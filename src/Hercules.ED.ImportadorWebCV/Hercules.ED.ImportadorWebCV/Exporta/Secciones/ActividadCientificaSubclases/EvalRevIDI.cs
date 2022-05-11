@@ -30,6 +30,48 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 {
                     itemBean.Items = new List<CVNObject>();
                 }
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIFunciones),
+                    "060.020.060.010", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDINombre),
+                    "060.020.060.020", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIPaisEntidadRealizacion),
+                    "060.020.060.030", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDICCAAEntidadRealizacion),
+                    "060.020.060.040", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDICiudadEntidadRealizacion),
+                    "060.020.060.190", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIModalidadActividad),
+                    "060.020.060.060", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIModalidadActividadOtros),
+                    "060.020.060.070", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio),
+                    "060.020.060.120", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIFechaFinalizacion),
+                    "060.020.060.130", keyValue.Value);
+                string frecuenciaActividad = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.evalRevIDIFrecuenciaActividad))) ?
+                    keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.evalRevIDIFrecuenciaActividad)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
+                    : null;
+                if (!string.IsNullOrEmpty(frecuenciaActividad))
+                {
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "060.020.060.140", frecuenciaActividad);
+                }
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDISistemaAcceso),
+                    "060.020.060.150", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDISistemaAccesoOtros),
+                    "060.020.060.160", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIAmbito),
+                    "060.020.060.170", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIAmbitoOtros),
+                    "060.020.060.180", keyValue.Value);
+                // Entidad realización
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDIEntidadNombre),
+                    "060.020.060.080", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDITipoEntidad),
+                    "060.020.060.100", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.evalRevIDITipoEntidadOtros),
+                    "060.020.060.110", keyValue.Value);
+
+                listado.Add(itemBean);
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
