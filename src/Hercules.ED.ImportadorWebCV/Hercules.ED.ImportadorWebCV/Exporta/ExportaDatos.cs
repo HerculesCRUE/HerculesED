@@ -151,6 +151,10 @@ namespace ImportadorWebCV.Exporta
             EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
             evalRevIDI.ExportaEvalRevIDI(entity, seccion);
 
+
+            ProduccionCientifica produccionCientifica = new ProduccionCientifica(cvn, cvID);
+            produccionCientifica.ExportaProduccionCientifica(entity, seccion);
+
             ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
             comitesCTA.ExportaComitesCTA(entity, seccion);
 
