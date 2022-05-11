@@ -2436,7 +2436,7 @@
                         "width": 3,
                         "auxEntityData": {
                           "propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-                          "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                          "rdftype": "http://w3id.org/roh/PersonAux",
                           "propertyTitle": {
                             "property": "http://xmlns.com/foaf/0.1/firstName"
                           },
@@ -3921,7 +3921,7 @@
                         "width": 3,
                         "auxEntityData": {
                           "propertyOrder": "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment",
-                          "rdftype": "http://xmlns.com/foaf/0.1/Person",
+                          "rdftype": "http://w3id.org/roh/PersonAux",
                           "propertyTitle": {
                             "property": "http://xmlns.com/foaf/0.1/firstName"
                           },
