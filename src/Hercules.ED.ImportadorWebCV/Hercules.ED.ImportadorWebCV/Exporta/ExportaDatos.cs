@@ -109,6 +109,7 @@ namespace ImportadorWebCV.Exporta
             GrupoIDI grupoIDI = new GrupoIDI(cvn, cvID);
 
             ObrasArtisticas obrasArtisticas = new ObrasArtisticas(cvn, cvID);
+            obrasArtisticas.ExportaObrasArtisticas(entity, seccion);
 
             PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
 
@@ -126,6 +127,12 @@ namespace ImportadorWebCV.Exporta
 
             ForosComites forosComites = new ForosComites(cvn, cvID);
             forosComites.ExportaForosComites(entity, seccion);
+
+            OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
+            organizacionesIDI.ExportaOrganizacionesIDI(entity, seccion);
+
+            TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
+            trabajosCongresos.ExportaTrabajosCongresos(entity, seccion);
 
             RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
             redesCooperacion.ExportaRedesCooperacion(entity, seccion);

@@ -17,7 +17,7 @@ namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
     {
-        public static List<Tuple<string,string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID) 
+        public static List<Tuple<string, string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
             if (propiedadesItem == null) { return null; }
@@ -235,6 +235,29 @@ namespace ExportadorWebCV.Utils
                 {
                     Code = code,
                     Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                });
+            }
+        }
+        public static void AddCvnItemBeanCvnString_cv(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            if (entity.properties_cv == null)
+            {
+                return;
+            }
+
+            if (entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            {
+                itemBean.Items.Add(new CvnItemBeanCvnString()
+                {
+                    Code = code,
+                    Value = entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
                 });
             }
@@ -484,8 +507,7 @@ namespace ExportadorWebCV.Utils
                 itemBean.Items.Add(cvnBoolean);
             }
         }
-
-        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnBoolean_cv(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -493,10 +515,62 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
-            codeGroup.Code = code;
+            CvnItemBeanCvnBoolean cvnBoolean = new CvnItemBeanCvnBoolean();
+            cvnBoolean.Code = code;
 
-            itemBean.Items.Add(codeGroup);
+            //Añado si se inserta valor
+            if (Comprobar(entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))))
+            {
+                cvnBoolean.Value = entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true") ? true : false;
+
+                itemBean.Items.Add(cvnBoolean);
+            }
+        }
+
+        //TODO
+        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            List<Tuple<string, string, string>> lt = new List<Tuple<string, string, string>>();
+            foreach (Tuple<string, string, string> tuple in dicCodigos)
+            {
+                if (!Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3))))
+                {
+                    continue;
+                }
+                //lt.Add(new Tuple<string, string, string>(tuple.Item3, 
+                //    entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x=>x.values), 
+                //    "prop"));
+            }
+
+            List<CvnItemBeanCvnCodeGroup> codeGroupList = new List<CvnItemBeanCvnCodeGroup>();
+            foreach (Tuple<string, string, string> tuple in dicCodigos)
+            {
+                CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
+                if (tuple.Item1.Equals("String"))
+                {
+                    if (!Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3))))
+                    {
+                        continue;
+                    }
+
+                    CvnItemBeanCvnCodeGroupCvnString codeGroupCvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                    codeGroupCvnString.Code = tuple.Item2;
+                    codeGroupCvnString.Value = entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last().Split("_").Last();
+
+                    codeGroup.CvnString.Append(codeGroupCvnString);
+                }
+            }
+            //codeGroup.CvnEntityBean = null;
+
+            //itemBean.Items.Add(codeGroup);
         }
 
         public static void AddCvnItemBeanCvnDouble(CvnItemBean itemBean, string code, string value, [Optional] string secciones)
@@ -838,7 +912,7 @@ namespace ExportadorWebCV.Utils
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                    .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1];
+                    .Select(x => x.values).Where(x=>x.Count()==1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
 
                 string anio = gnossDate.Substring(0, 4);
                 string mes = gnossDate.Substring(4, 2);
