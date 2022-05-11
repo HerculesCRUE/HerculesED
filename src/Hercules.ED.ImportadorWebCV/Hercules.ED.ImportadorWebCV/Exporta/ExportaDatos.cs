@@ -145,6 +145,9 @@ namespace ImportadorWebCV.Exporta
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
+            GestionIDI gestionIDI = new GestionIDI(cvn, cvID);
+            gestionIDI.ExportaGestionIDI(entity, seccion);
+
             EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
             evalRevIDI.ExportaEvalRevIDI(entity, seccion);
 
