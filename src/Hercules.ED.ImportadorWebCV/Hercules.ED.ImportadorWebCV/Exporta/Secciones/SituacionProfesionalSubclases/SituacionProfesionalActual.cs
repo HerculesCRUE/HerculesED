@@ -72,25 +72,29 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     "010.010.000.040", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalTipoEntidadEmpleadoraOtros),
                     "010.010.000.050", keyValue.Value);
+
                 // Telefono
                 string propTelefono = Variables.SituacionProfesional.situacionProfesionalFijoNumero.Split("@@@").FirstOrDefault();
                 if (!string.IsNullOrEmpty(propTelefono))
                 {
                     UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propTelefono, "010.010.000.140", keyValue.Value);
                 }
+
                 // Fax
                 string propFax = Variables.SituacionProfesional.situacionProfesionalFaxNumero.Split("@@@").FirstOrDefault();
                 if (!string.IsNullOrEmpty(propFax))
                 {
                     UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propFax, "010.010.000.150", keyValue.Value);
                 }
+
                 // Cod Unesco
                 UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria),
                     "010.010.000.220", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria),
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCodUnescoSecundaria),
                     "010.010.000.230", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCodUnescoPrimaria),
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalCodUnescoTerciaria),
                     "010.010.000.240", keyValue.Value);
+
                 // Correo electronico
                 List<string> listadoCorreos = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.situacionProfesionalCorreoElectronico))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.situacionProfesionalCorreoElectronico)).Select(x => x.values).FirstOrDefault()
