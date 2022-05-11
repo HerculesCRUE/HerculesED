@@ -77,13 +77,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.cursosSeminariosISSN),
                     "030.060.000.190", keyValue.Value);
 
-                //ID publicacion TODO
+                //ID publicacion 
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.cursosSeminariosIDPubDigitalHandle),
                     "030.060.000.210", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.cursosSeminariosIDPubDigitalDOI),
                     "030.060.000.210", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.cursosSeminariosIDPubDigitalPMID),
                     "030.060.000.210", keyValue.Value);
+
+                Dictionary<string, string> dicNombreID = new Dictionary<string, string>();
+                dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadDocente.cursosSeminariosNombreOtroIDPubDigital));
+                dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadDocente.cursosSeminariosIDOtroPubDigital));
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean,dicNombreID, "030.060.000.210", keyValue.Value);
 
                 listado.Add(itemBean);
             }
