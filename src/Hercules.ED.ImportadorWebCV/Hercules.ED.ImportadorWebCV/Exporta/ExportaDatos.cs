@@ -131,10 +131,15 @@ namespace ImportadorWebCV.Exporta
 
             OtrosModosColaboracion otrosModosColaboracion = new OtrosModosColaboracion(cvn, cvID);
             otrosModosColaboracion.ExportaOtrosModosColaboracion(entity, seccion);
+
             AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos(cvn, cvID);
             acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion);
+
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(entity, seccion);
+
+            EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
+            evalRevIDI.ExportaEvalRevIDI(entity, seccion);
 
             SociedadesAsociaciones sociedadesAsociaciones = new SociedadesAsociaciones(cvn, cvID);
             sociedadesAsociaciones.ExportaSociedadesAsociaciones(entity, seccion);
