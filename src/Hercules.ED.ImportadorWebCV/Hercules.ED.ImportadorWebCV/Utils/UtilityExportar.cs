@@ -17,6 +17,42 @@ namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
     {
+        public static List<Tuple<string,string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID) 
+        {
+            //Compruebo que no es nulo y que tiene 1 o más valores
+            if (propiedadesItem == null) { return null; }
+            if (propiedadesItem.Count != 4) { return null; }
+
+            string select = $@"select distinct *";
+            string where = $@"where {{?cv <{propiedadesItem[0]}> ?prop1 . 
+        ?prop1 <{propiedadesItem[1]}> ?prop2 .
+        OPTIONAL{{?prop2 <{propiedadesItem[2]}> ?itemCV }}
+        ?prop2 <{propiedadesItem[3]}> ?item .
+    FILTER(?cv=<{pCVID}>) 
+}}";
+
+
+            List<Tuple<string, string>> listaResultado = new List<Tuple<string, string>>();
+
+            SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            if (resultData.results.bindings.Count == 0)
+            {
+                return null;
+            }
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("itemCV"))
+                {
+                    listaResultado.Add(new Tuple<string, string>(fila["item"].value, fila["itemCV"].value));
+                }
+                else
+                {
+                    listaResultado.Add(new Tuple<string, string>(fila["item"].value, ""));
+                }
+            }
+
+            return listaResultado;
+        }
         public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
