@@ -141,13 +141,43 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            foreach (string palabraClave in listaPalabrasClave)
+            Dictionary<string, string> codigos = GetHijosListadoPalabrasClave(listaPalabrasClave);
+
+            foreach (KeyValuePair<string, string> keyValue in codigos)
             {
-                string identificador = palabraClave.Split("_").Last();
-                AddCvnItemBeanCvnStringSimple(itemBean, code, identificador);
+                AddCvnItemBeanCvnStringSimple(itemBean, code, keyValue.Value);
             }
         }
 
+        public static Dictionary<string, string> GetHijosListadoPalabrasClave(List<string> listaPalabrasClave)
+        {
+            Dictionary<string, string> codigos = new Dictionary<string, string>();
+
+            foreach (string palabraClave in listaPalabrasClave)
+            {
+                string key = palabraClave.Split("@@@").First();
+                string value = palabraClave.Split("_").Last();
+
+                if (codigos.ContainsKey(key))
+                {
+                    string mayor;
+                    if (double.Parse(value) > double.Parse(codigos[key]))
+                    {
+                        mayor = value;
+                    }
+                    else
+                    {
+                        mayor = codigos[key];
+                    }
+                    codigos[key] = mayor;
+                }
+                else
+                {
+                    codigos.Add(key, value);
+                }
+            }
+            return codigos;
+        }
 
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string property, string code, Entity entity)
         {
