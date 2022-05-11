@@ -17,7 +17,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public TrabajosJornadasSeminarios(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
-        public void ExportaConsejos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaTrabajosJornadasSeminarios(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
