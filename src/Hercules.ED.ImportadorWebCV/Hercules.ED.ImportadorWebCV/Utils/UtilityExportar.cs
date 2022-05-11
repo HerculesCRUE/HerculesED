@@ -239,6 +239,29 @@ namespace ExportadorWebCV.Utils
                 });
             }
         }
+        public static void AddCvnItemBeanCvnString_cv(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            if (entity.properties_cv == null)
+            {
+                return;
+            }
+
+            if (entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            {
+                itemBean.Items.Add(new CvnItemBeanCvnString()
+                {
+                    Code = code,
+                    Value = entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                });
+            }
+        }
 
         public static void AddDireccion(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
@@ -479,6 +502,26 @@ namespace ExportadorWebCV.Utils
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))))
             {
                 cvnBoolean.Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true") ? true : false;
+
+                itemBean.Items.Add(cvnBoolean);
+            }
+        }
+        public static void AddCvnItemBeanCvnBoolean_cv(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            CvnItemBeanCvnBoolean cvnBoolean = new CvnItemBeanCvnBoolean();
+            cvnBoolean.Code = code;
+
+            //Añado si se inserta valor
+            if (Comprobar(entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))))
+            {
+                cvnBoolean.Value = entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true") ? true : false;
 
                 itemBean.Items.Add(cvnBoolean);
@@ -869,7 +912,7 @@ namespace ExportadorWebCV.Utils
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                    .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1];
+                    .Select(x => x.values).Where(x=>x.Count()==1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
 
                 string anio = gnossDate.Substring(0, 4);
                 string mes = gnossDate.Substring(4, 2);
