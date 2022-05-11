@@ -77,6 +77,12 @@ namespace ExportadorWebCV.Utils
             return string.Join("|", cadena.Split("|").Select(x => x.Split("@@@")[0]));
         }
 
+        /// <summary>
+        /// True si la enumeracion contiene algun elemento
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enumeracion"></param>
+        /// <returns></returns>
         public static bool Comprobar<T>(IEnumerable<T> enumeracion)
         {
             return enumeracion.Any();
