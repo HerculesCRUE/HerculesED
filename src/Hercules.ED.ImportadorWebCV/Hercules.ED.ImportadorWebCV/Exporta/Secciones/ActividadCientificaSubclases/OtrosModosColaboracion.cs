@@ -11,7 +11,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class OtrosModosColaboracion:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherCollaborations", "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherCollaborations", 
+            "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "collaboration";
         public OtrosModosColaboracion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
