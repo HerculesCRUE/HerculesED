@@ -76,7 +76,11 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.estudiosCicloTipoEntidadTitulacionOtros),
                     "020.010.010.120", keyValue.Value);
 
+                listado.Add(itemBean);
             }
+
+            //Añado en el cvnRootResultBean los items que forman parte del listado
+            UtilityExportar.AniadirItems(mCvn, listado);
         }
     }
 }
