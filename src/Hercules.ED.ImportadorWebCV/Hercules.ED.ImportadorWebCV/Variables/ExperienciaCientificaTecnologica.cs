@@ -113,11 +113,11 @@
         public const string propIIDerechosConexos = "http://w3id.org/roh/relatedRights";
         public const string propIISecretoEmpresarial = "http://w3id.org/roh/tradeSecret";
         public const string propIIModalidadKnowHow = "http://w3id.org/roh/knowHow";
-        public const string propIIInventoresAutoresNombre = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
-        public const string propIIInventoresAutoresOrden = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
-        public const string propIIInventoresAutoresPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
-        public const string propIIInventoresAutoresSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
-        public const string propIIInventoresAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
+        public const string propIIInventoresAutoresNombre = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
+        public const string propIIInventoresAutoresOrden = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
+        public const string propIIInventoresAutoresPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";
+        public const string propIIInventoresAutoresSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://w3id.org/roh/secondFamilyName";
+        public const string propIIInventoresAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
         public const string propIICodReferencia = "http://w3id.org/roh/referenceCode";
         public const string propIINumSolicitud = "http://w3id.org/roh/applicationNumber";
         public const string propIIPaisInscripcion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
@@ -177,10 +177,10 @@
         /// </summary>
         public const string obrasArtisticasDescripcion = "http://w3id.org/roh/title";
         public const string obrasArtisticasNombreExpo = "http://w3id.org/roh/exhibition";
-        public const string obrasArtisticasAutoresNombre = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
-        public const string obrasArtisticasAutoresPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
-        public const string obrasArtisticasAutoresSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
-        public const string obrasArtisticasAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
+        public const string obrasArtisticasAutoresNombre = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
+        public const string obrasArtisticasAutoresPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";
+        public const string obrasArtisticasAutoresSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://w3id.org/roh/secondFamilyName";
+        public const string obrasArtisticasAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
         public const string obrasArtisticasPaisExpo = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string obrasArtisticasCCAAExpo = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string obrasArtisticasCiudadExpo = "https://www.w3.org/2006/vcard/ns#locality";
