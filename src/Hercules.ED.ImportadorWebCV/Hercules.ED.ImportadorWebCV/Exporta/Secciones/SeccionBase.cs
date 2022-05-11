@@ -83,8 +83,115 @@ namespace ImportadorWebCV.Exporta.Secciones
             return null;
         }
 
+        public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string>> listadoId, string pGraph)
+        {
+            Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, List<Dictionary<string, Data>>> listResultCV = new Dictionary<string, List<Dictionary<string, Data>>>();
+            try
+            {
+                int numLimit = 10000;
+                int offset = 0;
+                bool cargar = true;
+                while (cargar)
+                {
+                    string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
+                    string whereID = $@"where{{
+        ?x <http://gnoss/hasEntidad> ?s . 
+        ?s ?p ?o .
+        OPTIONAL{{
+            ?o ?q ?w .
+        }}
+        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x=>x.Item1))}>))
+    }}
+    order by desc(?s) desc(?p) desc(?o)
+}} limit {numLimit} offset {offset}";
 
-        public Dictionary<string, Entity> GetListLoadedEntity(List<string> listadoId, string pGraph)
+                    SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, pGraph);
+                    foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                    {
+                        if (!listResult.ContainsKey(fila["s"].value))
+                        {
+                            listResult.Add(fila["s"].value, new List<Dictionary<string, Data>>());
+                        }
+                        listResult[fila["s"].value].Add(fila);
+                    }
+                    offset += numLimit;
+                    if (resultData.results.bindings.Count < numLimit)
+                    {
+                        cargar = false;
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+            
+            try
+            {
+                int numLimit = 10000;
+                int offset = 0;
+                bool cargar = true;
+                while (cargar)
+                {
+                    string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
+                    string whereID = $@"where{{
+        ?x <http://gnoss/hasEntidad> ?s . 
+        ?s ?p ?o .
+        OPTIONAL{{
+            ?o ?q ?w .
+        }}
+        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x=>x.Item2).Where(x=>!string.IsNullOrEmpty(x)))}>))
+    }}
+    order by desc(?s) desc(?p) desc(?o)
+}} limit {numLimit} offset {offset}";
+
+                    SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, "curriculumvitae");
+                    foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                    {
+                        if (!listResultCV.ContainsKey(fila["s"].value))
+                        {
+                            listResultCV.Add(fila["s"].value, new List<Dictionary<string, Data>>());
+                        }
+                        listResultCV[fila["s"].value].Add(fila);
+                    }
+                    offset += numLimit;
+                    if (resultData.results.bindings.Count < numLimit)
+                    {
+                        cargar = false;
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+
+
+            foreach (string pId in listadoId.Select(x=>x.Item1))
+            {
+                Entity entity = new Entity()
+                {
+                    id = pId,
+                    ontology = pGraph,
+                    rdfType = listResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value,
+                    properties = new List<Entity.Property>(),
+                    properties_cv = new List<Entity.Property>()
+                };
+                GetLoadedEntity(pId, "", "", ref entity, listResult);
+                if(!string.IsNullOrEmpty(listadoId.Where(x => x.Item1.Equals(pId)).Select(x => x.Item2).FirstOrDefault()))
+                {
+                    GetLoadedEntityCV(listadoId.Where(x => x.Item1.Equals(pId)).Select(x => x.Item2).FirstOrDefault(), "", "", ref entity, listResultCV);
+                }
+                listaEntidades.Add(pId, entity);
+            }
+
+            return listaEntidades;
+        }
+
+
+            public Dictionary<string, Entity> GetListLoadedEntity(List<string> listadoId, string pGraph)
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
@@ -238,6 +345,99 @@ namespace ImportadorWebCV.Exporta.Secciones
                             {
                                 property = new Entity.Property(pPropAcumuladoAux, new List<string>());
                                 pEntity.properties.Add(property);
+                            }
+                            property.values.Add(pObjAcumuladoAux);
+                        }
+                    }
+                }
+            }
+        }
+        private void GetLoadedEntityCV(string pId, string pPropAcumulado, string pObjAcumulado, ref Entity pEntity, Dictionary<string, List<Dictionary<string, Data>>> pListResult)
+        {
+            foreach (Dictionary<string, Data> prop in pListResult[pId])
+            {
+                string s = prop["s"].value;
+                string p = prop["p"].value;
+                string o = prop["o"].value;
+                string q = "";
+                string w = "";
+                if (prop.ContainsKey("q") && prop.ContainsKey("w"))
+                {
+                    q = prop["q"].value;
+                    w = prop["w"].value;
+                }
+
+                string rdfType = pListResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value;
+                if (s == pId && p != "http://www.w3.org/2000/01/rdf-schema#label" && p != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                {
+                    string qPropAcumuladoAux = "";
+                    string wObjAcumuladoAux = "";
+                    if (!string.IsNullOrEmpty(q) && q != "http://www.w3.org/2000/01/rdf-schema#label"
+                        && q != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                    {
+                        qPropAcumuladoAux = pPropAcumulado;
+                        if (string.IsNullOrEmpty(pPropAcumulado))
+                        {
+                            qPropAcumuladoAux += p;
+                        }
+                        if (!string.IsNullOrEmpty(qPropAcumuladoAux))
+                        {
+                            qPropAcumuladoAux += "@@@" + rdfType + "|";
+                        }
+                        qPropAcumuladoAux += q;
+
+                        wObjAcumuladoAux = pObjAcumulado;
+                        if (string.IsNullOrEmpty(pObjAcumulado))
+                        {
+                            wObjAcumuladoAux += o;
+                        }
+                        if (!string.IsNullOrEmpty(wObjAcumuladoAux))
+                        {
+                            wObjAcumuladoAux += "@@@";
+                        }
+                        wObjAcumuladoAux += w;
+                    }
+
+                    string pPropAcumuladoAux = pPropAcumulado;
+                    if (!string.IsNullOrEmpty(pPropAcumulado))
+                    {
+                        pPropAcumuladoAux += "@@@" + rdfType + "|";
+                    }
+                    pPropAcumuladoAux += p;
+                    string pObjAcumuladoAux = pObjAcumulado;
+                    if (!string.IsNullOrEmpty(pObjAcumulado))
+                    {
+                        pObjAcumuladoAux += "@@@";
+                    }
+                    pObjAcumuladoAux += o;
+                    if (pListResult.ContainsKey(o))
+                    {
+                        GetLoadedEntity(o, pPropAcumuladoAux, pObjAcumuladoAux, ref pEntity, pListResult);
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(wObjAcumuladoAux))
+                        {
+                            Entity.Property property = pEntity.properties_cv.FirstOrDefault(x => x.prop == qPropAcumuladoAux);
+                            if (property == null)
+                            {
+                                property = new Entity.Property(qPropAcumuladoAux, new List<string>());
+                                pEntity.properties_cv.Add(property);
+                            }
+                            property.values.Add(wObjAcumuladoAux);
+                        }
+                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 && 
+                            Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res)) 
+                        { 
+                            //No inserto nada
+                        }
+                        else
+                        {
+                            Entity.Property property = pEntity.properties_cv.FirstOrDefault(x => x.prop == pPropAcumuladoAux);
+                            if (property == null)
+                            {
+                                property = new Entity.Property(pPropAcumuladoAux, new List<string>());
+                                pEntity.properties_cv.Add(property);
                             }
                             property.values.Add(pObjAcumuladoAux);
                         }

@@ -152,14 +152,23 @@ namespace ImportadorWebCV.Exporta
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
+            GestionIDI gestionIDI = new GestionIDI(cvn, cvID);
+            gestionIDI.ExportaGestionIDI(entity, seccion);
+
             EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
             evalRevIDI.ExportaEvalRevIDI(entity, seccion);
+
+            ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
+            comitesCTA.ExportaComitesCTA(entity, seccion);
 
             SociedadesAsociaciones sociedadesAsociaciones = new SociedadesAsociaciones(cvn, cvID);
             sociedadesAsociaciones.ExportaSociedadesAsociaciones(entity, seccion);
 
             Consejos consejos = new Consejos(cvn, cvID);
             consejos.ExportaConsejos(entity, seccion);
+
+            TrabajosJornadasSeminarios trabajosJornadasSeminarios = new TrabajosJornadasSeminarios(cvn, cvID);
+            trabajosJornadasSeminarios.ExportaTrabajosJornadasSeminarios(entity, seccion);
 
             OtrasDistinciones otrasDistinciones = new OtrasDistinciones(cvn, cvID);
             otrasDistinciones.ExportaOtrasDistinciones(entity, seccion);

@@ -1983,7 +1983,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         ComitesCTAEntidadAfiliacion(item, entidadAux);
                         ComitesCTACodigosUnesco(item, entidadAux);
-                        ComitesCTATipoEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -2036,22 +2035,6 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         }
 
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes al tipo de Entidad de Afiliación.
-        /// </summary>
-        /// <param name="item">item</param>
-        /// <param name="entidadAux">entidadAux</param>
-        private void ComitesCTATipoEntidad(CvnItemBean item, Entity entidadAux)
-        {
-            //Añado otros, o el ID de una preseleccion
-            string valorTipo = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.010.090")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.020.010.080");
-
-            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacion, valorTipo),
-                new Property(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacionOtros, item.GetStringPorIDCampo("060.020.010.090"))
-            ));
-        }
 
         /// <summary>
         /// 060.020.030.000
