@@ -131,6 +131,9 @@ namespace ImportadorWebCV.Exporta
             OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
             organizacionesIDI.ExportaOrganizacionesIDI(entity, seccion);
 
+            TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
+            trabajosCongresos.ExportaTrabajosCongresos(entity, seccion);
+
             RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
             redesCooperacion.ExportaRedesCooperacion(entity, seccion);
 
