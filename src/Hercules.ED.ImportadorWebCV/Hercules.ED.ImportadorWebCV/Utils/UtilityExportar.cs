@@ -598,7 +598,10 @@ namespace ExportadorWebCV.Utils
                             .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last();
             }
 
-            itemBean.Items.Add(pageBean);
+            if (!string.IsNullOrEmpty(pageBean.InitialPage) || !string.IsNullOrEmpty(pageBean.FinalPage))
+            {
+                itemBean.Items.Add(pageBean);
+            }
         }
 
         public static void AddLanguage(CvnItemBean itemBean, string propertyIdentification, string code, Entity entity, [Optional] string secciones)
@@ -689,7 +692,10 @@ namespace ExportadorWebCV.Utils
                             .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last();
             }
 
-            itemBean.Items.Add(volumeBean);
+            if (!string.IsNullOrEmpty(volumeBean.Number) || !string.IsNullOrEmpty(volumeBean.Volume))
+            {
+                itemBean.Items.Add(volumeBean);
+            }
         }
 
         /// <summary>
