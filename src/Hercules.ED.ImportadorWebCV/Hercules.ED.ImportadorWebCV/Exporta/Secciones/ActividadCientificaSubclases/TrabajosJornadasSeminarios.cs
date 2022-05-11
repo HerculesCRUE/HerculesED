@@ -12,16 +12,17 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
     public class TrabajosJornadasSeminarios:SeccionBase
     {
         List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/worksSubmittedSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
+            "http://w3id.org/roh/worksSubmittedSeminars", "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV", 
+            "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "document";
         public TrabajosJornadasSeminarios(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
         public void ExportaTrabajosJornadasSeminarios(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
-        {
+       {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
+            List<Tuple<string,string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
                 CvnItemBean itemBean = new CvnItemBean();
