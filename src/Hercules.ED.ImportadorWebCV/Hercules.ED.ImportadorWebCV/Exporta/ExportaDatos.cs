@@ -120,6 +120,13 @@ namespace ImportadorWebCV.Exporta
         public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
+
+            OtrasActividadesDivulgacion otrasActividadesDivulgacion = new OtrasActividadesDivulgacion(cvn, cvID);
+            otrasActividadesDivulgacion.ExportaOtrasActividadesDivulgacion(entity, seccion);
+
+            ForosComites forosComites = new ForosComites(cvn, cvID);
+            forosComites.ExportaForosComites(entity, seccion);
+
             RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
             redesCooperacion.ExportaRedesCooperacion(entity, seccion);
 
