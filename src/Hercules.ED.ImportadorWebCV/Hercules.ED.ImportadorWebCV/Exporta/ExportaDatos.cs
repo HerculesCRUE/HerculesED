@@ -109,6 +109,7 @@ namespace ImportadorWebCV.Exporta
             GrupoIDI grupoIDI = new GrupoIDI(cvn, cvID);
 
             ObrasArtisticas obrasArtisticas = new ObrasArtisticas(cvn, cvID);
+            obrasArtisticas.ExportaObrasArtisticas(entity, seccion);
 
             PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
 
