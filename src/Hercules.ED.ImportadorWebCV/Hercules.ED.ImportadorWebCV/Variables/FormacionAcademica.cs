@@ -47,10 +47,10 @@
         public const string doctoradosDirectorTesisNombre = "http://w3id.org/roh/directorName";
         public const string doctoradosDirectorTesisPrimerApellido = "http://w3id.org/roh/directorFirstSurname";
         public const string doctoradosDirectorTesisSegundoApellido = "http://w3id.org/roh/directorSecondSurname";
-        public const string doctoradosCodirectorTesisFirma = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/nick";
-        public const string doctoradosCodirectorTesisNombre = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/firstName";
-        public const string doctoradosCodirectorTesisPrimerApellido = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://xmlns.com/foaf/0.1/familyName";
-        public const string doctoradosCodirectorTesisSegundoApellido = "http://w3id.org/roh/codirector@@@http://xmlns.com/foaf/0.1/Person|http://w3id.org/roh/secondFamilyName";
+        public const string doctoradosCodirectorTesisFirma = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
+        public const string doctoradosCodirectorTesisNombre = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
+        public const string doctoradosCodirectorTesisPrimerApellido = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";
+        public const string doctoradosCodirectorTesisSegundoApellido = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://w3id.org/roh/secondFamilyName";
         public const string doctoradosCalificacionObtenida = "http://w3id.org/roh/qualification";
         public const string doctoradosDoctoradoUE = "http://w3id.org/roh/europeanDoctorate";
         public const string doctoradosMencionCalidad = "http://w3id.org/roh/qualityMention";

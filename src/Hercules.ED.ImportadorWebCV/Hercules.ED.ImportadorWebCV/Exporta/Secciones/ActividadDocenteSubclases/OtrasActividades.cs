@@ -28,30 +28,32 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             {
                 CvnItemBean itemBean = new CvnItemBean()
                 {
-                    Code = "030.010.000.000",
+                    Code = "030.100.000.000",
                     Items = new List<CVNObject>()
                 };
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesDescripcion),
-                    "030.010.000.010", keyValue.Value);
+                    "030.100.000.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesPaisRealizacion),
-                    "030.010.000.030", keyValue.Value);
+                    "030.100.000.030", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesCCAARealizacion),
-                    "030.010.000.040", keyValue.Value);
+                    "030.100.000.040", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesCiudadRealizacion),
-                    "030.010.000.060", keyValue.Value);
+                    "030.100.000.060", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesFechaFinalizacion),
-                    "030.010.000.110", keyValue.Value);
+                    "030.100.000.110", keyValue.Value);
 
-                //TODO Palabras clave
+                //Palabras clave
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesPalabrasClave),
+                    "030.100.000.020", keyValue.Value);
 
                 //Entidad organizadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre),
-                    "030.010.000.070", keyValue.Value);
+                    "030.100.000.070", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesTipoEntidadOrganizadora),
-                    "030.010.000.090", keyValue.Value);
+                    "030.100.000.090", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.otrasActividadesTipoEntidadOrganizadoraOtros),
-                    "030.010.000.100", keyValue.Value);
+                    "030.100.000.100", keyValue.Value);
 
                 listado.Add(itemBean);
             }
