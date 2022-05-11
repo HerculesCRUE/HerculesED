@@ -544,9 +544,9 @@ namespace ExportadorWebCV.Utils
                 {
                     continue;
                 }
-                lt.Add(new Tuple<string, string, string>(tuple.Item3, 
-                    entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x=>x.values), 
-                    "prop"));
+                //lt.Add(new Tuple<string, string, string>(tuple.Item3, 
+                //    entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x=>x.values), 
+                //    "prop"));
             }
 
             List<CvnItemBeanCvnCodeGroup> codeGroupList = new List<CvnItemBeanCvnCodeGroup>();
