@@ -881,7 +881,7 @@ namespace ExportadorWebCV.Utils
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                    .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1];
+                    .Select(x => x.values).Where(x=>x.Count()==1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
 
                 string anio = gnossDate.Substring(0, 4);
                 string mes = gnossDate.Substring(4, 2);
