@@ -157,6 +157,9 @@ namespace ImportadorWebCV.Exporta
             Consejos consejos = new Consejos(cvn, cvID);
             consejos.ExportaConsejos(entity, seccion);
 
+            TrabajosJornadasSeminarios trabajosJornadasSeminarios = new TrabajosJornadasSeminarios(cvn, cvID);
+            trabajosJornadasSeminarios.ExportaTrabajosJornadasSeminarios(entity, seccion);
+
             OtrasDistinciones otrasDistinciones = new OtrasDistinciones(cvn, cvID);
             otrasDistinciones.ExportaOtrasDistinciones(entity, seccion);
 

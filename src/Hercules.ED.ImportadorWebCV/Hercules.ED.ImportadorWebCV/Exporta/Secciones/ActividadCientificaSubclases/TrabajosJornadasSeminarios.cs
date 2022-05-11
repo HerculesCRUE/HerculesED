@@ -86,10 +86,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeoOtros),
                     "060.010.030.060", keyValue.Value);
 
-                // Rango
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeo),
+                // Rango TODO
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIntervencion),
                     "060.010.030.040", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeoOtros),
+                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorCorrespondencia),
                     "060.010.030.390", keyValue.Value);
 
                 // Autores 060.010.030.310 TODO
