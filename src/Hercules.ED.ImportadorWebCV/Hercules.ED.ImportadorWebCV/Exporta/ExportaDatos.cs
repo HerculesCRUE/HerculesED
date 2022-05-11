@@ -121,6 +121,9 @@ namespace ImportadorWebCV.Exporta
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
 
+            OtrasActividadesDivulgacion otrasActividadesDivulgacion = new OtrasActividadesDivulgacion(cvn, cvID);
+            otrasActividadesDivulgacion.ExportaOtrasActividadesDivulgacion(entity, seccion);
+
             ForosComites forosComites = new ForosComites(cvn, cvID);
             forosComites.ExportaForosComites(entity, seccion);
 
