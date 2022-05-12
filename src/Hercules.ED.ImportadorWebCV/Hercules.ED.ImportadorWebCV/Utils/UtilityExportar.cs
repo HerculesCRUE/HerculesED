@@ -1101,6 +1101,36 @@ namespace ExportadorWebCV.Utils
             //Añado el tipo si se corresponde con uno de los validos, sino salgo sin añadir
             switch (property)
             {
+                case "http://w3id.org/roh/projectCode":
+                    externalPKBean.Type = "000";
+                    break;
+                case "http://purl.org/ontology/bibo/issn":
+                    externalPKBean.Type = "010";
+                    break;
+                case "http://w3id.org/roh/isbn":
+                    externalPKBean.Type = "020";
+                    break;
+                case "http://w3id.org/roh/legalDeposit":
+                    externalPKBean.Type = "030";
+                    break;
+                case "http://purl.org/ontology/bibo/doi":
+                    externalPKBean.Type = "040";
+                    break;
+                case "http://w3id.org/roh/applicationNumber":
+                    externalPKBean.Type = "060";
+                    break;
+                case "http://w3id.org/roh/referenceCode":
+                    externalPKBean.Type = "070";
+                    break;
+                case "http://w3id.org/roh/normalizedCode":
+                    externalPKBean.Type = "110";
+                    break;
+                case "http://purl.org/ontology/bibo/handle":
+                    externalPKBean.Type = "120";
+                    break;
+                case "http://purl.org/ontology/bibo/pmid":
+                    externalPKBean.Type = "130";
+                    break;
                 case "http://w3id.org/roh/ORCID":
                     externalPKBean.Type = "140";
                     break;
@@ -1109,24 +1139,6 @@ namespace ExportadorWebCV.Utils
                     break;
                 case "http://vivoweb.org/ontology/core#researcherId":
                     externalPKBean.Type = "160";
-                    break;
-                case "http://w3id.org/roh/legalDeposit":
-                    externalPKBean.Type = "030";
-                    break;
-                case "http://w3id.org/roh/isbn":
-                    externalPKBean.Type = "020";
-                    break;
-                case "http://purl.org/ontology/bibo/issn":
-                    externalPKBean.Type = "010";
-                    break;
-                case "http://purl.org/ontology/bibo/doi":
-                    externalPKBean.Type = "040";
-                    break;
-                case "http://purl.org/ontology/bibo/handle":
-                    externalPKBean.Type = "120";
-                    break;
-                case "http://purl.org/ontology/bibo/pmid":
-                    externalPKBean.Type = "130";
                     break;
                 default:
                     return;
