@@ -11,12 +11,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class TrabajosCongresos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedConferences"
-            ,"http://w3id.org/roh/relatedWorkSubmittedConferencesCV", "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/worksSubmittedConferences", "http://w3id.org/roh/relatedWorkSubmittedConferencesCV",
+            "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "document";
+
         public TrabajosCongresos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-            
+
         }
         public void ExportaTrabajosCongresos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
@@ -95,9 +97,43 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.070", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia),
                     "060.010.020.390", keyValue.Value);
-                
-                // TODO Lista de autores TrabajosCongresosAutores
 
+                // Lista de autores
+
+                //Selecciono las firmas de las personas
+                Dictionary<string, string> dicFirmas = new Dictionary<string, string>();
+                if (UtilityExportar.Comprobar(keyValue.Value.properties
+                        .Where(x => UtilityExportar.EliminarRDF(x.prop).Equals(UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutorFirma))))
+                    &&
+                    UtilityExportar.Comprobar(keyValue.Value.properties
+                        .Where(x => UtilityExportar.EliminarRDF(x.prop).Equals(UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutorFirma)))
+                        .Select(x => x.values).First())
+                )
+                {
+                    List<string[]> listadoFirmas = keyValue.Value.properties
+                        .Where(x => UtilityExportar.EliminarRDF(x.prop).Equals(UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutorFirma)))
+                        .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                    dicFirmas = listadoFirmas.ToDictionary(x => x.ElementAt(0), x => x.ElementAt(1));
+                }
+
+                //Selecciono los autores
+                List<Tuple<string, string, string>> autorNombreApellido = new List<Tuple<string, string, string>>();
+                if (UtilityExportar.Comprobar(keyValue.Value.properties
+                        .Where(x => UtilityExportar.EliminarRDF(x.prop).Equals(UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutor)))) 
+                    &&
+                    UtilityExportar.Comprobar(keyValue.Value.properties
+                        .Where(x => UtilityExportar.EliminarRDF(x.prop).Equals(UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutor)))
+                        .Select(x => x.values).First())
+                )
+                {
+                    List<string[]> listadoPersonas = keyValue.Value.properties
+                    .Where(x => UtilityExportar.EliminarRDF(x.prop).Equals(UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutor)))
+                    .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                    Dictionary<string, string> dicPersonas = listadoPersonas.ToDictionary(x => x.ElementAt(1), x => x.ElementAt(0));
+                    autorNombreApellido = UtilityExportar.GetListadoAutores(mResourceApi, dicPersonas);
+                }
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanListSimple(itemBean, autorNombreApellido, dicFirmas, 
+                    "060.010.020.040");
 
                 // Trabajos Congresos ID Publicacion
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalHandle),
