@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class PublicacionesDocumentos:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/scientificProduction", "http://w3id.org/roh/scientificProductionCV",
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "scientificproduction";
+        string graph = "document";
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
@@ -88,13 +88,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
                     "060.010.010.210", keyValue.Value);
 
-                // Autores TODO
-                //Dictionary<string, string> listadoAutores = new Dictionary<string, string>();
-                //listadoAutores.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubdocumentos));
-                //listadoAutores.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.direccionTesisCodirectorTesisNombre));
-                //listadoAutores.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.direccionTesisCodirectorTesisPrimerApellido));
-                //listadoAutores.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisCodirectorTesisSegundoApellido));
-                //UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoAutores, "060.010.010.040", keyValue.Value);
+                // Autores 
+                //Selecciono las firmas de las personas
+                Dictionary<string, string> dicFirmas = UtilityExportar.GetFirmasAutores(Variables.ActividadCientificaTecnologica.pubDocumentosAutoresFirma, keyValue.Value);
+
+                //Selecciono los autores
+                List<Tuple<string, string, string>> autorNombreApellido = UtilityExportar.GetNombreApellidoAutor(Variables.ActividadCientificaTecnologica.pubDocumentosAutores, keyValue.Value, mResourceApi);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanListSimple(itemBean, autorNombreApellido, dicFirmas,
+                    "060.010.010.040");
 
                 // Traducciones
                 UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTraduccion),
