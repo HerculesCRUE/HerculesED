@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace Hercules.ED.GraphicEngine.Models
 {
@@ -43,7 +44,7 @@ namespace Hercules.ED.GraphicEngine.Models
             pagina.id = pConfigModel.identificador;
             pagina.nombre = GetTextLang(pLang, pConfigModel.nombre);
             pagina.listaIdsGraficas = new List<string>();
-            foreach(Grafica itemGrafica in pConfigModel.graficas)
+            foreach (Grafica itemGrafica in pConfigModel.graficas)
             {
                 pagina.listaIdsGraficas.Add(itemGrafica.identificador);
             }
@@ -125,9 +126,15 @@ namespace Hercules.ED.GraphicEngine.Models
             }
             grafica.options = options;
 
-            //foreach (Dimension itemGrafica in pGrafica.configBarras.dimensiones)
-            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
+            ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
+            Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
+            foreach (Dimension dim in pGrafica.configBarras.dimensiones)
+            {
+                resultadosDimension[dim] = null;
+                dimensionesDataset[dim] = null;
+            }
 
+            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 5 }, itemGrafica =>
             {
                 // Orden.
                 string orden = "ASC";
@@ -194,48 +201,90 @@ namespace Hercules.ED.GraphicEngine.Models
                         dicResultados.Add(fila["ejeX"].value, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture));
                     }
                 }
+                resultadosDimension[itemGrafica] = dicResultados;
+            });
 
-                // Rellena y ordena con los años faltantes en el caso que sea true.
-                if (pGrafica.configBarras.rellenarEjeX)
+            // Obtención del valor de máximo y mínimo del eje x.            
+            HashSet<string> valuesEje = new HashSet<string>();
+            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            {
+                if (item.Value != null && item.Value.Any())
                 {
-                    if (dicResultados.Count > 0)
+                    valuesEje.UnionWith(item.Value.Keys);
+                }
+            }
+
+            bool isInt = valuesEje.Where(x => !int.TryParse(x, out int aux)).Count() == 0;
+
+            if (pGrafica.configBarras.rellenarEjeX && isInt)
+            {
+                int numMin = valuesEje.Min(x => int.Parse(x));
+                int numMax = valuesEje.Max(x => int.Parse(x));
+                for (int i = numMin; i <= numMax; i++)
+                {
+                    valuesEje.Add(i.ToString());
+                }
+            }
+
+            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            {
+                if (item.Value != null && item.Value.Any())
+                {
+                    foreach (string valor in valuesEje)
                     {
-                        int inicio = dicResultados.Keys.Select(x => int.Parse(x)).Min();
-                        int fin = dicResultados.Keys.Select(x => int.Parse(x)).Max();
-                        for (int i = inicio; i < fin; i++)
+                        if (!item.Value.ContainsKey(valor.ToString()))
                         {
-                            if (!dicResultados.ContainsKey(i.ToString()))
-                            {
-                                dicResultados.Add(i.ToString(), 0);
-                            }
+                            item.Value.Add(valor.ToString(), 0);
                         }
                     }
-                    dicResultados = dicResultados.OrderBy(item => item.Key).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
                 }
+                if (isInt)
+                {
+                    resultadosDimension[item.Key] = item.Value.OrderBy(item => int.Parse(item.Key)).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+                }
+                else
+                {
+                    resultadosDimension[item.Key] = item.Value.OrderBy(item => item.Key).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+                }
+            }
 
-                // Obtención del objeto de la gráfica.
-                List<string> listaLabels = dicResultados.Keys.ToList();
+
+            if (isInt)
+            {
+                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
+            }
+            else
+            {
+                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
+            }
+
+
+            // Obtención del objeto de la gráfica.
+            List<string> listaLabels = valuesEje.ToList();
+
+            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            {
                 Dataset dataset = new Dataset();
-                dataset.data = dicResultados.Values.ToList();
+                dataset.data = item.Value.Values.ToList();
 
                 // Nombre del dato en leyenda.
-                dataset.label = GetTextLang(pLang, itemGrafica.nombre);
+                dataset.label = GetTextLang(pLang, item.Key.nombre);
 
                 // Color.
-                dataset.backgroundColor = ObtenerColores(dataset.data.Count(), itemGrafica.color);
-                dataset.type = itemGrafica.tipoDimension;
+                dataset.backgroundColor = ObtenerColores(dataset.data.Count(), item.Key.color);
+                dataset.type = item.Key.tipoDimension;
 
                 // Anchura.
                 dataset.barPercentage = 1;
-                if (itemGrafica.anchura != 0)
+                if (item.Key.anchura != 0)
                 {
-                    dataset.barPercentage = itemGrafica.anchura;
+                    dataset.barPercentage = item.Key.anchura;
                 }
 
                 // Stack.
-                if (!string.IsNullOrEmpty(itemGrafica.stack))
+                if (!string.IsNullOrEmpty(item.Key.stack))
                 {
-                    dataset.stack = itemGrafica.stack;
+                    dataset.stack = item.Key.stack;
                 }
                 else
                 {
@@ -243,12 +292,17 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
 
                 // Eje Y.
-                dataset.yAxisID = itemGrafica.yAxisID;
+                dataset.yAxisID = item.Key.yAxisID;
 
-                grafica.data.datasets.Add(dataset);
                 data.labels = listaLabels;
-                data.type = itemGrafica.tipoDimension;
-            });
+                data.type = item.Key.tipoDimension;
+                dimensionesDataset[item.Key] = dataset;
+            } 
+
+            foreach (Dimension dim in pGrafica.configBarras.dimensiones)
+            {
+                grafica.data.datasets.Add(dimensionesDataset[dim]);
+            }
 
             return grafica;
         }
@@ -278,6 +332,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pLang)
         {
             Faceta faceta = new Faceta();
+            faceta.id = pFacetaConf.filtro;
             faceta.nombre = GetTextLang(pLang, pFacetaConf.nombre);
             faceta.items = new List<ItemFaceta>();
 
