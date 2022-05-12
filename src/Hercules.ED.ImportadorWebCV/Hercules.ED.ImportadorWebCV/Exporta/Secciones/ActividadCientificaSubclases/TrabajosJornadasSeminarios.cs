@@ -87,15 +87,25 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAmbitoGeoOtros),
                     "060.010.030.060", keyValue.Value);
 
-                // Rango TODO
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIntervencion),
+                // properties_cv
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIntervencion),
                     "060.010.030.040", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorCorrespondencia),
+                UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorCorrespondencia),
                     "060.010.030.390", keyValue.Value);
 
                 // Autores 060.010.030.310 TODO
 
-                // IDPublicación 060.010.030.400 TODO
+                // IDPublicación
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalHandle),
+                    "060.010.030.400", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalDOI),
+                    "060.010.030.400", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalPMID),
+                    "060.010.030.400", keyValue.Value);
+                Dictionary<string, string> dicNombreID = new Dictionary<string, string>();
+                dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemNombreOtroPubDigital));
+                dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIDOtroPubDigital));
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean, dicNombreID, "060.010.030.400", keyValue.Value);
 
                 // ISBN
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemPubISBN),

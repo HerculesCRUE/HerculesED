@@ -30,7 +30,46 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 {
                     itemBean.Items = new List<CVNObject>();
                 }
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTATitulo),
+                    "060.020.010.010", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTAPaisRadicacion),
+                    "060.020.010.020", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTACCAARadicacion),
+                    "060.020.010.030", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTACiudadRadicacion),
+                    "060.020.010.050", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTAPaisEntidadAfiliacion),
+                    "060.020.010.190", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTACCAAEntidadAfiliacion),
+                    "060.020.010.180", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTACiudadEntidadAfiliacion),
+                    "060.020.010.170", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTAAmbitoActividad),
+                    "060.020.010.100", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTAAmbitoActividadOtros),
+                    "060.020.010.110", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTAFechaInicio),
+                    "060.020.010.150", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTAFechaFinalizacion),
+                    "060.020.010.160", keyValue.Value);
 
+                // Entidad afiliación
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacionNombre),
+                    "060.020.010.060", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacion),
+                    "060.020.010.080", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTATipoEntidadAfiliacionOtros),
+                    "060.020.010.090", keyValue.Value);
+
+                // Códigos Unesco
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTACodUnescoPrimaria),
+                    "060.020.010.120", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTACodUnescoSecundaria),
+                    "060.020.010.130", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.comitesCTACodUnescoTerciaria),
+                    "060.020.010.140", keyValue.Value);
+
+                listado.Add(itemBean);
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
