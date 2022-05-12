@@ -239,6 +239,31 @@ namespace ExportadorWebCV.Utils
                 });
             }
         }
+        public static void AddCvnItemBeanCvnStringList(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+            List<string> listaStrings = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).FirstOrDefault()
+                : null;
+
+            if (listaStrings == null)
+            {
+                return;
+            }
+
+            foreach (string stringValue in listaStrings)
+            {
+                CvnItemBeanCvnString cvnString = new CvnItemBeanCvnString();
+                cvnString.Code = code;
+                cvnString.Value = stringValue.Split("_").Last();
+
+                itemBean.Items.Add(cvnString);
+            }
+        }
         public static void AddCvnItemBeanCvnString_cv(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -688,6 +713,32 @@ namespace ExportadorWebCV.Utils
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))))
             {
                 entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+
+                itemBean.Items.Add(entityBean);
+            }
+        }
+
+        public static void AddCvnItemBeanCvnEntityBeanList(CvnItemBean itemBean, string propertyName, string code, Entity entity, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+            List<string> listaEntityBeanNombres = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)))
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault()
+                : null;
+
+            if (listaEntityBeanNombres == null)
+            {
+                return;
+            }
+
+            foreach (string entityBeanNombre in listaEntityBeanNombres)
+            {
+                CvnItemBeanCvnEntityBean entityBean = new CvnItemBeanCvnEntityBean();
+                entityBean.Code = code;
+                entityBean.Name = entityBeanNombre.Split("@@@").Last();
 
                 itemBean.Items.Add(entityBean);
             }
