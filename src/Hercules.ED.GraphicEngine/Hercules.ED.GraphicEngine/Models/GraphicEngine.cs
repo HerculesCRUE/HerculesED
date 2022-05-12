@@ -20,6 +20,7 @@ namespace Hercules.ED.GraphicEngine.Models
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
 
+        #region --- Gráficas
         public static GraficaBase GetGrafica(string pIdPagina, string pIdGrafica, string pFiltros, string pLang)
         {
             // Lectura del JSON de configuración.
@@ -42,7 +43,7 @@ namespace Hercules.ED.GraphicEngine.Models
             }
         }
 
-        private static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltros, string pLang)
+        public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltros, string pLang)
         {
             switch (pGrafica.tipoGrafica)
             {
@@ -62,7 +63,7 @@ namespace Hercules.ED.GraphicEngine.Models
             }
         }
 
-        public static GraficaBase CrearGraficaBarras(Grafica pGrafica, string pFiltroBase,string pLang)
+        public static GraficaBase CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pLang)
         {
             // Objeto a devolver.
             GraficaBase grafica = new GraficaBase();
@@ -84,9 +85,9 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Ejes Y
             options.scales = new Dictionary<string, EjeY>();
-            foreach(EjeYConf item in pGrafica.configBarras.yAxisPrint)
+            foreach (EjeYConf item in pGrafica.configBarras.yAxisPrint)
             {
-                options.scales.Add(item.yAxisID, new EjeY() { position = item.posicion});
+                options.scales.Add(item.yAxisID, new EjeY() { position = item.posicion });
             }
             grafica.options = options;
 
@@ -213,7 +214,39 @@ namespace Hercules.ED.GraphicEngine.Models
 
             return grafica;
         }
+        #endregion
 
+        #region --- Facetas
+        public static Faceta GetFaceta(string pIdPagina, string pIdFaceta, string pFiltros, string pLang)
+        {
+            // Lectura del JSON de configuración.
+            List<ConfigModel> listaConfigModel = null;
+            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configGraficas\configuration.json"))
+            {
+                string json = reader.ReadToEnd();
+                listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
+            }
+
+            ConfigModel configModel = listaConfigModel.FirstOrDefault(x => x.identificador == pIdPagina);
+            if (configModel != null)
+            {
+                FacetaConf faceta = configModel.facetas.FirstOrDefault(x => x.filtro == pIdFaceta);
+                return CrearFaceta(faceta, pFiltros, pLang);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static Faceta CrearFaceta(FacetaConf faceta, string pFiltro, string pLang)
+        {
+            return null;
+        }
+
+        #endregion
+
+        #region --- Utils
         public static List<string> ObtenerColores(int pNumVeces, string pColorHex)
         {
             List<string> colores = new List<string>();
@@ -313,5 +346,6 @@ namespace Hercules.ED.GraphicEngine.Models
                 return "";
             }
         }
+        #endregion
     }
 }
