@@ -105,12 +105,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDICiudadEntidadRealizacion),
                     "050.020.010.090", keyValue.Value);
 
-                // Resultados relevantes palabras clave TOSEE
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantesPalabrasClave),
-                    "050.020.010.350", entity);
-                // Palabras clave TOSEE
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIPalabrasClave), 
-                    "050.020.010.020", entity);
+                //// Resultados relevantes palabras clave TODO
+                //UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantesPalabrasClave),
+                //    "050.020.010.350", entity);
+                //// Palabras clave TODO
+                //UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIPalabrasClave), 
+                //    "050.020.010.020", entity);
 
                 // Financiacion
                 string cuantiaSubproyecto = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ExperienciaCientificaTecnologica.proyectosIDICuantiaSubproyecto))) ?
