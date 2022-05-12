@@ -11,13 +11,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class OtrosModosColaboracion:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherCollaborations", 
-            "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+            "http://w3id.org/roh/otherCollaborations", "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "collaboration";
         public OtrosModosColaboracion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.020.020.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaOtrosModosColaboracion(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -75,12 +81,11 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
                    "060.020.020.080", keyValue.Value);
 
-                // KeyWords
+                // Palabras Clave
                 UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabPalabrasClave),
                     "060.020.020.160", keyValue.Value);
 
                 listado.Add(itemBean);
-
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
