@@ -112,6 +112,7 @@ namespace ImportadorWebCV.Exporta
             obrasArtisticas.ExportaObrasArtisticas(entity, seccion);
 
             PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
+            propII.ExportaPropiedadII(entity, seccion);
 
             ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
 
