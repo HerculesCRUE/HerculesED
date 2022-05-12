@@ -135,6 +135,9 @@ namespace ImportadorWebCV.Exporta
             OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
             organizacionesIDI.ExportaOrganizacionesIDI(entity, seccion);
 
+            IndicadoresGenerales indicadoresGenerales = new IndicadoresGenerales(cvn, cvID);
+            indicadoresGenerales.ExportaIndicadoresGenerales(entity, seccion);
+            
             TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
             trabajosCongresos.ExportaTrabajosCongresos(entity, seccion);
 
