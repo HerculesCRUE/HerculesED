@@ -18,11 +18,60 @@ namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
     {
+        public static List<Tuple<string, string, string>> GetListadoAutores(ResourceApi pResourceApi, Dictionary<string, string> dicPersonas)
+        {
+            if (dicPersonas.Count() == 0)
+            {
+                return new List<Tuple<string, string, string>>();
+            }
+            string select = $@"select distinct *";
+            string where = $@"where {{ 
+    ?person a <http://xmlns.com/foaf/0.1/Person>
+    OPTIONAL{{?person <http://xmlns.com/foaf/0.1/firstName> ?nombre}}
+    OPTIONAL{{?person <http://xmlns.com/foaf/0.1/lastName> ?apellidos }}
+    FILTER(
+        ?person in (<{string.Join(">,<", dicPersonas.Keys)}>)
+    ) 
+}}";
+            List<Tuple<string, string, string>> listaResultado = new List<Tuple<string, string, string>>();
+
+            SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "person");
+            if (resultData.results.bindings.Count == 0)
+            {
+                return null;
+            }
+
+            //Añado si como minimo tiene nombre
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (!fila.ContainsKey("person"))
+                {
+                    continue;
+                }
+                if (fila.ContainsKey("nombre") && fila.ContainsKey("apellidos"))
+                {
+                    listaResultado.Add(new Tuple<string, string, string>(dicPersonas[fila["person"].value], fila["nombre"].value, fila["apellidos"].value));
+                }
+                else if (fila.ContainsKey("nombre"))
+                {
+                    listaResultado.Add(new Tuple<string, string, string>("", fila["nombre"].value, ""));
+                }
+            }
+
+            return listaResultado;
+        }
+
         public static List<Tuple<string, string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
-            if (propiedadesItem == null) { return null; }
-            if (propiedadesItem.Count != 4) { return null; }
+            if (propiedadesItem == null)
+            {
+                return null;
+            }
+            if (propiedadesItem.Count != 4)
+            {
+                return null;
+            }
 
             string select = $@"select distinct *";
             string where = $@"where {{?cv <{propiedadesItem[0]}> ?prop1 . 
@@ -54,11 +103,18 @@ namespace ExportadorWebCV.Utils
 
             return listaResultado;
         }
+
         public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
-            if (propiedadesItem == null) { return null; }
-            if (propiedadesItem.Count == 0) { return null; }
+            if (propiedadesItem == null)
+            {
+                return null;
+            }
+            if (propiedadesItem.Count == 0)
+            {
+                return null;
+            }
 
             string select = $@"select distinct *";
             string where = "where {";
@@ -477,10 +533,70 @@ namespace ExportadorWebCV.Utils
                 ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
                 : null;
 
-            if (!string.IsNullOrEmpty(authorBean.GivenName) 
+            if (!string.IsNullOrEmpty(authorBean.GivenName)
                 || !string.IsNullOrEmpty(authorBean.Signature))
             {
                 itemBean.Items.Add(authorBean);
+            }
+        }
+
+        public static List<Tuple<string, string, string>> GetNombreApellidoAutor(string propiedad, Entity entity, ResourceApi resourceApi)
+        {
+            List<Tuple<string, string, string>> autorNombreApellido = new List<Tuple<string, string, string>>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))))
+                &&
+                Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))).Select(x => x.values).First())
+            )
+            {
+                List<string[]> listadoPersonas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
+                .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                Dictionary<string, string> dicPersonas = listadoPersonas.ToDictionary(x => x.ElementAt(1), x => x.ElementAt(0));
+
+                autorNombreApellido = GetListadoAutores(resourceApi, dicPersonas);
+            }
+
+            return autorNombreApellido;
+        }
+
+        public static Dictionary<string, string> GetFirmasAutores(string propiedad, Entity entity)
+        {
+            Dictionary<string, string> dicFirmas = new Dictionary<string, string>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))).Select(x => x.values).First())
+                )
+            {
+                List<string[]> listadoFirmas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
+                    .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+
+                dicFirmas = listadoFirmas.ToDictionary(x => x.ElementAt(0), x => x.ElementAt(1));
+            }
+            return dicFirmas;
+        }
+
+        public static void AddCvnItemBeanCvnAuthorBeanListSimple(CvnItemBean itemBean, List<Tuple<string, string, string>> autorNombreApellido,
+            Dictionary<string, string> dicFirmas, string code, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+            foreach (Tuple<string, string, string> autores in autorNombreApellido)
+            {
+                CvnItemBeanCvnAuthorBean cvnAuthorBean = new CvnItemBeanCvnAuthorBean();
+                cvnAuthorBean.Code = code;
+                cvnAuthorBean.GivenName = autores.Item2;
+                cvnAuthorBean.CvnFamilyNameBean = new CvnItemBeanCvnAuthorBeanCvnFamilyNameBean()
+                {
+                    Code = code,
+                    FirstFamilyName = autores.Item3
+                };
+                if (dicFirmas.ContainsKey(autores.Item1))
+                {
+                    cvnAuthorBean.Signature = dicFirmas[autores.Item1];
+                }
+                itemBean.Items.Add(cvnAuthorBean);
             }
         }
 
@@ -549,7 +665,7 @@ namespace ExportadorWebCV.Utils
                 }
 
                 if (!string.IsNullOrEmpty(authorBean.GivenName)
-                || !string.IsNullOrEmpty(authorBean.Signature)) 
+                || !string.IsNullOrEmpty(authorBean.Signature))
                 {
                     itemBean.Items.Add(authorBean);
                 }
@@ -590,7 +706,7 @@ namespace ExportadorWebCV.Utils
                 itemBean.Items.Add(cvnBoolean);
             }
         }
-        
+
         public static void AddCvnItemBeanCvnBoolean_cv(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -664,7 +780,7 @@ namespace ExportadorWebCV.Utils
 
                 //Tipodato, Codigo, Propiedad, Valor
                 var tupla = listado.ElementAt(i).Select(x => new Tuple<string, string, string, string>(x.Item1, x.Item2, x.Item3, x.Item5));
-                for(int j = 0; j < tupla.Count(); j++)
+                for (int j = 0; j < tupla.Count(); j++)
                 {
                     if (tupla.ElementAt(j).Item1.Equals("String"))
                     {
@@ -1078,7 +1194,8 @@ namespace ExportadorWebCV.Utils
             }
 
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0 &&
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).Where(x => x.Count() == 1).Any())
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).Where(x => x.Count() == 1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
@@ -1229,7 +1346,8 @@ namespace ExportadorWebCV.Utils
                 case "http://w3id.org/roh/applicationNumber":
                     externalPKBean.Type = "060";
                     break;
-                case "http://w3id.org/roh/referenceCode": case "http://w3id.org/roh/patentNumber":
+                case "http://w3id.org/roh/referenceCode":
+                case "http://w3id.org/roh/patentNumber":
                     externalPKBean.Type = "070";
                     break;
                 case "http://w3id.org/roh/normalizedCode":
