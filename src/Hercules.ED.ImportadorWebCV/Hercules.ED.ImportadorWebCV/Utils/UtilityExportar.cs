@@ -477,7 +477,11 @@ namespace ExportadorWebCV.Utils
                 ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
                 : null;
 
-            itemBean.Items.Add(authorBean);
+            if (!string.IsNullOrEmpty(authorBean.GivenName) 
+                || !string.IsNullOrEmpty(authorBean.Signature))
+            {
+                itemBean.Items.Add(authorBean);
+            }
         }
 
         /// <summary>
@@ -544,7 +548,11 @@ namespace ExportadorWebCV.Utils
                     authorBean.CvnFamilyNameBean = familyNameBean;
                 }
 
-                itemBean.Items.Add(authorBean);
+                if (!string.IsNullOrEmpty(authorBean.GivenName)
+                || !string.IsNullOrEmpty(authorBean.Signature)) 
+                {
+                    itemBean.Items.Add(authorBean);
+                }
             }
         }
 
@@ -1221,7 +1229,7 @@ namespace ExportadorWebCV.Utils
                 case "http://w3id.org/roh/applicationNumber":
                     externalPKBean.Type = "060";
                     break;
-                case "http://w3id.org/roh/referenceCode":
+                case "http://w3id.org/roh/referenceCode": case "http://w3id.org/roh/patentNumber":
                     externalPKBean.Type = "070";
                     break;
                 case "http://w3id.org/roh/normalizedCode":
