@@ -104,7 +104,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 Dictionary<string, string> dicFirmas = UtilityExportar.GetFirmasAutores(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutorFirma, keyValue.Value);
 
                 //Selecciono los autores
-                List<Tuple<string, string, string>> autorNombreApellido = UtilityExportar.GetNombreApellidoAutor(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutor, keyValue.Value, mResourceApi);
+                List<Tuple<string, string, string>> autorNombreApellido = UtilityExportar.GetNombreApellidoAutor(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutores, keyValue.Value, mResourceApi);
                 UtilityExportar.AddCvnItemBeanCvnAuthorBeanListSimple(itemBean, autorNombreApellido, dicFirmas,
                     "060.010.020.040");
 
