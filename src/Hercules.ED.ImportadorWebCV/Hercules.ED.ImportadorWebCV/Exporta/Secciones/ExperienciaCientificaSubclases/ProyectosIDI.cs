@@ -18,6 +18,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         public ProyectosIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+        /// <summary>
+        /// Exporta los datos de la sección "050.020.010.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaProyectosIDI(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -30,6 +37,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     Code = "050.020.010.000",
                     Items = new List<CVNObject>()
                 };
+
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDINombre),
                     "050.020.010.010", keyValue.Value);
@@ -58,7 +66,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDINombreProgramaFinanciacion),
                     "050.020.010.250", keyValue.Value);
-                // TOSEE
+               
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDICodEntidadFinanciacion),
                     "050.020.010.260", keyValue.Value);
 
