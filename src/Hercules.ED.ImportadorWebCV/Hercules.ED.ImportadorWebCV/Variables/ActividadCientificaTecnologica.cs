@@ -102,8 +102,10 @@
         public const string trabajosCongresosIDPubDigitalPMID = "http://purl.org/ontology/bibo/pmid";
         public const string trabajosCongresosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
         public const string trabajosCongresosNombreOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
-        
-        
+
+        public const string trabajosCongresosMiembrosAutor = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
+        public const string trabajosCongresosMiembrosAutorFirma = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://xmlns.com/foaf/0.1/nick";
+
         /// <summary>
         /// Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o internacionales - 060.010.030.000
         /// <summary>
