@@ -89,7 +89,17 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadFinanciadoraOtros),
                     "030.080.000.120", keyValue.Value);
 
-                //Entidad participante - TODO CodeGroup
+                //Entidad participante 
+                List<Tuple<string, string, string>> dicCodigos = new List<Tuple<string, string, string>>();
+                dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "030.080.000.150",
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.170", 
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.180", 
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipanteOtros)));
+
+                UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
+                   "030.080.000.150", keyValue.Value);
 
                 //Investigador principal
                 Dictionary<string, string> listadoIP = new Dictionary<string, string>();

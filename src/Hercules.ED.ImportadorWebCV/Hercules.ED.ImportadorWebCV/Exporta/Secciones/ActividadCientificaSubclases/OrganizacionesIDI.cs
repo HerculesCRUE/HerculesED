@@ -26,7 +26,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             {
                 CvnItemBean itemBean = new CvnItemBean()
                 {
-                    Code = "060.020.050.000",
+                    Code = "060.020.030.000",
                     Items = new List<CVNObject>()
                 };
 

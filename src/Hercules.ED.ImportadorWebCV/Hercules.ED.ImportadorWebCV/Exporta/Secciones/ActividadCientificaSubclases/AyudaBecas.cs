@@ -33,8 +33,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     Items = new List<CVNObject>()
                 };
 
-
-
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasNombre),
                     "060.030.010.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasPaisConcede),
@@ -54,15 +52,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 if (!string.IsNullOrEmpty(importeBecas))
                 {
                     UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "060.030.010.120", importeBecas);
-
                 }
                 
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasFechaConcesion),
                     "060.030.010.130", keyValue.Value);
-
-                //TODO test
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,"060.030.010.140", keyValue.Value); 
-
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,
+                    "060.030.010.140", keyValue.Value); 
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasFechaFinalizacion),
                     "060.030.010.160", keyValue.Value);
 
@@ -81,8 +76,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.030.010.170", keyValue.Value);
 
                 listado.Add(itemBean);
-
-
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado

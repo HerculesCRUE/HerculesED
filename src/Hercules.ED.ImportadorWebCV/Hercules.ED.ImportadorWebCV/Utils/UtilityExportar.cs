@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
@@ -553,7 +554,15 @@ namespace ExportadorWebCV.Utils
             }
         }
 
-        //TODO
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> los valores CodeGroup.
+        /// Tipos de dato: "String", "Double","Boolean","EntityBean","TitleBean".
+        /// </summary>
+        /// <param name="itemBean">iteamBean</param>
+        /// <param name="dicCodigos">Tupla de <TipoDato, Codigo, Propiedad> </param>
+        /// <param name="code">Codigo del CodeGroup</param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -562,40 +571,90 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            List<Tuple<string, string, string>> lt = new List<Tuple<string, string, string>>();
+            //Tipodato, Codigo, Propiedad, ID, Valor
+            List<Tuple<string, string, string, string, string>> listadoTuplas = new List<Tuple<string, string, string, string, string>>();
             foreach (Tuple<string, string, string> tuple in dicCodigos)
             {
                 if (!Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3))))
                 {
                     continue;
                 }
-                //lt.Add(new Tuple<string, string, string>(tuple.Item3, 
-                //    entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x=>x.values), 
-                //    "prop"));
-            }
-
-            List<CvnItemBeanCvnCodeGroup> codeGroupList = new List<CvnItemBeanCvnCodeGroup>();
-            foreach (Tuple<string, string, string> tuple in dicCodigos)
-            {
-                CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
-                if (tuple.Item1.Equals("String"))
+                for (int i = 0; i < entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x => x.values).FirstOrDefault().Count(); i++)
                 {
-                    if (!Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3))))
-                    {
-                        continue;
-                    }
-
-                    CvnItemBeanCvnCodeGroupCvnString codeGroupCvnString = new CvnItemBeanCvnCodeGroupCvnString();
-                    codeGroupCvnString.Code = tuple.Item2;
-                    codeGroupCvnString.Value = entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3))
-                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last().Split("_").Last();
-
-                    codeGroup.CvnString.Append(codeGroupCvnString);
+                    listadoTuplas.Add(new Tuple<string, string, string, string, string>(tuple.Item1, tuple.Item2, tuple.Item3,
+                        entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x => x.values).FirstOrDefault().ElementAt(i).Split("@@@").FirstOrDefault(),
+                        entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x => x.values).FirstOrDefault().ElementAt(i).Split("_").Last()
+                        )
+                    );
                 }
             }
-            //codeGroup.CvnEntityBean = null;
 
-            //itemBean.Items.Add(codeGroup);
+            List<IGrouping<string, Tuple<string, string, string, string, string>>> listado = listadoTuplas.GroupBy(x => x.Item4).ToList();
+            for (int i = 0; i < listado.Count; i++)
+            {
+                //Inicializacion de valores
+                CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
+                codeGroup.Code = code;
+                codeGroup.CvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
+                codeGroup.CvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble[10];
+                codeGroup.CvnEntityBean = new CvnItemBeanCvnCodeGroupCvnEntityBean();
+                codeGroup.CvnString = new CvnItemBeanCvnCodeGroupCvnString[10];
+                codeGroup.CvnTitleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
+
+                List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new List<CvnItemBeanCvnCodeGroupCvnString>();
+                List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new List<CvnItemBeanCvnCodeGroupCvnDouble>();
+
+                //Tipodato, Codigo, Propiedad, Valor
+                var tupla = listado.ElementAt(i).Select(x => new Tuple<string, string, string, string>(x.Item1, x.Item2, x.Item3, x.Item5));
+                for(int j = 0; j < tupla.Count(); j++)
+                {
+                    if (tupla.ElementAt(j).Item1.Equals("String"))
+                    {
+                        CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                        cvnString.Code = tupla.ElementAt(j).Item2;
+                        cvnString.Value = tupla.ElementAt(j).Item4;
+                        listadoStrings.Add(cvnString);
+                        continue;
+                    }
+                    if (tupla.ElementAt(j).Item1.Equals("Double"))
+                    {
+                        CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                        cvnDouble.Code = tupla.ElementAt(j).Item2;
+                        cvnDouble.Value = Encoding.ASCII.GetBytes(tupla.ElementAt(j).Item4).FirstOrDefault();
+                        listadoDouble.Add(cvnDouble);
+                        continue;
+                    }
+                    if (tupla.ElementAt(j).Item1.Equals("Boolean"))
+                    {
+                        CvnItemBeanCvnCodeGroupCvnBoolean cvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
+                        cvnBoolean.Code = tupla.ElementAt(j).Item2;
+                        cvnBoolean.Value = tupla.ElementAt(j).Item4.ToLower().Equals("true") ? true : false;
+                        codeGroup.CvnBoolean = cvnBoolean;
+                        continue;
+                    }
+                    if (tupla.ElementAt(j).Item1.Equals("EntityBean"))
+                    {
+                        CvnItemBeanCvnCodeGroupCvnEntityBean cvnEntityBean = new CvnItemBeanCvnCodeGroupCvnEntityBean();
+                        cvnEntityBean.Code = tupla.ElementAt(j).Item2;
+                        cvnEntityBean.Name = tupla.ElementAt(j).Item4.Split("@@@").Last();
+                        codeGroup.CvnEntityBean = cvnEntityBean;
+                        continue;
+                    }
+                    if (tupla.ElementAt(j).Item1.Equals("TitleBean"))
+                    {
+                        CvnItemBeanCvnCodeGroupCvnTitleBean cvnTitleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
+                        cvnTitleBean.Code = tupla.ElementAt(j).Item2;
+                        cvnTitleBean.Name = tupla.ElementAt(j).Item4;
+                        codeGroup.CvnTitleBean = cvnTitleBean;
+                        continue;
+                    }
+                }
+                codeGroup.CvnString = listadoStrings.ToArray();
+                codeGroup.CvnDouble = listadoDouble.ToArray();
+
+
+                itemBean.Items.Add(codeGroup);
+            }
         }
 
         public static void AddCvnItemBeanCvnDouble(CvnItemBean itemBean, string code, string value, [Optional] string secciones)
@@ -963,7 +1022,7 @@ namespace ExportadorWebCV.Utils
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                    .Select(x => x.values).Where(x=>x.Count()==1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
+                    .Select(x => x.values).Where(x => x.Count() == 1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
 
                 string anio = gnossDate.Substring(0, 4);
                 string mes = gnossDate.Substring(4, 2);
@@ -1093,6 +1152,36 @@ namespace ExportadorWebCV.Utils
             //Añado el tipo si se corresponde con uno de los validos, sino salgo sin añadir
             switch (property)
             {
+                case "http://w3id.org/roh/projectCode":
+                    externalPKBean.Type = "000";
+                    break;
+                case "http://purl.org/ontology/bibo/issn":
+                    externalPKBean.Type = "010";
+                    break;
+                case "http://w3id.org/roh/isbn":
+                    externalPKBean.Type = "020";
+                    break;
+                case "http://w3id.org/roh/legalDeposit":
+                    externalPKBean.Type = "030";
+                    break;
+                case "http://purl.org/ontology/bibo/doi":
+                    externalPKBean.Type = "040";
+                    break;
+                case "http://w3id.org/roh/applicationNumber":
+                    externalPKBean.Type = "060";
+                    break;
+                case "http://w3id.org/roh/referenceCode":
+                    externalPKBean.Type = "070";
+                    break;
+                case "http://w3id.org/roh/normalizedCode":
+                    externalPKBean.Type = "110";
+                    break;
+                case "http://purl.org/ontology/bibo/handle":
+                    externalPKBean.Type = "120";
+                    break;
+                case "http://purl.org/ontology/bibo/pmid":
+                    externalPKBean.Type = "130";
+                    break;
                 case "http://w3id.org/roh/ORCID":
                     externalPKBean.Type = "140";
                     break;
@@ -1101,24 +1190,6 @@ namespace ExportadorWebCV.Utils
                     break;
                 case "http://vivoweb.org/ontology/core#researcherId":
                     externalPKBean.Type = "160";
-                    break;
-                case "http://w3id.org/roh/legalDeposit":
-                    externalPKBean.Type = "030";
-                    break;
-                case "http://w3id.org/roh/isbn":
-                    externalPKBean.Type = "020";
-                    break;
-                case "http://purl.org/ontology/bibo/issn":
-                    externalPKBean.Type = "010";
-                    break;
-                case "http://purl.org/ontology/bibo/doi":
-                    externalPKBean.Type = "040";
-                    break;
-                case "http://purl.org/ontology/bibo/handle":
-                    externalPKBean.Type = "120";
-                    break;
-                case "http://purl.org/ontology/bibo/pmid":
-                    externalPKBean.Type = "130";
                     break;
                 default:
                     return;
