@@ -105,6 +105,7 @@ namespace ImportadorWebCV.Exporta
             string seccion = "http://w3id.org/roh/scientificExperience";
 
             Contratos contratos = new Contratos(cvn, cvID);
+            contratos.ExportaContratos(entity, seccion);
 
             GrupoIDI grupoIDI = new GrupoIDI(cvn, cvID);
             grupoIDI.ExportaGrupoIDI(entity, seccion);
