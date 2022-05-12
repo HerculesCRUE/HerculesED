@@ -83,11 +83,11 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIEntidadTitularDerechosNombre),
                     "050.030.010.300", keyValue.Value);
 
-                // Empresas repeticiones
+                // Empresas
                 UtilityExportar.AddCvnItemBeanCvnEntityBeanList(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIEmpresasExplotacionNombre),
                     "050.030.010.250", keyValue.Value);
 
-                // Productos repeticiones
+                // Productos
                 UtilityExportar.AddCvnItemBeanCvnStringList(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIINombreProductos),
                     "050.030.010.290", keyValue.Value);
 
