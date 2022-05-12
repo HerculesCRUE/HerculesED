@@ -1,0 +1,45 @@
+﻿using ExportadorWebCV.Utils;
+using ImportadorWebCV;
+using Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+
+namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
+{
+    public class IndicadoresGenerales : SeccionBase
+    {
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/generalQualityIndicators",
+            "http://w3id.org/roh/generalQualityIndicatorCV" };
+        string graph = "curriculumvitae";
+
+
+        public IndicadoresGenerales(cvnRootResultBean cvn , string cvID) : base(cvn,cvID) { }
+
+        public void ExportaIndicadoresGenerales(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
+        {
+            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            {
+                CvnItemBean itemBean = new CvnItemBean()
+                {
+                    Code = "060.060.010.000",
+                    Items = new List<CVNObject>()
+                };
+                
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.indicadoresGeneralesCalidad),
+                    "060.010.060.010", keyValue.Value);
+                
+                listado.Add(itemBean);
+            }
+
+            //Añado en el cvnRootResultBean los items que forman parte del listado
+            UtilityExportar.AniadirItems(mCvn, listado);
+        }
+
+    }
+}
