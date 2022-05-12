@@ -116,6 +116,7 @@ namespace ImportadorWebCV.Exporta
             propII.ExportaPropiedadII(entity, seccion);
 
             ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
+            proyectosIDI.ExportaProyectosIDI(entity, seccion);
 
             ResultadosTecnologicos resultadosTecnologicos = new ResultadosTecnologicos(cvn, cvID);
             resultadosTecnologicos.ExportaResultadosTecnologicos(entity, seccion);
