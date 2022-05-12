@@ -118,6 +118,7 @@ namespace ImportadorWebCV.Exporta
             ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
 
             ResultadosTecnologicos resultadosTecnologicos = new ResultadosTecnologicos(cvn, cvID);
+            resultadosTecnologicos.ExportaResultadosTecnologicos(entity, seccion);
 
         }
         public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
