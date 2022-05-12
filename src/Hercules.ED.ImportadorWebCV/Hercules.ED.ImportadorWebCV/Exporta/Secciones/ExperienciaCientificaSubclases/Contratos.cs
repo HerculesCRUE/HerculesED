@@ -11,13 +11,20 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class Contratos:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/nonCompetitiveProjects",
-                    "http://w3id.org/roh/relatedNonCompetitiveProjectCV","http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+            "http://w3id.org/roh/nonCompetitiveProjects", "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
+            "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "project";
         public Contratos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "050.020.020.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaContratos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -152,6 +159,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 
                 UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
                    "050.020.020.120", keyValue.Value);
+
+                // TODO Palabras clave y Resultados relevantes palabras clave
+
                 listado.Add(itemBean);
             }
 

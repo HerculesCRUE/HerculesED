@@ -11,13 +11,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class OtrasActividadesDivulgacion:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/otherDisseminationActivities",
-            "http://vivoweb.org/ontology/core#relatedBy"};
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+            "http://w3id.org/roh/otherDisseminationActivities", "http://vivoweb.org/ontology/core#relatedBy"};
         string graph = "activity";
         public OtrasActividadesDivulgacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.010.040.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaOtrasActividadesDivulgacion(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -60,7 +66,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 Dictionary<string, string> propiedadesPagIniPagFin = new Dictionary<string, string>();
                 propiedadesPagIniPagFin.Add("PaginaInicial", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubPagIni));
                 propiedadesPagIniPagFin.Add("PaginaFinal", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubPagFin));
-                UtilityExportar.AddCvnItemBeanCvnPageBean(itemBean, propiedadesPagIniPagFin,"060.010.040.240", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnPageBean(itemBean, propiedadesPagIniPagFin, "060.010.040.230", keyValue.Value);
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulResponsableEditorial),
                     "060.010.040.240", keyValue.Value);
@@ -77,7 +83,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulAutorCorrespondencia),
                     "060.010.040.390", keyValue.Value);
 
-                // Divulgacion evento 
+                // Evento 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulNombreEvento),
                     "060.010.040.080", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulFechaCelebracion),
@@ -99,7 +105,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulAmbitoEventoOtros),
                     "060.010.040.070", keyValue.Value);
 
-                // Divulgacion Entidad 
+                // Entidad organizadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrgNombre),
                     "060.010.040.090", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEntidadOrg),
@@ -115,19 +121,17 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 listadoPropiedadesAutor.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulAutorSegundoApellido));
                 UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoPropiedadesAutor, "060.010.040.350", keyValue.Value);
 
-                // Otras Actividades Divulgacion     
+                // ID Publicación 
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalHandle),
                     "060.010.040.400", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalDOI),
                     "060.010.040.400", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalPMID),
                     "060.010.040.400", keyValue.Value);
-
                 Dictionary<string, string> dicNombreID = new Dictionary<string, string>();
                 dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulIDOtroPubDigital));
                 dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulNombreOtroIDPubDigital));
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean, dicNombreID, "060.010.040.400", keyValue.Value);
-
 
                 //ISBN
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubISBN),

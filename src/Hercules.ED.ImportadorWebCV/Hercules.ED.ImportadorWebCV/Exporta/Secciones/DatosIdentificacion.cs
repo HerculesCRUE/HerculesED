@@ -14,6 +14,11 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "000.010.000.000" a cvn.cvnRootResultBean.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
         public void ExportaDatosIdentificacion(Entity entity, string seccion)
         {
             CvnItemBean itemBean = new CvnItemBean()
@@ -53,14 +58,14 @@ namespace ImportadorWebCV.Exporta.Secciones
             UtilityExportar.AddDireccion(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.direccionContactoResto), "000.010.000.150", entity);
             UtilityExportar.AddDireccion(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.direccionContacto), "000.010.000.140", entity);
 
-            //Movil
-            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional.Split("@@@")[0]), "000.010.000.140", entity);
+            //Movil            
+            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional).Split("|").FirstOrDefault(), "000.010.000.240", entity);
 
             //Telefono
-            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional.Split("@@@")[0]), "000.010.000.140", entity);
+            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional).Split("|").FirstOrDefault(), "000.010.000.210", entity);
 
             //Fax
-            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional.Split("@@@")[0]), "000.010.000.140", entity);
+            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional).Split("|").FirstOrDefault(), "000.010.000.220", entity);
 
             //Otros identificadores
             UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.otroIdentificador), "000.010.000.260", entity);

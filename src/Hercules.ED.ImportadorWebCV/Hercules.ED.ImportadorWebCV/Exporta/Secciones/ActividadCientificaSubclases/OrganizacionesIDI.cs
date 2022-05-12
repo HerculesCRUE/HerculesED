@@ -11,12 +11,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class OrganizacionesIDI:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/activitiesOrganization", "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+            "http://w3id.org/roh/activitiesOrganization", "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "activity";
         public OrganizacionesIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.020.030.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaOrganizacionesIDI(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
