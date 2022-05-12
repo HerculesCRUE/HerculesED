@@ -821,7 +821,8 @@ namespace ExportadorWebCV.Utils
             //Añado si se inserta valor
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))))
             {
-                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))
+                    .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
 
                 itemBean.Items.Add(entityBean);
             }
