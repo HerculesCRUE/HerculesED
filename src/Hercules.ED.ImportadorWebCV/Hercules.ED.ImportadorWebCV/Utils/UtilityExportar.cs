@@ -18,11 +18,11 @@ namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
     {
-        public static List<Tuple<string, string>> GetListadoAutores(ResourceApi pResourceApi, List<string> listadoPersonas)
+        public static List<Tuple<string, string, string>> GetListadoAutores(ResourceApi pResourceApi, Dictionary<string, string> dicPersonas)
         {
-            if (listadoPersonas.Count() == 0)
+            if (dicPersonas.Count() == 0)
             {
-                return new List<Tuple<string, string>>();
+                return new List<Tuple<string, string, string>>();
             }
             string select = $@"select distinct *";
             string where = $@"where {{ 
@@ -30,10 +30,10 @@ namespace ExportadorWebCV.Utils
     OPTIONAL{{?person <http://xmlns.com/foaf/0.1/firstName> ?nombre}}
     OPTIONAL{{?person <http://xmlns.com/foaf/0.1/lastName> ?apellidos }}
     FILTER(
-        ?person in (<{string.Join(">,<", listadoPersonas)}>)
+        ?person in (<{string.Join(">,<", dicPersonas.Keys)}>)
     ) 
 }}";
-            List<Tuple<string, string>> listaResultado = new List<Tuple<string, string>>();
+            List<Tuple<string, string, string>> listaResultado = new List<Tuple<string, string, string>>();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "person");
             if (resultData.results.bindings.Count == 0)
@@ -44,14 +44,18 @@ namespace ExportadorWebCV.Utils
             //Añado si como minimo tiene nombre
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-                //if (fila.ContainsKey("nombre") && fila.ContainsKey("apellidos")) 
-                //{
-                //    listaResultado.Add(new Tuple<string, string>(fila["nombre"].value, fila["apellidos"].value));
-                //}
-                //else (fila.ContainsKey("nombre"))
-                //{
-                //    listaResultado.Add(new Tuple<string, string>(fila["nombre"].value, ""));
-                //}
+                if (!fila.ContainsKey("person"))
+                {
+                    continue;
+                }
+                if (fila.ContainsKey("nombre") && fila.ContainsKey("apellidos"))
+                {
+                    listaResultado.Add(new Tuple<string, string, string>(dicPersonas[fila["person"].value], fila["nombre"].value, fila["apellidos"].value));
+                }
+                else if (fila.ContainsKey("nombre"))
+                {
+                    listaResultado.Add(new Tuple<string, string, string>("", fila["nombre"].value, ""));
+                }
             }
 
             return listaResultado;
@@ -533,6 +537,32 @@ namespace ExportadorWebCV.Utils
                 || !string.IsNullOrEmpty(authorBean.Signature))
             {
                 itemBean.Items.Add(authorBean);
+            }
+        }
+
+        public static void AddCvnItemBeanCvnAuthorBeanListSimple(CvnItemBean itemBean, List<Tuple<string, string, string>> autorNombreApellido,
+            Dictionary<string, string> dicFirmas, string code, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+            foreach (Tuple<string, string, string> autores in autorNombreApellido)
+            {
+                CvnItemBeanCvnAuthorBean cvnAuthorBean = new CvnItemBeanCvnAuthorBean();
+                cvnAuthorBean.Code = code;
+                cvnAuthorBean.GivenName = autores.Item2;
+                cvnAuthorBean.CvnFamilyNameBean = new CvnItemBeanCvnAuthorBeanCvnFamilyNameBean()
+                {
+                    Code = code,
+                    FirstFamilyName = autores.Item3
+                };
+                if (dicFirmas.ContainsValue(autores.Item1))
+                {
+                    cvnAuthorBean.Signature = dicFirmas[autores.Item1];
+                }
+                itemBean.Items.Add(cvnAuthorBean);
             }
         }
 
