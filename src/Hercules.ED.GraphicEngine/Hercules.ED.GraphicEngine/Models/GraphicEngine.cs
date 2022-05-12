@@ -1,6 +1,7 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.GraphicEngine.Models.Graficas;
+using Hercules.ED.GraphicEngine.Models.Paginas;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,43 @@ namespace Hercules.ED.GraphicEngine.Models
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
 
+        #region --- Páginas
+        public static Pagina GetPage(string pIdPagina, string pLang)
+        {
+            // Lectura del JSON de configuración.
+            List<ConfigModel> listaConfigModel = null;
+            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configGraficas\configuration.json"))
+            {
+                string json = reader.ReadToEnd();
+                listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
+            }
+
+            ConfigModel configModel = listaConfigModel.FirstOrDefault(x => x.identificador == pIdPagina);
+
+            return CrearPagina(configModel, pLang);
+        }
+
+        public static Pagina CrearPagina(ConfigModel pConfigModel, string pLang)
+        {
+            Pagina pagina = new Pagina();
+            pagina.id = pConfigModel.identificador;
+            pagina.nombre = GetTextLang(pLang, pConfigModel.nombre);
+            pagina.listaIdsGraficas = new List<string>();
+            foreach(Grafica itemGrafica in pConfigModel.graficas)
+            {
+                pagina.listaIdsGraficas.Add(itemGrafica.identificador);
+            }
+            pagina.listaIdsFacetas = new List<string>();
+            foreach (FacetaConf itemFaceta in pConfigModel.facetas)
+            {
+                pagina.listaIdsFacetas.Add(itemFaceta.filtro);
+            }
+            return pagina;
+        }
+        #endregion
+
         #region --- Gráficas
-        public static GraficaBase GetGrafica(string pIdPagina, string pIdGrafica, string pFiltros, string pLang)
+        public static GraficaBase GetGrafica(string pIdPagina, string pIdGrafica, string pFiltroFacetas, string pLang)
         {
             // Lectura del JSON de configuración.
             List<ConfigModel> listaConfigModel = null;
@@ -35,15 +71,13 @@ namespace Hercules.ED.GraphicEngine.Models
             if (configModel != null)
             {
                 Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
-                return CrearGrafica(grafica, configModel.filtro, pFiltros, pLang);
+                return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltros, string pLang)
+        public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             switch (pGrafica.tipoGrafica)
             {
@@ -57,13 +91,13 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         throw new Exception("No se ha configurado dimensiones.");
                     }
-                    return CrearGraficaBarras(pGrafica, pFiltroBase, pLang);
+                    return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 default:
                     return null;
             }
         }
 
-        public static GraficaBase CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pLang)
+        public static GraficaBase CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             // Objeto a devolver.
             GraficaBase grafica = new GraficaBase();
@@ -110,6 +144,10 @@ namespace Hercules.ED.GraphicEngine.Models
                 StringBuilder select = new StringBuilder(), where = new StringBuilder();
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.configBarras.ejeX }, "ejeX"));
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
+                if (!string.IsNullOrEmpty(pFiltroFacetas))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                }
                 if (!string.IsNullOrEmpty(itemGrafica.filtro))
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
@@ -231,19 +269,55 @@ namespace Hercules.ED.GraphicEngine.Models
             if (configModel != null)
             {
                 FacetaConf faceta = configModel.facetas.FirstOrDefault(x => x.filtro == pIdFaceta);
-                return CrearFaceta(faceta, pFiltros, pLang);
+                return CrearFaceta(faceta, configModel.filtro, pLang);
             }
-            else
-            {
-                return null;
-            }
-        }
 
-        public static Faceta CrearFaceta(FacetaConf faceta, string pFiltro, string pLang)
-        {
             return null;
         }
 
+        public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pLang)
+        {
+            Faceta faceta = new Faceta();
+            faceta.nombre = GetTextLang(pLang, pFacetaConf.nombre);
+            faceta.items = new List<ItemFaceta>();
+
+            // Filtro de página.
+            List<string> filtros = new List<string>();
+            filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
+            filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }));
+            Dictionary<string, float> dicResultados = new Dictionary<string, float>();
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            select = new StringBuilder();
+            where = new StringBuilder();
+
+            select.Append(mPrefijos);
+            select.Append($@"SELECT DISTINCT ?title1 AS ?itemFaceta COUNT(?s) AS ?numero ");
+            where.Append("WHERE { ");
+            foreach (string item in filtros)
+            {
+                where.Append(item);
+            }
+            where.Append($@"FILTER(LANG(?title1) = '{pLang}' OR LANG(?title1) = '' OR !isLiteral(?title1)) ");
+            where.Append($@"}} ORDER BY DESC (?numero) ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    ItemFaceta itemFaceta = new ItemFaceta();
+                    itemFaceta.nombre = fila["itemFaceta"].value;
+                    itemFaceta.numero = Int32.Parse(fila["numero"].value);
+                    itemFaceta.filtro = $@"{pFacetaConf.filtro}='{itemFaceta.nombre}'@{pLang}";
+                    faceta.items.Add(itemFaceta);
+                }
+            }
+
+            return faceta;
+        }
         #endregion
 
         #region --- Utils
