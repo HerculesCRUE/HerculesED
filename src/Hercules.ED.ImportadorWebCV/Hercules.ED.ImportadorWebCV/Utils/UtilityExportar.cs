@@ -662,7 +662,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                         cvnString.Code = tupla.ElementAt(j).Item2;
-                        cvnString.Value = tupla.ElementAt(j).Item4;
+                        cvnString.Value = tupla.ElementAt(j).Item4.Split("@@@").Last();
                         listadoStrings.Add(cvnString);
                         continue;
                     }
@@ -670,7 +670,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
-                        cvnDouble.Value = Encoding.ASCII.GetBytes(tupla.ElementAt(j).Item4).FirstOrDefault();
+                        cvnDouble.Value = Encoding.ASCII.GetBytes(tupla.ElementAt(j).Item4.Split("@@@").Last()).FirstOrDefault();
                         listadoDouble.Add(cvnDouble);
                         continue;
                     }
@@ -678,7 +678,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnBoolean cvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
                         cvnBoolean.Code = tupla.ElementAt(j).Item2;
-                        cvnBoolean.Value = tupla.ElementAt(j).Item4.ToLower().Equals("true") ? true : false;
+                        cvnBoolean.Value = tupla.ElementAt(j).Item4.Split("@@@").Last().ToLower().Equals("true") ? true : false;
                         codeGroup.CvnBoolean = cvnBoolean;
                         continue;
                     }
@@ -694,7 +694,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnTitleBean cvnTitleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
                         cvnTitleBean.Code = tupla.ElementAt(j).Item2;
-                        cvnTitleBean.Name = tupla.ElementAt(j).Item4;
+                        cvnTitleBean.Name = tupla.ElementAt(j).Item4.Split("@@@").Last();
                         codeGroup.CvnTitleBean = cvnTitleBean;
                         continue;
                     }
