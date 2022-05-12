@@ -477,7 +477,11 @@ namespace ExportadorWebCV.Utils
                 ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
                 : null;
 
-            itemBean.Items.Add(authorBean);
+            if (!string.IsNullOrEmpty(authorBean.GivenName) 
+                || !string.IsNullOrEmpty(authorBean.Signature))
+            {
+                itemBean.Items.Add(authorBean);
+            }
         }
 
         /// <summary>
@@ -544,7 +548,11 @@ namespace ExportadorWebCV.Utils
                     authorBean.CvnFamilyNameBean = familyNameBean;
                 }
 
-                itemBean.Items.Add(authorBean);
+                if (!string.IsNullOrEmpty(authorBean.GivenName)
+                || !string.IsNullOrEmpty(authorBean.Signature)) 
+                {
+                    itemBean.Items.Add(authorBean);
+                }
             }
         }
 
