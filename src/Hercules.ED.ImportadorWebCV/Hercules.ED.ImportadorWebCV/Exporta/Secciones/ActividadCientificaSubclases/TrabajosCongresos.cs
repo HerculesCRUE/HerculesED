@@ -11,19 +11,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class TrabajosCongresos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedConferences",
-            "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedConferences"
+            ,"http://w3id.org/roh/relatedWorkSubmittedConferencesCV", "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "document";
         public TrabajosCongresos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
-
+            
         }
         public void ExportaTrabajosCongresos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
+            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
                 CvnItemBean itemBean = new CvnItemBean()
@@ -31,7 +30,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     Code = "060.010.020.000",
                     Items = new List<CVNObject>()
                 };
-
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo),
                     "060.010.020.030", keyValue.Value);
@@ -60,9 +58,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.260", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubCCAA),
                     "060.010.020.280", keyValue.Value);
-                // Tipo DateMonthYear
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha),
-                    "060.010.020.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha),
                     "060.010.020.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL),
@@ -91,16 +86,16 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.080", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeoOtros),
                     "060.010.020.090", keyValue.Value);
-
-                /*  TODO propiedades_cv
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("060.010.020.050")),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetTipoInscripcionEventoPorIDCampo("060.010.020.060")),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.020.390       
+                // Propiedades cv
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion),
+                    "060.010.020.050", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion),
+                    "060.010.020.060", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros),
+                    "060.010.020.070", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia),
+                    "060.010.020.390", keyValue.Value);
                 
-                 */
-
-
                 // TODO Lista de autores TrabajosCongresosAutores
 
 
@@ -132,7 +127,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.130", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadoraOtros),
                     "060.010.020.140", keyValue.Value);
-
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadEntidadOrganizadora),
                     "060.010.020.360", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisEntidadOrganizadora),
