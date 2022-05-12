@@ -540,6 +540,40 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        public static List<Tuple<string, string, string>> GetNombreApellidoAutor(string propiedad, Entity entity, ResourceApi resourceApi)
+        {
+            List<Tuple<string, string, string>> autorNombreApellido = new List<Tuple<string, string, string>>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))))
+                &&
+                Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))).Select(x => x.values).First())
+            )
+            {
+                List<string[]> listadoPersonas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
+                .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                Dictionary<string, string> dicPersonas = listadoPersonas.ToDictionary(x => x.ElementAt(1), x => x.ElementAt(0));
+
+                autorNombreApellido = GetListadoAutores(resourceApi, dicPersonas);
+            }
+
+            return autorNombreApellido;
+        }
+
+        public static Dictionary<string, string> GetFirmasAutores(string propiedad, Entity entity)
+        {
+            Dictionary<string, string> dicFirmas = new Dictionary<string, string>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))).Select(x => x.values).First())
+                )
+            {
+                List<string[]> listadoFirmas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
+                    .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+
+                dicFirmas = listadoFirmas.ToDictionary(x => x.ElementAt(0), x => x.ElementAt(1));
+            }
+            return dicFirmas;
+        }
+
         public static void AddCvnItemBeanCvnAuthorBeanListSimple(CvnItemBean itemBean, List<Tuple<string, string, string>> autorNombreApellido,
             Dictionary<string, string> dicFirmas, string code, [Optional] string secciones)
         {
@@ -558,7 +592,7 @@ namespace ExportadorWebCV.Utils
                     Code = code,
                     FirstFamilyName = autores.Item3
                 };
-                if (dicFirmas.ContainsValue(autores.Item1))
+                if (dicFirmas.ContainsKey(autores.Item1))
                 {
                     cvnAuthorBean.Signature = dicFirmas[autores.Item1];
                 }
