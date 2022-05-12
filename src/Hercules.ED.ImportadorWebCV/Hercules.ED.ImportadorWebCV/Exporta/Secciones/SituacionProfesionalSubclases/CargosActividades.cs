@@ -70,7 +70,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     "010.020.000.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesFechaFinalizacion),
                     "010.020.000.310", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, Variables.SituacionProfesional.cargosActividadesPalabrasClave, "010.020.000.270",keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesPalabrasClave), "010.020.000.270",keyValue.Value);
 
                 //Entidad empleadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre),
