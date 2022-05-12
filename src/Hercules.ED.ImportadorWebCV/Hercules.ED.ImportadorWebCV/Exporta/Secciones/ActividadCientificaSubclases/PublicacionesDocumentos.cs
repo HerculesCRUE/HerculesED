@@ -12,7 +12,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
     public class PublicacionesDocumentos:SeccionBase
     {
         List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/scientificProduction", "http://vivoweb.org/ontology/core#relatedBy" };
+            "http://w3id.org/roh/scientificProduction", "http://w3id.org/roh/scientificProductionCV",
+            "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "scientificproduction";
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -20,8 +21,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public void ExportaPublicacionesDocumentos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
+            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
                 CvnItemBean itemBean = new CvnItemBean();
@@ -69,14 +70,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "060.010.010.340", reseniasRevista);
                 }
 
-                // Properties_cv TODO
-                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion),
+                // Properties_cv
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion),
                     "060.010.010.060", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosResultadosDestacados),
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosResultadosDestacados),
                     "060.010.010.290", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubRelevante),
+                UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubRelevante),
                     "060.010.010.300", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia),
+                UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia),
                     "060.010.010.390", keyValue.Value);
 
                 // Soporte
