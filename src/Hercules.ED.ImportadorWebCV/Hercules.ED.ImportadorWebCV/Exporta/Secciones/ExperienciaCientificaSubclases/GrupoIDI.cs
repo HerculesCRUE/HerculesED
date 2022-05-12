@@ -85,7 +85,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.010.000.160", keyValue.Value);
 
                 // Autores
-
                 Dictionary<string, string> listadoPropiedadesAutor = new Dictionary<string, string>();
                 listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDIFirmaIP));
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDINombreIP));
@@ -100,6 +99,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.010.000.110", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDITipoEntidadAfiliacionOtros),
                     "050.010.000.120", keyValue.Value);
+
+                //TODO Palabras Clave
 
                 listado.Add(itemBean);
             }

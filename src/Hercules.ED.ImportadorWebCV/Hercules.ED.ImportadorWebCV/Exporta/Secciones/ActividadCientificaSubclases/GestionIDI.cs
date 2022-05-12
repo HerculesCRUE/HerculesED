@@ -17,6 +17,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public GestionIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.020.040.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaGestionIDI(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -51,12 +58,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.020.040.150", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.gestionIDISistemaAccesoOtros),
                     "060.020.040.160", keyValue.Value);
-                string promedioPropuesto = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.gestionIDIPromedioPresupuesto))) ?
+                string promedioPresupuesto = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.gestionIDIPromedioPresupuesto))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.gestionIDIPromedioPresupuesto)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
                     : null;
-                if (!string.IsNullOrEmpty(promedioPropuesto))
+                if (!string.IsNullOrEmpty(promedioPresupuesto))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "060.020.040.170", promedioPropuesto);
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "060.020.040.170", promedioPresupuesto);
                 }
                 string numPersonas = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.gestionIDINumPersonas))) ?
                        keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.gestionIDINumPersonas)).Select(x => x.values).FirstOrDefault().FirstOrDefault()

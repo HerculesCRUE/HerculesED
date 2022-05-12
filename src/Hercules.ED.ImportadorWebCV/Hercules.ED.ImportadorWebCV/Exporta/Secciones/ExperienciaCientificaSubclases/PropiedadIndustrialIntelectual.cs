@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
+    /// <summary>
+    /// Exporta los datos de la sección "050.030.010.000" a cvn.cvnRootResultBean
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="seccion"></param>
+    /// <param name="secciones"></param>
+    /// <param name="preimportar"></param>
     public class PropiedadIndustrialIntelectual:SeccionBase
     {
         List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
