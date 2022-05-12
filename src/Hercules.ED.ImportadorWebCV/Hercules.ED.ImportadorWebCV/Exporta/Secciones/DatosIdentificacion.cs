@@ -59,13 +59,13 @@ namespace ImportadorWebCV.Exporta.Secciones
             UtilityExportar.AddDireccion(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.direccionContacto), "000.010.000.140", entity);
 
             //Movil            
-            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional).Split("|").FirstOrDefault(), "000.010.000.240", entity);
+            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.movilCodInternacional).Split("|").FirstOrDefault(), "000.010.000.240", entity);
 
             //Telefono
             UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional).Split("|").FirstOrDefault(), "000.010.000.210", entity);
 
             //Fax
-            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.telefonoCodInternacional).Split("|").FirstOrDefault(), "000.010.000.220", entity);
+            UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.faxCodInternacional).Split("|").FirstOrDefault(), "000.010.000.220", entity);
 
             //Otros identificadores
             UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.otroIdentificador), "000.010.000.260", entity);
