@@ -70,7 +70,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     "010.020.000.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesFechaFinalizacion),
                     "010.020.000.310", keyValue.Value);
-                // TODO PalabrasClave
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesPalabrasClave), "010.020.000.270",keyValue.Value);
 
                 //Entidad empleadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre),
@@ -93,8 +93,13 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propFax, "010.020.000.150", keyValue.Value);
                 }
 
-                // TODO Codigo Unesco
-
+                // Codigo Unesco
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesCodUnescoPrimaria),
+                    "010.020.000.230", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesCodUnescoSecundaria),
+                    "010.020.000.240", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesCodUnescoTerciaria),
+                    "010.020.000.250", keyValue.Value);
 
                 //Correo Electronico
                 // Si hay algún correo, guardo los correos concatenados con ';' en un string. En caso contrario guardo null.

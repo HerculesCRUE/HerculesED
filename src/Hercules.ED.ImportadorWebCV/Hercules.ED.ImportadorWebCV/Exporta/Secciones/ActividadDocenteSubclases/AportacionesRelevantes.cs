@@ -43,7 +43,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.aportacionesCVFechaFinalizacion),
                     "030.110.000.110", keyValue.Value);
 
-                //Palabras clave TODO
+                //Palabras clave
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.aportacionesCVPalabrasClave),
+                    "030.110.000.020", keyValue.Value);
 
                 //Entidad organizadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean,UtilityExportar.EliminarRDF(Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre),

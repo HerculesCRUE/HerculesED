@@ -107,10 +107,10 @@ namespace TeachingcongressOntology
 			{
 				this.Roh_publicationType = new PublicationType(propRoh_publicationType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_publicationDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationDate"));
+			this.Roh_publicationDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationDate"));
 			this.Roh_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isbn"));
 			this.Roh_legalDeposit = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/legalDeposit"));
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_targetProfile = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/targetProfile"));
 			this.Roh_goals = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/goals"));
 			this.Roh_publicationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationTitle"));
@@ -127,11 +127,11 @@ namespace TeachingcongressOntology
 			this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
 			this.Bibo_issue = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issue"));
 			this.Bibo_volume = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/volume"));
-			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
 			this.Bibo_pageStart = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageStart"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Vivo_publisher = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#publisher"));
 			this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
 			this.Bibo_pageEnd = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageEnd"));
@@ -221,10 +221,10 @@ namespace TeachingcongressOntology
 			{
 				this.Roh_publicationType = new PublicationType(propRoh_publicationType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_publicationDate= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationDate"));
+			this.Roh_publicationDate = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationDate"));
 			this.Roh_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isbn"));
 			this.Roh_legalDeposit = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/legalDeposit"));
-			this.Vivo_start= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
+			this.Vivo_start = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#start"));
 			this.Roh_targetProfile = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/targetProfile"));
 			this.Roh_goals = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/goals"));
 			this.Roh_publicationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationTitle"));
@@ -241,11 +241,11 @@ namespace TeachingcongressOntology
 			this.Bibo_doi = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/doi"));
 			this.Bibo_issue = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issue"));
 			this.Bibo_volume = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/volume"));
-			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
 			this.Bibo_pageStart = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageStart"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
-			this.Vivo_end= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
+			this.Vivo_end = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#end"));
 			this.Vivo_publisher = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#publisher"));
 			this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
 			this.Bibo_pageEnd = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageEnd"));
@@ -1062,86 +1062,12 @@ namespace TeachingcongressOntology
 			return list;
 		}
 
-		public override KeyValuePair<Guid, string> ToAcidData(ResourceApi resourceAPI)
-		{
 
-			//Insert en la tabla Documento
-			string tags = "";
-			foreach(string tag in tagList)
-			{
-				tags += $"{tag}, ";
-			}
-			if (!string.IsNullOrEmpty(tags))
-			{
-				tags = tags.Substring(0, tags.LastIndexOf(','));
-			}
-			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
-			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
-
-			return valor;
-		}
-
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
 		public override string GetURI(ResourceApi resourceAPI)
 		{
 			return $"{resourceAPI.GraphsUrl}items/TeachingcongressOntology_{ResourceID}_{ArticleID}";
 		}
 
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 		internal void AddResourceTitle(ComplexOntologyResource resource)
 		{
@@ -1153,21 +1079,7 @@ namespace TeachingcongressOntology
 			resource.Description = this.Roh_title;
 		}
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
 
 
 	}

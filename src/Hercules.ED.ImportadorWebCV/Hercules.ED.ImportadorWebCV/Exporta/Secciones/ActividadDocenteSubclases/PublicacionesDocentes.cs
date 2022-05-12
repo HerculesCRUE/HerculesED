@@ -86,9 +86,28 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteISSNPublicacion),
                     "030.070.000.170", keyValue.Value);
 
-                //ID publicacion TODO
+                //ID publicacion
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteIDPubDigitalHandle),
+                    "030.070.000.230", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteIDPubDigitalDOI),
+                    "030.070.000.230", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteIDPubDigitalPMID),
+                    "030.070.000.230", keyValue.Value);
+
+                Dictionary<string, string> dicNombreID = new Dictionary<string, string>();
+                dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteNombreOtroIDPubDigital));
+                dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteIDOtroPubDigital));
+                UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean, dicNombreID, "030.070.000.230", keyValue.Value);
 
                 //Autores
+                Dictionary<string, string> listadoIP = new Dictionary<string, string>();
+                listadoIP.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteAutorFirma));
+                listadoIP.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteAutorNombre));
+                listadoIP.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteAutorPrimerApellido));
+                listadoIP.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteAutorSegundoApellido));
+
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoIP,
+                    "030.070.000.030", keyValue.Value);
 
                 listado.Add(itemBean);
             }

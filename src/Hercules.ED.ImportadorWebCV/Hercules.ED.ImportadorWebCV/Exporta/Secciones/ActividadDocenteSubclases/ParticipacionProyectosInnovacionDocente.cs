@@ -81,6 +81,36 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaFechaInicio),
                     "030.080.000.280", keyValue.Value);
 
+                //Entidad financiadora
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaEntidadFinanciadoraNombre),
+                    "030.080.000.090", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadFinanciadora),
+                    "030.080.000.110", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadFinanciadoraOtros),
+                    "030.080.000.120", keyValue.Value);
+
+                //Entidad participante 
+                List<Tuple<string, string, string>> dicCodigos = new List<Tuple<string, string, string>>();
+                dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "030.080.000.150",
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.170", 
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.180", 
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipanteOtros)));
+
+                UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
+                   "030.080.000.150", keyValue.Value);
+
+                //Investigador principal
+                Dictionary<string, string> listadoIP = new Dictionary<string, string>();
+                listadoIP.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaFirmaIP));
+                listadoIP.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaNombreIP));
+                listadoIP.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaPrimerApellidoIP));
+                listadoIP.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaSegundoApellidoIP));
+
+                UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoIP,
+                    "030.080.000.220",keyValue.Value);
+
                 listado.Add(itemBean);
             }
 
