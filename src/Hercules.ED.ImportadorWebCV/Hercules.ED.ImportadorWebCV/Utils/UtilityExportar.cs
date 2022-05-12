@@ -18,11 +18,56 @@ namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
     {
+        public static List<Tuple<string, string>> GetListadoAutores(ResourceApi pResourceApi, List<string> listadoPersonas)
+        {
+            if (listadoPersonas.Count() == 0)
+            {
+                return new List<Tuple<string, string>>();
+            }
+            string select = $@"select distinct *";
+            string where = $@"where {{ 
+    ?person a <http://xmlns.com/foaf/0.1/Person>
+    OPTIONAL{{?person <http://xmlns.com/foaf/0.1/firstName> ?nombre}}
+    OPTIONAL{{?person <http://xmlns.com/foaf/0.1/lastName> ?apellidos }}
+    FILTER(
+        ?person in (<{string.Join(">,<", listadoPersonas)}>)
+    ) 
+}}";
+            List<Tuple<string, string>> listaResultado = new List<Tuple<string, string>>();
+
+            SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "person");
+            if (resultData.results.bindings.Count == 0)
+            {
+                return null;
+            }
+
+            //Añado si como minimo tiene nombre
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                //if (fila.ContainsKey("nombre") && fila.ContainsKey("apellidos")) 
+                //{
+                //    listaResultado.Add(new Tuple<string, string>(fila["nombre"].value, fila["apellidos"].value));
+                //}
+                //else (fila.ContainsKey("nombre"))
+                //{
+                //    listaResultado.Add(new Tuple<string, string>(fila["nombre"].value, ""));
+                //}
+            }
+
+            return listaResultado;
+        }
+
         public static List<Tuple<string, string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
-            if (propiedadesItem == null) { return null; }
-            if (propiedadesItem.Count != 4) { return null; }
+            if (propiedadesItem == null)
+            {
+                return null;
+            }
+            if (propiedadesItem.Count != 4)
+            {
+                return null;
+            }
 
             string select = $@"select distinct *";
             string where = $@"where {{?cv <{propiedadesItem[0]}> ?prop1 . 
@@ -54,11 +99,18 @@ namespace ExportadorWebCV.Utils
 
             return listaResultado;
         }
+
         public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
-            if (propiedadesItem == null) { return null; }
-            if (propiedadesItem.Count == 0) { return null; }
+            if (propiedadesItem == null)
+            {
+                return null;
+            }
+            if (propiedadesItem.Count == 0)
+            {
+                return null;
+            }
 
             string select = $@"select distinct *";
             string where = "where {";
@@ -477,7 +529,11 @@ namespace ExportadorWebCV.Utils
                 ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
                 : null;
 
-            itemBean.Items.Add(authorBean);
+            if (!string.IsNullOrEmpty(authorBean.GivenName)
+                || !string.IsNullOrEmpty(authorBean.Signature))
+            {
+                itemBean.Items.Add(authorBean);
+            }
         }
 
         /// <summary>
@@ -544,7 +600,11 @@ namespace ExportadorWebCV.Utils
                     authorBean.CvnFamilyNameBean = familyNameBean;
                 }
 
-                itemBean.Items.Add(authorBean);
+                if (!string.IsNullOrEmpty(authorBean.GivenName)
+                || !string.IsNullOrEmpty(authorBean.Signature))
+                {
+                    itemBean.Items.Add(authorBean);
+                }
             }
         }
 
@@ -582,7 +642,7 @@ namespace ExportadorWebCV.Utils
                 itemBean.Items.Add(cvnBoolean);
             }
         }
-        
+
         public static void AddCvnItemBeanCvnBoolean_cv(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -656,7 +716,7 @@ namespace ExportadorWebCV.Utils
 
                 //Tipodato, Codigo, Propiedad, Valor
                 var tupla = listado.ElementAt(i).Select(x => new Tuple<string, string, string, string>(x.Item1, x.Item2, x.Item3, x.Item5));
-                for(int j = 0; j < tupla.Count(); j++)
+                for (int j = 0; j < tupla.Count(); j++)
                 {
                     if (tupla.ElementAt(j).Item1.Equals("String"))
                     {
@@ -821,7 +881,8 @@ namespace ExportadorWebCV.Utils
             //Añado si se inserta valor
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))))
             {
-                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))
+                    .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
 
                 itemBean.Items.Add(entityBean);
             }
@@ -1069,7 +1130,8 @@ namespace ExportadorWebCV.Utils
             }
 
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0 &&
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).Where(x => x.Count() == 1).Any())
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).Where(x => x.Count() == 1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
@@ -1220,7 +1282,8 @@ namespace ExportadorWebCV.Utils
                 case "http://w3id.org/roh/applicationNumber":
                     externalPKBean.Type = "060";
                     break;
-                case "http://w3id.org/roh/referenceCode": case "http://w3id.org/roh/patentNumber":
+                case "http://w3id.org/roh/referenceCode":
+                case "http://w3id.org/roh/patentNumber":
                     externalPKBean.Type = "070";
                     break;
                 case "http://w3id.org/roh/normalizedCode":
