@@ -4,7 +4,7 @@ namespace Hercules.ED.GraphicEngine.Models
 {
     public class ConfigModel
     {
-        public Dictionary<string,string> nombre { get; set; }
+        public Dictionary<string, string> nombre { get; set; }
         public string filtro { get; set; }
         public string identificador { get; set; }
         public List<Grafica> graficas { get; set; }
@@ -22,7 +22,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public string identificador { get; set; }
         public Dictionary<string, string> nombre { get; set; }
         public EnumGraficas tipoGrafica { get; set; }
-        public ConfigBarras configBarras { get; set; }        
+        public ConfigBarras configBarras { get; set; }
     }
 
     public class ConfigBarras
