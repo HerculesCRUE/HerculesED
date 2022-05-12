@@ -52,7 +52,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 }
 
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.acreditacionesFechaReconocimiento),
-                "060.030.090.100", keyValue.Value);
+                "060.030.090.110", keyValue.Value);
 
 
                 // Acreditaciones Obtenidas Entidad
