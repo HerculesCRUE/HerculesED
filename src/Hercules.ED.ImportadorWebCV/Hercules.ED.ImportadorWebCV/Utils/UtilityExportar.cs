@@ -93,6 +93,12 @@ namespace ExportadorWebCV.Utils
 
             return listaResultado;
         }
+
+        /// <summary>
+        /// Añade en cvnRootBean de <paramref name="cvn"/> los valores de <paramref name="listado"/>
+        /// </summary>
+        /// <param name="cvn"></param>
+        /// <param name="listado"></param>
         public static void AniadirItems(cvnRootResultBean cvn, List<CvnItemBean> listado)
         {
             if (cvn.cvnRootBean == null)
@@ -105,6 +111,11 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Elimina las propiedades RDF intermedias de la cadena concatenando por "|" los valores restantes.
+        /// </summary>
+        /// <param name="cadena"></param>
+        /// <returns></returns>
         public static string EliminarRDF(string cadena)
         {
             if (string.IsNullOrEmpty(cadena))
@@ -125,6 +136,14 @@ namespace ExportadorWebCV.Utils
             return enumeracion.Any();
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="section"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -145,6 +164,12 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> y valor <paramref name="value"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="code"></param>
+        /// <param name="value"></param>
         public static void AddCvnItemBeanCvnStringSimple(CvnItemBean itemBean, string code, string value)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -192,6 +217,11 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Devuelve los hijos del listado de palabras clave, eliminando a los padres.
+        /// </summary>
+        /// <param name="listaPalabrasClave"></param>
+        /// <returns></returns>
         public static Dictionary<string, string> GetHijosListadoPalabrasClave(List<string> listaPalabrasClave)
         {
             Dictionary<string, string> codigos = new Dictionary<string, string>();
@@ -240,6 +270,7 @@ namespace ExportadorWebCV.Utils
                 });
             }
         }
+
         public static void AddCvnItemBeanCvnStringList(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -265,6 +296,7 @@ namespace ExportadorWebCV.Utils
                 itemBean.Items.Add(cvnString);
             }
         }
+
         public static void AddCvnItemBeanCvnString_cv(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -289,6 +321,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade un objeto CvnItemBeanCvnString con formato de una direccion
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="section"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddDireccion(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -383,13 +423,6 @@ namespace ExportadorWebCV.Utils
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="value"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnRichText(CvnItemBean itemBean, string value, string code, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -405,6 +438,14 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(richText);
         }
 
+        /// <summary>
+        /// Añade un CvnItemBeanCvnAuthorBeanCvnFamilyNameBean en <paramref name="itemBean"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="properties"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnAuthorBean(CvnItemBean itemBean, Dictionary<string, string> properties, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -439,6 +480,14 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(authorBean);
         }
 
+        /// <summary>
+        /// Añade un listado de autores, CvnItemBeanCvnAuthorBeanCvnFamilyNameBean, en <paramref name="itemBean"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="properties"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnAuthorBeanList(CvnItemBean itemBean, Dictionary<string, string> properties, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -533,6 +582,7 @@ namespace ExportadorWebCV.Utils
                 itemBean.Items.Add(cvnBoolean);
             }
         }
+        
         public static void AddCvnItemBeanCvnBoolean_cv(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
