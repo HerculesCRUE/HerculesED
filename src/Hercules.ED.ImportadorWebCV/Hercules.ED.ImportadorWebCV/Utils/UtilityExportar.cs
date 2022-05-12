@@ -1220,7 +1220,7 @@ namespace ExportadorWebCV.Utils
                 case "http://w3id.org/roh/applicationNumber":
                     externalPKBean.Type = "060";
                     break;
-                case "http://w3id.org/roh/referenceCode":
+                case "http://w3id.org/roh/referenceCode": case "http://w3id.org/roh/patentNumber":
                     externalPKBean.Type = "070";
                     break;
                 case "http://w3id.org/roh/normalizedCode":
