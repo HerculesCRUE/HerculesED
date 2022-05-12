@@ -107,6 +107,7 @@ namespace ImportadorWebCV.Exporta
             Contratos contratos = new Contratos(cvn, cvID);
 
             GrupoIDI grupoIDI = new GrupoIDI(cvn, cvID);
+            grupoIDI.ExportaGrupoIDI(entity, seccion);
 
             ObrasArtisticas obrasArtisticas = new ObrasArtisticas(cvn, cvID);
             obrasArtisticas.ExportaObrasArtisticas(entity, seccion);
