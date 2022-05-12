@@ -53,7 +53,8 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     "010.020.000.170", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesFechaInicio),
                     "010.020.000.180", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, "010.020.000.190", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, 
+                    "010.020.000.190", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesModalidadContrato),
                     "010.020.000.200", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesModalidadContratoOtros),
@@ -70,7 +71,8 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     "010.020.000.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesFechaFinalizacion),
                     "010.020.000.310", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesPalabrasClave), "010.020.000.270",keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesPalabrasClave),
+                    "010.020.000.270",keyValue.Value);
 
                 //Entidad empleadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre),
@@ -84,13 +86,15 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                 string propTelefono = Variables.SituacionProfesional.cargosActividadesFijoNumero.Split("@@@").FirstOrDefault();
                 if (!string.IsNullOrEmpty(propTelefono))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propTelefono, "010.020.000.140", keyValue.Value);
+                    UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propTelefono, 
+                        "010.020.000.140", keyValue.Value);
                 }
                 //Fax
                 string propFax = Variables.SituacionProfesional.cargosActividadesFaxNumero.Split("@@@").FirstOrDefault();
                 if (!string.IsNullOrEmpty(propFax))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propFax, "010.020.000.150", keyValue.Value);
+                    UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propFax, 
+                        "010.020.000.150", keyValue.Value);
                 }
 
                 // Codigo Unesco
@@ -102,9 +106,15 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     "010.020.000.250", keyValue.Value);
 
                 //Correo Electronico
+                List<string> listadoCorreos = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.cargosActividadesCorreoElectronico))) ?
+                keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.cargosActividadesCorreoElectronico)).Select(x => x.values).FirstOrDefault() 
+                : null;
                 // Si hay algún correo, guardo los correos concatenados con ';' en un string. En caso contrario guardo null.
-                List<string> listadoCorreos = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.situacionProfesionalCorreoElectronico))) ?
-                keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.situacionProfesionalCorreoElectronico)).Select(x => x.values).FirstOrDefault() : null;
+                string correos = (listadoCorreos != null && listadoCorreos.Any()) ? string.Join(";", listadoCorreos) : null;
+                if (!string.IsNullOrEmpty(correos))
+                {
+                    UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "010.020.000.160", correos);
+                }
 
                 listado.Add(itemBean);
             }
