@@ -18,6 +18,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.010.010.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaPublicacionesDocumentos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -52,7 +59,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.110", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubCCAA),
                     "060.010.010.120", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha),
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha),
                     "060.010.010.140", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL),
                     "060.010.010.150", keyValue.Value);
