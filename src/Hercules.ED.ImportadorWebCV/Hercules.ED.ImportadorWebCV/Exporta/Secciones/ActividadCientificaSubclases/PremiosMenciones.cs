@@ -30,7 +30,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     Items = new List<CVNObject>()
                 };
 
-                // TODO test
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.premiosMencionesDescripcion),
                     "060.030.050.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.premiosMencionesPais),
