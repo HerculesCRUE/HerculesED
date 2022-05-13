@@ -1606,9 +1606,9 @@ namespace ExportadorWebCV.Utils
                 if (property.Contains("http://w3id.org/roh/otherIds"))
                 {
                     externalPKBean.Type = "OTHERS";
-                    externalPKBean.Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                    externalPKBean.Others = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
-                    externalPKBean.Others = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://purl.org/dc/elements/1.1/title"))
+                    externalPKBean.Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://purl.org/dc/elements/1.1/title"))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
                     itemBean.Items.Add(externalPKBean);
                     return;
