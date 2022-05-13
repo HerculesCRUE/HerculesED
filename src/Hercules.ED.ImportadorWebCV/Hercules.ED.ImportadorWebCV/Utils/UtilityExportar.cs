@@ -1167,15 +1167,21 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            if (Comprobar(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate"))))
+            if (Comprobar(entity.properties.Where(x => x.prop.Equals(propertyIdentification))))
             {
-                CultureInfo cultureInfo = new CultureInfo(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate")).First()
+                CultureInfo cultureInfo = new CultureInfo(entity.properties.Where(x => x.prop.Equals(propertyIdentification)).First()
                     .values.First().Split("_").Last());
 
                 CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
                 titleBean.Code = code;
                 titleBean.Name = cultureInfo.EnglishName;
                 titleBean.Identification = cultureInfo.Name;
+
+                //Añado si se inserta valor
+                if (!string.IsNullOrEmpty(titleBean.Name) || !string.IsNullOrEmpty(titleBean.Identification))
+                {
+                    itemBean.Items.Add(titleBean);
+                }
             }
         }
 
@@ -1203,7 +1209,7 @@ namespace ExportadorWebCV.Utils
 
 
             //Añado si se inserta valor
-            if (!string.IsNullOrEmpty(titleBean.Name) || !string.IsNullOrEmpty(titleBean.Identification))
+            if (!string.IsNullOrEmpty(titleBean.Name))
             {
                 itemBean.Items.Add(titleBean);
             }
