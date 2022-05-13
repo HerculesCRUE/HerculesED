@@ -20,6 +20,13 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "020.020.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaFormacionEspecializada(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
