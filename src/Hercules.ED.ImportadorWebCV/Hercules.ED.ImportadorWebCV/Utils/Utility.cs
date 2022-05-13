@@ -506,7 +506,7 @@ namespace Utils
 
                 List<CVNObject> listadoCamposAux = cvnItemBean.Items?.ToList();
                 CvnItemBeanCvnString campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-                if (campo != null)
+                if (campo != null && string.IsNullOrEmpty(campo.Value.Trim()))
                 {
                     return campo.Value;
                 }
@@ -537,7 +537,7 @@ namespace Utils
             if (listado == null) { return null; }
             IEnumerable<CVNObject> listadoCamposAux = listado.Where(x => x.Code.StartsWith(codigo.Substring(0, 11))).SelectMany(x => x.Items)?.ToList();
             CvnItemBeanCvnString campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null)
+            if (campo != null && string.IsNullOrEmpty(campo.Value.Trim()))
             {
                 return campo.Value;
             }
