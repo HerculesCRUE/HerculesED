@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Web;
 
 namespace Hercules.ED.GraphicEngine.Models
 {
@@ -23,6 +24,12 @@ namespace Hercules.ED.GraphicEngine.Models
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
 
         #region --- Páginas
+        /// <summary>
+        /// Obtiene los datos de la página.
+        /// </summary>
+        /// <param name="pIdPagina">Identificador de la página.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
         public static Pagina GetPage(string pIdPagina, string pLang)
         {
             // Lectura del JSON de configuración.
@@ -38,6 +45,12 @@ namespace Hercules.ED.GraphicEngine.Models
             return CrearPagina(configModel, pLang);
         }
 
+        /// <summary>
+        /// Crea el objeto página.
+        /// </summary>
+        /// <param name="pConfigModel">Configuración.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
         public static Pagina CrearPagina(ConfigModel pConfigModel, string pLang)
         {
             Pagina pagina = new Pagina();
@@ -58,6 +71,14 @@ namespace Hercules.ED.GraphicEngine.Models
         #endregion
 
         #region --- Gráficas
+        /// <summary>
+        /// Lee la configuración y obtiene los datos necesarios para el servicio de gráficas.
+        /// </summary>
+        /// <param name="pIdPagina">Identificador de la página.</param>
+        /// <param name="pIdFaceta">Identificador de la faceta.</param>
+        /// <param name="pFiltroFacetas">Filtros de la URL.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
         public static GraficaBase GetGrafica(string pIdPagina, string pIdGrafica, string pFiltroFacetas, string pLang)
         {
             // Lectura del JSON de configuración.
@@ -78,8 +99,18 @@ namespace Hercules.ED.GraphicEngine.Models
             return null;
         }
 
+        /// <summary>
+        /// Crea el objeto gráfica.
+        /// </summary>
+        /// <param name="pGrafica">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
+            pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
             switch (pGrafica.tipoGrafica)
             {
                 case EnumGraficas.Barras:
@@ -98,6 +129,14 @@ namespace Hercules.ED.GraphicEngine.Models
             }
         }
 
+        /// <summary>
+        /// Crea el objeto de la gráfica (Gráfica de Barras).
+        /// </summary>
+        /// <param name="pGrafica">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
         public static GraficaBase CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             // Objeto a devolver.
@@ -128,13 +167,14 @@ namespace Hercules.ED.GraphicEngine.Models
 
             ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
+
             foreach (Dimension dim in pGrafica.configBarras.dimensiones)
             {
                 resultadosDimension[dim] = null;
                 dimensionesDataset[dim] = null;
             }
 
-            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 5 }, itemGrafica =>
+            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
             {
                 // Orden.
                 string orden = "ASC";
@@ -166,7 +206,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     where = new StringBuilder();
 
                     select.Append(mPrefijos);
-                    select.Append("SELECT ?ejeX COUNT(DISTINCT ?s) AS ?numero ");
+                    select.Append($@"SELECT ?ejeX COUNT(DISTINCT ?s) AS ?numero ");
                     where.Append("WHERE { ");
                     foreach (string item in filtros)
                     {
@@ -184,7 +224,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     where = new StringBuilder();
 
                     select.Append(mPrefijos);
-                    select.Append($@"SELECT ?ejeX {calculo}(?calc) AS ?numero ");
+                    select.Append($@"SELECT ?ejeX {calculo}(?citationCount0) AS ?numero ");
                     where.Append("WHERE { ");
                     foreach (string item in filtros)
                     {
@@ -204,8 +244,9 @@ namespace Hercules.ED.GraphicEngine.Models
                 resultadosDimension[itemGrafica] = dicResultados;
             });
 
-            // Obtención del valor de máximo y mínimo del eje x.            
+            #region --- Cálculo de los valores del Eje X
             HashSet<string> valuesEje = new HashSet<string>();
+
             foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
             {
                 if (item.Value != null && item.Value.Any())
@@ -216,7 +257,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             bool isInt = valuesEje.Where(x => !int.TryParse(x, out int aux)).Count() == 0;
 
-            if (pGrafica.configBarras.rellenarEjeX && isInt)
+            if (pGrafica.configBarras.rellenarEjeX && isInt && valuesEje.Count > 0)
             {
                 int numMin = valuesEje.Min(x => int.Parse(x));
                 int numMax = valuesEje.Max(x => int.Parse(x));
@@ -248,7 +289,6 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-
             if (isInt)
             {
                 valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
@@ -257,7 +297,7 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
             }
-
+            #endregion
 
             // Obtención del objeto de la gráfica.
             List<string> listaLabels = valuesEje.ToList();
@@ -297,7 +337,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 data.labels = listaLabels;
                 data.type = item.Key.tipoDimension;
                 dimensionesDataset[item.Key] = dataset;
-            } 
+            }
 
             foreach (Dimension dim in pGrafica.configBarras.dimensiones)
             {
@@ -309,8 +349,17 @@ namespace Hercules.ED.GraphicEngine.Models
         #endregion
 
         #region --- Facetas
-        public static Faceta GetFaceta(string pIdPagina, string pIdFaceta, string pFiltros, string pLang)
+        /// <summary>
+        /// Lee la configuración y obtiene los datos necesarios para el servicio de facetas.
+        /// </summary>
+        /// <param name="pIdPagina">Identificador de la página.</param>
+        /// <param name="pIdFaceta">Identificador de la faceta.</param>
+        /// <param name="pFiltroFacetas">Filtros de la URL.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
+        public static Faceta GetFaceta(string pIdPagina, string pIdFaceta, string pFiltroFacetas, string pLang)
         {
+            pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
             // Lectura del JSON de configuración.
             List<ConfigModel> listaConfigModel = null;
             using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configGraficas\configuration.json"))
@@ -323,13 +372,21 @@ namespace Hercules.ED.GraphicEngine.Models
             if (configModel != null)
             {
                 FacetaConf faceta = configModel.facetas.FirstOrDefault(x => x.filtro == pIdFaceta);
-                return CrearFaceta(faceta, configModel.filtro, pLang);
+                return CrearFaceta(faceta, configModel.filtro, pFiltroFacetas, pLang);
             }
 
             return null;
         }
 
-        public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pLang)
+        /// <summary>
+        /// Crea el objeto faceta.
+        /// </summary>
+        /// <param name="pFacetaConf">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
+        public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             Faceta faceta = new Faceta();
             faceta.id = pFacetaConf.filtro;
@@ -339,7 +396,11 @@ namespace Hercules.ED.GraphicEngine.Models
             // Filtro de página.
             List<string> filtros = new List<string>();
             filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
-            filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }));
+            filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "nombreFaceta"));
+            if (!string.IsNullOrEmpty(pFiltroFacetas))
+            {
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+            }
             Dictionary<string, float> dicResultados = new Dictionary<string, float>();
             SparqlObject resultadoQuery = null;
             StringBuilder select = new StringBuilder(), where = new StringBuilder();
@@ -349,13 +410,13 @@ namespace Hercules.ED.GraphicEngine.Models
             where = new StringBuilder();
 
             select.Append(mPrefijos);
-            select.Append($@"SELECT DISTINCT ?title1 AS ?itemFaceta COUNT(?s) AS ?numero ");
+            select.Append($@"SELECT DISTINCT ?nombreFaceta LANG(?nombreFaceta) AS ?lang COUNT(?s) AS ?numero ");
             where.Append("WHERE { ");
             foreach (string item in filtros)
             {
                 where.Append(item);
             }
-            where.Append($@"FILTER(LANG(?title1) = '{pLang}' OR LANG(?title1) = '' OR !isLiteral(?title1)) ");
+            where.Append($@"FILTER(LANG(?nombreFaceta) = '{pLang}' OR LANG(?nombreFaceta) = '' OR !isLiteral(?nombreFaceta)) ");
             where.Append($@"}} ORDER BY DESC (?numero) ");
 
             resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
@@ -364,9 +425,24 @@ namespace Hercules.ED.GraphicEngine.Models
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
                     ItemFaceta itemFaceta = new ItemFaceta();
-                    itemFaceta.nombre = fila["itemFaceta"].value;
+                    itemFaceta.nombre = fila["nombreFaceta"].value;
                     itemFaceta.numero = Int32.Parse(fila["numero"].value);
-                    itemFaceta.filtro = $@"{pFacetaConf.filtro}='{itemFaceta.nombre}'@{pLang}";
+
+                    // Comprobación si tiene idioma asignado.
+                    string lang = "";
+                    if (!string.IsNullOrEmpty(fila["lang"].value))
+                    {
+                        lang = "@" + fila["lang"].value;
+                    }
+
+                    // Comprobación si es literal o numerico.
+                    string filtro = itemFaceta.nombre;
+                    if (fila["nombreFaceta"].type == "literal")
+                    {
+                        filtro = "'" + filtro + "'";
+                    }
+
+                    itemFaceta.filtro = $@"{pFacetaConf.filtro}={filtro}{lang}";
                     faceta.items.Add(itemFaceta);
                 }
             }
@@ -376,6 +452,12 @@ namespace Hercules.ED.GraphicEngine.Models
         #endregion
 
         #region --- Utils
+        /// <summary>
+        /// Crea la lista de colores para rellenar las gráficas.
+        /// </summary>
+        /// <param name="pNumVeces">Número de la lista.</param>
+        /// <param name="pColorHex">Color a rellenar.</param>
+        /// <returns></returns>
         public static List<string> ObtenerColores(int pNumVeces, string pColorHex)
         {
             List<string> colores = new List<string>();
@@ -386,72 +468,99 @@ namespace Hercules.ED.GraphicEngine.Models
             return colores;
         }
 
+        /// <summary>
+        /// Splitea los filtros para tratarlos.
+        /// </summary>
+        /// <param name="pListaFiltros">Listado de filtros.</param>
+        /// <param name="pNombreVar">Nombre a poner a la última variable.</param>
+        /// <returns></returns>
         public static List<string> ObtenerFiltros(List<string> pListaFiltros, string pNombreVar = null)
         {
             // Split por filtro.
             List<string> listaAux = new List<string>();
             foreach (string filtro in pListaFiltros)
             {
-                string[] array = filtro.Split("&");
+                string[] array = filtro.Split("&", StringSplitOptions.RemoveEmptyEntries);
                 listaAux.AddRange(array.ToList());
             }
 
             List<string> filtrosQuery = new List<string>();
 
             // Split por salto de ontología.
+            int i = 0;
             foreach (string item in listaAux)
             {
-                if (!item.Contains("@@@"))
-                {
-                    if (item.Contains("="))
-                    {
-                        string predicado = item.Split("=")[0];
-                        string objeto = item.Split("=")[1];
-                        filtrosQuery.Add($@"?s {predicado} '{objeto}'. ");
-                    }
-                    else if (string.IsNullOrEmpty(pNombreVar))
-                    {
-                        filtrosQuery.Add($@"?s {item} ?calc. ");
-                    }
-                    else
-                    {
-                        filtrosQuery.Add($@"?s {item} ?{pNombreVar}. ");
-                    }
-                }
-                else
-                {
-                    filtrosQuery.Add(TratarParametros(item, "?s", 0));
-                }
+                filtrosQuery.Add(TratarParametros(item, "?s", i, pNombreVar));
+                i += 10;
             }
 
             return filtrosQuery;
         }
 
-        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux)
+        /// <summary>
+        /// Según el tipo de parametros, los trata de una manera u otra para el filtro.
+        /// </summary>
+        /// <param name="pFiltro">Filtro a tratar.</param>
+        /// <param name="pVarAnterior">Sujeto.</param>
+        /// <param name="pAux">Iterador incremental.</param>
+        /// <param name="pNombreVar">Nombre de la última variable.</param>
+        /// <returns></returns>
+        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux, string pNombreVar = null)
         {
             StringBuilder filtro = new StringBuilder();
-            foreach (string parteFiltro in pFiltro.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries))
+            string[] filtros = pFiltro.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries);
+            int i = 0;
+            foreach (string parteFiltro in filtros)
             {
+                i++;
                 if (!parteFiltro.Contains("="))
                 {
                     string varActual = $@"?{parteFiltro.Substring(parteFiltro.IndexOf(":") + 1)}{pAux}";
                     filtro.Append($@"{pVarAnterior} ");
                     filtro.Append($@"{parteFiltro} ");
-                    filtro.Append($@"{varActual}. ");
+                    // Si es el último, le asignamos el nombre que queramos.
+                    if (i == filtros.Length && !string.IsNullOrEmpty(pNombreVar))
+                    {
+                        filtro.Append($@"?{pNombreVar}. ");
+                    }
+                    else
+                    {
+                        filtro.Append($@"{varActual}. ");
+                    }
                     pVarAnterior = varActual;
                     pAux++;
                 }
                 else
                 {
                     string varActual = $@"{parteFiltro.Split("=")[1]}";
-                    filtro.Append($@"{pVarAnterior} ");
-                    filtro.Append($@"{parteFiltro.Split("=")[0]} ");
-                    filtro.Append($@"{varActual}. ");
+                    if (varActual.StartsWith("'"))
+                    {
+                        filtro.Append($@"{pVarAnterior} ");
+                        filtro.Append($@"{parteFiltro.Split("=")[0]} ");
+                        filtro.Append($@"{varActual}. ");
+                    }
+                    else
+                    {
+                        // Si el valor es númerico, se le asigna con el FILTER.
+                        string varActualAux = $@"?{parteFiltro.Split("=")[0].Substring(parteFiltro.IndexOf(":") + 1)}{pAux}";
+
+                        filtro.Append($@"{pVarAnterior} ");
+                        filtro.Append($@"{parteFiltro.Split("=")[0]} ");
+                        filtro.Append($@"{varActualAux}. ");
+                        filtro.Append($@"FILTER({varActualAux} = {varActual}) ");
+                    }
+
                 }
             }
             return filtro.ToString();
         }
 
+        /// <summary>
+        /// Obtiene el idioma de del diccionario de idiomas.
+        /// </summary>
+        /// <param name="pLang">Idioma.</param>
+        /// <param name="pValores">Diccionario.</param>
+        /// <returns></returns>
         public static string GetTextLang(string pLang, Dictionary<string, string> pValores)
         {
             if (pValores == null)

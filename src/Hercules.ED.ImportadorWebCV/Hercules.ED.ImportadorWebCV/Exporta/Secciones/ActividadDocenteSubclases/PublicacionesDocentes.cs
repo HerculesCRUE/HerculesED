@@ -20,6 +20,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "030.070.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaPublicacionesDocentes(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -45,6 +52,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.070.000.060", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteTipologiaSoporteOtros),
                     "030.070.000.070", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteTituloPublicacion),
+                    "030.070.000.080", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteNombrePublicacion),
                     "030.070.000.190", keyValue.Value);
 
