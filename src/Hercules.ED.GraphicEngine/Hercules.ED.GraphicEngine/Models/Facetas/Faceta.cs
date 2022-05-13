@@ -6,6 +6,7 @@ namespace Hercules.ED.GraphicEngine.Models
     {
         public string id { get; set; }
         public string nombre { get; set; }
+        public int numeroItemsFaceta { get; set; }
         public List<ItemFaceta> items { get; set; }
     }
 

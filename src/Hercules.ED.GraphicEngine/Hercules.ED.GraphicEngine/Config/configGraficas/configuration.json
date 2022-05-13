@@ -94,7 +94,8 @@
         "nombre": {
           "es": "Año"
         },
-        "filtro": "roh:year"
+        "filtro": "roh:year",
+        "numeroItemsFaceta": 10
       }
     ]
   }
