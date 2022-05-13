@@ -29,12 +29,12 @@
           "dimensiones": [
             {
               "nombre": {
-                "es": "Citas media por año (line)"
+                "es": "Citas Media por Año"
               },
               "filtro": "roh:citationCount",
               "calculo": "AVG",
               "tipoDimension": "line",
-              "color": "#008F39",
+              "color": "#000000",
               "yAxisID": "y2"
             },
             {
@@ -43,40 +43,27 @@
               },
               "filtro": "",
               "tipoDimension": "bar",
-              "color": "#FF8000",
-              "anchura": 0.2,
+              "color": "#BF4858",
               "yAxisID": "y1"
             },
             {
               "nombre": {
-                "es": "Publicaciones  de tipo 'Aritculo científico'"
+                "es": "Publicaciones de tipo Aritculo Científico"
               },
               "filtro": "dc:type@@@dc:title='Artículo científico'@es",
               "tipoDimension": "bar",
-              "color": "#FF8000",
-              "anchura": 0.2,
+              "color": "#7CBFE3",
+              "stack": "stack1",
               "yAxisID": "y1"
             },
             {
               "nombre": {
-                "es": "Citas por año bar A"
+                "es": "Publicaciones de tipo Capítulo de Libro"
               },
-              "filtro": "roh:citationCount",
-              "calculo": "SUM",
+              "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
               "tipoDimension": "bar",
-              "stack": "nomStack1",
-              "color": "#FF0000",
-              "yAxisID": "y1"
-            },
-            {
-              "nombre": {
-                "es": "Citas por año bar B"
-              },
-              "filtro": "roh:citationCount",
-              "calculo": "SUM",
-              "tipoDimension": "bar",
-              "color": "#FFFF00",
-              "stack": "nomStack1",
+              "color": "#6CAFD3",
+              "stack": "stack1",
               "yAxisID": "y1"
             }
           ]
