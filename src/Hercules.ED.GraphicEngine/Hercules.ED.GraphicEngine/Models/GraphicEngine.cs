@@ -174,7 +174,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 dimensionesDataset[dim] = null;
             }
 
-            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
+            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 5 }, itemGrafica =>
             {
                 // Orden.
                 string orden = "ASC";
@@ -359,7 +359,9 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <returns></returns>
         public static Faceta GetFaceta(string pIdPagina, string pIdFaceta, string pFiltroFacetas, string pLang)
         {
+            // Decode de los filtros.
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
+
             // Lectura del JSON de configuración.
             List<ConfigModel> listaConfigModel = null;
             using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configGraficas\configuration.json"))
@@ -389,6 +391,13 @@ namespace Hercules.ED.GraphicEngine.Models
         public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             Faceta faceta = new Faceta();
+
+            faceta.numeroItemsFaceta = int.MaxValue;
+            if (pFacetaConf.numeroItemsFaceta != 0)
+            {
+                faceta.numeroItemsFaceta = pFacetaConf.numeroItemsFaceta;
+            }
+
             faceta.id = pFacetaConf.filtro;
             faceta.nombre = GetTextLang(pLang, pFacetaConf.nombre);
             faceta.items = new List<ItemFaceta>();
@@ -446,6 +455,9 @@ namespace Hercules.ED.GraphicEngine.Models
                     faceta.items.Add(itemFaceta);
                 }
             }
+
+            // Ordenación.
+            //faceta.items = faceta.items.OrderBy(o => o.nombre).ToList();
 
             return faceta;
         }
