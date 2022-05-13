@@ -105,7 +105,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.040");
 
                 // Traducciones
-                UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTraduccion),
+                UtilityExportar.AddLanguage(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTraduccion),
                     "060.010.010.350", keyValue.Value);
 
                 // ID publicación
