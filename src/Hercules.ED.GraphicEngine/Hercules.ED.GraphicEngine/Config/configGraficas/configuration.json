@@ -3,7 +3,7 @@
     "nombre": {
       "es": "Página de EJEMPLO"
     },
-    "filtro": "rdf:type=document&roh:isValidated=true",
+    "filtro": "rdf:type='document'&roh:isValidated='true'",
     "identificador": "123",
     "graficas": [
       {
@@ -81,82 +81,6 @@
             }
           ]
         }
-      },
-      {
-        "identificador": "222",
-        "nombre": {
-          "es": "Nombre de la Gráfica de EJEMPLO"
-        },
-        "tipo": "Barras",
-        "configBarras": {
-          "ejeX": "roh:year",
-          "orderDesc": false,
-          "rellenarEjeX": true,
-          "yAxisPrint": [
-            {
-              "yAxisID": "y2",
-              "posicion": "left"
-            },
-            {
-              "yAxisID": "y1",
-              "posicion": "right"
-            }
-          ],
-          "dimensiones": [
-            {
-              "nombre": {
-                "es": "Citas media por año (line)"
-              },
-              "filtro": "roh:citationCount",
-              "calculo": "SUM",
-              "tipoDimension": "line",
-              "color": "#008F39",
-              "yAxisID": "y2"
-            },
-            {
-              "nombre": {
-                "es": "Publicaciones por año"
-              },
-              "filtro": "",
-              "tipoDimension": "bar",
-              "color": "#FF8000",
-              "anchura": 0.2,
-              "yAxisID": "y1"
-            },
-            {
-              "nombre": {
-                "es": "Publicaciones  de tipo 'Aritculo científico'"
-              },
-              "filtro": "dc:type@@@dc:title='Artículo científico'@es",
-              "tipoDimension": "bar",
-              "color": "#FF8000",
-              "anchura": 0.2,
-              "yAxisID": "y1"
-            },
-            {
-              "nombre": {
-                "es": "Citas por año bar A"
-              },
-              "filtro": "roh:citationCount",
-              "calculo": "AVG",
-              "tipoDimension": "bar",
-              "stack": "nomStack1",
-              "color": "#0000FF",
-              "yAxisID": "y1"
-            },
-            {
-              "nombre": {
-                "es": "Citas por año bar B"
-              },
-              "filtro": "roh:citationCount",
-              "calculo": "AVG",
-              "tipoDimension": "bar",
-              "color": "#FFFF00",
-              "stack": "nomStack1",
-              "yAxisID": "y1"
-            }
-          ]
-        }
       }
     ],
     "facetas": [
@@ -165,6 +89,12 @@
           "es": "Tipo de publicación"
         },
         "filtro": "dc:type@@@dc:title"
+      },
+      {
+        "nombre": {
+          "es": "Año"
+        },
+        "filtro": "roh:year"
       }
     ]
   }
