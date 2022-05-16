@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesnormalizadorHercules.Models
+namespace DesnormalizadorHercules.Models.Actualizadores
 {
     /// <summary>
     /// Clase para actualizar propiedades de personas
@@ -23,6 +23,127 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
+        /// Actualizamos en la propiedad http://w3id.org/roh/lineResearch de las http://xmlns.com/foaf/0.1/Person  
+        /// las líneas de investigación activas
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pPersons">IDs de las personas</param>
+        /// <param name="pGroups">ID de grupos</param>
+        public void ActualizarPertenenciaLineas(List<string> pPersons = null, List<string> pGroups = null)
+        {
+            string fechaActual = DateTime.UtcNow.ToString("yyyyMMdd000000");
+            HashSet<string> filters = new HashSet<string>();
+            if (pPersons != null && pPersons.Count > 0)
+            {
+                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
+            }
+            if (pGroups != null && pGroups.Count > 0)
+            {
+                filters.Add($" ?groupAux <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?groupAux in (<{string.Join(">,<", pGroups)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    //Añadimos líneas
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"select distinct ?person  ?linea  from <http://gnoss.com/person.owl> ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {{
+                                        select distinct ?person ?linea
+                                        Where
+                                        {{
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.     
+                                            {{
+                                                ?group <http://vivoweb.org/ontology/core#relates> ?rol.
+                                                ?rol <http://w3id.org/roh/roleOf> ?person.                                                
+                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?startAux.}}
+                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?endAux.}}
+                                                BIND(IF(BOUND(?endAux),xsd:integer(?endAux) ,30000000000000)  as ?end)
+                                                BIND(IF(BOUND(?startAux),xsd:integer(?startAux),10000000000000)  as ?start)
+                                                ?rol <http://vivoweb.org/ontology/core#hasResearchArea> ?lineaAux.
+                                                ?lineaAux <http://w3id.org/roh/title> ?linea.        
+                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#start> ?startLineAux.}}
+                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#end> ?endLineAux.}}
+                                                BIND(IF(BOUND(?endLineAux),xsd:integer(?endLineAux) ,30000000000000)  as ?endLine)
+                                                BIND(IF(BOUND(?startLineAux),xsd:integer(?startLineAux),10000000000000)  as ?startLine)
+                                            }}
+                                            FILTER(?start<={fechaActual} AND ?end>={fechaActual} )
+                                            FILTER(?startLine<={fechaActual} AND ?endLine>={fechaActual} )
+                                            MINUS
+                                            {{
+                                                ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                                ?person <http://w3id.org/roh/lineResearch> ?linea. 
+                                            }}
+                                        }}
+                                    }}                                    
+                                }}order by desc(?person) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "person", "linea");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    //Eliminamos líneas
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"select distinct ?person  ?linea  from <http://gnoss.com/person.owl> ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                        ?person <http://w3id.org/roh/lineResearch> ?linea.                                        
+                                    }}
+                                    MINUS
+                                    {{
+                                        select distinct ?person ?linea
+                                        Where
+                                        {{
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.                   
+                                            {{
+                                                ?group <http://vivoweb.org/ontology/core#relates> ?rol.
+                                                ?rol <http://w3id.org/roh/roleOf> ?person.                                                
+                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?startAux.}}
+                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?endAux.}}
+                                                BIND(IF(BOUND(?endAux),xsd:integer(?endAux) ,30000000000000)  as ?end)
+                                                BIND(IF(BOUND(?startAux),xsd:integer(?startAux),10000000000000)  as ?start)
+                                                ?rol <http://vivoweb.org/ontology/core#hasResearchArea> ?lineaAux.
+                                                ?lineaAux <http://w3id.org/roh/title> ?linea.        
+                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#start> ?startLineAux.}}
+                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#end> ?endLineAux.}}
+                                                BIND(IF(BOUND(?endLineAux),xsd:integer(?endLineAux) ,30000000000000)  as ?endLine)
+                                                BIND(IF(BOUND(?startLineAux),xsd:integer(?startLineAux),10000000000000)  as ?startLine)
+                                            }}
+                                            FILTER(?start<={fechaActual} AND ?end>={fechaActual} )
+                                            FILTER(?startLine<={fechaActual} AND ?endLine>={fechaActual} )
+                                        }}
+                                    }}
+                                }}order by desc(?person) limit {limit}";
+                    var resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "person", "linea");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/publicationsNumber de las http://xmlns.com/foaf/0.1/Person el nº de publicaciones validadas
         /// Depende de ActualizadorDocument.ActualizarDocumentosValidados
         /// </summary>
@@ -32,12 +153,12 @@ namespace DesnormalizadorHercules.Models
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/publicationsNumber");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -49,7 +170,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{select ?person  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl> from <http://gnoss.com/curriculumvitae.owl> ";
+                    String select = @"select ?person  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl> from <http://gnoss.com/curriculumvitae.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -71,7 +192,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?person 
                             }}
                             FILTER(?numDocumentosCargados!= ?numDocumentosACargar OR !BOUND(?numDocumentosCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -104,12 +225,12 @@ namespace DesnormalizadorHercules.Models
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/publicPublicationsNumber");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -122,7 +243,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{select ?person  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl> from <http://gnoss.com/curriculumvitae.owl> ";
+                    String select = @"select ?person  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl> from <http://gnoss.com/curriculumvitae.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -152,7 +273,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?person 
                             }}
                             FILTER(?numDocumentosCargados!= ?numDocumentosACargar OR !BOUND(?numDocumentosCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -180,17 +301,22 @@ namespace DesnormalizadorHercules.Models
         /// No tiene dependencias
         /// </summary>
         /// <param name="pPersons">IDs de las personas</param>
-        public void ActualizarNumeroIPProyectos(List<string> pPersons = null)
+        /// <param name="pProjects">ID de proyectos</param>
+        public void ActualizarNumeroIPProyectos(List<string> pPersons = null, List<string> pProjects = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/ipNumber");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" ?project <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
+            }
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -203,7 +329,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{select ?person  ?numIPCargados ?numIPACargar  from <http://gnoss.com/project.owl> ";
+                    String select = @"select ?person  ?numIPCargados ?numIPACargar  from <http://gnoss.com/project.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -226,7 +352,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?person 
                             }}
                             FILTER(?numIPCargados!= ?numIPACargar OR !BOUND(?numIPCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -251,20 +377,25 @@ namespace DesnormalizadorHercules.Models
 
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/projectsNumber de las http://xmlns.com/foaf/0.1/Person el nº de proyectos validados
-        /// Depende de ActualizadorProject.ActualizarMiembros
+        /// Depende de ActualizadorProject.ActualizarMiembrosUnificados
         /// </summary>
         /// <param name="pPersons">IDs de las personas</param>
-        public void ActualizarNumeroProyectosValidados(List<string> pPersons = null)
+        /// <param name="pProjects">IDs de proyectos</param>
+        public void ActualizarNumeroProyectosValidados(List<string> pPersons = null, List<string> pProjects = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/projectsNumber");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" ?project <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
+            }
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -277,7 +408,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{select ?person  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> ";
+                    String select = @"select ?person  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -292,21 +423,13 @@ namespace DesnormalizadorHercules.Models
                                 ?person a <http://xmlns.com/foaf/0.1/Person>.
                                 OPTIONAL{{
                                     ?proyecto a <http://vivoweb.org/ontology/core#Project>.
-                                    ?proyecto <http://w3id.org/roh/isValidated> 'true'.
-                                    {{
-                                        ?proyecto <http://w3id.org/roh/mainResearchers> ?main.
-				                        ?main rdf:member ?person .
-			                        }}UNION
-			                        {{
-
-                                        ?proyecto <http://w3id.org/roh/researchers> ?main.
-				                        ?main rdf:member ?person .
-			                        }}
+                                    ?proyecto <http://w3id.org/roh/isValidated> 'true'.                                    
+                                    ?proyecto <http://w3id.org/roh/membersProject> ?person.
                                 }}
                               }}Group by ?person 
                             }}
                             FILTER(?numProyectosCargados!= ?numProyectosACargar OR !BOUND(?numProyectosCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -331,20 +454,25 @@ namespace DesnormalizadorHercules.Models
 
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/projectsNumber de las http://xmlns.com/foaf/0.1/Person el nº de proyectos públicos
-        /// Depende de ActualizadorProject.ActualizarMiembros y ActualizadorCV.ModificarProyectos();
+        /// Depende de ActualizadorProject.ActualizarMiembrosUnificados y ActualizadorCV.ModificarProyectos();
         /// </summary>
         /// <param name="pPersons">IDs de las personas</param>
-        public void ActualizarNumeroProyectosPublicos(List<string> pPersons = null)
+        /// <param name="pProjects">IDs de proyectos</param>
+        public void ActualizarNumeroProyectosPublicos(List<string> pPersons = null, List<string> pProjects = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/publicProjectsNumber");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" ?project <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
+            }
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -357,7 +485,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{select ?person  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/curriculumvitae.owl> ";
+                    String select = @"select ?person  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/curriculumvitae.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -381,15 +509,13 @@ namespace DesnormalizadorHercules.Models
 		                            }}UNION
                                     {{
                                         ?proyecto <http://w3id.org/roh/isValidated> 'true'.
-                                        ?proyecto ?propMember ?main.
-                                        FILTER(?propMember in (<http://w3id.org/roh/mainResearchers>,<http://w3id.org/roh/researchers>))
-                                        ?main rdf:member ?person .
+                                        ?proyecto <http://w3id.org/roh/membersProject> ?person.
                                     }}
                                 }}
                               }}Group by ?person 
                             }}
                             FILTER(?numProyectosCargados!= ?numProyectosACargar OR !BOUND(?numProyectosCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -413,134 +539,19 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/lineResearch de las http://xmlns.com/foaf/0.1/Person  
-        /// las líneas de investigación activas
-        /// No tiene dependencias
-        /// </summary>
-        /// <param name="pPersons">IDs de las personas</param>
-        public void ActualizarPertenenciaLineas(List<string> pPersons = null)
-        {
-            string fechaActual = DateTime.UtcNow.ToString("yyyyMMdd000000");
-            List<string> filters = new List<string>();
-            if (pPersons != null && pPersons.Count > 0)
-            {
-                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
-            }
-            else
-            {
-                filters.Add("");
-            }
-
-            foreach (string filter in filters)
-            {
-                while (true)
-                {
-                    //Añadimos líneas
-                    int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select * where{ select distinct ?person  ?linea  from <http://gnoss.com/person.owl> ";
-                    String where = @$"where{{
-                                    {filter}
-                                    {{
-                                        select distinct ?person ?linea
-                                        Where
-                                        {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.     
-                                            {{
-                                                ?group <http://vivoweb.org/ontology/core#relates> ?rol.
-                                                ?rol <http://w3id.org/roh/roleOf> ?person.                                                
-                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?startAux.}}
-                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?endAux.}}
-                                                BIND(IF(BOUND(?endAux),xsd:integer(?endAux) ,30000000000000)  as ?end)
-                                                BIND(IF(BOUND(?startAux),xsd:integer(?startAux),10000000000000)  as ?start)
-                                                ?rol <http://vivoweb.org/ontology/core#hasResearchArea> ?lineaAux.
-                                                ?lineaAux <http://w3id.org/roh/title> ?linea.        
-                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#start> ?startLineAux.}}
-                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#end> ?endLineAux.}}
-                                                BIND(IF(BOUND(?endLineAux),xsd:integer(?endLineAux) ,30000000000000)  as ?endLine)
-                                                BIND(IF(BOUND(?startLineAux),xsd:integer(?startLineAux),10000000000000)  as ?startLine)
-                                            }}
-                                            FILTER(?start<={fechaActual} AND ?end>={fechaActual} )
-                                            FILTER(?startLine<={fechaActual} AND ?endLine>={fechaActual} )
-                                            MINUS
-                                            {{
-                                                ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                                ?person <http://w3id.org/roh/lineResearch> ?linea. 
-                                            }}
-                                        }}
-                                    }}                                    
-                                }}}}order by desc(?person) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
-                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "person", "linea");
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-
-                while (true)
-                {
-                    //Eliminamos líneas
-                    int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select * where{select distinct ?person  ?linea  from <http://gnoss.com/person.owl> ";
-                    String where = @$"where{{
-                                    {filter}
-                                    {{
-                                        ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                        ?person <http://w3id.org/roh/lineResearch> ?linea.                                        
-                                    }}
-                                    MINUS
-                                    {{
-                                        select distinct ?person ?linea
-                                        Where
-                                        {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.                   
-                                            {{
-                                                ?group <http://vivoweb.org/ontology/core#relates> ?rol.
-                                                ?rol <http://w3id.org/roh/roleOf> ?person.                                                
-                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#start> ?startAux.}}
-                                                OPTIONAL{{?rol <http://vivoweb.org/ontology/core#end> ?endAux.}}
-                                                BIND(IF(BOUND(?endAux),xsd:integer(?endAux) ,30000000000000)  as ?end)
-                                                BIND(IF(BOUND(?startAux),xsd:integer(?startAux),10000000000000)  as ?start)
-                                                ?rol <http://vivoweb.org/ontology/core#hasResearchArea> ?lineaAux.
-                                                ?lineaAux <http://w3id.org/roh/title> ?linea.        
-                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#start> ?startLineAux.}}
-                                                OPTIONAL{{?linea <http://vivoweb.org/ontology/core#end> ?endLineAux.}}
-                                                BIND(IF(BOUND(?endLineAux),xsd:integer(?endLineAux) ,30000000000000)  as ?endLine)
-                                                BIND(IF(BOUND(?startLineAux),xsd:integer(?startLineAux),10000000000000)  as ?startLine)
-                                            }}
-                                            FILTER(?start<={fechaActual} AND ?end>={fechaActual} )
-                                            FILTER(?startLine<={fechaActual} AND ?endLine>={fechaActual} )
-                                        }}
-                                    }}
-                                }}}}order by desc(?person) limit {limit}";
-                    var resultado = mResourceApi.VirtuosoQuery(select, where, "group");
-                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "person", "linea");
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Actualizamos en la propiedad http://vivoweb.org/ontology/core#hasResearchArea de las http://xmlns.com/foaf/0.1/Person 
-        /// las áreas en función de sus publicaciones validadas (a no ser que las haya editado manualmente)
-        /// No tiene dependencias
+        /// las áreas en función de sus publicaciones validadas 
+        /// Depende de ActualiadorDocument.ActualizarAreasDocumentos
         /// </summary>
         /// <param name="pPersons">ID de las personas</param>
         public void ActualizarAreasPersonas(List<string> pPersons = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -641,12 +652,12 @@ namespace DesnormalizadorHercules.Models
                     int limit = 500;
                     //INSERTAMOS
                     //TODO eliminar from
-                    String select = @"select distinct * where{select ?person ?categoryNode from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct ?person ?categoryNode from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
                     String where = @$"where{{
-                            ?person a <http://xmlns.com/foaf/0.1/Person>.
-                            {filter}
-                            {{
+                            ?person a <http://xmlns.com/foaf/0.1/Person>.                            
+                            {{                                
                                 select  distinct ?person ?hasKnowledgeAreaDocument ?categoryNode where{{
+                                    {filter}
                                     ?document a <http://purl.org/ontology/bibo/Document>.
                                     ?document <http://w3id.org/roh/isValidated> 'true'.
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
@@ -670,7 +681,7 @@ namespace DesnormalizadorHercules.Models
                                     }}
                                 }}
                             }}
-                            }}}}order by (?person) limit {limit}";
+                            }}order by (?person) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
                     InsertarCategorias(resultado, dicAreasBroader, mResourceApi.GraphsUrl, "person", "http://vivoweb.org/ontology/core#hasResearchArea");
                     if (resultado.results.bindings.Count != limit)
@@ -684,14 +695,13 @@ namespace DesnormalizadorHercules.Models
                     int limit = 500;
                     //ELIMINAMOS
                     //TODO eliminar from
-                    String select = @"select distinct * where{select ?person ?hasKnowledgeArea from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select ?person ?hasKnowledgeArea from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
                     String where = @$"where{{
-                            ?person a <http://xmlns.com/foaf/0.1/Person>.
-                            ?person <http://w3id.org/roh/hasResearchAreaEdited> 'false'.
-                            {filter}
+                            ?person a <http://xmlns.com/foaf/0.1/Person>.                            
                             {{
                                 select distinct ?person ?hasKnowledgeArea ?categoryNode 
                                 where{{
+                                    {filter}
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
                                     ?person <http://vivoweb.org/ontology/core#hasResearchArea> ?hasKnowledgeArea.
                                     ?hasKnowledgeArea <http://w3id.org/roh/categoryNode> ?categoryNode
@@ -715,7 +725,7 @@ namespace DesnormalizadorHercules.Models
                                 }}
                                  
                             }}
-                            }}}}order by (?person) limit {limit}";
+                            }}order by (?person) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
                     EliminarCategorias(resultado, "person", "http://vivoweb.org/ontology/core#hasResearchArea");
                     if (resultado.results.bindings.Count != limit)
@@ -729,7 +739,7 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/themedAreasNumber de las http://xmlns.com/foaf/0.1/Person 
         /// el número de áreas temáticas de sus publicaciones públicas
-        /// Depende de ActualizadorCV.ModificarDocumentos y actualizadorCV.CambiarPrivacidadDocumentos
+        /// Depende de ActualizadorCV.ModificarDocumentos, ActualizadorCV.CambiarPrivacidadDocumentos y AcualizadorDocument.ActualizarAreasDocumentos
         /// </summary>
         /// <param name="pPersons">IDs de la personas</param>
         public void ActualizarNumeroAreasTematicas(List<string> pPersons = null)
@@ -737,12 +747,12 @@ namespace DesnormalizadorHercules.Models
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/themedAreasNumber");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -755,19 +765,19 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?person  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl> from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/taxonomy.owl>  ";
-                    String where = @$"where{{
-                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                    String select = @"select ?person  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl> from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String where = @$"where{{                            
                             {filter}
+                            ?person a <http://xmlns.com/foaf/0.1/Person>.
                             OPTIONAL
                             {{
                               ?person <http://w3id.org/roh/themedAreasNumber> ?numAreasTematicasCargadasAux. 
                               BIND(xsd:int( ?numAreasTematicasCargadasAux) as  ?numAreasTematicasCargadas)
                             }}
-                            {{
+                            OPTIONAL{{
                               select ?person count(distinct ?categoria) as ?numAreasTematicasACargar
                               Where{{
-                                ?person a <http://xmlns.com/foaf/0.1/Person>.                                
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.   
                                 OPTIONAL{{
                                     ?documento a <http://purl.org/ontology/bibo/Document>. 
                                     {{
@@ -792,8 +802,8 @@ namespace DesnormalizadorHercules.Models
                                 }}
                               }}Group by ?person 
                             }}
-                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar OR !BOUND(?numAreasTematicasCargadas) )
-                            }}}} limit {limit}";
+                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar )
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -819,20 +829,25 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/collaboratorsNumber de las http://xmlns.com/foaf/0.1/Person 
         /// el nº de colaboradores (personas con coautorías en publicaciones públicos y personas con coautorias en proyectos públicos)
-        /// Depende de ActualizadorProject.ActualizarMiembros, ActualizadorCV.ModificarProyectos, ActualizadorCV.ModificarDocumentos y actualizadorCV.CambiarPrivacidadDocumentos
+        /// Depende de ActualizadorProject.ActualizarMiembrosUnificados
         /// </summary>
         /// <param name="pPersons">ID de las personas</param>
-        public void ActualizarNumeroColaboradoresPublicos(List<string> pPersons = null)
+        /// <param name="pProjects">IDs de proyectos</param>
+        public void ActualizarNumeroColaboradoresPublicos(List<string> pPersons = null, List<string> pProjects = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/publicCollaboratorsNumber");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" ?projectAux <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?projectAux in (<{string.Join(">,<", pProjects)}>))");
+            }
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -843,7 +858,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?person ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
+                    String select = @"select distinct ?person ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -880,12 +895,8 @@ namespace DesnormalizadorHercules.Models
 				                                    SELECT *
 				                                    WHERE {{
                                                         ?proy a <http://vivoweb.org/ontology/core#Project>.
-                                                        ?proy ?propRolActual ?roleActual.
-                                                        FILTER(?propRolActual in (<http://w3id.org/roh/mainResearchers>,<http://w3id.org/roh/researchers>))
-                                                        ?roleActual rdf:member ?person .                       
-					                                    ?proy ?propRol ?role.
-					                                    FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
-					                                    ?role <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?collaborator.
+                                                        ?proy <http://w3id.org/roh/membersProject> ?person.    
+					                                    ?proy <http://w3id.org/roh/membersProject> ?collaborator.
 				                                    }}
 			                                    }}
 		                                    }}		
@@ -896,7 +907,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?person 
                             }}
                             FILTER(?numColaboradoresCargados!= ?numColaboradoresACargar OR !BOUND(?numColaboradoresCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -918,7 +929,6 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
-
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/isIPGroupActually de las http://xmlns.com/foaf/0.1/Person 
         /// si la persona es actualmente IP de algún grupo
@@ -933,15 +943,17 @@ namespace DesnormalizadorHercules.Models
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/isIPGroupActually");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pGroups != null && pGroups.Count > 0)
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
-            }else
+                filters.Add($" ?groupAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?groupAux in (<{string.Join(">,<", pGroups)}>))");
+            }
+            
+            if(filters.Count==0)
             {
                 filters.Add("");
             }
@@ -952,7 +964,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?person ?datoActual ?datoCargar  from <http://gnoss.com/group.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/group.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -979,7 +991,7 @@ namespace DesnormalizadorHercules.Models
                               }}
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -1013,16 +1025,16 @@ namespace DesnormalizadorHercules.Models
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/isIPGroupHistorically");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pGroups != null && pGroups.Count > 0)
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
+                filters.Add($" ?groupAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?groupAux in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count==0)
             {
                 filters.Add("");
             }
@@ -1033,7 +1045,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?person ?datoActual ?datoCargar  from <http://gnoss.com/group.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/group.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -1055,7 +1067,7 @@ namespace DesnormalizadorHercules.Models
                               }}
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -1091,16 +1103,16 @@ namespace DesnormalizadorHercules.Models
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/isIPProjectActually");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pProjects != null && pProjects.Count > 0)
+            if (pProjects != null && pProjects.Count > 0)
             {
-                filters.Add($" FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
+                filters.Add($" ?projectAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?projectAux in (<{string.Join(">,<", pProjects)}>))");
             }
-            else
+            if(filters.Count==0)
             {
                 filters.Add("");
             }
@@ -1111,7 +1123,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?person ?datoActual ?datoCargar  from <http://gnoss.com/project.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/project.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -1138,7 +1150,7 @@ namespace DesnormalizadorHercules.Models
                               }}
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -1172,16 +1184,16 @@ namespace DesnormalizadorHercules.Models
             //Eliminamos los duplicados
             EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/isIPProjectHistorically");
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pProjects != null && pProjects.Count > 0)
+            if (pProjects != null && pProjects.Count > 0)
             {
-                filters.Add($" FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
+                filters.Add($" ?projectAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?projectAux in (<{string.Join(">,<", pProjects)}>))");
             }
-            else
+            if(filters.Count==0)
             {
                 filters.Add("");
             }
@@ -1192,7 +1204,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?person ?datoActual ?datoCargar  from <http://gnoss.com/project.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/project.owl> ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -1214,7 +1226,7 @@ namespace DesnormalizadorHercules.Models
                               }}
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {

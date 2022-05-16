@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace DesnormalizadorHercules.Models
+namespace DesnormalizadorHercules.Models.Actualizadores
 {
     //TODO comentarios completados, falta eliminar froms
 
@@ -29,24 +29,26 @@ namespace DesnormalizadorHercules.Models
         /// las áreas del documento (obtenido de varias propiedades en las que están las áreas en función de su origen)
         /// No tiene dependencias
         /// </summary>
-        /// <param name="pRO">ID del researchObject</param>
-        public void ActualizarAreasRO(string pRO = null)
+        /// <param name="pROs">IDs de researchObjects</param>
+        public void ActualizarAreasRO(List<string> pROs = null)
         {
             //Categorías
             //unificada-->http://w3id.org/roh/hasKnowledgeArea
             //usuario-->http://w3id.org/roh/userKnowledgeArea
             //external-->http://w3id.org/roh/externalKnowledgeArea
             //enriched-->http://w3id.org/roh/enrichedKnowledgeArea
-
-            string graphsUrl = mResourceApi.GraphsUrl;
-            if (!string.IsNullOrEmpty(graphsUrl))
+            HashSet<string> filters = new HashSet<string>();
+            if (pROs != null && pROs.Count > 0)
             {
-                string filter = "";
-                if (!string.IsNullOrEmpty(pRO))
-                {
-                    filter = $" FILTER(?ro =<{pRO}>)";
-                }
+                filters.Add($" FILTER(?ro in (<{string.Join(">,<", pROs)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
 
+            foreach (string filter in filters)
+            {
                 //Eliminamos las categorías duplicadas
                 while (true)
                 {
@@ -114,7 +116,7 @@ namespace DesnormalizadorHercules.Models
 
 
                 //Cargamos el tesauro
-                Dictionary<string, string> dicAreasBroader = new ();
+                Dictionary<string, string> dicAreasBroader = new();
                 {
                     String select = @"select distinct * ";
                     String where = @$"where{{
@@ -170,7 +172,7 @@ namespace DesnormalizadorHercules.Models
                             }}
                             }}}}order by (?ro) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
-                    InsertarCategorias(resultado, dicAreasBroader, graphsUrl,"ro", "http://w3id.org/roh/hasKnowledgeArea");
+                    InsertarCategorias(resultado, dicAreasBroader, mResourceApi.GraphsUrl, "ro", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;
@@ -225,8 +227,8 @@ namespace DesnormalizadorHercules.Models
         /// los tagso (obtenido de varias propiedades en las que están los tags en función de su origen)
         /// No tiene dependencias
         /// </summary>
-        /// <param name="pDocument">ID del documento</param>
-        public void ActualizarTagsRO(string pRO = null)
+        /// <param name="pROs">ID de ROs</param>
+        public void ActualizarTagsRO(List<string> pROs=null)
         {
             //Etiquetas
             //unificada-->http://vivoweb.org/ontology/core#freeTextKeyword
@@ -234,15 +236,19 @@ namespace DesnormalizadorHercules.Models
             //external-->http://w3id.org/roh/externalKeywords
             //enriched-->http://w3id.org/roh/enrichedKeywords
 
-            string graphsUrl = mResourceApi.GraphsUrl;
-            if (!string.IsNullOrEmpty(graphsUrl))
-            {
-                string filter = "";
-                if (!string.IsNullOrEmpty(pRO))
-                {
-                    filter = $" FILTER(?ro =<{pRO}>)";
-                }
 
+            HashSet<string> filters = new HashSet<string>();
+            if (pROs != null && pROs.Count > 0)
+            {
+                filters.Add($" FILTER(?ro in (<{string.Join(">,<", pROs)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
                 while (true)
                 {
                     int limit = 500;
@@ -306,73 +312,6 @@ namespace DesnormalizadorHercules.Models
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/isValidated de los http://w3id.org/roh/ResearchObject
-        /// los ros validados (son los ros oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier o validados por la universidad)
-        /// Esta propiedad se utilizará como filtro en el bucador general de ros
-        /// No tiene dependencias
-        /// </summary>
-        /// <param name="pDocument">ID del documento</param>
-        public void ActualizarROsValidados(string pRO = null)
-        {
-            //TODO validación de la universidad
-            string filter = "";
-            if (!string.IsNullOrEmpty(pRO))
-            {
-                filter = $" FILTER(?ro =<{pRO}>)";
-            }
-            //Eliminamos los duplicados
-            EliminarDuplicados("document", "http://w3id.org/roh/ResearchObject", "http://w3id.org/roh/isValidated");
-
-            while (true)
-            {
-                //TODO añadir validación
-                int limit = 500;
-                String select = @"select * where{ select ?ro ?isValidatedCargado ?isValidatedCargar ";
-                String where = @$"where{{
-                            ?ro a <http://w3id.org/roh/ResearchObject>.
-                            {filter}
-                            OPTIONAL
-                            {{
-                                ?ro <http://w3id.org/roh/isValidated> ?isValidatedCargado.
-                            }}
-                            {{
-                                select distinct ?ro IF(BOUND(?isValidatedCargar),?isValidatedCargar,'false')  as ?isValidatedCargar
-                                Where
-                                {{
-                                    ?ro a <http://w3id.org/roh/ResearchObject>.
-                                    OPTIONAL
-                                    {{
-                                        ?document ?propIdRo ?id.
-                                        FILTER(?propIdRo in (<http://w3id.org/roh/idZenodo>,<http://w3id.org/roh/idGit>,<http://w3id.org/roh/idFigShare>))
-                                        BIND('true' as ?isValidatedCargar)
-                                    }}      
-                                }}
-                            }}
-                            FILTER(?isValidatedCargado!= ?isValidatedCargar OR !BOUND(?isValidatedCargado) )
-                            }}}} limit {limit}";
-                SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
-
-                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
-                {
-                    string ro = fila["ro"].value;
-                    string isValidatedCargar = fila["isValidatedCargar"].value;
-                    string isValidatedCargado = "";
-                    if (fila.ContainsKey("isValidatedCargado"))
-                    {
-                        isValidatedCargado = fila["isValidatedCargado"].value;
-                    }
-                    ActualizadorTriple(ro, "http://w3id.org/roh/isValidated", isValidatedCargado, isValidatedCargar);
-                });
-
-                if (resultado.results.bindings.Count != limit)
-                {
-                    break;
-                }
-            }
-
         }
 
     }
