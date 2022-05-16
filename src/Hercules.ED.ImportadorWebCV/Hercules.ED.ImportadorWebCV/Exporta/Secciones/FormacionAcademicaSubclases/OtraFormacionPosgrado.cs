@@ -20,6 +20,13 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "020.010.030.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaOtraFormacionPosgrado(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -34,7 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                 };
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionTipoFormacion),
-                    "020.010.030.060", keyValue.Value);
+                    "020.010.030.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionPaisEntidadTitulacion),
                     "020.010.030.040", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionCCAAEntidadTitulacion),

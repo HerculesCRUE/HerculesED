@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
 
 namespace Utils
@@ -14,6 +15,32 @@ namespace Utils
     {
         private static Dictionary<string, string> mListaRevistas = new Dictionary<string, string>();
         private static Dictionary<string, string> mListaPalabrasClave = new Dictionary<string, string>();
+        public static List<Tuple<string, string>> Lenguajes = new List<Tuple<string, string>>();
+
+        public static void GetLenguajes(ResourceApi pResourceApi)
+        {
+            string select = $@"select distinct ?title ?ident";
+            string where = $@" where {{
+?s a <http://w3id.org/roh/Language> .
+?s <http://purl.org/dc/elements/1.1/title> ?title FILTER(langMatches(lang(?title), ""es""))
+?s <http://purl.org/dc/elements/1.1/identifier> ?ident .
+}}";
+            List<Tuple<string, string, string>> listaResultado = new List<Tuple<string, string, string>>();
+
+            SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "language");
+            if (resultData.results.bindings.Count == 0)
+            {
+                return;
+            }
+
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("title") && fila.ContainsKey("ident"))
+                {
+                    Lenguajes.Add(new Tuple<string, string>(fila["title"].value, fila["ident"].value));
+                }
+            }
+        }
 
         /// <summary>
         /// Devuelve los identificadores devueltos en la consulta.
@@ -128,7 +155,7 @@ namespace Utils
             string select = $@"select distinct ?nombre ?organizacion";
             string where = $@"where {{ 
                                 ?organizacion <http://w3id.org/roh/title> ?nombre  
-                                FILTER(ucase(?nombre)=""{nombreOrganizacion.ToUpper().Replace("\"","\\\"")}"")
+                                FILTER(ucase(?nombre)=""{nombreOrganizacion.ToUpper().Replace("\"", "\\\"")}"")
                             }}  LIMIT 1";
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "organization");
@@ -433,7 +460,7 @@ namespace Utils
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
 
                         string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                        string valorID = StringGNOSSID(entityPartAux, identificador.Value); ;
+                        string valorID = StringGNOSSID(entityPartAux, identificador.Value);
                         CheckProperty(IDOtro, entidadAux, valorID, propIdOtroPub);
 
                         string valorNombre = StringGNOSSID(entityPartAux, identificador.Others);

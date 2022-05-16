@@ -22,6 +22,7 @@ namespace ImportadorWebCV.Exporta
         {
             this.cvID = cvID;
             this.cvn = cvn;
+            Utils.UtilitySecciones.GetLenguajes(mResourceApi);
         }
 
         public void ExportaDatosIdentificacion(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
@@ -105,6 +106,7 @@ namespace ImportadorWebCV.Exporta
             string seccion = "http://w3id.org/roh/scientificExperience";
 
             Contratos contratos = new Contratos(cvn, cvID);
+            contratos.ExportaContratos(entity, seccion);
 
             GrupoIDI grupoIDI = new GrupoIDI(cvn, cvID);
             grupoIDI.ExportaGrupoIDI(entity, seccion);
@@ -114,10 +116,12 @@ namespace ImportadorWebCV.Exporta
 
             PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
             propII.ExportaPropiedadII(entity, seccion);
-
+                        
             ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
+            proyectosIDI.ExportaProyectosIDI(entity, seccion);
 
             ResultadosTecnologicos resultadosTecnologicos = new ResultadosTecnologicos(cvn, cvID);
+            resultadosTecnologicos.ExportaResultadosTecnologicos(entity, seccion);
 
         }
         public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
@@ -133,6 +137,9 @@ namespace ImportadorWebCV.Exporta
             OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
             organizacionesIDI.ExportaOrganizacionesIDI(entity, seccion);
 
+            IndicadoresGenerales indicadoresGenerales = new IndicadoresGenerales(cvn, cvID);
+            indicadoresGenerales.ExportaIndicadoresGenerales(entity, seccion);
+            
             TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
             trabajosCongresos.ExportaTrabajosCongresos(entity, seccion);
 

@@ -19,7 +19,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         {
 
         }
-
+        /// <summary>
+        /// Exporta los datos de la sección "030.040.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaDireccionTesis(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -77,7 +83,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 listadoPropiedadesAlumno.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisAlumnoPrimerApellido));
                 listadoPropiedadesAlumno.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisAlumnoSegundoApellido));
 
-                UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoPropiedadesAlumno,"030.040.000.180",keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoPropiedadesAlumno,"030.040.000.120",keyValue.Value);
 
                 //Codirectores
                 Dictionary<string, string> listadoPropiedadesCodirector = new Dictionary<string, string>();

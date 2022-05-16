@@ -10,7 +10,11 @@ using Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Hercules.ED.ExportadorWebCV.Controllers
 {
@@ -44,8 +48,8 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             exporta.ExportaSituacionProfesional(entity, secciones);
             exporta.ExportaFormacionAcademica(entity, secciones);
             exporta.ExportaActividadDocente(entity, secciones);
-            //exporta.ExportaExperienciaCientificaTecnologica(entity, secciones);
-            //exporta.ExportaActividadCientificaTecnologiaca(entity, secciones);
+            exporta.ExportaExperienciaCientificaTecnologica(entity, secciones);
+            exporta.ExportaActividadCientificaTecnologica(entity, secciones);
             exporta.ExportaTextoLibre(entity, secciones);
 
             return Ok();

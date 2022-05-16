@@ -17,9 +17,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 
         public AcreditacionesReconocimientos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
         }
-
+        /// <summary>
+        /// Exporta los datos de la sección "060.030.090.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaAcreditacionesReconocimientos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -52,7 +57,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 }
 
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.acreditacionesFechaReconocimiento),
-                "060.030.090.100", keyValue.Value);
+                "060.030.090.110", keyValue.Value);
 
 
                 // Acreditaciones Obtenidas Entidad

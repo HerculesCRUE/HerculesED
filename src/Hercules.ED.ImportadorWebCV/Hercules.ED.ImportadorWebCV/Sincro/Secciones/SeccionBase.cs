@@ -636,7 +636,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<Notification> notificacionesCargar = notificaciones.ToList();
             notificacionesCargar.RemoveAll(x => x.IdRoh_owner == idPersona);
             mResourceApi.ChangeOntoly("notification");
-            //TODO cambiar parallel
             Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 6 }, notificacion =>
             {
                 ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);

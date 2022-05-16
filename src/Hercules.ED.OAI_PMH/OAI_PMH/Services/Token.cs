@@ -18,7 +18,7 @@ namespace OAI_PMH.Services
         private static DateTime lastUpdate;
         private static ConfigService _ConfigService;
 
-        public static string CheckToken(ConfigService pConfig)
+        public static string CheckToken(ConfigService pConfig, bool pTokenGestor = true, bool pTokenPii = false)
         {
             _ConfigService = pConfig;
 
@@ -34,14 +34,14 @@ namespace OAI_PMH.Services
                     }
                     else
                     {
-                        accessToken = GetToken(pConfig);
+                        accessToken = GetToken(pConfig, pTokenGestor, pTokenPii);
                         lastUpdate = DateTime.UtcNow;
                     }
                 }
             }
             else
             {
-                accessToken = GetToken(pConfig);
+                accessToken = GetToken(pConfig, pTokenGestor, pTokenPii);
                 lastUpdate = DateTime.UtcNow;
             }
             return accessToken;
@@ -90,16 +90,30 @@ namespace OAI_PMH.Services
             }
         }
 
-        private static string GetToken(ConfigService pConfig)
+        private static string GetToken(ConfigService pConfig, bool pTokenGestor, bool pTokenPii)
         {
             Uri url = new Uri(pConfig.GetUrlBaseToken());
-            var content = new FormUrlEncodedContent(new[]
+            FormUrlEncodedContent content = null;
+            if (pTokenGestor)
             {
+                content = new FormUrlEncodedContent(new[]
+                {
                 new KeyValuePair<string, string>("client_id", "front"),
                 new KeyValuePair<string, string>("username", _ConfigService.GetUsernameToken()),
                 new KeyValuePair<string, string>("password", _ConfigService.GetPasswordToken()),
                 new KeyValuePair<string, string>("grant_type", "password")
             });
+            }
+            else
+            {
+                content = new FormUrlEncodedContent(new[]
+                {
+                new KeyValuePair<string, string>("client_id", "front"),
+                new KeyValuePair<string, string>("username", _ConfigService.GetUsernamePIIToken()),
+                new KeyValuePair<string, string>("password", _ConfigService.GetPasswordPIIToken()),
+                new KeyValuePair<string, string>("grant_type", "password")
+            });
+            }
 
             string result = httpCall(url.ToString(), "POST", content).Result;
 

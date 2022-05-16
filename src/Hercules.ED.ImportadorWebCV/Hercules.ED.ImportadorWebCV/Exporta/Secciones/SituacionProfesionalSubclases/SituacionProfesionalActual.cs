@@ -19,6 +19,13 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
         {
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "010.010.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaSituacionProfesional(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -62,9 +69,11 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     "010.010.000.290", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalAmbitoActividadGestionOtros),
                     "010.010.000.300", keyValue.Value);
+
                 // Palabras clave
                 UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalPalabrasClave),
                     "010.010.000.260", keyValue.Value);
+
                 // Entidad empleadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadoraNombre),
                     "010.010.000.020", keyValue.Value);

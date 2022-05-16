@@ -17,8 +17,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         string graph = "group";
         public GrupoIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "050.010.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaGrupoIDI(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -85,7 +91,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.010.000.160", keyValue.Value);
 
                 // Autores
-
                 Dictionary<string, string> listadoPropiedadesAutor = new Dictionary<string, string>();
                 listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDIFirmaIP));
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDINombreIP));
@@ -100,6 +105,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.010.000.110", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDITipoEntidadAfiliacionOtros),
                     "050.010.000.120", keyValue.Value);
+
+                // TODO Palabras clave
 
                 listado.Add(itemBean);
             }

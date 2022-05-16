@@ -18,6 +18,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public TrabajosJornadasSeminarios(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.010.030.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaTrabajosJornadasSeminarios(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
        {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -93,7 +100,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemAutorCorrespondencia),
                     "060.010.030.390", keyValue.Value);
 
-                // Autores 060.010.030.310 TODO
+                // Autores
+                //Selecciono las firmas de las personas
+                Dictionary<string, string> dicFirmas = UtilityExportar.GetFirmasAutores(Variables.ActividadCientificaTecnologica.trabajosJornSemAutoresFirma, keyValue.Value);
+
+                //Selecciono los autores
+                List<Tuple<string, string, string>> autorNombreApellido = UtilityExportar.GetNombreApellidoAutor(Variables.ActividadCientificaTecnologica.trabajosJornSemAutores, keyValue.Value, mResourceApi);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanListSimple(itemBean, autorNombreApellido, dicFirmas,
+                    "060.010.030.310");
 
                 // IDPublicación
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalHandle),

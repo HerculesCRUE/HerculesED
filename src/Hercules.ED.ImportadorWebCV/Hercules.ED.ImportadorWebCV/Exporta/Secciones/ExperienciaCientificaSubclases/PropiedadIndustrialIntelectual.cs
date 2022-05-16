@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
+    /// <summary>
+    /// Exporta los datos de la sección "050.030.010.000" a cvn.cvnRootResultBean
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="seccion"></param>
+    /// <param name="secciones"></param>
+    /// <param name="preimportar"></param>
     public class PropiedadIndustrialIntelectual:SeccionBase
     {
         List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
@@ -91,13 +98,23 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnStringList(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIINombreProductos),
                     "050.030.010.290", keyValue.Value);
 
-                // Autores TODO
+                // Autores
+                Dictionary<string, string> listadoPropiedadesAutor = new Dictionary<string, string>();
+                listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIInventoresAutoresFirma));
+                listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIInventoresAutoresNombre));
+                listadoPropiedadesAutor.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIInventoresAutoresPrimerApellido));
+                listadoPropiedadesAutor.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIInventoresAutoresSegundoApellido));
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoPropiedadesAutor, "050.030.010.090", keyValue.Value);
 
-                // Pais explotacion Codegroup repeticiones
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIPaisExplotacion),
-                    "050.030.010.220", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIICCAAExplotacion),
-                    "050.030.010.230", keyValue.Value);
+                // Pais explotacion
+                List<Tuple<string, string, string>> dicPais = new List<Tuple<string, string, string>>();
+                dicPais.Add(new Tuple<string, string, string>("String", "050.030.010.220",
+                    UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIPaisExplotacion)));
+                dicPais.Add(new Tuple<string, string, string>("String", "050.030.010.230",
+                    UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIICCAAExplotacion)));
+
+                UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicPais,
+                   "050.030.010.220", keyValue.Value);
 
                 // Palabras clave
                 UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIPalabrasClave),

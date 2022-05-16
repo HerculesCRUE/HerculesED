@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
 {
@@ -11,5 +12,12 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         public TipoProteccion tipoProteccion { get; set; }
         public string proyectoRef { get; set; }
         public string comentarios { get; set; }
-    }
+        public List<SectorAplicacion> sectoresAplicacion { get; set; }
+        public List<AreaConocimiento> areasConocimiento { get; set; }
+        public List<PalabraClave> palabrasClave { get; set; }
+        public List<Inventor> inventores { get; set; }
+        public List<PeriodoTitularidad> periodosTitularidad { get; set; }
+        public List<SolicitudProteccion> solicitudesProteccion { get; set; }
+        public List<Titular> titulares { get; set; }
+     }
 }

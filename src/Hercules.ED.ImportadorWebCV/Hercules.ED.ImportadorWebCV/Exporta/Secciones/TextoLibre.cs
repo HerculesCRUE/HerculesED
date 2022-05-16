@@ -15,6 +15,10 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "070.000.000.000" a cvn.cvnRootResultBean.
+        /// </summary>
+        /// <param name="entity"></param>
         public void ExportaTextoLibre(Entity entity)
         {
             string propResumenLibre = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.resumenLibre)).Select(x => x.prop).FirstOrDefault());
@@ -43,7 +47,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             string resumen = resumenLibre + " B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida"
                 + resumenTFG + " B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida" + resumenTFM;
 
-            UtilityExportar.AddCvnItemBeanCvnRichText(itemBean, resumen, "070.010.000.000");
+            UtilityExportar.AddCvnItemBeanCvnRichText(itemBean, resumen, "070.010.000.010");
 
             //Añado el item al listado
             listado.Add(itemBean);

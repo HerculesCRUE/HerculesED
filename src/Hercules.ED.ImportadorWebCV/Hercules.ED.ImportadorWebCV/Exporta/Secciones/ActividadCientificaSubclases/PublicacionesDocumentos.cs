@@ -11,13 +11,20 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class PublicacionesDocumentos:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/scientificProduction", "http://w3id.org/roh/scientificProductionCV",
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "scientificproduction";
+        string graph = "document";
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.010.010.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaPublicacionesDocumentos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -52,7 +59,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.110", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubCCAA),
                     "060.010.010.120", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha),
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha),
                     "060.010.010.140", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL),
                     "060.010.010.150", keyValue.Value);
@@ -88,16 +95,17 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
                     "060.010.010.210", keyValue.Value);
 
-                // Autores TODO
-                //Dictionary<string, string> listadoAutores = new Dictionary<string, string>();
-                //listadoAutores.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubdocumentos));
-                //listadoAutores.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.direccionTesisCodirectorTesisNombre));
-                //listadoAutores.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.direccionTesisCodirectorTesisPrimerApellido));
-                //listadoAutores.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisCodirectorTesisSegundoApellido));
-                //UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoAutores, "060.010.010.040", keyValue.Value);
+                // Autores 
+                //Selecciono las firmas de las personas
+                Dictionary<string, string> dicFirmas = UtilityExportar.GetFirmasAutores(Variables.ActividadCientificaTecnologica.pubDocumentosAutoresFirma, keyValue.Value);
+
+                //Selecciono los autores
+                List<Tuple<string, string, string>> autorNombreApellido = UtilityExportar.GetNombreApellidoAutor(Variables.ActividadCientificaTecnologica.pubDocumentosAutores, keyValue.Value, mResourceApi);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanListSimple(itemBean, autorNombreApellido, dicFirmas,
+                    "060.010.010.040");
 
                 // Traducciones
-                UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTraduccion),
+                UtilityExportar.AddLanguage(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTraduccion),
                     "060.010.010.350", keyValue.Value);
 
                 // ID publicación

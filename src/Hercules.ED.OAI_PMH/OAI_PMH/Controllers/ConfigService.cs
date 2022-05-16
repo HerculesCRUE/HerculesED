@@ -12,6 +12,8 @@ namespace OAI_PMH.Controllers
         // Credenciales
         private string UsernameToken { get; set; }
         private string PasswordToken { get; set; }
+        private string UsernameTokenPII { get; set; }
+        private string PasswordTokenPII { get; set; }
 
         // URLs
         private string ConfigUrl { get; set; }
@@ -384,6 +386,56 @@ namespace OAI_PMH.Controllers
             }
 
             return PasswordToken;
+        }
+
+        /// <summary>
+        /// Obtiene el user del token del API que ha sido configurada.
+        /// </summary>
+        /// <returns></returns>
+        public string GetUsernamePIIToken()
+        {
+            if (string.IsNullOrEmpty(UsernameTokenPII))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UsernameTokenPII"))
+                {
+                    connectionString = environmentVariables["UsernameTokenPII"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UsernameTokenPII"];
+                }
+
+                UsernameTokenPII = connectionString;
+            }
+
+            return UsernameTokenPII;
+        }
+
+        /// <summary>
+        /// Obtiene el password del token del API que ha sido configurada.
+        /// </summary>
+        /// <returns></returns>
+        public string GetPasswordPIIToken()
+        {
+            if (string.IsNullOrEmpty(PasswordTokenPII))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("PasswordTokenPII"))
+                {
+                    connectionString = environmentVariables["PasswordTokenPII"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["PasswordTokenPII"];
+                }
+
+                PasswordTokenPII = connectionString;
+            }
+
+            return PasswordTokenPII;
         }
     }
 }

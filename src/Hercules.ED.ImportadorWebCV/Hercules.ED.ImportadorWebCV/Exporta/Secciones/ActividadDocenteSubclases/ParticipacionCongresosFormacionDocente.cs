@@ -19,6 +19,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         {
 
         }
+        /// <summary>
+        /// Exporta los datos de la sección "030.090.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaParticipacionCongresos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -54,7 +61,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.090.000.120", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosPerfilDestinatarios),
                     "030.090.000.130", keyValue.Value);
-                UtilityExportar.AddLanguage(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosIdiomaPresentacion),
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosIdiomaPresentacion),
                     "030.090.000.140", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosFechaPresentacion),
                     "030.090.000.150", keyValue.Value);
@@ -94,7 +101,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosDepositoLegalPublicacion),
                    "030.090.000.320", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDurationHours(itemBean,
-                    "030.090.000.350", keyValue.Value);
+                    "030.090.000.340", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosFechaInicioPublicacion),
                     "030.090.000.350", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosFechaFinalPublicacion),

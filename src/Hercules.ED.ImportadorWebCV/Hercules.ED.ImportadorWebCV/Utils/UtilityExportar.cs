@@ -18,11 +18,74 @@ namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
     {
+
+        /// <summary>
+        /// Devuelve una lista de tuplas con la persona, nombre, apellidos.
+        /// </summary>
+        /// <param name="pResourceApi"></param>
+        /// <param name="dicPersonas">Key:BFO, Value:Person</param>
+        /// <returns></returns>
+        public static List<Tuple<string, string, string>> GetListadoAutores(ResourceApi pResourceApi, Dictionary<string, string> dicPersonas)
+        {
+            if (dicPersonas.Count() == 0)
+            {
+                return new List<Tuple<string, string, string>>();
+            }
+            string select = $@"select distinct *";
+            string where = $@"where {{ 
+    ?person a <http://xmlns.com/foaf/0.1/Person>
+    OPTIONAL{{?person <http://xmlns.com/foaf/0.1/firstName> ?nombre}}
+    OPTIONAL{{?person <http://xmlns.com/foaf/0.1/lastName> ?apellidos }}
+    FILTER(
+        ?person in (<{string.Join(">,<", dicPersonas.Keys)}>)
+    ) 
+}}";
+            List<Tuple<string, string, string>> listaResultado = new List<Tuple<string, string, string>>();
+
+            SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "person");
+            if (resultData.results.bindings.Count == 0)
+            {
+                return null;
+            }
+
+            //Añado si como minimo tiene nombre
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (!fila.ContainsKey("person"))
+                {
+                    continue;
+                }
+                if (fila.ContainsKey("nombre") && fila.ContainsKey("apellidos"))
+                {
+                    listaResultado.Add(new Tuple<string, string, string>(dicPersonas[fila["person"].value], fila["nombre"].value, fila["apellidos"].value));
+                }
+                else if (fila.ContainsKey("nombre"))
+                {
+                    listaResultado.Add(new Tuple<string, string, string>("", fila["nombre"].value, ""));
+                }
+            }
+
+            return listaResultado;
+        }
+
+        /// <summary>
+        /// Devuelve una lista de tuplas con las entidades del CV.
+        /// </summary>
+        /// <param name="pResourceApi"></param>
+        /// <param name="propiedadesItem"></param>
+        /// <param name="pCVID"></param>
+        /// <returns></returns>
         public static List<Tuple<string, string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
-            if (propiedadesItem == null) { return null; }
-            if (propiedadesItem.Count != 4) { return null; }
+            if (propiedadesItem == null)
+            {
+                return null;
+            }
+            if (propiedadesItem.Count != 4)
+            {
+                return null;
+            }
 
             string select = $@"select distinct *";
             string where = $@"where {{?cv <{propiedadesItem[0]}> ?prop1 . 
@@ -54,11 +117,25 @@ namespace ExportadorWebCV.Utils
 
             return listaResultado;
         }
+
+        /// <summary>
+        /// Devuelve las entidades con propiedad/es <paramref name="propiedadesItem"/> del CV con valor <paramref name="pCVID"/>.
+        /// </summary>
+        /// <param name="pResourceApi"></param>
+        /// <param name="propiedadesItem"></param>
+        /// <param name="pCVID"></param>
+        /// <returns></returns>
         public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
-            if (propiedadesItem == null) { return null; }
-            if (propiedadesItem.Count == 0) { return null; }
+            if (propiedadesItem == null)
+            {
+                return null;
+            }
+            if (propiedadesItem.Count == 0)
+            {
+                return null;
+            }
 
             string select = $@"select distinct *";
             string where = "where {";
@@ -252,6 +329,13 @@ namespace ExportadorWebCV.Utils
             return codigos;
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -271,6 +355,13 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade un listado de <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnStringList(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -297,6 +388,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// dentro de entity.properties_cv
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnString_cv(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -349,6 +448,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnFamilyNameBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="section"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnFamilyNameBean(CvnItemBean itemBean, string section, List<string> property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -374,7 +481,7 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(cvnFamilyNameBean);
         }
 
-        public static void AddCvnItemBeanCvnFamilyNameBeanFirstFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
+        private static void AddCvnItemBeanCvnFamilyNameBeanFirstFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
             if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
             {
@@ -384,7 +491,7 @@ namespace ExportadorWebCV.Utils
                 .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1];
         }
 
-        public static void AddCvnItemBeanCvnFamilyNameBeanSecondFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
+        private static void AddCvnItemBeanCvnFamilyNameBeanSecondFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
             if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
             {
@@ -423,6 +530,13 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnRichText con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="value"></param>
+        /// <param name="code"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnRichText(CvnItemBean itemBean, string value, string code, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -477,7 +591,92 @@ namespace ExportadorWebCV.Utils
                 ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
                 : null;
 
-            itemBean.Items.Add(authorBean);
+            if (!string.IsNullOrEmpty(authorBean.GivenName)
+                || !string.IsNullOrEmpty(authorBean.Signature))
+            {
+                itemBean.Items.Add(authorBean);
+            }
+        }
+
+        /// <summary>
+        /// Devuelve un lista de tuplas con persona, nombre, apellidos.
+        /// </summary>
+        /// <param name="propiedad"></param>
+        /// <param name="entity"></param>
+        /// <param name="resourceApi"></param>
+        /// <returns></returns>
+        public static List<Tuple<string, string, string>> GetNombreApellidoAutor(string propiedad, Entity entity, ResourceApi resourceApi)
+        {
+            List<Tuple<string, string, string>> autorNombreApellido = new List<Tuple<string, string, string>>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))))
+                &&
+                Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))).Select(x => x.values).First())
+            )
+            {
+                List<string[]> listadoPersonas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
+                .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                Dictionary<string, string> dicPersonas = listadoPersonas.ToDictionary(x => x.ElementAt(1), x => x.ElementAt(0));
+
+                autorNombreApellido = GetListadoAutores(resourceApi, dicPersonas);
+            }
+
+            return autorNombreApellido;
+        }
+
+        /// <summary>
+        /// Devuelve un diccionario con el BFO y las firmas de los autores
+        /// </summary>
+        /// <param name="propiedad"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetFirmasAutores(string propiedad, Entity entity)
+        {
+            Dictionary<string, string> dicFirmas = new Dictionary<string, string>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))).Select(x => x.values).First())
+                )
+            {
+                List<string[]> listadoFirmas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
+                    .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+
+                dicFirmas = listadoFirmas.ToDictionary(x => x.ElementAt(0), x => x.ElementAt(1));
+            }
+            return dicFirmas;
+        }
+
+        /// <summary>
+        /// Añade un CvnItemBeanCvnAuthorBeanCvnFamilyNameBean en <paramref name="itemBean"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="autorNombreApellido"></param>
+        /// <param name="dicFirmas"></param>
+        /// <param name="code"></param>
+        /// <param name="secciones"></param>
+        public static void AddCvnItemBeanCvnAuthorBeanListSimple(CvnItemBean itemBean, List<Tuple<string, string, string>> autorNombreApellido,
+            Dictionary<string, string> dicFirmas, string code, [Optional] string secciones)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+            foreach (Tuple<string, string, string> autores in autorNombreApellido)
+            {
+                CvnItemBeanCvnAuthorBean cvnAuthorBean = new CvnItemBeanCvnAuthorBean();
+                cvnAuthorBean.Code = code;
+                cvnAuthorBean.GivenName = autores.Item2;
+                cvnAuthorBean.CvnFamilyNameBean = new CvnItemBeanCvnAuthorBeanCvnFamilyNameBean()
+                {
+                    Code = code,
+                    FirstFamilyName = autores.Item3
+                };
+                if (dicFirmas.ContainsKey(autores.Item1))
+                {
+                    cvnAuthorBean.Signature = dicFirmas[autores.Item1];
+                }
+                itemBean.Items.Add(cvnAuthorBean);
+            }
         }
 
         /// <summary>
@@ -544,11 +743,20 @@ namespace ExportadorWebCV.Utils
                     authorBean.CvnFamilyNameBean = familyNameBean;
                 }
 
-                itemBean.Items.Add(authorBean);
+                if (!string.IsNullOrEmpty(authorBean.GivenName)
+                || !string.IsNullOrEmpty(authorBean.Signature))
+                {
+                    itemBean.Items.Add(authorBean);
+                }
             }
         }
 
-
+        /// <summary>
+        /// Añade en <paramref name="diccionario"/> los valores de Key:(identificador, nombrePropiedad) y Value:valor
+        /// </summary>
+        /// <param name="listado"></param>
+        /// <param name="diccionario"></param>
+        /// <param name="nombrePropiedad"></param>
         private static void ListarCodirectores(List<string> listado, Dictionary<Tuple<string, string>, string> diccionario, string nombrePropiedad)
         {
             foreach (string dato in listado)
@@ -562,6 +770,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnBoolean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnBoolean(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -582,7 +798,16 @@ namespace ExportadorWebCV.Utils
                 itemBean.Items.Add(cvnBoolean);
             }
         }
-        
+
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnRichText con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// en entity.properties_cv
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnBoolean_cv(CvnItemBean itemBean, string property, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -613,7 +838,8 @@ namespace ExportadorWebCV.Utils
         /// <param name="code">Codigo del CodeGroup</param>
         /// <param name="entity"></param>
         /// <param name="secciones"></param>
-        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity, 
+            [Optional] string othersType,[Optional] string othersOthers, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -639,30 +865,36 @@ namespace ExportadorWebCV.Utils
                 }
             }
 
+            //Si se envia opción de otros. Elimino la ocurrencia del tipo "OTHERS" y solo mantengo el valor especificado en el tipo otros.
+            if (listadoTuplas.Any(x => x.Item3.Equals(othersOthers)))
+            {
+                List<string> idOthers = listadoTuplas.Where(x => x.Item3.Equals(othersOthers)).Select(x=>x.Item4).ToList();
+                foreach(string identificador in idOthers)
+                {
+                    listadoTuplas.RemoveAll(x => x.Item4.Equals(identificador) && x.Item3.Equals(othersType));
+                }
+            }
+
             List<IGrouping<string, Tuple<string, string, string, string, string>>> listado = listadoTuplas.GroupBy(x => x.Item4).ToList();
             for (int i = 0; i < listado.Count; i++)
             {
                 //Inicializacion de valores
                 CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
                 codeGroup.Code = code;
-                codeGroup.CvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
-                codeGroup.CvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble[10];
-                codeGroup.CvnEntityBean = new CvnItemBeanCvnCodeGroupCvnEntityBean();
-                codeGroup.CvnString = new CvnItemBeanCvnCodeGroupCvnString[10];
-                codeGroup.CvnTitleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
 
                 List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new List<CvnItemBeanCvnCodeGroupCvnString>();
                 List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new List<CvnItemBeanCvnCodeGroupCvnDouble>();
 
                 //Tipodato, Codigo, Propiedad, Valor
                 var tupla = listado.ElementAt(i).Select(x => new Tuple<string, string, string, string>(x.Item1, x.Item2, x.Item3, x.Item5));
-                for(int j = 0; j < tupla.Count(); j++)
+                for (int j = 0; j < tupla.Count(); j++)
                 {
                     if (tupla.ElementAt(j).Item1.Equals("String"))
                     {
                         CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                         cvnString.Code = tupla.ElementAt(j).Item2;
                         cvnString.Value = tupla.ElementAt(j).Item4.Split("@@@").Last();
+
                         listadoStrings.Add(cvnString);
                         continue;
                     }
@@ -671,6 +903,7 @@ namespace ExportadorWebCV.Utils
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
                         cvnDouble.Value = Encoding.ASCII.GetBytes(tupla.ElementAt(j).Item4.Split("@@@").Last()).FirstOrDefault();
+
                         listadoDouble.Add(cvnDouble);
                         continue;
                     }
@@ -679,6 +912,9 @@ namespace ExportadorWebCV.Utils
                         CvnItemBeanCvnCodeGroupCvnBoolean cvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
                         cvnBoolean.Code = tupla.ElementAt(j).Item2;
                         cvnBoolean.Value = tupla.ElementAt(j).Item4.Split("@@@").Last().ToLower().Equals("true") ? true : false;
+
+
+                        codeGroup.CvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
                         codeGroup.CvnBoolean = cvnBoolean;
                         continue;
                     }
@@ -687,6 +923,9 @@ namespace ExportadorWebCV.Utils
                         CvnItemBeanCvnCodeGroupCvnEntityBean cvnEntityBean = new CvnItemBeanCvnCodeGroupCvnEntityBean();
                         cvnEntityBean.Code = tupla.ElementAt(j).Item2;
                         cvnEntityBean.Name = tupla.ElementAt(j).Item4.Split("@@@").Last();
+
+
+                        codeGroup.CvnEntityBean = new CvnItemBeanCvnCodeGroupCvnEntityBean();
                         codeGroup.CvnEntityBean = cvnEntityBean;
                         continue;
                     }
@@ -695,18 +934,37 @@ namespace ExportadorWebCV.Utils
                         CvnItemBeanCvnCodeGroupCvnTitleBean cvnTitleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
                         cvnTitleBean.Code = tupla.ElementAt(j).Item2;
                         cvnTitleBean.Name = tupla.ElementAt(j).Item4.Split("@@@").Last();
+
+
+                        codeGroup.CvnTitleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
                         codeGroup.CvnTitleBean = cvnTitleBean;
                         continue;
                     }
                 }
-                codeGroup.CvnString = listadoStrings.ToArray();
-                codeGroup.CvnDouble = listadoDouble.ToArray();
+
+                if (listadoStrings.Count > 0)
+                {
+                    codeGroup.CvnString = new CvnItemBeanCvnCodeGroupCvnString[10];
+                    codeGroup.CvnString = listadoStrings.ToArray();
+                }
+                if (listadoDouble.Count > 0)
+                {
+                    codeGroup.CvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble[10];
+                    codeGroup.CvnDouble = listadoDouble.ToArray();
+                }
 
 
                 itemBean.Items.Add(codeGroup);
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnDouble con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="code"></param>
+        /// <param name="value"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnDouble(CvnItemBean itemBean, string code, string value, [Optional] string secciones)
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
@@ -720,6 +978,14 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(cvnDouble);
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnDuration con codigo <paramref name="code"/> si existe algun valor con propiedades
+        /// "http://w3id.org/roh/durationYears", "http://w3id.org/roh/durationMonths" y "http://w3id.org/roh/durationDays"
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnDuration(CvnItemBean itemBean, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -772,6 +1038,13 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnDuration con codigo <paramref name="code"/> si existe algun valor con propiedad "http://w3id.org/roh/durationHours"
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnDurationHours(CvnItemBean itemBean, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -807,6 +1080,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnEntityBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnEntityBean(CvnItemBean itemBean, string propertyName, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -821,12 +1102,21 @@ namespace ExportadorWebCV.Utils
             //Añado si se inserta valor
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))))
             {
-                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+                entityBean.Name = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName))
+                    .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last();
 
                 itemBean.Items.Add(entityBean);
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un listado de CvnEntityBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnEntityBeanList(CvnItemBean itemBean, string propertyName, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -853,6 +1143,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnPageBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propPagIniPagFin"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propPagIniPagFin"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnPageBean(CvnItemBean itemBean, Dictionary<string, string> propPagIniPagFin, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -880,6 +1178,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyIdentification"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propertyIdentification"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddLanguage(CvnItemBean itemBean, string propertyIdentification, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -888,18 +1194,36 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            if (Comprobar(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate"))))
+            if (Comprobar(entity.properties.Where(x => x.prop.Equals(propertyIdentification))))
             {
-                CultureInfo cultureInfo = new CultureInfo(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/languageOfTheCertificate")).First()
-                    .values.First().Split("_").Last());
+                string IdNombre = entity.properties.Where(x => x.prop.Equals(propertyIdentification)).First().values.First().Split("_").Last();
+                if (!UtilitySecciones.Lenguajes.Where(x => x.Item2.Equals(IdNombre)).Any())
+                {
+                    return;
+                }
+                string nombre = UtilitySecciones.Lenguajes.Where(x => x.Item2.Equals(IdNombre)).Select(x => x.Item1).FirstOrDefault();
 
                 CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
                 titleBean.Code = code;
-                titleBean.Name = cultureInfo.EnglishName;
-                titleBean.Identification = cultureInfo.Name;
+                titleBean.Name = nombre;
+                titleBean.Identification = IdNombre;
+
+                //Añado si se inserta valor
+                if (!string.IsNullOrEmpty(titleBean.Name) || !string.IsNullOrEmpty(titleBean.Identification))
+                {
+                    itemBean.Items.Add(titleBean);
+                }
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string propertyName, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -916,12 +1240,22 @@ namespace ExportadorWebCV.Utils
 
 
             //Añado si se inserta valor
-            if (!string.IsNullOrEmpty(titleBean.Name) || !string.IsNullOrEmpty(titleBean.Identification))
+            if (!string.IsNullOrEmpty(titleBean.Name))
             {
                 itemBean.Items.Add(titleBean);
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>.
+        /// Con Identification: <paramref name="propertyIdentification"/> y Name: <paramref name="propertyName"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propertyIdentification"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnTitleBean(CvnItemBean itemBean, string propertyIdentification, string propertyName, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -947,6 +1281,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnvolumeBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propVolNum"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propVolNum"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        /// <param name="secciones"></param>
         public static void AddCvnItemBeanCvnVolumeBean(CvnItemBean itemBean, Dictionary<string, string> propVolNum, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -1069,7 +1411,8 @@ namespace ExportadorWebCV.Utils
             }
 
             if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0 &&
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).Where(x => x.Count() == 1).Any())
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).Where(x => x.Count() == 1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
@@ -1091,6 +1434,14 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Inserta en <paramref name="entity"/> el DateDayMonthYear con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
+        /// Debe tener formato de fecha GNOSS "yyyMMddHHmmSS"
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnDateDayMonthYear(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -1121,6 +1472,13 @@ namespace ExportadorWebCV.Utils
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnExternalPKBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyList"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="propertyList"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnExternalPKBeanOthers(CvnItemBean itemBean, Dictionary<string, string> propertyList, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -1164,13 +1522,20 @@ namespace ExportadorWebCV.Utils
                 CvnItemBeanCvnExternalPKBean externalPKBean = new CvnItemBeanCvnExternalPKBean();
                 externalPKBean.Code = code;
                 externalPKBean.Type = "OTHERS";
-                externalPKBean.Value = !string.IsNullOrEmpty(keyValue.Value.Item1) ? keyValue.Value.Item1 : null;
-                externalPKBean.Others = !string.IsNullOrEmpty(keyValue.Value.Item2) ? keyValue.Value.Item2 : null;
+                externalPKBean.Others = !string.IsNullOrEmpty(keyValue.Value.Item1) ? keyValue.Value.Item1 : null;
+                externalPKBean.Value = !string.IsNullOrEmpty(keyValue.Value.Item2) ? keyValue.Value.Item2 : null;
 
                 itemBean.Items.Add(externalPKBean);
             }
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnExternalPKBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnExternalPKBean(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -1220,7 +1585,8 @@ namespace ExportadorWebCV.Utils
                 case "http://w3id.org/roh/applicationNumber":
                     externalPKBean.Type = "060";
                     break;
-                case "http://w3id.org/roh/referenceCode": case "http://w3id.org/roh/patentNumber":
+                case "http://w3id.org/roh/referenceCode":
+                case "http://w3id.org/roh/patentNumber":
                     externalPKBean.Type = "070";
                     break;
                 case "http://w3id.org/roh/normalizedCode":
@@ -1252,6 +1618,14 @@ namespace ExportadorWebCV.Utils
 
         }
 
+        /// <summary>
+        /// Añade en <paramref name="itemBean"/> un CvnExternalPKBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="section"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
         public static void AddCvnItemBeanCvnExternalPKBean(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
