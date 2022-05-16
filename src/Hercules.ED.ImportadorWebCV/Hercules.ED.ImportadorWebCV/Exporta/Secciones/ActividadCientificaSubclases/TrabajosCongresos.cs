@@ -123,8 +123,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.400", keyValue.Value);
 
                 Dictionary<string, string> dicNombreID = new Dictionary<string, string>();
-                dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIDOtroPubDigital));
-                dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreOtroPubDigital));
+                dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreOtroPubDigital));
+                dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIDOtroPubDigital));
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean, dicNombreID, "060.010.020.400", keyValue.Value);
 
                 //ISBN
