@@ -117,7 +117,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosCiudadEntidadDestinataria)));
 
                 UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicDestinataria,
-                   "050.030.020.170", keyValue.Value);
+                   "050.030.020.210", keyValue.Value);
 
                 // Códigos Unesco
                 UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosCodUnescoPrimaria),
