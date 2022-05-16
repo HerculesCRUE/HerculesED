@@ -56,7 +56,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "060.030.080.050", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaTipoEntidadConcesionaria),
                     "060.030.080.070", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaTipoEntidadConcesionaria),
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.premiosInnovaTipoEntidadConcesionariaOtros),
                     "060.030.080.080", keyValue.Value);
 
                 listado.Add(itemBean);
