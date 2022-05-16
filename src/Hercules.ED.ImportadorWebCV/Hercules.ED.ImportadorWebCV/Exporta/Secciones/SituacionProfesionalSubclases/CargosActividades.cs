@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Utils;
-using ImportadorWebCV.Variables;
 using Gnoss.ApiWrapper.ApiModel;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using ImportadorWebCV;
@@ -45,7 +44,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 
                 UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesGestionDocente),
                     "010.020.000.010", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesFacultadEscuela),
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesFacultadEscuela),
                     "010.020.000.060", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.cargosActividadesDepartamento),
                     "010.020.000.080", keyValue.Value);
@@ -95,6 +94,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     UtilityExportar.AddCvnItemBeanCvnPhoneBean(itemBean, propTelefono, 
                         "010.020.000.140", keyValue.Value);
                 }
+
                 //Fax
                 string propFax = Variables.SituacionProfesional.cargosActividadesFaxNumero.Split("@@@").FirstOrDefault();
                 if (!string.IsNullOrEmpty(propFax))
@@ -115,6 +115,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                 List<string> listadoCorreos = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.cargosActividadesCorreoElectronico))) ?
                 keyValue.Value.properties.Where(x => x.prop.Equals(Variables.SituacionProfesional.cargosActividadesCorreoElectronico)).Select(x => x.values).FirstOrDefault() 
                 : null;
+
                 // Si hay algún correo, guardo los correos concatenados con ';' en un string. En caso contrario guardo null.
                 string correos = (listadoCorreos != null && listadoCorreos.Any()) ? string.Join(";", listadoCorreos) : null;
                 if (!string.IsNullOrEmpty(correos))
