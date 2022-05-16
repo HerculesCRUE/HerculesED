@@ -573,6 +573,10 @@
                                     "es": "Introduce la ciudad de entidad financiadora"
                                   },
                                   "property": "https://www.w3.org/2006/vcard/ns#locality",
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
+                                  },
                                   "type": "text",
                                   "width": 1
                                 },
@@ -592,6 +596,10 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
+                                  },
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
@@ -616,6 +624,10 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
+                                  },
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
@@ -1545,6 +1557,10 @@
                                     "es": "Introduce la ciudad de entidad financiadora"
                                   },
                                   "property": "https://www.w3.org/2006/vcard/ns#locality",
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
+                                  },
                                   "type": "text",
                                   "width": 1
                                 },
@@ -1564,6 +1580,10 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
+                                  },
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
@@ -1588,6 +1608,10 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
+                                  },
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
@@ -4779,6 +4803,10 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
+                                  },
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
