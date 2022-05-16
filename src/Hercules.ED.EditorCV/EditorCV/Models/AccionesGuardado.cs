@@ -157,8 +157,17 @@ namespace EditorCV.Models
                 mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(entityDestino), true);
             }
 
-            //Insertamos en la cola del desnormalizador
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+            Dictionary<string, DenormalizerItemQueue.ItemType> tiposDesnormalizar = new Dictionary<string, DenormalizerItemQueue.ItemType>();
+            tiposDesnormalizar.Add("Document_", DenormalizerItemQueue.ItemType.document);
+            tiposDesnormalizar.Add("ResearchObject_", DenormalizerItemQueue.ItemType.researchobject);
+            tiposDesnormalizar.Add("Group_", DenormalizerItemQueue.ItemType.group);
+            tiposDesnormalizar.Add("Project_", DenormalizerItemQueue.ItemType.project);
+            string claveDiccionario = tiposDesnormalizar.Keys.Where(x => entityDestino.Contains(x)).FirstOrDefault();
+            if (tiposDesnormalizar.ContainsKey(claveDiccionario))
+            {
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[claveDiccionario], new HashSet<string> { entityDestino }));
+            }
             rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { personCV }));
 
             return new JsonResult() { ok = dicCorrecto[mResourceApi.GetShortGuid(pEntity)] };
