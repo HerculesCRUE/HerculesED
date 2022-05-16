@@ -71,54 +71,54 @@ namespace ImportadorWebCV.Exporta
         {
             string seccion = "http://w3id.org/roh/teachingExperience";
 
-            AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes(cvn, cvID);
-            aportacionesRelevantes.ExportaAportacionesRelevantes(entity,seccion);
-
-            CursosSeminarios cursosSeminarios = new CursosSeminarios(cvn, cvID);
-            cursosSeminarios.ExportaCursosSeminarios(entity, seccion);
-
             DireccionTesis direccionTesis = new DireccionTesis(cvn, cvID);
             direccionTesis.ExportaDireccionTesis(entity, seccion);
 
             FormacionAcademicaSubclase formacionAcademica = new FormacionAcademicaSubclase(cvn, cvID);
             formacionAcademica.ExportaFormacionAcademica(entity, seccion);
 
-            OtrasActividades otrasActividades = new OtrasActividades(cvn, cvID);
-            otrasActividades.ExportaOtrasActividades(entity, seccion);
+            TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
+            tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
 
-            ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente(cvn, cvID);
-            participacionCongresos.ExportaParticipacionCongresos(entity, seccion);
-
-            ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
-            participacionProyectos.ExportaParticipacionProyectos(entity, seccion);
-
-            PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
-            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
+            CursosSeminarios cursosSeminarios = new CursosSeminarios(cvn, cvID);
+            cursosSeminarios.ExportaCursosSeminarios(entity, seccion);
 
             PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
             publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion);
 
-            TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
-            tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion);
+            ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
+            participacionProyectos.ExportaParticipacionProyectos(entity, seccion);
+
+            ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente(cvn, cvID);
+            participacionCongresos.ExportaParticipacionCongresos(entity, seccion);
+
+            PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
+            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion);
+
+            OtrasActividades otrasActividades = new OtrasActividades(cvn, cvID);
+            otrasActividades.ExportaOtrasActividades(entity, seccion);
+
+            AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes(cvn, cvID);
+            aportacionesRelevantes.ExportaAportacionesRelevantes(entity,seccion);
         }
         public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/scientificExperience";
 
+            ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
+            proyectosIDI.ExportaProyectosIDI(entity, seccion);
+
             Contratos contratos = new Contratos(cvn, cvID);
             contratos.ExportaContratos(entity, seccion);
+
+            PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
+            propII.ExportaPropiedadII(entity, seccion);
 
             GrupoIDI grupoIDI = new GrupoIDI(cvn, cvID);
             grupoIDI.ExportaGrupoIDI(entity, seccion);
 
             ObrasArtisticas obrasArtisticas = new ObrasArtisticas(cvn, cvID);
             obrasArtisticas.ExportaObrasArtisticas(entity, seccion);
-
-            PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
-            propII.ExportaPropiedadII(entity, seccion);
-                        
-            ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
-            proyectosIDI.ExportaProyectosIDI(entity, seccion);
 
             ResultadosTecnologicos resultadosTecnologicos = new ResultadosTecnologicos(cvn, cvID);
             resultadosTecnologicos.ExportaResultadosTecnologicos(entity, seccion);
@@ -128,26 +128,41 @@ namespace ImportadorWebCV.Exporta
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
 
+            ProduccionCientifica produccionCientifica = new ProduccionCientifica(cvn, cvID);
+            produccionCientifica.ExportaProduccionCientifica(entity, seccion);
+
+            IndicadoresGenerales indicadoresGenerales = new IndicadoresGenerales(cvn, cvID);
+            indicadoresGenerales.ExportaIndicadoresGenerales(entity, seccion);
+
+            PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos(cvn, cvID);
+            publicacionesDocumentos.ExportaPublicacionesDocumentos(entity, seccion);
+
+            TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
+            trabajosCongresos.ExportaTrabajosCongresos(entity, seccion);
+
+            TrabajosJornadasSeminarios trabajosJornadasSeminarios = new TrabajosJornadasSeminarios(cvn, cvID);
+            trabajosJornadasSeminarios.ExportaTrabajosJornadasSeminarios(entity, seccion);
+
             OtrasActividadesDivulgacion otrasActividadesDivulgacion = new OtrasActividadesDivulgacion(cvn, cvID);
             otrasActividadesDivulgacion.ExportaOtrasActividadesDivulgacion(entity, seccion);
 
-            ForosComites forosComites = new ForosComites(cvn, cvID);
-            forosComites.ExportaForosComites(entity, seccion);
+            ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
+            comitesCTA.ExportaComitesCTA(entity, seccion);
 
             OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
             organizacionesIDI.ExportaOrganizacionesIDI(entity, seccion);
 
-            IndicadoresGenerales indicadoresGenerales = new IndicadoresGenerales(cvn, cvID);
-            indicadoresGenerales.ExportaIndicadoresGenerales(entity, seccion);
-            
-            TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
-            trabajosCongresos.ExportaTrabajosCongresos(entity, seccion);
+            GestionIDI gestionIDI = new GestionIDI(cvn, cvID);
+            gestionIDI.ExportaGestionIDI(entity, seccion);
 
-            RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
-            redesCooperacion.ExportaRedesCooperacion(entity, seccion);
+            ForosComites forosComites = new ForosComites(cvn, cvID);
+            forosComites.ExportaForosComites(entity, seccion);
 
-            PremiosMenciones premiosMenciones = new PremiosMenciones(cvn, cvID);
-            premiosMenciones.ExportaPremiosMenciones(entity, seccion);
+            EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
+            evalRevIDI.ExportaEvalRevIDI(entity, seccion);
+
+            EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
+            estanciasIDI.ExportaEstanciasIDI(entity, seccion);
 
             AyudaBecas ayudaBecas = new AyudaBecas(cvn, cvID);
             ayudaBecas.ExportaAyudaBecas(entity, seccion);
@@ -155,35 +170,17 @@ namespace ImportadorWebCV.Exporta
             OtrosModosColaboracion otrosModosColaboracion = new OtrosModosColaboracion(cvn, cvID);
             otrosModosColaboracion.ExportaOtrosModosColaboracion(entity, seccion);
 
-            AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos(cvn, cvID);
-            acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion);
-
-            EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
-            estanciasIDI.ExportaEstanciasIDI(entity, seccion);
-
-            GestionIDI gestionIDI = new GestionIDI(cvn, cvID);
-            gestionIDI.ExportaGestionIDI(entity, seccion);
-
-            EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
-            evalRevIDI.ExportaEvalRevIDI(entity, seccion);
-
-            PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos(cvn, cvID);
-            publicacionesDocumentos.ExportaPublicacionesDocumentos(entity, seccion);
-
-            ProduccionCientifica produccionCientifica = new ProduccionCientifica(cvn, cvID);
-            produccionCientifica.ExportaProduccionCientifica(entity, seccion);
-
-            ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
-            comitesCTA.ExportaComitesCTA(entity, seccion);
-
             SociedadesAsociaciones sociedadesAsociaciones = new SociedadesAsociaciones(cvn, cvID);
             sociedadesAsociaciones.ExportaSociedadesAsociaciones(entity, seccion);
 
             Consejos consejos = new Consejos(cvn, cvID);
             consejos.ExportaConsejos(entity, seccion);
 
-            TrabajosJornadasSeminarios trabajosJornadasSeminarios = new TrabajosJornadasSeminarios(cvn, cvID);
-            trabajosJornadasSeminarios.ExportaTrabajosJornadasSeminarios(entity, seccion);
+            RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
+            redesCooperacion.ExportaRedesCooperacion(entity, seccion);
+
+            PremiosMenciones premiosMenciones = new PremiosMenciones(cvn, cvID);
+            premiosMenciones.ExportaPremiosMenciones(entity, seccion);
 
             OtrasDistinciones otrasDistinciones = new OtrasDistinciones(cvn, cvID);
             otrasDistinciones.ExportaOtrasDistinciones(entity, seccion);
@@ -191,9 +188,11 @@ namespace ImportadorWebCV.Exporta
             PeriodosActividad periodosActividad = new PeriodosActividad(cvn, cvID);
             periodosActividad.ExportaPeriodosActividad(entity, seccion);
 
+            AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos(cvn, cvID);
+            acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion);
+
             OtrosMeritos otrosMeritos = new OtrosMeritos(cvn, cvID);
             otrosMeritos.ExportaOtrosMeritos(entity, seccion);
-
         }
 
         public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
