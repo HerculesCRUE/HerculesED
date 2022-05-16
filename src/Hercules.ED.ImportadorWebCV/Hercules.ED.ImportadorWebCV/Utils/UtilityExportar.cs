@@ -1496,8 +1496,8 @@ namespace ExportadorWebCV.Utils
                 CvnItemBeanCvnExternalPKBean externalPKBean = new CvnItemBeanCvnExternalPKBean();
                 externalPKBean.Code = code;
                 externalPKBean.Type = "OTHERS";
-                externalPKBean.Value = !string.IsNullOrEmpty(keyValue.Value.Item1) ? keyValue.Value.Item1 : null;
-                externalPKBean.Others = !string.IsNullOrEmpty(keyValue.Value.Item2) ? keyValue.Value.Item2 : null;
+                externalPKBean.Others = !string.IsNullOrEmpty(keyValue.Value.Item1) ? keyValue.Value.Item1 : null;
+                externalPKBean.Value = !string.IsNullOrEmpty(keyValue.Value.Item2) ? keyValue.Value.Item2 : null;
 
                 itemBean.Items.Add(externalPKBean);
             }
