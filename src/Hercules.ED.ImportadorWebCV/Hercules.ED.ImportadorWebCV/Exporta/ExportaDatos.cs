@@ -22,6 +22,7 @@ namespace ImportadorWebCV.Exporta
         {
             this.cvID = cvID;
             this.cvn = cvn;
+            Utils.UtilitySecciones.GetLenguajes(mResourceApi);
         }
 
         public void ExportaDatosIdentificacion(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
@@ -115,7 +116,7 @@ namespace ImportadorWebCV.Exporta
 
             PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
             propII.ExportaPropiedadII(entity, seccion);
-
+                        
             ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
             proyectosIDI.ExportaProyectosIDI(entity, seccion);
 
