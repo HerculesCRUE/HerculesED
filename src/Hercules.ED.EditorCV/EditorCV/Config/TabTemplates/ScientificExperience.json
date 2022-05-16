@@ -335,7 +335,7 @@
                         },
                         "autocomplete": true,
                         "placeholder": {
-                          "es": "Introduce la entidad convocante"
+                          "es": "Introduce la entidad de realización"
                         },
                         "property": "http://w3id.org/roh/conductedByTitle",
                         "autocompleteConfig": {
@@ -1307,7 +1307,7 @@
                         },
                         "autocomplete": true,
                         "placeholder": {
-                          "es": "Introduce la entidad convocante"
+                          "es": "Introduce la entidad de realización"
                         },
                         "property": "http://w3id.org/roh/conductedByTitle",
                         "autocompleteConfig": {
@@ -5274,6 +5274,10 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
+                                  },
+                                  "dependency": {
+                                    "property": "http://w3id.org/roh/organizationTitle",
+                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
