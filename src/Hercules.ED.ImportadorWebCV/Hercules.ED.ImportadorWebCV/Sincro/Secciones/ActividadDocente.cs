@@ -1193,19 +1193,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                 UtilitySecciones.CheckProperty(propertyEP, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, entidadN), propiedadEP);
 
                 //Añado otros, o el ID de una preseleccion
-                if (!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.170")))
+                if (!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.180")))
+                {
+                    string valorTipo = mResourceApi.GraphsUrl + "items/organizationtype_OTHERS";
+                    string valorTipoOtros = entidad.GetStringCvnCodeGroup("030.080.000.180");
+
+                    UtilitySecciones.CheckProperty(propertyTipo, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipo), propiedadTipo);
+                    UtilitySecciones.CheckProperty(propertyTipoOtros, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipoOtros), propiedadTipoOtros);
+                }
+                else if(!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.170")))
                 {
                     string valorTipo = mResourceApi.GraphsUrl + "items/organizationtype_" + entidad.GetStringCvnCodeGroup("030.080.000.170");
 
                     UtilitySecciones.CheckProperty(propertyTipo, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipo), propiedadTipo);
-                }
-                else if (!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.180")))
-                {
-                    string valorTipo = mResourceApi.GraphsUrl + "items/organizationtype_OTHERS";
-                    string valorTipoOtros = item.GetStringPorIDCampo("030.080.000.180");
-
-                    UtilitySecciones.CheckProperty(propertyTipo, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipo), propiedadTipo);
-                    UtilitySecciones.CheckProperty(propertyTipoOtros, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipoOtros), propiedadTipoOtros);
                 }
             }
         }

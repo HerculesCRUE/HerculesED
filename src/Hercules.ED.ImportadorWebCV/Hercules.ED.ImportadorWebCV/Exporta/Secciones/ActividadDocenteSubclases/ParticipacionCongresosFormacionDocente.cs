@@ -61,7 +61,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.090.000.120", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosPerfilDestinatarios),
                     "030.090.000.130", keyValue.Value);
-                UtilityExportar.AddLanguage(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosIdiomaPresentacion),
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosIdiomaPresentacion),
                     "030.090.000.140", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participaCongresosFechaPresentacion),
                     "030.090.000.150", keyValue.Value);

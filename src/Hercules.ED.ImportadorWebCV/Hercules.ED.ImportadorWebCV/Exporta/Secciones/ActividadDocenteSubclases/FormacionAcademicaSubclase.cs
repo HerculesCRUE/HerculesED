@@ -127,7 +127,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.010.000.610", keyValue.Value);
 
                 //Titulacion universitaria
-                UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitariaNombre),
+                UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitaria),
+                     UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitariaNombre),
                     "030.010.000.020", keyValue.Value);
 
                 //Entidad realizacion
