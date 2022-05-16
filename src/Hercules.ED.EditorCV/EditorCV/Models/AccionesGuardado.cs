@@ -398,7 +398,7 @@ namespace EditorCV.Models
                     {
                         bool hasChange = MergeLoadedEntity(loadedEntity, pEntity);
 
-                        if (hasChange)
+                        if (hasChange) 
                         {
                             ComplexOntologyResource resource = ToGnossApiResource(loadedEntity);
                             mResourceApi.ModifyComplexOntologyResource(resource, false, true);
