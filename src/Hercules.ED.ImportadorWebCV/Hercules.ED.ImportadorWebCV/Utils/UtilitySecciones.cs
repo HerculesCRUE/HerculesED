@@ -460,7 +460,7 @@ namespace Utils
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
 
                         string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                        string valorID = StringGNOSSID(entityPartAux, identificador.Value); ;
+                        string valorID = StringGNOSSID(entityPartAux, identificador.Value);
                         CheckProperty(IDOtro, entidadAux, valorID, propIdOtroPub);
 
                         string valorNombre = StringGNOSSID(entityPartAux, identificador.Others);
