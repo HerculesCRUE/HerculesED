@@ -399,7 +399,7 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             Faceta faceta = new Faceta();
 
-            faceta.numeroItemsFaceta = int.MaxValue;
+            faceta.numeroItemsFaceta = 100000;
             if (pFacetaConf.numeroItemsFaceta != 0)
             {
                 faceta.numeroItemsFaceta = pFacetaConf.numeroItemsFaceta;
