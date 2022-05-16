@@ -17,7 +17,8 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 namespace ExportadorWebCV.Utils
 {
     public class UtilityExportar
-    {
+    {       
+
         /// <summary>
         /// Devuelve una lista de tuplas con la persona, nombre, apellidos.
         /// </summary>
@@ -1152,7 +1153,7 @@ namespace ExportadorWebCV.Utils
         }
 
         /// <summary>
-        /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad "http://w3id.org/roh/languageOfTheCertificate"
+        /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyIdentification"/>
         /// </summary>
         /// <param name="itemBean"></param>
         /// <param name="propertyIdentification"></param>
@@ -1169,13 +1170,17 @@ namespace ExportadorWebCV.Utils
 
             if (Comprobar(entity.properties.Where(x => x.prop.Equals(propertyIdentification))))
             {
-                CultureInfo cultureInfo = new CultureInfo(entity.properties.Where(x => x.prop.Equals(propertyIdentification)).First()
-                    .values.First().Split("_").Last());
+                string IdNombre = entity.properties.Where(x => x.prop.Equals(propertyIdentification)).First().values.First().Split("_").Last();
+                if (!UtilitySecciones.Lenguajes.Where(x => x.Item2.Equals(IdNombre)).Any())
+                {
+                    return;
+                }
+                string nombre = UtilitySecciones.Lenguajes.Where(x => x.Item2.Equals(IdNombre)).Select(x => x.Item1).FirstOrDefault();
 
                 CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
                 titleBean.Code = code;
-                titleBean.Name = cultureInfo.EnglishName;
-                titleBean.Identification = cultureInfo.Name;
+                titleBean.Name = nombre;
+                titleBean.Identification = IdNombre;
 
                 //Añado si se inserta valor
                 if (!string.IsNullOrEmpty(titleBean.Name) || !string.IsNullOrEmpty(titleBean.Identification))
