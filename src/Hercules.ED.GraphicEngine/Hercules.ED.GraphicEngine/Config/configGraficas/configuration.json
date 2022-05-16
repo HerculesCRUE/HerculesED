@@ -48,7 +48,7 @@
             },
             {
               "nombre": {
-                "es": "Publicaciones de tipo Aritculo Científico"
+                "es": "Publicaciones de tipo Artículo Científico"
               },
               "filtro": "dc:type@@@dc:title='Artículo científico'@es",
               "tipoDimension": "bar",

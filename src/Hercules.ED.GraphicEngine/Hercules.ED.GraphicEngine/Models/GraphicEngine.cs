@@ -18,9 +18,9 @@ namespace Hercules.ED.GraphicEngine.Models
     public static class GraphicEngine
     {
         // Prefijos.
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configJson\prefijos.json")));
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configJson/prefijos.json")));
+        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
 
         #region --- Páginas
@@ -34,7 +34,7 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Lectura del JSON de configuración.
             List<ConfigModel> listaConfigModel = null;
-            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configGraficas\configuration.json"))
+            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas/configuration.json"))
             {
                 string json = reader.ReadToEnd();
                 listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
@@ -75,7 +75,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// Lee la configuración y obtiene los datos necesarios para el servicio de gráficas.
         /// </summary>
         /// <param name="pIdPagina">Identificador de la página.</param>
-        /// <param name="pIdFaceta">Identificador de la faceta.</param>
+        /// <param name="pIdGrafica">Identificador de la gráfica.</param>
         /// <param name="pFiltroFacetas">Filtros de la URL.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
@@ -83,7 +83,7 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Lectura del JSON de configuración.
             List<ConfigModel> listaConfigModel = null;
-            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configGraficas\configuration.json"))
+            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas/configuration.json"))
             {
                 string json = reader.ReadToEnd();
                 listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
@@ -145,11 +145,15 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Asignación de Data.
             Data data = new Data();
-            data.datasets = new System.Collections.Concurrent.ConcurrentBag<Dataset>();
+            data.datasets = new ConcurrentBag<Dataset>();
             grafica.data = data;
 
             // Asignación de Options.
             Options options = new Options();
+
+            // Animación
+            options.animation = new Animation();
+            options.animation.duration = 2000;
 
             // Título
             options.plugins = new Plugin();
@@ -167,6 +171,9 @@ namespace Hercules.ED.GraphicEngine.Models
 
             ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
+            
+            // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
+            pGrafica.configBarras.dimensiones.Reverse();
 
             foreach (Dimension dim in pGrafica.configBarras.dimensiones)
             {
@@ -364,7 +371,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Lectura del JSON de configuración.
             List<ConfigModel> listaConfigModel = null;
-            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configGraficas\configuration.json"))
+            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas/configuration.json"))
             {
                 string json = reader.ReadToEnd();
                 listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
@@ -441,14 +448,14 @@ namespace Hercules.ED.GraphicEngine.Models
                     string lang = "";
                     if (!string.IsNullOrEmpty(fila["lang"].value))
                     {
-                        lang = "@" + fila["lang"].value;
+                        lang = $@"@{fila["lang"].value}";
                     }
 
                     // Comprobación si es literal o numerico.
                     string filtro = itemFaceta.nombre;
                     if (fila["nombreFaceta"].type == "literal")
                     {
-                        filtro = "'" + filtro + "'";
+                        filtro = $@"'{filtro}'";
                     }
 
                     itemFaceta.filtro = $@"{pFacetaConf.filtro}={filtro}{lang}";
