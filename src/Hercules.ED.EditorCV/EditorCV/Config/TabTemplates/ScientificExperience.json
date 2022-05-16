@@ -335,7 +335,7 @@
                         },
                         "autocomplete": true,
                         "placeholder": {
-                          "es": "Introduce la entidad convocante"
+                          "es": "Introduce la entidad de realización"
                         },
                         "property": "http://w3id.org/roh/conductedByTitle",
                         "autocompleteConfig": {
@@ -1307,7 +1307,7 @@
                         },
                         "autocomplete": true,
                         "placeholder": {
-                          "es": "Introduce la entidad convocante"
+                          "es": "Introduce la entidad de realización"
                         },
                         "property": "http://w3id.org/roh/conductedByTitle",
                         "autocompleteConfig": {
@@ -4727,10 +4727,6 @@
                                   "placeholder": {
                                     "es": "Introduce la ciudad de la entidad colaboradora"
                                   },
-                                  "dependency": {
-                                    "property": "http://w3id.org/roh/organizationTitle",
-                                    "propertyValue": "*"
-                                  },
                                   "property": "https://www.w3.org/2006/vcard/ns#locality",
                                   "type": "text",
                                   "width": 1
@@ -4751,10 +4747,6 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
-                                  },
-                                  "dependency": {
-                                    "property": "http://w3id.org/roh/organizationTitle",
-                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
@@ -5222,10 +5214,6 @@
                                   "placeholder": {
                                     "es": "Introduce la ciudad de la entidad destinataria"
                                   },
-                                  "dependency": {
-                                    "property": "http://w3id.org/roh/organizationTitle",
-                                    "propertyValue": "*"
-                                  },
                                   "property": "https://www.w3.org/2006/vcard/ns#locality",
                                   "type": "text",
                                   "width": 1
@@ -5246,10 +5234,6 @@
                                     "property": {
                                       "property": "http://www.geonames.org/ontology#name"
                                     }
-                                  },
-                                  "dependency": {
-                                    "property": "http://w3id.org/roh/organizationTitle",
-                                    "propertyValue": "*"
                                   },
                                   "type": "selectCombo",
                                   "width": 1
