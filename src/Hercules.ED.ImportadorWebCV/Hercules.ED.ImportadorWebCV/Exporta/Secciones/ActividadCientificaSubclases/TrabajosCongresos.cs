@@ -148,6 +148,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.340", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAAEntidadOrganizadora),
                     "060.010.020.350", keyValue.Value);
+
+                // TODO Citas, Indice de impacto
+
                 listado.Add(itemBean);
             }
 
