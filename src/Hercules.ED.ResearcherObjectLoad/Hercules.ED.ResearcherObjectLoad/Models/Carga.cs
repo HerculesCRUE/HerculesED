@@ -333,7 +333,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
                     {
                         HashSet<string> idsPersonasActualizar = new HashSet<string>();
-                        HashSet<string> idsDcumentosActualizar = new HashSet<string>();
+                        HashSet<string> idsDocumentosActualizar = new HashSet<string>();
                         HashSet<string> idsResearchObjectsActualizar = new HashSet<string>();
 
 
@@ -697,15 +697,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                         // ------------------------------ CARGA
                         idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
-                        idsDcumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
+                        idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
                         idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
-                        ConcurrentBag<string> idsDcumentosModificados = new ConcurrentBag<string>();
-                        ConcurrentBag<string> idsResearchObjectsModificados = new ConcurrentBag<string>();
+                        idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);                        
+                        idsResearchObjectsActualizar.UnionWith(listaROsModificar.Keys);
+
                         //Modificación
                         Parallel.ForEach(listaDocumentosModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
                         {
-                            idsDcumentosModificados.Add(recursoModificar.Key);
                             string[] idSplit = recursoModificar.Key.Split('_');
                             Document doc = listaDocumentosModificar[recursoModificar.Key];
                             ModificarDocumento(doc, recursoModificar.Key);
@@ -734,7 +734,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         //Modificación
                         Parallel.ForEach(listaROsModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
                         {
-                            idsResearchObjectsModificados.Add(recursoModificar.Key);
                             string[] idSplit = recursoModificar.Key.Split('_');
                             ResearchobjectOntology.ResearchObject ro = listaROsModificar[recursoModificar.Key];
                             ModificarRO(ro, recursoModificar.Key);
@@ -761,11 +760,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         });
 
                         //Insertamos en la cola del desnormalizador
-                        idsDcumentosActualizar.UnionWith(idsDcumentosModificados);
-                        idsResearchObjectsActualizar.UnionWith(idsResearchObjectsModificados);
                         RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
                         rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, idsPersonasActualizar ));
-                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, idsDcumentosActualizar));
+                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, idsDocumentosActualizar));
                         rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
 
 
