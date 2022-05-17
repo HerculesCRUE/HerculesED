@@ -65,7 +65,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     : null;
                 if (!string.IsNullOrEmpty(frecuenciaActividad))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.080.000.120", frecuenciaActividad);
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.050.000.120", frecuenciaActividad);
                 }
 
                 string numHorasECTS = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.tutoAcademicaNumHorasECTS))) ?
@@ -73,7 +73,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     : null;
                 if (!string.IsNullOrEmpty(numHorasECTS))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.080.000.130", numHorasECTS);
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.050.000.130", numHorasECTS);
                 }
 
                 //Nombre programa

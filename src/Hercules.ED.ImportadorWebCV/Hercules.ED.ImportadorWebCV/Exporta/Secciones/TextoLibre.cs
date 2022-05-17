@@ -18,12 +18,12 @@ namespace ImportadorWebCV.Exporta.Secciones
         }
 
         /// <summary>
-        /// Exporta los datos de la sección "070.000.000.000" a cvn.cvnRootResultBean.
+        /// Exporta los datos de la sección "070.010.000.000" a cvn.cvnRootResultBean.
         /// </summary>
         /// <param name="entity"></param>
         public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones)
         {
-            if (!UtilitySecciones.CheckSecciones(secciones, "070.000.000.000"))
+            if (!UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"))
             {
                 return;
             }
@@ -34,7 +34,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             List<CvnItemBean> listado = new List<CvnItemBean>();
             CvnItemBean itemBean = new CvnItemBean()
             {
-                Code = "070.000.000.000",
+                Code = "070.010.000.000",
                 Items = new List<CVNObject>()
             };
 
