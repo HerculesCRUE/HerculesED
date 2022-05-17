@@ -105,7 +105,12 @@
         public const string trabajosCongresosIDPubDigitalPMID = "http://purl.org/ontology/bibo/pmid";
         public const string trabajosCongresosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
         public const string trabajosCongresosNombreOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
-
+        public const string trabajosCongresosCitasInrecs = "http://w3id.org/roh/inrecsCitationCount";
+        public const string trabajosCongresosCitasScopus = "http://w3id.org/roh/scopusCitationCount";
+        public const string trabajosCongresosCitasWOS = "http://w3id.org/roh/wosCitationCount";
+        public const string trabajosCongresosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
+        public const string trabajosCongresosOtrasCitas = "";
+        public const string trabajosCongresosOtrasCitasNombre = "";
         public const string trabajosCongresosMiembrosAutores = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
         public const string trabajosCongresosMiembrosAutorFirma = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://xmlns.com/foaf/0.1/nick";
 
