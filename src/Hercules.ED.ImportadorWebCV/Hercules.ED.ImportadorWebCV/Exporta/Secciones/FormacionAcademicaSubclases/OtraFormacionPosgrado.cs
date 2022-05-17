@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 {
@@ -29,6 +30,10 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
         /// <param name="preimportar"></param>
         public void ExportaOtraFormacionPosgrado(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "020.010.030.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);

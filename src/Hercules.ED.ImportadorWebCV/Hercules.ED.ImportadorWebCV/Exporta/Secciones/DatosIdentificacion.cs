@@ -3,7 +3,9 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones
 {
@@ -19,8 +21,12 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="seccion"></param>
-        public void ExportaDatosIdentificacion(Entity entity, string seccion)
+        public void ExportaDatosIdentificacion(Entity entity, string seccion, [Optional] List<string> secciones)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"))
+            {
+                return;
+            } 
             CvnItemBean itemBean = new CvnItemBean()
             {
                 Code = "000.010.000.000",

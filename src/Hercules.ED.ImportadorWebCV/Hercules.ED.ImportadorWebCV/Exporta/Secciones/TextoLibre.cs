@@ -3,7 +3,9 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones
 {
@@ -19,8 +21,12 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// Exporta los datos de la sección "070.000.000.000" a cvn.cvnRootResultBean.
         /// </summary>
         /// <param name="entity"></param>
-        public void ExportaTextoLibre(Entity entity)
+        public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "070.000.000.000"))
+            {
+                return;
+            }
             string propResumenLibre = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.resumenLibre)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFG = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b1DescripcionTFG)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFM = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b2DescripcionTFM)).Select(x => x.prop).FirstOrDefault());
