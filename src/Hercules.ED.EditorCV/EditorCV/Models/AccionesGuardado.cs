@@ -916,7 +916,7 @@ namespace EditorCV.Models
             }
         }
 
-        public object ValidateORCID(string pORCID)
+        public object ValidateORCID(ConfigService pConfigService, string pORCID)
         {
             pORCID = pORCID.Replace("https://orcid.org/", "");
             //1º Buscamos en las personas cargadas
@@ -968,6 +968,11 @@ namespace EditorCV.Models
                         mResourceApi.ChangeOntoly("person");
                         ComplexOntologyResource resource = ToGnossApiResource(entity);
                         string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
+
+                        //Insertamos en la cola del desnormalizador
+                        RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { result }));
+
                         if (resource.Uploaded)
                         {
                             idPerson = result;
@@ -986,7 +991,7 @@ namespace EditorCV.Models
             return new JsonResult() { ok = false, id = "", error = "El código introducido no es válio" };
         }
 
-        public Object CreatePerson(string pName, string pSurname)
+        public Object CreatePerson(ConfigService pConfigService, string pName, string pSurname)
         {
             Entity entity = new Entity();
             entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
@@ -1012,8 +1017,13 @@ namespace EditorCV.Models
             mResourceApi.ChangeOntoly("person");
             ComplexOntologyResource resource = ToGnossApiResource(entity);
             string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
+
             if (resource.Uploaded)
             {
+                //Insertamos en la cola del desnormalizador
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { result }));
+
                 return GetPerson(result);
             }
             return new JsonResult() { ok = false, id = "", error = "Se ha producido un error al crear la persona" };
