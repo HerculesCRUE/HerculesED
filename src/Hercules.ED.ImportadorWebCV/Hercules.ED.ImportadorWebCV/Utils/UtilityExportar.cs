@@ -838,8 +838,8 @@ namespace ExportadorWebCV.Utils
         /// <param name="code">Codigo del CodeGroup</param>
         /// <param name="entity"></param>
         /// <param name="secciones"></param>
-        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity, 
-            [Optional] string othersType,[Optional] string othersOthers, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity,
+            [Optional] string othersType, [Optional] string othersOthers, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -868,8 +868,8 @@ namespace ExportadorWebCV.Utils
             //Si se envia opción de otros. Elimino la ocurrencia del tipo "OTHERS" y solo mantengo el valor especificado en el tipo otros.
             if (listadoTuplas.Any(x => x.Item3.Equals(othersOthers)))
             {
-                List<string> idOthers = listadoTuplas.Where(x => x.Item3.Equals(othersOthers)).Select(x=>x.Item4).ToList();
-                foreach(string identificador in idOthers)
+                List<string> idOthers = listadoTuplas.Where(x => x.Item3.Equals(othersOthers)).Select(x => x.Item4).ToList();
+                foreach (string identificador in idOthers)
                 {
                     listadoTuplas.RemoveAll(x => x.Item4.Equals(identificador) && x.Item3.Equals(othersType));
                 }
@@ -902,7 +902,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
-                        cvnDouble.Value = Encoding.ASCII.GetBytes(tupla.ElementAt(j).Item4.Split("@@@").Last()).FirstOrDefault();
+                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last());
 
                         listadoDouble.Add(cvnDouble);
                         continue;
