@@ -20,7 +20,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
     public class Grafica
     {
-        public string identificador { get; set; }
+        public string identificador { get; set; }        
         public Dictionary<string, string> nombre { get; set; }
         public EnumGraficas tipoGrafica { get; set; }
         public ConfigBarras configBarras { get; set; }
@@ -28,11 +28,13 @@ namespace Hercules.ED.GraphicEngine.Models
 
     public class ConfigBarras
     {
+        public bool orientacionVertical { get; set; }
         public string ejeX { get; set; }
         public bool orderDesc { get; set; }
         public string color { get; set; }
         public bool rellenarEjeX { get; set; }
         public List<EjeYConf> yAxisPrint { get; set; }
+
         public List<Dimension> dimensiones { get; set; }
     }
     public class EjeYConf

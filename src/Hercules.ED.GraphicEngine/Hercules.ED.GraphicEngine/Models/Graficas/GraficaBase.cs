@@ -15,6 +15,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public Animation animation { get; set; }
         public Plugin plugins { get; set; }
         public Dictionary<string, EjeY> scales { get; set; }
+        public string indexAxis { get; set; }
     }
 
     public class Animation
