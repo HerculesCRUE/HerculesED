@@ -86,7 +86,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ValidateORCID(pOrcid));
+                return Ok(accionesGuardado.ValidateORCID(_Configuracion, pOrcid));
             }
             catch (Exception ex)
             {
@@ -100,7 +100,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.CreatePerson(pName, pSurname));
+                return Ok(accionesGuardado.CreatePerson(_Configuracion, pName, pSurname));
             }
             catch (Exception ex)
             {
