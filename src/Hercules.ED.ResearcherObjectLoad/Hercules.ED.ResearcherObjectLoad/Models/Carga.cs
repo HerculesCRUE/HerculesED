@@ -332,6 +332,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                     if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
                     {
+                        HashSet<string> idsPersonasActualizar = new HashSet<string>();
+                        HashSet<string> idsDcumentosActualizar = new HashSet<string>();
+                        HashSet<string> idsResearchObjectsActualizar = new HashSet<string>();
+
+
                         // Obtención de la lista de equivalencias.
                         Dictionary<string, HashSet<string>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
 
@@ -691,13 +696,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         #endregion
 
                         // ------------------------------ CARGA
-                        CargarDatos(listaPersonasCargar);
-                        CargarDatos(listaDocumentosCargar);
-                        CargarDatos(listaROsCargar);
+                        idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
+                        idsDcumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
+                        idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
+                        ConcurrentBag<string> idsDcumentosModificados = new ConcurrentBag<string>();
+                        ConcurrentBag<string> idsResearchObjectsModificados = new ConcurrentBag<string>();
                         //Modificación
                         Parallel.ForEach(listaDocumentosModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
                         {
+                            idsDcumentosModificados.Add(recursoModificar.Key);
                             string[] idSplit = recursoModificar.Key.Split('_');
                             Document doc = listaDocumentosModificar[recursoModificar.Key];
                             ModificarDocumento(doc, recursoModificar.Key);
@@ -711,7 +719,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 if (numIntentos > MAX_INTENTOS)
                                 {
                                     break;
-                                }
+                                }                                
                                 if (listaDocumentosModificar.Last().Key == recursoModificar.Key)
                                 {
                                     mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
@@ -726,6 +734,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         //Modificación
                         Parallel.ForEach(listaROsModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
                         {
+                            idsResearchObjectsModificados.Add(recursoModificar.Key);
                             string[] idSplit = recursoModificar.Key.Split('_');
                             ResearchobjectOntology.ResearchObject ro = listaROsModificar[recursoModificar.Key];
                             ModificarRO(ro, recursoModificar.Key);
@@ -751,18 +760,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                         });
 
-                        //Desnormalizamos los documentos
-                        List<string> listaDocumentos = listaDocumentosCargar.Select(x => x.GnossId).Union(listaDocumentosModificar.Select(x => x.Key)).Distinct().ToList();
-                        Utility.ModificarDocumentos(pDocuments: listaDocumentos);
+                        //Insertamos en la cola del desnormalizador
+                        idsDcumentosActualizar.UnionWith(idsDcumentosModificados);
+                        idsResearchObjectsActualizar.UnionWith(idsResearchObjectsModificados);
+                        RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
+                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, idsPersonasActualizar ));
+                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, idsDcumentosActualizar));
+                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
 
-                        //Desnormalizamos los research object
-                        List<string> listaRO = listaROsCargar.Select(x => x.GnossId).Union(listaROsModificar.Select(x => x.Key)).Distinct().ToList();
-                        Utility.ModificarResearchObjects(pResearchObjects: listaRO);
-
-                        //Desnormalizamos las personas
-                        List<string> listaPersonas = listaPersonasCargar.Select(x => x.GnossId).ToList();
-                        Utility.ModificarDocumentos(pPersons: listaPersonas);
-                        Utility.ModificarResearchObjects(pPersons: listaPersonas);
 
                         //Cargamos las notificaciones
                         List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
@@ -1882,8 +1887,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// Permite cargar los recursos.
         /// </summary>
         /// <param name="pListaRecursosCargar">Lista de recursos a cargar.</param>
-        private static void CargarDatos(List<ComplexOntologyResource> pListaRecursosCargar)
+        private static List<string> CargarDatos(List<ComplexOntologyResource> pListaRecursosCargar)
         {
+            ConcurrentBag<string> idsItems = new ConcurrentBag<string>();
             //Carga.
             Parallel.ForEach(pListaRecursosCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoCargar =>
             {
@@ -1896,16 +1902,22 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         break;
                     }
+                    string id = "";
                     if (pListaRecursosCargar.Last() == recursoCargar)
                     {
-                        mResourceApi.LoadComplexSemanticResource(recursoCargar, false, true);
+                        id = mResourceApi.LoadComplexSemanticResource(recursoCargar, false, true);
                     }
                     else
                     {
-                        mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                        id = mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                    }
+                    if (recursoCargar.Uploaded)
+                    {
+                        idsItems.Add(id);
                     }
                 }
             });
+            return idsItems.Distinct().ToList();
         }
 
         /// <summary>
