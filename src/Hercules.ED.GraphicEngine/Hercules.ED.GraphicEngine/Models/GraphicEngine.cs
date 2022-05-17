@@ -141,11 +141,28 @@ namespace Hercules.ED.GraphicEngine.Models
             // Asignación de Options.
             Options options = new Options();
 
-            // Orientación
-            options.indexAxis = "x";
-            if (pGrafica.configBarras.orientacionVertical)
+            // Orientación            
+            if (!pGrafica.configBarras.orientacionVertical)
             {
                 options.indexAxis = "y";
+            }
+            else
+            {
+                options.indexAxis = "x";
+            }
+
+            options.scales = new Dictionary<string, Eje>();
+
+            // Ejes X
+            foreach (EjeXConf item in pGrafica.configBarras.xAxisPrint)
+            {
+                options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
+            }
+
+            // Ejes Y
+            foreach (EjeYConf item in pGrafica.configBarras.yAxisPrint)
+            {
+                options.scales.Add(item.yAxisID, new Eje() { position = item.posicion });
             }
 
             // Animación
@@ -157,16 +174,10 @@ namespace Hercules.ED.GraphicEngine.Models
             options.plugins.title = new Title();
             options.plugins.title.display = true;
             options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
-
-            // Ejes Y
-            options.scales = new Dictionary<string, EjeY>();
-            foreach (EjeYConf item in pGrafica.configBarras.yAxisPrint)
-            {
-                options.scales.Add(item.yAxisID, new EjeY() { position = item.posicion });
-            }
+            
             grafica.options = options;
 
-            ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
+            ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
 
             // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
@@ -178,8 +189,15 @@ namespace Hercules.ED.GraphicEngine.Models
                 dimensionesDataset[dim] = null;
             }
 
-            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 5 }, itemGrafica =>
+            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
             {
+                // Determina si en el filtro contiene '=' para tratarlo de manera especial.
+                bool filtroEspecial = false;
+                if (!string.IsNullOrEmpty(itemGrafica.filtro) && !itemGrafica.filtro.Contains("="))
+                {
+                    filtroEspecial = true;
+                }
+
                 // Orden.
                 string orden = "ASC";
                 if (pGrafica.configBarras.orderDesc == true)
@@ -190,7 +208,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 // Filtro de página.
                 List<string> filtros = new List<string>();
 
-                Dictionary<string, float> dicResultados = new Dictionary<string, float>();
+                List<Tuple<string, string, float>> listaTuplas = new List<Tuple<string, string, float>>();
                 SparqlObject resultadoQuery = null;
                 StringBuilder select = new StringBuilder(), where = new StringBuilder();
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.configBarras.ejeX }, "ejeX"));
@@ -199,7 +217,11 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
                 }
-                if (!string.IsNullOrEmpty(itemGrafica.filtro))
+                if(filtroEspecial)
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }, "aux"));
+                }
+                else if (!string.IsNullOrEmpty(itemGrafica.filtro))
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
                 }
@@ -210,11 +232,22 @@ namespace Hercules.ED.GraphicEngine.Models
                     where = new StringBuilder();
 
                     select.Append(mPrefijos);
-                    select.Append($@"SELECT ?ejeX COUNT(DISTINCT ?s) AS ?numero ");
+                    if (filtroEspecial)
+                    {
+                        select.Append($@"SELECT ?ejeX ?aux COUNT(DISTINCT ?s) AS ?numero ");
+                    }
+                    else
+                    {
+                        select.Append($@"SELECT ?ejeX COUNT(DISTINCT ?s) AS ?numero ");
+                    }
                     where.Append("WHERE { ");
                     foreach (string item in filtros)
                     {
                         where.Append(item);
+                    }
+                    if (filtroEspecial)
+                    {
+                        where.Append($@"FILTER(LANG(?aux) = 'es' OR LANG(?aux) = '' OR !isLiteral(?aux))");
                     }
                     where.Append($@"}} ORDER BY {orden}(?ejeX) ");
                 }
@@ -228,7 +261,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     where = new StringBuilder();
 
                     select.Append(mPrefijos);
-                    select.Append($@"SELECT ?ejeX {calculo}(?citationCount0) AS ?numero ");
+                    select.Append($@"SELECT ?ejeX {calculo}(?aux) AS ?numero ");
                     where.Append("WHERE { ");
                     foreach (string item in filtros)
                     {
@@ -242,20 +275,30 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-                        dicResultados.Add(fila["ejeX"].value, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture));
+                        if (filtroEspecial && string.IsNullOrEmpty(itemGrafica.calculo))
+                        {
+                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, fila["aux"].value, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                        }
+                        else
+                        {
+                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, string.Empty, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                        }
                     }
                 }
-                resultadosDimension[itemGrafica] = dicResultados;
+                resultadosDimension[itemGrafica] = listaTuplas;
             });
 
             #region --- Cálculo de los valores del Eje X
             HashSet<string> valuesEje = new HashSet<string>();
 
-            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 if (item.Value != null && item.Value.Any())
                 {
-                    valuesEje.UnionWith(item.Value.Keys);
+                    foreach (Tuple<string, string, float> item2 in item.Value)
+                    {
+                        valuesEje.Add(item2.Item1);
+                    }                    
                 }
             }
 
@@ -271,25 +314,26 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 if (item.Value != null && item.Value.Any())
                 {
                     foreach (string valor in valuesEje)
                     {
-                        if (!item.Value.ContainsKey(valor.ToString()))
+                        if (!item.Value.Where(x => x.Item1.Equals(valor)).Any())
                         {
-                            item.Value.Add(valor.ToString(), 0);
+                            item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
                         }
                     }
                 }
+
                 if (isInt)
                 {
-                    resultadosDimension[item.Key] = item.Value.OrderBy(item => int.Parse(item.Key)).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+                    resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
                 }
                 else
                 {
-                    resultadosDimension[item.Key] = item.Value.OrderBy(item => item.Key).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+                    resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
                 }
             }
 
@@ -306,10 +350,15 @@ namespace Hercules.ED.GraphicEngine.Models
             // Obtención del objeto de la gráfica.
             List<string> listaLabels = valuesEje.ToList();
 
-            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 Dataset dataset = new Dataset();
-                dataset.data = item.Value.Values.ToList();
+                List<float> listaData = new List<float>();
+                foreach(Tuple<string, string, float> itemAux in item.Value)
+                {
+                    listaData.Add(itemAux.Item3);
+                }
+                dataset.data = listaData;
 
                 // Nombre del dato en leyenda.
                 dataset.label = GetTextLang(pLang, item.Key.nombre);
@@ -337,6 +386,9 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 // Eje Y.
                 dataset.yAxisID = item.Key.yAxisID;
+
+                // Eje X.
+                dataset.xAxisID = item.Key.xAxisID;
 
                 data.labels = listaLabels;
                 data.type = item.Key.tipoDimension;

@@ -902,7 +902,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
-                        cvnDouble.Value = Convert.ToByte(int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last()));
+                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last());
 
                         listadoDouble.Add(cvnDouble);
                         continue;
@@ -974,7 +974,7 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            // Si el tamaño del listado no es 2(WOS,SCOPUS,INRECS) o 3 (OTROS) no hago nada
+            // Si el tamaño del listado no es 2(WOS,SCOPUS,INRECS) o 3 (SCHOLAR) no hago nada
             if (dicCodigos.Count > 3 && dicCodigos.Count < 2)
             {
                 return;
@@ -992,7 +992,7 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x=>x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x=>x.values).FirstOrDefault().FirstOrDefault()));
+                cvnDouble.Value = int.Parse(entity.properties.Where(x=>x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x=>x.values).FirstOrDefault().FirstOrDefault());
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1006,7 +1006,7 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()));
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1021,7 +1021,7 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()));
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1031,12 +1031,12 @@ namespace ExportadorWebCV.Utils
 
                 listadoStrings.Add(cvnString);
             }
-            else if (dicCodigos.ElementAt(1).Item3.Equals("OTHERS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
             {
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()));
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1056,6 +1056,7 @@ namespace ExportadorWebCV.Utils
 
                 listadoStrings.Add(cvnString);
             }
+            
 
             if (listadoStrings.Count > 0)
             {

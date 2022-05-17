@@ -34,12 +34,18 @@ namespace Hercules.ED.GraphicEngine.Models
         public string color { get; set; }
         public bool rellenarEjeX { get; set; }
         public List<EjeYConf> yAxisPrint { get; set; }
-
+        public List<EjeXConf> xAxisPrint { get; set; }
         public List<Dimension> dimensiones { get; set; }
     }
+
     public class EjeYConf
     {
         public string yAxisID { get; set; }
+        public string posicion { get; set; }
+    }
+    public class EjeXConf
+    {
+        public string xAxisID { get; set; }
         public string posicion { get; set; }
     }
 
@@ -53,6 +59,6 @@ namespace Hercules.ED.GraphicEngine.Models
         public string stack { get; set; }
         public float anchura { get; set; }
         public string yAxisID { get; set; }
+        public string xAxisID { get; set; }
     }
-
 }

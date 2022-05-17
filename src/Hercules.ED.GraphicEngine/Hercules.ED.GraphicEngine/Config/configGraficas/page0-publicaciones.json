@@ -1,0 +1,80 @@
+{
+  "nombre": {
+    "es": "Página de EJEMPLO"
+  },
+  "filtro": "rdf:type='document'&roh:isValidated='true'",
+  "identificador": "123",
+  "graficas": [
+    {
+      "identificador": "111",
+      "nombre": {
+        "es": "Nombre de la Gráfica de EJEMPLO"
+      },
+      "tipo": "Barras",
+      "configBarras": {
+        "orientacionVertical": true,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x2",
+            "posicion": "top"
+          },
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "yAxisPrint": [
+          {
+            "yAxisID": "y2",
+            "posicion": "right"
+          },
+          {
+            "yAxisID": "y1",
+            "posicion": "left"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Citas Media por Año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "AVG",
+            "tipoDimension": "line",
+            "color": "#000000",
+            "xAxisID": "x2",
+            "yAxisID": "y2"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "yAxisID": "y1"
+          }
+        ]
+      }
+    }
+  ],
+  "facetas": [
+    {
+      "nombre": {
+        "es": "Tipo de publicación"
+      },
+      "filtro": "dc:type@@@dc:title"
+    },
+    {
+      "nombre": {
+        "es": "Año"
+      },
+      "filtro": "roh:year",
+      "numeroItemsFaceta": 10
+    }
+  ]
+}
