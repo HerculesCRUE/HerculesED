@@ -974,7 +974,7 @@ namespace ExportadorWebCV.Utils
                 return;
             }
 
-            // Si el tamaño del listado no es 2(WOS,SCOPUS,INRECS) o 3 (OTROS) no hago nada
+            // Si el tamaño del listado no es 2(WOS,SCOPUS,INRECS) o 3 (SCHOLAR) no hago nada
             if (dicCodigos.Count > 3 && dicCodigos.Count < 2)
             {
                 return;
@@ -1031,7 +1031,7 @@ namespace ExportadorWebCV.Utils
 
                 listadoStrings.Add(cvnString);
             }
-            else if (dicCodigos.ElementAt(1).Item3.Equals("OTHERS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
             {
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
@@ -1056,6 +1056,31 @@ namespace ExportadorWebCV.Utils
 
                 listadoStrings.Add(cvnString);
             }
+            //else if (dicCodigos.ElementAt(1).Item3.Equals("OTHERS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            //{
+            //    //Añado nº de citas
+            //    CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+            //    cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+            //    cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()));
+            //    listadoDouble.Add(cvnDouble);
+
+            //    //Añado Tipo
+            //    CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+            //    cvnString.Code = dicCodigos.ElementAt(1).Item2;
+            //    codeGroup.CvnString.Append(cvnString);
+
+            //    //Añado nombre otros
+            //    CvnItemBeanCvnCodeGroupCvnString cvnStringOthers = new CvnItemBeanCvnCodeGroupCvnString();
+            //    cvnStringOthers.Code = dicCodigos.ElementAt(2).Item2;
+            //    cvnStringOthers.Value = "OTHERS";
+
+            //    //Añado nombre otros
+            //    CvnItemBeanCvnCodeGroupCvnString cvnStringOthersNombre = new CvnItemBeanCvnCodeGroupCvnString();
+            //    cvnStringOthersNombre.Code = dicCodigos.ElementAt(3).Item2;
+            //    cvnStringOthersNombre.Value = entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+
+            //    listadoStrings.Add(cvnString);
+            //}
 
             if (listadoStrings.Count > 0)
             {
