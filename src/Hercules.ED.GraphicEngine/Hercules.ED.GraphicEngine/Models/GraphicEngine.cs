@@ -18,10 +18,11 @@ namespace Hercules.ED.GraphicEngine.Models
     public static class GraphicEngine
     {
         // Prefijos.
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configJson/prefijos.json")));
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
-        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configJson\prefijos.json")));
+        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
+        private static List<ConfigModel> mTabTemplates;
 
         #region --- Páginas
         /// <summary>
@@ -33,14 +34,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static Pagina GetPage(string pIdPagina, string pLang)
         {
             // Lectura del JSON de configuración.
-            List<ConfigModel> listaConfigModel = null;
-            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas/configuration.json"))
-            {
-                string json = reader.ReadToEnd();
-                listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
-            }
-
-            ConfigModel configModel = listaConfigModel.FirstOrDefault(x => x.identificador == pIdPagina);
+            ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
 
             return CrearPagina(configModel, pLang);
         }
@@ -82,14 +76,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaBase GetGrafica(string pIdPagina, string pIdGrafica, string pFiltroFacetas, string pLang)
         {
             // Lectura del JSON de configuración.
-            List<ConfigModel> listaConfigModel = null;
-            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas/configuration.json"))
-            {
-                string json = reader.ReadToEnd();
-                listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
-            }
-
-            ConfigModel configModel = listaConfigModel.FirstOrDefault(x => x.identificador == pIdPagina);
+            ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
             if (configModel != null)
             {
                 Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
@@ -124,6 +111,9 @@ namespace Hercules.ED.GraphicEngine.Models
                         throw new Exception("No se ha configurado dimensiones.");
                     }
                     return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                case EnumGraficas.Circular:
+                    // TODO: Controlar excepciones en la configuración.
+                    return CrearGraficaCircular(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 default:
                     return null;
             }
@@ -151,6 +141,13 @@ namespace Hercules.ED.GraphicEngine.Models
             // Asignación de Options.
             Options options = new Options();
 
+            // Orientación
+            options.indexAxis = "x";
+            if (pGrafica.configBarras.orientacionVertical)
+            {
+                options.indexAxis = "y";
+            }
+
             // Animación
             options.animation = new Animation();
             options.animation.duration = 2000;
@@ -171,7 +168,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
-            
+
             // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
             pGrafica.configBarras.dimensiones.Reverse();
 
@@ -353,6 +350,61 @@ namespace Hercules.ED.GraphicEngine.Models
 
             return grafica;
         }
+
+        public static GraficaBase CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        {
+            ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
+            Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
+
+            // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
+            pGrafica.configBarras.dimensiones.Reverse();
+
+            foreach (Dimension dim in pGrafica.configBarras.dimensiones)
+            {
+                resultadosDimension[dim] = null;
+                dimensionesDataset[dim] = null;
+            }
+
+            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 5 }, itemGrafica =>
+            {
+                SparqlObject resultadoQuery = null;
+                StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+                // Consulta sparql.
+                List<string> filtros = new List<string>();
+                Dictionary<string, float> dicResultados = new Dictionary<string, float>();
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
+                if (!string.IsNullOrEmpty(pFiltroFacetas))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                }
+                if (!string.IsNullOrEmpty(itemGrafica.filtro))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
+                }
+
+                select.Append(mPrefijos);
+                select.Append($@"SELECT ?tipo COUNT(?s) AS ?numero ");
+                where.Append("WHERE { ");
+                foreach (string item in filtros)
+                {
+                    where.Append(item);
+                }
+                where.Append($@"FILTER(LANG(?tipo) = '{pLang}' OR LANG(?tipo) = '' OR !isLiteral(?tipo)) ");
+                where.Append($@"}} ORDER BY DESC (?numero) ");
+
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+
+                    }
+                }
+            });
+
+            return null;
+        }
         #endregion
 
         #region --- Facetas
@@ -370,14 +422,7 @@ namespace Hercules.ED.GraphicEngine.Models
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
 
             // Lectura del JSON de configuración.
-            List<ConfigModel> listaConfigModel = null;
-            using (StreamReader reader = new StreamReader($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas/configuration.json"))
-            {
-                string json = reader.ReadToEnd();
-                listaConfigModel = JsonConvert.DeserializeObject<List<ConfigModel>>(json);
-            }
-
-            ConfigModel configModel = listaConfigModel.FirstOrDefault(x => x.identificador == pIdPagina);
+            ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
             if (configModel != null)
             {
                 FacetaConf faceta = configModel.facetas.FirstOrDefault(x => x.filtro == pIdFaceta);
@@ -471,6 +516,26 @@ namespace Hercules.ED.GraphicEngine.Models
         #endregion
 
         #region --- Utils
+        /// <summary>
+        /// Obtiene la lista de configuraciones.
+        /// </summary>
+        public static List<ConfigModel> TabTemplates
+        {
+            get
+            {
+                if (mTabTemplates == null || mTabTemplates.Count != Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas").Count())
+                {
+                    mTabTemplates = new List<ConfigModel>();
+                    foreach (string file in Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configGraficas"))
+                    {
+                        ConfigModel tab = JsonConvert.DeserializeObject<ConfigModel>(File.ReadAllText(file));
+                        mTabTemplates.Add(tab);
+                    }
+                }
+                return mTabTemplates;
+            }
+        }
+
         /// <summary>
         /// Crea la lista de colores para rellenar las gráficas.
         /// </summary>
