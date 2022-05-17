@@ -1,0 +1,88 @@
+{
+  "nombre": {
+    "es": "Página de EJEMPLO"
+  },
+  "filtro": "rdf:type='document'&roh:isValidated='true'",
+  "identificador": "456",
+  "graficas": [
+    {
+      "identificador": "111",
+      "nombre": {
+        "es": "Nombre de la Gráfica de EJEMPLO"
+      },
+      "tipo": "Barras",
+      "configBarras": {
+        "orientacionVertical": false,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "yAxisPrint": [
+          {
+            "yAxisID": "y2",
+            "posicion": "left"
+          },
+          {
+            "yAxisID": "y1",
+            "posicion": "right"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Citas Media por Año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "AVG",
+            "tipoDimension": "line",
+            "color": "#000000",
+            "yAxisID": "y2"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "yAxisID": "y1"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Artículo Científico"
+            },
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "stack": "stack1",
+            "yAxisID": "y1"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Capítulo de Libro"
+            },
+            "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
+            "tipoDimension": "bar",
+            "color": "#6CAFD3",
+            "stack": "stack1",
+            "yAxisID": "y1"
+          }
+        ]
+      }
+    }
+  ],
+  "facetas": [
+    {
+      "nombre": {
+        "es": "Tipo de publicación"
+      },
+      "filtro": "dc:type@@@dc:title"
+    },
+    {
+      "nombre": {
+        "es": "Año"
+      },
+      "filtro": "roh:year",
+      "numeroItemsFaceta": 10
+    }
+  ]
+}
