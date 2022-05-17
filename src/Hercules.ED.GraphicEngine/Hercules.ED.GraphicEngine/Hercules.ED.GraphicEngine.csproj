@@ -12,14 +12,16 @@
 
   <ItemGroup>
     <Folder Include="Config\configJson\" />
-    <Folder Include="Config\configGraficas\" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\configGraficas\configuration.json">
+    <Content Update="Config\configGraficas\page1-investigadores.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Config\configGraficas\page0-publicaciones.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Config\configJson\prefijos.json">
