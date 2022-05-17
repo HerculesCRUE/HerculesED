@@ -902,7 +902,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
-                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last());
+                        cvnDouble.Value = Convert.ToByte(int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last()));
 
                         listadoDouble.Add(cvnDouble);
                         continue;
@@ -992,9 +992,9 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x=>x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x=>x.values).FirstOrDefault().FirstOrDefault());
-
+                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x=>x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x=>x.values).FirstOrDefault().FirstOrDefault()));
                 listadoDouble.Add(cvnDouble);
+
                 //Añado Tipo
                 CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnString.Code = dicCodigos.ElementAt(1).Item2;
@@ -1006,9 +1006,9 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
-
+                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()));
                 listadoDouble.Add(cvnDouble);
+
                 //Añado Tipo
                 CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnString.Code = dicCodigos.ElementAt(1).Item2;
@@ -1021,9 +1021,9 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
-
+                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()));
                 listadoDouble.Add(cvnDouble);
+
                 //Añado Tipo
                 CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnString.Code = dicCodigos.ElementAt(1).Item2;
@@ -1036,22 +1036,23 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
-
+                cvnDouble.Value = Convert.ToByte(int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()));
                 listadoDouble.Add(cvnDouble);
+
                 //Añado Tipo
                 CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnString.Code = dicCodigos.ElementAt(1).Item2;
                 codeGroup.CvnString.Append(cvnString);
+
                 //Añado nombre otros
                 CvnItemBeanCvnCodeGroupCvnString cvnStringOthers = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnStringOthers.Code = dicCodigos.ElementAt(2).Item2;
                 cvnStringOthers.Value = "OTHERS";
+
                 //Añado nombre otros
                 CvnItemBeanCvnCodeGroupCvnString cvnStringOthersNombre = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnStringOthersNombre.Code = dicCodigos.ElementAt(3).Item2;
                 cvnStringOthersNombre.Value = entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
-
 
                 listadoStrings.Add(cvnString);
             }

@@ -150,7 +150,7 @@ namespace ImportadorWebCV
     {
 
         /// <remarks/>
-        public int Value { get; set; }
+        public byte Value { get; set; }
     }
 
     /// <remarks/>
