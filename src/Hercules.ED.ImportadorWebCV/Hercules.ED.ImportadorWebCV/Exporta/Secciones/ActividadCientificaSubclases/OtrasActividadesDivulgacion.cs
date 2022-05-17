@@ -103,7 +103,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.040.020", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulTipoEventoOtros),
                     "060.010.040.030", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubActaAdmisionExt),
+                UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubActaAdmisionExt),
                     "060.010.040.190", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulAmbitoEvento),
                     "060.010.040.060", keyValue.Value);
