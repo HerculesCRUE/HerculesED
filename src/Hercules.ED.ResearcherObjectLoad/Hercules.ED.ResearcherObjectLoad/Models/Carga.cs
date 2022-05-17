@@ -761,9 +761,18 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                         //Insertamos en la cola del desnormalizador
                         RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
-                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, idsPersonasActualizar ));
-                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, idsDocumentosActualizar));
-                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
+                        if (idsPersonasActualizar.Count > 0)
+                        {
+                            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, idsPersonasActualizar));
+                        }
+                        if (idsDocumentosActualizar.Count > 0)
+                        {
+                            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, idsDocumentosActualizar));
+                        }
+                        if (idsResearchObjectsActualizar.Count > 0)
+                        {
+                            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
+                        }
 
 
                         //Cargamos las notificaciones
