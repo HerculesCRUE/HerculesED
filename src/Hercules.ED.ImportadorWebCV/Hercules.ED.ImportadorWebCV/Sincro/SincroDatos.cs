@@ -13,13 +13,50 @@ namespace ImportadorWebCV.Sincro
 {
     public class SincroDatos
     {
+        readonly ConfigService mConfiguracion;
         private cvnRootResultBean cvn;
         private string cvID;
         private string personID;
 
-        public SincroDatos()
+        /// <summary>
+        /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
+        /// </summary>
+        /// <param name="Configuracion"></param>
+        /// <param name="cvID"></param>
+        /// <param name="CVFile"></param>
+        public SincroDatos(ConfigService Configuracion, string cvID, IFormFile CVFile)
         {
-            cvn = new cvnRootResultBean();
+            mConfiguracion = Configuracion;
+            string extensionFile = Path.GetExtension(CVFile.FileName);
+
+            //Si no es un XML o un PDF. No hago nada
+            if (!extensionFile.Equals(".xml") && !extensionFile.Equals(".pdf"))
+            {
+                throw new FileLoadException("Extensión de archivo invalida");
+            }
+            //Si es un PDF lo convierto a XML y lo inserto.
+            if (extensionFile.Equals(".pdf"))
+            {
+                FormFile CVFileAsXML = GenerarRootBean(mConfiguracion, CVFile);
+
+                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
+                {
+                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                }
+                this.cvID = cvID;
+                this.personID = Utility.PersonaCV(cvID);
+            }
+            else
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
+                {
+                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                }
+                this.cvID = cvID;
+                this.personID = Utility.PersonaCV(cvID);
+            }
         }
 
         /// <summary>
@@ -51,46 +88,7 @@ namespace ImportadorWebCV.Sincro
             };
             return file;
         }
-
-        /// <summary>
-        /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
-        /// </summary>
-        /// <param name="_Configuracion"></param>
-        /// <param name="cvID"></param>
-        /// <param name="CVFile"></param>
-        public SincroDatos(ConfigService _Configuracion, string cvID, IFormFile CVFile)
-        {
-            string extensionFile = Path.GetExtension(CVFile.FileName);
-
-            //Si no es un XML o un PDF. No hago nada
-            if (!extensionFile.Equals(".xml") && !extensionFile.Equals(".pdf"))
-            {
-                throw new FileLoadException("Extensión de archivo invalida");
-            }
-            //Si es un PDF lo convierto a XML y lo inserto.
-            if (extensionFile.Equals(".pdf"))
-            {
-                FormFile CVFileAsXML = GenerarRootBean(_Configuracion, CVFile);
-
-                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
-                {
-                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
-                }
-                this.cvID = cvID;
-                this.personID = Utility.PersonaCV(cvID);
-            }
-            else
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
-                {
-                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
-                }
-                this.cvID = cvID;
-                this.personID = Utility.PersonaCV(cvID);
-            }
-        }
+        
 
         /// <summary>
         /// Metodo para sincronizar los datos pertenecientes al 
