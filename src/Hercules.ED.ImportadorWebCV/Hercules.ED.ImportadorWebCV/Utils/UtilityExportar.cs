@@ -838,8 +838,8 @@ namespace ExportadorWebCV.Utils
         /// <param name="code">Codigo del CodeGroup</param>
         /// <param name="entity"></param>
         /// <param name="secciones"></param>
-        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity, 
-            [Optional] string othersType,[Optional] string othersOthers, [Optional] string secciones)
+        public static void AddCvnItemBeanCvnCodeGroup(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity,
+            [Optional] string othersType, [Optional] string othersOthers, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
             if (Utility.CodigoIncorrecto(code))
@@ -868,8 +868,8 @@ namespace ExportadorWebCV.Utils
             //Si se envia opción de otros. Elimino la ocurrencia del tipo "OTHERS" y solo mantengo el valor especificado en el tipo otros.
             if (listadoTuplas.Any(x => x.Item3.Equals(othersOthers)))
             {
-                List<string> idOthers = listadoTuplas.Where(x => x.Item3.Equals(othersOthers)).Select(x=>x.Item4).ToList();
-                foreach(string identificador in idOthers)
+                List<string> idOthers = listadoTuplas.Where(x => x.Item3.Equals(othersOthers)).Select(x => x.Item4).ToList();
+                foreach (string identificador in idOthers)
                 {
                     listadoTuplas.RemoveAll(x => x.Item4.Equals(identificador) && x.Item3.Equals(othersType));
                 }
@@ -902,7 +902,7 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
-                        cvnDouble.Value = Encoding.ASCII.GetBytes(tupla.ElementAt(j).Item4.Split("@@@").Last()).FirstOrDefault();
+                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last());
 
                         listadoDouble.Add(cvnDouble);
                         continue;
@@ -954,6 +954,121 @@ namespace ExportadorWebCV.Utils
                 }
 
 
+                itemBean.Items.Add(codeGroup);
+            }
+        }
+
+        /// <summary>
+        /// Añade citas al objeto <paramref name="itemBean"/>.
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="dicCodigos">1º elemento Double con la propiedad
+        /// 2º elemento String con "WOS/SCOPUS/INRECS/OTHERS"</param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        public static void AddCitas(CvnItemBean itemBean, List<Tuple<string, string, string>> dicCodigos, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            // Si el tamaño del listado no es 2(WOS,SCOPUS,INRECS) o 3 (OTROS) no hago nada
+            if (dicCodigos.Count > 3 && dicCodigos.Count < 2)
+            {
+                return;
+            }
+
+            //Inicializacion de valores
+            CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
+            codeGroup.Code = code;
+
+            List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new List<CvnItemBeanCvnCodeGroupCvnString>();
+            List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new List<CvnItemBeanCvnCodeGroupCvnDouble>();
+
+            if (dicCodigos.ElementAt(1).Item3.Equals("WOS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))))
+            {
+                //Añado nº de citas
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+                cvnDouble.Value = int.Parse(entity.properties.Where(x=>x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x=>x.values).FirstOrDefault().FirstOrDefault());
+
+                listadoDouble.Add(cvnDouble);
+                //Añado Tipo
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = dicCodigos.ElementAt(1).Item2;
+                cvnString.Value = "000";
+                listadoStrings.Add(cvnString);
+            }
+            else if (dicCodigos.ElementAt(1).Item3.Equals("SCOPUS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))))
+            {
+                //Añado nº de citas
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+
+                listadoDouble.Add(cvnDouble);
+                //Añado Tipo
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = dicCodigos.ElementAt(1).Item2;
+                cvnString.Value = "010";
+
+                listadoStrings.Add(cvnString);
+            }
+            else if (dicCodigos.ElementAt(1).Item3.Equals("INRECS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))))
+            {
+                //Añado nº de citas
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+
+                listadoDouble.Add(cvnDouble);
+                //Añado Tipo
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = dicCodigos.ElementAt(1).Item2;
+                cvnString.Value = "020";
+
+                listadoStrings.Add(cvnString);
+            }
+            else if (dicCodigos.ElementAt(1).Item3.Equals("OTHERS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            {
+                //Añado nº de citas
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+
+                listadoDouble.Add(cvnDouble);
+                //Añado Tipo
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = dicCodigos.ElementAt(1).Item2;
+                codeGroup.CvnString.Append(cvnString);
+                //Añado nombre otros
+                CvnItemBeanCvnCodeGroupCvnString cvnStringOthers = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnStringOthers.Code = dicCodigos.ElementAt(2).Item2;
+                cvnStringOthers.Value = "OTHERS";
+                //Añado nombre otros
+                CvnItemBeanCvnCodeGroupCvnString cvnStringOthersNombre = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnStringOthersNombre.Code = dicCodigos.ElementAt(3).Item2;
+                cvnStringOthersNombre.Value = entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+
+
+                listadoStrings.Add(cvnString);
+            }
+
+            if (listadoStrings.Count > 0)
+            {
+                codeGroup.CvnString = new CvnItemBeanCvnCodeGroupCvnString[10];
+                codeGroup.CvnString = listadoStrings.ToArray();
+            }
+            if (listadoDouble.Count > 0)
+            {
+                codeGroup.CvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble[10];
+                codeGroup.CvnDouble = listadoDouble.ToArray();
+            }
+
+            if (codeGroup.CvnString != null && codeGroup.CvnString.Length != 0)
+            {
                 itemBean.Items.Add(codeGroup);
             }
         }

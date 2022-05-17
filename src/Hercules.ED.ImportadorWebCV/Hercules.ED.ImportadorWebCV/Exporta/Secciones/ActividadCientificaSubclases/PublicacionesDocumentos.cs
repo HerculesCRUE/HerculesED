@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class PublicacionesDocumentos:SeccionBase
+    public class PublicacionesDocumentos : SeccionBase
     {
         List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
@@ -54,7 +54,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 propiedadesPagIniPagFin.Add("PaginaInicial", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni));
                 propiedadesPagIniPagFin.Add("PaginaFinal", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin));
                 UtilityExportar.AddCvnItemBeanCvnPageBean(itemBean, propiedadesPagIniPagFin, "060.010.010.090", keyValue.Value);
-                
+
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubPais),
                     "060.010.010.110", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubCCAA),
@@ -120,11 +120,45 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosIDOtroPubDigital));
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean, dicNombreID, "060.010.010.400", keyValue.Value);
 
-                // TODO quedan apartados por completar en la sección
-
                 // ISBN
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubISBN),
                     "060.010.010.160", keyValue.Value);
+
+                // Citas 
+                List<Tuple<string, string, string>> dicCodigosWOS = new List<Tuple<string, string, string>>();
+                dicCodigosWOS.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS)));
+                dicCodigosWOS.Add(new Tuple<string, string, string>("String", "060.010.010.320", "WOS"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosWOS,
+                    "060.010.010.310", keyValue.Value);
+
+                List<Tuple<string, string, string>> dicCodigosScopus = new List<Tuple<string, string, string>>();
+                dicCodigosScopus.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus)));
+                dicCodigosScopus.Add(new Tuple<string, string, string>("String", "060.010.010.320", "SCOPUS"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosScopus,
+                    "060.010.010.310", keyValue.Value);
+
+                List<Tuple<string, string, string>> dicCodigosInrecs = new List<Tuple<string, string, string>>();
+                dicCodigosInrecs.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasInrecs)));
+                dicCodigosInrecs.Add(new Tuple<string, string, string>("String", "060.010.010.320", "INRECS"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosInrecs,
+                    "060.010.010.310", keyValue.Value);
+
+                List<Tuple<string, string, string>> dicCodigosScholar = new List<Tuple<string, string, string>>();
+                dicCodigosScholar.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScholar)));
+                dicCodigosScholar.Add(new Tuple<string, string, string>("String", "060.010.010.320", "OTHERS"));
+                dicCodigosScholar.Add(new Tuple<string, string, string>("String", "060.010.010.370", "Semantic Scholar"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosScholar,
+                    "060.010.010.310", keyValue.Value);
+
+                List<Tuple<string, string, string>> dicCodigosOther = new List<Tuple<string, string, string>>();
+                dicCodigosOther.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosOtrasCitas)));
+                dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.010.320", "OTHERS"));
+                dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.010.370", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosOtrasCitasNombre)));
+                UtilityExportar.AddCitas(itemBean, dicCodigosOther,
+                    "060.010.010.310", keyValue.Value);
+
+                // TODO Indice de impacto
+
 
                 listado.Add(itemBean);
             }
