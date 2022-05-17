@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace DesnormalizadorHercules.Models
+namespace DesnormalizadorHercules.Models.Actualizadores
 {
     //TODO comentarios completados, falta eliminar froms
 
@@ -30,17 +30,17 @@ namespace DesnormalizadorHercules.Models
         /// Además desnormalizamos los nombres dentro de la entidad auxiliar http://w3id.org/roh/PersonAux a la que apuntan estas propiedades
         /// No tiene dependencias
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarMiembros(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        public void ActualizarMiembros(List<string> pGroups = null)
         {
             string fechaActual = DateTime.UtcNow.ToString("yyyyMMdd000000");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -52,7 +52,7 @@ namespace DesnormalizadorHercules.Models
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select * where{select distinct ?group ?person ?nick ?ip  ";
+                    String select = @"select distinct ?group ?person ?nick ?ip  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -85,7 +85,7 @@ namespace DesnormalizadorHercules.Models
                                             BIND('false' as ?ip)
                                         }}
                                     }}
-                                }}}}order by desc(?group) limit {limit}";
+                                }}order by desc(?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                     InsercionMiembrosProyectoGrupo(resultado.results.bindings, "group");
                     if (resultado.results.bindings.Count != limit)
@@ -98,7 +98,7 @@ namespace DesnormalizadorHercules.Models
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select * where{select distinct ?group ?propPersonAux ?personAux  ";
+                    String select = @"select distinct ?group ?propPersonAux ?personAux  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -135,7 +135,7 @@ namespace DesnormalizadorHercules.Models
                                             FILTER(?fechaPersonaInitAux<={fechaActual} AND ?fechaPersonaEndAux>={fechaActual})
                                         }}
                                     }}                                    
-                                }}}}order by desc(?group) limit {limit}";
+                                }}order by desc(?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                     EliminacionMiembrosProyectoGrupo(resultado.results.bindings, "group");
                     if (resultado.results.bindings.Count != limit)
@@ -156,7 +156,7 @@ namespace DesnormalizadorHercules.Models
                     {
                         int limit = 500;
                         //TODO eliminar from
-                        String select = @"select * where{select distinct ?group ?personAux ?propPersonAux ?property ?propertyLoad ?propertyToLoad from <http://gnoss.com/person.owl> ";
+                        String select = @"select distinct ?group ?personAux ?propPersonAux ?property ?propertyLoad ?propertyToLoad from <http://gnoss.com/person.owl> ";
                         String where = @$"where{{
                                     {filter}
                                     {{
@@ -190,7 +190,7 @@ namespace DesnormalizadorHercules.Models
                                             )
                                         }}
                                     }}
-                                }}}}order by desc(?group) limit {limit}";
+                                }}order by desc(?group) limit {limit}";
                         SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                         ActualizarPropiedadMiembrosProyectoGrupo(resultado.results.bindings, "group");
                         if (resultado.results.bindings.Count != limit)
@@ -204,23 +204,104 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
+        /// Actualizamos en la propiedad http://w3id.org/roh/membersGroup de los http://xmlns.com/foaf/0.1/Group
+        /// todos los miembros del grupo 
+        /// Depende de ActualizadorGroup.ActualizarMiembros
+        /// </summary>
+        /// <param name="pGroups">IDs de los grupos</param>
+        public void ActualizarMiembrosUnificados(List<string> pGroups = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
+            {
+                filters.Add($" FILTER(?group in(<{string.Join(">,<", pGroups)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+            foreach (string filter in filters)
+            {
+                //Creamos los miembros
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select distinct ?group ?person ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {{                                        
+                                        select distinct ?group ?person
+                                        Where{{                               
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.                                                 
+                                            ?group ?propRol ?rol.
+                                            FILTER(?propRol in ( <http://w3id.org/roh/mainResearchers>, <http://w3id.org/roh/researchers>))
+                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person    
+                                        }}
+                                    }}
+                                    MINUS
+                                    {{
+                                        ?group a <http://xmlns.com/foaf/0.1/Group>.
+                                        ?group <http://w3id.org/roh/membersGroup> ?person.
+                                    }}
+                                }}order by desc(?group) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersGroup", "group", "person");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //Eliminamos los miembros
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select distinct ?group ?person ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {{         
+                                        ?group a <http://xmlns.com/foaf/0.1/Group>.
+                                        ?group <http://w3id.org/roh/membersGroup> ?person.                                                      
+                                    }}
+                                    MINUS
+                                    {{
+                                        select distinct ?group ?person
+                                        Where{{                               
+                                            ?group a <http://xmlns.com/foaf/0.1/Group>.
+                                            ?group ?propRol ?rol.
+                                            FILTER(?propRol in ( <http://w3id.org/roh/mainResearchers>, <http://w3id.org/roh/researchers>))
+                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person      
+                                        }}
+                                    }}
+                                }}order by desc(?group) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersGroup", "group", "person");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/isValidated de los http://xmlns.com/foaf/0.1/Group
         /// los grupos validados (son los proyectos oficiales, es decir, los que tienen http://w3id.org/roh/crisIdentifier)
         /// Esta propiedad se utilizará como filtro en el bucador general de grupos
         /// No tiene dependencias
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarGruposValidados(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        public void ActualizarGruposValidados(List<string> pGroups = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("group", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/isValidated");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -231,7 +312,7 @@ namespace DesnormalizadorHercules.Models
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select * where{ select ?group ?isValidatedCargado ?isValidatedCargar ";
+                    String select = @"select ?group ?isValidatedCargado ?isValidatedCargar ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -250,7 +331,7 @@ namespace DesnormalizadorHercules.Models
                               }}
                             }}
                             FILTER(?isValidatedCargado!= ?isValidatedCargar OR !BOUND(?isValidatedCargado) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -276,20 +357,20 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/membersNumber de los http://xmlns.com/foaf/0.1/Group 
         /// el nº de miembros 
-        /// Depende de ActualizadorGrupos.ActualizarMiembros
+        /// Depende de ActualizadorGrupos.ActualizarMiembrosUnificados
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarNumeroMiembros(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        public void ActualizarNumeroMiembros(List<string> pGroups = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("group", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/membersNumber");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -301,7 +382,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?group ?numMiembrosCargados ?numMiembrosACargar  ";
+                    String select = @"select ?group ?numMiembrosCargados ?numMiembrosACargar  ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -314,13 +395,11 @@ namespace DesnormalizadorHercules.Models
                               select ?group count(distinct ?person) as ?numMiembrosACargar
                               Where{{                               
                                 ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                ?group ?propRol ?researcher.
-                                FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
-                                ?researcher <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                ?group <http://w3id.org/roh/membersGroup> ?person.
                               }}Group by ?group 
                             }}
                             FILTER(?numMiembrosCargados!= ?numMiembrosACargar OR !BOUND(?numMiembrosCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -348,18 +427,19 @@ namespace DesnormalizadorHercules.Models
         /// el nº de colaboradores  (personas con autorías en documentos del grupo validados o miembros de proyectos validados del grupo que no son miembros del grupo)
         /// Depende de ActualizadorProject.ActualizarPertenenciaGrupos, ActualizadorDocument.ActualizarPertenenciaGrupos y ActualizadorDocument.ActualizarGruposValidados
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarNumeroColaboradores(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        /// <param name="pDocuments">ID de documentos</param>
+        public void ActualizarNumeroColaboradores(List<string> pGroups = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("group", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/collaboratorsNumber");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -371,7 +451,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?group ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/person.owl> from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
+                    String select = @"select ?group ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/person.owl> from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -430,7 +510,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?group 
                             }}
                             FILTER(?numColaboradoresCargados!= ?numColaboradoresACargar OR !BOUND(?numColaboradoresCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -458,18 +538,23 @@ namespace DesnormalizadorHercules.Models
         /// el nº de proyectos (proyectos que apuntan al grupo con la propiedad 'http://w3id.org/roh/isProducedBy')
         /// Depende de ActualizadorProject.ActualizarPertenenciaGrupos y ActualizadorDocument.ActualizarGruposValidados
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarNumeroProyectos(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        /// <param name="pProjects">IDs de proyectos</param>
+        public void ActualizarNumeroProyectos(List<string> pGroups = null, List<string> pProjects = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("group", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/projectsNumber");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" ?project <http://w3id.org/roh/isProducedBy> ?group.  FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
+            }
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -482,7 +567,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?group  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl> ";
+                    String select = @"select ?group  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -504,7 +589,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?group 
                             }}
                             FILTER(?numProyectosCargados!= ?numProyectosACargar OR !BOUND(?numProyectosCargados) )
-                        }}}} limit {limit}";
+                        }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -532,18 +617,19 @@ namespace DesnormalizadorHercules.Models
         /// el número de publicaciones validadas del grupo (publicaciones que apuntan al grupo con la propiedad 'http://w3id.org/roh/isProducedBy')
         /// Depende de ActualizadorDocument.ActualizarPertenenciaGrupos
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarNumeroPublicaciones(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        /// <param name="pDocuments">ID de documentos</param>
+        public void ActualizarNumeroPublicaciones(List<string> pGroups = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("group", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/publicationsNumber");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -556,7 +642,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?group  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl>  ";
+                    String select = @"select ?group  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl>  ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -576,7 +662,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?group 
                             }}
                             FILTER(?numDocumentosCargados!= ?numDocumentosACargar OR !BOUND(?numDocumentosCargados) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -602,20 +688,20 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/themedAreasNumber de los http://xmlns.com/foaf/0.1/Group  
         /// el número de áreas temáticas de las publicaciones validads del grupo, este dato es inferido de las publicaciones validadas que pertenecen al grupo (publicaciones que apuntan al grupo con la propiedad 'http://w3id.org/roh/isProducedBy')
-        /// Depende de ActualizadorDocument.ActualizarPertenenciaGrupos
+        /// Depende de ActualizadorDocument.ActualizarPertenenciaGrupos, ActualizadorDocument.ActualizarDocumentosValidados y ActualizadorDocument.ActualizarAreasDocumentos
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarNumeroAreasTematicas(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        public void ActualizarNumeroAreasTematicas(List<string> pGroups = null)
         {
             //Eliminamos los duplicados
             EliminarDuplicados("group", "http://xmlns.com/foaf/0.1/Group", "http://w3id.org/roh/themedAreasNumber");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -628,7 +714,7 @@ namespace DesnormalizadorHercules.Models
                 {
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select ?group  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select ?group  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl>  from <http://gnoss.com/taxonomy.owl>  ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -656,7 +742,7 @@ namespace DesnormalizadorHercules.Models
                               }}Group by ?group 
                             }}
                             FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar OR !BOUND(?numAreasTematicasCargadas) )
-                            }}}} limit {limit}";
+                            }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
@@ -684,17 +770,17 @@ namespace DesnormalizadorHercules.Models
         /// la líneas de investigación de sus miembros activos en el momento actual
         /// No tiene dependencias
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarPertenenciaLineas(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        public void ActualizarPertenenciaLineas(List<string> pGroups = null)
         {
             string fechaActual = DateTime.UtcNow.ToString("yyyyMMdd000000");
 
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -707,7 +793,7 @@ namespace DesnormalizadorHercules.Models
                     //Añadimos líneas
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select distinct ?group  ?linea  from <http://gnoss.com/person.owl> ";
+                    String select = @"select distinct ?group  ?linea  from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -739,7 +825,7 @@ namespace DesnormalizadorHercules.Models
                                             }}
                                         }}
                                     }}                                    
-                                }}}}order by desc(?group) limit {limit}";
+                                }}order by desc(?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                     InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "group", "linea");
                     if (resultado.results.bindings.Count != limit)
@@ -753,7 +839,7 @@ namespace DesnormalizadorHercules.Models
                     //Eliminamos líneas
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"select * where{ select distinct ?group  ?linea  from <http://gnoss.com/person.owl> ";
+                    String select = @"select distinct ?group  ?linea  from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -785,7 +871,7 @@ namespace DesnormalizadorHercules.Models
                                             FILTER(?startLine<={fechaActual} AND ?endLine>={fechaActual} )
                                         }}
                                     }}
-                                }}}}order by desc(?group) limit {limit}";
+                                }}order by desc(?group) limit {limit}";
                     var resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                     EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "group", "linea");
                     if (resultado.results.bindings.Count != limit)
@@ -799,17 +885,17 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/hasKnowledgeArea de los http://xmlns.com/foaf/0.1/Group 
         /// las áreas de los miembros actuales del grupo
-        /// Depende de ActualizadorGrupos.ActualizarMiembros y ActualizadorPerson.ActualizarAreasPersonas
+        /// Depende de ActualizadorGrupos.ActualizarMiembrosUnificados y ActualizadorPerson.ActualizarAreasPersonas
         /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarAreasGrupos(List<string> pGrupos = null)
+        /// <param name="pGroups">IDs de los grupos</param>
+        public void ActualizarAreasGrupos(List<string> pGroups = null)
         {
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
+            HashSet<string> filters = new HashSet<string>();
+            if (pGroups != null && pGroups.Count > 0)
             {
-                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGrupos)}>))");
+                filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -917,9 +1003,7 @@ namespace DesnormalizadorHercules.Models
                                 select  distinct ?group ?hasKnowledgeAreaPerson ?categoryNode where{{
                                     ?group a <http://xmlns.com/foaf/0.1/Group>.
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                    ?group ?propRol ?role.
-					                FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
-					                ?role <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.                            
+                                    ?group <http://w3id.org/roh/membersGroup> ?person.                            
                                     ?person  <http://vivoweb.org/ontology/core#hasResearchArea> ?hasKnowledgeAreaPerson.
                                     ?hasKnowledgeAreaPerson <http://w3id.org/roh/categoryNode> ?categoryNode.
                                     MINUS{{
@@ -952,7 +1036,7 @@ namespace DesnormalizadorHercules.Models
                     int limit = 500;
                     //ELIMINAMOS
                     //TODO eliminar from
-                    String select = @"select distinct * where{select ?group ?hasKnowledgeArea from <http://gnoss.com/person.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct * where{select ?group ?hasKnowledgeArea from <http://gnoss.com/person.owl> from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -971,9 +1055,7 @@ namespace DesnormalizadorHercules.Models
                                 select  distinct ?group ?hasKnowledgeAreaPerson ?categoryNode where{{
                                     ?group a <http://xmlns.com/foaf/0.1/Group>.
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
-                                    ?group ?propRol ?role.
-					                FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
-					                ?role <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.                                     
+                                    ?group <http://w3id.org/roh/membersGroup> ?person.
                                     ?person  <http://vivoweb.org/ontology/core#hasResearchArea> ?hasKnowledgeAreaPerson.
                                     ?hasKnowledgeAreaPerson <http://w3id.org/roh/categoryNode> ?categoryNode.
                                     MINUS{{
@@ -985,87 +1067,6 @@ namespace DesnormalizadorHercules.Models
                             }}}}order by (?group) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
                     EliminarCategorias(resultado, "group", "http://w3id.org/roh/hasKnowledgeArea");
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Actualizamos en la propiedad http://w3id.org/roh/membersGroup de los http://xmlns.com/foaf/0.1/Group
-        /// todos los miembros del grupo 
-        /// Depende de ActualizadorGroup.ActualizarMiembros
-        /// </summary>
-        /// <param name="pGrupos">IDs de los grupos</param>
-        public void ActualizarMiembrosUnificados(List<string> pGrupos = null)
-        {
-            List<string> filters = new List<string>();
-            if (pGrupos != null && pGrupos.Count > 0)
-            {
-                filters.Add($" FILTER(?group =<{string.Join(">,<", pGrupos)}>)");
-            }
-            else
-            {
-                filters.Add("");
-            }
-            foreach (string filter in filters)
-            {
-                //Creamos los miembros
-                while (true)
-                {
-                    int limit = 500;
-                    String select = @"select * where{select distinct ?group ?person ";
-                    String where = @$"where{{
-                                    {filter}
-                                    {{                                        
-                                        select distinct ?group ?person
-                                        Where{{                               
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.                                                 
-                                            ?group ?propRol ?rol.
-                                            FILTER(?propRol in ( <http://w3id.org/roh/mainResearchers>, <http://w3id.org/roh/researchers>))
-                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person    
-                                        }}
-                                    }}
-                                    MINUS
-                                    {{
-                                        ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                        ?group <http://w3id.org/roh/membersGroup> ?person.
-                                    }}
-                                }}}}order by desc(?group) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
-                    InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersGroup", "group", "person");
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-
-                //Eliminamos los miembros
-                while (true)
-                {
-                    int limit = 500;
-                    String select = @"select * where{select distinct ?group ?person ";
-                    String where = @$"where{{
-                                    {filter}
-                                    {{         
-                                        ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                        ?group <http://w3id.org/roh/membersGroup> ?person.                                                      
-                                    }}
-                                    MINUS
-                                    {{
-                                        select distinct ?group ?person
-                                        Where{{                               
-                                            ?group a <http://xmlns.com/foaf/0.1/Group>.
-                                            ?group ?propRol ?rol.
-                                            FILTER(?propRol in ( <http://w3id.org/roh/mainResearchers>, <http://w3id.org/roh/researchers>))
-                                            ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person      
-                                        }}
-                                    }}
-                                }}}}order by desc(?group) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
-                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/membersGroup", "group", "person");
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;

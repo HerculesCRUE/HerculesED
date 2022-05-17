@@ -258,6 +258,23 @@ var edicionCV = {
 		.page-cv .resource-list .resource .middle-wrap .content-wrap .description-wrap .group ul li{
 			margin-bottom: 0;
 		}
+		
+		#collapse-autores .collapse-toggle, #collapse-lista-autores .user-list .collapse-toggle {
+			font-size: inherit;
+			font-weight: 500;
+			text-transform: initial;
+			color: var(--c-primario);
+		}
+		
+		#collapse-lista-autores .user-list > ul > li {
+			padding-right: 12px;
+		}
+		
+		#collapse-lista-autores .user-list {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+		}
 
 		</style>`);
 
@@ -2281,9 +2298,15 @@ var edicionCV = {
                 }
                 var iconAdd = "add";
                 var classList = "";
+				var authorList=false;
+				var ocultarEdicionAuthorList='';
                 if ($(this).hasClass('entityauxauthorlist')) {
                     iconAdd = "person_add";
                     classList = " resource-list-autores";
+					authorList=true;
+					ocultarEdicionAuthorList=`<a class="collapse-toggle" data-toggle="collapse" href="#collapse-autores" role="button" aria-expanded="true" aria-controls="collapse-autores">
+                            ${GetText('CV_OCULTAR_EDICION')}
+                        </a>`;
                 }
                 var htmlAdd = "";
                 if (multiple || (aux && items.length == 0)) {
@@ -2308,6 +2331,7 @@ var edicionCV = {
 										</span>
 									</div>`;*/
                 }
+				
                 var htmlAcciones = `
 									<div class="simple-collapse-content">
 										<div class="acciones-listado acciones-listado-edicion">
@@ -2326,8 +2350,53 @@ var edicionCV = {
 												${that.repintarListadoEntityItems(items,idTemp,$(this).attr('order'),texto)}
 											</div>
 										</div>
+										${ocultarEdicionAuthorList}
 									</div>
 								</div>`;
+				//Si son los autores de un documento hay que pintarlos diferente
+				if(authorList)
+				{
+					var authorList='';
+					
+					var autores=$(this).find('div.item.added.entityaux');
+					
+					autores = autores.sort(function(a, b) {
+						var ordenA = $(a).find('input[propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment"]').val();
+						ordenA = parseInt(ordenA);
+						var ordenB = $(b).children('input[propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment"]').val();						
+						ordenB = parseInt(ordenB);
+						if (ordenA > ordenB) {
+							return 1;
+						} else if (ordenA < ordenB) {
+							return -1;
+						} else {
+							return 0;
+						}
+					});
+					
+					
+					$(autores).each(function() {
+						var nombre=$(this).find('span[route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"]').text();
+						authorList+=`<li>${nombre}</li>`;
+					});
+					
+					
+					htmlAcciones=`	<div class="simple-collapse-content">
+										<div class="collapse show" id="collapse-lista-autores" style="">
+											<div class="simple-collapse-content">
+												<div class="user-list">
+													<ul class="no-list-style d-flex flex-wrap align-items-center">
+													${authorList}
+													</ul>
+													<a class="collapse-toggle collapsed" data-toggle="collapse" href="#collapse-autores" role="button" aria-expanded="false" aria-controls="collapse-autores">
+														${GetText('CV_EDITAR')}
+													</a>
+												</div>
+											</div>
+										</div>
+										<div class="collapse" id="collapse-autores">${htmlAcciones}</div>
+									</div>`;
+				}
                 $(this).append(htmlAcciones);
             } else {
                 htmlAcciones = "";
@@ -2825,6 +2894,7 @@ var edicionCV = {
         plegarSubFacetas.init();
         operativaFormularioTesauro.init();
 		iniciarComportamientoImagenUsuario.init();
+		edicionListaAutorCV.init();
         var that = this;
 
         //Tesauros
@@ -6123,6 +6193,31 @@ cambioTraducciones.comportamiento= function () {
 			edicionCV.mostrarTraducciones();
 		}
 	});
+};
+
+var edicionListaAutorCV = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.collapse_lista_autores = $('#collapse-lista-autores');
+        this.collapse_autores = $('#collapse-autores');
+    },
+    comportamiento: function () {
+        var that = this;
+        this.collapse_lista_autores.find('.collapse-toggle').off('click').on('click', function () {
+            if (that.collapse_lista_autores.hasClass('show')) {
+                that.collapse_lista_autores.collapse('hide');
+            }
+        });
+
+        this.collapse_autores.find('.collapse-toggle').off('click').on('click', function () {
+            if (that.collapse_autores.hasClass('show')) {
+                that.collapse_lista_autores.collapse('show');
+            }
+        });
+    }
 };
 
 

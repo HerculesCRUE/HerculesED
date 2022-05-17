@@ -1,17 +1,16 @@
-﻿using Gnoss.ApiWrapper;
+﻿using DesnormalizadorHercules.Models.Actualizadores;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesnormalizadorHercules.Models
 {
     public static class ActualizadorEDMA
     {
-        private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/OAuthV3.config";
+        private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config";
         private static ResourceApi resourceApi = new ResourceApi(rutaOauth);
         private static CommunityApi communityApi = new CommunityApi(rutaOauth);
 
@@ -22,303 +21,347 @@ namespace DesnormalizadorHercules.Models
         /// </summary>
         public static void DesnormalizarTodo()
         {
-            try
-            {
-                ActualizadorCV actualizadorCV = new(resourceApi);
-                ActualizadorPerson actualizadorPersonas = new(resourceApi);
-                ActualizadorGroup actualizadorGrupos = new(resourceApi);
-                ActualizadorDocument actualizadorDocument = new(resourceApi);
-                ActualizadorProject actualizadorProject = new(resourceApi);
-                ActualizadorRO actualizadorRO = new(resourceApi);
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            ActualizadorPerson actualizadorPersonas = new(resourceApi);
+            ActualizadorGroup actualizadorGrupos = new(resourceApi);
+            ActualizadorDocument actualizadorDocument = new(resourceApi);
+            ActualizadorProject actualizadorProject = new(resourceApi);
+            ActualizadorRO actualizadorRO = new(resourceApi);
 
-                //CV + dependencias
-                actualizadorCV.CrearCVs();
-                actualizadorCV.ModificarDocumentos();
-                actualizadorCV.CambiarPrivacidadDocumentos();
-                actualizadorCV.ModificarResearchObjects();
-                actualizadorCV.CambiarPrivacidadResearchObjects();
-                actualizadorCV.ModificarGrupos();
-                actualizadorCV.ModificarProyectos();
+            //Ejecuciones ordenadas en función de sus dependencias
 
-                //Persona sin dependencias                
-                actualizadorPersonas.ActualizarPertenenciaLineas();
-                //depende de doc
-                actualizadorPersonas.ActualizarNumeroPublicacionesValidadas();
-                actualizadorPersonas.ActualizarAreasPersonas();
-                actualizadorPersonas.ActualizarIPGruposActuales(); 
-                actualizadorPersonas.ActualizarIPGruposHistoricos();
-                actualizadorPersonas.ActualizarIPProyectosActuales();
-                actualizadorPersonas.ActualizarIPProyectosHistoricos();
+            //Sin dependencias
+            //CV sin dependencias 
+            actualizadorCV.CrearCVs();
 
-                //Persona con dependencias
-                actualizadorPersonas.ActualizarNumeroColaboradoresPublicos();                
-                actualizadorPersonas.ActualizarNumeroPublicacionesPublicas();
-                actualizadorPersonas.ActualizarNumeroProyectosValidados();
-                actualizadorPersonas.ActualizarNumeroProyectosPublicos();
-                actualizadorPersonas.ActualizarNumeroAreasTematicas();
-                actualizadorPersonas.ActualizarNumeroIPProyectos();
+            //Persona sin dependencias                
+            actualizadorPersonas.ActualizarPertenenciaLineas();
+            actualizadorPersonas.ActualizarNumeroIPProyectos();
+            actualizadorPersonas.ActualizarIPGruposActuales();
+            actualizadorPersonas.ActualizarIPGruposHistoricos();
+            actualizadorPersonas.ActualizarIPProyectosActuales();
+            actualizadorPersonas.ActualizarIPProyectosHistoricos();
 
-                //Grupo sin dependencias                
-                actualizadorGrupos.ActualizarGruposValidados();
-                actualizadorGrupos.ActualizarMiembros();
-                actualizadorGrupos.ActualizarPertenenciaLineas();
+            //Grupo sin dependencias                
+            actualizadorGrupos.ActualizarMiembros();
+            actualizadorGrupos.ActualizarGruposValidados();
+            actualizadorGrupos.ActualizarPertenenciaLineas();
 
-                //Grupo con dependencias
-                actualizadorGrupos.ActualizarNumeroMiembros();
-                actualizadorGrupos.ActualizarNumeroPublicaciones();                
-                actualizadorGrupos.ActualizarNumeroColaboradores();
-                actualizadorGrupos.ActualizarNumeroAreasTematicas();
-                actualizadorGrupos.ActualizarAreasGrupos();
-                actualizadorGrupos.ActualizarNumeroProyectos();
-                actualizadorGrupos.ActualizarMiembrosUnificados();
+            //Proyectos sin dependencias
+            actualizadorProject.ActualizarProyectosValidados();
+            actualizadorProject.ActualizarMiembros();
+            actualizadorProject.ActualizarPertenenciaGrupos();
 
-                //Proyectos sin dependencias
-                actualizadorProject.ActualizarProyectosValidados();
-                actualizadorProject.ActualizarMiembros();
-                actualizadorProject.ActualizarPertenenciaGrupos();
+            //Documentos sin dependencias
+            actualizadorDocument.ActualizarDocumentosValidados();
+            actualizadorDocument.ActualizarPertenenciaGrupos();
+            actualizadorDocument.ActualizarNumeroCitasMaximas();
+            actualizadorDocument.ActualizarAreasDocumentos();
+            actualizadorDocument.ActualizarTagsDocumentos();
+            actualizadorDocument.ActualizarAnios();
+            actualizadorDocument.ActualizarIndicesImpacto();
 
-                //Proyectos con dependencias
-                actualizadorProject.ActualizarNumeroAreasTematicas();
-                actualizadorProject.ActualizarNumeroColaboradores();
-                actualizadorProject.ActualizarNumeroMiembros();
-                actualizadorProject.ActualizarNumeroPublicaciones();
-                actualizadorProject.ActualizarMiembrosUnificados();
+            //ROs sin dependencias
+            actualizadorRO.ActualizarAreasRO();
+            actualizadorRO.ActualizarTagsRO();
 
 
-                //Ejecuciones ordenadas en función de sus dependencias
+            //CV con dependencias 
+            actualizadorCV.ModificarDocumentos();
+            actualizadorCV.CambiarPrivacidadDocumentos();
+            actualizadorCV.ModificarResearchObjects();
+            actualizadorCV.CambiarPrivacidadResearchObjects();
+            actualizadorCV.ModificarProyectos();
+            actualizadorCV.ModificarGrupos();
+            actualizadorCV.ModificarElementosCV();
+            actualizadorCV.ModificarOrganizacionesCV();
 
-                //No tienen dependencias
+            //Proyectos con dependencias
+            actualizadorProject.ActualizarNumeroAreasTematicas();
+            actualizadorProject.ActualizarMiembrosUnificados();
+            actualizadorProject.ActualizarNumeroMiembros();
+            actualizadorProject.ActualizarNumeroColaboradores();
+            actualizadorProject.ActualizarNumeroPublicaciones();
 
+            //Persona con dependencias  
+            actualizadorPersonas.ActualizarNumeroPublicacionesValidadas();
+            actualizadorPersonas.ActualizarAreasPersonas();
+            actualizadorPersonas.ActualizarNumeroColaboradoresPublicos();
+            actualizadorPersonas.ActualizarNumeroPublicacionesPublicas();
+            actualizadorPersonas.ActualizarNumeroProyectosValidados();
+            actualizadorPersonas.ActualizarNumeroProyectosPublicos();
+            actualizadorPersonas.ActualizarNumeroAreasTematicas();
 
+            //Grupo con dependencias
+            actualizadorGrupos.ActualizarMiembrosUnificados();
+            actualizadorGrupos.ActualizarNumeroMiembros();
+            actualizadorGrupos.ActualizarNumeroPublicaciones();
+            actualizadorGrupos.ActualizarNumeroColaboradores();
+            actualizadorGrupos.ActualizarNumeroAreasTematicas();
+            actualizadorGrupos.ActualizarAreasGrupos();
+            actualizadorGrupos.ActualizarNumeroProyectos();
+        }
 
-                actualizadorDocument.ActualizarDocumentosValidados();
-                actualizadorRO.ActualizarROsValidados();                
-                actualizadorDocument.ActualizarPertenenciaGrupos();                       
-                actualizadorDocument.ActualizarNumeroCitasMaximas();                
-                
-                actualizadorDocument.ActualizarAreasDocumentos();
-                actualizadorDocument.ActualizarTagsDocumentos();
-                actualizadorRO.ActualizarAreasRO();
-                actualizadorRO.ActualizarTagsRO();
-
-
-
-
-                actualizadorDocument.ActualizarAnios();
-
-                //TODO agregar la fuente para el factor de impacto
-                actualizadorDocument.ActualizarIndicesImpacto();
-                //actualizadorDocument.ActualizarIndiceImpacto();
-
-                //TODO hacer bien
-                //actualizadorDocument.ActualizarCuartil();
-
-                //Dependen únicamente del CV
-
-
-                //Desnormalizar posicion de firma
-
-                //Otras dependencias
-
-
-
-
-
-
-
-
-                //TODO desnormalizar unmnero de IP
-
-                //TODO nombres org
-
-
-                actualizadorCV.ModificarElementosCV();
-
-
-
-
-
-
-
-            }
-            catch (Exception)
-            {
-
-            }
+        /// <summary>
+        /// Inserta/elimina de los CV todos los datos
+        /// </summary>
+        public static void DesnormalizarDatosCV()
+        {
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            actualizadorCV.CrearCVs();
+            actualizadorCV.ModificarDocumentos();
+            actualizadorCV.CambiarPrivacidadDocumentos();
+            actualizadorCV.ModificarResearchObjects();
+            actualizadorCV.CambiarPrivacidadResearchObjects();
+            actualizadorCV.ModificarProyectos();
+            actualizadorCV.ModificarGrupos();
+            actualizadorCV.ModificarElementosCV();
+            actualizadorCV.ModificarOrganizacionesCV();
         }
 
 
-        ///// <summary>
-        ///// Actualiza elementos desnormalizados que afectan a una persona
-        ///// </summary>
-        ///// <param name="pPerson">ID de la persona</param>
-        //public static void DesnormalizarDatosPersona(string pPerson = null)
-        //{
-        //    try
-        //    {
-        //        ActualizadorCV actualizadorCV = new(resourceApi);
-        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
-        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
-        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
-        //        ActualizadorProject actualizadorProject = new(resourceApi);
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican personas
+        /// </summary>
+        /// <param name="pPersons">ID de las personas</param>
+        public static void DesnormalizarDatosPersonas(List<string> pPersons = null)
+        {
+            ActualizadorPerson actualizadorPersonas = new(resourceApi);
 
-        //        //No tienen dependencias
-        //        actualizadorCV.CrearCVs(pPerson);
-        //        actualizadorPersonas.ActualizarPertenenciaLineas(pPerson);
+            //Ejecuciones ordenadas en función de sus dependencias
 
-        //        //Dependen únicamente del CV
-        //        actualizadorCV.ModificarDocumentos(pPerson);
-        //        actualizadorCV.CambiarPrivacidadDocumentos(pPerson);
-        //        actualizadorCV.ModificarGrupos(pPerson);
-        //        actualizadorCV.ModificarProyectos(pPerson);
+            //Persona sin dependencias                
+            actualizadorPersonas.ActualizarPertenenciaLineas(pPersons:pPersons);
+            actualizadorPersonas.ActualizarNumeroIPProyectos(pPersons:pPersons);
+            actualizadorPersonas.ActualizarIPGruposActuales(pPersons: pPersons);
+            actualizadorPersonas.ActualizarIPGruposHistoricos(pPersons: pPersons);
+            actualizadorPersonas.ActualizarIPProyectosActuales(pPersons: pPersons);
+            actualizadorPersonas.ActualizarIPProyectosHistoricos(pPersons: pPersons);
 
-        //        //Otras dependencias
-        //        actualizadorPersonas.ActualizarAreasPersonas(pPerson);
-        //        actualizadorPersonas.ActualizarNumeroAreasTematicas(pPerson);
-        //        actualizadorPersonas.ActualizarNumeroColaboradoresPublicos(pPerson);
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Actualiza elementos desnormalizados que afectan a un poyecto
-        ///// </summary>
-        ///// <param name="pProyecto">ID del proyecto</param>
-        //public static void DesnormalizarDatosProyecto(string pProyecto = null)
-        //{
-        //    try
-        //    {
-        //        ActualizadorCV actualizadorCV = new(resourceApi);
-        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
-        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
-        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
-        //        ActualizadorProject actualizadorProject = new(resourceApi);
-
-        //        //No tienen dependencias
-        //        actualizadorProject.ActualizarProyectosValidados(pProyecto);
-        //        actualizadorProject.ActualizarPertenenciaGrupos("", pProyecto);
-        //        actualizadorProject.ActualizarNumeroAreasTematicas(pProyecto);
-        //        actualizadorProject.ActualizarNumeroPublicaciones(pProyecto);
-
-        //        //Dependen únicamente del CV
-        //        actualizadorCV.ModificarProyectos("", pProyecto);
-
-        //        //Otras dependencias
-        //        actualizadorProject.ActualizarNumeroColaboradores(pProyecto);
-        //        actualizadorProject.ActualizarNumeroMiembros(pProyecto);
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Actualiza elementos desnormalizados que afectan a un grupo
-        ///// </summary>
-        ///// <param name="pGrupo">ID del grupo</param>
-        //public static void DesnormalizarDatosGrupo(string pGrupo = null)
-        //{
-        //    try
-        //    {
-        //        ActualizadorCV actualizadorCV = new(resourceApi);
-        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
-        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
-        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
-        //        ActualizadorProject actualizadorProject = new(resourceApi);
-
-        //        //No tienen dependencias
-        //        actualizadorGrupos.ActualizarGruposValidados(pGrupo);
-        //        actualizadorDocument.ActualizarPertenenciaGrupos(pGrupo);
-        //        actualizadorGrupos.ActualizarPertenenciaLineas(pGrupo);
-        //        actualizadorProject.ActualizarPertenenciaGrupos(pGrupo);
-
-        //        //Dependen únicamente del CV
-        //        actualizadorCV.ModificarGrupos("", pGrupo);
-
-        //        //Otras dependencias
-        //        actualizadorGrupos.ActualizarNumeroMiembros(pGrupo);
-        //        actualizadorGrupos.ActualizarNumeroColaboradores(pGrupo);
-        //        actualizadorGrupos.ActualizarNumeroProyectos(pGrupo);
-        //        actualizadorGrupos.ActualizarNumeroPublicaciones(pGrupo);
-        //        actualizadorGrupos.ActualizarNumeroAreasTematicas(pGrupo);
-        //        actualizadorGrupos.ActualizarAreasGrupos(pGrupo);
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Actualiza elementos desnormalizados que afectan a un documento
-        ///// </summary>
-        ///// <param name="pDocumento">ID del documento</param>
-        //public static void DesnormalizarDatosDocumento(string pDocumento)
-        //{
-        //    try
-        //    {
-        //        ActualizadorCV actualizadorCV = new(resourceApi);
-        //        ActualizadorPerson actualizadorPersonas = new(resourceApi);
-        //        ActualizadorGroup actualizadorGrupos = new(resourceApi);
-        //        ActualizadorDocument actualizadorDocument = new(resourceApi);
-        //        ActualizadorProject actualizadorProject = new(resourceApi);
-
-        //        //Ejecuciones ordenadas en función de sus dependencias
-
-        //        //No tienen dependencias
-        //        actualizadorDocument.ActualizarPertenenciaGrupos("", pDocumento);
-        //        actualizadorDocument.ActualizarNumeroCitasMaximas(pDocumento);
-        //        actualizadorDocument.ActualizarAreasDocumentos(pDocumento);
-        //        actualizadorDocument.ActualizarTagsDocumentos(pDocumento);
-        //        actualizadorDocument.ActualizarDocumentosValidados(pDocumento);
-
-        //        //Dependen únicamente del CV
-        //        actualizadorCV.ModificarDocumentos("", pDocumento);
-        //        actualizadorCV.CambiarPrivacidadDocumentos("", pDocumento);
-                
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //    }
-        //}
+            //Persona con dependencias  
+            actualizadorPersonas.ActualizarNumeroPublicacionesValidadas(pPersons: pPersons);
+            actualizadorPersonas.ActualizarAreasPersonas(pPersons: pPersons);
+            actualizadorPersonas.ActualizarNumeroColaboradoresPublicos(pPersons: pPersons);
+            actualizadorPersonas.ActualizarNumeroPublicacionesPublicas(pPersons: pPersons);
+            actualizadorPersonas.ActualizarNumeroProyectosValidados(pPersons: pPersons);
+            actualizadorPersonas.ActualizarNumeroProyectosPublicos(pPersons: pPersons);
+            actualizadorPersonas.ActualizarNumeroAreasTematicas(pPersons: pPersons);
+        }
 
         /// <summary>
-        /// IMPORTANTE!!! esto sólo debe usarse para pruebas, si se eliminan los datos no son recuperables
-        /// Elimina los datos desnormalizados
+        /// Actualiza elementos desnormalizados cuando se crean/modifican proyectos
         /// </summary>
-        public static void EliminarCVs()
+        /// <param name="pProyectso">ID de proyectos</param>
+        public static void DesnormalizarDatosProyectos(List<string> pProjects = null)
         {
-            bool eliminarDatos = false;
-            //IMPORTANTE!!!
-            //No descomentar, esto sólo debe usarse para pruebas, si se eliminan los datos no son recuperables
-            if (eliminarDatos)
+            ActualizadorPerson actualizadorPersonas = new(resourceApi);
+            ActualizadorGroup actualizadorGrupos = new(resourceApi);
+            ActualizadorProject actualizadorProject = new(resourceApi);
+
+            //Ejecuciones ordenadas en función de sus dependencias
+
+            //Persona sin dependencias                
+            actualizadorPersonas.ActualizarNumeroIPProyectos(pProjects: pProjects);
+            actualizadorPersonas.ActualizarIPProyectosActuales(pProjects: pProjects);
+            actualizadorPersonas.ActualizarIPProyectosHistoricos(pProjects: pProjects);
+
+            //Proyectos sin dependencias
+            actualizadorProject.ActualizarProyectosValidados(pProjects: pProjects);
+            actualizadorProject.ActualizarMiembros(pProjects: pProjects);
+            actualizadorProject.ActualizarPertenenciaGrupos(pProjects: pProjects);
+
+            //Proyectos con dependencias
+            actualizadorProject.ActualizarNumeroAreasTematicas(pProjects: pProjects);
+            actualizadorProject.ActualizarMiembrosUnificados(pProjects: pProjects);
+            actualizadorProject.ActualizarNumeroMiembros(pProjects: pProjects);
+            actualizadorProject.ActualizarNumeroColaboradores(pProjects: pProjects);
+            actualizadorProject.ActualizarNumeroPublicaciones(pProjects: pProjects);
+
+            //Persona con dependencias  
+            actualizadorPersonas.ActualizarNumeroColaboradoresPublicos(pProjects: pProjects);
+            actualizadorPersonas.ActualizarNumeroProyectosValidados(pProjects: pProjects);
+            actualizadorPersonas.ActualizarNumeroProyectosPublicos(pProjects: pProjects);
+
+            //Grupo con dependencias
+            actualizadorGrupos.ActualizarNumeroProyectos(pProjects: pProjects);
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican grupos
+        /// </summary>
+        /// <param name="pGroups">ID de grupos</param>
+        public static void DesnormalizarDatosGrupos(List<string> pGroups = null)
+        {
+            ActualizadorPerson actualizadorPersonas = new(resourceApi);
+            ActualizadorGroup actualizadorGrupos = new(resourceApi);
+            ActualizadorDocument actualizadorDocument = new(resourceApi);
+            ActualizadorProject actualizadorProject = new(resourceApi);
+
+            //Ejecuciones ordenadas en función de sus dependencias
+
+            //Persona sin dependencias                
+            actualizadorPersonas.ActualizarPertenenciaLineas(pGroups: pGroups);
+            actualizadorPersonas.ActualizarIPGruposActuales(pGroups: pGroups);
+            actualizadorPersonas.ActualizarIPGruposHistoricos(pGroups: pGroups);
+
+            //Grupo sin dependencias                
+            actualizadorGrupos.ActualizarMiembros(pGroups: pGroups);
+            actualizadorGrupos.ActualizarGruposValidados(pGroups: pGroups);
+            actualizadorGrupos.ActualizarPertenenciaLineas(pGroups: pGroups);
+
+            //Proyectos sin dependencias
+            actualizadorProject.ActualizarPertenenciaGrupos(pGroups: pGroups);
+
+            //Documentos sin dependencias
+            actualizadorDocument.ActualizarPertenenciaGrupos(pGroups: pGroups);
+
+            //Grupo con dependencias
+            actualizadorGrupos.ActualizarMiembrosUnificados(pGroups: pGroups);
+            actualizadorGrupos.ActualizarNumeroMiembros(pGroups: pGroups);
+            actualizadorGrupos.ActualizarNumeroPublicaciones(pGroups: pGroups);
+            actualizadorGrupos.ActualizarNumeroColaboradores(pGroups: pGroups);
+            actualizadorGrupos.ActualizarNumeroAreasTematicas(pGroups: pGroups);
+            actualizadorGrupos.ActualizarAreasGrupos(pGroups: pGroups);
+            actualizadorGrupos.ActualizarNumeroProyectos(pGroups: pGroups);
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican documentos
+        /// </summary>
+        /// <param name="pDocuments">ID de los documentos</param>
+        public static void DesnormalizarDatosDocumento(List<string> pDocuments)
+        {
+            ActualizadorPerson actualizadorPersonas = new(resourceApi);
+            ActualizadorGroup actualizadorGrupos = new(resourceApi);
+            ActualizadorDocument actualizadorDocument = new(resourceApi);
+            ActualizadorProject actualizadorProject = new(resourceApi);
+
+            //Ejecuciones ordenadas en función de sus dependencias
+
+            //Documentos sin dependencias
+            actualizadorDocument.ActualizarDocumentosValidados(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarPertenenciaGrupos(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarNumeroCitasMaximas(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarAreasDocumentos(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarTagsDocumentos(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarAnios(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarIndicesImpacto(pDocuments: pDocuments);
+
+            //Proyectos con dependencias
+            actualizadorProject.ActualizarNumeroAreasTematicas(pDocuments: pDocuments);
+            actualizadorProject.ActualizarNumeroColaboradores(pDocuments: pDocuments);
+            actualizadorProject.ActualizarNumeroPublicaciones(pDocuments: pDocuments);
+
+            //Persona con dependencias  
+            List<string> persons= resourceApi.VirtuosoQuery("select ?person", 
+                $@" where
+                    {{ 
+                        ?document <http://purl.org/ontology/bibo/authorList> ?autores. 
+                        ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  
+                        FILTER(?document in (<{string.Join(">,<", pDocuments)}>))
+                    }}", "document").results.bindings.Select(x=>x["person"].value).Distinct().ToList();
+            List<List<string>> listPersons= ActualizadorBase.SplitList(persons, 500).ToList();
+            foreach (List<string> listPersonIn in listPersons)
             {
-                //Eliminamos los CV
-                while (true)
-                {
-                    int limit = 500;
-                    String select = @"SELECT ?cv ";
-                    String where = @$"  where{{
-                                            ?cv a <http://w3id.org/roh/CV>.
-                                        }} limit {limit}";
-
-                    SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
-                    {
-                        resourceApi.PersistentDelete(resourceApi.GetShortGuid(fila["cv"].value));
-                    });
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
+                actualizadorPersonas.ActualizarNumeroPublicacionesValidadas(pPersons: listPersonIn);
+                actualizadorPersonas.ActualizarAreasPersonas(pPersons: listPersonIn);
+                actualizadorPersonas.ActualizarNumeroColaboradoresPublicos(pPersons: listPersonIn);
+                actualizadorPersonas.ActualizarNumeroPublicacionesPublicas(pPersons: listPersonIn);
+                actualizadorPersonas.ActualizarNumeroAreasTematicas(pPersons: listPersonIn);
             }
+
+            //Grupo con dependencias
+            List<string> groups = resourceApi.VirtuosoQuery("select ?group",
+                $@" where
+                    {{   
+                        ?document <http://w3id.org/roh/isProducedBy> ?group.  FILTER(?document in (<{string.Join(">,<", pDocuments)}>))
+                    }}", "document").results.bindings.Select(x => x["group"].value).Distinct().ToList();
+            List<List<string>> listGroups = ActualizadorBase.SplitList(groups, 500).ToList();
+            foreach (List<string> listGroupsIn in listGroups)
+            {
+                actualizadorGrupos.ActualizarNumeroPublicaciones(pGroups: listGroupsIn);
+                actualizadorGrupos.ActualizarNumeroColaboradores(pGroups: listGroupsIn);
+                actualizadorGrupos.ActualizarNumeroAreasTematicas(pGroups: listGroupsIn);
+                actualizadorGrupos.ActualizarAreasGrupos(pGroups: listGroupsIn);
+            }
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican research objects
+        /// </summary>
+        /// <param name="pROs">ID de los research objects</param>
+        public static void DesnormalizarDatosResearchObject(List<string> pROs)
+        {
+            ActualizadorRO actualizadorRO = new(resourceApi);
+
+            //Ejecuciones ordenadas en función de sus dependencias
+
+            //ROs sin dependencias
+            actualizadorRO.ActualizarAreasRO(pROs: pROs);
+            actualizadorRO.ActualizarTagsRO(pROs: pROs);
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican personas relacionados con el CV
+        /// </summary>
+        /// <param name="pPersons">ID de las personas</param>
+        public static void DesnormalizarDatosCVPersonas(List<string> pPersons = null)
+        {
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            actualizadorCV.CrearCVs(pPersons: pPersons);
+            actualizadorCV.ModificarDocumentos(pPersons: pPersons);
+            actualizadorCV.CambiarPrivacidadDocumentos(pPersons: pPersons);
+            actualizadorCV.ModificarResearchObjects(pPersons: pPersons);
+            actualizadorCV.CambiarPrivacidadResearchObjects(pPersons: pPersons);
+            actualizadorCV.ModificarProyectos(pPersons: pPersons);
+            actualizadorCV.ModificarGrupos(pPersons: pPersons);
+            actualizadorCV.ModificarElementosCV(pPersons: pPersons);
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican proyectos relacionados con el CV
+        /// </summary>
+        /// <param name="pProyectso">ID de proyectos</param>
+        public static void DesnormalizarDatosCVProyectos(List<string> pProjects = null)
+        {
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            actualizadorCV.CrearCVs(pProjects: pProjects);
+            actualizadorCV.ModificarProyectos(pProjects: pProjects);
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican grupos relacionados con el CV
+        /// </summary>
+        /// <param name="pGroups">ID de grupos</param>
+        public static void DesnormalizarDatosCVGrupos(List<string> pGroups = null)
+        {
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            actualizadorCV.CrearCVs(pGroups: pGroups);
+            actualizadorCV.ModificarGrupos(pGroups: pGroups);
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican documentos relacionados con el CV
+        /// </summary>
+        /// <param name="pDocuments">ID de los documentos</param>
+        public static void DesnormalizarDatosCVDocumento(List<string> pDocuments)
+        {
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            actualizadorCV.CrearCVs(pDocuments: pDocuments);
+            actualizadorCV.ModificarDocumentos(pDocuments: pDocuments);
+            actualizadorCV.CambiarPrivacidadDocumentos(pDocuments: pDocuments);
+        }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican research objects relacionados con el CV
+        /// </summary>
+        /// <param name="pROs">ID de los research objects</param>
+        public static void DesnormalizarDatosCVResearchObject(List<string> pROs)
+        {
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            actualizadorCV.CrearCVs(pROs: pROs);
+            actualizadorCV.ModificarResearchObjects(pROs: pROs);
+            actualizadorCV.CambiarPrivacidadResearchObjects(pROs: pROs);
         }
 
 

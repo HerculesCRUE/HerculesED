@@ -41,7 +41,7 @@ namespace EditorCV.Models
         /// <param name="pEntity">Identificador de la entidad</param>
         /// <param name="pIsPublic">TRUE si es público</param>
         /// <returns></returns>
-        public JsonResult ChangePrivacityItem(string pIdSection, string pRdfTypeTab, string pEntity, bool pIsPublic)
+        public JsonResult ChangePrivacityItem(ConfigService pConfigService, string pIdSection, string pRdfTypeTab, string pEntity, bool pIsPublic)
         {
             TabSectionListItem presentationMini = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation.listItemsPresentation.listItem;
 
@@ -57,6 +57,11 @@ namespace EditorCV.Models
             {
                 valorActual = resultDataProperty.results.bindings[0]["o"].value;
             }
+
+            //Insertamos en la cola del desnormalizador
+            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { UtilityCV.GetPersonFromCV(subjectPropertiesAndRdfTypes.Item1[0]) }));
+
 
             if (string.IsNullOrEmpty(valorActual))
             {
@@ -83,9 +88,10 @@ namespace EditorCV.Models
         /// <summary>
         /// Elimina un item de un listado
         /// </summary>
+        /// <param name="pConfigService">Configuración</param>
         /// <param name="pEntity">Entidad a eliminar</param>
         /// <returns></returns>
-        public JsonResult RemoveItem(string pEntity)
+        public JsonResult RemoveItem(ConfigService pConfigService, string pEntity)
         {
             string accion = "delete";
             //Obtenemos la entidad para luego borrarla si es necesario
@@ -104,10 +110,10 @@ namespace EditorCV.Models
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == rdftypes[1]);
             API.Templates.TabSection templateSection = template.sections.First(x => x.property == properties[1]);
 
+            string personCV = UtilityCV.GetPersonFromCV(entities.First());
             if (templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor != null)
             {
-                //Si tiene autores eliminamos la persona actual de la lista de autores de la entidad
-                string personCV = UtilityCV.GetPersonFromCV(entities.First());
+                //Si tiene autores eliminamos la persona actual de la lista de autores de la entidad                
                 Entity entityBBDD = GetLoadedEntity(entityDestino, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                 if (entityBBDD.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property))
                 {
@@ -150,21 +156,37 @@ namespace EditorCV.Models
             {
                 mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(entityDestino), true);
             }
+
+            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+            Dictionary<string, DenormalizerItemQueue.ItemType> tiposDesnormalizar = new Dictionary<string, DenormalizerItemQueue.ItemType>();
+            tiposDesnormalizar.Add("Document_", DenormalizerItemQueue.ItemType.document);
+            tiposDesnormalizar.Add("ResearchObject_", DenormalizerItemQueue.ItemType.researchobject);
+            tiposDesnormalizar.Add("Group_", DenormalizerItemQueue.ItemType.group);
+            tiposDesnormalizar.Add("Project_", DenormalizerItemQueue.ItemType.project);
+            string claveDiccionario = tiposDesnormalizar.Keys.Where(x => entityDestino.Contains(x)).FirstOrDefault();
+            if (tiposDesnormalizar.ContainsKey(claveDiccionario))
+            {
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[claveDiccionario], new HashSet<string> { entityDestino }));
+            }
+            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { personCV }));
+
             return new JsonResult() { ok = dicCorrecto[mResourceApi.GetShortGuid(pEntity)] };
         }
 
         /// <summary>
         /// Crea/actualiza una entidad
         /// </summary>
+        /// <param name="pConfigService">Configuración</param>
         /// <param name="pEntity">Datos de la entidad a crear/actualizar</param>
         /// <param name="pCvID">Identificador del CV</param>
         /// <param name="pSectionID">Identifiador de la sección (para la edición de un item de un listado)</param>
         /// <param name="pRdfTypeTab">rdf:type de la pestaña (para la edición de un item de un listado)</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        public JsonResult ActualizarEntidad(Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab, string pLang)
+        public JsonResult ActualizarEntidad(ConfigService pConfigService, Entity pEntity, string pCvID, string pSectionID, string pRdfTypeTab, string pLang)
         {
             string accion = "";
+            string personCV = UtilityCV.GetPersonFromCV(pCvID);
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
                 API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
@@ -195,10 +217,9 @@ namespace EditorCV.Models
                     mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                     pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
                     itemEditConfig = templateSection.presentation.listItemsPresentation.listItemEdit;
-                    string personCV = UtilityCV.GetPersonFromCV(pCvID);
                     if (templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor != null)
                     {
-                        
+
                         if (!pEntity.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property) ||
                             !pEntity.properties.First(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property).values.Exists(x => x.Contains(personCV)))
                         {
@@ -398,7 +419,7 @@ namespace EditorCV.Models
                     {
                         bool hasChange = MergeLoadedEntity(loadedEntity, pEntity);
 
-                        if (hasChange) 
+                        if (hasChange)
                         {
                             ComplexOntologyResource resource = ToGnossApiResource(loadedEntity);
                             mResourceApi.ModifyComplexOntologyResource(resource, false, true);
@@ -562,8 +583,22 @@ namespace EditorCV.Models
                     string personaCV = UtilityCV.GetPersonFromCV(pCvID);
                     pEntity.id = entityID;
                     ProcesLoadPropertyValues(itemEditConfig, pEntity);
-                    ModificacionNotificacion(pEntity, template, templateSection, personaCV, accion);
+                    Entity entityBBDD = GetLoadedEntity(entityID, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
+                    ModificacionNotificacion(entityBBDD, template, templateSection, personaCV, accion);
                 }
+
+                //Insertamos en la cola del desnormalizador
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+                Dictionary<string, DenormalizerItemQueue.ItemType> tiposDesnormalizar = new Dictionary<string, DenormalizerItemQueue.ItemType>();
+                tiposDesnormalizar.Add("http://purl.org/ontology/bibo/Document", DenormalizerItemQueue.ItemType.document);
+                tiposDesnormalizar.Add("http://w3id.org/roh/ResearchObject", DenormalizerItemQueue.ItemType.researchobject);
+                tiposDesnormalizar.Add("http://xmlns.com/foaf/0.1/Group", DenormalizerItemQueue.ItemType.group);
+                tiposDesnormalizar.Add("http://vivoweb.org/ontology/core#Project", DenormalizerItemQueue.ItemType.project);
+                if (tiposDesnormalizar.ContainsKey(pEntity.rdfType))
+                {
+                    rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[pEntity.rdfType], new HashSet<string> { entityID }));
+                }
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { personCV }));
 
                 return new JsonResult() { ok = true, id = entityIDResponse };
             }
@@ -577,9 +612,9 @@ namespace EditorCV.Models
         /// <param name="templateSection"></param>
         private void ModificacionNotificacion(Entity entity, API.Templates.Tab template, API.Templates.TabSection templateSection, string personaCV, string accion)
         {
-            if(accion== null) 
+            if (accion == null)
             {
-                return; 
+                return;
             }
 
             string graphsUrl = mResourceApi.GraphsUrl;
@@ -665,7 +700,7 @@ namespace EditorCV.Models
                             notificacion.IdRoh_owner = fila["person"].value;
                             notificacion.Dct_issued = DateTime.Now;
                             notificacion.Roh_type = accion;
-                            notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x=>x.values).FirstOrDefault());
+                            notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
                             notificaciones.Add(notificacion);
                         }
