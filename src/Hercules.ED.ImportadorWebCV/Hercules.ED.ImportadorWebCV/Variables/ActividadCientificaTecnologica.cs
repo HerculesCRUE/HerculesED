@@ -54,6 +54,7 @@
         public const string pubDocumentosCitasWOS = "http://w3id.org/roh/wosCitationCount";
         public const string pubDocumentosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
         public const string pubDocumentosOtrasCitas = "";
+        public const string pubDocumentosOtrasCitasNombre = "";
         public const string pubDocumentosAutores = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
         public const string pubDocumentosAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://xmlns.com/foaf/0.1/nick";
         
