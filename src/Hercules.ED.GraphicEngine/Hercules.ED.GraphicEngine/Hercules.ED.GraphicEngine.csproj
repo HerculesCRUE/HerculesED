@@ -18,9 +18,6 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\configGraficas\page1-investigadores.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Update="Config\configGraficas\page0-publicaciones.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

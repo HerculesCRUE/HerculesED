@@ -141,11 +141,28 @@ namespace Hercules.ED.GraphicEngine.Models
             // Asignación de Options.
             Options options = new Options();
 
-            // Orientación
-            options.indexAxis = "x";
-            if (pGrafica.configBarras.orientacionVertical)
+            // Orientación            
+            if (!pGrafica.configBarras.orientacionVertical)
             {
                 options.indexAxis = "y";
+            }
+            else
+            {
+                options.indexAxis = "x";
+            }
+
+            options.scales = new Dictionary<string, Eje>();
+
+            // Ejes X
+            foreach (EjeXConf item in pGrafica.configBarras.xAxisPrint)
+            {
+                options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
+            }
+
+            // Ejes Y
+            foreach (EjeYConf item in pGrafica.configBarras.yAxisPrint)
+            {
+                options.scales.Add(item.yAxisID, new Eje() { position = item.posicion });
             }
 
             // Animación
@@ -157,13 +174,7 @@ namespace Hercules.ED.GraphicEngine.Models
             options.plugins.title = new Title();
             options.plugins.title.display = true;
             options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
-
-            // Ejes Y
-            options.scales = new Dictionary<string, EjeY>();
-            foreach (EjeYConf item in pGrafica.configBarras.yAxisPrint)
-            {
-                options.scales.Add(item.yAxisID, new EjeY() { position = item.posicion });
-            }
+            
             grafica.options = options;
 
             ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
@@ -319,12 +330,10 @@ namespace Hercules.ED.GraphicEngine.Models
                 if (isInt)
                 {
                     resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
-                    //resultadosDimension[item.Key] = item.Value.OrderBy(item => int.Parse(item.Key)).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
                 }
                 else
                 {
                     resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
-                    //resultadosDimension[item.Key] = item.Value.OrderBy(item => item.Key).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
                 }
             }
 
@@ -377,6 +386,9 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 // Eje Y.
                 dataset.yAxisID = item.Key.yAxisID;
+
+                // Eje X.
+                dataset.xAxisID = item.Key.xAxisID;
 
                 data.labels = listaLabels;
                 data.type = item.Key.tipoDimension;
