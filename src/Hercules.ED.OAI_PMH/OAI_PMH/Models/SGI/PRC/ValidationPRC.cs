@@ -1,6 +1,6 @@
-﻿namespace OAI_PMH.Models.SGI.ProduccionCientifica
+﻿namespace OAI_PMH.Models.SGI.PRC
 {
-    public class ProduccionCientificaEstado : SGI_Base
+    public class ValidationPrc
     {
         public string idRef { get; set; }
         public string epigrafeCVN { get; set; }
