@@ -302,29 +302,27 @@ namespace ExportadorWebCV.Utils
         /// <returns></returns>
         public static Dictionary<string, string> GetHijosListadoPalabrasClave(List<string> listaPalabrasClave)
         {
-            Dictionary<string, string> codigos = new Dictionary<string, string>();
+            List<decimal> ld = new List<decimal>();
 
+            Dictionary<string, string> codigos = new Dictionary<string, string>();
             foreach (string palabraClave in listaPalabrasClave)
             {
                 string key = palabraClave.Split("@@@").First();
-                string value = palabraClave.Split("_").Last();
+                decimal value = decimal.Parse(palabraClave.Split("_").Last());
 
-                if (codigos.ContainsKey(key))
+                ld.Add(value);
+                if (codigos.ContainsKey(key) )
                 {
-                    string mayor;
-                    if (double.Parse(value) > double.Parse(codigos[key]))
+                    if (value.CompareTo(decimal.Parse(codigos[key])) <= 0)
                     {
-                        mayor = value;
+                        continue;
                     }
-                    else
-                    {
-                        mayor = codigos[key];
-                    }
+                    string mayor = value.ToString();
                     codigos[key] = mayor;
                 }
                 else
                 {
-                    codigos.Add(key, value);
+                    codigos.Add(key, value.ToString());
                 }
             }
             return codigos;
@@ -998,7 +996,7 @@ namespace ExportadorWebCV.Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x=>x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x=>x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1062,7 +1060,7 @@ namespace ExportadorWebCV.Utils
 
                 listadoStrings.Add(cvnString);
             }
-            
+
 
             if (listadoStrings.Count > 0)
             {
