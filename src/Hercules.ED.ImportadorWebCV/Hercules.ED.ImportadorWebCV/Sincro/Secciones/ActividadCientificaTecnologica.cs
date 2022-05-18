@@ -1,4 +1,5 @@
 ﻿using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.ED.ImportadorWebCV.Controllers;
 using Hercules.ED.ImportadorWebCV.Models;
 using ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases;
 using Models;
@@ -16,7 +17,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private List<CvnItemBean> listadoSituacionProfesional = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
-        public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
+        public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
             listadoSituacionProfesional = mCvn.GetListadoBloque("010");
@@ -1477,6 +1478,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         TrabajosCongresosIDPublicacion(item, entidadAux);
                         TrabajosCongresosISSN(item, entidadAux);
                         TrabajosCongresosISBN(item, entidadAux);
+                        //TODO lento
                         TrabajosCongresosEntidadOrganizadora(item, entidadAux);
 
                         listado.Add(entidadAux);
