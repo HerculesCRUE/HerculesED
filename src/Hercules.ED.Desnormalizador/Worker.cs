@@ -156,7 +156,7 @@ namespace DesnormalizadorHercules
                     }
                     catch (Exception ex)
                     {
-                        FileLogger.Log(ex.Message);
+                        FileLogger.Log(ex);
                         Thread.Sleep(60000);
                     }
                 }
@@ -231,7 +231,7 @@ namespace DesnormalizadorHercules
                     }
                     catch (Exception ex)
                     {
-                        FileLogger.Log(ex.Message);
+                        FileLogger.Log(ex);
                     }
                     finally
                     {
@@ -322,7 +322,7 @@ namespace DesnormalizadorHercules
                         {
                             File.Move(file, file.Replace(_directoryPending, _directoryError));
                         }
-                        FileLogger.Log(ex.Message);
+                        FileLogger.Log(ex);
                     }
 
                 }
@@ -381,14 +381,14 @@ namespace DesnormalizadorHercules
                                 }
                                 catch(Exception ex)
                                 {
-                                    FileLogger.Log(ex.Message);
+                                    FileLogger.Log(ex);
                                 }
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        FileLogger.Log(ex.Message);
+                        FileLogger.Log(ex);
                     }
 
                 }
