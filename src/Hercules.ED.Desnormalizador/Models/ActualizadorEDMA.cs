@@ -231,8 +231,6 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pDocuments">ID de los documentos</param>
         public static void DesnormalizarDatosDocumento(List<string> pDocuments)
         {
-            throw new Exception(rutaOauth + "|" + System.IO.File.Exists(rutaOauth));
-
             ActualizadorPerson actualizadorPersonas = new(resourceApi);
             ActualizadorGroup actualizadorGrupos = new(resourceApi);
             ActualizadorDocument actualizadorDocument = new(resourceApi);
