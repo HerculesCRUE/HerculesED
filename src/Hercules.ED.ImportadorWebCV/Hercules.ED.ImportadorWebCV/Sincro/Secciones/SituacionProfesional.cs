@@ -8,6 +8,7 @@ using Hercules.ED.DisambiguationEngine.Models;
 using System.Runtime.InteropServices;
 using ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases;
 using Hercules.ED.ImportadorWebCV.Models;
+using Hercules.ED.ImportadorWebCV.Controllers;
 
 namespace ImportadorWebCV.Sincro.Secciones
 {
@@ -15,7 +16,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ProfessionalSituation";
-        public SituacionProfesional(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
+        public SituacionProfesional(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("010");
         }
