@@ -406,8 +406,11 @@ namespace EditorCV.Models
                     else
                     {
                         //Si es editable eliminamos las propiedades bloqueadas
-                        List<string> propertiesBloqueadas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.blocked).Select(x => x.property).ToList();
-                        pEntity.properties.RemoveAll(x => propertiesBloqueadas.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
+                        if (templateSection.presentation.listItemsPresentation != null)
+                        {
+                            List<string> propertiesBloqueadas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.blocked).Select(x => x.property).ToList();
+                            pEntity.properties.RemoveAll(x => propertiesBloqueadas.Contains(x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0]));
+                        }
                     }
 
                     Entity loadedEntity = GetLoadedEntity(pEntity.id, pEntity.ontology);
