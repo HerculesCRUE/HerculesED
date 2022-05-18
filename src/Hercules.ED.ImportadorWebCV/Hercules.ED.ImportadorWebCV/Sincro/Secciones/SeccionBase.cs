@@ -27,16 +27,18 @@ namespace ImportadorWebCV.Sincro.Secciones
         readonly ConfigService mConfiguracion;
 
 
-        public SeccionBase(cvnRootResultBean cvn, string cvID)
+        public SeccionBase(cvnRootResultBean cvn, string cvID,ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
+            mConfiguracion = configuracion;
         }
-        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID)
+        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID,ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
             mPersonID = personID;
+            mConfiguracion = configuracion;
         }
 
         /// <summary>
