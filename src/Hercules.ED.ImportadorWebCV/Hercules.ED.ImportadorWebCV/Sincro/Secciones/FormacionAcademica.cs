@@ -390,7 +390,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void EstudiosCiclosEntidadTitulacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Titulacion
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.010.090"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.010.090"),
                 Variables.FormacionAcademica.estudiosCicloEntidadTitulacionNombre,
                 Variables.FormacionAcademica.estudiosCicloEntidadTitulacion, entidadAux);
 
@@ -588,7 +588,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             new Property(Variables.FormacionAcademica.doctoradosEntidadTitulacionDEA, item.GetNameEntityBeanPorIDCampo("020.010.020.040"))
             */
             //Añado la referencia si existe Entidad de Titulacion
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.020.040"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.020.040"),
                 Variables.FormacionAcademica.doctoradosEntidadTitulacionDEANombre,
                 Variables.FormacionAcademica.doctoradosEntidadTitulacionDEA, entidadAux);
         }
@@ -602,7 +602,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void DoctoradosEntidadTitulacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Titulacion
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.020.100"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.020.100"),
                 Variables.FormacionAcademica.doctoradosEntidadTitulacionNombre,
                 Variables.FormacionAcademica.doctoradosEntidadTitulacion, entidadAux);
 
@@ -692,7 +692,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("020.010.030.080"))) { return; }
 
             //Añado la referencia si existe Entidad de Titulacion
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.030.080"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.030.080"),
                 Variables.FormacionAcademica.otraFormacionEntidadTitulacionNombre,
                 Variables.FormacionAcademica.otraFormacionEntidadTitulacion, entidadAux);
 
@@ -783,7 +783,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private static void FormacionEspecializadaEntidadTitulacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Titulacion
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.020.000.080"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.020.000.080"),
                 Variables.FormacionAcademica.formacionEspeEntidadTitulacionNombre,
                 Variables.FormacionAcademica.formacionEspeEntidadTitulacion, entidadAux);
 
@@ -857,7 +857,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("020.050.000.070"))) { return; }
 
             //Añado la referencia si existe Entidad Organizadora
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.050.000.070"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.050.000.070"),
                 Variables.FormacionAcademica.cursosSeminariosEntidadOrganizadoraNombre,
                 Variables.FormacionAcademica.cursosSeminariosEntidadOrganizadora, entidadAux);
 
