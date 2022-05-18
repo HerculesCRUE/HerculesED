@@ -56,5 +56,6 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public float barPercentage { get; set; }
         public string yAxisID { get; set; }
         public string xAxisID { get; set; }
+        public int order { get; set; }
     }
 }
