@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using Hercules.ED.ImportadorWebCV.Models;
 using Hercules.ED.DisambiguationEngine.Models;
 using ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases;
+using Hercules.ED.ImportadorWebCV.Controllers;
 
 namespace ImportadorWebCV.Sincro.Secciones
 {
@@ -17,7 +18,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/TeachingExperience";
 
-        public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
+        public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("030");
             listadoPremios = mCvn.GetListadoBloque("060.030.080");
