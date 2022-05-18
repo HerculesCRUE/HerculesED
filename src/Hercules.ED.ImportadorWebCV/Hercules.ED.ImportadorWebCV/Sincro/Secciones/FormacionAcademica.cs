@@ -1,4 +1,5 @@
 ﻿using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.ED.ImportadorWebCV.Controllers;
 using Hercules.ED.ImportadorWebCV.Models;
 using ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases;
 using Models;
@@ -15,7 +16,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/Qualifications";
-        public FormacionAcademica(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
+        public FormacionAcademica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("020");
         }
