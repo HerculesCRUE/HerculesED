@@ -309,20 +309,20 @@ namespace ExportadorWebCV.Utils
             {
                 string key = palabraClave.Split("@@@").First();
                 decimal value = decimal.Parse(palabraClave.Split("_").Last());
+                string valueString = palabraClave.Split("_").Last();
 
                 ld.Add(value);
-                if (codigos.ContainsKey(key) )
+                if (codigos.ContainsKey(key))
                 {
                     if (value.CompareTo(decimal.Parse(codigos[key])) <= 0)
                     {
                         continue;
                     }
-                    string mayor = value.ToString();
-                    codigos[key] = mayor;
+                    codigos[key] = valueString;
                 }
                 else
                 {
-                    codigos.Add(key, value.ToString());
+                    codigos.Add(key, valueString);
                 }
             }
             return codigos;
