@@ -1,6 +1,7 @@
 using DesnormalizadorHercules.Models;
 using DesnormalizadorHercules.Models.Actualizadores;
 using DesnormalizadorHercules.Models.Services;
+using Gnoss.ApiWrapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -99,6 +100,14 @@ namespace DesnormalizadorHercules
                     Thread.Sleep(5000);
                 }
             }
+
+
+
+            
+        string rutaOauth = $@"Config/configOAuth/OAuthV3.config";
+        ResourceApi resourceApi = new ResourceApi(rutaOauth);
+        CommunityApi communityApi = new CommunityApi(rutaOauth);
+            throw new Exception(rutaOauth + "|" + System.IO.File.Exists(rutaOauth));
 
             ListenToQueue();
 
