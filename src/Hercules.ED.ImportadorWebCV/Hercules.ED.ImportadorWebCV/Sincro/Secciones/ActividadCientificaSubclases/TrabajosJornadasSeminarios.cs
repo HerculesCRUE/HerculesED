@@ -144,7 +144,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             });
 
             //Divido la lista en listas de elementos
-            List<List<string>> listaListasIdPersonas = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).ToList(), Utility.splitListNum).ToList();
+            List<List<string>> listaListasIdPersonas = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).Distinct().ToList(), Utility.splitListNum).ToList();
 
             foreach (List<string> lista in listaListasIdPersonas)
             {
@@ -189,38 +189,51 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     }
                 }
 
-                string select = $@"SELECT distinct ?item group_concat(?autor;separator=""|"") as ?autores ";
-                string where = $@"where {{
+                Dictionary<string, HashSet<string>> docAutores = new Dictionary<string, HashSet<string>>();
+                int offset = 0;
+                int limit = 10000;
+                while (true)
+                {
+                    string selectX = $@"select * where{{ SELECT distinct ?item ?autor ";
+                    string whereX = $@"where {{
                                         ?item a <http://purl.org/ontology/bibo/Document> . 
                                         ?item <http://purl.org/ontology/bibo/authorList> ?authorList . 
                                         ?authorList <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autorIn .                                        
                                         ?item <http://purl.org/ontology/bibo/authorList> ?authorList2 . 
                                         ?authorList2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor .
                                         FILTER(?autorIn in (<{string.Join(">,<", lista)}>))                                        
-                                    }}";
-
-                SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
-                foreach (Dictionary<string, Data> fila in resultData.results.bindings)
-                {
-                    string doc = fila["item"].value;
-                    HashSet<string> autores = new HashSet<string>();
-                    if (fila.ContainsKey("autores"))
+                                    }}order by desc(?item) desc(?autor)}} offset {offset} limit {limit}";
+                    SparqlObject resultDataX = pResourceApi.VirtuosoQuery(selectX, whereX, graph);
+                    foreach (Dictionary<string, Data> fila in resultDataX.results.bindings)
                     {
-                        foreach (string autor in fila["autores"].value.Split("|"))
+                        string doc = fila["item"].value;
+                        string autor = fila["autor"].value;
+                        HashSet<string> autores = new HashSet<string>();
+                        if (!docAutores.ContainsKey(doc))
                         {
-                            autores.Add(autor);
+                            docAutores.Add(doc, new HashSet<string>());
                         }
+                        docAutores[doc].Add(autor);
                     }
-                    foreach (string autorIn in autores)
+                    offset += limit;
+                    if (resultDataX.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+
+
+                foreach (string doc in docAutores.Keys)
+                {
+                    foreach (string autorIn in docAutores[doc])
                     {
                         List<Persona> personas = listaPersonasAux.SelectMany(x => x.Value).Where(x => x.personid == autorIn).ToList();
                         foreach (Persona persona in personas)
                         {
                             persona.documentos.Add(doc);
-                            persona.coautores.UnionWith(autores.Except(new List<string>() { persona.personid }));
+                            persona.coautores.UnionWith(docAutores[doc].Except(new List<string>() { persona.personid }));
                         }
                     }
-
                 }
             }
 
