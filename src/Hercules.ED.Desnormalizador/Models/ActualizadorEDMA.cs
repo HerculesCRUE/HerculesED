@@ -10,7 +10,7 @@ namespace DesnormalizadorHercules.Models
 {
     public static class ActualizadorEDMA
     {
-        private readonly static string rutaOauth = $@"Config/configOAuth/OAuthV3.config";
+        private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config";
         private static ResourceApi resourceApi = new ResourceApi(rutaOauth);
         private static CommunityApi communityApi = new CommunityApi(rutaOauth);
 
