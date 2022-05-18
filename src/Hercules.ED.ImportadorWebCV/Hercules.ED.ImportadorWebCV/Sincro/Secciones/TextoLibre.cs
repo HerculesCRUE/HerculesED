@@ -1,4 +1,5 @@
-﻿using Hercules.ED.ImportadorWebCV.Models;
+﻿using Hercules.ED.ImportadorWebCV.Controllers;
+using Hercules.ED.ImportadorWebCV.Models;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
 
-        public TextoLibre(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public TextoLibre(cvnRootResultBean cvn, string cvID, ConfigService configuracion) : base(cvn, cvID,configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("070");
         }
