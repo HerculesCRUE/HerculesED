@@ -86,6 +86,31 @@
           }
         ]
       }
+    },
+    {
+      "identificador": "222",
+      "nombre": {
+        "es": "Nombre de la Gráfica Circular de EJEMPLO"
+      },
+      "tipo": "Circular",
+      "config": {
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Artículo Científico"
+            },
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "color": "#7CBFE3"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Capítulo de Libro"
+            },
+            "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
+            "color": "#6CAFD3"
+          }
+        ]
+      }
     }
   ],
   "facetas": [

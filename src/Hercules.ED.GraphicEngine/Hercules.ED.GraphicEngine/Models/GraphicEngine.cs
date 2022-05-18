@@ -98,7 +98,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
-            switch (pGrafica.tipoGrafica)
+            switch (pGrafica.tipo)
             {
                 case EnumGraficas.Barras:
                     // TODO: Controlar excepciones en la configuración.
@@ -402,17 +402,34 @@ namespace Hercules.ED.GraphicEngine.Models
 
         public static GraficaBase CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
+            // Objeto a devolver.
+            GraficaBase grafica = new GraficaBase();
+            grafica.type = "pie"; // Por defecto, de tipo pie.
+
+            // Asignación de Data.
+            Data data = new Data();
+            data.datasets = new ConcurrentBag<Dataset>();
+            grafica.data = data;
+
+            // Asignación de Options.
+            Options options = new Options();
+
+            // Animación
+            options.animation = new Animation();
+            options.animation.duration = 2000;
+
+            // Título
+            options.plugins = new Plugin();
+            options.plugins.title = new Title();
+            options.plugins.title.display = true;
+            options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
+
+            grafica.options = options;
+
             ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
 
-            // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
-            pGrafica.config.dimensiones.Reverse();
-
-            foreach (Dimension dim in pGrafica.config.dimensiones)
-            {
-                resultadosDimension[dim] = null;
-                dimensionesDataset[dim] = null;
-            }
+            Dictionary<string, float> dicNombreData = new Dictionary<string, float>();
 
             Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
             {
@@ -447,12 +464,46 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-
+                        // TODO: filtro fila["tipo"].value
+                        dicNombreData.Add("Artículo científico", Int32.Parse(fila["numero"].value));
                     }
+                    resultadosDimension[itemGrafica] = dicNombreData;
                 }
             });
 
-            return null;
+            List<string> listaNombres = new List<string>();
+            List<float> listaData = new List<float>();
+            foreach (KeyValuePair<string,float> nombreData in dicNombreData)
+            {
+                listaNombres.Add(nombreData.Key);
+                listaData.Add(nombreData.Value);
+            }
+
+            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            {
+                Dataset dataset = new Dataset();
+
+                dataset.data = listaData;
+
+                // Nombre del dato en leyenda.
+                dataset.label = GetTextLang(pLang, item.Key.nombre);
+
+                // Radio dataset.radius = item.Key.radio;
+
+                // Color.
+                dataset.backgroundColor = ObtenerColores(dataset.data.Count(), item.Key.color);
+
+                data.labels = listaNombres;
+                data.type = item.Key.tipoDimension;
+                dimensionesDataset[item.Key] = dataset;
+            }
+
+            foreach (Dimension dim in pGrafica.config.dimensiones)
+            {
+                grafica.data.datasets.Add(dimensionesDataset[dim]);
+            }
+
+            return grafica;
         }
         #endregion
 
