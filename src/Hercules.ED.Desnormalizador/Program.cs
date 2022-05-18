@@ -46,7 +46,20 @@ namespace DesnormalizadorHercules
         /// </summary>
         public static class FileLogger
         {
-            private const string FilePath = "/app/logs/log.txt"; // --- TODO: Sacarlo a archivo de configuración.
+            private const string FilePath = "/app/logs/"; // --- TODO: Sacarlo a archivo de configuración.
+
+            /// <summary>
+            /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
+            /// </summary>
+            /// <param name="messsage"></param>
+            public static void Log(Exception ex)
+            {
+                string filePath = FilePath + "error_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                using var fileStream = new FileStream(filePath, FileMode.Append);
+                using var writer = new StreamWriter(fileStream);
+                writer.WriteLine(ex.Message);
+                writer.WriteLine(ex.StackTrace);
+            }
 
             /// <summary>
             /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
@@ -54,7 +67,8 @@ namespace DesnormalizadorHercules
             /// <param name="messsage"></param>
             public static void Log(string messsage)
             {
-                using var fileStream = new FileStream(FilePath, FileMode.Append);
+                string filePath = FilePath + "error_"+ DateTime.Now.ToString("yyyy-MM-dd")+".txt";
+                using var fileStream = new FileStream(filePath, FileMode.Append);
                 using var writer = new StreamWriter(fileStream);
                 writer.WriteLine(messsage);
             }
