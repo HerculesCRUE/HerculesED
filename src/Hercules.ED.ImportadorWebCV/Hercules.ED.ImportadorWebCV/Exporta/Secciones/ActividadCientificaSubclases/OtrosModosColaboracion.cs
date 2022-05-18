@@ -54,7 +54,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.020.020.060", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabFechaInicio),
                     "060.020.020.120", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,"060.020.020.130" ,keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,
+                    "060.020.020.130" ,keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabDescripcionColaboracion),
                     "060.020.020.140", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabResultadosRelevantes),
