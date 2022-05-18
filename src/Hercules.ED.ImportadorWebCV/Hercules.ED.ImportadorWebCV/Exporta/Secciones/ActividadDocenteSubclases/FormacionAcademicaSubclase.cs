@@ -81,7 +81,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.010.000.220", NumeroECTS);
                 }
 
-                UtilityExportar.AddLanguage(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaIdiomaAsignatura),
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaIdiomaAsignatura),
                     "030.010.000.230", keyValue.Value);
 
                 string frecuenciaAsignatura = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.formacionAcademicaFrecuenciaAsignatura))) ?

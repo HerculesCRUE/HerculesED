@@ -101,7 +101,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDINombreIP));
                 listadoPropiedadesAutor.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDIPrimerApellidoIP));
                 listadoPropiedadesAutor.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDISegundoapellidoIP));
-                UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoPropiedadesAutor, "050.010.000.080", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoPropiedadesAutor, "050.010.000.080", keyValue.Value);
 
                 // Entidad
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDIEntidadAfiliacionNombre),
