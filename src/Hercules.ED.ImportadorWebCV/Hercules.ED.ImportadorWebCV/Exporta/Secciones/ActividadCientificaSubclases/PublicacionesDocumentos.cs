@@ -155,13 +155,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCitas(itemBean, dicCodigosScholar,
                     "060.010.010.310", keyValue.Value);
 
-                //List<Tuple<string, string, string>> dicCodigosOther = new List<Tuple<string, string, string>>();
-                //dicCodigosOther.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosOtrasCitas)));
-                //dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.010.320", "OTHERS"));
-                //dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.010.370", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosOtrasCitasNombre)));
-                //UtilityExportar.AddCitas(itemBean, dicCodigosOther,
-                //    "060.010.010.310", keyValue.Value);
-
                 // TODO Indice de impacto
 
 
