@@ -104,7 +104,7 @@ namespace DesnormalizadorHercules
 
 
             
-        string rutaOauth = $@"Config/configOAuth/OAuthV3.config";
+        string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config";
         ResourceApi resourceApi = new ResourceApi(rutaOauth);
         CommunityApi communityApi = new CommunityApi(rutaOauth);
             FileLogger.Log(new Exception(rutaOauth + "|" + System.IO.File.Exists(rutaOauth)));
