@@ -171,6 +171,10 @@ namespace ImportadorWebCV.Exporta.Secciones
 
             foreach (string pId in listadoId.Select(x=>x.Item1))
             {
+                if (!listResult.ContainsKey(pId))
+                {
+                    continue;
+                }
                 Entity entity = new Entity()
                 {
                     id = pId,

@@ -11,6 +11,13 @@ namespace GuardadoCV.Controllers
     [EnableCors("_myAllowSpecificOrigins")]
     public class GuardadoCVController : ControllerBase
     {
+        readonly ConfigService _Configuracion;
+
+        public GuardadoCVController(ConfigService pConfig)
+        {
+            _Configuracion = pConfig;
+        }
+
         /// <summary>
         /// Cambia la privacidad de un item
         /// </summary>
@@ -25,7 +32,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ChangePrivacityItem(pIdSection, pRdfTypeTab, pEntity, pIsPublic));
+                return Ok(accionesGuardado.ChangePrivacityItem(_Configuracion,pIdSection, pRdfTypeTab, pEntity, pIsPublic));
             }
             catch (Exception ex)
             {
@@ -44,7 +51,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.RemoveItem(pEntity));
+                return Ok(accionesGuardado.RemoveItem(_Configuracion, pEntity));
             }
             catch (Exception ex)
             {
@@ -64,7 +71,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ActualizarEntidad(entity, cvID, sectionID, rdfTypeTab,pLang));
+                return Ok(accionesGuardado.ActualizarEntidad(_Configuracion, entity, cvID, sectionID, rdfTypeTab,pLang));
             }
             catch (Exception ex)
             {
@@ -79,7 +86,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ValidateORCID(pOrcid));
+                return Ok(accionesGuardado.ValidateORCID(_Configuracion, pOrcid));
             }
             catch (Exception ex)
             {
@@ -93,7 +100,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.CreatePerson(pName, pSurname));
+                return Ok(accionesGuardado.CreatePerson(_Configuracion, pName, pSurname));
             }
             catch (Exception ex)
             {

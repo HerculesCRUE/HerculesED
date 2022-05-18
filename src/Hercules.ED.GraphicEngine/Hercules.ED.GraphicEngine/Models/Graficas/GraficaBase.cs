@@ -12,8 +12,15 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
 
     public class Options
     {
+        public Animation animation { get; set; }
         public Plugin plugins { get; set; }
-        public Dictionary<string, EjeY> scales { get; set; }
+        public Dictionary<string, Eje> scales { get; set; }
+        public string indexAxis { get; set; }
+    }
+
+    public class Animation
+    {
+        public int duration { get; set; }
     }
 
     public class Plugin
@@ -27,7 +34,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public string text { get; set; }
     }
 
-    public class EjeY
+    public class Eje
     {
         public string position { get; set; }
     }
@@ -48,5 +55,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public string stack { get; set; }
         public float barPercentage { get; set; }
         public string yAxisID { get; set; }
+        public string xAxisID { get; set; }
+        public int order { get; set; }
     }
 }

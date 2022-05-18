@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
@@ -18,8 +19,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         {
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "030.080.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaParticipacionProyectos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "030.080.000.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
@@ -71,7 +83,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     : null;
                 if (!string.IsNullOrEmpty(importeConcedido))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.080.000.230", importeConcedido);
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.080.000.240", importeConcedido);
                 }
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaAmbitoProyecto),
@@ -89,7 +101,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadFinanciadoraOtros),
                     "030.080.000.120", keyValue.Value);
 
-                //Entidad participante - TODO CodeGroup
+                //Entidad participante 
+                List<Tuple<string, string, string>> dicCodigos = new List<Tuple<string, string, string>>();
+                dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "030.080.000.150",
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.170", 
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.180", 
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipanteOtros)));
+
+                UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
+                   "030.080.000.150", keyValue.Value,
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante),
+                    UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipanteOtros));
 
                 //Investigador principal
                 Dictionary<string, string> listadoIP = new Dictionary<string, string>();

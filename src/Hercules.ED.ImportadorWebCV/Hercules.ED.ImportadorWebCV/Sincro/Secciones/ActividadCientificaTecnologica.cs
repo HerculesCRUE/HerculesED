@@ -1,4 +1,5 @@
 ﻿using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.ED.ImportadorWebCV.Controllers;
 using Hercules.ED.ImportadorWebCV.Models;
 using ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases;
 using Models;
@@ -16,7 +17,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private List<CvnItemBean> listadoSituacionProfesional = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
-        public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
+        public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
             listadoSituacionProfesional = mCvn.GetListadoBloque("010");
@@ -1583,7 +1584,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void TrabajosCongresosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.020.110"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.020.110"),
                 Variables.ActividadCientificaTecnologica.trabajosCongresosEntidadOrganizadoraNombre,
                 Variables.ActividadCientificaTecnologica.trabajosCongresosEntidadOrganizadora, entidadAux);
 
@@ -1769,7 +1770,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void TrabajosJornadasSeminariosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.030.080"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.030.080"),
                 Variables.ActividadCientificaTecnologica.trabajosJornSemEntidadOrganizadoraNombre,
                 Variables.ActividadCientificaTecnologica.trabajosJornSemEntidadOrganizadora, entidadAux);
 
@@ -1933,7 +1934,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void OtrasActividadesDivulgacionEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.040.090"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.040.090"),
                 Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrgNombre,
                 Variables.ActividadCientificaTecnologica.otrasActDivulEntidadOrg, entidadAux);
 
@@ -2000,7 +2001,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void ComitesCTAEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Afiliación
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.010.060"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.010.060"),
                 Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacionNombre,
                 Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacion, entidadAux);
 
@@ -2096,7 +2097,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void OrganizacionIDIEntidadConvocante(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Convocante
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.030.070"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.030.070"),
                 Variables.ActividadCientificaTecnologica.orgIDIEntidadConvocanteNombre,
                 Variables.ActividadCientificaTecnologica.orgIDIEntidadConvocante, entidadAux);
 
@@ -2198,7 +2199,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void GestionIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Realizacion
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.040.090"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.040.090"),
                 Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacionNombre,
                 Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacion, entidadAux);
 
@@ -2267,7 +2268,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void ForosComitesEntidadOrganizadoraORepresentada(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.050.060"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.050.060"),
                 Variables.ActividadCientificaTecnologica.forosComitesEntidadOrganizadoraNombre,
                 Variables.ActividadCientificaTecnologica.forosComitesEntidadOrganizadora, entidadAux);
 
@@ -2281,7 +2282,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
 
             //Añado la referencia si existe Entidad Representada
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.050.110"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.050.110"),
                 Variables.ActividadCientificaTecnologica.forosComitesOrganismoRepresentadoNombre,
                 Variables.ActividadCientificaTecnologica.forosComitesOrganismoRepresentado, entidadAux);
 
@@ -2351,7 +2352,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.060.080"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.060.080"),
                 Variables.ActividadCientificaTecnologica.evalRevIDIEntidadNombre,
                 Variables.ActividadCientificaTecnologica.evalRevIDIEntidad, entidadAux);
 
@@ -2476,7 +2477,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.010.050.010")))
             {
                 //Añado la referencia si existe
-                UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.050.010"),
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.050.010"),
                     Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacionNombre,
                     Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacion, entidadAux);
 
@@ -2501,7 +2502,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string valorTipoEF = !string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.050.190")) ? mResourceApi.GraphsUrl + "items/organizationtype_OTHERS" : item.GetOrganizacionPorIDCampo("060.010.050.180");
 
                 //Añado la referencia si existe
-                UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.050.160"),
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.050.160"),
                     Variables.ActividadCientificaTecnologica.estanciasIDIEntidadFinanciadoraNombre,
                     Variables.ActividadCientificaTecnologica.estanciasIDIEntidadFinanciadora, entidadAux);
 
@@ -2598,7 +2599,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.180"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.010.180"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.010.180"),
                 Variables.ActividadCientificaTecnologica.ayudasBecasEntidadRealizacionNombre,
                 Variables.ActividadCientificaTecnologica.ayudasBecasEntidadRealizacion, entidadAux);
 
@@ -2621,7 +2622,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.080"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.010.080"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.010.080"),
                 Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcedeNombre,
                 Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcede, entidadAux);
 
@@ -2804,8 +2805,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     string propiedadCiudadEP = Variables.ActividadCientificaTecnologica.otrasColabCiudadEntidadParticipante;
                     UtilitySecciones.CheckProperty(propertyCiudadEntidadParticipante, entidadAux, valorCiudadEP, propiedadCiudadEP);
 
-                    Property propertyTipoEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipante);
-                    Property propertyTipoEntidadParticipanteOtros = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipanteOtros);
+                    Property propertyTipoEntidadParticipante = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabTipoEntidad);
+                    Property propertyTipoEntidadParticipanteOtros = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabTipoEntidadOtros);
 
                     //Añado tipo entidad participante
                     string valorOtroTipoEP = UtilitySecciones.StringGNOSSID(entityPartAux, entidadParticipante.GetStringCvnCodeGroup("060.020.020.110"));
@@ -2903,7 +2904,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.020.050"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.020.050"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.020.050"),
                 Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacionNombre,
                 Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacion, entidadAux);
 
@@ -2976,7 +2977,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.030.050"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.030.050"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.030.050"),
                 Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacionNombre,
                 Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacion, entidadAux);
 
@@ -3048,7 +3049,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.040.110"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.040.110"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.040.110"),
                 Variables.ActividadCientificaTecnologica.redesCoopEntidadSeleccionNombre,
                 Variables.ActividadCientificaTecnologica.redesCoopEntidadSeleccion, entidadAux);
 
@@ -3164,7 +3165,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.050.050"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.050.050"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.050.050"),
                 Variables.ActividadCientificaTecnologica.premiosMencionesEntidadNombre,
                 Variables.ActividadCientificaTecnologica.premiosMencionesEntidad, entidadAux);
 
@@ -3228,7 +3229,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.060.050"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.060.050"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.060.050"),
                 Variables.ActividadCientificaTecnologica.otrasDistincionesEntidadNombre,
                 Variables.ActividadCientificaTecnologica.otrasDistincionesEntidad, entidadAux);
 
@@ -3292,7 +3293,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.070.050"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.070.050"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.070.050"),
                 Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidadNombre,
                 Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidad, entidadAux);
 
@@ -3355,7 +3356,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.090.060"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.090.060"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.090.060"),
                 Variables.ActividadCientificaTecnologica.acreditacionesEntidadNombre,
                 Variables.ActividadCientificaTecnologica.acreditacionesEntidad, entidadAux);
 
@@ -3418,7 +3419,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.100.020"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.100.020"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.100.020"),
                 Variables.ActividadCientificaTecnologica.otrosMeritosEntidadNombre,
                 Variables.ActividadCientificaTecnologica.otrosMeritosEntidad, entidadAux);
 

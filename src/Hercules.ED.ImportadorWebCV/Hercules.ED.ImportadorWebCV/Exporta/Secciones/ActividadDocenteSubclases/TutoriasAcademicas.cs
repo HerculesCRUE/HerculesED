@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
@@ -20,8 +21,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "030.050.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaTutoriasAcademicas(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "030.050.000.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
@@ -38,7 +50,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.tutoAcademicaCCAAEntidadRealizacion),
                     "030.050.000.040", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.tutoAcademicaCiudadEntidadRealizacion),
-                    "030.050.000.050", keyValue.Value);
+                    "030.050.000.060", keyValue.Value);
 
                 string numAlumnos = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.tutoAcademicaNumAlumnosTutelados))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.tutoAcademicaNumAlumnosTutelados)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
@@ -53,7 +65,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     : null;
                 if (!string.IsNullOrEmpty(frecuenciaActividad))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.080.000.120", frecuenciaActividad);
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.050.000.120", frecuenciaActividad);
                 }
 
                 string numHorasECTS = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.tutoAcademicaNumHorasECTS))) ?
@@ -61,7 +73,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     : null;
                 if (!string.IsNullOrEmpty(numHorasECTS))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.080.000.130", numHorasECTS);
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.050.000.130", numHorasECTS);
                 }
 
                 //Nombre programa

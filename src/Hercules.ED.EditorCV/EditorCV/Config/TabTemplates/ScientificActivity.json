@@ -1011,17 +1011,7 @@
                       }
                     ]
                   },
-                  {
-                    "properties": [
-                      {
-                        "title": {
-                          "es": "TODO indice impacto"
-                        },
-                        "property": "http://w3id.org/roh/todo",
-                        "width": 1
-                      }
-                    ]
-                  },
+                  //TODO indice impacto
                   {
                     "properties": [
                       {

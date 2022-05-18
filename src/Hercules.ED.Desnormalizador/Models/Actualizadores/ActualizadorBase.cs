@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace DesnormalizadorHercules.Models
+namespace DesnormalizadorHercules.Models.Actualizadores
 {
     //TODO comentarios completados, falta eliminar froms
 
@@ -180,7 +180,7 @@ namespace DesnormalizadorHercules.Models
                 t.NewValue = pValorNuevo;
                 t.OldValue = pValorAntiguo;
                 t.Predicate = pPredicado;
-                mResourceApi.ModifyPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToModify>() { t } } });
+                var x=mResourceApi.ModifyPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToModify>() { t } } });
             }
             else if (string.IsNullOrEmpty(pValorAntiguo) && !string.IsNullOrEmpty(pValorNuevo))
             {
@@ -188,7 +188,7 @@ namespace DesnormalizadorHercules.Models
                 TriplesToInclude t = new();
                 t.Predicate = pPredicado;
                 t.NewValue = pValorNuevo;
-                mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToInclude>() { t } } });
+                var x = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>>() { { guid, new List<Gnoss.ApiWrapper.Model.TriplesToInclude>() { t } } });
             }
             else if (!string.IsNullOrEmpty(pValorAntiguo) && string.IsNullOrEmpty(pValorNuevo))
             {
@@ -196,7 +196,7 @@ namespace DesnormalizadorHercules.Models
                 RemoveTriples t = new();
                 t.Predicate = pPredicado;
                 t.Value = pValorAntiguo;
-                mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { guid, new List<Gnoss.ApiWrapper.Model.RemoveTriples>() { t } } });
+                var x = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { guid, new List<Gnoss.ApiWrapper.Model.RemoveTriples>() { t } } });
             }
         }
 

@@ -8,6 +8,7 @@ using Hercules.ED.DisambiguationEngine.Models;
 using ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases;
 using System.Runtime.InteropServices;
 using Hercules.ED.ImportadorWebCV.Models;
+using Hercules.ED.ImportadorWebCV.Controllers;
 
 namespace ImportadorWebCV.Sincro.Secciones
 {
@@ -15,7 +16,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificExperience";
-        public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
+        public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("050");
         }
@@ -423,7 +424,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("050.020.010.100"))) { return; }
 
             //Añado la referencia si existe Entidad
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.020.010.100"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.020.010.100"),
                 Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadRealizacionNombre,
                 Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadRealizacion, entidadAux);
 
@@ -461,7 +462,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
 
                 //Añado la referencia si existe Entidad
-                UtilitySecciones.AniadirEntidad(mResourceApi, entidad.Name,
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidad.Name,
                     Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadParticipanteNombre,
                     Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadParticipante, entidadAux, entityPartAux);
             }
@@ -526,7 +527,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
 
                 //Añado la referencia si existe Entidad
-                UtilitySecciones.AniadirEntidad(mResourceApi, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.010.190"),
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.010.190"),
                     Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinanciadoraNombre,
                     Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinanciadora, entidadAux, entityPartAux);
 
@@ -689,7 +690,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void ContratosEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.020.020.370"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.020.020.370"),
                 Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacionNombre,
                 Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacion, entidadAux);
 
@@ -724,7 +725,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
 
                 //Añado la referencia si existe Entidad
-                UtilitySecciones.AniadirEntidad(mResourceApi, entidad.Name,
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidad.Name,
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadParticipanteNombre,
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadParticipante, entidadAux, entityPartAux);
             }
@@ -787,7 +788,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //Añado la referencia si existe Entidad
                 if (entidadFinanciadora.CvnEntityBean == null) { continue; }
-                UtilitySecciones.AniadirEntidad(mResourceApi, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.020.120"),
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidadFinanciadora.GetNameEntityBeanCvnCodeGroup("050.020.020.120"),
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadoraNombre,
                     Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadora, entidadAux, entityPartAux);
 
@@ -911,7 +912,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void PropiedadIndustrialIntelectualEntidadTitularDerechos(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.030.010.300"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.030.010.300"),
                 Variables.ExperienciaCientificaTecnologica.propIIEntidadTitularDerechosNombre,
                 Variables.ExperienciaCientificaTecnologica.propIIEntidadTitularDerechos, entidadAux);
         }
@@ -1121,7 +1122,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void GrupoIDIEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.010.000.090"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("050.010.000.090"),
                 Variables.ExperienciaCientificaTecnologica.grupoIDIEntidadAfiliacionNombre,
                 Variables.ExperienciaCientificaTecnologica.grupoIDIEntidadAfiliacion, entidadAux);
 
@@ -1407,7 +1408,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
 
                 //Añado la referencia si existe Entidad
-                UtilitySecciones.AniadirEntidad(mResourceApi, entidadColaboradora.GetNameEntityBeanCvnCodeGroup("050.030.020.170"),
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidadColaboradora.GetNameEntityBeanCvnCodeGroup("050.030.020.170"),
                     Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadColaboradoraNombre,
                     Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadColaboradora, entidadAux, entityPartAux);
 
@@ -1463,7 +1464,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string valorED = entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210");
 
                 //Añado la referencia si existe Entidad
-                UtilitySecciones.AniadirEntidad(mResourceApi, entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210"),
+                UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210"),
                     Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadDestinatariaNombre,
                     Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadDestinataria, entidadAux, entityPartAux);
 

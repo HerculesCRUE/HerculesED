@@ -2,6 +2,7 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.ED.ImportadorWebCV.Controllers;
 using Hercules.ED.ImportadorWebCV.Models;
 using Models;
 using Models.NotificationOntology;
@@ -22,16 +23,22 @@ namespace ImportadorWebCV.Sincro.Secciones
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
-        public SeccionBase(cvnRootResultBean cvn, string cvID)
+
+        readonly ConfigService mConfiguracion;
+
+
+        public SeccionBase(cvnRootResultBean cvn, string cvID,ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
+            mConfiguracion = configuracion;
         }
-        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID)
+        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID,ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
             mPersonID = personID;
+            mConfiguracion = configuracion;
         }
 
         /// <summary>
@@ -317,6 +324,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
             List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
         {
+            HashSet<string> itemsNuevosOModificados = new HashSet<string>();
             for (int i = 0; i < listadoAux.Count; i++)
             {
                 Entity entityXML = listadoAux[i];
@@ -337,10 +345,24 @@ namespace ImportadorWebCV.Sincro.Secciones
                     //Añadimos la referencia a BBDD para usarla en caso de añadir elementos en el CV.
                     idBBDD = equivalencias[idXML];
                 }
-
+                itemsNuevosOModificados.Add(idBBDD);
                 if (!string.IsNullOrEmpty(pPropertyCV) && !string.IsNullOrEmpty(pRdfTypeCV))
                 {
                     valoresPropertiesCV(entityXML, propiedadesItem, pPropertyCV, pRdfTypeCV, idBBDD, RdfTypeTab);
+                }
+            }
+
+            //Insertamos en la cola del desnormalizador
+            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
+            if (itemsNuevosOModificados.Count > 0)
+            {
+                if (rdfType== "http://vivoweb.org/ontology/core#Project")
+                {
+                    rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.project, itemsNuevosOModificados));
+                }
+                if (rdfType == "http://xmlns.com/foaf/0.1/Group")
+                {
+                    rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.group, itemsNuevosOModificados));
                 }
             }
         }
@@ -398,6 +420,10 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             //Diccionario para almacenar las notificaciones
             ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
+
+            //Listados para añadir las personas y documentos a desnormalizar
+            HashSet<string> personasDesnormalizar = new HashSet<string>();
+            HashSet<string> documentosDesnormalizar = new HashSet<string>();
 
             //Obtengo los datos de la persona para comprobar que existe en los documentos que cargamos
             Dictionary<string, string> idPersonaNick = UtilitySecciones.ObtenerIdPersona(mResourceApi, mCvID);
@@ -538,7 +564,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
                     modificado = true;
                     //Notificar
-                    foreach(Persona autor in entityXML.autores)
+                    foreach (Persona autor in entityXML.autores)
                     {
                         //No notifico a quien suben el documento
                         if (autor.personid == idPersona)
@@ -562,7 +588,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
                         notificaciones.Add(notificacion);
-                    }                    
+                    }
                 }
                 else
                 {
@@ -590,7 +616,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         notificacion.IdRoh_trigger = idPersona;
                         notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                         notificacion.Roh_entity = idBBDD;
-                        notificacion.IdRoh_owner = equivalencias.Where(x=>x.Value.Any(y=>y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                        notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
                         notificacion.Dct_issued = DateTime.Now;
                         notificacion.Roh_type = "edit";
                         notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -613,11 +639,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     valoresPropertiesCV(entityXML, propiedadesItem, pPropertyCV, pRdfTypeCV, idBBDD, RdfTypeTab);
                 }
+
+                documentosDesnormalizar.Add(idBBDD);
             }
 
             //Elimino las personas repetidas.
             personasCargar.RemoveAll(x => !personasUsadas.Contains(x.GnossId));
             //Cargo las personas
+            ConcurrentBag<string> personasDesnormalizarAux = new ConcurrentBag<string>();
             Parallel.ForEach(personasCargar, new ParallelOptions { MaxDegreeOfParallelism = 5 }, personaCargar =>
             {
                 int numIntentos = 0;
@@ -628,15 +657,30 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         break;
                     }
-                    mResourceApi.LoadComplexSemanticResource(personaCargar);
+                    string id = mResourceApi.LoadComplexSemanticResource(personaCargar);
+                    if (personaCargar.Uploaded)
+                    {
+                        personasDesnormalizarAux.Add(id);
+                    }
                 }
             });
+            personasDesnormalizar.UnionWith(personasDesnormalizarAux);
+
+            //Insertamos en la cola del desnormalizador
+            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
+            if (personasDesnormalizar.Count > 0)
+            {
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, personasDesnormalizar));
+            }
+            if (documentosDesnormalizar.Count > 0)
+            {
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, documentosDesnormalizar));
+            }
 
             //Enviamos las notificaciones
             List<Notification> notificacionesCargar = notificaciones.ToList();
             notificacionesCargar.RemoveAll(x => x.IdRoh_owner == idPersona);
             mResourceApi.ChangeOntoly("notification");
-            //TODO cambiar parallel
             Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 6 }, notificacion =>
             {
                 ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
@@ -830,7 +874,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     break;
                 }
-                result=mResourceApi.LoadComplexSemanticResource(resource);
+                result = mResourceApi.LoadComplexSemanticResource(resource);
             }
 
             //Obtenemos la auxiliar en la que cargar la entidad

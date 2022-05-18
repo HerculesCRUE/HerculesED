@@ -237,7 +237,7 @@ namespace OAI_PMH.Models.OAIPMH
                         List<Record> prcRecordList = new();
                         foreach (ProduccionCientificaEstado prc in prcList)
                         {
-                            prcRecordList.Add(ToRecord(prc, arguments.Set, prc.IdRef, startDate, arguments.MetadataPrefix));
+                            prcRecordList.Add(ToRecord(prc, arguments.Set, prc.idRef, startDate, arguments.MetadataPrefix));
                         }
                         container.Records = prcRecordList;
                         break;

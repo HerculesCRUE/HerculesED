@@ -118,6 +118,7 @@ namespace ImportadorWebCV
         public CvnItemBeanCvnCodeGroupCvnBoolean CvnBoolean { get; set; }
 
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CvnDouble")]
         public CvnItemBeanCvnCodeGroupCvnDouble[] CvnDouble { get; set; }
 
         /// <remarks/>
@@ -150,7 +151,7 @@ namespace ImportadorWebCV
     {
 
         /// <remarks/>
-        public byte Value { get; set; }
+        public int Value { get; set; }
     }
 
     /// <remarks/>

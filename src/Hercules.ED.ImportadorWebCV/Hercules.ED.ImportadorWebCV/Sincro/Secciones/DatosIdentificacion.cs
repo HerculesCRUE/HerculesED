@@ -1,4 +1,5 @@
 ﻿using Gnoss.ApiWrapper.ApiModel;
+using Hercules.ED.ImportadorWebCV.Controllers;
 using Hercules.ED.ImportadorWebCV.Models;
 using Models;
 using System;
@@ -13,7 +14,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     public class DatosIdentificacion : SeccionBase
     {
-        public DatosIdentificacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public DatosIdentificacion(cvnRootResultBean cvn, string cvID,ConfigService configuracion) : base(cvn, cvID,configuracion)
         {
         }
 
@@ -152,8 +153,8 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     string entityAux = Guid.NewGuid().ToString() + "|";
                     entity.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.DatosIdentificacion.otroIdentificador, UtilitySecciones.StringGNOSSID(entityAux, item.Others)),
-                        new Property(Variables.DatosIdentificacion.otroIdentificadorTitulo, UtilitySecciones.StringGNOSSID(entityAux, item.Value))
+                        new Property(Variables.DatosIdentificacion.otroIdentificador, UtilitySecciones.StringGNOSSID(entityAux, item.Value)),
+                        new Property(Variables.DatosIdentificacion.otroIdentificadorTitulo, UtilitySecciones.StringGNOSSID(entityAux, item.Others))
                     ));
                     entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/otherIds")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
                 }

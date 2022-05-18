@@ -6,24 +6,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class TrabajosCongresos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedConferences",
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/worksSubmittedConferences", "http://w3id.org/roh/relatedWorkSubmittedConferencesCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "document";
+
         public TrabajosCongresos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.010.020.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaTrabajosCongresos(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "060.010.020.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
+            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
                 CvnItemBean itemBean = new CvnItemBean()
@@ -31,7 +43,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     Code = "060.010.020.000",
                     Items = new List<CVNObject>()
                 };
-
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo),
                     "060.010.020.030", keyValue.Value);
@@ -60,9 +71,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.260", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubCCAA),
                     "060.010.020.280", keyValue.Value);
-                // Tipo DateMonthYear
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha),
-                    "060.010.020.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha),
                     "060.010.020.300", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL),
@@ -71,7 +79,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.330", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreCongreso),
                     "060.010.020.100", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaCelebracion),
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaCelebracion),
                     "060.010.020.190", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosFechaFin),
                     "060.010.020.380", keyValue.Value);
@@ -91,18 +99,25 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.080", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosAmbitoGeoOtros),
                     "060.010.020.090", keyValue.Value);
+                // Propiedades cv
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion),
+                    "060.010.020.050", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion),
+                    "060.010.020.060", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros),
+                    "060.010.020.070", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia),
+                    "060.010.020.390", keyValue.Value);
 
-                /*  TODO propiedades_cv
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("060.010.020.050")),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetTipoInscripcionEventoPorIDCampo("060.010.020.060")),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),
-                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.020.390       
-                
-                 */
+                // Lista de autores
 
+                //Selecciono las firmas de las personas
+                Dictionary<string, string> dicFirmas = UtilityExportar.GetFirmasAutores(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutorFirma, keyValue.Value);
 
-                // TODO Lista de autores TrabajosCongresosAutores
-
+                //Selecciono los autores
+                List<Tuple<string, string, string>> autorNombreApellido = UtilityExportar.GetNombreApellidoAutor(Variables.ActividadCientificaTecnologica.trabajosCongresosMiembrosAutores, keyValue.Value, mResourceApi);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanListSimple(itemBean, autorNombreApellido, dicFirmas,
+                    "060.010.020.040");
 
                 // Trabajos Congresos ID Publicacion
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalHandle),
@@ -113,8 +128,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.400", keyValue.Value);
 
                 Dictionary<string, string> dicNombreID = new Dictionary<string, string>();
-                dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIDOtroPubDigital));
-                dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreOtroPubDigital));
+                dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosNombreOtroPubDigital));
+                dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIDOtroPubDigital));
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean, dicNombreID, "060.010.020.400", keyValue.Value);
 
                 //ISBN
@@ -132,13 +147,48 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.130", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoEntidadOrganizadoraOtros),
                     "060.010.020.140", keyValue.Value);
-
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCiudadEntidadOrganizadora),
                     "060.010.020.360", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPaisEntidadOrganizadora),
                     "060.010.020.340", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCCAAEntidadOrganizadora),
                     "060.010.020.350", keyValue.Value);
+
+                // Citas 
+                List<Tuple<string, string, string>> dicCodigosWOS = new List<Tuple<string, string, string>>();
+                dicCodigosWOS.Add(new Tuple<string, string, string>("Double", "060.010.020.430", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCitasWOS)));
+                dicCodigosWOS.Add(new Tuple<string, string, string>("String", "060.010.020.440", "WOS"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosWOS,
+                    "060.010.020.430", keyValue.Value);
+
+                List<Tuple<string, string, string>> dicCodigosScopus = new List<Tuple<string, string, string>>();
+                dicCodigosScopus.Add(new Tuple<string, string, string>("Double", "060.010.020.430", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCitasScopus)));
+                dicCodigosScopus.Add(new Tuple<string, string, string>("String", "060.010.020.440", "SCOPUS"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosScopus,
+                    "060.010.020.430", keyValue.Value);
+
+                List<Tuple<string, string, string>> dicCodigosInrecs = new List<Tuple<string, string, string>>();
+                dicCodigosInrecs.Add(new Tuple<string, string, string>("Double", "060.010.020.430", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCitasInrecs)));
+                dicCodigosInrecs.Add(new Tuple<string, string, string>("String", "060.010.020.440", "INRECS"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosInrecs,
+                    "060.010.020.430", keyValue.Value);
+
+                List<Tuple<string, string, string>> dicCodigosScholar = new List<Tuple<string, string, string>>();
+                dicCodigosScholar.Add(new Tuple<string, string, string>("Double", "060.010.020.430", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosCitasScholar)));
+                dicCodigosScholar.Add(new Tuple<string, string, string>("String", "060.010.020.440", "SCHOLAR"));
+                dicCodigosScholar.Add(new Tuple<string, string, string>("String", "060.010.020.450", "Semantic Scholar"));
+                UtilityExportar.AddCitas(itemBean, dicCodigosScholar,
+                    "060.010.020.430", keyValue.Value);
+
+                //List<Tuple<string, string, string>> dicCodigosOther = new List<Tuple<string, string, string>>();
+                //dicCodigosOther.Add(new Tuple<string, string, string>("Double", "060.010.020.430", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitas)));
+                //dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.020.440", "OTHERS"));
+                //dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.020.450", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitasNombre)));
+                //UtilityExportar.AddCitas(itemBean, dicCodigosOther,
+                //    "060.010.020.430", keyValue.Value);
+
+                // TODO Indice de impacto
+
                 listado.Add(itemBean);
             }
 

@@ -8,6 +8,7 @@ using Hercules.ED.DisambiguationEngine.Models;
 using System.Runtime.InteropServices;
 using ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases;
 using Hercules.ED.ImportadorWebCV.Models;
+using Hercules.ED.ImportadorWebCV.Controllers;
 
 namespace ImportadorWebCV.Sincro.Secciones
 {
@@ -15,7 +16,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ProfessionalSituation";
-        public SituacionProfesional(cvnRootResultBean cvn, string cvID, string personID) : base(cvn, cvID, personID)
+        public SituacionProfesional(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("010");
         }
@@ -197,7 +198,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.010.000.020"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.010.000.020"),
                 Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadoraNombre,
                 Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadora, entidadAux);
 
@@ -380,7 +381,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.020.000.020"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.020.000.020"),
                 Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre,
                 Variables.SituacionProfesional.cargosActividadesEntidadEmpleadora, entidadAux);
 

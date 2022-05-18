@@ -6,6 +6,7 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OAI_PMH.Models.SGI.PRC;
 
 namespace OAI_PMH.Services
 {
@@ -22,7 +23,12 @@ namespace OAI_PMH.Services
             IRestResponse response = client.Execute(request);
             if (!string.IsNullOrEmpty(response.Content))
             {
-                idList = response.Content[1..^1].Split(',').ToList();
+                List<ProduccionCientificaEstado> listaValidaciones = JsonConvert.DeserializeObject<List<ProduccionCientificaEstado>>(response.Content);
+                foreach(ProduccionCientificaEstado item in listaValidaciones)
+                {
+                    idList.Add(item.idRef);
+                }
+                                
                 foreach (string id in idList)
                 {
                     idDictionary.Add("PRC_" + id, DateTime.UtcNow);

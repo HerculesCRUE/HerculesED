@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
 
 namespace Utils
@@ -14,6 +15,34 @@ namespace Utils
     {
         private static Dictionary<string, string> mListaRevistas = new Dictionary<string, string>();
         private static Dictionary<string, string> mListaPalabrasClave = new Dictionary<string, string>();
+        public static List<Tuple<string, string>> Lenguajes = new List<Tuple<string, string>>();
+        private static Dictionary<string, string> mOrgsNombreIds = new Dictionary<string, string>();
+        private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
+
+        public static void GetLenguajes(ResourceApi pResourceApi)
+        {
+            string select = $@"select distinct ?title ?ident";
+            string where = $@" where {{
+?s a <http://w3id.org/roh/Language> .
+?s <http://purl.org/dc/elements/1.1/title> ?title FILTER(langMatches(lang(?title), ""es""))
+?s <http://purl.org/dc/elements/1.1/identifier> ?ident .
+}}";
+            List<Tuple<string, string, string>> listaResultado = new List<Tuple<string, string, string>>();
+
+            SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "language");
+            if (resultData.results.bindings.Count == 0)
+            {
+                return;
+            }
+
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("title") && fila.ContainsKey("ident"))
+                {
+                    Lenguajes.Add(new Tuple<string, string>(fila["title"].value, fila["ident"].value));
+                }
+            }
+        }
 
         /// <summary>
         /// Devuelve los identificadores devueltos en la consulta.
@@ -86,6 +115,7 @@ namespace Utils
 
             if (mListaRevistas.Count == 0)
             {
+                Dictionary<string, string> listaRevistasAux = new Dictionary<string, string>();
                 while (true)
                 {
                     //Si tengo más de 10.000 resultados repito la consulta, sino salgo del bucle
@@ -95,9 +125,10 @@ namespace Utils
                              }} ORDER BY ?nombreRevista
                         }} LIMIT {limit} OFFSET {offsetInt} ";
                     SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "maindocument");
+                    
                     for (int i = 0; i < resultData.results.bindings.Count; i++)
                     {
-                        mListaRevistas[resultData.results.bindings.Select(x => x["nombreRevista"].value).ElementAt(i).ToLower()] = resultData.results.bindings.Select(x => x["identificador"].value).ElementAt(i);
+                        listaRevistasAux[resultData.results.bindings.Select(x => x["nombreRevista"].value).ElementAt(i).ToLower()] = resultData.results.bindings.Select(x => x["identificador"].value).ElementAt(i);
                     }
                     offsetInt += limit;
                     if (resultData.results.bindings.Count < limit)
@@ -105,6 +136,7 @@ namespace Utils
                         break;
                     }
                 }
+                mListaRevistas = listaRevistasAux;
             }
             if (mListaRevistas.ContainsKey(nombreRevista.ToLower()))
             {
@@ -125,19 +157,41 @@ namespace Utils
         /// <returns>string</returns>
         public static string GetOrganizacionPorNombre(ResourceApi pResourceApi, string nombreOrganizacion)
         {
-            string select = $@"select distinct ?nombre ?organizacion";
-            string where = $@"where {{ 
-                                ?organizacion <http://w3id.org/roh/title> ?nombre  
-                                FILTER(ucase(?nombre)=""{nombreOrganizacion.ToUpper().Replace("\"","\\\"")}"")
-                            }}  LIMIT 1";
-
-            SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "organization");
-            if (resultData.results.bindings.Count == 0)
+            //Recalculamos cada 60 minutos
+            if(mDateOrgsNombreIds.AddMinutes(60) <DateTime.Now)
             {
-                return null;
-            }
+                Dictionary<string, string> aux = new Dictionary<string, string>();
+                int offset = 0;
+                int limit = 10000;
+                while (true)
+                {
+                    string select = $@"select * where{{ select distinct ?nombre ?id";
+                    string where = $@"where {{ 
+                                ?id <http://w3id.org/roh/title> ?nombre.  
+                            }}order by desc(?id) }} offset {offset} limit {limit}";
 
-            return resultData.results.bindings.Select(x => x["organizacion"].value).FirstOrDefault();
+                    SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "organization");
+
+                    if (resultData.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultData.results.bindings)
+                        {
+                            aux[fila["nombre"].value] = fila["id"].value;
+                        }
+                    }
+                    offset += limit;
+                    if (resultData.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+
+                
+                mOrgsNombreIds = aux;
+                mDateOrgsNombreIds = DateTime.Now;
+            }
+            KeyValuePair<string, string> valor = mOrgsNombreIds.FirstOrDefault(x => x.Key.ToLower() == nombreOrganizacion.ToLower());
+            return valor.Value;
         }
 
 
@@ -206,7 +260,7 @@ namespace Utils
         /// <param name="propiedadNombreEntidad"></param>
         /// <param name="propiedadEntidad"></param>
         /// <param name="entidadAux"></param>
-        public static void AniadirEntidad(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux, [Optional] string aux)
+        public static void AniadirEntidadOrganizacion(ResourceApi mResourceApi, string nombreEntidad, string propiedadNombreEntidad, string propiedadEntidad, Entity entidadAux, [Optional] string aux)
         {
             if (mResourceApi == null || string.IsNullOrEmpty(nombreEntidad) ||
                 string.IsNullOrEmpty(propiedadEntidad) || string.IsNullOrEmpty(propiedadEntidad))
@@ -433,7 +487,7 @@ namespace Utils
                         Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
 
                         string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                        string valorID = StringGNOSSID(entityPartAux, identificador.Value); ;
+                        string valorID = StringGNOSSID(entityPartAux, identificador.Value);
                         CheckProperty(IDOtro, entidadAux, valorID, propIdOtroPub);
 
                         string valorNombre = StringGNOSSID(entityPartAux, identificador.Others);

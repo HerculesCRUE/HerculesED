@@ -6,22 +6,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class AyudaBecas : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/grants", "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+            "http://w3id.org/roh/grants", "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "grant";
         public AyudaBecas(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
-
-
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "060.030.010.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaAyudaBecas(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "060.030.010.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
@@ -32,8 +41,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     Code = "060.030.010.000",
                     Items = new List<CVNObject>()
                 };
-
-
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasNombre),
                     "060.030.010.010", keyValue.Value);
@@ -54,21 +61,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 if (!string.IsNullOrEmpty(importeBecas))
                 {
                     UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "060.030.010.120", importeBecas);
-
                 }
                 
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasFechaConcesion),
                     "060.030.010.130", keyValue.Value);
-
-                //TODO test
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,"060.030.010.140", keyValue.Value); 
-
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,
+                    "060.030.010.140", keyValue.Value); 
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasFechaFinalizacion),
                     "060.030.010.160", keyValue.Value);
 
                 // Entidad Concede
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcedeNombre),
-                   "060.030.010.080", keyValue.Value);
+                    "060.030.010.080", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcede),
                     "060.030.010.100", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasTipoEntidadConcedeOtros),
@@ -76,13 +80,11 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 
                 // Entidad Realizacion
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasEntidadRealizacionNombre),
-                   "060.030.010.180", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasFacultadEscuela),
+                    "060.030.010.180", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasFacultadEscuela),
                     "060.030.010.170", keyValue.Value);
 
                 listado.Add(itemBean);
-
-
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado

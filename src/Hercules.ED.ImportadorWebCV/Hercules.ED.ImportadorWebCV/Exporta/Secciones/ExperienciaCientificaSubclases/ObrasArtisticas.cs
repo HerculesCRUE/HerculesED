@@ -6,20 +6,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class ObrasArtisticas:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+            "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "supervisedartisticproject";
         public ObrasArtisticas(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
-
-
         }
+        /// <summary>
+        /// Exporta los datos de la sección "050.020.030.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaObrasArtisticas(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "050.020.030.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
@@ -30,7 +41,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     Code = "050.020.030.000",
                     Items = new List<CVNObject>()
                 };
-
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.obrasArtisticasDescripcion), 
                     "050.020.030.010", keyValue.Value);

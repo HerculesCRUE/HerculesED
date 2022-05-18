@@ -6,21 +6,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class RedesCooperacion :SeccionBase
     {
 
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/networks", "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+            "http://w3id.org/roh/networks", "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "network";
         public RedesCooperacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
 
         }
-
+        /// <summary>
+        /// Exporta los datos de la sección "060.030.040.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaRedesCooperacion(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "060.030.040.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
@@ -47,44 +59,47 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 }
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopPaisRadicacion),
-                         "060.030.040.040", keyValue.Value);
+                    "060.030.040.040", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopCCAARadicacion),
-                         "060.030.040.050", keyValue.Value);
-
+                    "060.030.040.050", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopCiudadRadicacion),
-                         "060.030.040.180", keyValue.Value);
+                    "060.030.040.180", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopPaisEntidadSeleccion),
-                         "060.030.040.190", keyValue.Value);
+                    "060.030.040.190", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopCCAAEntidadSeleccion),
-                         "060.030.040.200", keyValue.Value);
+                    "060.030.040.200", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopCiudadEntidadSeleccion),
-                         "060.030.040.210", keyValue.Value);
+                    "060.030.040.210", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTareas),
-                         "060.030.040.150", keyValue.Value);
+                    "060.030.040.150", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopFechaInicio),
-                         "060.030.040.160", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, "060.030.040.170", keyValue.Value);
-
-
+                    "060.030.040.160", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, 
+                    "060.030.040.170", keyValue.Value);
 
                 // Entidad Seleccion
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopEntidadSeleccionNombre),
-                   "060.030.050.110", keyValue.Value);
+                    "060.030.040.110", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadSeleccion),
-                    "060.030.050.130", keyValue.Value);
+                    "060.030.040.130", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadSeleccionOtros),
-                    "060.030.050.140", keyValue.Value);
+                    "060.030.040.140", keyValue.Value);
 
-                // Entidad Participantes
-                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipanteNombre),
-                   "060.030.040.070", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipante),
-                    "060.030.040.090", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipanteOtros),
-                    "060.030.040.100", keyValue.Value);
+                // Entidades Participantes
+                List<Tuple<string, string, string>> dicCodigos = new List<Tuple<string, string, string>>();
+                dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "060.030.040.070",
+                    UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipanteNombre)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "060.030.040.090",
+                    UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipante)));
+                dicCodigos.Add(new Tuple<string, string, string>("String", "060.030.040.100",
+                    UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipanteOtros)));
+
+                UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
+                   "060.030.040.070", keyValue.Value,
+                   UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipante),
+                   UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopTipoEntidadParticipanteOtros));
+
                 listado.Add(itemBean);
-
-
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado

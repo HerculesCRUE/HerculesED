@@ -3,7 +3,9 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones
 {
@@ -15,8 +17,16 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         }
 
-        public void ExportaTextoLibre(Entity entity)
+        /// <summary>
+        /// Exporta los datos de la sección "070.010.000.000" a cvn.cvnRootResultBean.
+        /// </summary>
+        /// <param name="entity"></param>
+        public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"))
+            {
+                return;
+            }
             string propResumenLibre = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.resumenLibre)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFG = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b1DescripcionTFG)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFM = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b2DescripcionTFM)).Select(x => x.prop).FirstOrDefault());
@@ -24,7 +34,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             List<CvnItemBean> listado = new List<CvnItemBean>();
             CvnItemBean itemBean = new CvnItemBean()
             {
-                Code = "070.000.000.000",
+                Code = "070.010.000.000",
                 Items = new List<CVNObject>()
             };
 
@@ -40,10 +50,11 @@ namespace ImportadorWebCV.Exporta.Secciones
                 : null;
 
             //Separación de los diferentes apartados por los titulos del FECYT. 
-            string resumen = resumenLibre + " B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida"
-                + resumenTFG + " B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida" + resumenTFM;
+            string resumen = resumenLibre 
+                + " B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida" + resumenTFG 
+                + " B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida" + resumenTFM;
 
-            UtilityExportar.AddCvnItemBeanCvnRichText(itemBean, resumen, "070.010.000.000");
+            UtilityExportar.AddCvnItemBeanCvnRichText(itemBean, resumen, "070.010.000.010");
 
             //Añado el item al listado
             listado.Add(itemBean);

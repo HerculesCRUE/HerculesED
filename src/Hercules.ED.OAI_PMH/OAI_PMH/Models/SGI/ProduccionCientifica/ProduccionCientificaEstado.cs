@@ -2,8 +2,8 @@
 {
     public class ProduccionCientificaEstado : SGI_Base
     {
-        public string IdRef { get; set; }
-        public string EpigrafeCVN { get; set; }
-        public string Estado { get; set; }
+        public string idRef { get; set; }
+        public string epigrafeCVN { get; set; }
+        public string estado { get; set; }
     }
 }

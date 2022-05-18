@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
@@ -19,8 +20,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         {
 
         }
+        /// <summary>
+        /// Exporta los datos de la sección "030.010.000.000" a cvn.cvnRootResultBean
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="seccion"></param>
+        /// <param name="secciones"></param>
+        /// <param name="preimportar"></param>
         public void ExportaFormacionAcademica(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
         {
+            if (!UtilitySecciones.CheckSecciones(secciones, "030.010.000.000"))
+            {
+                return;
+            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
@@ -69,7 +81,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.010.000.220", NumeroECTS);
                 }
 
-                UtilityExportar.AddLanguage(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaIdiomaAsignatura),
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaIdiomaAsignatura),
                     "030.010.000.230", keyValue.Value);
 
                 string frecuenciaAsignatura = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.formacionAcademicaFrecuenciaAsignatura))) ?
@@ -120,7 +132,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.010.000.610", keyValue.Value);
 
                 //Titulacion universitaria
-                UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitariaNombre),
+                UtilityExportar.AddCvnItemBeanCvnTitleBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitaria),
+                     UtilityExportar.EliminarRDF(Variables.ActividadDocente.formacionAcademicaTitulacionUniversitariaNombre),
                     "030.010.000.020", keyValue.Value);
 
                 //Entidad realizacion

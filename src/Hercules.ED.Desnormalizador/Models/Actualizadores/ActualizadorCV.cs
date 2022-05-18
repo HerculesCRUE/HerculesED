@@ -9,13 +9,88 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace DesnormalizadorHercules.Models
+namespace DesnormalizadorHercules.Models.Actualizadores
 {
     /// <summary>
     /// Clase para actualizar propiedades de CVs
     /// </summary>
     class ActualizadorCV : ActualizadorBase
     {
+        /// <summary>
+        /// Objeto para 'ModificarElementosCV'
+        /// </summary>
+        public class CVSection
+        {
+            /// <summary>
+            /// Código de CVN
+            /// </summary>
+            public string cvnCode { get; set; }
+            /// <summary>
+            /// Grafo de la entidad
+            /// </summary>
+            public string graph { get; set; }
+            /// <summary>
+            /// rdf:type de la entidad
+            /// </summary>
+            public string rdfType { get; set; }
+            /// <summary>
+            /// rdf:type de la entidad auxiliar
+            /// </summary>
+            public string rdfTypeAux { get; set; }
+            /// <summary>
+            /// Propiedad que apunta a la sección
+            /// </summary>
+            public string sectionProperty { get; set; }
+            /// <summary>
+            /// Propiedad que apunta de la sección a la entidad auxiliar
+            /// </summary>
+            public string itemProperty { get; set; }
+            public CVSection(string pCvnCode, string pGraph, string pRdfType, string pSectionProperty, string pItemProperty, string pRdfTypeAux)
+            {
+                cvnCode = pCvnCode;
+                graph = pGraph;
+                rdfType = pRdfType;
+                sectionProperty = pSectionProperty;
+                itemProperty = pItemProperty;
+                rdfTypeAux = pRdfTypeAux;
+            }
+        }
+
+        /// <summary>
+        /// Objeto para 'ModificarOrganizacionesCV'
+        /// </summary>
+        public class OrgTitleCVTitleOrg
+        {
+            /// <summary>
+            /// PropiedadAuxiliar
+            /// </summary>
+            public string propAux { get; set; }
+            /// <summary>
+            /// Grafo
+            /// </summary>
+            public string graph { get; set; }
+            /// <summary>
+            /// rdf:type de la entidad
+            /// </summary>
+            public string rdfType { get; set; }
+            /// <summary>
+            /// Propiedad con el título desnormalizado
+            /// </summary>
+            public string propTituloDesnormalizado { get; set; }
+            /// <summary>
+            /// Propiedad con la orgnización
+            /// </summary>
+            public string propOrganizacion { get; set; }
+            public OrgTitleCVTitleOrg(string pGraph, string pRdfType, string pPropAux, string pPropTituloDesnormalizado, string pPropOrganizacion)
+            {
+                propAux = pPropAux;
+                graph = pGraph;
+                rdfType = pRdfType;
+                propTituloDesnormalizado = pPropTituloDesnormalizado;
+                propOrganizacion = pPropOrganizacion;
+            }
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -31,14 +106,34 @@ namespace DesnormalizadorHercules.Models
         /// No tiene dependencias
         /// </summary>
         /// <param name="pPersons">ID de las personas</param>
-        public void CrearCVs(List<string> pPersons = null)
+        /// <param name="pProjects">ID de proyectos</param>
+        /// <param name="pGroups">ID de grupos</param>
+        /// <param name="pDocuments">ID de documentos</param>
+        /// <param name="pROs">ID de research objects</param>
+        public void CrearCVs(List<string> pPersons = null, List<string> pProjects = null, List<string> pGroups = null, List<string> pDocuments = null, List<string> pROs = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" ?projectAux <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?projectAux in (<{string.Join(">,<", pProjects)}>))");
+            }
+            if (pGroups != null && pGroups.Count > 0)
+            {
+                filters.Add($" ?groupAux <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?groupAux in (<{string.Join(">,<", pGroups)}>))");
+            }
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" ?docAux <http://purl.org/ontology/bibo/authorList> ?autoresAux. ?autoresAux <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  FILTER(?docAux in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (pROs != null && pROs.Count > 0)
+            {
+                filters.Add($" ?roAux <http://purl.org/ontology/bibo/authorList> ?autoresAux. ?autoresAux <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  FILTER(?roAux in (<{string.Join(">,<", pROs)}>))");
+            }
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -49,7 +144,7 @@ namespace DesnormalizadorHercules.Models
                     //Creamos CVs
                     int limit = 50;
                     //TODO eliminar from
-                    String select = @"SELECT distinct ?person from <http://gnoss.com/curriculumvitae.owl> ";
+                    String select = @"SELECT distinct ?person from <http://gnoss.com/curriculumvitae.owl> from <http://gnoss.com/project.owl> from <http://gnoss.com/group.owl> from <http://gnoss.com/document.owl> from <http://gnoss.com/researchobject.owl>  ";
                     String where = @$"  where{{
                                             {filter}
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
@@ -108,20 +203,20 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pCVs">IDs del CV</param>
         public void ModificarDocumentos(List<string> pPersons = null, List<string> pDocuments = null, List<string> pCVs = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pDocuments != null && pDocuments.Count > 0)
+            if (pDocuments != null && pDocuments.Count > 0)
             {
                 filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
             }
-            else if (pCVs != null && pCVs.Count > 0)
+            if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -133,7 +228,7 @@ namespace DesnormalizadorHercules.Models
                     //Añadimos documentos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificActivity ?document ?isValidated ?typeDocument  from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
+                    String select = @"select distinct ?cv ?scientificActivity ?document ?isValidated ?typeDocument  from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -179,7 +274,7 @@ namespace DesnormalizadorHercules.Models
                                                 BIND(""SAD3"" as ?typeDocument)
                                         }}
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     InsertarDocumentosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -193,7 +288,7 @@ namespace DesnormalizadorHercules.Models
                     //Elminamos documentos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificActivity ?item ?typeDocument from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
+                    String select = @"select distinct ?cv ?scientificActivity ?item ?typeDocument from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -238,7 +333,7 @@ namespace DesnormalizadorHercules.Models
                                             ?scientificActivityDocument <http://purl.org/dc/elements/1.1/identifier> ?typeDocument.
                                         }}                                        
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     EliminarDocumentosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -252,7 +347,7 @@ namespace DesnormalizadorHercules.Models
                     //Elminamos duplicados
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?document from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl> ";
+                    String select = @"select * where{select distinct ?cv (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?document from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -285,20 +380,20 @@ namespace DesnormalizadorHercules.Models
         /// <param name="pCVs">IDs del CV</param>
         public void CambiarPrivacidadDocumentos(List<string> pPersons = null, List<string> pDocuments = null, List<string> pCVs = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pDocuments != null && pDocuments.Count > 0)
+            if (pDocuments != null && pDocuments.Count > 0)
             {
                 filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
             }
-            else if (pCVs != null && pCVs.Count > 0)
+            if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -311,7 +406,7 @@ namespace DesnormalizadorHercules.Models
                     //Publicamos los documentos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificActivity ?propItem ?item from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  ";
+                    String select = @"select distinct ?cv ?scientificActivity ?propItem ?item from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  ";
                     String where = @$"where{{
                                 {filter}
                                 {{
@@ -325,7 +420,7 @@ namespace DesnormalizadorHercules.Models
                                     ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
                                     ?item <http://w3id.org/roh/isPublic> 'false'.
                                 }}
-                            }}}}order by desc(?cv) limit {limit}";
+                            }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     PublicarDocumentosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -342,24 +437,24 @@ namespace DesnormalizadorHercules.Models
         /// Depende de ActualizadorCV.CrearCVs
         /// </summary>        
         /// <param name="pPersons">IDs de la persona</param>
-        /// <param name="pResearchObjects">IDs del research object</param>
+        /// <param name="pROs">IDs del research object</param>
         /// <param name="pCVs">IDs del CV</param>
-        public void ModificarResearchObjects(List<string> pPersons = null, List<string> pResearchObjects = null, List<string> pCVs = null)
+        public void ModificarResearchObjects(List<string> pPersons = null, List<string> pROs = null, List<string> pCVs = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in ( <{string.Join(">,<", pPersons)}>))");
             }
-            else if (pResearchObjects != null && pResearchObjects.Count > 0)
+            if (pROs != null && pROs.Count > 0)
             {
-                filters.Add($" FILTER(?ro in ( <{string.Join(">,<", pResearchObjects)}>))");
+                filters.Add($" FILTER(?ro in ( <{string.Join(">,<", pROs)}>))");
             }
-            else if (pCVs != null && pCVs.Count > 0)
+            if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in ( <{string.Join(">,<", pCVs)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -371,7 +466,7 @@ namespace DesnormalizadorHercules.Models
                     //Añadimos documentos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?researchObject ?ro from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>   ";
+                    String select = @"select distinct ?cv ?researchObject ?ro from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>   ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -399,7 +494,7 @@ namespace DesnormalizadorHercules.Models
                                         ?researchObject <http://w3id.org/roh/researchObjects> ?item.
                                         ?item <http://vivoweb.org/ontology/core#relatedBy> ?ro.
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     InsertarResearchObjectsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -413,7 +508,7 @@ namespace DesnormalizadorHercules.Models
                     //Elminamos documentos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?researchObject ?item from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>  ";
+                    String select = @"select distinct ?cv ?researchObject ?item from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>  ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -441,7 +536,7 @@ namespace DesnormalizadorHercules.Models
                                             ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
                                         }}                                      
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     EliminarResearchObjectsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -455,7 +550,7 @@ namespace DesnormalizadorHercules.Models
                     //Elminamos duplicados
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?researchObject (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?ro from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl> ";
+                    String select = @"select * where{select distinct ?cv ?researchObject (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?ro from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl> ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -484,24 +579,24 @@ namespace DesnormalizadorHercules.Models
         /// Depende de ActualizadorCV.CrearCVs
         /// </summary>
         /// <param name="pPersons">IDs de la persona</param>
-        /// <param name="pResearchObjects">IDs del research object</param>
+        /// <param name="pROs">IDs del research object</param>
         /// <param name="pCVs">IDs del CV</param>
-        public void CambiarPrivacidadResearchObjects(List<string> pPersons = null, List<string> pResearchObjects = null, List<string> pCVs = null)
+        public void CambiarPrivacidadResearchObjects(List<string> pPersons = null, List<string> pROs = null, List<string> pCVs = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pResearchObjects != null && pResearchObjects.Count > 0)
+            if (pROs != null && pROs.Count > 0)
             {
-                filters.Add($" FILTER(?ro in (<{string.Join(">,<", pResearchObjects)}>))");
+                filters.Add($" FILTER(?ro in (<{string.Join(">,<", pROs)}>))");
             }
-            else if (pCVs != null && pCVs.Count > 0)
+            if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -513,7 +608,7 @@ namespace DesnormalizadorHercules.Models
                     //Publicamos los documentos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?researchObject ?propItem ?item from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>  ";
+                    String select = @"select distinct ?cv ?researchObject ?propItem ?item from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -527,7 +622,7 @@ namespace DesnormalizadorHercules.Models
                                         ?item <http://vivoweb.org/ontology/core#relatedBy> ?ro.
                                         ?item <http://w3id.org/roh/isPublic> 'false'.
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     PublicarResearchObjectsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -543,24 +638,24 @@ namespace DesnormalizadorHercules.Models
         /// Depende de ActualizadorCV.CrearCVs
         /// </summary>        
         /// <param name="pPersons">IDs de la persona</param>
-        /// <param name="pProyectos">IDs del documento</param>
+        /// <param name="pProjects">IDs del documento</param>
         /// <param name="pCVs">IDs del CV</param>
-        public void ModificarProyectos(List<string> pPersons = null, List<string> pProyectos = null, List<string> pCVs = null)
+        public void ModificarProyectos(List<string> pPersons = null, List<string> pProjects = null, List<string> pCVs = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pProyectos != null && pProyectos.Count > 0)
+            if (pProjects != null && pProjects.Count > 0)
             {
-                filters.Add($" FILTER(?project in (<{string.Join(">,<", pProyectos)}>))");
+                filters.Add($" FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
             }
-            else if (pCVs != null && pCVs.Count > 0)
+            if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -572,7 +667,7 @@ namespace DesnormalizadorHercules.Models
                     //Añadimos proyectos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificExperience ?project ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
+                    String select = @"select distinct ?cv ?scientificExperience ?project ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -613,7 +708,7 @@ namespace DesnormalizadorHercules.Models
                                                 BIND(""SEP2"" as ?typeProject)
                                         }}
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     InsertarProyectosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -627,7 +722,7 @@ namespace DesnormalizadorHercules.Models
                     //Elminamos proyectos
                     int limit = 500;
                     //TODO eliminar from select distinct ?cv ?scientificActivity ?item ?typeDocument
-                    String select = @"SELECT * WHERE{select distinct ?cv ?scientificExperience ?project ?item ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
+                    String select = @"select distinct ?cv ?scientificExperience ?project ?item ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
                     String where = @$"where{{
                                     {filter}
                                     
@@ -668,7 +763,7 @@ namespace DesnormalizadorHercules.Models
                                             ?scientificExperienceProject <http://purl.org/dc/elements/1.1/identifier> ?typeProject.
                                         }}
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     EliminarProyectosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -683,25 +778,25 @@ namespace DesnormalizadorHercules.Models
         /// Insertamos/eliminamos en los CV los grupos oficiales (con http://w3id.org/roh/isValidated='true' ) de los que el dueño del CV ha sido miembro y les ponemos privacidad pública
         /// Depende de ActualizadorCV.CrearCVs
         /// </summary>        
-        /// <param name="pPersons">IDs de la persona</param>
-        /// <param name="pGroups">IDs del grupo</param>
-        /// <param name="pCVs">ID del CV</param>
+        /// <param name="pPersons">IDs de las personas</param>
+        /// <param name="pGroups">IDs de los grupos</param>
+        /// <param name="pCVs">IDs de los CVs</param>
         public void ModificarGrupos(List<string> pPersons = null, List<string> pGroups = null, List<string> pCVs = null)
         {
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pGroups != null && pGroups.Count > 0)
+            if (pGroups != null && pGroups.Count > 0)
             {
                 filters.Add($" FILTER(?group in (<{string.Join(">,<", pGroups)}>))");
             }
-            else if (pCVs != null && pCVs.Count > 0)
+            if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -713,7 +808,7 @@ namespace DesnormalizadorHercules.Models
                     //Añadimos grupos
                     int limit = 500;
                     //TODO eliminar from
-                    String select = @"SELECT * WHERE{select distinct ?cv ?idSection ?item 
+                    String select = @"select distinct ?cv ?idSection ?item 
                                         'http://w3id.org/roh/RelatedGroup' as ?rdfTypeAux 
                                         'http://w3id.org/roh/scientificExperience' as ?sectionProperty
                                         'http://w3id.org/roh/groups' as ?auxProperty
@@ -744,7 +839,7 @@ namespace DesnormalizadorHercules.Models
                                         ?idSection <http://w3id.org/roh/groups> ?auxSection.
                                         ?auxSection <http://vivoweb.org/ontology/core#relatedBy> ?item.
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     InsertarItemsCV(resultado);
 
@@ -759,7 +854,7 @@ namespace DesnormalizadorHercules.Models
                     //Elminamos grupos
                     int limit = 500;
                     //TODO eliminar from 
-                    String select = @"SELECT * WHERE{select distinct ?cv ?idSection ?auxEntity 
+                    String select = @"select distinct ?cv ?idSection ?auxEntity 
                                         'http://w3id.org/roh/scientificExperience' as ?sectionProperty
                                         'http://w3id.org/roh/groups' as ?auxProperty      
                                         ?group from <http://gnoss.com/group.owl> from <http://gnoss.com/person.owl> ";
@@ -788,7 +883,7 @@ namespace DesnormalizadorHercules.Models
                                         ?group <http://vivoweb.org/ontology/core#relates> ?rol.
                                         ?rol <http://w3id.org/roh/roleOf> ?person.
                                     }}
-                                }}}}order by desc(?cv) limit {limit}";
+                                }}order by desc(?cv) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                     EliminarItemsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
@@ -799,44 +894,12 @@ namespace DesnormalizadorHercules.Models
             }
         }
 
-        public class CVSection
-        {
-            /// <summary>
-            /// Códifo de CVN
-            /// </summary>
-            public string cvnCode { get; set; }
-            /// <summary>
-            /// Grafo de la entidad
-            /// </summary>
-            public string graph { get; set; }
-            /// <summary>
-            /// rdf:type de la entidad
-            /// </summary>
-            public string rdfType { get; set; }
-            /// <summary>
-            /// rdf:type de la entidad auxiliar
-            /// </summary>
-            public string rdfTypeAux { get; set; }
-            /// <summary>
-            /// Propiedad que apunta a la sección
-            /// </summary>
-            public string sectionProperty { get; set; }
-            /// <summary>
-            /// Propiedad que apunta de la sección a la entidad auxiliar
-            /// </summary>
-            public string itemProperty { get; set; }
-            public CVSection(string pCvnCode, string pGraph, string pRdfType, string pSectionProperty, string pItemProperty, string pRdfTypeAux)
-            {
-                cvnCode = pCvnCode;
-                graph = pGraph;
-                rdfType = pRdfType;
-                sectionProperty = pSectionProperty;
-                itemProperty = pItemProperty;
-                rdfTypeAux = pRdfTypeAux;
-            }
-        }
-
-
+        /// <summary>
+        /// Modifica los elementos del CV agrgandolos/eliminandolos del CV
+        /// Depende de ActualizadorCV.CrearCVs
+        /// </summary>
+        /// <param name="pPersons">>IDs de las personas</param>
+        /// <param name="pCVs">IDs de los CVs</param>
         public void ModificarElementosCV(List<string> pPersons = null, List<string> pCVs = null)
         {
             List<CVSection> listaSecciones = new List<CVSection>();
@@ -928,16 +991,16 @@ namespace DesnormalizadorHercules.Models
 
 
 
-            List<string> filters = new List<string>();
+            HashSet<string> filters = new HashSet<string>();
             if (pPersons != null && pPersons.Count > 0)
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            else if (pCVs != null && pCVs.Count > 0)
+            if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
             }
-            else
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -1049,33 +1112,152 @@ namespace DesnormalizadorHercules.Models
                         break;
                     }
                 }
-
-                //while (true)
-                //{
-                //    //Elminamos duplicados
-                //    int limit = 500;
-                //    //TODO eliminar from
-                //    String select = @"SELECT * WHERE{select distinct ?cv (group_concat(?item;separator="";"") as ?items) count(?item) as ?numItems  ?document from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl> ";
-                //    String where = @$"where{{
-                //                    {filter}                                    
-                //                    {{
-                //                        ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
-                //                        ?document a <http://purl.org/ontology/bibo/Document>.
-                //                        ?cv a <http://w3id.org/roh/CV>.
-                //                        ?cv <http://w3id.org/roh/cvOf> ?person.
-                //                        ?cv <http://w3id.org/roh/scientificActivity> ?scientificActivity.
-                //                        ?scientificActivity ?p ?item.
-                //                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
-                //                    }}
-                //                }}}}GROUP BY ?cv ?document HAVING (?numItems > 1)  order by desc(?cv) limit {limit}";
-                //    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                //    EliminarDocumentosDuplicadosCV(resultado);
-                //    if (resultado.results.bindings.Count != limit)
-                //    {
-                //        break;
-                //    }
-                //}
             }
+        }
+
+        /// <summary>
+        /// Modifica los nombres de las organizaciones en el CV en función de como se llamen
+        /// Depende de ActualizadorCV.CrearCVs
+        /// </summary>
+        /// <param name="pPersons">IDs de las personas</param>
+        /// <param name="pCVs">IDs de los CVs</param>
+        public void ModificarOrganizacionesCV(List<string> pPersons = null, List<string> pCVs = null)
+        {
+            List<OrgTitleCVTitleOrg> listaOrgs = new List<OrgTitleCVTitleOrg>();
+
+            listaOrgs.Add(new OrgTitleCVTitleOrg("academicdegree", "http://vivoweb.org/ontology/core#AcademicDegree", "", "http://w3id.org/roh/conductedByTitle", "http://w3id.org/roh/conductedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("academicdegree", "http://vivoweb.org/ontology/core#AcademicDegree", "", "http://w3id.org/roh/deaEntityTitle", "http://w3id.org/roh/deaEntity"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("accreditation", "http://w3id.org/roh/Accreditation", "", "http://w3id.org/roh/accreditationIssuedByTitle", "http://w3id.org/roh/accreditationIssuedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("activity", "http://w3id.org/roh/Activity", "", "http://w3id.org/roh/conductedByTitle", "http://w3id.org/roh/conductedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("activity", "http://w3id.org/roh/Activity", "", "http://w3id.org/roh/promotedByTitle", "http://w3id.org/roh/promotedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("activity", "http://w3id.org/roh/Activity", "", "http://w3id.org/roh/representedEntityTitle", "http://w3id.org/roh/representedEntity"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("collaboration", "http://w3id.org/roh/Collaboration", "http://w3id.org/roh/participates", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("committee", "http://w3id.org/roh/Committee", "", "http://w3id.org/roh/affiliatedOrganizationTitle", "http://vivoweb.org/ontology/core#affiliatedOrganization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("council", "http://w3id.org/roh/Council", "", "http://w3id.org/roh/affiliatedOrganizationTitle", "http://vivoweb.org/ontology/core#affiliatedOrganization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("document", "http://purl.org/ontology/bibo/Document", "", "http://w3id.org/roh/presentedAtOrganizerTitle", "http://w3id.org/roh/presentedAtOrganizer"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("grant", "http://vivoweb.org/ontology/core#Grant", "", "http://w3id.org/roh/awardingEntityTitle", "http://w3id.org/roh/awardingEntity"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("grant", "http://vivoweb.org/ontology/core#Grant", "", "http://w3id.org/roh/entityTitle", "http://w3id.org/roh/entity"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("group", "http://xmlns.com/foaf/0.1/Group", "", "http://w3id.org/roh/affiliatedOrganizationTitle", "http://vivoweb.org/ontology/core#affiliatedOrganization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("impartedacademictraining", "http://w3id.org/roh/ImpartedAcademicTraining", "", "http://w3id.org/roh/evaluatedByTitle", "http://w3id.org/roh/evaluatedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("impartedacademictraining", "http://w3id.org/roh/ImpartedAcademicTraining", "", "http://w3id.org/roh/financedByTitle", "http://w3id.org/roh/financedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("impartedacademictraining", "http://w3id.org/roh/ImpartedAcademicTraining", "", "http://w3id.org/roh/promotedByTitle", "http://w3id.org/roh/promotedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("impartedcoursesseminars", "http://w3id.org/roh/ImpartedCoursesSeminars", "", "http://w3id.org/roh/promotedByTitle", "http://w3id.org/roh/promotedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("network", "http://w3id.org/roh/Network", "http://w3id.org/roh/participates", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("network", "http://w3id.org/roh/Network", "", "http://w3id.org/roh/selectionEntityTitle", "http://w3id.org/roh/selectionEntity"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("patent", "http://purl.org/ontology/bibo/Patent", "http://w3id.org/roh/operatingCompanies", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("patent", "http://purl.org/ontology/bibo/Patent", "", "http://w3id.org/roh/ownerOrganizationTitle", "http://w3id.org/roh/ownerOrganization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("position", "http://vivoweb.org/ontology/core#Position", "", "http://w3id.org/roh/employerOrganizationTitle", "http://w3id.org/roh/employerOrganization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/grantedBy", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/participates", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("project", "http://vivoweb.org/ontology/core#Project", "", "http://w3id.org/roh/conductedByTitle", "http://w3id.org/roh/conductedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("society", "http://w3id.org/roh/Society", "", "http://w3id.org/roh/affiliatedOrganizationTitle", "http://vivoweb.org/ontology/core#affiliatedOrganization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("stay", "http://w3id.org/roh/Stay", "", "http://w3id.org/roh/entityTitle", "http://w3id.org/roh/entity"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("stay", "http://w3id.org/roh/Stay", "", "http://w3id.org/roh/fundedByTitle", "http://w3id.org/roh/fundedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("teachingcongress", "http://w3id.org/roh/TeachingCongress", "", "http://w3id.org/roh/conductedByTitle", "http://w3id.org/roh/conductedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("teachingproject", "http://w3id.org/roh/TeachingProject", "", "http://w3id.org/roh/fundedByTitle", "http://w3id.org/roh/fundedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("teachingproject", "http://w3id.org/roh/TeachingProject", "http://w3id.org/roh/participates", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("technologicalresult", "http://w3id.org/roh/TechnologicalResult", "http://w3id.org/roh/participates", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("technologicalresult", "http://w3id.org/roh/TechnologicalResult", "http://w3id.org/roh/targetOrganizations", "http://w3id.org/roh/organizationTitle", "http://w3id.org/roh/organization"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("thesissupervision", "http://w3id.org/roh/ThesisSupervision", "", "http://w3id.org/roh/promotedByTitle", "http://w3id.org/roh/promotedBy"));
+            listaOrgs.Add(new OrgTitleCVTitleOrg("tutorship", "http://w3id.org/roh/Tutorship", "", "http://w3id.org/roh/conductedByTitle", "http://w3id.org/roh/conductedBy"));
+
+
+            HashSet<string> filters = new HashSet<string>();
+            if (pPersons != null && pPersons.Count > 0)
+            {
+                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
+            }
+            if (pCVs != null && pCVs.Count > 0)
+            {
+                filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (OrgTitleCVTitleOrg section in listaOrgs)
+            {
+                foreach (string filter in filters)
+                {
+                    while (true)
+                    {
+                        string[] propsAux = section.propAux.Split("|", StringSplitOptions.RemoveEmptyEntries);
+                        string filterPropAux = "";
+                        int i = 0;
+                        foreach (string propAux in propsAux)
+                        {
+                            filterPropAux += $"?s{i} <{propAux}> ?s{i + 1}.\n";
+                            i++;
+                        }
+
+                        int limit = 500;
+                        //TODO eliminar from
+                        String select = @$"select * from <http://gnoss.com/organization.owl> ";
+                        String where = @$"where{{
+                                    ?s0 a <{section.rdfType}>.
+                                    {filterPropAux}
+                                    OPTIONAL{{?s{i} <{section.propTituloDesnormalizado}> ?orgTituloDesnormalizado.}}
+                                    ?s{i} <{section.propOrganizacion}> ?org.
+                                    ?org <http://w3id.org/roh/title> ?titleOrg.
+                                    FILTER(?orgTituloDesnormalizado!=?titleOrg)
+                                }}limit {limit}";
+                        SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, section.graph);
+                        Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                        {
+                            //Entidad principal
+                            string mainEntity = fila["s0"].value;
+                            //Predicado
+                            string predicado = section.propTituloDesnormalizado;
+                            if (!string.IsNullOrEmpty(section.propAux))
+                            {
+                                predicado = section.propAux + "|" + predicado;
+                            }
+                            //Valor antiguo
+                            string valorAntiguo = "";
+                            if (fila.ContainsKey("orgTituloDesnormalizado"))
+                            {
+                                valorAntiguo = fila["orgTituloDesnormalizado"].value;
+                                List<string> auxEntities = new List<string>();
+                                foreach (string key in fila.Keys)
+                                {
+                                    if (key.StartsWith("s") && key != "s0")
+                                    {
+                                        auxEntities.Add(fila[key].value);
+                                    }
+                                }
+                                if (auxEntities.Count > 0)
+                                {
+                                    valorAntiguo = string.Join("|", auxEntities) + "|" + valorAntiguo;
+                                }
+                            }
+                            //Valor nuevo
+                            string valorNuevo = fila["titleOrg"].value;
+                            {
+                                List<string> auxEntities = new List<string>();
+                                foreach (string key in fila.Keys)
+                                {
+                                    if (key.StartsWith("s") && key != "s0")
+                                    {
+                                        auxEntities.Add(fila[key].value);
+                                    }
+                                }
+                                if (auxEntities.Count > 0)
+                                {
+                                    valorNuevo = string.Join("|", auxEntities) + "|" + valorNuevo;
+                                }
+                            }
+                            ActualizadorTriple(mainEntity, predicado, valorAntiguo, valorNuevo);
+                        });
+                        if (resultado.results.bindings.Count != limit)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+
         }
 
         #endregion
@@ -1121,20 +1303,21 @@ namespace DesnormalizadorHercules.Models
                             lastName = fila["lastName"].value;
                         }
                         string[] nameSplit = name.Split(' ');
-                        if(string.IsNullOrEmpty(firstName))
+                        if (string.IsNullOrEmpty(firstName))
                         {
                             firstName = nameSplit[0];
                         }
                         if (string.IsNullOrEmpty(lastName))
                         {
-                            if(nameSplit.Count()>1)
+                            if (nameSplit.Count() > 1)
                             {
                                 lastName = nameSplit[1];
-                            }else
+                            }
+                            else
                             {
                                 lastName = nameSplit[0];
                             }
-                            
+
                         }
                         CV cv = new();
                         if (listaCV.ContainsKey(person))

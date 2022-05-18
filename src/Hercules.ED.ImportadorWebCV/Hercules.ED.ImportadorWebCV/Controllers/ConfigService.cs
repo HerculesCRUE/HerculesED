@@ -13,6 +13,10 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         private string Usuario_PDF { get; set; }
         private string PSS_PDF { get; set; }
 
+        //Configuración Rabbit para el desnormalizador
+        private string RabbitConnectionString { get; set; }
+        private string DenormalizerQueueRabbit { get; set; }
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -69,6 +73,52 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
             }
 
             return PSS_PDF;
+        }
+
+        /// <summary>
+        /// Obtiene la cadena de conexión de Rabbit configurada.
+        /// </summary>
+        /// <returns>Cadena de conexión de Rabbit.</returns>
+        public string GetrabbitConnectionString()
+        {
+            if (string.IsNullOrEmpty(RabbitConnectionString))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string rabbitConnectionString = string.Empty;
+                if (environmentVariables.Contains("RabbitMQ"))
+                {
+                    rabbitConnectionString = environmentVariables["RabbitMQ"] as string;
+                }
+                else
+                {
+                    rabbitConnectionString = configuracion.GetConnectionString("RabbitMQ");
+                }
+                RabbitConnectionString = rabbitConnectionString;
+            }
+            return RabbitConnectionString;
+        }
+
+        /// <summary>
+        /// Obtiene la el nombre de la cola Rabbit de desnormalización de configuración.
+        /// </summary>
+        /// <returns>Nombre de la cola Rabbit.</returns>
+        public string GetDenormalizerQueueRabbit()
+        {
+            if (string.IsNullOrEmpty(DenormalizerQueueRabbit))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string queue = string.Empty;
+                if (environmentVariables.Contains("DenormalizerQueueRabbit"))
+                {
+                    queue = environmentVariables["DenormalizerQueueRabbit"] as string;
+                }
+                else
+                {
+                    queue = configuracion["DenormalizerQueueRabbit"];
+                }
+                DenormalizerQueueRabbit = queue;
+            }
+            return DenormalizerQueueRabbit;
         }
     }
 }

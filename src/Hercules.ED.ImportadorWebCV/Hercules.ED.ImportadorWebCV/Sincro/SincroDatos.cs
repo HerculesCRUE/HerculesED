@@ -13,13 +13,50 @@ namespace ImportadorWebCV.Sincro
 {
     public class SincroDatos
     {
+        readonly ConfigService mConfiguracion;
         private cvnRootResultBean cvn;
         private string cvID;
         private string personID;
 
-        public SincroDatos()
+        /// <summary>
+        /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
+        /// </summary>
+        /// <param name="Configuracion"></param>
+        /// <param name="cvID"></param>
+        /// <param name="CVFile"></param>
+        public SincroDatos(ConfigService Configuracion, string cvID, IFormFile CVFile)
         {
-            cvn = new cvnRootResultBean();
+            mConfiguracion = Configuracion;
+            string extensionFile = Path.GetExtension(CVFile.FileName);
+
+            //Si no es un XML o un PDF. No hago nada
+            if (!extensionFile.Equals(".xml") && !extensionFile.Equals(".pdf"))
+            {
+                throw new FileLoadException("Extensión de archivo invalida");
+            }
+            //Si es un PDF lo convierto a XML y lo inserto.
+            if (extensionFile.Equals(".pdf"))
+            {
+                FormFile CVFileAsXML = GenerarRootBean(mConfiguracion, CVFile);
+
+                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
+                {
+                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                }
+                this.cvID = cvID;
+                this.personID = Utility.PersonaCV(cvID);
+            }
+            else
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
+                {
+                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                }
+                this.cvID = cvID;
+                this.personID = Utility.PersonaCV(cvID);
+            }
         }
 
         /// <summary>
@@ -51,46 +88,7 @@ namespace ImportadorWebCV.Sincro
             };
             return file;
         }
-
-        /// <summary>
-        /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
-        /// </summary>
-        /// <param name="_Configuracion"></param>
-        /// <param name="cvID"></param>
-        /// <param name="CVFile"></param>
-        public SincroDatos(ConfigService _Configuracion, string cvID, IFormFile CVFile)
-        {
-            string extensionFile = Path.GetExtension(CVFile.FileName);
-
-            //Si no es un XML o un PDF. No hago nada
-            if (!extensionFile.Equals(".xml") && !extensionFile.Equals(".pdf"))
-            {
-                throw new FileLoadException("Extensión de archivo invalida");
-            }
-            //Si es un PDF lo convierto a XML y lo inserto.
-            if (extensionFile.Equals(".pdf"))
-            {
-                FormFile CVFileAsXML = GenerarRootBean(_Configuracion, CVFile);
-
-                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
-                {
-                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
-                }
-                this.cvID = cvID;
-                this.personID = Utility.PersonaCV(cvID);
-            }
-            else
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
-                {
-                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
-                }
-                this.cvID = cvID;
-                this.personID = Utility.PersonaCV(cvID);
-            }
-        }
+        
 
         /// <summary>
         /// Metodo para sincronizar los datos pertenecientes al 
@@ -99,7 +97,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID);
+            DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID,mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones,"000.000.000.000"), preimportar)));
@@ -114,7 +112,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroDatosSituacionProfesional([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID, personID);
+            SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("010.010.000.000", situacionProfesional.SincroSituacionProfesionalActual(UtilitySecciones.CheckSecciones(secciones,"010.010.000.000"), preimportar)));
@@ -130,7 +128,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroFormacionAcademica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            FormacionAcademica formacionAcademica = new FormacionAcademica(cvn, cvID, personID);
+            FormacionAcademica formacionAcademica = new FormacionAcademica(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("020.010.010.000", formacionAcademica.SincroEstudiosCiclos(UtilitySecciones.CheckSecciones(secciones,"020.010.010.000"), preimportar)));
@@ -150,7 +148,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroActividadDocente([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID, personID);
+            ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("030.040.000.000", actividadDocente.SincroDireccionTesis(UtilitySecciones.CheckSecciones(secciones,"030.040.000.000"), preimportar)));
@@ -174,7 +172,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroExperienciaCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID, personID);
+            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(UtilitySecciones.CheckSecciones(secciones,"050.020.010.000"), preimportar)));//TODO palabras clave
@@ -194,7 +192,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroActividadCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID, personID);
+            ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID, personID,mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(UtilitySecciones.CheckSecciones(secciones,"060.010.000.000"), preimportar)));
@@ -232,7 +230,7 @@ namespace ImportadorWebCV.Sincro
         /// <returns></returns>
         public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            TextoLibre textoLibre = new TextoLibre(cvn, cvID);
+            TextoLibre textoLibre = new TextoLibre(cvn, cvID,mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones,"070.010.000.000"), preimportar)));
