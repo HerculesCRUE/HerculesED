@@ -75,20 +75,20 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 // Entidad realización
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacionNombre),
                     "060.010.050.010", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacion),
+                    "060.010.050.030", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacionOtros),
                     "060.010.050.040", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadRealizacionOtros),
-                    "060.010.050.030", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDIFacultadEscuela),
                     "060.010.050.280", keyValue.Value);
 
                 // Entidad financiadora
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDIEntidadFinanciadoraNombre),
                     "060.010.050.160", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadoraOtros),
-                    "060.010.050.190", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadora),
                     "060.010.050.180", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDITipoEntidadFinanciadoraOtros),
+                    "060.010.050.190", keyValue.Value);
 
                 // Códigos Unesco
                 UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDICodUnescoPrimaria),
