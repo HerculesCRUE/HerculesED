@@ -237,6 +237,7 @@ namespace ExportadorWebCV.Utils
                     Code = code,
                     Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1]
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
                 });
             }
         }
@@ -258,7 +259,7 @@ namespace ExportadorWebCV.Utils
             itemBean.Items.Add(new CvnItemBeanCvnString()
             {
                 Code = code,
-                Value = value
+                Value = value.Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
             });
         }
 
@@ -351,6 +352,7 @@ namespace ExportadorWebCV.Utils
                     Code = code,
                     Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
                 });
             }
         }
@@ -382,7 +384,7 @@ namespace ExportadorWebCV.Utils
             {
                 CvnItemBeanCvnString cvnString = new CvnItemBeanCvnString();
                 cvnString.Code = code;
-                cvnString.Value = stringValue.Split("_").Last();
+                cvnString.Value = stringValue.Split("_").Last().Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n");
 
                 itemBean.Items.Add(cvnString);
             }
@@ -416,6 +418,7 @@ namespace ExportadorWebCV.Utils
                     Code = code,
                     Value = entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
                 });
             }
         }
@@ -444,6 +447,7 @@ namespace ExportadorWebCV.Utils
                     Code = code,
                     Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last().Split("_").Last()
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
                 });
             }
         }
@@ -526,6 +530,7 @@ namespace ExportadorWebCV.Utils
                     Code = code,
                     Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1].Split("_").Last()
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
                 });
             }
         }
@@ -800,7 +805,7 @@ namespace ExportadorWebCV.Utils
         }
 
         /// <summary>
-        /// Añade en <paramref name="itemBean"/> un CvnRichText con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
+        /// Añade en <paramref name="itemBean"/> un CvnBoolean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// en entity.properties_cv
         /// </summary>
         /// <param name="itemBean"></param>
@@ -893,7 +898,8 @@ namespace ExportadorWebCV.Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                         cvnString.Code = tupla.ElementAt(j).Item2;
-                        cvnString.Value = tupla.ElementAt(j).Item4.Split("@@@").Last();
+                        cvnString.Value = tupla.ElementAt(j).Item4.Split("@@@").Last()
+                            .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n");
 
                         listadoStrings.Add(cvnString);
                         continue;

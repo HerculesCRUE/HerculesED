@@ -50,8 +50,9 @@ namespace ImportadorWebCV.Exporta.Secciones
                 : null;
 
             //Separación de los diferentes apartados por los titulos del FECYT. 
-            string resumen = resumenLibre + " B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida"
-                + resumenTFG + " B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida" + resumenTFM;
+            string resumen = resumenLibre 
+                + " B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida" + resumenTFG 
+                + " B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida" + resumenTFM;
 
             UtilityExportar.AddCvnItemBeanCvnRichText(itemBean, resumen, "070.010.000.010");
 
