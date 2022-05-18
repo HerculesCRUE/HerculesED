@@ -198,7 +198,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.010.000.020"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.010.000.020"),
                 Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadoraNombre,
                 Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadora, entidadAux);
 
@@ -381,7 +381,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020"))) { return; }
 
             //Añado la referencia si existe
-            UtilitySecciones.AniadirEntidad(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.020.000.020"),
+            UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("010.020.000.020"),
                 Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre,
                 Variables.SituacionProfesional.cargosActividadesEntidadEmpleadora, entidadAux);
 
