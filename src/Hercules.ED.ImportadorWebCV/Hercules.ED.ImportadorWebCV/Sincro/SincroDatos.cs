@@ -97,7 +97,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID);
+            DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID,mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones,"000.000.000.000"), preimportar)));
@@ -112,7 +112,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroDatosSituacionProfesional([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID, personID);
+            SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("010.010.000.000", situacionProfesional.SincroSituacionProfesionalActual(UtilitySecciones.CheckSecciones(secciones,"010.010.000.000"), preimportar)));
@@ -128,7 +128,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroFormacionAcademica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            FormacionAcademica formacionAcademica = new FormacionAcademica(cvn, cvID, personID);
+            FormacionAcademica formacionAcademica = new FormacionAcademica(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("020.010.010.000", formacionAcademica.SincroEstudiosCiclos(UtilitySecciones.CheckSecciones(secciones,"020.010.010.000"), preimportar)));
@@ -148,7 +148,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroActividadDocente([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID, personID);
+            ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("030.040.000.000", actividadDocente.SincroDireccionTesis(UtilitySecciones.CheckSecciones(secciones,"030.040.000.000"), preimportar)));
@@ -172,7 +172,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroExperienciaCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID, personID);
+            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(UtilitySecciones.CheckSecciones(secciones,"050.020.010.000"), preimportar)));//TODO palabras clave
@@ -192,7 +192,7 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroActividadCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID, personID);
+            ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID, personID,mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(UtilitySecciones.CheckSecciones(secciones,"060.010.000.000"), preimportar)));
@@ -230,7 +230,7 @@ namespace ImportadorWebCV.Sincro
         /// <returns></returns>
         public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar)
         {
-            TextoLibre textoLibre = new TextoLibre(cvn, cvID);
+            TextoLibre textoLibre = new TextoLibre(cvn, cvID,mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones,"070.010.000.000"), preimportar)));
