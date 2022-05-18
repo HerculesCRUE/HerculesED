@@ -1,4 +1,5 @@
 ﻿using Gnoss.ApiWrapper.ApiModel;
+using Hercules.ED.ImportadorWebCV.Controllers;
 using Hercules.ED.ImportadorWebCV.Models;
 using Models;
 using System;
@@ -13,7 +14,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     public class DatosIdentificacion : SeccionBase
     {
-        public DatosIdentificacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        public DatosIdentificacion(cvnRootResultBean cvn, string cvID,ConfigService configuracion) : base(cvn, cvID,configuracion)
         {
         }
 
