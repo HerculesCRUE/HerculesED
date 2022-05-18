@@ -102,11 +102,11 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 case EnumGraficas.Barras:
                     // TODO: Controlar excepciones en la configuración.
-                    if (string.IsNullOrEmpty(pGrafica.configBarras.ejeX))
+                    if (string.IsNullOrEmpty(pGrafica.config.ejeX))
                     {
                         throw new Exception("No está configurada la propiedad del agrupación del eje x.");
                     }
-                    if (pGrafica.configBarras.dimensiones == null || pGrafica.configBarras.dimensiones.Count() == 0)
+                    if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
                     {
                         throw new Exception("No se ha configurado dimensiones.");
                     }
@@ -142,7 +142,7 @@ namespace Hercules.ED.GraphicEngine.Models
             Options options = new Options();
 
             // Orientación            
-            if (!pGrafica.configBarras.orientacionVertical)
+            if (!pGrafica.config.orientacionVertical)
             {
                 options.indexAxis = "y";
             }
@@ -154,13 +154,13 @@ namespace Hercules.ED.GraphicEngine.Models
             options.scales = new Dictionary<string, Eje>();
 
             // Ejes X
-            foreach (EjeXConf item in pGrafica.configBarras.xAxisPrint)
+            foreach (EjeXConf item in pGrafica.config.xAxisPrint)
             {
                 options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
             }
 
             // Ejes Y
-            foreach (EjeYConf item in pGrafica.configBarras.yAxisPrint)
+            foreach (EjeYConf item in pGrafica.config.yAxisPrint)
             {
                 options.scales.Add(item.yAxisID, new Eje() { position = item.posicion });
             }
@@ -174,13 +174,22 @@ namespace Hercules.ED.GraphicEngine.Models
             options.plugins.title = new Title();
             options.plugins.title.display = true;
             options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
-            
+
             grafica.options = options;
 
             ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
 
-            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
+            // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
+            pGrafica.config.dimensiones.Reverse();
+
+            foreach (Dimension dim in pGrafica.config.dimensiones)
+            {
+                resultadosDimension[dim] = null;
+                dimensionesDataset[dim] = null;
+            }
+
+            Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
             {
                 // Determina si en el filtro contiene '=' para tratarlo de manera especial.
                 bool filtroEspecial = false;
@@ -191,7 +200,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 // Orden.
                 string orden = "ASC";
-                if (pGrafica.configBarras.orderDesc == true)
+                if (pGrafica.config.orderDesc == true)
                 {
                     orden = "DESC";
                 }
@@ -202,13 +211,13 @@ namespace Hercules.ED.GraphicEngine.Models
                 List<Tuple<string, string, float>> listaTuplas = new List<Tuple<string, string, float>>();
                 SparqlObject resultadoQuery = null;
                 StringBuilder select = new StringBuilder(), where = new StringBuilder();
-                filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.configBarras.ejeX }, "ejeX"));
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
                 }
-                if(filtroEspecial)
+                if (filtroEspecial)
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }, "aux"));
                 }
@@ -281,6 +290,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             #region --- Cálculo de los valores del Eje X
             HashSet<string> valuesEje = new HashSet<string>();
+            HashSet<string> tipos = new HashSet<string>();
 
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
@@ -289,13 +299,14 @@ namespace Hercules.ED.GraphicEngine.Models
                     foreach (Tuple<string, string, float> item2 in item.Value)
                     {
                         valuesEje.Add(item2.Item1);
-                    }                    
+                        tipos.Add(item2.Item2);
+                    }
                 }
             }
 
             bool isInt = valuesEje.Where(x => !int.TryParse(x, out int aux)).Count() == 0;
 
-            if (pGrafica.configBarras.rellenarEjeX && isInt && valuesEje.Count > 0)
+            if (pGrafica.config.rellenarEjeX && isInt && valuesEje.Count > 0)
             {
                 int numMin = valuesEje.Min(x => int.Parse(x));
                 int numMax = valuesEje.Max(x => int.Parse(x));
@@ -311,7 +322,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     foreach (string valor in valuesEje)
                     {
-                        if (!item.Value.Where(x => x.Item1.Equals(valor)).Any())
+                        Tuple<string, string, float> tuplaAux = item.Value.FirstOrDefault(x => x.Item1.Equals(valor));
+                        if (tuplaAux == null)
                         {
                             item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
                         }
@@ -345,7 +357,7 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 Dataset dataset = new Dataset();
                 List<float> listaData = new List<float>();
-                foreach(Tuple<string, string, float> itemAux in item.Value)
+                foreach (Tuple<string, string, float> itemAux in item.Value)
                 {
                     listaData.Add(itemAux.Item3);
                 }
@@ -389,7 +401,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 dimensionesDataset[item.Key] = dataset;
             }
 
-            foreach (Dimension dim in pGrafica.configBarras.dimensiones)
+            foreach (Dimension dim in pGrafica.config.dimensiones)
             {
                 grafica.data.datasets.Add(dimensionesDataset[dim]);
             }
@@ -403,15 +415,15 @@ namespace Hercules.ED.GraphicEngine.Models
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
 
             // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
-            pGrafica.configBarras.dimensiones.Reverse();
+            pGrafica.config.dimensiones.Reverse();
 
-            foreach (Dimension dim in pGrafica.configBarras.dimensiones)
+            foreach (Dimension dim in pGrafica.config.dimensiones)
             {
                 resultadosDimension[dim] = null;
                 dimensionesDataset[dim] = null;
             }
 
-            Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 5 }, itemGrafica =>
+            Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
             {
                 SparqlObject resultadoQuery = null;
                 StringBuilder select = new StringBuilder(), where = new StringBuilder();

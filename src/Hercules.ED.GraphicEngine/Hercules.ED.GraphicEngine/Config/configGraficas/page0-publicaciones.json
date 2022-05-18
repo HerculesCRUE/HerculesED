@@ -11,7 +11,7 @@
         "es": "Nombre de la Gráfica de EJEMPLO"
       },
       "tipo": "Barras",
-      "configBarras": {
+      "config": {
         "orientacionVertical": true,
         "ejeX": "roh:year",
         "orderDesc": false,
@@ -46,8 +46,7 @@
             "tipoDimension": "line",
             "color": "#000000",
             "yAxisID": "y2",
-            "xAxisID": "x2",
-            "orden":  1
+            "xAxisID": "x2"
           },
           {
             "nombre": {
@@ -57,8 +56,7 @@
             "tipoDimension": "bar",
             "color": "#BF4858",
             "yAxisID": "y1",
-            "xAxisID": "x1",
-            "orden": 2
+            "xAxisID": "x1"
           },
           {
             "nombre": {
@@ -69,8 +67,7 @@
             "color": "#7CBFE3",
             "stack": "stack1",
             "yAxisID": "y1",
-            "xAxisID": "x1",
-            "orden": 3
+            "xAxisID": "x1"
           },
           {
             "nombre": {
@@ -81,8 +78,7 @@
             "color": "#6CAFD3",
             "stack": "stack1",
             "yAxisID": "y1",
-            "xAxisID": "x1",
-            "orden": 4
+            "xAxisID": "x1"
           }
         ]
       }
@@ -101,13 +97,6 @@
       },
       "filtro": "roh:year",
       "numeroItemsFaceta": 100
-    },
-    {
-      "nombre": {
-        "es": "Revistas"
-      },
-      "filtro": "vivo:hasPublicationVenue@@@roh:title",
-      "numeroItemsFaceta": 10
     }
   ]
 }

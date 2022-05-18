@@ -11,7 +11,7 @@
         "es": "Nombre de la Gráfica de EJEMPLO"
       },
       "tipo": "Barras",
-      "configBarras": {
+      "config": {
         "orientacionVertical": false,
         "ejeX": "roh:year",
         "orderDesc": false,

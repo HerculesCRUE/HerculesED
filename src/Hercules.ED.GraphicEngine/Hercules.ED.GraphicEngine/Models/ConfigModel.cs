@@ -20,13 +20,13 @@ namespace Hercules.ED.GraphicEngine.Models
 
     public class Grafica
     {
-        public string identificador { get; set; }        
+        public string identificador { get; set; }
         public Dictionary<string, string> nombre { get; set; }
         public EnumGraficas tipoGrafica { get; set; }
-        public ConfigBarras configBarras { get; set; }
+        public Config config { get; set; }
     }
 
-    public class ConfigBarras
+    public class Config
     {
         public bool orientacionVertical { get; set; }
         public string ejeX { get; set; }
