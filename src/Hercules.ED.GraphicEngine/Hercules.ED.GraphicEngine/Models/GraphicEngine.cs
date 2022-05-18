@@ -447,6 +447,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 if (!string.IsNullOrEmpty(itemGrafica.filtro))
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }, "tipo"));
                 }
 
                 select.Append(mPrefijos);
@@ -464,8 +465,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-                        // TODO: filtro fila["tipo"].value
-                        dicNombreData.Add("Artículo científico", Int32.Parse(fila["numero"].value));
+                        dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
                     }
                     resultadosDimension[itemGrafica] = dicNombreData;
                 }
@@ -721,7 +721,15 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         filtro.Append($@"{pVarAnterior} ");
                         filtro.Append($@"{parteFiltro.Split("=")[0]} ");
-                        filtro.Append($@"{varActual}. ");
+
+                        if (pNombreVar != null)
+                        {                            
+                            filtro.Append($@"?{pNombreVar}. ");
+                        }
+                        else
+                        {
+                            filtro.Append($@"{varActual}. ");
+                        }
                     }
                     else
                     {
