@@ -1,6 +1,7 @@
 using DesnormalizadorHercules.Models;
 using DesnormalizadorHercules.Models.Actualizadores;
 using DesnormalizadorHercules.Models.Services;
+using Gnoss.ApiWrapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -12,12 +13,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static DesnormalizadorHercules.Program;
 
 namespace DesnormalizadorHercules
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
         private readonly ConfigService _configService;
         private readonly RabbitServiceReaderDenormalizer _rabbitServiceReaderDenormalizer;
         private readonly string _directoryPendingCV;
@@ -27,11 +28,8 @@ namespace DesnormalizadorHercules
         /// <summary>
         /// Contructor.
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="serviceScopeFactory"></param>
-        public Worker(ILogger<Worker> logger, ConfigService configService, RabbitServiceReaderDenormalizer rabbitServiceReaderDenormalizer)
+        public Worker(ConfigService configService, RabbitServiceReaderDenormalizer rabbitServiceReaderDenormalizer)
         {
-            _logger = logger;
             _configService = configService;
             _rabbitServiceReaderDenormalizer = rabbitServiceReaderDenormalizer;
 
@@ -159,7 +157,7 @@ namespace DesnormalizadorHercules
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex.Message);
+                        FileLogger.Log(ex);
                         Thread.Sleep(60000);
                     }
                 }
@@ -234,7 +232,7 @@ namespace DesnormalizadorHercules
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex.Message);
+                        FileLogger.Log(ex);
                     }
                     finally
                     {
@@ -325,7 +323,7 @@ namespace DesnormalizadorHercules
                         {
                             File.Move(file, file.Replace(_directoryPending, _directoryError));
                         }
-                        _logger.LogError(ex.Message);
+                        FileLogger.Log(ex);
                     }
 
                 }
@@ -384,14 +382,14 @@ namespace DesnormalizadorHercules
                                 }
                                 catch(Exception ex)
                                 {
-                                    _logger.LogError(ex.Message);
+                                    FileLogger.Log(ex);
                                 }
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex.Message);
+                        FileLogger.Log(ex);
                     }
 
                 }
