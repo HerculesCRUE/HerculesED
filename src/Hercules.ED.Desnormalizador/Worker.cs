@@ -107,7 +107,7 @@ namespace DesnormalizadorHercules
         string rutaOauth = $@"Config/configOAuth/OAuthV3.config";
         ResourceApi resourceApi = new ResourceApi(rutaOauth);
         CommunityApi communityApi = new CommunityApi(rutaOauth);
-            throw new Exception(rutaOauth + "|" + System.IO.File.Exists(rutaOauth));
+            FileLogger.Log(new Exception(rutaOauth + "|" + System.IO.File.Exists(rutaOauth)));
 
             ListenToQueue();
 
