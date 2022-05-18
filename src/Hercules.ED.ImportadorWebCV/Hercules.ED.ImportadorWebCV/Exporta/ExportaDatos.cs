@@ -28,7 +28,7 @@ namespace ImportadorWebCV.Exporta
         public void ExportaDatosIdentificacion(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
         {
             string seccion = "http://w3id.org/roh/personalData";
-
+            
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn,cvID);
             datosIdentificacion.ExportaDatosIdentificacion(entity, seccion, secciones);
         }
