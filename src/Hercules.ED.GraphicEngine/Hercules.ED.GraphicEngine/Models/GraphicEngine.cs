@@ -180,15 +180,6 @@ namespace Hercules.ED.GraphicEngine.Models
             ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
             Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
 
-            // Invierte las dimensiones para que la grafica de línea salga por encima de la de barras.
-            pGrafica.configBarras.dimensiones.Reverse();
-
-            foreach (Dimension dim in pGrafica.configBarras.dimensiones)
-            {
-                resultadosDimension[dim] = null;
-                dimensionesDataset[dim] = null;
-            }
-
             Parallel.ForEach(pGrafica.configBarras.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
             {
                 // Determina si en el filtro contiene '=' para tratarlo de manera especial.
@@ -389,6 +380,9 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 // Eje X.
                 dataset.xAxisID = item.Key.xAxisID;
+
+                // Orden
+                dataset.order = item.Key.orden;
 
                 data.labels = listaLabels;
                 data.type = item.Key.tipoDimension;

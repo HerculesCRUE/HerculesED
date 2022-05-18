@@ -45,8 +45,9 @@
             "calculo": "AVG",
             "tipoDimension": "line",
             "color": "#000000",
+            "yAxisID": "y2",
             "xAxisID": "x2",
-            "yAxisID": "y2"
+            "orden":  1
           },
           {
             "nombre": {
@@ -55,8 +56,33 @@
             "filtro": "",
             "tipoDimension": "bar",
             "color": "#BF4858",
+            "yAxisID": "y1",
             "xAxisID": "x1",
-            "yAxisID": "y1"
+            "orden": 2
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Artículo Científico"
+            },
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "stack": "stack1",
+            "yAxisID": "y1",
+            "xAxisID": "x1",
+            "orden": 3
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Capítulo de Libro"
+            },
+            "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
+            "tipoDimension": "bar",
+            "color": "#6CAFD3",
+            "stack": "stack1",
+            "yAxisID": "y1",
+            "xAxisID": "x1",
+            "orden": 4
           }
         ]
       }
@@ -74,6 +100,13 @@
         "es": "Año"
       },
       "filtro": "roh:year",
+      "numeroItemsFaceta": 100
+    },
+    {
+      "nombre": {
+        "es": "Revistas"
+      },
+      "filtro": "vivo:hasPublicationVenue@@@roh:title",
       "numeroItemsFaceta": 10
     }
   ]

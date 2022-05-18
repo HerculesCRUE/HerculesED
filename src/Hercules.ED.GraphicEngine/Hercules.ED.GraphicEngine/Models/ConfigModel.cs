@@ -60,5 +60,6 @@ namespace Hercules.ED.GraphicEngine.Models
         public float anchura { get; set; }
         public string yAxisID { get; set; }
         public string xAxisID { get; set; }
+        public int orden { get; set; }
     }
 }
