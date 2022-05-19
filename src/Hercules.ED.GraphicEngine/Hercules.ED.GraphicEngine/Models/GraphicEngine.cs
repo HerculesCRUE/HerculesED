@@ -127,15 +127,15 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static GraficaBase CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static GraficaBarras CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             // Objeto a devolver.
-            GraficaBase grafica = new GraficaBase();
+            GraficaBarras grafica = new GraficaBarras();
             grafica.type = "bar"; // Por defecto, de tipo bar.
 
             // Asignación de Data.
-            Data data = new Data();
-            data.datasets = new ConcurrentBag<Dataset>();
+            DataBarras data = new DataBarras();
+            data.datasets = new ConcurrentBag<DatasetBarras>();
             grafica.data = data;
 
             // Asignación de Options.
@@ -178,7 +178,7 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.options = options;
 
             ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
-            Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
+            Dictionary<Dimension, DatasetBarras> dimensionesDataset = new Dictionary<Dimension, DatasetBarras>();
 
             Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
             {
@@ -346,7 +346,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
-                Dataset dataset = new Dataset();
+                DatasetBarras dataset = new DatasetBarras();
                 List<float> listaData = new List<float>();
                 foreach (Tuple<string, string, float> itemAux in item.Value)
                 {
@@ -400,15 +400,15 @@ namespace Hercules.ED.GraphicEngine.Models
             return grafica;
         }
 
-        public static GraficaBase CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static GraficaCircular CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             // Objeto a devolver.
-            GraficaBase grafica = new GraficaBase();
+            GraficaCircular grafica = new GraficaCircular();
             grafica.type = "pie"; // Por defecto, de tipo pie.
 
             // Asignación de Data.
-            Data data = new Data();
-            data.datasets = new ConcurrentBag<Dataset>();
+            DataCircular data = new DataCircular();
+            data.datasets = new ConcurrentBag<DatasetCircular>();
             grafica.data = data;
 
             // Asignación de Options.
@@ -427,7 +427,7 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.options = options;
 
             ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
-            Dictionary<Dimension, Dataset> dimensionesDataset = new Dictionary<Dimension, Dataset>();
+            Dictionary<Dimension, DatasetCircular> dimensionesDataset = new Dictionary<Dimension, DatasetCircular>();
 
             Dictionary<string, float> dicNombreData = new Dictionary<string, float>();
 
@@ -478,30 +478,26 @@ namespace Hercules.ED.GraphicEngine.Models
                 listaNombres.Add(nombreData.Key);
                 listaData.Add(nombreData.Value);
             }
+            DatasetCircular dataset = new DatasetCircular();
+
+            dataset.data = listaData;
+
+            List<string> listaColores = new List<string>();
 
             foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
             {
-                Dataset dataset = new Dataset();
-
-                dataset.data = listaData;
-
                 // Nombre del dato en leyenda.
                 dataset.label = GetTextLang(pLang, item.Key.nombre);
 
-                // Radio dataset.radius = item.Key.radio;
-
                 // Color.
-                dataset.backgroundColor = ObtenerColores(dataset.data.Count(), item.Key.color);
+                listaColores.Add(item.Key.color);
 
                 data.labels = listaNombres;
-                data.type = item.Key.tipoDimension;
-                dimensionesDataset[item.Key] = dataset;
             }
 
-            foreach (Dimension dim in pGrafica.config.dimensiones)
-            {
-                grafica.data.datasets.Add(dimensionesDataset[dim]);
-            }
+            dataset.backgroundColor = listaColores;
+
+            grafica.data.datasets.Add(dataset);
 
             return grafica;
         }
