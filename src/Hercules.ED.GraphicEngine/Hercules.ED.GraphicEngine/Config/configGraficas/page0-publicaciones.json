@@ -11,6 +11,7 @@
         "es": "Nombre de la Gráfica de EJEMPLO"
       },
       "tipo": "Barras",
+      "anchura12":  6,
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:year",
@@ -93,6 +94,7 @@
         "es": "Nombre de la Gráfica Circular de EJEMPLO"
       },
       "tipo": "Circular",
+      "anchura12": 7,
       "config": {
         "dimensiones": [
           {
@@ -118,6 +120,47 @@
         "es": "Nombre de la Gráfica Circular de EJEMPLO 2"
       },
       "tipo": "Circular",
+      "anchura12": 6,
+      "config": {
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones de revista Lecture Notes"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='Lecture Notes in Computer Science'",
+            "color": "#DAF7A6"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de revista Sensors"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='Sensors'",
+            "color": "#FFC300"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de revista IEEE Access"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='IEEE Access'",
+            "color": "#C70039"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de revista Future Generation"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='Future Generation Computer Systems-The International Journal of eScience'",
+            "color": "#581845"
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "444",
+      "nombre": {
+        "es": "Nombre de la Gráfica Circular de EJEMPLO 2"
+      },
+      "tipo": "Circular",
+      "anchura12": 3,
       "config": {
         "dimensiones": [
           {

@@ -50,10 +50,15 @@ namespace Hercules.ED.GraphicEngine.Models
             Pagina pagina = new Pagina();
             pagina.id = pConfigModel.identificador;
             pagina.nombre = GetTextLang(pLang, pConfigModel.nombre);
-            pagina.listaIdsGraficas = new List<string>();
+            pagina.listaConfigGraficas = new List<ConfigPagina>();
             foreach (Grafica itemGrafica in pConfigModel.graficas)
             {
-                pagina.listaIdsGraficas.Add(itemGrafica.identificador);
+                ConfigPagina configPagina = new ConfigPagina()
+                {
+                    id = itemGrafica.identificador,
+                    anchura = itemGrafica.anchura12
+                };
+                pagina.listaConfigGraficas.Add(configPagina);
             }
             pagina.listaIdsFacetas = new List<string>();
             foreach (FacetaConf itemFaceta in pConfigModel.facetas)
@@ -489,12 +494,11 @@ namespace Hercules.ED.GraphicEngine.Models
                 // Nombre del dato en leyenda.
                 dataset.label = GetTextLang(pLang, item.Key.nombre);
 
-                // Color.
+                // Color. TODO: Ordenar colores
                 listaColores.Add(item.Key.color);
 
                 data.labels = listaNombres;
             }
-
             dataset.backgroundColor = listaColores;
 
             grafica.data.datasets.Add(dataset);
