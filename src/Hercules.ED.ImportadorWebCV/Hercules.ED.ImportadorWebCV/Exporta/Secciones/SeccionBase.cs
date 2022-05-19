@@ -83,7 +83,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             return null;
         }
 
-        public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string>> listadoId, string pGraph)
+        public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
@@ -102,7 +102,7 @@ namespace ImportadorWebCV.Exporta.Secciones
         OPTIONAL{{
             ?o ?q ?w .
         }}
-        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x=>x.Item1))}>))
+        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
     }}
     order by desc(?s) desc(?p) desc(?o)
 }} limit {numLimit} offset {offset}";
@@ -127,7 +127,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             {
                 throw;
             }
-            
+
             try
             {
                 int numLimit = 10000;
@@ -142,7 +142,7 @@ namespace ImportadorWebCV.Exporta.Secciones
         OPTIONAL{{
             ?o ?q ?w .
         }}
-        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x=>x.Item2).Where(x=>!string.IsNullOrEmpty(x)))}>))
+        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x => x.Item2).Where(x => !string.IsNullOrEmpty(x)))}>))
     }}
     order by desc(?s) desc(?p) desc(?o)
 }} limit {numLimit} offset {offset}";
@@ -169,7 +169,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             }
 
 
-            foreach (string pId in listadoId.Select(x=>x.Item1))
+            foreach (string pId in listadoId.Select(x => x.Item1))
             {
                 if (!listResult.ContainsKey(pId))
                 {
@@ -183,8 +183,8 @@ namespace ImportadorWebCV.Exporta.Secciones
                     properties = new List<Entity.Property>(),
                     properties_cv = new List<Entity.Property>()
                 };
-                GetLoadedEntity(pId, "", "", ref entity, listResult);
-                if(!string.IsNullOrEmpty(listadoId.Where(x => x.Item1.Equals(pId)).Select(x => x.Item2).FirstOrDefault()))
+                GetLoadedEntity(pId, "", "", ref entity, listResult, MultilangProp);
+                if (!string.IsNullOrEmpty(listadoId.Where(x => x.Item1.Equals(pId)).Select(x => x.Item2).FirstOrDefault()))
                 {
                     GetLoadedEntityCV(listadoId.Where(x => x.Item1.Equals(pId)).Select(x => x.Item2).FirstOrDefault(), "", "", ref entity, listResultCV);
                 }
@@ -195,7 +195,7 @@ namespace ImportadorWebCV.Exporta.Secciones
         }
 
 
-            public Dictionary<string, Entity> GetListLoadedEntity(List<string> listadoId, string pGraph)
+        public Dictionary<string, Entity> GetListLoadedEntity(List<string> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
@@ -246,14 +246,38 @@ namespace ImportadorWebCV.Exporta.Secciones
                     rdfType = listResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value,
                     properties = new List<Entity.Property>()
                 };
-                GetLoadedEntity(pId, "", "", ref entity, listResult);
+                GetLoadedEntity(pId, "", "", ref entity, listResult, MultilangProp);
                 listaEntidades.Add(pId, entity);
             }
 
             return listaEntidades;
         }
 
+        protected Dictionary<string, List<Dictionary<string, Data>>> GetMultilangProperties(string pCVID, string pIdioma)
+        {
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
 
+            string select = $@"select distinct ?entity ?multilangProperties ?prop ?lang ?value";
+            string where = $@"where{{
+    <{pCVID}> <http://w3id.org/roh/multilangProperties> ?multilangProperties . 
+    ?multilangProperties <http://w3id.org/roh/entity> ?entity . 
+    ?multilangProperties <http://w3id.org/roh/property> ?prop. 
+    ?multilangProperties <http://w3id.org/roh/lang> ?lang. 
+    ?multilangProperties <http://w3id.org/roh/value> ?value. 
+    FILTER(?lang='{pIdioma}')
+}}";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (!listResult.ContainsKey(fila["entity"].value))
+                {
+                    listResult.Add(fila["entity"].value, new List<Dictionary<string, Data>>());
+                }
+                listResult[fila["entity"].value].Add(fila);
+            }
+
+            return listResult;
+        }
 
         /// <summary>
         /// Carga los datos en el objeto entidad con los datos obtenidos
@@ -263,7 +287,8 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// <param name="pObjAcumulado">Objeto acumulado</param>
         /// <param name="pEntity">Entidad</param>
         /// <param name="pListResult">Datos de BBDD</param>
-        private void GetLoadedEntity(string pId, string pPropAcumulado, string pObjAcumulado, ref Entity pEntity, Dictionary<string, List<Dictionary<string, Data>>> pListResult)
+        private void GetLoadedEntity(string pId, string pPropAcumulado, string pObjAcumulado, ref Entity pEntity,
+            Dictionary<string, List<Dictionary<string, Data>>> pListResult, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
             foreach (Dictionary<string, Data> prop in pListResult[pId])
             {
@@ -323,7 +348,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                     pObjAcumuladoAux += o;
                     if (pListResult.ContainsKey(o))
                     {
-                        GetLoadedEntity(o, pPropAcumuladoAux, pObjAcumuladoAux, ref pEntity, pListResult);
+                        GetLoadedEntity(o, pPropAcumuladoAux, pObjAcumuladoAux, ref pEntity, pListResult, MultilangProp);
                     }
                     else
                     {
@@ -337,9 +362,9 @@ namespace ImportadorWebCV.Exporta.Secciones
                             }
                             property.values.Add(wObjAcumuladoAux);
                         }
-                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 && 
-                            Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res)) 
-                        { 
+                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 &&
+                            Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res))
+                        {
                             //No inserto nada
                         }
                         else
@@ -350,7 +375,22 @@ namespace ImportadorWebCV.Exporta.Secciones
                                 property = new Entity.Property(pPropAcumuladoAux, new List<string>());
                                 pEntity.properties.Add(property);
                             }
-                            property.values.Add(pObjAcumuladoAux);
+                            if (MultilangProp != null && MultilangProp.ContainsKey(pId) && MultilangProp[pId].Any(x => x.Values.Where(x => x.value.Equals(pPropAcumuladoAux)).Any()))
+                            {
+                                List<Dictionary<string, Data>> xx = MultilangProp[pId].Where(x => x["prop"].value.Equals(pPropAcumuladoAux)).ToList();
+                                foreach (Dictionary<string, Data> keyValuePairs in xx)
+                                {
+                                    if (keyValuePairs.TryGetValue("prop", out Data d) && d.value.Equals(pPropAcumuladoAux))
+                                    {
+                                        keyValuePairs.TryGetValue("value", out Data propiedadInsertar);
+                                        property.values.Add(propiedadInsertar.value);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                property.values.Add(pObjAcumuladoAux);
+                            }
                         }
                     }
                 }
@@ -430,9 +470,9 @@ namespace ImportadorWebCV.Exporta.Secciones
                             }
                             property.values.Add(wObjAcumuladoAux);
                         }
-                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 && 
-                            Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res)) 
-                        { 
+                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 &&
+                            Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res))
+                        {
                             //No inserto nada
                         }
                         else
@@ -449,55 +489,6 @@ namespace ImportadorWebCV.Exporta.Secciones
                 }
             }
         }
-
-        /// <summary>
-        /// Transforma la propiedad para su carga en una entiadad auxiliar
-        /// </summary>
-        /// <param name="pProp">Propiedad</param>
-        /// <returns></returns>
-        private string GetPropUpdateEntityAux(string pProp)
-        {
-            while (pProp.Contains("@@@"))
-            {
-                int indexInitRdfType = pProp.IndexOf("@@@");
-                int indexEndRdfType = pProp.IndexOf("|", indexInitRdfType);
-                if (indexEndRdfType > indexInitRdfType)
-                {
-                    pProp = pProp.Substring(0, indexInitRdfType) + pProp.Substring(indexEndRdfType);
-                }
-                else
-                {
-                    pProp = pProp.Substring(0, indexInitRdfType);
-                }
-            }
-            return pProp;
-        }
-
-        /// <summary>
-        /// Transforma el valor de la propiedad para su carga en una entiadad auxiliar
-        /// </summary>
-        /// <param name="pValue">Valor</param>
-        /// <returns></returns>
-        private string GetValueUpdateEntityAux(string pValue)
-        {
-            return pValue.Replace("@@@", "|");
-        }
-
-        /// <summary>
-        /// Obtiene la entidad del valor
-        /// </summary>
-        /// <param name="pValue"></param>
-        /// <returns></returns>
-        private string GetEntityOfValue(string pValue)
-        {
-            string entityID = "";
-            if (pValue.Contains("@@@"))
-            {
-                entityID = pValue.Substring(0, pValue.IndexOf("@@@"));
-            }
-            return entityID;
-        }
-
 
     }
 }
