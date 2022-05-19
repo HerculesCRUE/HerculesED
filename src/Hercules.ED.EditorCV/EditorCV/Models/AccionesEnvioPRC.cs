@@ -52,11 +52,41 @@ namespace EditorCV.Models
             ProduccionCientifica PRC = new ProduccionCientifica();
 
             // Identificador.
-            PRC.idRef = pIdDocumento;
+            //PRC.idRef = pIdDocumento;
+            PRC.idRef = mResourceApi.GetShortGuid(pIdDocumento).ToString();
+            //PRC.idRef = pIdDocumento.Substring(pIdDocumento.LastIndexOf("/") + 1);
             PRC.estado = "PENDIENTE";
             PRC.campos = new List<CampoProduccionCientifica>();
 
+            #region --- Estado de validación
+            // Comprobar si está el triple del estado.
+            string valorEnviado = string.Empty;
+            select = new StringBuilder();
+            where = new StringBuilder();
+
+            select.Append(mPrefijos);
+            select.Append("SELECT DISTINCT ?enviado ");
+            where.Append("WHERE { ");
+            where.Append("?s a bibo:Document. ");
+            where.Append("OPTIONAL{?s roh:validationStatusPRC ?enviado. } ");
+            where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
+                }
+            }
+            #endregion
+
             #region --- Tipo del Documento.
+            select = new StringBuilder();
+            where = new StringBuilder();
+
             // Consulta sparql (Tipo del documento).
             select.Append(mPrefijos);
             select.Append("SELECT DISTINCT ?tipoDocumento ");
@@ -301,7 +331,7 @@ namespace EditorCV.Models
                 }
 
                 // Nombre de la revista 
-                if (!string.IsNullOrEmpty(dicDataRevista["titulo"]))
+                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["titulo"]))
                 {
                     CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
                     campoAux.codigoCVN = "060.010.010.210";
@@ -310,7 +340,7 @@ namespace EditorCV.Models
                 }
 
                 // Editorial
-                if (!string.IsNullOrEmpty(dicDataRevista["editor"]))
+                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["editor"]))
                 {
                     CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
                     campoAux.codigoCVN = "060.010.010.100";
@@ -319,7 +349,7 @@ namespace EditorCV.Models
                 }
 
                 // ISSN
-                if (!string.IsNullOrEmpty(dicDataRevista["issn"]))
+                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["issn"]))
                 {
                     CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
                     campoAux.codigoCVN = "060.010.010.160";
@@ -399,7 +429,7 @@ namespace EditorCV.Models
                                 }
                                 else if (item == "doi" || item == "handle" || item == "pmid")
                                 {
-                                    switch(item)
+                                    switch (item)
                                     {
                                         case "doi":
                                             dicIds["040"] = fila[item].value;
@@ -439,15 +469,20 @@ namespace EditorCV.Models
                         listaValores.Add(item.Value);
                     }
                 }
-                CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                campoAux.codigoCVN = "060.010.010.400";
-                campoAux.valores = listaValores;
-                PRC.campos.Add(campoAux);
-                campoAux = new CampoProduccionCientifica();
-                campoAux.codigoCVN = "060.010.010.410";
-                campoAux.valores = listaIds;
-                PRC.campos.Add(campoAux);
-
+                if (listaValores != null && listaValores.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.400";
+                    campoAux.valores = listaValores;
+                    PRC.campos.Add(campoAux);
+                }
+                if (listaIds != null && listaIds.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.410";
+                    campoAux.valores = listaIds;
+                    PRC.campos.Add(campoAux);
+                }
             }
             #endregion
 
@@ -550,26 +585,46 @@ namespace EditorCV.Models
                         listaValores.Add(item.Value);
                     }
                 }
-                CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                campoAux.codigoCVN = "060.010.010.400";
-                campoAux.valores = listaValores;
-                PRC.campos.Add(campoAux);
-                campoAux = new CampoProduccionCientifica();
-                campoAux.codigoCVN = "060.010.010.410";
-                campoAux.valores = listaIds;
-                PRC.campos.Add(campoAux);
+                if (listaValores != null && listaValores.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.400";
+                    campoAux.valores = listaValores;
+                    PRC.campos.Add(campoAux);
+                }
+                if (listaIds != null && listaIds.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.410";
+                    campoAux.valores = listaIds;
+                    PRC.campos.Add(campoAux);
+                }
             }
             #endregion
 
             #region --- Envío a SGI.
             try
-            {
-                RestClient client = new(pConfig.GetUrlProduccionCientifica());
-                client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
-                var request = new RestRequest(Method.POST);
-                request.AddJsonBody(PRC);
-                string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
-                IRestResponse response = client.Execute(request);
+            {                
+                IRestResponse response = null;
+
+                if (valorEnviado == "rechazado")
+                {
+                    RestClient client = new($@"{pConfig.GetUrlProduccionCientifica()}/{PRC.idRef}");
+                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
+                    var request = new RestRequest(Method.PUT);
+                    request.AddJsonBody(PRC);
+                    string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
+                    response = client.Execute(request);
+                }
+                else
+                {
+                    RestClient client = new(pConfig.GetUrlProduccionCientifica());
+                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
+                    var request = new RestRequest(Method.POST);
+                    request.AddJsonBody(PRC);
+                    string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
+                    response = client.Execute(request);
+                }                
 
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
@@ -582,30 +637,7 @@ namespace EditorCV.Models
             }
             #endregion
 
-            #region --- Cambio del estado del envío.
-            // Comprobar si está el triple del estado.
-            string valorEnviado = string.Empty;
-            select = new StringBuilder();
-            where = new StringBuilder();
-
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?enviado ");
-            where.Append("WHERE { ");
-            where.Append("?s a bibo:Document. ");
-            where.Append("OPTIONAL{?s roh:validationStatusPRC ?enviado. } ");
-            where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-            where.Append("} ");
-
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
-                }
-            }
-
+            #region --- Cambio del estado del envío.           
             mResourceApi.ChangeOntoly("document");
             guid = mResourceApi.GetShortGuid(pIdDocumento);
 
