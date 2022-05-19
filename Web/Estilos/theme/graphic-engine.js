@@ -106,10 +106,25 @@ var metricas = {
         var that = this;
 
         // Crear estructura para el apartado de gráficas.
-        pPageData.listaIdsGraficas.forEach(function(item, index, array) {
-            $('#page_' + pPageData.id + ' .containerGraficas').append(`
-			        	<div class='grafica' idgrafica='${item}'></div>
+
+        var rowNumber = 1;
+        $('#page_' + pPageData.id + ' .containerGraficas').append(`
+			        	<div class="row" id="row_${rowNumber}"></div>
 			        `);
+        var espacio = 12;
+
+        pPageData.listaConfigGraficas.forEach(function(item, index, array) {
+            if (espacio - item.anchura < 0) {
+                rowNumber++;
+                $('#page_' + pPageData.id + ' .containerGraficas').append(`
+			        	<div class="row" id="row_${rowNumber}"></div>
+			        `);
+                espacio = 12;
+            }
+            $('#row_' + rowNumber).append(`
+                            <div class='grafica col-xl-${item.anchura}' idgrafica='${item.id}'></div>
+                    `);
+            espacio = espacio - item.anchura;
         });
 
         // Crear estructura para el apartado de facetas.
