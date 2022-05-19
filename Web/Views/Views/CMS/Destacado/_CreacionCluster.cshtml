@@ -65,6 +65,7 @@
 				    <div class="steps-content-wrap">
 				        <div class="p-3 mb-2 bg-danger text-white" id="error-modal-cluster" style="display:none">@Html.Translate("REVISE_ERRORES_CAMPOS_RELLENADOS")</div>
 				        <div class="p-3 mb-2 bg-danger text-white" id="error-modal-cluster-step2" style="display:none">@Html.Translate("REVISE_ERRORES_CAMPOS_ETIQUETAS_TAGS")</div>
+				        <div class="p-3 mb-2 bg-danger text-white" id="error-modal-cluster-step2-equals" style="display:none">@Html.Translate("PERFILES_REPETIDOS")</div>
 				        <div class="p-3 mb-2 bg-danger text-white" id="error-modal-server-cluster" style="display:none">@Html.Translate("ERROR_SERVER")</div>
 
 				        <!-- START STEP 1 -->
@@ -339,7 +340,7 @@
 		                        </div>
 		                    </div>
 		                    <div class="form-actions top">
-		                        <a href="javascript:void(0)" class="btn btn-primary pmd-ripple-effect btnsave">@Html.Translate("GUARDAR")</a>
+		                        <a href="javascript:void(0)" class="btn btn-primary pmd-ripple-effect btnsave disabled">@Html.Translate("GUARDAR_CAMBIOS")</a>
 		                    </div>
 		                </div>
 		            </div>
@@ -397,6 +398,30 @@
 		                    </div>
 		                    <div class="form-actions">
 		                        <a href="javascript: stepsCls.addPerfilSearch()" class="btn btn-primary uppercase">@Html.Translate("GUARDAR")</a>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
+		<div id="modal-editar-perfil-cluster" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+		    <div class="modal-dialog" role="document">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <p class="modal-title"><span class="material-icons">person</span>@Html.Translate("EDITAR_PERFIL")</p>
+		                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+		            </div>
+		            <div class="modal-body">
+		                <div class="formulario-edicion">
+		                    <div class="custom-form-row">
+		                        <div class="form-group full-group">
+		                            <label class="control-label d-block">@Html.Translate("EDITAR_PERFIL")</label>
+		                            <input placeholder="@Html.Translate("INTRODUCE_NOMBRE_NUEVO_PERFIL")" type="text" name="perfilname" id="input-editar-perfil" class="form-control not-outline">
+		                        </div>
+		                    </div>
+		                    <div class="form-actions">
+		                        <a href="javascript: void(0)" class="btn btn-primary btneditar uppercase">@Html.Translate("EDITAR")</a>
 		                    </div>
 		                </div>
 		            </div>

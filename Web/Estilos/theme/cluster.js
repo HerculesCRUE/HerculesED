@@ -46,6 +46,7 @@ class StepsCluster {
 		this.clusterAccordionPerfil = this.modalCrearCluster.find("#accordion_cluster")
 		this.errorDiv = this.modalCrearCluster.find("#error-modal-cluster")
 		this.errorDivStep2 = this.modalCrearCluster.find("#error-modal-cluster-step2")
+		this.errorDivStep2Equals = this.modalCrearCluster.find("#error-modal-cluster-step2-equals")
 		this.errorDivServer = this.modalCrearCluster.find("#error-modal-server-cluster")
 		this.perfilesStep3 = this.modalCrearClusterStep3.find("#perfiles-stp3-result-cluster")
 
@@ -56,12 +57,17 @@ class StepsCluster {
 		this.modalPerfil = this.body.find("#modal-anadir-perfil-cluster")
 		this.inputPerfil = this.modalPerfil.find("#input-anadir-perfil")
 
+		// Editar perfil
+		this.modalPerfilEditar = this.body.find("#modal-editar-perfil-cluster")
+		this.inputPerfilEditar = this.modalPerfilEditar.find("#input-editar-perfil")
+
 		// Areas temáticas Modal
 		this.modalAreasTematicas = this.body.find('#modal-seleccionar-area-tematica')
 		this.divTesArbol = this.modalAreasTematicas.find('.divTesArbol')
 		this.divTesLista = this.modalAreasTematicas.find('.divTesLista')
 		this.divTesListaCaths = undefined
 		this.btnSaveAT = this.modalAreasTematicas.find('.btnsave')
+		this.cambiosAreasTematicas = 0
 
 		// Información para el guardado 
 		this.userId = document.getElementById('inpt_usuarioID').value
@@ -194,6 +200,7 @@ class StepsCluster {
 
 			this.errorDiv.hide()
 			this.errorDivStep2.hide()
+			this.errorDivStep2Equals.hide()
 			this.errorDivServer.hide()
 			this.setStep(pos)
 
@@ -229,6 +236,7 @@ class StepsCluster {
 			if (continueStep && this.step > (pos - 2)) {
 				this.errorDiv.hide()
 				this.errorDivStep2.hide()
+				this.errorDivStep2Equals.hide()
 				this.errorDivServer.hide()
 				this.setStep(pos)
 			} else {
@@ -255,12 +263,52 @@ class StepsCluster {
 
 	/**
 	 * Método que borra un perfil
+	 * @param head1: Id de la cabecera del collapse
+	 * @param head2: Id del contenido del collapse
+	 * @param profileId: Id del profile a borrar
 	 */
-	deletePerfil(head1, head2) {
+	deletePerfil(head1, head2, profileId) {
 		$('#' + head1).remove()
 		$('#' + head2).remove()
+
+		// Borrar de los datos
+		if (this.data && this.data.profiles) {
+			this.data.profiles.filter(e => e.entityID != profileId)
+		}
 		this.checkNumberProfiles()
 		// $(item).parent().parent().remove()
+	}
+
+	/**
+	 * Método que edita un perfil
+	 * @param head1: Id de la cabecera del collapse
+	 * @param head2: Id del contenido del collapse
+	 * @param profileId: Id del profile a borrar
+	 */
+	editarPerfil(head1, head2, profileId) {
+		let _self = this;
+		// Texto acstual
+		var texto = $('#' + head1).find('.texto').text()
+		// Abrimos el popup
+		_self.modalPerfilEditar.modal('show')
+		// Establecemos el texto por defecto
+		_self.inputPerfilEditar.val(texto)
+		// Evento de guardar el modal
+		_self.modalPerfilEditar.find('.btneditar').off('click').on('click', function() {
+			let name = _self.inputPerfilEditar.val()
+			$('#' + head1).find('.texto').text(name)
+			$('#' + head2).data('name', name)
+
+			// Esitamos los datos
+			if (_self.data && _self.data.profiles) {
+				let profile = _self.data.profiles.find(e => e.entityID == profileId)
+				profile.name = name
+			}
+
+			_self.modalPerfilEditar.modal('hide')
+		})
+
+		// this.checkNumberProfiles()
 	}
 
 	/**
@@ -406,6 +454,10 @@ class StepsCluster {
 			let dataId = $(this).attr('id')
 			let dataParentId = $(this).data('parentid')
 			dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
+
+			// Añadimos un cambio para las areas tematicas
+			_self.cambiosAreasTematicas ++
+			_self.btnSaveAT.removeClass('disabled')
 
 			if (dataParentId.length > 0) {
 				if (!dataVal) {
@@ -663,6 +715,10 @@ class StepsCluster {
 			}
 
 
+			// Reestablecemos el botón de guardar las Áreas Temáticas
+			this.cambiosAreasTematicas = 0
+			this.btnSaveAT.addClass('disabled')
+
 			// Muestra el modal de las áreas temáticas
 			this.modalAreasTematicas.modal('show')
 
@@ -827,6 +883,10 @@ class StepsCluster {
 				// Oculta el modal de las áreas temáticas
 				this.modalAreasTematicas.modal('hide')
 
+				// Reestablecemos el botón de guardar las Áreas Temáticas
+				this.cambiosAreasTematicas = 0
+				this.btnSaveAT.addClass('disabled')
+
 				// Selecciona y establece el contenedor de las areas temáticas
 				// let relItem = $('#' + $(item).data("rel"))
 
@@ -898,6 +958,10 @@ class StepsCluster {
 		})
 	}
 
+	perfilExist(name) {
+		return this.data && this.data.profiles && this.data.profiles.find(e => e.name == name)
+	}
+
 	/**
 	 * Método que añade un perfil nuevo en el segundo paso
 	 * @param name, Nombre opcional para crear un perfil guardado en el cluster que se está cargando
@@ -918,68 +982,90 @@ class StepsCluster {
 				name = profileObj.name
 				profileId = profileObj.shortEntityID
 			}
+
 			this.modalPerfil.modal('hide')
 			this.inputPerfil.val("") // Set the name empty
 
-			// Get the image user url
-			let imgUser = this.modalCrearCluster.data('imguser')
+			// Comprueba si el perfil existe
+			if (this.perfilExist(name)) {
+				// Muestra un error
+				this.errorDivStep2Equals.show()
 
-			// Set The item id
-			let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
-			let rand = Math.random() * (100000 - 10000) + 10000
-			nameId = nameId + rand.toFixed()
+			} else {
 
-			// Get the panel item
-			let panel = this.clusterAccordionPerfil.find('.panel')
+				this.errorDivStep2Equals.hide()
+				// Get the image user url
+				let imgUser = this.modalCrearCluster.data('imguser')
 
-			// 
-			let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
-					<p class="panel-title">
-						<a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
-							<span class="material-icons">keyboard_arrow_down</span>
-							<img src="`+ imgUser +`" alt="person">
-							<span class="texto">`+ name +`</span>
-						</a>
-					</p>
-					<a href="javascript:void(0)" onclick="stepsCls.deletePerfil('`+ nameId +`-tab', '`+ nameId +`')" class="btn btn-outline-grey eliminar">
-						` + this.eliminarText + `
-						<span class="material-icons-outlined">delete</span>
-					</a>
-				</div>
-				<div data-profileid="`+profileId+`" id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
-					<div class="panel-body">
+				// Set The item id
+				let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
+				let rand = Math.random() * (100000 - 10000) + 10000
+				nameId = nameId + rand.toFixed()
 
-						<!-- Areas temáticas -->
-						<div class="form-group mb-5 edit-etiquetas terms-items">
-							<label class="control-label d-block">`+ this.areasTematicasText +`</label>
-							<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
-								<div class="tag-list mb-4 d-inline"></div> 
-							</div>
-							<a class="btn btn-outline-primary" href="javascript: void(0)">
-								<span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
+				// Get the panel item
+				let panel = this.clusterAccordionPerfil.find('.panel')
+
+				// 
+				let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
+						<p class="panel-title">
+							<a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
+								<span class="material-icons">keyboard_arrow_down</span>
+								<img src="`+ imgUser +`" alt="person">
+								<span class="texto">`+ name +`</span>
+							</a>
+						</p>
+						<div class="conteditborrbtn">
+							<a href="javascript:void(0)" onclick="stepsCls.editarPerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey edit">
+								<span class="material-icons-outlined px-0">edit</span>
+							</a>
+							<a href="javascript:void(0)" onclick="stepsCls.deletePerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey eliminar">
+								` + this.eliminarText + `
+								<span class="material-icons-outlined">delete</span>
 							</a>
 						</div>
-						<!-- -->
-
-						<!-- Tópicos -->
-						<div class="form-group mb-5 edit-etiquetas tags-items">
-							<label class="control-label d-block">` + this.descriptoresEspecificosText + `</label>
-							<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-tags-`+ nameId +`">
-								<div class="tag-list mb-4 d-inline"></div> 
-							</div>
-							<a class="btn btn-outline-primary" href="javascript: void(0)">
-								<span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsCls.loadModalTopics(this)">add</span>
-							</a>
-						</div>
-						<!-- -->
-
 					</div>
-				</div>`
+					<div data-profileid="`+profileId+`" id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
+						<div class="panel-body">
 
-			panel.append(item)
+							<!-- Areas temáticas -->
+							<div class="form-group mb-5 edit-etiquetas terms-items">
+								<label class="control-label d-block">`+ this.areasTematicasText +`</label>
+								<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
+									<div class="tag-list mb-4 d-inline"></div> 
+								</div>
+								<a class="btn btn-outline-primary" href="javascript: void(0)">
+									<span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
+								</a>
+							</div>
+							<!-- -->
 
-			this.checkNumberProfiles()
-			resolve(nameId)
+							<!-- Tópicos -->
+							<div class="form-group mb-5 edit-etiquetas tags-items">
+								<label class="control-label d-block">` + this.descriptoresEspecificosText + `</label>
+								<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-tags-`+ nameId +`">
+									<div class="tag-list mb-4 d-inline"></div> 
+								</div>
+								<a class="btn btn-outline-primary" href="javascript: void(0)">
+									<span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsCls.loadModalTopics(this)">add</span>
+								</a>
+							</div>
+							<!-- -->
+
+						</div>
+					</div>`
+
+				panel.append(item)
+
+				if (this.data.profiles) {
+					this.data.profiles.push({ name, entityID: profileId })
+				} else {
+					this.data.profiles = [{ name, entityID: profileId }]
+				}
+
+				this.checkNumberProfiles()
+				resolve(nameId)
+			}
+
 		})
 
 	}

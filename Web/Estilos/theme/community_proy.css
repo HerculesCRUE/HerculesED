@@ -205,3 +205,23 @@ header .row .col.col02 .col-buscador {
 a.faceta.applied{
 	font-weight: 700!important;
 }
+
+
+.edicionCluster .formulario-edicion .panel-heading .conteditborrbtn {
+    display: inline-flex;
+    font-size: 15px;
+    font-weight: 400;
+    position: absolute;
+    top: -5px;
+    right: 0;
+}
+
+.edicionCluster .formulario-edicion .panel-heading .btn {
+    display: inline-flex !important;
+    font-size: 15px;
+    font-weight: 400;
+    position: relative !important;
+    top: initial !important;
+    right: initial !important;
+    margin-left: 5px;
+}
