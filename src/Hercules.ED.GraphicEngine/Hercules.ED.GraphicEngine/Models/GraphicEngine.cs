@@ -433,7 +433,6 @@ namespace Hercules.ED.GraphicEngine.Models
 
             ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
             Dictionary<Dimension, DatasetCircular> dimensionesDataset = new Dictionary<Dimension, DatasetCircular>();
-
             Dictionary<string, float> dicNombreData = new Dictionary<string, float>();
 
             Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
@@ -472,35 +471,43 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
                     }
-                    resultadosDimension[itemGrafica] = dicNombreData;
+                    resultadosDimension[itemGrafica] = dicNombreData;                    
                 }
             });
 
+            // Lista de los ordenes de las revistas.
             List<string> listaNombres = new List<string>();
+
             List<float> listaData = new List<float>();
             foreach (KeyValuePair<string,float> nombreData in dicNombreData)
             {
                 listaNombres.Add(nombreData.Key);
                 listaData.Add(nombreData.Value);
             }
-            DatasetCircular dataset = new DatasetCircular();
 
+            DatasetCircular dataset = new DatasetCircular();
             dataset.data = listaData;
 
             List<string> listaColores = new List<string>();
 
-            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            foreach (string orden in listaNombres)
             {
-                // Nombre del dato en leyenda.
-                dataset.label = GetTextLang(pLang, item.Key.nombre);
+                foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+                {
+                    string nombreRevista = item.Key.filtro.Split("=")[1].Substring(1, item.Key.filtro.Split("=")[1].Length - 2);
+                    if (nombreRevista == orden)
+                    {
+                        // Nombre del dato en leyenda.
+                        dataset.label = GetTextLang(pLang, item.Key.nombre);
 
-                // Color. TODO: Ordenar colores
-                listaColores.Add(item.Key.color);
-
-                data.labels = listaNombres;
+                        // Color. 
+                        listaColores.Add(item.Key.color);
+                    }
+                }
             }
-            dataset.backgroundColor = listaColores;
 
+            data.labels = listaNombres;
+            dataset.backgroundColor = listaColores;
             grafica.data.datasets.Add(dataset);
 
             return grafica;
