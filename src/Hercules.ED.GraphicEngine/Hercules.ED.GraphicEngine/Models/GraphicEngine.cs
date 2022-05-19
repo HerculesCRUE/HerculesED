@@ -107,17 +107,11 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 case EnumGraficas.Barras:
                     // TODO: Controlar excepciones en la configuración.
-                    if (string.IsNullOrEmpty(pGrafica.config.ejeX))
-                    {
-                        throw new Exception("No está configurada la propiedad del agrupación del eje x.");
-                    }
-                    if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
-                    {
-                        throw new Exception("No se ha configurado dimensiones.");
-                    }
+                    ControlarExcepcionesBarras(pGrafica);
                     return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 case EnumGraficas.Circular:
                     // TODO: Controlar excepciones en la configuración.
+                    ControlarExcepcionesCircular(pGrafica);
                     return CrearGraficaCircular(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 default:
                     return null;
@@ -470,7 +464,13 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-                        dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
+                        try
+                        {
+                            dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
+                        } catch (Exception ex)
+                        {
+                            throw new Exception("No se ha configurado bien el apartado de dimensiones.");
+                        }
                     }
                     resultadosDimension[itemGrafica] = dicNombreData;
                 }
@@ -774,6 +774,45 @@ namespace Hercules.ED.GraphicEngine.Models
             else
             {
                 return "";
+            }
+        }
+        #endregion
+
+        #region --- Excepciones
+
+        public static void ControlarExcepcionesBarras(Grafica pGrafica)
+        {
+            if (pGrafica.config == null)
+            {
+                throw new Exception("La gráfica no tiene configuración");
+            }
+            if (string.IsNullOrEmpty(pGrafica.config.ejeX))
+            {
+                throw new Exception("No está configurada la propiedad del agrupación del eje x.");
+            }
+            if (pGrafica.config.xAxisPrint == null)
+            {
+                throw new Exception("No está configurada la propiedad xAxisPrint");
+            }
+            if (pGrafica.config.yAxisPrint == null)
+            {
+                throw new Exception("No está configurada la propiedad yAxisPrint");
+            }
+            if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
+            {
+                throw new Exception("No se ha configurado dimensiones.");
+            }
+        }
+
+        public static void ControlarExcepcionesCircular(Grafica pGrafica)
+        {
+            if (pGrafica.config == null)
+            {
+                throw new Exception("La gráfica no tiene configuración");
+            }
+            if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
+            {
+                throw new Exception("No se ha configurado dimensiones.");
             }
         }
         #endregion
