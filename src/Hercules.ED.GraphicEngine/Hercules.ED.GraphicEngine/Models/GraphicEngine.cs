@@ -58,6 +58,10 @@ namespace Hercules.ED.GraphicEngine.Models
                     id = itemGrafica.identificador,
                     anchura = itemGrafica.anchura12
                 };
+                if (configPagina.anchura > 12 || configPagina.anchura < 1)
+                {
+                    configPagina.anchura = 6;
+                }
                 pagina.listaConfigGraficas.Add(configPagina);
             }
             pagina.listaIdsFacetas = new List<string>();
@@ -494,7 +498,7 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
                 {
-                    string nombreRevista = item.Key.filtro.Split("=")[1].Substring(1, item.Key.filtro.Split("=")[1].Length - 2);
+                    string nombreRevista = item.Key.filtro.Split("=")[1].Split("@")[0].Substring(1, item.Key.filtro.Split("=")[1].Split("@")[0].Length - 2);
                     if (nombreRevista == orden)
                     {
                         // Nombre del dato en leyenda.
