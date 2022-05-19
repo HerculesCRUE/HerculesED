@@ -67,6 +67,7 @@ class StepsCluster {
 		this.divTesLista = this.modalAreasTematicas.find('.divTesLista')
 		this.divTesListaCaths = undefined
 		this.btnSaveAT = this.modalAreasTematicas.find('.btnsave')
+		this.cambiosAreasTematicas = 0
 
 		// Información para el guardado 
 		this.userId = document.getElementById('inpt_usuarioID').value
@@ -454,6 +455,10 @@ class StepsCluster {
 			let dataParentId = $(this).data('parentid')
 			dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
 
+			// Añadimos un cambio para las areas tematicas
+			_self.cambiosAreasTematicas ++
+			_self.btnSaveAT.removeClass('disabled')
+
 			if (dataParentId.length > 0) {
 				if (!dataVal) {
 					let brothers = $(this).parent().parent().parent().parent().find('input.at-input:checked')
@@ -710,6 +715,10 @@ class StepsCluster {
 			}
 
 
+			// Reestablecemos el botón de guardar las Áreas Temáticas
+			this.cambiosAreasTematicas = 0
+			this.btnSaveAT.addClass('disabled')
+
 			// Muestra el modal de las áreas temáticas
 			this.modalAreasTematicas.modal('show')
 
@@ -873,6 +882,10 @@ class StepsCluster {
 
 				// Oculta el modal de las áreas temáticas
 				this.modalAreasTematicas.modal('hide')
+
+				// Reestablecemos el botón de guardar las Áreas Temáticas
+				this.cambiosAreasTematicas = 0
+				this.btnSaveAT.addClass('disabled')
 
 				// Selecciona y establece el contenedor de las areas temáticas
 				// let relItem = $('#' + $(item).data("rel"))
