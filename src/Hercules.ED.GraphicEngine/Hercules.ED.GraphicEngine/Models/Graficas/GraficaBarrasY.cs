@@ -8,6 +8,8 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
 {
     public class GraficaBarrasY : GraficaBase
     {
+        public string type { get; set; }
+        public Options options { get; set; }
         public DataBarrasY data { get; set; }
     }
     public class DataBarrasY
