@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Hercules.ED.GraphicEngine.Models.Graficas
 {
-    public class GraficaBarras : GraficaBase
+    public class GraficaBarrasY : GraficaBase
     {
-        public DataBarras data { get; set; }
+        public DataBarrasY data { get; set; }
     }
-    public class DataBarras
+    public class DataBarrasY
     {
         public List<string> labels { get; set; }
-        public ConcurrentBag<DatasetBarras> datasets { get; set; }
+        public ConcurrentBag<DatasetBarrasY> datasets { get; set; }
         public string type { get; set; }
     }
-    public class DatasetBarras
+    public class DatasetBarrasY
     {
         public string label { get; set; }
         public List<float> data { get; set; }
@@ -24,7 +24,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public string type { get; set; }
         public string stack { get; set; }
         public float barPercentage { get; set; }
-        public string yAxisID { get; set; }
+        public string xAxisID { get; set; }
         public int order { get; set; }
     }
 }

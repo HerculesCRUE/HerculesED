@@ -111,8 +111,16 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 case EnumGraficas.Barras:
                     // TODO: Controlar excepciones en la configuración.
-                    ControlarExcepcionesBarras(pGrafica);
-                    return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                    if (pGrafica.config.orientacionVertical)
+                    {
+                        ControlarExcepcionesBarrasX(pGrafica);
+                        return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                    }
+                    else
+                    {
+                        ControlarExcepcionesBarrasY(pGrafica);
+                        return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                    }
                 case EnumGraficas.Circular:
                     // TODO: Controlar excepciones en la configuración.
                     ControlarExcepcionesCircular(pGrafica);
@@ -123,7 +131,7 @@ namespace Hercules.ED.GraphicEngine.Models
         }
 
         /// <summary>
-        /// Crea el objeto de la gráfica (Gráfica de Barras).
+        /// Crea el objeto de la gráfica (Gráfica de Barras vertical).
         /// </summary>
         /// <param name="pGrafica">Configuración.</param>
         /// <param name="pFiltroBase">Filtros base.</param>
@@ -144,23 +152,10 @@ namespace Hercules.ED.GraphicEngine.Models
             // Asignación de Options.
             Options options = new Options();
 
-            // Orientación            
-            if (!pGrafica.config.orientacionVertical)
-            {
-                options.indexAxis = "y";
-            }
-            else
-            {
-                options.indexAxis = "x";
-            }
+            // Orientación
+            options.indexAxis = "x";
 
             options.scales = new Dictionary<string, Eje>();
-
-            // Ejes X
-            foreach (EjeXConf item in pGrafica.config.xAxisPrint)
-            {
-                options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
-            }
 
             // Ejes Y
             foreach (EjeYConf item in pGrafica.config.yAxisPrint)
@@ -384,6 +379,274 @@ namespace Hercules.ED.GraphicEngine.Models
                 // Eje Y.
                 dataset.yAxisID = item.Key.yAxisID;
 
+                // Orden
+                dataset.order = item.Key.orden;
+
+                data.labels = listaLabels;
+                data.type = item.Key.tipoDimension;
+                dimensionesDataset[item.Key] = dataset;
+            }
+
+            foreach (Dimension dim in pGrafica.config.dimensiones)
+            {
+                grafica.data.datasets.Add(dimensionesDataset[dim]);
+            }
+
+            return grafica;
+        }
+        /// <summary>
+        /// Crea el objeto de la gráfica (Gráfica de Barras horizontal).
+        /// </summary>
+        /// <param name="pGrafica">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
+        public static GraficaBarrasY CrearGraficaBarrasY(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        {
+            // Objeto a devolver.
+            GraficaBarrasY grafica = new GraficaBarrasY();
+            grafica.type = "bar"; // Por defecto, de tipo bar.
+
+            // Asignación de Data.
+            DataBarrasY data = new DataBarrasY();
+            data.datasets = new ConcurrentBag<DatasetBarrasY>();
+            grafica.data = data;
+
+            // Asignación de Options.
+            Options options = new Options();
+
+            // Orientación            
+            if (!pGrafica.config.orientacionVertical)
+            {
+                options.indexAxis = "y";
+            }
+            else
+            {
+                options.indexAxis = "x";
+            }
+
+            options.scales = new Dictionary<string, Eje>();
+
+            // Ejes X
+            foreach (EjeXConf item in pGrafica.config.xAxisPrint)
+            {
+                options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
+            }
+
+            // Animación
+            options.animation = new Animation();
+            options.animation.duration = 2000;
+
+            // Título
+            options.plugins = new Plugin();
+            options.plugins.title = new Title();
+            options.plugins.title.display = true;
+            options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
+
+            grafica.options = options;
+
+            ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
+            Dictionary<Dimension, DatasetBarrasY> dimensionesDataset = new Dictionary<Dimension, DatasetBarrasY>();
+
+            Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
+            {
+                // Determina si en el filtro contiene '=' para tratarlo de manera especial.
+                bool filtroEspecial = false;
+                if (!string.IsNullOrEmpty(itemGrafica.filtro) && !itemGrafica.filtro.Contains("="))
+                {
+                    filtroEspecial = true;
+                }
+
+                // Orden.
+                string orden = "ASC";
+                if (pGrafica.config.orderDesc == true)
+                {
+                    orden = "DESC";
+                }
+
+                // Filtro de página.
+                List<string> filtros = new List<string>();
+
+                List<Tuple<string, string, float>> listaTuplas = new List<Tuple<string, string, float>>();
+                SparqlObject resultadoQuery = null;
+                StringBuilder select = new StringBuilder(), where = new StringBuilder();
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
+                if (!string.IsNullOrEmpty(pFiltroFacetas))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                }
+                if (filtroEspecial)
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }, "aux"));
+                }
+                else if (!string.IsNullOrEmpty(itemGrafica.filtro))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
+                }
+                if (string.IsNullOrEmpty(itemGrafica.calculo))
+                {
+                    // Consulta sparql.                    
+                    select = new StringBuilder();
+                    where = new StringBuilder();
+
+                    select.Append(mPrefijos);
+                    if (filtroEspecial)
+                    {
+                        select.Append($@"SELECT ?ejeX ?aux COUNT(DISTINCT ?s) AS ?numero ");
+                    }
+                    else
+                    {
+                        select.Append($@"SELECT ?ejeX COUNT(DISTINCT ?s) AS ?numero ");
+                    }
+                    where.Append("WHERE { ");
+                    foreach (string item in filtros)
+                    {
+                        where.Append(item);
+                    }
+                    if (filtroEspecial)
+                    {
+                        where.Append($@"FILTER(LANG(?aux) = 'es' OR LANG(?aux) = '' OR !isLiteral(?aux))");
+                    }
+                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                }
+                else
+                {
+                    // Cálculo (SUM|AVG|MIN|MAX)
+                    string calculo = itemGrafica.calculo;
+
+                    // Consulta sparql.
+                    select = new StringBuilder();
+                    where = new StringBuilder();
+
+                    select.Append(mPrefijos);
+                    select.Append($@"SELECT ?ejeX {calculo}(?aux) AS ?numero ");
+                    where.Append("WHERE { ");
+                    foreach (string item in filtros)
+                    {
+                        where.Append(item);
+                    }
+                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                }
+
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        if (filtroEspecial && string.IsNullOrEmpty(itemGrafica.calculo))
+                        {
+                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, fila["aux"].value, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                        }
+                        else
+                        {
+                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, string.Empty, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                        }
+                    }
+                }
+                resultadosDimension[itemGrafica] = listaTuplas;
+            });
+
+            #region --- Cálculo de los valores del Eje X
+            HashSet<string> valuesEje = new HashSet<string>();
+            HashSet<string> tipos = new HashSet<string>();
+
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            {
+                if (item.Value != null && item.Value.Any())
+                {
+                    foreach (Tuple<string, string, float> item2 in item.Value)
+                    {
+                        valuesEje.Add(item2.Item1);
+                        tipos.Add(item2.Item2);
+                    }
+                }
+            }
+
+            bool isInt = valuesEje.Where(x => !int.TryParse(x, out int aux)).Count() == 0;
+
+            if (pGrafica.config.rellenarEjeX && isInt && valuesEje.Count > 0)
+            {
+                int numMin = valuesEje.Min(x => int.Parse(x));
+                int numMax = valuesEje.Max(x => int.Parse(x));
+                for (int i = numMin; i <= numMax; i++)
+                {
+                    valuesEje.Add(i.ToString());
+                }
+            }
+
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            {
+                if (item.Value != null && item.Value.Any())
+                {
+                    foreach (string valor in valuesEje)
+                    {
+                        Tuple<string, string, float> tuplaAux = item.Value.FirstOrDefault(x => x.Item1.Equals(valor));
+                        if (tuplaAux == null)
+                        {
+                            item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
+                        }
+                    }
+                }
+
+                if (isInt)
+                {
+                    resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
+                }
+                else
+                {
+                    resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                }
+            }
+
+            if (isInt)
+            {
+                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
+            }
+            else
+            {
+                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
+            }
+            #endregion
+
+            // Obtención del objeto de la gráfica.
+            List<string> listaLabels = valuesEje.ToList();
+
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            {
+                DatasetBarrasY dataset = new DatasetBarrasY();
+                List<float> listaData = new List<float>();
+                foreach (Tuple<string, string, float> itemAux in item.Value)
+                {
+                    listaData.Add(itemAux.Item3);
+                }
+                dataset.data = listaData;
+
+                // Nombre del dato en leyenda.
+                dataset.label = GetTextLang(pLang, item.Key.nombre);
+
+                // Color.
+                dataset.backgroundColor = ObtenerColores(dataset.data.Count(), item.Key.color);
+                dataset.type = item.Key.tipoDimension;
+
+                // Anchura.
+                dataset.barPercentage = 1;
+                if (item.Key.anchura != 0)
+                {
+                    dataset.barPercentage = item.Key.anchura;
+                }
+
+                // Stack.
+                if (!string.IsNullOrEmpty(item.Key.stack))
+                {
+                    dataset.stack = item.Key.stack;
+                }
+                else
+                {
+                    dataset.stack = Guid.NewGuid().ToString();
+                }
+
                 // Eje X.
                 dataset.xAxisID = item.Key.xAxisID;
 
@@ -403,6 +666,14 @@ namespace Hercules.ED.GraphicEngine.Models
             return grafica;
         }
 
+        /// <summary>
+        /// Crea el objeto de la gráfica (Gráfica circular).
+        /// </summary>
+        /// <param name="pGrafica">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
         public static GraficaCircular CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             // Objeto a devolver.
@@ -472,7 +743,7 @@ namespace Hercules.ED.GraphicEngine.Models
                             dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
                         } catch (Exception ex)
                         {
-                            throw new Exception("No se ha configurado bien el apartado de dimensiones.");
+                            throw new Exception("No se ha configurado el apartado de dimensiones.");
                         }
                     }
                     resultadosDimension[itemGrafica] = dicNombreData;                    
@@ -509,9 +780,11 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                 }
             }
-
+            
             data.labels = listaNombres;
             dataset.backgroundColor = listaColores;
+            // Le doy un hoverOffset por defecto
+            dataset.hoverOffset = 4;
             grafica.data.datasets.Add(dataset);
 
             return grafica;
@@ -791,7 +1064,26 @@ namespace Hercules.ED.GraphicEngine.Models
 
         #region --- Excepciones
 
-        public static void ControlarExcepcionesBarras(Grafica pGrafica)
+        public static void ControlarExcepcionesBarrasX(Grafica pGrafica)
+        {
+            if (pGrafica.config == null)
+            {
+                throw new Exception("La gráfica no tiene configuración");
+            }
+            if (string.IsNullOrEmpty(pGrafica.config.ejeX))
+            {
+                throw new Exception("No está configurada la propiedad del agrupación del eje x.");
+            }
+            if (pGrafica.config.yAxisPrint == null)
+            {
+                throw new Exception("No está configurada la propiedad yAxisPrint");
+            }
+            if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
+            {
+                throw new Exception("No se ha configurado dimensiones.");
+            }
+        }
+        public static void ControlarExcepcionesBarrasY(Grafica pGrafica)
         {
             if (pGrafica.config == null)
             {
@@ -804,10 +1096,6 @@ namespace Hercules.ED.GraphicEngine.Models
             if (pGrafica.config.xAxisPrint == null)
             {
                 throw new Exception("No está configurada la propiedad xAxisPrint");
-            }
-            if (pGrafica.config.yAxisPrint == null)
-            {
-                throw new Exception("No está configurada la propiedad yAxisPrint");
             }
             if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
             {
