@@ -11,14 +11,21 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
-namespace ExportadorWebCV.Utils
+namespace Utils
 {
     public class UtilityExportar
     {
-
+        public static bool EsMultiidioma(string lang)
+        {
+            if (lang.Equals("es") || lang.Equals("ca") || lang.Equals("eu") ||
+                lang.Equals("gl") || lang.Equals("fr") || lang.Equals("en"))
+            {
+                return true;
+            }
+            return false;
+        }
         /// <summary>
         /// Devuelve una lista de tuplas con la persona, nombre, apellidos.
         /// </summary>

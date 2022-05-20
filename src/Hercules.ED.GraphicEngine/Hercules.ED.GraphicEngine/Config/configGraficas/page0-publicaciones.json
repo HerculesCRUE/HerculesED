@@ -8,11 +8,12 @@
     {
       "identificador": "111",
       "nombre": {
-        "es": "Nombre de la Gráfica de EJEMPLO"
+        "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Horizontal"
       },
       "tipo": "Barras",
+      "anchura12": 12,
       "config": {
-        "orientacionVertical": true,
+        "orientacionVertical": false,
         "ejeX": "roh:year",
         "orderDesc": false,
         "rellenarEjeX": false,
@@ -26,6 +27,65 @@
             "posicion": "bottom"
           }
         ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Citas Media por Año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "AVG",
+            "tipoDimension": "line",
+            "color": "#000000",
+            "xAxisID": "x2",
+            "orden": 1
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 2
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Artículo Científico"
+            },
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "stack": "stack1",
+            "xAxisID": "x1",
+            "orden": 3
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Capítulo de Libro"
+            },
+            "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
+            "tipoDimension": "bar",
+            "color": "#6CAFD3",
+            "stack": "stack1",
+            "xAxisID": "x1",
+            "orden": 4
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "222",
+      "nombre": {
+        "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Vertical"
+      },
+      "tipo": "Barras",
+      "anchura12": 12,
+      "config": {
+        "orientacionVertical": true,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": false,
         "yAxisPrint": [
           {
             "yAxisID": "y2",
@@ -46,7 +106,6 @@
             "tipoDimension": "line",
             "color": "#000000",
             "yAxisID": "y2",
-            "xAxisID": "x2",
             "orden": 1
           },
           {
@@ -57,7 +116,6 @@
             "tipoDimension": "bar",
             "color": "#BF4858",
             "yAxisID": "y1",
-            "xAxisID": "x1",
             "orden": 2
           },
           {
@@ -69,7 +127,6 @@
             "color": "#7CBFE3",
             "stack": "stack1",
             "yAxisID": "y1",
-            "xAxisID": "x1",
             "orden": 3
           },
           {
@@ -81,18 +138,18 @@
             "color": "#6CAFD3",
             "stack": "stack1",
             "yAxisID": "y1",
-            "xAxisID": "x1",
             "orden": 4
           }
         ]
       }
     },
     {
-      "identificador": "222",
+      "identificador": "333",
       "nombre": {
-        "es": "Nombre de la Gráfica Circular de EJEMPLO"
+        "es": "Nombre de la Gráfica Circular de EJEMPLO - Gráfica Circular"
       },
       "tipo": "Circular",
+      "anchura12": 6,
       "config": {
         "dimensiones": [
           {
@@ -113,11 +170,52 @@
       }
     },
     {
-      "identificador": "333",
+      "identificador": "444",
       "nombre": {
-        "es": "Nombre de la Gráfica Circular de EJEMPLO 2"
+        "es": "Nombre de la Gráfica Circular de EJEMPLO 2 - Gráfica Circular"
       },
       "tipo": "Circular",
+      "anchura12": 6,
+      "config": {
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones de revista Lecture Notes"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='Lecture Notes in Computer Science'",
+            "color": "#DAF7A6"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de revista Sensors"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='Sensors'",
+            "color": "#FFC300"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de revista IEEE Access"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='IEEE Access'",
+            "color": "#C70039"
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de revista Future Generation"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='Future Generation Computer Systems-The International Journal of eScience'",
+            "color": "#581845"
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "555",
+      "nombre": {
+        "es": "Nombre de la Gráfica Circular de EJEMPLO 3 - Gráfica Circular"
+      },
+      "tipo": "Circular",
+      "anchura12": 12,
       "config": {
         "dimensiones": [
           {

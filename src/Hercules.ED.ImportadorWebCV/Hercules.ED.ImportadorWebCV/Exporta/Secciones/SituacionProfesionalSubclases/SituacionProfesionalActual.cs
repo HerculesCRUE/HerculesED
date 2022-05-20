@@ -1,5 +1,4 @@
-﻿using ExportadorWebCV.Utils;
-using ImportadorWebCV;
+﻿using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Utils;
+using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 {
@@ -27,7 +27,8 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
         /// <param name="seccion"></param>
         /// <param name="secciones"></param>
         /// <param name="preimportar"></param>
-        public void ExportaSituacionProfesional(Entity entity, string seccion, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaSituacionProfesional(Entity entity, string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp
+            , [Optional] List<string> secciones, [Optional] bool preimportar)
         {
             if (!UtilitySecciones.CheckSecciones(secciones, "010.010.000.000"))
             {
@@ -35,7 +36,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
             }
             List<CvnItemBean> listado = new List<CvnItemBean>();
             List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph);
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
                 CvnItemBean itemBean = new CvnItemBean();

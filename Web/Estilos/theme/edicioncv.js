@@ -1,10 +1,3 @@
-$(function() {
-    edicionCV.init();
-});
-
-
-//var urlEdicionCV = "https://localhost:44360/EdicionCV/";
-//var urlGuardadoCV = "https://localhost:44360/GuardadoCV/";
 var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
 var urlGuardadoCV = "http://serviciosedma.gnoss.com/editorcv/GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];

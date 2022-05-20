@@ -8,6 +8,8 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
 {
     public class GraficaCircular : GraficaBase
     {
+        public string type { get; set; }
+        public Options options { get; set; }
         public DataCircular data { get; set; }
     }
     public class DataCircular

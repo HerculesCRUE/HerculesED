@@ -50,10 +50,22 @@ namespace Hercules.ED.GraphicEngine.Models
             Pagina pagina = new Pagina();
             pagina.id = pConfigModel.identificador;
             pagina.nombre = GetTextLang(pLang, pConfigModel.nombre);
-            pagina.listaIdsGraficas = new List<string>();
+            pagina.listaConfigGraficas = new List<ConfigPagina>();
             foreach (Grafica itemGrafica in pConfigModel.graficas)
             {
-                pagina.listaIdsGraficas.Add(itemGrafica.identificador);
+                ConfigPagina configPagina = new ConfigPagina()
+                {
+                    id = itemGrafica.identificador,
+                    anchura = itemGrafica.anchura12
+                };
+
+                // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
+                if (configPagina.anchura > 12 || configPagina.anchura < 1)
+                {
+                    configPagina.anchura = 6;
+                }
+
+                pagina.listaConfigGraficas.Add(configPagina);
             }
             pagina.listaIdsFacetas = new List<string>();
             foreach (FacetaConf itemFaceta in pConfigModel.facetas)
@@ -102,25 +114,29 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 case EnumGraficas.Barras:
                     // TODO: Controlar excepciones en la configuración.
-                    if (string.IsNullOrEmpty(pGrafica.config.ejeX))
+                    if (pGrafica.config.orientacionVertical)
                     {
-                        throw new Exception("No está configurada la propiedad del agrupación del eje x.");
+                        ControlarExcepcionesBarrasX(pGrafica);
+                        return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                     }
-                    if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
+                    else
                     {
-                        throw new Exception("No se ha configurado dimensiones.");
+                        ControlarExcepcionesBarrasY(pGrafica);
+                        return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                     }
-                    return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 case EnumGraficas.Circular:
                     // TODO: Controlar excepciones en la configuración.
+                    ControlarExcepcionesCircular(pGrafica);
                     return CrearGraficaCircular(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                case EnumGraficas.Nodos:
+                    return CrearGraficaNodos(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 default:
                     return null;
             }
         }
 
         /// <summary>
-        /// Crea el objeto de la gráfica (Gráfica de Barras).
+        /// Crea el objeto de la gráfica (Gráfica de Barras vertical).
         /// </summary>
         /// <param name="pGrafica">Configuración.</param>
         /// <param name="pFiltroBase">Filtros base.</param>
@@ -141,23 +157,10 @@ namespace Hercules.ED.GraphicEngine.Models
             // Asignación de Options.
             Options options = new Options();
 
-            // Orientación            
-            if (!pGrafica.config.orientacionVertical)
-            {
-                options.indexAxis = "y";
-            }
-            else
-            {
-                options.indexAxis = "x";
-            }
+            // Orientación
+            options.indexAxis = "x";
 
             options.scales = new Dictionary<string, Eje>();
-
-            // Ejes X
-            foreach (EjeXConf item in pGrafica.config.xAxisPrint)
-            {
-                options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
-            }
 
             // Ejes Y
             foreach (EjeYConf item in pGrafica.config.yAxisPrint)
@@ -381,6 +384,274 @@ namespace Hercules.ED.GraphicEngine.Models
                 // Eje Y.
                 dataset.yAxisID = item.Key.yAxisID;
 
+                // Orden
+                dataset.order = item.Key.orden;
+
+                data.labels = listaLabels;
+                data.type = item.Key.tipoDimension;
+                dimensionesDataset[item.Key] = dataset;
+            }
+
+            foreach (Dimension dim in pGrafica.config.dimensiones)
+            {
+                grafica.data.datasets.Add(dimensionesDataset[dim]);
+            }
+
+            return grafica;
+        }
+        /// <summary>
+        /// Crea el objeto de la gráfica (Gráfica de Barras horizontal).
+        /// </summary>
+        /// <param name="pGrafica">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
+        public static GraficaBarrasY CrearGraficaBarrasY(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        {
+            // Objeto a devolver.
+            GraficaBarrasY grafica = new GraficaBarrasY();
+            grafica.type = "bar"; // Por defecto, de tipo bar.
+
+            // Asignación de Data.
+            DataBarrasY data = new DataBarrasY();
+            data.datasets = new ConcurrentBag<DatasetBarrasY>();
+            grafica.data = data;
+
+            // Asignación de Options.
+            Options options = new Options();
+
+            // Orientación            
+            if (!pGrafica.config.orientacionVertical)
+            {
+                options.indexAxis = "y";
+            }
+            else
+            {
+                options.indexAxis = "x";
+            }
+
+            options.scales = new Dictionary<string, Eje>();
+
+            // Ejes X
+            foreach (EjeXConf item in pGrafica.config.xAxisPrint)
+            {
+                options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
+            }
+
+            // Animación
+            options.animation = new Animation();
+            options.animation.duration = 2000;
+
+            // Título
+            options.plugins = new Plugin();
+            options.plugins.title = new Title();
+            options.plugins.title.display = true;
+            options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
+
+            grafica.options = options;
+
+            ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
+            Dictionary<Dimension, DatasetBarrasY> dimensionesDataset = new Dictionary<Dimension, DatasetBarrasY>();
+
+            Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
+            {
+                // Determina si en el filtro contiene '=' para tratarlo de manera especial.
+                bool filtroEspecial = false;
+                if (!string.IsNullOrEmpty(itemGrafica.filtro) && !itemGrafica.filtro.Contains("="))
+                {
+                    filtroEspecial = true;
+                }
+
+                // Orden.
+                string orden = "ASC";
+                if (pGrafica.config.orderDesc == true)
+                {
+                    orden = "DESC";
+                }
+
+                // Filtro de página.
+                List<string> filtros = new List<string>();
+
+                List<Tuple<string, string, float>> listaTuplas = new List<Tuple<string, string, float>>();
+                SparqlObject resultadoQuery = null;
+                StringBuilder select = new StringBuilder(), where = new StringBuilder();
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
+                if (!string.IsNullOrEmpty(pFiltroFacetas))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                }
+                if (filtroEspecial)
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }, "aux"));
+                }
+                else if (!string.IsNullOrEmpty(itemGrafica.filtro))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
+                }
+                if (string.IsNullOrEmpty(itemGrafica.calculo))
+                {
+                    // Consulta sparql.                    
+                    select = new StringBuilder();
+                    where = new StringBuilder();
+
+                    select.Append(mPrefijos);
+                    if (filtroEspecial)
+                    {
+                        select.Append($@"SELECT ?ejeX ?aux COUNT(DISTINCT ?s) AS ?numero ");
+                    }
+                    else
+                    {
+                        select.Append($@"SELECT ?ejeX COUNT(DISTINCT ?s) AS ?numero ");
+                    }
+                    where.Append("WHERE { ");
+                    foreach (string item in filtros)
+                    {
+                        where.Append(item);
+                    }
+                    if (filtroEspecial)
+                    {
+                        where.Append($@"FILTER(LANG(?aux) = 'es' OR LANG(?aux) = '' OR !isLiteral(?aux))");
+                    }
+                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                }
+                else
+                {
+                    // Cálculo (SUM|AVG|MIN|MAX)
+                    string calculo = itemGrafica.calculo;
+
+                    // Consulta sparql.
+                    select = new StringBuilder();
+                    where = new StringBuilder();
+
+                    select.Append(mPrefijos);
+                    select.Append($@"SELECT ?ejeX {calculo}(?aux) AS ?numero ");
+                    where.Append("WHERE { ");
+                    foreach (string item in filtros)
+                    {
+                        where.Append(item);
+                    }
+                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                }
+
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        if (filtroEspecial && string.IsNullOrEmpty(itemGrafica.calculo))
+                        {
+                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, fila["aux"].value, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                        }
+                        else
+                        {
+                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, string.Empty, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                        }
+                    }
+                }
+                resultadosDimension[itemGrafica] = listaTuplas;
+            });
+
+            #region --- Cálculo de los valores del Eje X
+            HashSet<string> valuesEje = new HashSet<string>();
+            HashSet<string> tipos = new HashSet<string>();
+
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            {
+                if (item.Value != null && item.Value.Any())
+                {
+                    foreach (Tuple<string, string, float> item2 in item.Value)
+                    {
+                        valuesEje.Add(item2.Item1);
+                        tipos.Add(item2.Item2);
+                    }
+                }
+            }
+
+            bool isInt = valuesEje.Where(x => !int.TryParse(x, out int aux)).Count() == 0;
+
+            if (pGrafica.config.rellenarEjeX && isInt && valuesEje.Count > 0)
+            {
+                int numMin = valuesEje.Min(x => int.Parse(x));
+                int numMax = valuesEje.Max(x => int.Parse(x));
+                for (int i = numMin; i <= numMax; i++)
+                {
+                    valuesEje.Add(i.ToString());
+                }
+            }
+
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            {
+                if (item.Value != null && item.Value.Any())
+                {
+                    foreach (string valor in valuesEje)
+                    {
+                        Tuple<string, string, float> tuplaAux = item.Value.FirstOrDefault(x => x.Item1.Equals(valor));
+                        if (tuplaAux == null)
+                        {
+                            item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
+                        }
+                    }
+                }
+
+                if (isInt)
+                {
+                    resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
+                }
+                else
+                {
+                    resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                }
+            }
+
+            if (isInt)
+            {
+                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
+            }
+            else
+            {
+                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
+            }
+            #endregion
+
+            // Obtención del objeto de la gráfica.
+            List<string> listaLabels = valuesEje.ToList();
+
+            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            {
+                DatasetBarrasY dataset = new DatasetBarrasY();
+                List<float> listaData = new List<float>();
+                foreach (Tuple<string, string, float> itemAux in item.Value)
+                {
+                    listaData.Add(itemAux.Item3);
+                }
+                dataset.data = listaData;
+
+                // Nombre del dato en leyenda.
+                dataset.label = GetTextLang(pLang, item.Key.nombre);
+
+                // Color.
+                dataset.backgroundColor = ObtenerColores(dataset.data.Count(), item.Key.color);
+                dataset.type = item.Key.tipoDimension;
+
+                // Anchura.
+                dataset.barPercentage = 1;
+                if (item.Key.anchura != 0)
+                {
+                    dataset.barPercentage = item.Key.anchura;
+                }
+
+                // Stack.
+                if (!string.IsNullOrEmpty(item.Key.stack))
+                {
+                    dataset.stack = item.Key.stack;
+                }
+                else
+                {
+                    dataset.stack = Guid.NewGuid().ToString();
+                }
+
                 // Eje X.
                 dataset.xAxisID = item.Key.xAxisID;
 
@@ -400,6 +671,14 @@ namespace Hercules.ED.GraphicEngine.Models
             return grafica;
         }
 
+        /// <summary>
+        /// Crea el objeto de la gráfica (Gráfica circular).
+        /// </summary>
+        /// <param name="pGrafica">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
         public static GraficaCircular CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             // Objeto a devolver.
@@ -428,7 +707,6 @@ namespace Hercules.ED.GraphicEngine.Models
 
             ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
             Dictionary<Dimension, DatasetCircular> dimensionesDataset = new Dictionary<Dimension, DatasetCircular>();
-
             Dictionary<string, float> dicNombreData = new Dictionary<string, float>();
 
             Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = 1 }, itemGrafica =>
@@ -465,40 +743,230 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-                        dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
+                        try
+                        {
+                            dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception("No se ha configurado el apartado de dimensiones.");
+                        }
                     }
                     resultadosDimension[itemGrafica] = dicNombreData;
                 }
             });
 
+            // Lista de los ordenes de las revistas.
             List<string> listaNombres = new List<string>();
+
             List<float> listaData = new List<float>();
-            foreach (KeyValuePair<string,float> nombreData in dicNombreData)
+            foreach (KeyValuePair<string, float> nombreData in dicNombreData)
             {
                 listaNombres.Add(nombreData.Key);
                 listaData.Add(nombreData.Value);
             }
-            DatasetCircular dataset = new DatasetCircular();
 
+            DatasetCircular dataset = new DatasetCircular();
             dataset.data = listaData;
 
             List<string> listaColores = new List<string>();
 
-            foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+            foreach (string orden in listaNombres)
             {
-                // Nombre del dato en leyenda.
-                dataset.label = GetTextLang(pLang, item.Key.nombre);
+                foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+                {
+                    string nombreRevista = item.Key.filtro.Split("=")[1].Split("@")[0].Substring(1, item.Key.filtro.Split("=")[1].Split("@")[0].Length - 2);
+                    if (nombreRevista == orden)
+                    {
+                        // Nombre del dato en leyenda.
+                        dataset.label = GetTextLang(pLang, item.Key.nombre);
 
-                // Color.
-                listaColores.Add(item.Key.color);
-
-                data.labels = listaNombres;
+                        // Color. 
+                        listaColores.Add(item.Key.color);
+                    }
+                }
             }
-
+            
+            data.labels = listaNombres;
             dataset.backgroundColor = listaColores;
-
+            // Le doy un hoverOffset por defecto
+            dataset.hoverOffset = 4;
             grafica.data.datasets.Add(dataset);
 
+            return grafica;
+        }
+
+        public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        {
+            GraficaNodos grafica = new GraficaNodos();
+
+            //Nodos            
+            Dictionary<string, string> dicNodos = new Dictionary<string, string>();
+
+            //Relaciones
+            Dictionary<string, List<DataQueryRelaciones>> dicRelaciones = new Dictionary<string, List<DataQueryRelaciones>>();
+
+            //Respuesta
+            List<DataItemRelacion> itemsRelacion = new List<DataItemRelacion>();
+
+            Dictionary<string, List<string>> dicResultadosAreaRelacionAreas = new Dictionary<string, List<string>>();
+            Dictionary<string, int> scoreNodes = new Dictionary<string, int>();
+
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            List<string> filtros = new List<string>();
+
+            select.Append(mPrefijos);
+            select.Append("SELECT ?documento group_concat(?categoria;separator=\",\") AS ?idCategorias ");
+            where.Append("WHERE { ");
+            where.Append("?documento a 'document'. ");
+            where.Append("?documento roh:hasKnowledgeArea ?area. ");
+            where.Append("?area roh:categoryNode ?categoria. ");
+            where.Append("MINUS { ?categoria skos:narrower ?hijos } ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    string idCategorias = fila["idCategorias"].value;
+                    HashSet<string> categorias = new HashSet<string>(idCategorias.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
+
+                    foreach (string categoria in categorias)
+                    {
+                        if (!scoreNodes.ContainsKey(categoria))
+                        {
+                            scoreNodes.Add(categoria, 0);
+                        }
+
+                        scoreNodes[categoria]++;
+
+                        if (!dicResultadosAreaRelacionAreas.ContainsKey(categoria))
+                        {
+                            dicResultadosAreaRelacionAreas.Add(categoria, new List<string>());
+                        }
+
+                        dicResultadosAreaRelacionAreas[categoria].AddRange(categorias.Except(new List<string>() { categoria }));
+                    }
+                }
+            }
+
+            ProcesarRelaciones("Category", dicResultadosAreaRelacionAreas, ref dicRelaciones);
+
+            int maximasRelaciones = 0;
+            foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+            {
+                foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                {
+                    foreach (Datos relaciones2 in relaciones.idRelacionados)
+                    {
+                        maximasRelaciones = Math.Max(maximasRelaciones, relaciones2.numVeces);
+                    }
+                }
+            }
+
+            // Creamos los nodos y las relaciones en función de pNumAreas.
+            // TODO: pNumAreas
+            int pNumAreas = 10;
+
+            Dictionary<string, int> numRelaciones = new Dictionary<string, int>();
+            foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+            {
+                if (!numRelaciones.ContainsKey(sujeto.Key))
+                {
+                    numRelaciones.Add(sujeto.Key, 0);
+                }
+                foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                {
+                    foreach (Datos relaciones2 in relaciones.idRelacionados)
+                    {
+                        if (!numRelaciones.ContainsKey(relaciones2.idRelacionado))
+                        {
+                            numRelaciones.Add(relaciones2.idRelacionado, 0);
+                        }
+                        numRelaciones[sujeto.Key] += relaciones2.numVeces;
+                        numRelaciones[relaciones2.idRelacionado] += relaciones2.numVeces;
+                    }
+                }
+            }
+
+            List<string> itemsSeleccionados = numRelaciones.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.Distinct().ToList();
+            if (itemsSeleccionados.Count() > pNumAreas)
+            {
+                itemsSeleccionados = itemsSeleccionados.GetRange(0, pNumAreas);
+            }
+
+            if (itemsSeleccionados.Count > 0)
+            {
+                //Recuperamos los nombres de caregorías y creamos los nodos
+                select = new StringBuilder();
+                where = new StringBuilder();
+
+                select.Append(mPrefijos);
+                select.Append("SELECT ?categoria ?nombreCategoria ");
+                where.Append("WHERE { ");
+                where.Append("?categoria skos:prefLabel ?nombreCategoria. ");
+                where.Append($@"FILTER(?categoria IN (<{string.Join(">,<", itemsSeleccionados)}>)) ");
+                where.Append("} ");
+
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        if (!dicNodos.ContainsKey(fila["categoria"].value))
+                        {
+                            dicNodos.Add(fila["categoria"].value, fila["nombreCategoria"].value);
+                        }
+                    }
+                }
+
+                // Nodos. 
+                if (dicNodos != null && dicNodos.Count > 0)
+                {
+                    foreach (KeyValuePair<string, string> nodo in dicNodos)
+                    {
+                        string clave = nodo.Key;
+                        Data data = new Data(clave, nodo.Value, null, null, null, "nodes", Data.Type.icon_area);
+                        if (scoreNodes.ContainsKey(clave))
+                        {
+                            data.score = scoreNodes[clave];
+                            data.name = data.name + " (" + data.score + ")";
+                        }
+                        DataItemRelacion dataColabo = new DataItemRelacion(data, true, true);
+                        itemsRelacion.Add(dataColabo);
+                    }
+                }
+
+                // Relaciones.
+                if (dicRelaciones != null && dicRelaciones.Count > 0)
+                {
+                    foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+                    {
+                        if (itemsSeleccionados.Contains(sujeto.Key))
+                        {
+                            foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                            {
+                                foreach (Datos relaciones2 in relaciones.idRelacionados)
+                                {
+                                    if (itemsSeleccionados.Contains(relaciones2.idRelacionado))
+                                    {
+                                        string id = $@"{sujeto.Key}~{relaciones.nombreRelacion}~{relaciones2.idRelacionado}~{relaciones2.numVeces}";
+                                        Data data = new Data(id, relaciones.nombreRelacion, sujeto.Key, relaciones2.idRelacionado, CalcularGrosor(maximasRelaciones, relaciones2.numVeces), "edges", Data.Type.relation_document);
+                                        DataItemRelacion dataColabo = new DataItemRelacion(data, null, null);
+                                        itemsRelacion.Add(dataColabo);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            grafica.listaItems = itemsRelacion;
             return grafica;
         }
         #endregion
@@ -719,7 +1187,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         filtro.Append($@"{parteFiltro.Split("=")[0]} ");
 
                         if (pNombreVar != null)
-                        {                            
+                        {
                             filtro.Append($@"?{pNombreVar}. ");
                         }
                         else
@@ -770,6 +1238,114 @@ namespace Hercules.ED.GraphicEngine.Models
             else
             {
                 return "";
+            }
+        }
+
+        public static void ProcesarRelaciones(string pNombreRelacion, Dictionary<string, List<string>> pItems, ref Dictionary<string, List<DataQueryRelaciones>> pDicRelaciones)
+        {
+            foreach (string itemA in pItems.Keys)
+            {
+                if (!pDicRelaciones.ContainsKey(itemA))
+                {
+                    pDicRelaciones.Add(itemA, new List<DataQueryRelaciones>());
+                }
+                DataQueryRelaciones dataQueryRelaciones = (pDicRelaciones[itemA].FirstOrDefault(x => x.nombreRelacion == pNombreRelacion));
+                if (dataQueryRelaciones == null)
+                {
+                    dataQueryRelaciones = new DataQueryRelaciones()
+                    {
+                        nombreRelacion = pNombreRelacion,
+                        idRelacionados = new List<Datos>()
+                    };
+                    pDicRelaciones[itemA].Add(dataQueryRelaciones);
+                }
+                foreach (string itemB in pItems.Keys)
+                {
+                    if (itemA != itemB)
+                    {
+                        if (string.Compare(itemA, itemB, StringComparison.OrdinalIgnoreCase) > 0)
+                        {
+                            int num = pItems[itemA].Intersect(pItems[itemB]).Count();
+                            if (num > 0)
+                            {
+                                dataQueryRelaciones.idRelacionados.Add(new Datos()
+                                {
+                                    idRelacionado = itemB,
+                                    numVeces = num
+                                });
+                            }
+                        }
+                    }
+                }
+                if (dataQueryRelaciones.idRelacionados.Count == 0)
+                {
+                    pDicRelaciones[itemA].Remove(dataQueryRelaciones);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Permite calcular el valor del ancho de la línea según el número de colaboraciones que tenga el nodo.
+        /// </summary>
+        /// <param name="pMax">Valor máximo.</param>
+        /// <param name="pColabo">Número de colaboraciones.</param>
+        /// <returns>Ancho de la línea en formate double.</returns>
+        public static double CalcularGrosor(int pMax, int pColabo)
+        {
+            return Math.Round(((double)pColabo / (double)pMax) * 10, 2);
+        }
+        #endregion
+
+        #region --- Excepciones
+
+        public static void ControlarExcepcionesBarrasX(Grafica pGrafica)
+        {
+            if (pGrafica.config == null)
+            {
+                throw new Exception("La gráfica no tiene configuración");
+            }
+            if (string.IsNullOrEmpty(pGrafica.config.ejeX))
+            {
+                throw new Exception("No está configurada la propiedad del agrupación del eje x.");
+            }
+            if (pGrafica.config.yAxisPrint == null)
+            {
+                throw new Exception("No está configurada la propiedad yAxisPrint");
+            }
+            if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
+            {
+                throw new Exception("No se ha configurado dimensiones.");
+            }
+        }
+        public static void ControlarExcepcionesBarrasY(Grafica pGrafica)
+        {
+            if (pGrafica.config == null)
+            {
+                throw new Exception("La gráfica no tiene configuración");
+            }
+            if (string.IsNullOrEmpty(pGrafica.config.ejeX))
+            {
+                throw new Exception("No está configurada la propiedad del agrupación del eje x.");
+            }
+            if (pGrafica.config.xAxisPrint == null)
+            {
+                throw new Exception("No está configurada la propiedad xAxisPrint");
+            }
+            if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
+            {
+                throw new Exception("No se ha configurado dimensiones.");
+            }
+        }
+
+        public static void ControlarExcepcionesCircular(Grafica pGrafica)
+        {
+            if (pGrafica.config == null)
+            {
+                throw new Exception("La gráfica no tiene configuración");
+            }
+            if (pGrafica.config.dimensiones == null || pGrafica.config.dimensiones.Count() == 0)
+            {
+                throw new Exception("No se ha configurado dimensiones.");
             }
         }
         #endregion

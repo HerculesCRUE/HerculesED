@@ -1,13 +1,12 @@
-﻿using Hercules.ED.ImportadorWebCV.Controllers;
+﻿using Gnoss.ApiWrapper.Model;
+using Hercules.ED.ImportadorWebCV.Controllers;
 using ImportadorWebCV;
 using ImportadorWebCV.Exporta;
-using ImportadorWebCV.Sincro;
-using ImportadorWebCV.Sincro.Secciones;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -39,9 +38,14 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="pCVID">ID curriculum</param>
         /// <returns></returns>
         [HttpPost("Exportar")]
-        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader][Optional] List<string> secciones)
+        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader] string lang, [FromHeader][Optional] List<string> secciones)
         {
-            ExportaDatos exporta = new ExportaDatos(_cvn, pCVID);
+            if (!Utils.UtilityExportar.EsMultiidioma(lang))
+            {
+                throw new Exception("El lenguaje de exportación es incorrecto");
+            }
+
+            ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
             Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
 
             exporta.ExportaDatosIdentificacion(entity, secciones);
@@ -56,9 +60,9 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         }
 
         [HttpPost("Preexportar")]
-        public ActionResult Exportar([FromHeader][Required] string pCVID)
+        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader] string lang)
         {
-            ExportaDatos exporta = new ExportaDatos(_cvn, pCVID);
+            ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
 
 
             return Ok();
