@@ -3,6 +3,7 @@
     public enum EnumGraficas
     {
         Barras,
-        Circular
+        Circular,
+        Nodos
     }
 }

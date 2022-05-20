@@ -5,8 +5,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
 {
     public class GraficaBase
     {
-        public string type { get; set; }
-        public Options options { get; set; }
+        
     }
 
     public class Options
