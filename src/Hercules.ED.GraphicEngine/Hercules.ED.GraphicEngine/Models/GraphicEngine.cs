@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Web;
+using System.Drawing;
 
 namespace Hercules.ED.GraphicEngine.Models
 {
@@ -735,8 +736,9 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     where.Append(item);
                 }
+                string limite = itemGrafica.limite == 0 ? "" : "LIMIT " + itemGrafica.limite;
                 where.Append($@"FILTER(LANG(?tipo) = '{pLang}' OR LANG(?tipo) = '' OR !isLiteral(?tipo)) ");
-                where.Append($@"}} ORDER BY DESC (?numero) ");
+                where.Append($@"}} ORDER BY DESC (?numero) {limite}");
 
                 resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -775,18 +777,25 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
                 {
-                    string nombreRevista = item.Key.filtro.Split("=")[1].Split("@")[0].Substring(1, item.Key.filtro.Split("=")[1].Split("@")[0].Length - 2);
-                    if (nombreRevista == orden)
+                    if (item.Key.colorMaximo != null)
                     {
-                        // Nombre del dato en leyenda.
-                        dataset.label = GetTextLang(pLang, item.Key.nombre);
+                        listaColores = ObtenerDegradadoColores(item.Key.colorMaximo, item.Key.color, item.Value.Count());
+                    }
+                    else
+                    {
+                        string nombreRevista = item.Key.filtro.Contains("=") ? item.Key.filtro.Split("=")[1].Split("@")[0].Substring(1, item.Key.filtro.Split("=")[1].Split("@")[0].Length - 2) : "";
+                        if (nombreRevista == orden)
+                        {
+                            // Nombre del dato en leyenda.
+                            dataset.label = GetTextLang(pLang, item.Key.nombre);
 
-                        // Color. 
-                        listaColores.Add(item.Key.color);
+                            // Color. 
+                            listaColores.Add(item.Key.color);
+                        }
                     }
                 }
             }
-            
+
             data.labels = listaNombres;
             dataset.backgroundColor = listaColores;
             // Le doy un hoverOffset por defecto
@@ -794,6 +803,32 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.data.datasets.Add(dataset);
 
             return grafica;
+        }
+        public static List<string> ObtenerDegradadoColores(string colorMax, string colorMin, int numColores)
+        {
+            List<string> listaColores = new List<string>();
+            if (colorMax.Length < 7 || colorMin.Length < 7)
+            {
+                colorMax = "#FFFFFF";
+                colorMin = "#000000";
+            }
+            int rMax = Convert.ToInt32(colorMax.Substring(1, 2), 16);
+            int gMax = Convert.ToInt32(colorMax.Substring(3, 2), 16);
+            int bMax = Convert.ToInt32(colorMax.Substring(5, 2), 16);
+            int rMin = Convert.ToInt32(colorMin.Substring(1, 2), 16);
+            int gMin = Convert.ToInt32(colorMin.Substring(3, 2), 16);
+            int bMin = Convert.ToInt32(colorMin.Substring(5, 2), 16);
+
+            for (int i = 0; i < numColores; i++)
+            {
+                int rAverage = rMin + (int)((rMax - rMin) * i / numColores);
+                int gAverage = gMin + (int)((gMax - gMin) * i / numColores);
+                int bAverage = bMin + (int)((bMax - bMin) * i / numColores);
+                string colorHex = '#' + rAverage.ToString("X2") + gAverage.ToString("X2") + bAverage.ToString("X2");
+                listaColores.Add(colorHex);
+            }
+
+            return listaColores;
         }
 
         public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
