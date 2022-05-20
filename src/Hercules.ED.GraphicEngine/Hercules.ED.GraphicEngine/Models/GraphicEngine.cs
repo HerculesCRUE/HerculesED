@@ -58,10 +58,13 @@ namespace Hercules.ED.GraphicEngine.Models
                     id = itemGrafica.identificador,
                     anchura = itemGrafica.anchura12
                 };
+
+                // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
                 if (configPagina.anchura > 12 || configPagina.anchura < 1)
                 {
                     configPagina.anchura = 6;
                 }
+
                 pagina.listaConfigGraficas.Add(configPagina);
             }
             pagina.listaIdsFacetas = new List<string>();
@@ -117,6 +120,8 @@ namespace Hercules.ED.GraphicEngine.Models
                     // TODO: Controlar excepciones en la configuración.
                     ControlarExcepcionesCircular(pGrafica);
                     return CrearGraficaCircular(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                case EnumGraficas.Nodos:
+                    return CrearGraficaNodos(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 default:
                     return null;
             }
@@ -470,12 +475,13 @@ namespace Hercules.ED.GraphicEngine.Models
                         try
                         {
                             dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
-                        } catch (Exception ex)
+                        }
+                        catch (Exception ex)
                         {
                             throw new Exception("No se ha configurado bien el apartado de dimensiones.");
                         }
                     }
-                    resultadosDimension[itemGrafica] = dicNombreData;                    
+                    resultadosDimension[itemGrafica] = dicNombreData;
                 }
             });
 
@@ -483,7 +489,7 @@ namespace Hercules.ED.GraphicEngine.Models
             List<string> listaNombres = new List<string>();
 
             List<float> listaData = new List<float>();
-            foreach (KeyValuePair<string,float> nombreData in dicNombreData)
+            foreach (KeyValuePair<string, float> nombreData in dicNombreData)
             {
                 listaNombres.Add(nombreData.Key);
                 listaData.Add(nombreData.Value);
@@ -514,6 +520,180 @@ namespace Hercules.ED.GraphicEngine.Models
             dataset.backgroundColor = listaColores;
             grafica.data.datasets.Add(dataset);
 
+            return grafica;
+        }
+
+        public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        {
+            GraficaNodos grafica = new GraficaNodos();
+
+            //Nodos            
+            Dictionary<string, string> dicNodos = new Dictionary<string, string>();
+
+            //Relaciones
+            Dictionary<string, List<DataQueryRelaciones>> dicRelaciones = new Dictionary<string, List<DataQueryRelaciones>>();
+
+            //Respuesta
+            List<DataItemRelacion> itemsRelacion = new List<DataItemRelacion>();
+
+            Dictionary<string, List<string>> dicResultadosAreaRelacionAreas = new Dictionary<string, List<string>>();
+            Dictionary<string, int> scoreNodes = new Dictionary<string, int>();
+
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            List<string> filtros = new List<string>();
+
+            select.Append(mPrefijos);
+            select.Append("SELECT ?documento group_concat(?categoria;separator=\",\") AS ?idCategorias ");
+            where.Append("WHERE { ");
+            where.Append("?documento a 'document'. ");
+            where.Append("?documento roh:hasKnowledgeArea ?area. ");
+            where.Append("?area roh:categoryNode ?categoria. ");
+            where.Append("MINUS { ?categoria skos:narrower ?hijos } ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    string idCategorias = fila["idCategorias"].value;
+                    HashSet<string> categorias = new HashSet<string>(idCategorias.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
+
+                    foreach (string categoria in categorias)
+                    {
+                        if (!scoreNodes.ContainsKey(categoria))
+                        {
+                            scoreNodes.Add(categoria, 0);
+                        }
+
+                        scoreNodes[categoria]++;
+
+                        if (!dicResultadosAreaRelacionAreas.ContainsKey(categoria))
+                        {
+                            dicResultadosAreaRelacionAreas.Add(categoria, new List<string>());
+                        }
+
+                        dicResultadosAreaRelacionAreas[categoria].AddRange(categorias.Except(new List<string>() { categoria }));
+                    }
+                }
+            }
+
+            ProcesarRelaciones("Category", dicResultadosAreaRelacionAreas, ref dicRelaciones);
+
+            int maximasRelaciones = 0;
+            foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+            {
+                foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                {
+                    foreach (Datos relaciones2 in relaciones.idRelacionados)
+                    {
+                        maximasRelaciones = Math.Max(maximasRelaciones, relaciones2.numVeces);
+                    }
+                }
+            }
+
+            // Creamos los nodos y las relaciones en función de pNumAreas.
+            // TODO: pNumAreas
+            int pNumAreas = 10;
+
+            Dictionary<string, int> numRelaciones = new Dictionary<string, int>();
+            foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+            {
+                if (!numRelaciones.ContainsKey(sujeto.Key))
+                {
+                    numRelaciones.Add(sujeto.Key, 0);
+                }
+                foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                {
+                    foreach (Datos relaciones2 in relaciones.idRelacionados)
+                    {
+                        if (!numRelaciones.ContainsKey(relaciones2.idRelacionado))
+                        {
+                            numRelaciones.Add(relaciones2.idRelacionado, 0);
+                        }
+                        numRelaciones[sujeto.Key] += relaciones2.numVeces;
+                        numRelaciones[relaciones2.idRelacionado] += relaciones2.numVeces;
+                    }
+                }
+            }
+
+            List<string> itemsSeleccionados = numRelaciones.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.Distinct().ToList();
+            if (itemsSeleccionados.Count() > pNumAreas)
+            {
+                itemsSeleccionados = itemsSeleccionados.GetRange(0, pNumAreas);
+            }
+
+            if (itemsSeleccionados.Count > 0)
+            {
+                //Recuperamos los nombres de caregorías y creamos los nodos
+                select = new StringBuilder();
+                where = new StringBuilder();
+
+                select.Append(mPrefijos);
+                select.Append("SELECT ?categoria ?nombreCategoria ");
+                where.Append("WHERE { ");
+                where.Append("?categoria skos:prefLabel ?nombreCategoria. ");
+                where.Append($@"FILTER(?categoria IN (<{string.Join(">,<", itemsSeleccionados)}>)) ");
+                where.Append("} ");
+
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        if (!dicNodos.ContainsKey(fila["categoria"].value))
+                        {
+                            dicNodos.Add(fila["categoria"].value, fila["nombreCategoria"].value);
+                        }
+                    }
+                }
+
+                // Nodos. 
+                if (dicNodos != null && dicNodos.Count > 0)
+                {
+                    foreach (KeyValuePair<string, string> nodo in dicNodos)
+                    {
+                        string clave = nodo.Key;
+                        Data data = new Data(clave, nodo.Value, null, null, null, "nodes", Data.Type.icon_area);
+                        if (scoreNodes.ContainsKey(clave))
+                        {
+                            data.score = scoreNodes[clave];
+                            data.name = data.name + " (" + data.score + ")";
+                        }
+                        DataItemRelacion dataColabo = new DataItemRelacion(data, true, true);
+                        itemsRelacion.Add(dataColabo);
+                    }
+                }
+
+                // Relaciones.
+                if (dicRelaciones != null && dicRelaciones.Count > 0)
+                {
+                    foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+                    {
+                        if (itemsSeleccionados.Contains(sujeto.Key))
+                        {
+                            foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                            {
+                                foreach (Datos relaciones2 in relaciones.idRelacionados)
+                                {
+                                    if (itemsSeleccionados.Contains(relaciones2.idRelacionado))
+                                    {
+                                        string id = $@"{sujeto.Key}~{relaciones.nombreRelacion}~{relaciones2.idRelacionado}~{relaciones2.numVeces}";
+                                        Data data = new Data(id, relaciones.nombreRelacion, sujeto.Key, relaciones2.idRelacionado, CalcularGrosor(maximasRelaciones, relaciones2.numVeces), "edges", Data.Type.relation_document);
+                                        DataItemRelacion dataColabo = new DataItemRelacion(data, null, null);
+                                        itemsRelacion.Add(dataColabo);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            grafica.listaItems = itemsRelacion;
             return grafica;
         }
         #endregion
@@ -734,7 +914,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         filtro.Append($@"{parteFiltro.Split("=")[0]} ");
 
                         if (pNombreVar != null)
-                        {                            
+                        {
                             filtro.Append($@"?{pNombreVar}. ");
                         }
                         else
@@ -786,6 +966,60 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 return "";
             }
+        }
+
+        public static void ProcesarRelaciones(string pNombreRelacion, Dictionary<string, List<string>> pItems, ref Dictionary<string, List<DataQueryRelaciones>> pDicRelaciones)
+        {
+            foreach (string itemA in pItems.Keys)
+            {
+                if (!pDicRelaciones.ContainsKey(itemA))
+                {
+                    pDicRelaciones.Add(itemA, new List<DataQueryRelaciones>());
+                }
+                DataQueryRelaciones dataQueryRelaciones = (pDicRelaciones[itemA].FirstOrDefault(x => x.nombreRelacion == pNombreRelacion));
+                if (dataQueryRelaciones == null)
+                {
+                    dataQueryRelaciones = new DataQueryRelaciones()
+                    {
+                        nombreRelacion = pNombreRelacion,
+                        idRelacionados = new List<Datos>()
+                    };
+                    pDicRelaciones[itemA].Add(dataQueryRelaciones);
+                }
+                foreach (string itemB in pItems.Keys)
+                {
+                    if (itemA != itemB)
+                    {
+                        if (string.Compare(itemA, itemB, StringComparison.OrdinalIgnoreCase) > 0)
+                        {
+                            int num = pItems[itemA].Intersect(pItems[itemB]).Count();
+                            if (num > 0)
+                            {
+                                dataQueryRelaciones.idRelacionados.Add(new Datos()
+                                {
+                                    idRelacionado = itemB,
+                                    numVeces = num
+                                });
+                            }
+                        }
+                    }
+                }
+                if (dataQueryRelaciones.idRelacionados.Count == 0)
+                {
+                    pDicRelaciones[itemA].Remove(dataQueryRelaciones);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Permite calcular el valor del ancho de la línea según el número de colaboraciones que tenga el nodo.
+        /// </summary>
+        /// <param name="pMax">Valor máximo.</param>
+        /// <param name="pColabo">Número de colaboraciones.</param>
+        /// <returns>Ancho de la línea en formate double.</returns>
+        public static double CalcularGrosor(int pMax, int pColabo)
+        {
+            return Math.Round(((double)pColabo / (double)pMax) * 10, 2);
         }
         #endregion
 
