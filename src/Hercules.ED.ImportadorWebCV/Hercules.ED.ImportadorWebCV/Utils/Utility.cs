@@ -1280,7 +1280,11 @@ namespace Utils
         /// <returns></returns>
         public static string GetFirmaAutor(this CvnItemBeanCvnAuthorBean item)
         {
-            if (item == null) { return null; }
+            if (item == null) 
+            { 
+                return null;
+            }
+
             if (!string.IsNullOrWhiteSpace(item.Signature))
             {
                 return item.Signature;
@@ -1295,7 +1299,10 @@ namespace Utils
         /// <returns></returns>
         public static string GetOrdenAutor(this CvnItemBeanCvnAuthorBean item)
         {
-            if (item == null) { return null; }
+            if (item == null) 
+            {
+                return null;
+            }
             return item.SignatureOrder.ToString();
         }
 
