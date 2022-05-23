@@ -53,7 +53,7 @@ namespace EditorCV.Models.Utils
         };
 
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
-        private static List<Tab> mTabTemplates;
+        private static ConcurrentBag<Tab> mTabTemplates;
 
         /// <summary>
         /// Obtiene la persona propietaria de un CV
@@ -476,18 +476,19 @@ namespace EditorCV.Models.Utils
         /// <summary>
         /// Lista de TabTemplates configurados
         /// </summary>
-        public static List<Tab> TabTemplates
+        public static ConcurrentBag<Tab> TabTemplates
         {
             get
             {
                 if (mTabTemplates == null || mTabTemplates.Count != System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates").Count())
                 {
-                    mTabTemplates = new List<Tab>();
-                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates"))
+                    ConcurrentBag<Tab> aux = new ConcurrentBag<Tab>();                    
+                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates").OrderByDescending(x=>x))
                     {
                         Tab tab = JsonConvert.DeserializeObject<Tab>(System.IO.File.ReadAllText(file));
-                        mTabTemplates.Add(tab);
+                        aux.Add(tab);
                     }
+                    mTabTemplates = aux;
                 }
                 return mTabTemplates;
             }
