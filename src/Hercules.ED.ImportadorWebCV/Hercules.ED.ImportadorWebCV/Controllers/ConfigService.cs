@@ -12,6 +12,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         // URLs
         private string Usuario_PDF { get; set; }
         private string PSS_PDF { get; set; }
+        private string Version { get; set; }
 
         //Configuración Rabbit para el desnormalizador
         private string RabbitConnectionString { get; set; }
@@ -23,6 +24,27 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         public ConfigService()
         {
             configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
+        }
+
+        public string GetVersion()
+        {
+            if (string.IsNullOrEmpty(Version))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("Version"))
+                {
+                    connectionString = environmentVariables["Version"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["Version"];
+                }
+
+                Version = connectionString;
+            }
+
+            return Version;
         }
 
         /// <summary>
