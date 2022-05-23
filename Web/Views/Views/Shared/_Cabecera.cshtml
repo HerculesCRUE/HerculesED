@@ -83,41 +83,16 @@
                                         <li class="liInicio @if (Comunidad.Url == (Html.GetBaseUrl() + Html.GetUrlPagina()) ){ Html.Raw("active"); }">
                                             <a href="@Comunidad.Url">@Html.Translate("INICIO")</a>
                                         </li>
-                                        <li class="liCluster">
-                                            <a href="@Comunidad.Url/nuevo-cluster">@Html.Translate("CREAR_CLUSTER")</a>
-                                        </li>
                                         <li class="liIndicadores">
                                             <a href="javascript: void(0);">@Html.Translate("INDICADORES")</a>
                                         </li>
-                                        <li class="iniciar-sesion">
-                                            <a href="@Html.GetUrlLogout()" class="texto-blanco">@Html.GetText("MENU", "SALIR")</a>
-                                        </li>
-                                        <li class="liNotificaciones nuevos">
-                                            <a href="@perfil.UrlViewProfile">Alertas</a>
+										<li id ="menuLateralUsuarioTrigger" class="liMenuUsuario">
+                                            <a href="javascript: void(0);"><span class="material-icons">person</span></a>
                                         </li>
                                     </ul>
-                                </div>
-                                <span id="menuLateralUsuarioTrigger" class="texto-blanco">
-                                    <div class="user-miniatura">
-                                        @if(perfil.Foto != null)
-                                        {
-                                            <div class="imagen-usuario-wrap">
-                                                <a href="@perfil.UrlViewProfile">
-                                                    <div class="imagen">
-                                                        <span style="background-image: url(@perfil.Foto)"></span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        }
-                                        <div class="nombre-usuario-wrap">
-                                            <a href="@perfil.UrlViewProfile">
-                                                <p class="nombre">@perfil.Name</p>
-                                                <p class="nombre-completo">@perfil.Name · @perfil.NameOrg</p>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </span>
-                            </li>
+                                </div>								
+                            </li>							
+
                         }
                     </ul>
                 </div>
