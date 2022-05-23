@@ -46,6 +46,21 @@ namespace EditorCV.Models
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
         /// </summary>
+        /// <returns></returns>
+        public string GetCVUrl(string userID, string lang)
+        {
+            string cv = UtilityCV.GetCVFromUser(userID);
+            List<ResponseGetUrl> urlList = mResourceApi.GetUrl(new List<Guid>() { mResourceApi.GetShortGuid(cv) },lang);
+            if(urlList.Count>0)
+            {
+                return urlList.First(x => x.resource_id == mResourceApi.GetShortGuid(cv)).url;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
+        /// </summary>
         /// <param name="pSearch">Texto por el que se van a buscar sugerencias</param>
         /// <param name="pProperty">Propiedad en la que se quiere buscar</param>
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
