@@ -11,6 +11,7 @@
 @{ CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
     string avisoCookies = Html.GetCookiesWarning();
+	UserProfileModel perfil = Html.GetPerfil();
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
@@ -269,6 +270,86 @@
                     </li>
                 </ul>
             </div>
+        </aside>
+		<aside id="menuLateralUsuario" class="menuLateral usuario" role="navigation">
+            <div class="header">
+				<div class="wrap-header">
+					<div class="usuarioWrapper">
+						<div class="nombre">
+							<span>@perfil.Name</span>
+						</div>
+					</div>
+					<span class="material-icons cerrar">close</span>
+				</div>
+			</div>
+
+            <div class="body pmd-scrollbar mCustomScrollbar" data-mcs-theme="minimal-dark">
+				<div class="menuUsuario ">
+					<div class="group-collapse alertas">
+						<div id="alertas-usuario" class="collapse show">
+							<ul class="pmd-sidebar-nav">
+								<li>
+									@{
+										string urlAlertas=Comunidad.Url+"/"+Html.Translate("ALERTAS_URL");
+									}
+									<a href="@urlAlertas">@Html.Translate("ALERTAS")</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="group-collapse curriculumvitae">
+						<a href="#curriculumvitae" data-toggle="collapse" aria-expanded="true">@Html.Translate("CURRICULUM")</a>
+						<div id="curriculumvitae" class="collapse show">
+							<ul class="pmd-sidebar-nav">
+								<li class="liInicio">
+									<a href="javascript: void(0);">@Html.Translate("EDITAR_CV")</a>
+								</li>
+								<li class="liCluster">
+									@{
+										string urlImportarCV=Comunidad.Url+"/"+Html.Translate("IMPORTAR_CV_URL");
+									}
+									<a href="@urlImportarCV">@Html.Translate("IMPORTAR_CV")</a>
+								</li>
+								<li class="liIndicadores">
+									@{
+										string urlExportarCV=Comunidad.Url+"/"+Html.Translate("EXPORTAR_CV_URL");
+									}
+									<a href="@urlExportarCV">@Html.Translate("EXPORTAR_CV")</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="group-collapse cluster">
+						<a href="#cluster" data-toggle="collapse" aria-expanded="true">@Html.Translate("GESTION_CLUSTERS")</a>
+						<div id="cluster" class="collapse show">
+							<ul class="pmd-sidebar-nav">
+								<li class="liInicio">
+									@{
+										string urlListadoCluster=Comunidad.Url+"/"+Html.Translate("CLUSTER_URL");
+									}
+									<a href="@urlListadoCluster">@Html.Translate("LISTADO_CLUSTERS")</a>
+								</li>
+								<li class="liCluster">
+									@{
+										string urlNuevoCluster=Comunidad.Url+"/"+Html.Translate("NUEVO_CLUSTER_URL");
+									}
+									<a href="@urlNuevoCluster">@Html.Translate("NUEVO_CLUSTER")</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					
+					<div class="group-collapse desconectar">
+						<div id="desconectar-usuario" class="collapse show">
+							<ul class="pmd-sidebar-nav">
+								<li>
+									<a href="@Html.GetUrlLogout()" class="desconectar-usuario bold">@Html.GetText("MENU", "SALIR")</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
         </aside>
 
 
