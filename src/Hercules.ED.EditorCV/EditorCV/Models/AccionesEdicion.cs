@@ -16,6 +16,7 @@ using EditorCV.Models.Enrichment;
 using EditorCV.Controllers;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
 using Hercules.ED.DisambiguationEngine.Models;
+using System.Collections.Concurrent;
 
 namespace EditorCV.Models
 {
@@ -236,12 +237,12 @@ namespace EditorCV.Models
         /// <param name="pRdfType">Rdf:type de la entidad de la sección</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <returns></returns>
-        public Object GetTab(string pCVId, string pId, string pRdfType, string pLang)
+        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang)
         {
 
             //Obtenemos el template
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfType);
-            Object respuesta = null;
+            AuxTab respuesta = null;
             if (!template.personalData)
             {
                 //Obtenemos los datos necesarios para el pintado
@@ -251,7 +252,6 @@ namespace EditorCV.Models
             }
             else
             {
-
                 respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);
             }
             return respuesta;
