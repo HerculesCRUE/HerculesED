@@ -82,7 +82,7 @@ namespace Utils
         /// <param name="propiedadesItem"></param>
         /// <param name="pCVID"></param>
         /// <returns></returns>
-        public static List<Tuple<string, string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
+        public static List<Tuple<string, string, string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
             if (propiedadesItem == null)
@@ -103,7 +103,7 @@ namespace Utils
 }}";
 
 
-            List<Tuple<string, string>> listaResultado = new List<Tuple<string, string>>();
+            List<Tuple<string, string, string>> listaResultado = new List<Tuple<string, string, string>>();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             if (resultData.results.bindings.Count == 0)
@@ -114,11 +114,11 @@ namespace Utils
             {
                 if (fila.ContainsKey("itemCV"))
                 {
-                    listaResultado.Add(new Tuple<string, string>(fila["item"].value, fila["itemCV"].value));
+                    listaResultado.Add(new Tuple<string, string, string>(fila["item"].value, fila["itemCV"].value, fila["prop2"].value));
                 }
                 else
                 {
-                    listaResultado.Add(new Tuple<string, string>(fila["item"].value, ""));
+                    listaResultado.Add(new Tuple<string, string, string>(fila["item"].value, "", fila["prop2"].value));
                 }
             }
 
@@ -132,7 +132,7 @@ namespace Utils
         /// <param name="propiedadesItem"></param>
         /// <param name="pCVID"></param>
         /// <returns></returns>
-        public static List<string> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
+        public static List<Tuple<string, string>> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
             if (propiedadesItem == null)
@@ -163,7 +163,7 @@ namespace Utils
             where += $"FILTER(?cv=<{pCVID}>) }}";
 
 
-            List<string> listaResultado = new List<string>();
+            List<Tuple<string, string>> listaResultado = new List<Tuple<string, string>>();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             if (resultData.results.bindings.Count == 0)
@@ -172,7 +172,14 @@ namespace Utils
             }
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-                listaResultado.Add(fila["item"].value);
+                if (propiedadesItem.Count == 1)
+                {
+                    listaResultado.Add(new Tuple<string, string>(fila["item"].value, fila["item"].value));
+                }
+                else
+                {
+                    listaResultado.Add(new Tuple<string, string>(fila["item"].value, fila["prop" + (propiedadesItem.Count - 1)].value));
+                }
             }
 
             return listaResultado;
@@ -726,6 +733,11 @@ namespace Utils
             {
                 List<string> listaFirma = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault();
                 ListarCodirectores(listaFirma, diccionarioCodirectores, "Firma");
+            }
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Orden"]))))
+            {
+                List<string> listaOrden = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Orden"])).Select(x => x.values).FirstOrDefault();
+                ListarCodirectores(listaOrden, diccionarioCodirectores, "Orden");
             }
 
             List<IGrouping<string, KeyValuePair<Tuple<string, string>, string>>> listadoCodirectores = diccionarioCodirectores

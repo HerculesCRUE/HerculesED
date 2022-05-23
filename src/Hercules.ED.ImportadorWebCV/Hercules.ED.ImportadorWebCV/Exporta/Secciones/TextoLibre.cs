@@ -10,6 +10,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class TextoLibre : SeccionBase
     {
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
 
         public TextoLibre(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
@@ -20,17 +21,24 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// Exporta los datos de la sección "070.010.000.000" a cvn.cvnRootResultBean.
         /// </summary>
         /// <param name="entity"></param>
-        public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones)
+        public void ExportaTextoLibre(Entity entity, [Optional] List<string> listaId)
         {
-            if (!UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"))
+            List<CvnItemBean> listado = new List<CvnItemBean>();
+            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
+            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null)
             {
-                return;
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item1)).ToList();
+                if (listadoIdentificadores.Count == 0)
+                {
+                    return;
+                }
             }
             string propResumenLibre = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.resumenLibre)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFG = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b1DescripcionTFG)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFM = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b2DescripcionTFM)).Select(x => x.prop).FirstOrDefault());
 
-            List<CvnItemBean> listado = new List<CvnItemBean>();
             CvnItemBean itemBean = new CvnItemBean()
             {
                 Code = "070.010.000.000",

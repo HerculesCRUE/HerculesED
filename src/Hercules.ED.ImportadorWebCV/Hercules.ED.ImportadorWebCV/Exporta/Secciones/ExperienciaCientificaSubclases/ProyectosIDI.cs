@@ -25,14 +25,20 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="seccion"></param>
         /// <param name="secciones"></param>
         /// <param name="preimportar"></param>
-        public void ExportaProyectosIDI(Entity entity, string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaProyectosIDI(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            if (!UtilitySecciones.CheckSecciones(secciones, "050.020.010.000"))
-            {
-                return;
-            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
+            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+            List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null)
+            {
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
+                if (listadoIdentificadores.Count == 0) 
+                { 
+                    return; 
+                }
+            }
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -160,6 +166,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 
                 // Autores
                 Dictionary<string, string> listadoAutores = new Dictionary<string, string>();
+                listadoAutores.Add("Orden", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIOrdenIP));
                 listadoAutores.Add("Firma", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIFirmaIP));
                 listadoAutores.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDINombreIP));
                 listadoAutores.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIPrimerApellidoIP));

@@ -2,6 +2,7 @@
 using ImportadorWebCV.Exporta.Secciones;
 using ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases;
 using ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases;
+using ImportadorWebCV.Exporta.Secciones.DatosIdentificacion;
 using ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases;
 using ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases;
 using ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases;
@@ -35,182 +36,185 @@ namespace ImportadorWebCV.Exporta
             return resourceApi;
         }
 
-        public void ExportaDatosIdentificacion(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
+        public void ExportaDatosIdentificacion(Entity entity, string version, [Optional] List<string> listaId)
         {
             string seccion = "http://w3id.org/roh/personalData";
 
+            IdentificacionCurriculum identificacionCurriculo = new IdentificacionCurriculum(cvn, cvID);
+            identificacionCurriculo.ExportaIdentificacionCurriculum(MultilangProp, version);
+
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID);
-            datosIdentificacion.ExportaDatosIdentificacion(entity, seccion, secciones);
+            datosIdentificacion.ExportaDatosIdentificacion(entity, seccion, listaId);
         }
 
-        public void ExportaSituacionProfesional(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
+        public void ExportaSituacionProfesional(Entity entity, [Optional] List<string> listaId)
         {
             string seccion = "http://w3id.org/roh/professionalSituation";
 
             SituacionProfesionalActual situacionProfesional = new SituacionProfesionalActual(cvn, cvID);
-            situacionProfesional.ExportaSituacionProfesional(entity, seccion, MultilangProp, secciones);
+            situacionProfesional.ExportaSituacionProfesional(MultilangProp, listaId);
 
             CargosActividades cargosActividades = new CargosActividades(cvn, cvID);
-            cargosActividades.ExportaCargosActividades(entity, seccion, MultilangProp, secciones);
+            cargosActividades.ExportaCargosActividades(MultilangProp, listaId);
 
         }
 
-        public void ExportaFormacionAcademica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
+        public void ExportaFormacionAcademica(Entity entity, [Optional] List<string> listaId)
         {
             string seccion = "http://w3id.org/roh/qualifications";
 
             EstudiosCiclos estudiosCiclos = new EstudiosCiclos(cvn, cvID);
-            estudiosCiclos.ExportaEstudiosCiclos(entity, seccion, MultilangProp, secciones);
+            estudiosCiclos.ExportaEstudiosCiclos(MultilangProp, listaId);
 
             Doctorados doctorados = new Doctorados(cvn, cvID);
-            doctorados.ExportaDoctorados(entity, seccion, MultilangProp, secciones);
+            doctorados.ExportaDoctorados(MultilangProp, listaId);
 
             OtraFormacionPosgrado otraFormacionPosgrado = new OtraFormacionPosgrado(cvn, cvID);
-            otraFormacionPosgrado.ExportaOtraFormacionPosgrado(entity, seccion, MultilangProp, secciones);
+            otraFormacionPosgrado.ExportaOtraFormacionPosgrado(entity, MultilangProp, listaId);
 
             FormacionEspecializada formacionEspecializada = new FormacionEspecializada(cvn, cvID);
-            formacionEspecializada.ExportaFormacionEspecializada(entity, seccion, MultilangProp, secciones);
+            formacionEspecializada.ExportaFormacionEspecializada(entity, MultilangProp, listaId);
 
             CursosMejoraDocente cursosMejora = new CursosMejoraDocente(cvn, cvID);
-            cursosMejora.ExportaCursosMejoraDocente(entity, seccion, MultilangProp, secciones);
+            cursosMejora.ExportaCursosMejoraDocente(MultilangProp, listaId);
 
             ConocimientoIdiomas conocimientoIdiomas = new ConocimientoIdiomas(cvn, cvID);
-            conocimientoIdiomas.ExportaConocimientoIdiomas(entity, seccion, MultilangProp, secciones);
+            conocimientoIdiomas.ExportaConocimientoIdiomas(MultilangProp, listaId);
         }
-        public void ExportaActividadDocente(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
+        public void ExportaActividadDocente(Entity entity, [Optional] List<string> listaId)
         {
             string seccion = "http://w3id.org/roh/teachingExperience";
 
             DireccionTesis direccionTesis = new DireccionTesis(cvn, cvID);
-            direccionTesis.ExportaDireccionTesis(entity, seccion, MultilangProp, secciones);
+            direccionTesis.ExportaDireccionTesis(MultilangProp, listaId);
 
             FormacionAcademicaSubclase formacionAcademica = new FormacionAcademicaSubclase(cvn, cvID);
-            formacionAcademica.ExportaFormacionAcademica(entity, seccion, MultilangProp, secciones);
+            formacionAcademica.ExportaFormacionAcademica(MultilangProp, listaId);
 
             TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas(cvn, cvID);
-            tutoriasAcademicas.ExportaTutoriasAcademicas(entity, seccion, MultilangProp, secciones);
+            tutoriasAcademicas.ExportaTutoriasAcademicas(MultilangProp, listaId);
 
             CursosSeminarios cursosSeminarios = new CursosSeminarios(cvn, cvID);
-            cursosSeminarios.ExportaCursosSeminarios(entity, seccion, MultilangProp, secciones);
+            cursosSeminarios.ExportaCursosSeminarios(MultilangProp, listaId);
 
             PublicacionesDocentes publicacionesDocentes = new PublicacionesDocentes(cvn, cvID);
-            publicacionesDocentes.ExportaPublicacionesDocentes(entity, seccion, MultilangProp, secciones);
+            publicacionesDocentes.ExportaPublicacionesDocentes(MultilangProp, listaId);
 
             ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente(cvn, cvID);
-            participacionProyectos.ExportaParticipacionProyectos(entity, seccion, MultilangProp, secciones);
+            participacionProyectos.ExportaParticipacionProyectos(MultilangProp, listaId);
 
             ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente(cvn, cvID);
-            participacionCongresos.ExportaParticipacionCongresos(entity, seccion, MultilangProp, secciones);
+            participacionCongresos.ExportaParticipacionCongresos(MultilangProp, listaId);
 
             PremiosInnovacionDocente premiosInnovacionDocente = new PremiosInnovacionDocente(cvn, cvID);
-            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(entity, seccion, MultilangProp, secciones);
+            premiosInnovacionDocente.ExportaPremiosInnovacionDocente(MultilangProp, listaId);
 
             OtrasActividades otrasActividades = new OtrasActividades(cvn, cvID);
-            otrasActividades.ExportaOtrasActividades(entity, seccion, MultilangProp, secciones);
+            otrasActividades.ExportaOtrasActividades(MultilangProp, listaId);
 
             AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes(cvn, cvID);
-            aportacionesRelevantes.ExportaAportacionesRelevantes(entity, seccion, MultilangProp, secciones);
+            aportacionesRelevantes.ExportaAportacionesRelevantes(MultilangProp, listaId);
         }
-        public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
+        public void ExportaExperienciaCientificaTecnologica(Entity entity, [Optional] List<string> listaId)
         {
             string seccion = "http://w3id.org/roh/scientificExperience";
 
             ProyectosIDI proyectosIDI = new ProyectosIDI(cvn, cvID);
-            proyectosIDI.ExportaProyectosIDI(entity, seccion, MultilangProp, secciones);
+            proyectosIDI.ExportaProyectosIDI(seccion, MultilangProp, listaId);
 
             Contratos contratos = new Contratos(cvn, cvID);
-            contratos.ExportaContratos(entity, seccion, MultilangProp, secciones);
+            contratos.ExportaContratos(MultilangProp, listaId);
 
             PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual(cvn, cvID);
-            propII.ExportaPropiedadII(entity, seccion, MultilangProp, secciones);
+            propII.ExportaPropiedadII(MultilangProp, listaId);
 
             GrupoIDI grupoIDI = new GrupoIDI(cvn, cvID);
-            grupoIDI.ExportaGrupoIDI(entity, seccion, MultilangProp, secciones);
+            grupoIDI.ExportaGrupoIDI(MultilangProp, listaId);
 
             ObrasArtisticas obrasArtisticas = new ObrasArtisticas(cvn, cvID);
-            obrasArtisticas.ExportaObrasArtisticas(entity, seccion, MultilangProp, secciones);
+            obrasArtisticas.ExportaObrasArtisticas(MultilangProp, listaId);
 
             ResultadosTecnologicos resultadosTecnologicos = new ResultadosTecnologicos(cvn, cvID);
-            resultadosTecnologicos.ExportaResultadosTecnologicos(entity, seccion, MultilangProp, secciones);
+            resultadosTecnologicos.ExportaResultadosTecnologicos(MultilangProp, listaId);
 
         }
-        public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
+        public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> listaId)
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
 
             ProduccionCientifica produccionCientifica = new ProduccionCientifica(cvn, cvID);
-            produccionCientifica.ExportaProduccionCientifica(entity, seccion, MultilangProp, secciones);
+            produccionCientifica.ExportaProduccionCientifica(MultilangProp, listaId);
 
             IndicadoresGenerales indicadoresGenerales = new IndicadoresGenerales(cvn, cvID);
-            indicadoresGenerales.ExportaIndicadoresGenerales(entity, seccion, MultilangProp, secciones);
+            indicadoresGenerales.ExportaIndicadoresGenerales(entity, MultilangProp, listaId);
 
             //TODO Citas, Indice de impacto
             PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos(cvn, cvID);
-            publicacionesDocumentos.ExportaPublicacionesDocumentos(entity, seccion, MultilangProp, secciones);
+            publicacionesDocumentos.ExportaPublicacionesDocumentos(seccion, MultilangProp, listaId);
 
             //TODO Citas, Indice de impacto
             TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
-            trabajosCongresos.ExportaTrabajosCongresos(entity, seccion, MultilangProp, secciones);
+            trabajosCongresos.ExportaTrabajosCongresos(seccion, MultilangProp, listaId);
 
             TrabajosJornadasSeminarios trabajosJornadasSeminarios = new TrabajosJornadasSeminarios(cvn, cvID);
-            trabajosJornadasSeminarios.ExportaTrabajosJornadasSeminarios(entity, seccion, MultilangProp, secciones);
+            trabajosJornadasSeminarios.ExportaTrabajosJornadasSeminarios(MultilangProp, listaId);
 
             OtrasActividadesDivulgacion otrasActividadesDivulgacion = new OtrasActividadesDivulgacion(cvn, cvID);
-            otrasActividadesDivulgacion.ExportaOtrasActividadesDivulgacion(entity, seccion, MultilangProp, secciones);
+            otrasActividadesDivulgacion.ExportaOtrasActividadesDivulgacion(MultilangProp, listaId);
 
             ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
-            comitesCTA.ExportaComitesCTA(entity, seccion, MultilangProp, secciones);
+            comitesCTA.ExportaComitesCTA(MultilangProp, listaId);
 
             OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
-            organizacionesIDI.ExportaOrganizacionesIDI(entity, seccion, MultilangProp, secciones);
+            organizacionesIDI.ExportaOrganizacionesIDI(MultilangProp, listaId);
 
             GestionIDI gestionIDI = new GestionIDI(cvn, cvID);
-            gestionIDI.ExportaGestionIDI(entity, seccion, MultilangProp, secciones);
+            gestionIDI.ExportaGestionIDI(MultilangProp, listaId);
 
             ForosComites forosComites = new ForosComites(cvn, cvID);
-            forosComites.ExportaForosComites(entity, seccion, MultilangProp, secciones);
+            forosComites.ExportaForosComites(MultilangProp, listaId);
 
             EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
-            evalRevIDI.ExportaEvalRevIDI(entity, seccion, MultilangProp, secciones);
+            evalRevIDI.ExportaEvalRevIDI(MultilangProp, listaId);
 
             EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
-            estanciasIDI.ExportaEstanciasIDI(entity, seccion, MultilangProp, secciones);
+            estanciasIDI.ExportaEstanciasIDI(MultilangProp, listaId);
 
             AyudaBecas ayudaBecas = new AyudaBecas(cvn, cvID);
-            ayudaBecas.ExportaAyudaBecas(entity, seccion, MultilangProp, secciones);
+            ayudaBecas.ExportaAyudaBecas(MultilangProp, listaId);
 
             OtrosModosColaboracion otrosModosColaboracion = new OtrosModosColaboracion(cvn, cvID);
-            otrosModosColaboracion.ExportaOtrosModosColaboracion(entity, seccion, MultilangProp, secciones);
+            otrosModosColaboracion.ExportaOtrosModosColaboracion(MultilangProp, listaId);
 
             SociedadesAsociaciones sociedadesAsociaciones = new SociedadesAsociaciones(cvn, cvID);
-            sociedadesAsociaciones.ExportaSociedadesAsociaciones(entity, seccion, MultilangProp, secciones);
+            sociedadesAsociaciones.ExportaSociedadesAsociaciones(MultilangProp, listaId);
 
             Consejos consejos = new Consejos(cvn, cvID);
-            consejos.ExportaConsejos(entity, seccion, MultilangProp, secciones);
+            consejos.ExportaConsejos(MultilangProp, listaId);
 
             RedesCooperacion redesCooperacion = new RedesCooperacion(cvn, cvID);
-            redesCooperacion.ExportaRedesCooperacion(entity, seccion, MultilangProp, secciones);
+            redesCooperacion.ExportaRedesCooperacion(MultilangProp, listaId);
 
             PremiosMenciones premiosMenciones = new PremiosMenciones(cvn, cvID);
-            premiosMenciones.ExportaPremiosMenciones(entity, seccion, MultilangProp, secciones);
+            premiosMenciones.ExportaPremiosMenciones(MultilangProp, listaId);
 
             OtrasDistinciones otrasDistinciones = new OtrasDistinciones(cvn, cvID);
-            otrasDistinciones.ExportaOtrasDistinciones(entity, seccion, MultilangProp, secciones);
+            otrasDistinciones.ExportaOtrasDistinciones(MultilangProp, listaId);
 
             PeriodosActividad periodosActividad = new PeriodosActividad(cvn, cvID);
-            periodosActividad.ExportaPeriodosActividad(entity, seccion, MultilangProp, secciones);
+            periodosActividad.ExportaPeriodosActividad(MultilangProp, listaId);
 
             AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos(cvn, cvID);
-            acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(entity, seccion, MultilangProp, secciones);
+            acreditacionesReconocimientos.ExportaAcreditacionesReconocimientos(MultilangProp, listaId);
 
             OtrosMeritos otrosMeritos = new OtrosMeritos(cvn, cvID);
-            otrosMeritos.ExportaOtrosMeritos(entity, seccion, MultilangProp, secciones);
+            otrosMeritos.ExportaOtrosMeritos(MultilangProp, listaId);
         }
 
-        public void ExportaTextoLibre(Entity entity, [Optional] List<string> secciones, [Optional] bool preexportar)
+        public void ExportaTextoLibre(Entity entity, [Optional] List<string> listaId)
         {
             TextoLibre textoLibre = new TextoLibre(cvn, cvID);
-            textoLibre.ExportaTextoLibre(entity, secciones);
+            textoLibre.ExportaTextoLibre(entity, listaId);
         }
     }
 }

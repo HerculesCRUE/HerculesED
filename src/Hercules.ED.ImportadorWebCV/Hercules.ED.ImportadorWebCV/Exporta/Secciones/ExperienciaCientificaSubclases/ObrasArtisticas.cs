@@ -24,14 +24,20 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="seccion"></param>
         /// <param name="secciones"></param>
         /// <param name="preimportar"></param>
-        public void ExportaObrasArtisticas(Entity entity, string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> secciones, [Optional] bool preimportar)
+        public void ExportaObrasArtisticas(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            if (!UtilitySecciones.CheckSecciones(secciones, "050.020.030.000"))
-            {
-                return;
-            }
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            List<string> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
+            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null)
+            {
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
+                if (listadoIdentificadores.Count == 0)
+                {
+                    return;
+                }
+            }
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -72,6 +78,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 
                 // Autores
                 Dictionary<string, string> listadoPropiedadesAutor = new Dictionary<string, string>();
+                listadoPropiedadesAutor.Add("Orden", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresOrden));
                 listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresFirma));
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresNombre));
                 listadoPropiedadesAutor.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresPrimerApellido));
