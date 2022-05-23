@@ -10,7 +10,7 @@ namespace EditorCV.Models.API.Response
     /// <summary>
     /// Entidad para edición
     /// </summary>
-    public class EntityEdit
+    public class EntityEdit:AuxTab
     {
         /// <summary>
         /// Identificador de la entidad
