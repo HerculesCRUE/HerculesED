@@ -37,7 +37,7 @@ namespace EditorCV.Controllers
         {
             try
             {
-                string pCVId = AccionesExportacion.GetCV(userID);
+                string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
                     throw new Exception("Usuario no encontrado " + userID);
