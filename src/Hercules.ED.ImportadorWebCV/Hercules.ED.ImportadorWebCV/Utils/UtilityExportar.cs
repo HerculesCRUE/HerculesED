@@ -758,6 +758,11 @@ namespace Utils
                     familyNameBean.SecondFamilyName = keyValuePair.Where(x => x.Key.Item2.Equals("SegundoApellido")).Select(x => x.Value).FirstOrDefault();
                     authorBean.GivenName = keyValuePair.Where(x => x.Key.Item2.Equals("Nombre")).Select(x => x.Value).FirstOrDefault();
                     authorBean.Signature = keyValuePair.Where(x => x.Key.Item2.Equals("Firma")).Select(x => x.Value).FirstOrDefault();
+                    if(int.TryParse(keyValuePair.Where(x => x.Key.Item2.Equals("Orden")).Select(x => x.Value).FirstOrDefault(), out int order))
+                    {
+                        authorBean.SignatureOrder = order;
+                        authorBean.SignatureOrderSpecified = true;
+                    }
                 }
                 //Si no hay valores no añado
                 if (!string.IsNullOrEmpty(familyNameBean.FirstFamilyName) && !string.IsNullOrEmpty(familyNameBean.SecondFamilyName))
