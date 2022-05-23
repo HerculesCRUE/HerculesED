@@ -89,7 +89,11 @@
 <input type="hidden" id="CV_SINTRADUCCION" value="@Html.Translate("CV_SINTRADUCCION")"/>
 <input type="hidden" id="CV_CONTRADUCCION" value="@Html.Translate("CV_CONTRADUCCION")"/>
 <input type="hidden" id="CV_OCULTAR_EDICION" value="@Html.Translate("CV_OCULTAR_EDICION")"/>
-
+<script>
+$(function() {
+    edicionCV.init();
+});
+</script>
 	
 <div class="row">
     <div class="col col-12 col-breadcrumb">
