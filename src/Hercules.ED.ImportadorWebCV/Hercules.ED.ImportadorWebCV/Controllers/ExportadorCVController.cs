@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Models;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -38,7 +39,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="pCVID">ID curriculum</param>
         /// <returns></returns>
         [HttpPost("Exportar")]
-        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader] string lang, [FromHeader][Optional] List<string> secciones)
+        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader][Required] string lang)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -48,21 +49,36 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
             Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
 
-            exporta.ExportaDatosIdentificacion(entity, secciones);
-            exporta.ExportaSituacionProfesional(entity, secciones);
-            exporta.ExportaFormacionAcademica(entity, secciones);
-            exporta.ExportaActividadDocente(entity, secciones);
-            exporta.ExportaExperienciaCientificaTecnologica(entity, secciones);
-            exporta.ExportaActividadCientificaTecnologica(entity, secciones);
-            exporta.ExportaTextoLibre(entity, secciones);
+            exporta.ExportaDatosIdentificacion(entity, _Configuracion.GetVersion());
+            exporta.ExportaSituacionProfesional(entity);
+            exporta.ExportaFormacionAcademica(entity);
+            exporta.ExportaActividadDocente(entity);
+            exporta.ExportaExperienciaCientificaTecnologica(entity);
+            exporta.ExportaActividadCientificaTecnologica(entity);
+            exporta.ExportaTextoLibre(entity);
 
             return Ok();
         }
 
-        [HttpPost("Preexportar")]
-        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader] string lang)
+        [HttpPost("ExportarLimitado")]
+        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader][Required] string lang, [FromHeader][Optional] List<string> secciones, [Optional] List<string> listaId)
         {
+            if (!Utils.UtilityExportar.EsMultiidioma(lang))
+            {
+                throw new Exception("El lenguaje de exportación es incorrecto");
+            }
+
             ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
+            Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
+
+            exporta.ExportaDatosIdentificacion(entity, _Configuracion.GetVersion(), listaId);
+            exporta.ExportaSituacionProfesional(entity, listaId);
+            exporta.ExportaFormacionAcademica(entity, listaId);
+            exporta.ExportaActividadDocente(entity, listaId);
+            exporta.ExportaExperienciaCientificaTecnologica(entity, listaId);
+            exporta.ExportaActividadCientificaTecnologica(entity, listaId);
+            exporta.ExportaTextoLibre(entity, listaId);
+
 
 
             return Ok();
