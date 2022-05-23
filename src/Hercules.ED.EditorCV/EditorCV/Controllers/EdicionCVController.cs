@@ -27,7 +27,7 @@ namespace GuardadoCV.Controllers
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        [HttpPost("GetCVUrl")]
+        [HttpGet("GetCVUrl")]
         public IActionResult GetCVUrl(string userID,string lang)
         {
             try
