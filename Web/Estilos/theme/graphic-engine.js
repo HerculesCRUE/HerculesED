@@ -199,6 +199,9 @@ var metricas = {
                                 <li class="control zoomout-control" id="zoomOut">
                                     <span class="material-icons">remove</span>
                                 </li>
+                                <li class="control text-control">
+                                    <span class="material-icons">search</span>
+                                </li>
                                 <li class="control zoomin-control" id="zoomIn">
                                     <span class="material-icons">add</span>
                                 </li>
