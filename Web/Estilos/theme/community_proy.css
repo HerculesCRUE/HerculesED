@@ -230,3 +230,10 @@ a.faceta.applied{
 .user-miniatura .imagen-usuario-wrap .imagen span{
     color: var(--c-blanco);
 }
+
+.graph-controls-menu {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
