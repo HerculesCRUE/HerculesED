@@ -427,15 +427,8 @@ namespace Hercules.ED.GraphicEngine.Models
             // Asignación de Options.
             Options options = new Options();
 
-            // Orientación            
-            if (!pGrafica.config.orientacionVertical)
-            {
-                options.indexAxis = "y";
-            }
-            else
-            {
-                options.indexAxis = "x";
-            }
+            // Orientación
+            options.indexAxis = "y";
 
             options.scales = new Dictionary<string, Eje>();
 

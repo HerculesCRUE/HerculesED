@@ -43,6 +43,8 @@ var metricas = {
                 data.ready = function() { window.cy = this };
                 var cy = window.cy = cytoscape(data);
 
+                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append(data.title);
+
                 var arrayNodes = [];
                 var nodos = cy.nodes();
                 for (i = 0; i < cy.nodes().length; i++) { //starts loop
@@ -76,8 +78,6 @@ var metricas = {
                         e._private.data.name = "";
                     }
                 });
-
-                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append("prueba");
 
             } else {
                 var myChart = new Chart(ctx, data);
