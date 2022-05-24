@@ -13,7 +13,39 @@ $(document).ready(function () {
         }
 	}
 	montarTooltipCode.init();
+	cargarCVId.init();
 });
+
+var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
+
+var cargarCVId = {
+	CVId:null,
+	init: function () {
+		this.loadCVId();
+		this.printCVId();
+	},
+	loadCVId:function(){
+		var that=this;
+		var keyCache='cv_'+lang+'_'+$('#inpt_usuarioID').val();
+		this.CVId=getCacheWithExpiry(keyCache);
+		if(this.CVId==null)
+		{
+			var urlGetCVUrl = urlEdicionCV+'GetCVUrl?userID='+$('#inpt_usuarioID').val()+ "&lang=" + lang;
+			$.get(urlGetCVUrl, null, function(data) {
+				this.CVId=data;
+				that.printCVId();
+				setCacheWithExpiry(keyCache,data,60000);
+			});
+		}
+	},
+	printCVId:function(){
+		if(this.CVId!=null && this.CVId!='')
+		{
+			$('#menuLateralUsuario .hasCV').show();
+			$('#menuLateralUsuario li.liEditarCV a').attr('href',this.CVId);
+		}
+	}
+}
 
 function enlazarFiltrosBusqueda() {
     // Cambiado por nuevo Front
@@ -1850,3 +1882,25 @@ var metabuscador = {
     }
 };
 
+function setCacheWithExpiry(key, value, ttl) {
+	const now = new Date();
+	const item = {
+		value: value,
+		expiry: now.getTime() + ttl
+	}
+	localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getCacheWithExpiry(key) {
+	const itemStr = localStorage.getItem(key);
+	if (!itemStr) {
+		return null;
+	}
+	const item = JSON.parse(itemStr);
+	const now = new Date();
+	if (now.getTime() > item.expiry) {
+		localStorage.removeItem(key);
+		return null;
+	}
+	return item.value;
+}
