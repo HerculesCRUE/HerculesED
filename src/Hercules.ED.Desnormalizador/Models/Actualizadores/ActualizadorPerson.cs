@@ -256,20 +256,23 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                               select ?person count(distinct ?doc) as ?numDocumentosACargar
                               Where{{
                                 ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                OPTIONAL
                                 {{
-			                        ?doc a <http://purl.org/ontology/bibo/Document>.
-			                        ?cv <http://w3id.org/roh/cvOf> ?person.
-			                        ?cv  <http://w3id.org/roh/scientificActivity> ?scientificActivity.
-			                        ?scientificActivity ?pAux ?oAux.
-			                        ?oAux <http://w3id.org/roh/isPublic> 'true'.
-			                        ?oAux <http://vivoweb.org/ontology/core#relatedBy> ?doc
-		                        }}UNION
-		                        {{
-			                        ?doc a <http://purl.org/ontology/bibo/Document>.
-			                        ?doc <http://w3id.org/roh/isValidated> 'true'.
-			                        ?doc <http://purl.org/ontology/bibo/authorList> ?listaAutores.
-			                        ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-		                        }}
+                                    {{
+			                            ?doc a <http://purl.org/ontology/bibo/Document>.
+			                            ?cv <http://w3id.org/roh/cvOf> ?person.
+			                            ?cv  <http://w3id.org/roh/scientificActivity> ?scientificActivity.
+			                            ?scientificActivity ?pAux ?oAux.
+			                            ?oAux <http://w3id.org/roh/isPublic> 'true'.
+			                            ?oAux <http://vivoweb.org/ontology/core#relatedBy> ?doc
+		                            }}UNION
+		                            {{
+			                            ?doc a <http://purl.org/ontology/bibo/Document>.
+			                            ?doc <http://w3id.org/roh/isValidated> 'true'.
+			                            ?doc <http://purl.org/ontology/bibo/authorList> ?listaAutores.
+			                            ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+		                            }}
+                                }}
                               }}Group by ?person 
                             }}
                             FILTER(?numDocumentosCargados!= ?numDocumentosACargar OR !BOUND(?numDocumentosCargados) )
