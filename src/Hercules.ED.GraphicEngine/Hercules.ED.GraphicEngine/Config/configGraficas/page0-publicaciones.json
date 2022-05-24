@@ -88,10 +88,6 @@
         "rellenarEjeX": false,
         "yAxisPrint": [
           {
-            "yAxisID": "y2",
-            "posicion": "right"
-          },
-          {
             "yAxisID": "y1",
             "posicion": "left"
           }
@@ -196,24 +192,24 @@
           }
         ]
       }
-    },
+    },    
     {
       "identificador": "666",
       "nombre": {
-        "es": "Nombre de la Gráfica Circular de EJEMPLO 3 - Gráfica Circular"
+        "es": "Nombre de la Gráfica Nodos"
       },
-      "tipo": "Circular",
-      "anchura12": 6,
+      "tipo": "Nodos",
+      "anchura12": 12,
       "config": {
         "dimensiones": [
           {
             "nombre": {
-              "es": "Publicaciones de revista Lecture Notes"
+              "es": "Categorías de los Artículos Científicos"
             },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title",
-            "limite": 10,
-            "color": "#572364",
-            "colorMaximo": "#cb3234"
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "numMaxNodos": 10,
+            "colorNodo": "#7CBFE3",
+            "colorLinea": "#BF4858"
           }
         ]
       }

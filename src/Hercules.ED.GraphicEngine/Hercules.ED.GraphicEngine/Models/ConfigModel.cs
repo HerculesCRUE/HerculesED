@@ -64,5 +64,8 @@ namespace Hercules.ED.GraphicEngine.Models
         public string yAxisID { get; set; }
         public string xAxisID { get; set; }
         public int orden { get; set; }
+        public int numMaxNodos { get; set; }
+        public string colorNodo { get; set; }
+        public string colorLinea { get; set; }
     }
 }

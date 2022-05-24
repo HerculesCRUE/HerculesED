@@ -66,6 +66,32 @@ namespace EditorCV.Models.Utils
         }
 
         /// <summary>
+        /// Devuelve el Identificador de CV del usuario con identificador <paramref name="userId"/>
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static string GetCVFromUser(string userId)
+        {
+            string select = $@"select ?cv from <{mResourceApi.GraphsUrl}person.owl>";
+            string where = $@"where {{
+    ?persona a <http://xmlns.com/foaf/0.1/Person> .
+    ?persona <http://w3id.org/roh/gnossUser> <http://gnoss/{userId.ToUpper()}> .
+    ?cv <http://w3id.org/roh/cvOf> ?persona .
+}}";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("cv"))
+                {
+                    return fila["cv"].value;
+                }
+            }
+
+            return "";
+        }
+
+
+        /// <summary>
         /// Obtiene las propiedades de las entidades pasadas por parámetro
         /// </summary>
         /// <param name="pIds">Identificadores de las entidades de las que recuperar sus propiedades</param>

@@ -14,32 +14,7 @@ namespace EditorCV.Models
     public class AccionesExportacion
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
-
-        /// <summary>
-        /// Devuelve el Identificador de CV del usuario con identificador <paramref name="userId"/>
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public static string GetCV(string userId)
-        {
-            string select = $@"select ?cv from <{mResourceApi.GraphsUrl}person.owl>";
-            string where = $@"where {{
-    ?persona a <http://xmlns.com/foaf/0.1/Person> .
-    ?persona <http://w3id.org/roh/gnossUser> <http://gnoss/{userId.ToUpper()}> .
-    ?cv <http://w3id.org/roh/cvOf> ?persona .
-}}";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
-            {
-                if (fila.ContainsKey("cv"))
-                {
-                    return fila["cv"].value;
-                }
-            }
-
-            return "";
-        }
-
+                
         /// <summary>
         /// Devuelve todas las pestañas del CV de <paramref name="pCVId"/>
         /// </summary>
