@@ -878,7 +878,7 @@ namespace Hercules.ED.GraphicEngine.Models
             layoutNodos.content = "data(name)";
             layoutNodos.font_size = "12px";
             layoutNodos.font_family = "Roboto";
-            layoutNodos.background_color = "#DAF7A6";
+            layoutNodos.background_color = pGrafica.config.dimensiones.FirstOrDefault().colorNodo;
             layoutNodos.text_outline_width = "0px";
             layoutNodos.overlay_padding = "6px";
             layoutNodos.line_color = "";
@@ -902,9 +902,12 @@ namespace Hercules.ED.GraphicEngine.Models
             layoutLineas.width = "mapData(weight, 0, 10, 0, 10)";
             layoutLineas.overlay_padding = "1px";
             layoutLineas.z_index = "11";
-            layoutLineas.line_color = "#E1E1E1";
+            layoutLineas.line_color = pGrafica.config.dimensiones.FirstOrDefault().colorLinea;
             estiloLinea.style = layoutLineas;
             grafica.style.Add(estiloLinea);
+            Options options = new Options();
+            options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
+            grafica.options = options;
             #endregion
 
             //Nodos            
@@ -992,8 +995,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
 
                 // Creamos los nodos y las relaciones en función de pNumAreas.
-                // TODO: pNumAreas
-                int pNumAreas = 10;
+                int pNumAreas = pGrafica.config.dimensiones.FirstOrDefault().numMaxNodos;
 
                 Dictionary<string, int> numRelaciones = new Dictionary<string, int>();
                 foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)

@@ -212,8 +212,8 @@
             },
             "filtro": "dc:type@@@dc:title='Artículo científico'@es",
             "numMaxNodos": 10,
-            "colorNodo": "",
-            "colorLinea": ""
+            "colorNodo": "#cb3234",
+            "colorLinea": "#eaa27e"
           }
         ]
       }
