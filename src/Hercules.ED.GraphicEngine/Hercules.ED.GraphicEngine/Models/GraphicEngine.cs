@@ -37,7 +37,6 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
-
             return CrearPagina(configModel, pLang);
         }
 
@@ -60,19 +59,12 @@ namespace Hercules.ED.GraphicEngine.Models
                     id = itemGrafica.identificador,
                     anchura = itemGrafica.anchura12
                 };
-
+             
                 if (itemGrafica.tipo == EnumGraficas.Nodos)
                 {
-                    if (!itemGrafica.identificador.Contains("nodes"))
-                    {
-                        itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
-                        configPagina.id = "nodes-" + configPagina.id;
-                    }
+                    itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
+                    configPagina.id = "nodes-" + configPagina.id;
                     configPagina.libreria = "cytoscape";
-                }
-                else
-                {
-                    configPagina.libreria = "chartjs";
                 }
 
                 // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
@@ -110,7 +102,6 @@ namespace Hercules.ED.GraphicEngine.Models
                 Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
                 return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang);
             }
-
             return null;
         }
 
@@ -129,7 +120,6 @@ namespace Hercules.ED.GraphicEngine.Models
             switch (pGrafica.tipo)
             {
                 case EnumGraficas.Barras:
-                    // TODO: Controlar excepciones en la configuración.
                     if (pGrafica.config.orientacionVertical)
                     {
                         ControlarExcepcionesBarrasX(pGrafica);
@@ -141,7 +131,6 @@ namespace Hercules.ED.GraphicEngine.Models
                         return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                     }
                 case EnumGraficas.Circular:
-                    // TODO: Controlar excepciones en la configuración.
                     ControlarExcepcionesCircular(pGrafica);
                     return CrearGraficaCircular(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
                 case EnumGraficas.Nodos:
@@ -814,38 +803,23 @@ namespace Hercules.ED.GraphicEngine.Models
 
             data.labels = listaNombres;
             dataset.backgroundColor = listaColores;
-            // Le doy un hoverOffset por defecto
+
+            // HoverOffset por defecto.
             dataset.hoverOffset = 4;
+
             grafica.data.datasets.Add(dataset);
 
             return grafica;
         }
-        public static List<string> ObtenerDegradadoColores(string colorMax, string colorMin, int numColores)
-        {
-            List<string> listaColores = new List<string>();
-            if (colorMax.Length < 7 || colorMin.Length < 7)
-            {
-                colorMax = "#FFFFFF";
-                colorMin = "#000000";
-            }
-            int rMax = Convert.ToInt32(colorMax.Substring(1, 2), 16);
-            int gMax = Convert.ToInt32(colorMax.Substring(3, 2), 16);
-            int bMax = Convert.ToInt32(colorMax.Substring(5, 2), 16);
-            int rMin = Convert.ToInt32(colorMin.Substring(1, 2), 16);
-            int gMin = Convert.ToInt32(colorMin.Substring(3, 2), 16);
-            int bMin = Convert.ToInt32(colorMin.Substring(5, 2), 16);
 
-            for (int i = 0; i < numColores; i++)
-            {
-                int rAverage = rMin + (int)((rMax - rMin) * i / numColores);
-                int gAverage = gMin + (int)((gMax - gMin) * i / numColores);
-                int bAverage = bMin + (int)((bMax - bMin) * i / numColores);
-                string colorHex = '#' + rAverage.ToString("X2") + gAverage.ToString("X2") + bAverage.ToString("X2");
-                listaColores.Add(colorHex);
-            }
-
-            return listaColores;
-        }
+        /// <summary>
+        /// Crea el objeto de la gráfica (Gráfica nodos).
+        /// </summary>
+        /// <param name="pGrafica">Configuración.</param>
+        /// <param name="pFiltroBase">Filtros base.</param>
+        /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
         public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             GraficaNodos grafica = new GraficaNodos();
@@ -1369,6 +1343,46 @@ namespace Hercules.ED.GraphicEngine.Models
             }
         }
 
+        /// <summary>
+        /// Obtiene la lista de colores degradados.
+        /// </summary>
+        /// <param name="pColorMax">Color máximo como límite.</param>
+        /// <param name="pColorMin">Color mínimo como límite.</param>
+        /// <param name="pNumColores">Número de colores a devolver.</param>
+        /// <returns></returns>
+        public static List<string> ObtenerDegradadoColores(string pColorMax, string pColorMin, int pNumColores)
+        {
+            List<string> listaColores = new List<string>();
+            if (pColorMax.Length < 7 || pColorMin.Length < 7)
+            {
+                pColorMax = "#FFFFFF";
+                pColorMin = "#000000";
+            }
+            int rMax = Convert.ToInt32(pColorMax.Substring(1, 2), 16);
+            int gMax = Convert.ToInt32(pColorMax.Substring(3, 2), 16);
+            int bMax = Convert.ToInt32(pColorMax.Substring(5, 2), 16);
+            int rMin = Convert.ToInt32(pColorMin.Substring(1, 2), 16);
+            int gMin = Convert.ToInt32(pColorMin.Substring(3, 2), 16);
+            int bMin = Convert.ToInt32(pColorMin.Substring(5, 2), 16);
+
+            for (int i = 0; i < pNumColores; i++)
+            {
+                int rAverage = rMin + (int)((rMax - rMin) * i / pNumColores);
+                int gAverage = gMin + (int)((gMax - gMin) * i / pNumColores);
+                int bAverage = bMin + (int)((bMax - bMin) * i / pNumColores);
+                string colorHex = '#' + rAverage.ToString("X2") + gAverage.ToString("X2") + bAverage.ToString("X2");
+                listaColores.Add(colorHex);
+            }
+
+            return listaColores;
+        }
+
+        /// <summary>
+        /// Procesa las relaciones de las gráficas de nodos.
+        /// </summary>
+        /// <param name="pNombreRelacion">Nombre de la relación.</param>
+        /// <param name="pItems">Número de ítems.</param>
+        /// <param name="pDicRelaciones">Diccionario con las relaciones.</param>
         public static void ProcesarRelaciones(string pNombreRelacion, Dictionary<string, List<string>> pItems, ref Dictionary<string, List<DataQueryRelaciones>> pDicRelaciones)
         {
             foreach (string itemA in pItems.Keys)
@@ -1425,7 +1439,6 @@ namespace Hercules.ED.GraphicEngine.Models
         #endregion
 
         #region --- Excepciones
-
         public static void ControlarExcepcionesBarrasX(Grafica pGrafica)
         {
             if (pGrafica.config == null)
@@ -1464,7 +1477,6 @@ namespace Hercules.ED.GraphicEngine.Models
                 throw new Exception("No se ha configurado dimensiones.");
             }
         }
-
         public static void ControlarExcepcionesCircular(Grafica pGrafica)
         {
             if (pGrafica.config == null)
