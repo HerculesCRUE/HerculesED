@@ -75,7 +75,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         }
 
         [HttpPost("ExportarLimitado")]
-        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [Optional] List<string> listaId)
+        public FileResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [Optional] List<string> listaId)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -94,8 +94,17 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             exporta.ExportaTextoLibre(entity, listaId);
 
 
+            Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
-            return Ok();
+            //Aumento el tiempo de espera a 10 minutos como maximo
+            client.Endpoint.Binding.CloseTimeout = new TimeSpan(0, 10, 0);
+            client.Endpoint.Binding.SendTimeout = new TimeSpan(0, 10, 0);
+
+            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", "spa");
+            var resp = peticion.Result.@return;
+            client.Close();
+
+            return File(resp.dataHandler, "application/pdf");
         }
     }
 }
