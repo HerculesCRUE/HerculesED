@@ -196,28 +196,7 @@
           }
         ]
       }
-    },
-    {
-      "identificador": "666",
-      "nombre": {
-        "es": "Nombre de la Gráfica Circular de EJEMPLO 3 - Gráfica Circular"
-      },
-      "tipo": "Circular",
-      "anchura12": 6,
-      "config": {
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Publicaciones de revista Lecture Notes"
-            },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title",
-            "limite": 10,
-            "color": "#572364",
-            "colorMaximo": "#cb3234"
-          }
-        ]
-      }
-    },
+    },    
     {
       "identificador": "nodes-666",
       "nombre": {
@@ -229,10 +208,12 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Publicaciones de revista Lecture Notes"
+              "es": "Categorías de los Artículos Científicos"
             },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title='Lecture Notes in Computer Science'",
-            "color": "#DAF7A6"
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "numMaxNodos": 10,
+            "colorNodo": "",
+            "colorLinea": ""
           }
         ]
       }
