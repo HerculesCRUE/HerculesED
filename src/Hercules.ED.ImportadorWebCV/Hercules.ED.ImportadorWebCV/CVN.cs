@@ -76,7 +76,7 @@ namespace ImportadorWebCV
         public string Signature { get; set; }
 
         /// <remarks/>
-        public byte SignatureOrder { get; set; }
+        public int SignatureOrder { get; set; }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]

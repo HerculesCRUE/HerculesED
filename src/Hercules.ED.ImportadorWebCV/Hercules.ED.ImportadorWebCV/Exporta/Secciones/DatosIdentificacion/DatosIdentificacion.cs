@@ -6,10 +6,12 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Utils;
 
-namespace ImportadorWebCV.Exporta.Secciones
+namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
 {
     public class DatosIdentificacion : SeccionBase
     {
+        private List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/personalData" };
+
         public DatosIdentificacion(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
 
@@ -20,12 +22,20 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="seccion"></param>
-        public void ExportaDatosIdentificacion(Entity entity, string seccion, [Optional] List<string> secciones)
+        public void ExportaDatosIdentificacion(Entity entity, string seccion, [Optional] List<string> listaId)
         {
-            if (!UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"))
+            List<CvnItemBean> listado = new List<CvnItemBean>();
+            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
+            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null)
             {
-                return;
-            } 
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
+                if (listadoIdentificadores.Count == 0)
+                {
+                    return;
+                }
+            }
             CvnItemBean itemBean = new CvnItemBean()
             {
                 Code = "000.010.000.000",

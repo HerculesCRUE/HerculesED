@@ -10,7 +10,7 @@ namespace EditorCV.Models.API.Response
     /// <summary>
     /// Modelo de una pestaña del CV
     /// </summary>
-    public class Tab
+    public class Tab:AuxTab
     {
         /// <summary>
         /// Secciones de la pestaña del CV

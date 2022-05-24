@@ -18,25 +18,25 @@
     <Content Update="Config\configOAuth\OAuthV3.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\PersonalData.json">
+    <Content Update="Config\TabTemplates\1.-PersonalData.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\TeachingExperience.json">
+    <Content Update="Config\TabTemplates\3.-TeachingExperience.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\Qualifications.json">
+    <Content Update="Config\TabTemplates\4.-Qualifications.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\ResearchObjects.json">
+    <Content Update="Config\TabTemplates\8.-ResearchObjects.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\ProfessionalSituation.json">
+    <Content Update="Config\TabTemplates\2.-ProfessionalSituation.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\FreeTextSummary.json">
+    <Content Update="Config\TabTemplates\7.-FreeTextSummary.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\ScientificActivity.json">
+    <Content Update="Config\TabTemplates\5.-ScientificActivity.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

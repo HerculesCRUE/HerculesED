@@ -1,10 +1,3 @@
-$(function() {
-    edicionCV.init();
-});
-
-
-//var urlEdicionCV = "https://localhost:44360/EdicionCV/";
-//var urlGuardadoCV = "https://localhost:44360/GuardadoCV/";
 var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
 var urlGuardadoCV = "http://serviciosedma.gnoss.com/editorcv/GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];
@@ -276,6 +269,72 @@ var edicionCV = {
 			align-items: center;
 		}
 
+        /* WYSIWYG Editor */
+        .edmaTextEditor {
+            width: 100%;
+            min-height: 18rem;
+           
+            border-top: 2px solid #4a4a4a;
+            border-radius: 3px;
+            margin: 2rem 0;
+        }
+
+        .edmaTextEditor .toolbar .line {
+            display: flex;
+            border: 1px solid #e2e2e2;
+        }
+
+        .edmaTextEditor .toolbar .line .box {
+            display: flex;
+        }
+
+        .edmaTextEditor .toolbar .line .box .editor-btn {
+            transition: 0.2s ease all;
+        }
+
+        .edmaTextEditor .toolbar .line .box .editor-btn:hover {
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .edmaTextEditor .toolbar .line .box .editor-btn.active {
+            background-color: #e1e1e1;
+        }
+
+        .edmaTextEditor .toolbar .line .box .editor-btn.icon img {
+            width: 16px;
+            padding: 9px;
+            box-sizing: content-box;
+        }
+
+        .visuell-view[placeholder]:empty:before {
+            content: attr(placeholder);
+            color: #AAA; 
+        }
+        
+        .visuell-view[placeholder]:empty:focus:before {
+            content: "";
+        }
+
+        .edmaTextEditor .visuell-view {
+            line-height: 1.5;
+            box-sizing: border-box;
+            outline: none;
+            display: inline-block;
+            min-height: inherit;
+            overflow-y: auto;
+            width: inherit;
+            overflow-x: auto;
+        }
+        .edmaTextEditor[disabled] .toolbar {
+            pointer-events:none;
+
+        }
+        .edmaTextEditor[disabled] {
+            opacity: 0.5;
+            background: #CCC;
+        }
+
 		</style>`);
 
         //Carga de secciones principales
@@ -349,9 +408,9 @@ var edicionCV = {
 							plegar=false;
 						}
 					});
-					
-					$('div[section="' + data.sections[i].identifier+'"] textarea').each(function() {
-						if($(this).val()!='')
+                    //
+					$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
+						if($(this).html()!='')
 						{
 							plegar=false;
 						}
@@ -1814,7 +1873,7 @@ var edicionCV = {
         var disabled = '';
         if (pDisabled && !pEntity_cv) {
             disabled = 'disabled';
-			css+=" disabled ";
+			css +=" disabled ";
         }
 		
 		
@@ -1829,14 +1888,39 @@ var edicionCV = {
 				{
 					valorIdioma=pValuesMultilang[language];
 				}
-				html+=`<textarea multilang="${language}" propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}" style="display:none">${valorIdioma}</textarea>`;
+                console.log(css);
+                html+=`<div class="edmaTextEditor multilangcontainer ${css.includes("disabled") ? "disabled":""}" multilangcontainer="${language}" style="display:none">
+                            <div class="toolbar">
+                                <div class="line">
+                                    <div class="box">
+                                        <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+                                            <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                        </span>        
+                                    </div>   
+                                </div>
+                            </div>
+                            <div multilang="${language}" class="form-control not-outline ${css} visuell-view" propertyrdf="${property}" ${css.includes("disabled") ? "":"contenteditable"} placeholder="${placeholder}" type="text" >${value}</div>
+                        </div>`;
+				//html+=`<textarea multilang="${language}" propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}" style="display:none">${valorIdioma}</textarea>`;
 			});
 		}
-		html+=`<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
+        html+=`<div ${disabled} class="edmaTextEditor ${css.replace('multilang','multilangcontainer')}">
+                    <div class="toolbar">
+                        <div class="line">
+                            <div class="box">
+                                <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+                                    <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                </span>        
+                            </div>   
+                        </div>
+                    </div>
+                    <div class="form-control not-outline visuell-view ${css}" propertyrdf="${property}" ${disabled.length == 0 ? "contenteditable":""} placeholder="${placeholder}" type="text">${value}</div>
+                </div>`;
+            
+		//html+=`<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
 		return html;
     },
     printSelectCombo: function(property, pId, pItems, pComboDependency, required, pDisabled,pEntity_cv,pDependency) {
-        
         var css = "";
         if (required) {
             css = "obligatorio";
@@ -1889,6 +1973,7 @@ var edicionCV = {
     },
     printThesaurus: function(property, values, pItems, required, pDisabled) {        
         var css = "";
+        
         if (required) {
             css = "obligatorio";
         }
@@ -2865,19 +2950,22 @@ var edicionCV = {
         if(lang=='es')
 		{
 			//Ocultamos todos los campos multiidioma que tienen idioma
-			contenedor.find('input.multilang[multilang],textarea.multilang[multilang]').hide();
+			contenedor.find('input.multilang[multilang],div.multilang[multilang], div.multilangcontainer[multilangcontainer]').hide();
 			//Mostramos todos los campos multiidioma que no tienen idioma
-			contenedor.find('input.multilang:not([multilang]),textarea.multilang:not([multilang])').show();		
+			contenedor.find('input.multilang:not([multilang]),div.multilang:not([multilang]), div.multilangcontainer:not([multilangcontainer])').show();		
 			//Hablitamos todos los campos q(que no sean campos deshabilitados)
-			contenedor.find('input:not(.disabled),select:not(.disabled),textarea:not(.disabled)').removeAttr('disabled');				
+			contenedor.find('input:not(.disabled),select:not(.disabled)').removeAttr('disabled');		
+            contenedor.find('div.edmaTextEditor:not(.disabled)').removeAttr('disabled').find('.visuell-view').attr('contenteditable',"true");		
 		}else
 		{
 			//Ocultamos todos los campos multiidioma 
-			contenedor.find('input.multilang,textarea.multilang').hide();
+			contenedor.find('input.multilang,div.multilang,div.multilangcontainer').hide();
 			//Mostramos todos los campos multiidioma que tienen el idioma seleccionado
-			contenedor.find(`input.multilang[multilang="${lang}"],textarea.multilang[multilang="${lang}"]`).show();
+			contenedor.find(`input.multilang[multilang="${lang}"],div.multilang[multilang="${lang}"],div.multilangcontainer[multilangcontainer="${lang}"]`).show();
 			//Deshablitamos todos los campos que no son multiidioma
-			contenedor.find('input:not(.multilang),select,textarea:not(.multilang)').attr('disabled','disabled');			
+			contenedor.find('input:not(.multilang),select,div.edmaTextEditor:not(.multilangcontainer)').attr('disabled','disabled');
+            contenedor.find('div.edmaTextEditor:not(.multilangcontainer)').find('.visuell-view').removeAttr('contenteditable');
+            console.log(contenedor.find('div.edmaTextEditor:not(.multilangcontainer)').find('.visuell-view'));
 		}
     },
     //Fin de métodos de edición
@@ -3005,11 +3093,11 @@ var edicionCV = {
         $('.multiple:not(.entityauxcontainer ):not(.entitycontainer ) .acciones-listado-edicion .add').off('click').on('click', function(e) {
             var contenedor = $(this).closest('.multiple');
             var item = $(this).closest('.item');
-            if (item.find('input, select, textarea').val() == '') {
+            if (item.find('input, select').val() == '' || item.find('div.visuell-view').html() == '') {
                 return;
             }
             var itemClone = item.clone();
-            itemClone.find('input, select, textarea').each(function(index) {
+            itemClone.find('input, select, div.visuell-view').each(function(index) {
                 if ($(this).attr('propertyrdf_aux') != null) {
                     $(this).attr('propertyrdf', $(this).attr('propertyrdf_aux'));
                     $(this).removeAttr('propertyrdf_aux');
@@ -3017,12 +3105,16 @@ var edicionCV = {
             });
             itemClone.removeClass('aux');
             itemClone.addClass('added');
-            itemClone.find('input, select, textarea').attr('disabled', '');
+            itemClone.find('input, select, div.edmaTextEditor').attr('disabled', ''); //TODO TEST EdmaTextEditor TextArea ; 
+            itemClone.find('div.edmaTextEditor').find('div.visuell-view').removeAttr('contenteditable');
             itemClone.find('.acciones-listado-edicion').replaceWith(that.printDeleteButton());
             contenedor.append(itemClone);
-            itemClone.find('input, select, textarea').val(item.find('input, select, textarea').val());
-            item.find('input, select, textarea').val('');
-            item.find('input, select, textarea').change();
+            itemClone.find('input, select').val(item.find('input, select').val());
+            itemClone.find('div.visuell-view').html(item.find('div.visuell-view').html());
+            item.find('input, select').val('');
+            item.find('div.visuell-view').html('');
+            item.find('input, select, div.visuell-view').change();
+
 
             if (contenedor.hasClass('topic')) {
                 edicionCV.repintarTopic();
@@ -3306,7 +3398,6 @@ var edicionCV = {
                 }
             });
         });
-
         operativaFormularioAutor.init();
 
         //Enganchamos comportamiento buscar	firmas		
@@ -3626,9 +3717,9 @@ var edicionCV = {
         });
 
         //Petición de enriquecimiento
-        $('form[rdftype="http://purl.org/ontology/bibo/Document"] textarea[propertyrdf="http://purl.org/ontology/bibo/abstract"]').off('focusout').on('focusout', function(e) {
+        $('form[rdftype="http://purl.org/ontology/bibo/Document"] div.visuell-view[propertyrdf="http://purl.org/ontology/bibo/abstract"]').off('focusout').on('focusout', function(e) {
             //TODO: Revisar tema del documento PDF. De momento, siempre se le pasa NULL.
-            edicionCV.cargarAreasEtiquetasEnriquecidas($('form[rdftype="http://purl.org/ontology/bibo/Document"] input[propertyrdf="http://w3id.org/roh/title"]').val(), $('form[rdftype="http://purl.org/ontology/bibo/Document"] textarea[propertyrdf="http://purl.org/ontology/bibo/abstract"]').val(), null);
+            edicionCV.cargarAreasEtiquetasEnriquecidas($('form[rdftype="http://purl.org/ontology/bibo/Document"] input[propertyrdf="http://w3id.org/roh/title"]').val(), $('form[rdftype="http://purl.org/ontology/bibo/Document"] div.visuell-view[propertyrdf="http://purl.org/ontology/bibo/abstract"]').html(), null);
         });
 		
 		//campos de texto dependientes
@@ -3738,6 +3829,13 @@ var edicionCV = {
 			$(this).addClass('active');
 			that.cambiarIdiomaEdicion($(this).attr('lang'),$(this).closest('.panel-collapse'));
         });
+        //Añadimos los listeners al editor WYSIWYG
+        const editores = document.getElementsByClassName('edmaTextEditor');
+        for (let i = 0; i < editores.length; i++) {
+            new textField(editores[i]);
+        }
+        document.removeEventListener('selectionchange', selectionChange);
+        document.addEventListener('selectionchange', selectionChange);
 
         return;
     },
@@ -3746,15 +3844,15 @@ var edicionCV = {
         //Validamos los campos obligatorios
         var camposObligatorios = [];
         //Validamos inputs que no pertenezcan a una entidad auxiliar (ni sean multiples)
-        $(formulario).find('input.obligatorio, select.obligatorio, textarea.obligatorio').each(function(index) {
+        $(formulario).find('input.obligatorio, select.obligatorio, div.visuell-view.obligatorio').each(function(index) {
             if ($(this).closest('.entityauxcontainer,.entitycontainer,.multiple').length == 0) {
                 if ($(this).val() == null || $(this).val() == '') {
-					if($(this).is('input')||$(this).is('textarea'))
+					if($(this).is('input')||$(this).is('div.visuell-view'))
 					{						
 						//Si es un input o textarea sólo es obligatorio si no tiene idioma y está visible
 						if(
 							($(this).closest('.form-group').attr('style')==null || $(this).closest('.form-group').attr('style').replaceAll(' ','').replaceAll(';','')!='display:none') && $(this).attr('multilang')==null
-							)
+						)
 						{
 							camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
 						}
@@ -3901,7 +3999,7 @@ var edicionCV = {
 			entidad.pLang = lang;
             entidad.properties = [];
 			entidad.properties_cv = [];
-            $(pFormulario).find('input, select, textarea').each(function(index) {				
+            $(pFormulario).find('input, select, div.visuell-view').each(function(index) {				
 				if($(this).attr('type')!='file' && !$(this).hasClass('autocompleteentity'))
 				{
 					var entityCV=$(this).hasClass('entity_cv');
@@ -3909,10 +4007,14 @@ var edicionCV = {
 						if ($(this).closest('.item').hasClass('aux') || $(this).hasClass('aux')) {
 							//Si es multiple y no es una entidad auxiliar y no tiene otros valores añadidos continua pero con valor vacío
 							if ($(this).closest('.multiple:not(.entityauxcontainer )').length > 0 && $(this).closest('.multiple:not(.entityauxcontainer )').find('.added').length == 0) {
-								$(this).val('');
-							} else {
-								return;
-							}
+								if ($(this).is('div.visuell-viewn')){
+                                        $(this).html('');
+                                    }else{
+                                        $(this).val('');
+                                    }
+                                    }else{
+                                        return;
+                                    }
 						}
 						var property = $(this).attr('propertyrdf');
 						//Cargar propiedades padre
@@ -3950,6 +4052,10 @@ var edicionCV = {
 							}
 						}
 						var valor = $(this).val();
+                        if($(this).is("div"))
+                        {
+                            valor = $(this).html();
+                        }
 						if ($(this).closest('.entityaux').length == 1) {
 							var entityParent = $(this).closest('.entityaux').attr('about');
 							valor = entityParent + "@@@" + valor;
@@ -4299,6 +4405,7 @@ var edicionCV = {
 		resourceList.addClass(clase);
     }
 };
+
 
 //Métodos auxiliares
 function EliminarAcentos(texto) {
@@ -6247,3 +6354,72 @@ tooltipsCV.traducciones= function () {
 		}
 	});
 };
+
+class textField {
+    constructor(editor) {
+      let button = editor.querySelector('.editor-btn');
+      let visuellView = editor.getElementsByClassName('visuell-view')[0];
+      button.removeEventListener('click', this.boldButton);
+      button.addEventListener('click', this.boldButton);
+      visuellView.removeEventListener('paste', this.pasteEvent);
+      visuellView.addEventListener('paste', this.pasteEvent);
+      editor.removeEventListener('focusout', this.focusout)
+      editor.addEventListener('focusout', this.focusout);
+      //Evita que el tab salte a otro elemento
+      visuellView.removeEventListener('keydown', this.keyEvent);
+      visuellView.addEventListener('keydown', this.keyEvent);
+      button.removeEventListener('mousedown', this.mouseEvent);
+      button.addEventListener('mousedown', this.mouseEvent);
+    }
+    mouseEvent(e){
+        e.preventDefault();
+    }
+    boldButton(e) {
+      document.execCommand("bold", false);
+      let button = e.currentTarget;
+      if (button.classList.contains('active')) {
+        button.classList.remove('active');
+      } else {
+        button.classList.add('active');
+      }
+    }
+    focusout(e) {
+      let button = e.target.parentNode.querySelector('.editor-btn');
+      let texto = e.target.innerHTML;
+      if (texto.substr(texto.length - 4) == '<br>') {
+      e.target.lastElementChild.remove();
+    }
+      button.classList.remove('active');
+    }
+    pasteEvent(e) {
+      e.preventDefault();
+      let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+      text = text.replaceAll("\n", "<br>");
+      document.execCommand('insertHTML', false, text);
+    }
+    keyEvent(e){
+        if (e.keyCode == 9) {
+            e.preventDefault();
+            document.execCommand('insertText', false, '    ');
+          } //if enter, disable bold 
+        else if (e.keyCode == 13) {
+            let button = e.currentTarget.parentNode.querySelector('.editor-btn');
+            button.classList.remove('active');
+        }
+    }
+
+
+  }
+
+  function selectionChange(e) {
+    let anchor = window.getSelection().anchorNode;
+    //En elementos desabilitados no existe el anchorNode;
+    if (!anchor) return; 
+    let elem = anchor.parentNode;
+    if (!(elem.classList.contains("visuell-view") || elem.parentNode.classList.contains("visuell-view"))) return;
+    let button = elem.tagName == "DIV" ? elem.parentNode.querySelector('.editor-btn') : elem.parentNode.parentNode.querySelector('.editor-btn');
+    button.classList.remove('active');
+    if (elem.tagName == "B") {
+      button.classList.add('active');
+    }
+  }

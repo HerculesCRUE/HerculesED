@@ -16,6 +16,7 @@ using EditorCV.Models.Enrichment;
 using EditorCV.Controllers;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
 using Hercules.ED.DisambiguationEngine.Models;
+using System.Collections.Concurrent;
 
 namespace EditorCV.Models
 {
@@ -41,6 +42,21 @@ namespace EditorCV.Models
 
 
         #region Métodos públicos
+
+        /// <summary>
+        /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
+        /// </summary>
+        /// <returns></returns>
+        public string GetCVUrl(string userID, string lang)
+        {
+            string cv = UtilityCV.GetCVFromUser(userID);
+            List<ResponseGetUrl> urlList = mResourceApi.GetUrl(new List<Guid>() { mResourceApi.GetShortGuid(cv) },lang);
+            if(urlList.Count>0)
+            {
+                return urlList.First(x => x.resource_id == mResourceApi.GetShortGuid(cv)).url;
+            }
+            return null;
+        }
 
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad
@@ -236,12 +252,12 @@ namespace EditorCV.Models
         /// <param name="pRdfType">Rdf:type de la entidad de la sección</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <returns></returns>
-        public Object GetTab(string pCVId, string pId, string pRdfType, string pLang)
+        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang)
         {
 
             //Obtenemos el template
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfType);
-            Object respuesta = null;
+            AuxTab respuesta = null;
             if (!template.personalData)
             {
                 //Obtenemos los datos necesarios para el pintado
@@ -251,7 +267,6 @@ namespace EditorCV.Models
             }
             else
             {
-
                 respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);
             }
             return respuesta;

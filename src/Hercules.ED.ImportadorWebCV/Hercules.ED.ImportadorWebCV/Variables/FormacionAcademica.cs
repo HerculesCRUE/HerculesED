@@ -47,6 +47,7 @@
         public const string doctoradosDirectorTesisNombre = "http://w3id.org/roh/directorName";
         public const string doctoradosDirectorTesisPrimerApellido = "http://w3id.org/roh/directorFirstSurname";
         public const string doctoradosDirectorTesisSegundoApellido = "http://w3id.org/roh/directorSecondSurname";
+        public const string doctoradosCodirectorTesisOrden = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
         public const string doctoradosCodirectorTesisFirma = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
         public const string doctoradosCodirectorTesisNombre = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
         public const string doctoradosCodirectorTesisPrimerApellido = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";

@@ -6,6 +6,7 @@ using EditorCV.Controllers;
 using EditorCV.Models.Enrichment;
 using EditorCV.Models;
 using EditorCV.Models.API.Input;
+using EditorCV.Models.Utils;
 
 namespace GuardadoCV.Controllers
 {
@@ -20,6 +21,26 @@ namespace GuardadoCV.Controllers
         {
             _Configuracion = pConfig;
         }
+
+        /// <summary>
+        /// Obtiene la URL de un CV a partir de un usuario
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        [HttpGet("GetCVUrl")]
+        public IActionResult GetCVUrl(string userID,string lang)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetCVUrl(userID,lang));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
 
         /// <summary>
         /// Obtiene un listado de sugerencias con datos existentes para esa propiedad en algún item de CV

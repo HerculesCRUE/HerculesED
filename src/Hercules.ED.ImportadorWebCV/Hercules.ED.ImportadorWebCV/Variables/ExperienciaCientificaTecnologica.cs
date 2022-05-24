@@ -181,6 +181,7 @@
         public const string obrasArtisticasAutoresPrimerApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";
         public const string obrasArtisticasAutoresSegundoApellido = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://w3id.org/roh/secondFamilyName";
         public const string obrasArtisticasAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
+        public const string obrasArtisticasAutoresOrden = "http://purl.org/ontology/bibo/authorList@@@http://w3id.org/roh/PersonAux|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
         public const string obrasArtisticasPaisExpo = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string obrasArtisticasCCAAExpo = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string obrasArtisticasCiudadExpo = "https://www.w3.org/2006/vcard/ns#locality";

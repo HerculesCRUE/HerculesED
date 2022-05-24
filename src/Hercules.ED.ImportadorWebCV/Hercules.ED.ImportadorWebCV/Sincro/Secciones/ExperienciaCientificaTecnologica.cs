@@ -1076,7 +1076,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.grupoIDIClaseColaboracion, item.GetTipoColaboracionPorIDCampo("050.010.000.160"))
                         ));
-                        GrupoIDIAutores(item, entidadAux);
+                        GrupoIDIAutor(item, entidadAux);
                         GrupoIDIEntidadAfiliacion(item, entidadAux);
                         //GrupoIDIPalabrasClave(item, entidadAux);
 
@@ -1137,11 +1137,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a los Autores/as.
+        /// pertenecientes al Autor/a.
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void GrupoIDIAutores(CvnItemBean item, Entity entidadAux)
+        private void GrupoIDIAutor(CvnItemBean item, Entity entidadAux)
         {
             string propiedadAutorFirma = Variables.ExperienciaCientificaTecnologica.grupoIDIFirmaIP;
             string propiedadAutorNombre = Variables.ExperienciaCientificaTecnologica.grupoIDINombreIP;
@@ -1227,6 +1227,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux">entidadAux</param>
         private void ObrasArtisticasAutores(CvnItemBean item, Entity entidadAux)
         {
+            string propiedadAutorOrden = Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresOrden;
             string propiedadAutorFirma = Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresFirma;
             string propiedadAutorNombre = Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresNombre;
             string propiedadAutorPrimerApellido = Variables.ExperienciaCientificaTecnologica.obrasArtisticasAutoresPrimerApellido;
@@ -1240,11 +1241,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(autor.GetNombreAutor())) { continue; }
 
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                Property propertyAutorOrden = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadAutorOrden);
                 Property propertyAutorFirma = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadAutorFirma);
                 Property propertyAutorNombre = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadAutorNombre);
                 Property propertyAutorPrimerApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadAutorPrimerApellido);
                 Property propertyAutorSegundoApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadAutorSegundoApellido);
 
+                UtilitySecciones.CheckProperty(propertyAutorOrden, entidadAux,
+                    UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetOrdenAutor()), propiedadAutorOrden);
                 UtilitySecciones.CheckProperty(propertyAutorFirma, entidadAux,
                     UtilitySecciones.StringGNOSSID(entityPartAux, autor.GetFirmaAutor()), propiedadAutorFirma);
                 UtilitySecciones.CheckProperty(propertyAutorNombre, entidadAux,

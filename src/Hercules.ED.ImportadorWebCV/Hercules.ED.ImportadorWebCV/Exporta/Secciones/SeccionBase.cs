@@ -83,7 +83,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             return null;
         }
 
-        public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
+        public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
@@ -195,7 +195,7 @@ namespace ImportadorWebCV.Exporta.Secciones
         }
 
 
-        public Dictionary<string, Entity> GetListLoadedEntity(List<string> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
+        public Dictionary<string, Entity> GetListLoadedEntity(List<Tuple<string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
@@ -213,7 +213,7 @@ namespace ImportadorWebCV.Exporta.Secciones
         OPTIONAL{{
             ?o ?q ?w .
         }}
-        FILTER(?s in (<{string.Join(">,<", listadoId)}>))
+        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
     }}
     order by desc(?s) desc(?p) desc(?o)
 }} limit {numLimit} offset {offset}";
@@ -237,7 +237,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             {
                 throw;
             }
-            foreach (string pId in listadoId)
+            foreach (string pId in listadoId.Select(x => x.Item1))
             {
                 Entity entity = new Entity()
                 {
@@ -375,12 +375,12 @@ namespace ImportadorWebCV.Exporta.Secciones
                                 property = new Entity.Property(pPropAcumuladoAux, new List<string>());
                                 pEntity.properties.Add(property);
                             }
-                            if (MultilangProp != null && MultilangProp.ContainsKey(pId) && MultilangProp[pId].Any(x => x.Values.Where(x => x.value.Equals(pPropAcumuladoAux)).Any()))
+                            if (MultilangProp != null && MultilangProp.ContainsKey(pId) && MultilangProp[pId].Any(x => x.Values.Where(x => x.value.Equals(p)).Any()))
                             {
-                                List<Dictionary<string, Data>> xx = MultilangProp[pId].Where(x => x["prop"].value.Equals(pPropAcumuladoAux)).ToList();
+                                List<Dictionary<string, Data>> xx = MultilangProp[pId].Where(x => x["prop"].value.Equals(p)).ToList();
                                 foreach (Dictionary<string, Data> keyValuePairs in xx)
                                 {
-                                    if (keyValuePairs.TryGetValue("prop", out Data d) && d.value.Equals(pPropAcumuladoAux))
+                                    if (keyValuePairs.TryGetValue("prop", out Data d) && d.value.Equals(p))
                                     {
                                         keyValuePairs.TryGetValue("value", out Data propiedadInsertar);
                                         property.values.Add(propiedadInsertar.value);

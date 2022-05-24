@@ -54,7 +54,9 @@ namespace Hercules.ED.GraphicEngine.Models
     {
         public Dictionary<string, string> nombre { get; set; }
         public string filtro { get; set; }
+        public int limite { get; set; }
         public string color { get; set; }
+        public string colorMaximo { get; set; }
         public string tipoDimension { get; set; }
         public string calculo { get; set; }
         public string stack { get; set; }

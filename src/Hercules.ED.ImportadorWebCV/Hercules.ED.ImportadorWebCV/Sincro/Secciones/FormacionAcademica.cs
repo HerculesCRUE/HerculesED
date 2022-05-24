@@ -549,6 +549,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             List<CvnItemBeanCvnAuthorBean> listadoCodirectores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("020.010.020.180");
 
+            string propiedadCodirectorTesisOrden = Variables.FormacionAcademica.doctoradosCodirectorTesisOrden;
             string propiedadCodirectorTesisFirma = Variables.FormacionAcademica.doctoradosCodirectorTesisFirma;
             string propiedadCodirectorTesisNombre = Variables.FormacionAcademica.doctoradosCodirectorTesisNombre;
             string propiedadCodirectorTesisPrimerApellido = Variables.FormacionAcademica.doctoradosCodirectorTesisPrimerApellido;
@@ -560,11 +561,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(codirector.GetNombreAutor())) { continue; }
 
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                Property propertyCodirectorTesisOrden = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadCodirectorTesisOrden);
                 Property propertyCodirectorTesisFirma = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadCodirectorTesisFirma);
                 Property propertyCodirectorTesisNombre = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadCodirectorTesisNombre);
                 Property propertyCodirectorTesisPrimerApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadCodirectorTesisPrimerApellido);
                 Property propertyCodirectorTesisSegundoApellido = entidadAux.properties.FirstOrDefault(x => x.prop == propiedadCodirectorTesisSegundoApellido);
 
+                UtilitySecciones.CheckProperty(propertyCodirectorTesisOrden, entidadAux,
+                    UtilitySecciones.StringGNOSSID(entityPartAux, codirector.GetOrdenAutor()), propiedadCodirectorTesisOrden);
                 UtilitySecciones.CheckProperty(propertyCodirectorTesisFirma, entidadAux,
                     UtilitySecciones.StringGNOSSID(entityPartAux, codirector.GetFirmaAutor()), propiedadCodirectorTesisFirma);
                 UtilitySecciones.CheckProperty(propertyCodirectorTesisNombre, entidadAux,
