@@ -32,7 +32,7 @@ var cargarCVId = {
 		{
 			var urlGetCVUrl = urlEdicionCV+'GetCVUrl?userID='+$('#inpt_usuarioID').val()+ "&lang=" + lang;
 			$.get(urlGetCVUrl, null, function(data) {
-				this.CVId=data;
+				that.CVId=data;
 				that.printCVId();
 				setCacheWithExpiry(keyCache,data,60000);
 			});
