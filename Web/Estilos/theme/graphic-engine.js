@@ -76,6 +76,9 @@ var metricas = {
                         e._private.data.name = "";
                     }
                 });
+
+                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append("prueba");
+
             } else {
                 var myChart = new Chart(ctx, data);
             }
@@ -190,6 +193,7 @@ var metricas = {
         $('#page_' + pIdPagina + ' .grafica').each(function() {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
+                        <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
                         <div id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else

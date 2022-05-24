@@ -63,8 +63,11 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 if (itemGrafica.tipo == EnumGraficas.Nodos)
                 {
-                    itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
-                    configPagina.id = "nodes-" + configPagina.id;
+                    if (!itemGrafica.identificador.Contains("nodes"))
+                    {
+                        itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
+                        configPagina.id = "nodes-" + configPagina.id;
+                    }
                     configPagina.libreria = "cytoscape";
                 }
                 else
@@ -866,6 +869,8 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.layout.initialTemp = 200;
             grafica.layout.coolingFactor = 0.95f;
             grafica.layout.minTemp = 1.0f;
+            // Titulo
+            grafica.title = pGrafica.config.dimensiones.FirstOrDefault().nombre.Values.FirstOrDefault();
 
             // Layout Nodos/Lineas
             grafica.style = new List<Style>();
@@ -905,9 +910,6 @@ namespace Hercules.ED.GraphicEngine.Models
             layoutLineas.line_color = pGrafica.config.dimensiones.FirstOrDefault().colorLinea;
             estiloLinea.style = layoutLineas;
             grafica.style.Add(estiloLinea);
-            Options options = new Options();
-            options.plugins.title.text = GetTextLang(pLang, pGrafica.nombre);
-            grafica.options = options;
             #endregion
 
             //Nodos            
@@ -1026,7 +1028,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 if (itemsSeleccionados.Count > 0)
                 {
-                    //Recuperamos los nombres de caregorías y creamos los nodos
+                    //Recuperamos los nombres de categorías y creamos los nodos
                     select = new StringBuilder();
                     where = new StringBuilder();
 

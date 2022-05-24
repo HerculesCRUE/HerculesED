@@ -6,6 +6,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
 {
     public class GraficaNodos : GraficaBase
     {
+        public string title { get; set; }
         public string container { get; set; }
         public Layout layout { get; set; }
         public List<Style> style { get; set; }
