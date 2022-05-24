@@ -100,11 +100,14 @@ namespace EditorCV.Models.Utils
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pDicQueries">Caché para las queries (select + where +graph)</param>
         /// <returns></returns>
-        public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetProperties(HashSet<string> pIds, string pGraph, List<PropertyData> pProperties, string pLang, Dictionary<string, SparqlObject> pDicQueries)
+        public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetProperties(HashSet<string> pIds, string pGraph,
+            List<PropertyData> pProperties, string pLang, Dictionary<string, SparqlObject> pDicQueries)
         {
             int paginacion = 10000;
             int maxIn = 1000;
             ConcurrentDictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = new ConcurrentDictionary<string, List<Dictionary<string, SparqlObject.Data>>>();
+            ConcurrentDictionary<string, SparqlObject> pConcDicQueries = new ConcurrentDictionary<string, SparqlObject>(pDicQueries);
+
 
             SparqlObject sparqlObject = null;
             //1º Hacemos las que no tienen orden
@@ -131,14 +134,14 @@ namespace EditorCV.Models.Utils
                                             }} limit {limit} offset {offset}";
                         string claveCache = select + where + pGraph;
                         SparqlObject sparqlObjectAux = null;
-                        if (pDicQueries.ContainsKey(claveCache))
+                        if (pConcDicQueries.ContainsKey(claveCache))
                         {
-                            sparqlObjectAux = pDicQueries[claveCache];
+                            sparqlObjectAux = pConcDicQueries[claveCache];
                         }
                         else
                         {
                             sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-                            pDicQueries[claveCache] = sparqlObjectAux;
+                            pConcDicQueries[claveCache] = sparqlObjectAux;
                         }
                         limit = sparqlObjectAux.results.bindings.Count;
                         offset += sparqlObjectAux.results.bindings.Count;
@@ -205,14 +208,14 @@ namespace EditorCV.Models.Utils
                                                 }} limit {limit} offset {offset}";
                             string claveCache = select + where + pGraph;
                             SparqlObject sparqlObjectAux = null;
-                            if (pDicQueries.ContainsKey(claveCache))
+                            if (pConcDicQueries.ContainsKey(claveCache))
                             {
-                                sparqlObjectAux = pDicQueries[claveCache];
+                                sparqlObjectAux = pConcDicQueries[claveCache];
                             }
                             else
                             {
                                 sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-                                pDicQueries[claveCache] = sparqlObjectAux;
+                                pConcDicQueries[claveCache] = sparqlObjectAux;
                             }
                             limit = sparqlObjectAux.results.bindings.Count;
                             offset += sparqlObjectAux.results.bindings.Count;
@@ -242,7 +245,8 @@ namespace EditorCV.Models.Utils
                 if (property.childs != null && property.childs.Count() > 0 && sparqlObject != null)
                 {
                     HashSet<string> ids = new HashSet<string>(sparqlObject.results.bindings.Where(x => x["p"].value == property.property).Select(x => x["o"].value).ToList());
-                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataAux = GetProperties(ids, property.graph, property.childs.ToList(), pLang, pDicQueries);
+                    Dictionary<string, SparqlObject> dicAux = new Dictionary<string, SparqlObject>(pConcDicQueries);
+                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataAux = GetProperties(ids, property.graph, property.childs.ToList(), pLang, dicAux);
                     foreach (string id in dataAux.Keys)
                     {
                         if (!data.ContainsKey(id))
@@ -284,7 +288,7 @@ namespace EditorCV.Models.Utils
                     string multilangProperties = fila["multilangProperties"].value;
                     string prop = fila["prop"].value;
                     string lang = fila["lang"].value;
-                    string value = fila["value"].value; 
+                    string value = fila["value"].value;
                     if (!entidadPropiedadesMultiIdioma.ContainsKey(entity))
                     {
                         entidadPropiedadesMultiIdioma.Add(entity, new Dictionary<string, List<MultilangProperty>>());
@@ -508,8 +512,8 @@ namespace EditorCV.Models.Utils
             {
                 if (mTabTemplates == null || mTabTemplates.Count != System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates").Count())
                 {
-                    ConcurrentBag<Tab> aux = new ConcurrentBag<Tab>();                    
-                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates").OrderByDescending(x=>x))
+                    ConcurrentBag<Tab> aux = new ConcurrentBag<Tab>();
+                    foreach (string file in System.IO.Directory.EnumerateFiles($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/TabTemplates").OrderByDescending(x => x))
                     {
                         Tab tab = JsonConvert.DeserializeObject<Tab>(System.IO.File.ReadAllText(file));
                         aux.Add(tab);

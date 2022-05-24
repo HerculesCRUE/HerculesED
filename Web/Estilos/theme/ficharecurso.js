@@ -331,6 +331,15 @@ function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation =
 }
 
 
+function zoomCyIn() {
+	window.cy.zoom(window.cy.zoom() + 0.2)
+}
+
+function zoomCyOut() {
+	window.cy.zoom(window.cy.zoom() - 0.2)
+}
+
+
 function PintarGraficaArania(data,idContenedor) {
 	let currentData = [...data];
 
