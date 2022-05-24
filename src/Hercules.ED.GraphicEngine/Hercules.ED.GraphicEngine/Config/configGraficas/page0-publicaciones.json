@@ -196,7 +196,7 @@
           }
         ]
       }
-    },
+    },    
     {
       "identificador": "666",
       "nombre": {
@@ -208,10 +208,12 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Publicaciones de revista Lecture Notes"
+              "es": "Categorías de los Artículos Científicos"
             },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title='Lecture Notes in Computer Science'",
-            "color": "#DAF7A6"
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "numMaxNodos": 10,
+            "colorNodo": "",
+            "colorLinea": ""
           }
         ]
       }
