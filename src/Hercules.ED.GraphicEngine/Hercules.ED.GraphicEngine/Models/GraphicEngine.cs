@@ -59,12 +59,18 @@ namespace Hercules.ED.GraphicEngine.Models
                     id = itemGrafica.identificador,
                     anchura = itemGrafica.anchura12
                 };
-             
-                if (itemGrafica.tipo == EnumGraficas.Nodos)
+
+                string prefijoNodos = "nodes";
+                string prefijoBarraHorizonal = "isHorizontal";
+                if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
-                    itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
-                    configPagina.id = "nodes-" + configPagina.id;
-                    configPagina.libreria = "cytoscape";
+                    itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
+                    configPagina.id = prefijoNodos + "-" + configPagina.id;
+                }
+                else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal))
+                {
+                    itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
+                    configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
                 }
 
                 // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
