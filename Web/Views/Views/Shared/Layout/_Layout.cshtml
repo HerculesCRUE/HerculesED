@@ -285,7 +285,7 @@
 
             <div class="body pmd-scrollbar mCustomScrollbar" data-mcs-theme="minimal-dark">
 				<div class="menuUsuario ">
-					<div class="group-collapse alertas">
+					<div class="group-collapse alertas hasCV" style="display:none">
 						<div id="alertas-usuario" class="collapse show">
 							<ul class="pmd-sidebar-nav">
 								<li>
@@ -297,11 +297,11 @@
 							</ul>
 						</div>
 					</div>
-					<div class="group-collapse curriculumvitae">
+					<div class="group-collapse curriculumvitae hasCV"  style="display:none">
 						<a href="#curriculumvitae" data-toggle="collapse" aria-expanded="true">@Html.Translate("CURRICULUM")</a>
 						<div id="curriculumvitae" class="collapse show">
 							<ul class="pmd-sidebar-nav">
-								<li class="liInicio">
+								<li class="liEditarCV">
 									<a href="javascript: void(0);">@Html.Translate("EDITAR_CV")</a>
 								</li>
 								<li class="liCluster">
@@ -319,7 +319,7 @@
 							</ul>
 						</div>
 					</div>
-					<div class="group-collapse cluster">
+					<div class="group-collapse cluster  hasCV"  style="display:none">
 						<a href="#cluster" data-toggle="collapse" aria-expanded="true">@Html.Translate("GESTION_CLUSTERS")</a>
 						<div id="cluster" class="collapse show">
 							<ul class="pmd-sidebar-nav">
