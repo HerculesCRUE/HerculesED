@@ -55,7 +55,7 @@ namespace EditorCV.Models
             {
                 return urlList.First(x => x.resource_id == mResourceApi.GetShortGuid(cv)).url;
             }
-            return null;
+            return "";
         }
 
         /// <summary>
