@@ -88,10 +88,6 @@
         "rellenarEjeX": false,
         "yAxisPrint": [
           {
-            "yAxisID": "y2",
-            "posicion": "right"
-          },
-          {
             "yAxisID": "y1",
             "posicion": "left"
           }

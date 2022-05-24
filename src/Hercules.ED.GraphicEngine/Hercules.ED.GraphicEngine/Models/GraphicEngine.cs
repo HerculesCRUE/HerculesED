@@ -64,7 +64,6 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
                     configPagina.id = "nodes-" + configPagina.id;
-                    configPagina.libreria = "cytoscape";
                 }
 
                 // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
@@ -427,15 +426,8 @@ namespace Hercules.ED.GraphicEngine.Models
             // Asignación de Options.
             Options options = new Options();
 
-            // Orientación            
-            if (!pGrafica.config.orientacionVertical)
-            {
-                options.indexAxis = "y";
-            }
-            else
-            {
-                options.indexAxis = "x";
-            }
+            // Orientación
+            options.indexAxis = "y";
 
             options.scales = new Dictionary<string, Eje>();
 
@@ -825,6 +817,12 @@ namespace Hercules.ED.GraphicEngine.Models
             GraficaNodos grafica = new GraficaNodos();
 
             #region --- Configuración
+            // Opciones interactivas
+            grafica.userZoomingEnabled = false;
+            grafica.zoomingEnabled = true;
+            grafica.minZoom = 0.5f;
+            grafica.maxZoom = 2.0f;
+
             // Layout Base
             grafica.layout = new Layout();
             grafica.layout.name = "cose";
@@ -843,6 +841,7 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.layout.initialTemp = 200;
             grafica.layout.coolingFactor = 0.95f;
             grafica.layout.minTemp = 1.0f;
+
             // Titulo
             grafica.title = pGrafica.config.dimensiones.FirstOrDefault().nombre.Values.FirstOrDefault();
 

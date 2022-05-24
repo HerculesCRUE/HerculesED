@@ -43,6 +43,8 @@ var metricas = {
                 data.ready = function() { window.cy = this };
                 var cy = window.cy = cytoscape(data);
 
+                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append(data.title);
+
                 var arrayNodes = [];
                 var nodos = cy.nodes();
                 for (i = 0; i < cy.nodes().length; i++) { //starts loop
@@ -76,9 +78,7 @@ var metricas = {
                         e._private.data.name = "";
                     }
                 });
-
-                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append("prueba");
-
+        
             } else {
                 var myChart = new Chart(ctx, data);
             }
@@ -194,6 +194,16 @@ var metricas = {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <div class="graph-controls" style="position: absolute; top: 24px; right: 20px; z-index: 200;">
+                            <ul class="no-list-style d-flex align-items-center">
+                                <li class="control zoomout-control" id="zoomOut">
+                                    <span class="material-icons">remove</span>
+                                </li>
+                                <li class="control zoomin-control" id="zoomIn">
+                                    <span class="material-icons">add</span>
+                                </li>
+                            </ul>
+                        </div>
                         <div id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else
@@ -239,6 +249,15 @@ var metricas = {
                 e.preventDefault();
                 that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
             });
-
+        $('#zoomIn')
+            .unbind()
+            .click(function(e) {
+                cy.zoom(cy.zoom()+0.2);
+            });
+        $('#zoomOut')
+            .unbind()
+            .click(function(e) {
+                cy.zoom(cy.zoom()-0.2);
+            });
     }
 }
