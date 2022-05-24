@@ -916,22 +916,25 @@ var edicionCV = {
 					${htmlProp}
 				</div>`;
     },
-    repintarListadoTab: function(id,noEngancharComportamientosCV) {
+    repintarListadoTab: function(id,noEngancharComportamientosCV) {		
+		var sectionItem=$('.panel-group[section="' + id + '"]');
+		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
+        var texto = sectionItem.find(' .txtBusqueda').val();
+        var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
+		var ordenItem=sectionItem.find(' .ordenar.dropdown .texto');
+        var ordenProperty = ordenItem.attr('property');
+        var ordenAsc = ordenItem.attr('asc');
 		
-        var numResultadosPagina = parseInt($('.panel-group[section="' + id + '"] .panNavegador .dropdown-toggle span').attr('items'));
-        var texto = $('.panel-group[section="' + id + '"] .txtBusqueda').val();
-        var paginaActual = parseInt($('.panel-group[section="' + id + '"] .panNavegador .pagination.numbers li.actual a').attr('page'));
-        var ordenProperty = $('.panel-group[section="' + id + '"] .ordenar.dropdown .texto').attr('property');
-        var ordenAsc = $('.panel-group[section="' + id + '"] .ordenar.dropdown .texto').attr('asc');
+		
         //paginaActual
         //orden
-
 
         var NUM_PAG_INICIO = 3;
         var NUM_PAG_PROX_CENTRO = 2;
         var NUM_PAG_FIN = 3;
 		
-        var articulos = $('div[section="' + id + '"] article');
+        var articulos = $('div[section="' + id + '"] article');		
+		
 		var ordenPropertySplit=[];
 		var ordenAscSplit=[];
 		if(ordenProperty!=null)
@@ -939,17 +942,41 @@ var edicionCV = {
 			ordenPropertySplit = ordenProperty.split('||');
             ordenAscSplit = ordenAsc.split('||');
 		}
-        articulos = articulos.sort(function(a, b) {
-            if (ordenProperty == null || ordenProperty == '') {
-                if ($(a).find('div.orderItems div[property="default"]').text() > $(b).find('div.orderItems div[property="default"]').text()) return 1;
-                if ($(a).find('div.orderItems div[property="default"]').text() < $(b).find('div.orderItems div[property="default"]').text()) return -1;
+		
+		
+		//Ordenes por defecto
+		var orderDefaultText = $('div[section="' + id + '"] article div.orderItems div[property="default"]').map((i, e) => {
+			return $(e).text();
+		});
+		
+		//Ordenes auxiliares
+		var ordersPropertyText={};
+		for (var i = 0; i < ordenPropertySplit.length; i++) {
+			let property = ordenPropertySplit[i];
+			let asc = ordenAscSplit[i];
+			var orderPropertyText = $('div[section="' + id + '"] article div.orderItems div[property="' + property + '"]').map((i, e) => {
+				return $(e).text();
+			});
+			ordersPropertyText[property]=orderPropertyText;
+		}
+		var num=0;
+		articulos.each(function() {
+			$(this).attr('num',num);
+			num++;
+        });
+		articulos = articulos.sort(function(a, b) {
+            let numA=$(a).attr('num');
+			let numB=$(b).attr('num');
+			if (ordenProperty == null || ordenProperty == '') {
+                if (orderDefaultText[numA] > orderDefaultText[numB]) return 1;
+                if (orderDefaultText[numA] < orderDefaultText[numB]) return -1;
                 return 0;
             } else {
                 for (var i = 0; i < ordenPropertySplit.length; i++) {
                     let property = ordenPropertySplit[i];
                     let asc = ordenAscSplit[i];
-                    let valueA = $(a).find('div.orderItems div[property="' + property + '"]').text();
-                    let valueB = $(b).find('div.orderItems div[property="' + property + '"]').text();
+					let valueA =ordersPropertyText[property][numA];
+					let valueB =ordersPropertyText[property][numB];
                     if (asc == 'true') {
                         if (valueA > valueB) {
                             return 1;
@@ -969,17 +996,14 @@ var edicionCV = {
                 return 0;
 
             }
-        });
-				
+        });			
         $('div[section="' + id + '"] article').remove();
         $('div[section="' + id + '"] .resource-list .resource-list-wrap').prepend(articulos);
-
 
         var numTotal = 1;
         var numPaginas = 1;
         var texto = EliminarAcentos(texto).toLowerCase();
 		$('div[section="' + id + '"] article').attr('style','display:none');
-		
         $('div[section="' + id + '"] article').each(function() {
 			var existe=texto=='';
             var existeEnTitulo = existe || EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
@@ -994,7 +1018,7 @@ var edicionCV = {
         });
         $('div[section="' + id + '"] .pagination.numbers').empty();
         $('div[section="' + id + '"] .pagination.arrows').empty();
-
+		
         ///INICIO/
         for (i = 1; i <= NUM_PAG_INICIO; i++) {
             if (i > numPaginas) //Hemos excedio el número máximo de páginas, así que dejamos de pintar.
@@ -1007,7 +1031,7 @@ var edicionCV = {
                 $('div[section="' + id + '"] .pagination.numbers').append(`<li ><a href="javascript: void(0)" page="${i}" >${i}</a></li>`);
             }
         }
-
+		
         if (numPaginas > NUM_PAG_INICIO) //Continuamos si ha más páginas que las que ya hemos pintado
         {
             var inicioRango = paginaActual - NUM_PAG_PROX_CENTRO;
@@ -1095,14 +1119,13 @@ var edicionCV = {
         } else {
             $('div[section="' + id + '"] .pagination.arrows').append(`<li><a href="javascript: void(0)" page="${(paginaActual + 1)}" class="ultimaPagina">Página siguiente</a></li>`);
         }
-		
         $('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');     
 		if(noEngancharComportamientosCV==null || !noEngancharComportamientosCV)
 		{
 			this.engancharComportamientosCV();				
 		}
         accionesPlegarDesplegarModal.init();	
-		tooltipsAccionesRecursos.init();
+		tooltipsAccionesRecursos.init();		
 		tooltipsCV.init();
     },
     paginarListado: function(sectionID, pagina) {
@@ -1888,7 +1911,6 @@ var edicionCV = {
 				{
 					valorIdioma=pValuesMultilang[language];
 				}
-                console.log(css);
                 html+=`<div class="edmaTextEditor multilangcontainer ${css.includes("disabled") ? "disabled":""}" multilangcontainer="${language}" style="display:none">
                             <div class="toolbar">
                                 <div class="line">
@@ -2965,7 +2987,6 @@ var edicionCV = {
 			//Deshablitamos todos los campos que no son multiidioma
 			contenedor.find('input:not(.multilang),select,div.edmaTextEditor:not(.multilangcontainer)').attr('disabled','disabled');
             contenedor.find('div.edmaTextEditor:not(.multilangcontainer)').find('.visuell-view').removeAttr('contenteditable');
-            console.log(contenedor.find('div.edmaTextEditor:not(.multilangcontainer)').find('.visuell-view'));
 		}
     },
     //Fin de métodos de edición
@@ -6264,7 +6285,7 @@ function getParam(param)
 tooltipsAccionesRecursos.lanzar= function () {
 	montarTooltip.lanzar(this.block, GetText('CV_BLOQUEADO'), 'background-gris-oscuro');
 	montarTooltip.lanzar(this.visible, GetText('CV_VISIBLE'), 'background-gris-oscuro');
-	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');
+	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');	
 };
 
 montarTooltip.lanzar= function (elem, title, classes) {
@@ -6274,7 +6295,6 @@ montarTooltip.lanzar= function (elem, title, classes) {
 		template: '<div class="tooltip ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
 		title: title
 	});
-
 	this.comportamiento(elem);
 };
 
