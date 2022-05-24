@@ -1,10 +1,65 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Hercules.ED.GraphicEngine.Models.Graficas
 {
     public class GraficaNodos : GraficaBase
     {
-        public List<DataItemRelacion> listaItems { get; set; }
+        public string container { get; set; }
+        public Layout layout { get; set; }
+        public List<Style> style { get; set; }
+        public List<DataItemRelacion> elements { get; set; }
+    }
+
+    public class Layout
+    {
+        public string name { get; set; }
+        public int idealEdgeLength { get; set; }
+        public int nodeOverlap { get; set; }
+        public int refresh { get; set; }
+        public bool fit { get; set; }
+        public int padding { get; set; }
+        public bool randomize { get; set; }
+        public int componentSpacing { get; set; }
+        public int nodeRepulsion { get; set; }
+        public int edgeElasticity { get; set; }
+        public int nestingFactor { get; set; }
+        public int gravity { get; set; }
+        public int numIter { get; set; }
+        public int initialTemp { get; set; }
+        public float coolingFactor { get; set; }
+        public float minTemp { get; set; }
+    }
+
+    public class Style
+    {
+        public string selector { get; set; }
+        public LayoutStyle style { get; set; }
+    }
+
+    public class LayoutStyle
+    {
+        public string width { get; set; }
+        public string content { get; set; }
+        [JsonPropertyName("font-size")]
+        public string font_size { get; set; }
+        [JsonPropertyName("font-family")]
+        public string font_family { get; set; }
+        [JsonPropertyName("background-color")]
+        public string background_color { get; set; }
+        [JsonPropertyName("overlay-padding")]
+        public string overlay_padding { get; set; }
+        [JsonPropertyName("z-index")]
+        public string z_index { get; set; }
+        public string height { get; set; }
+        [JsonPropertyName("text-outline-width")]
+        public string text_outline_width { get; set; }
+        [JsonPropertyName("curve-style")]
+        public string curve_style { get; set; }
+        [JsonPropertyName("haystack-radius")]
+        public string haystack_radius { get; set; }
+        public string opacity { get; set; }
     }
 
     public class DataItemRelacion

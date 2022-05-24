@@ -56,8 +56,17 @@ namespace Hercules.ED.GraphicEngine.Models
                 ConfigPagina configPagina = new ConfigPagina()
                 {
                     id = itemGrafica.identificador,
-                    anchura = itemGrafica.anchura12
+                    anchura = itemGrafica.anchura12,
                 };
+
+                if (itemGrafica.tipo == EnumGraficas.Nodos)
+                {
+                    configPagina.libreria = "cytoscape";
+                }
+                else
+                {
+                    configPagina.libreria = "chartjs";
+                }
 
                 // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
                 if (configPagina.anchura > 12 || configPagina.anchura < 1)
@@ -399,6 +408,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             return grafica;
         }
+
         /// <summary>
         /// Crea el objeto de la gráfica (Gráfica de Barras horizontal).
         /// </summary>
@@ -786,7 +796,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                 }
             }
-            
+
             data.labels = listaNombres;
             dataset.backgroundColor = listaColores;
             // Le doy un hoverOffset por defecto
@@ -799,6 +809,64 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             GraficaNodos grafica = new GraficaNodos();
+
+            #region --- Configuración
+            // Layout Base
+            grafica.layout = new Layout();
+            grafica.layout.name = "cose";
+            grafica.layout.idealEdgeLength = 100;
+            grafica.layout.nodeOverlap = 20;
+            grafica.layout.refresh = 20;
+            grafica.layout.fit = true;
+            grafica.layout.padding = 30;
+            grafica.layout.randomize = false;
+            grafica.layout.componentSpacing = 100;
+            grafica.layout.nodeRepulsion = 400000;
+            grafica.layout.edgeElasticity = 100;
+            grafica.layout.nestingFactor = 5;
+            grafica.layout.gravity = 80;
+            grafica.layout.numIter = 1000;
+            grafica.layout.initialTemp = 200;
+            grafica.layout.coolingFactor = 0.95f;
+            grafica.layout.minTemp = 1.0f;
+
+            // Layout Nodos/Lineas
+            grafica.style = new List<Style>();
+            Style estiloNodo = new Style();
+
+            // Nodos
+            LayoutStyle layoutNodos = new LayoutStyle();
+            layoutNodos.width = "mapData(score, 0, 80, 10, 90)";
+            layoutNodos.height = "mapData(score, 0, 80, 10, 90)";
+            layoutNodos.content = "data(name)";
+            layoutNodos.font_size = "12px";
+            layoutNodos.font_family = "Roboto";
+            layoutNodos.background_color = "#6cafd3";
+            layoutNodos.text_outline_width = "0px";
+            layoutNodos.overlay_padding = "6px";
+            layoutNodos.z_index = "10";
+
+            estiloNodo.selector = "node";
+            estiloNodo.style = layoutNodos;
+            grafica.style.Add(estiloNodo);
+
+            // Líneas
+            LayoutStyle layoutLineas = new LayoutStyle();
+            Style estiloLinea = new Style();
+            estiloLinea.selector = "edge";
+            layoutLineas.curve_style = "haystack";
+            layoutLineas.content = "data(name)";
+            layoutLineas.font_size = "24px";
+            layoutLineas.font_family = "Roboto";
+            layoutLineas.background_color = "#6cafd3";
+            layoutLineas.haystack_radius = "0.5";
+            layoutLineas.opacity = "0.5";
+            layoutLineas.width = "mapData(weight, 0, 10, 0, 10)";
+            layoutLineas.overlay_padding = "1px";
+            layoutLineas.z_index = "11";
+            estiloLinea.style = layoutLineas;
+            grafica.style.Add(estiloLinea);
+            #endregion
 
             //Nodos            
             Dictionary<string, string> dicNodos = new Dictionary<string, string>();
@@ -966,7 +1034,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            grafica.listaItems = itemsRelacion;
+            grafica.elements = itemsRelacion;
             return grafica;
         }
         #endregion
