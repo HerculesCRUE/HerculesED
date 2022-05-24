@@ -64,7 +64,6 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
                     configPagina.id = "nodes-" + configPagina.id;
-                    configPagina.libreria = "cytoscape";
                 }
 
                 // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
