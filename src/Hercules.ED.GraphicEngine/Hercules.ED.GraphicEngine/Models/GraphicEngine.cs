@@ -57,11 +57,13 @@ namespace Hercules.ED.GraphicEngine.Models
                 ConfigPagina configPagina = new ConfigPagina()
                 {
                     id = itemGrafica.identificador,
-                    anchura = itemGrafica.anchura12,
+                    anchura = itemGrafica.anchura12
                 };
 
                 if (itemGrafica.tipo == EnumGraficas.Nodos)
                 {
+                    itemGrafica.identificador = "nodes-" + itemGrafica.identificador;
+                    configPagina.id = "nodes-" + configPagina.id;
                     configPagina.libreria = "cytoscape";
                 }
                 else
@@ -876,9 +878,10 @@ namespace Hercules.ED.GraphicEngine.Models
             layoutNodos.content = "data(name)";
             layoutNodos.font_size = "12px";
             layoutNodos.font_family = "Roboto";
-            layoutNodos.background_color = "#6cafd3";
+            layoutNodos.background_color = "#DAF7A6";
             layoutNodos.text_outline_width = "0px";
             layoutNodos.overlay_padding = "6px";
+            layoutNodos.line_color = "";
             layoutNodos.z_index = "10";
 
             estiloNodo.selector = "node";
@@ -899,6 +902,7 @@ namespace Hercules.ED.GraphicEngine.Models
             layoutLineas.width = "mapData(weight, 0, 10, 0, 10)";
             layoutLineas.overlay_padding = "1px";
             layoutLineas.z_index = "11";
+            layoutLineas.line_color = "#E1E1E1";
             estiloLinea.style = layoutLineas;
             grafica.style.Add(estiloLinea);
             #endregion

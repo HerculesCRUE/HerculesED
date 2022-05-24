@@ -47,16 +47,6 @@ var metricas = {
                 var nodos = cy.nodes();
                 for (i = 0; i < cy.nodes().length; i++) { //starts loop
                     arrayNodes.push(nodos[i]._private.data.name);
-                    switch (nodos[i]._private.data.type) {
-                        default:
-                            nodos[i].style({
-                                'border-width': '0px',
-                                'border-color': '#6cafd3',
-                                'background-color': '#6cafd3',
-                                'shape': 'circle'
-                            });
-                            break;
-                    }
                 };
 
                 var arrayEdges = [];
@@ -65,13 +55,6 @@ var metricas = {
                     var data = edges[i]._private.data.id.split('~');
                     arrayEdges.push(data[data.length - 1]);
                     edges[i]._private.data.name = "";
-                    switch (edges[i]._private.data.type) {
-                        default:
-                            edges[i].style({
-                                "line-color": "#E1E1E1"
-                            })
-                            break;
-                    }
                 };
 
                 cy.on('click', 'node', function(e) {
@@ -210,7 +193,6 @@ var metricas = {
                         <div id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else
-
             {
                 $(this).append(`
                         <canvas id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width="600" height="250"></canvas>

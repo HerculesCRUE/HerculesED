@@ -60,6 +60,8 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         [JsonPropertyName("haystack-radius")]
         public string haystack_radius { get; set; }
         public string opacity { get; set; }
+        [JsonPropertyName("line-color")]
+        public string line_color { get; set; }
     }
 
     public class DataItemRelacion
