@@ -217,6 +217,25 @@
           }
         ]
       }
+    },
+    {
+      "identificador": "nodes-666",
+      "nombre": {
+        "es": "Nombre de la Gráfica Nodos"
+      },
+      "tipo": "Nodos",
+      "anchura12": 12,
+      "config": {
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones de revista Lecture Notes"
+            },
+            "filtro": "vivo:hasPublicationVenue@@@roh:title='Lecture Notes in Computer Science'",
+            "color": "#DAF7A6"
+          }
+        ]
+      }
     }
   ],
   "facetas": [
