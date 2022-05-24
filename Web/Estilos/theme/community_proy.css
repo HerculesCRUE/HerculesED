@@ -225,3 +225,15 @@ a.faceta.applied{
     right: initial !important;
     margin-left: 5px;
 }
+
+/* Estilos para la cabecera */
+.user-miniatura .imagen-usuario-wrap .imagen span{
+    color: var(--c-blanco);
+}
+
+.graph-controls-menu {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}

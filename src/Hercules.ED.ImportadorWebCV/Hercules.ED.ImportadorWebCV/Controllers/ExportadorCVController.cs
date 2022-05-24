@@ -39,7 +39,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="pCVID">ID curriculum</param>
         /// <returns></returns>
         [HttpPost("Exportar")]
-        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader][Required] string lang)
+        public FileResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -57,11 +57,25 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             exporta.ExportaActividadCientificaTecnologica(entity);
             exporta.ExportaTextoLibre(entity);
 
+
+            Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
+
+            //Aumento el tiempo de espera a 10 minutos como maximo
+            client.Endpoint.Binding.CloseTimeout = new TimeSpan(0, 10, 0);
+            client.Endpoint.Binding.SendTimeout = new TimeSpan(0, 10, 0);
+
+            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", "spa");
+            var resp = peticion.Result.@return;
+            client.Close();
+
+
+            return File(resp.dataHandler, "application/pdf");
+
             return Ok();
         }
 
         [HttpPost("ExportarLimitado")]
-        public ActionResult Exportar([FromHeader][Required] string pCVID, [FromHeader][Required] string lang, [FromHeader][Optional] List<string> secciones, [Optional] List<string> listaId)
+        public FileResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [Optional] List<string> listaId)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -80,8 +94,17 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             exporta.ExportaTextoLibre(entity, listaId);
 
 
+            Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
-            return Ok();
+            //Aumento el tiempo de espera a 10 minutos como maximo
+            client.Endpoint.Binding.CloseTimeout = new TimeSpan(0, 10, 0);
+            client.Endpoint.Binding.SendTimeout = new TimeSpan(0, 10, 0);
+
+            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", "spa");
+            var resp = peticion.Result.@return;
+            client.Close();
+
+            return File(resp.dataHandler, "application/pdf");
         }
     }
 }

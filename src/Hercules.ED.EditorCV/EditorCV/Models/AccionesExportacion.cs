@@ -1,11 +1,13 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -14,7 +16,64 @@ namespace EditorCV.Models
     public class AccionesExportacion
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
-                
+
+        /// <summary>
+        /// Añade el archivo enviado como array de bytes.
+        /// </summary>
+        /// <param name="pCVID">Id del CV</param>
+        /// <param name="result">archivo pdf a guardar</param>
+        public static void AddFile(ConfigService _Configuracion, string pCVID, string lang)
+        {
+            Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
+
+            //Añado GeneratedPDFFile sin el link al archivo
+            string filePredicateTitle = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/title";
+            string filePredicateFecha = "http://w3id.org/roh/generatedPDFFile|http://purl.org/dc/terms/issued";
+
+            string idEntityAux = $"{mResourceApi.GraphsUrl}items/GeneratedPDFFile_" + guidCortoCVID.ToString() + "_" + Guid.NewGuid();
+
+            //TODO
+            string PDFFileTitle = "prueba.pdf";//resp.filename;
+            string PDFFileFecha = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+
+
+            List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+            TriplesToInclude trTitle = new TriplesToInclude(idEntityAux + "|" + PDFFileTitle, filePredicateTitle);
+            listaTriples.Add(trTitle);
+            TriplesToInclude trFecha = new TriplesToInclude(idEntityAux + "|" + PDFFileFecha, filePredicateFecha);
+            listaTriples.Add(trFecha);
+
+            var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
+
+            //Petición al exportador
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("pCVID", pCVID),
+                new KeyValuePair<string, string>("lang", lang)
+            });
+
+            //Petición al exportador para conseguir el archivo PDF
+            HttpClient client = new HttpClient();
+            string urlExportador = _Configuracion.GetUrlExportador();
+            HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
+            response.EnsureSuccessStatusCode();
+            byte[] result = response.Content.ReadAsByteArrayAsync().Result;
+
+
+            string filePredicate = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/filePDF";
+            //TODO
+            string fileName = "http://gnoss.com/items/GeneratedPDFFile_44adc517-91fd-40fb-b90e-54f3e3c7c0a0_1fcb4fa6-7ba3-4849-9ba3-be58e1693be8|prueba.pdf";
+            //string fileName = ""+resp.filename;
+            List<byte[]> attachedFile = new List<byte[]>();
+            attachedFile.Add(result);
+
+            //TODO
+            //Añado el fichero en virtuoso
+            mResourceApi.AttachFileToResource(guidCortoCVID, filePredicate, fileName,
+                new List<string>() { "filePDF" }, new List<short>() { 0 }, attachedFile);
+            //new List<string>() { resp.filename }, new List<short>() { 0 }, new List<byte[]>() { resp.dataHandler });
+        }
+
         /// <summary>
         /// Devuelve todas las pestañas del CV de <paramref name="pCVId"/>
         /// </summary>
@@ -84,7 +143,7 @@ namespace EditorCV.Models
         private static string FirstLetterUpper(string uri, string property)
         {
             string upper = property.Substring(0, 1).ToUpper();
-            string substring = property.Substring(1, property.Length-1);
+            string substring = property.Substring(1, property.Length - 1);
             return uri + upper + substring;
         }
     }

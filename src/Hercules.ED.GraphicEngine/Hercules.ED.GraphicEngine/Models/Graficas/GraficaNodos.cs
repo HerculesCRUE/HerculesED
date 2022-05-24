@@ -11,6 +11,10 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public Layout layout { get; set; }
         public List<Style> style { get; set; }
         public List<DataItemRelacion> elements { get; set; }
+        public bool userZoomingEnabled { get; set; }
+        public bool zoomingEnabled { get; set; }
+        public float minZoom { get; set; }
+        public float maxZoom { get; set; }
     }
 
     public class Layout

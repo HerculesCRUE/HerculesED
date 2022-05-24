@@ -86,13 +86,31 @@
                                         <li class="liIndicadores">
                                             <a href="javascript: void(0);">@Html.Translate("INDICADORES")</a>
                                         </li>
-										<li id ="menuLateralUsuarioTrigger" class="liMenuUsuario">
-                                            <a href="javascript: void(0);"><span class="material-icons">person</span></a>
-                                        </li>
                                     </ul>
-                                </div>								
+                                </div>
+                                <div id ="menuLateralUsuarioTrigger" class="texto-blanco">
+                                    <div class="user-miniatura">
+                                        <div class="imagen-usuario-wrap">
+                                            <a href="javascript: void(0);">
+                                                <div class="imagen">
+                                                    <span class="material-icons">person</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="nombre-usuario-wrap">
+                                            <a href="javascript: void(0);">
+                                                <p class="nombre">@perfil.Name</p>
+                                                <p class="nombre-completo"></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </li>							
-
+                            <li class="buscar">
+                                <a href="javascript: void(0);" class="texto-blanco">
+                                    <span class="material-icons">search</span>
+                                </a>
+                            </li>
                         }
                     </ul>
                 </div>

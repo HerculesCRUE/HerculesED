@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using EditorCV.Models.Utils;
 using EditorCV.Models.API.Templates;
 using EditorCV.Models.API.Response;
+using System.Net.Http;
 
 namespace EditorCV.Controllers
 {
@@ -25,6 +26,18 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
+        [HttpGet("GetCV")]
+        public void GetCV(string userID, string lang)
+        {
+            string pCVId = UtilityCV.GetCVFromUser(userID);
+            if (string.IsNullOrEmpty(pCVId))
+            {
+                throw new Exception("Usuario no encontrado " + userID);
+            }
+
+            //Añado el archivo
+            //AccionesExportacion.AddFile(_Configuracion, pCVId, lang);
+        }
 
         /// <summary>
         /// Obtiene los datos de todas las pestaña dentro del editor
@@ -62,6 +75,5 @@ namespace EditorCV.Controllers
                 return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
         }
-
     }
 }
