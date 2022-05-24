@@ -1,17 +1,17 @@
-$(document).ready(function() {
+$(document).ready(function () {
     metricas.init();
 });
 
 var metricas = {
-    init: function() {
+    init: function () {
         this.createEmptyPage('123');
         this.getPage('123');
         return;
     },
-    config: function() {
+    config: function () {
         return;
     },
-    getPage: function(pIdPagina) {
+    getPage: function (pIdPagina) {
         var that = this;
         var url = "https://localhost:44352/GetPaginaGrafica";
         //var url = "https://serviciosedma.gnoss.com/graphicengine/GetPaginaGrafica";
@@ -20,11 +20,11 @@ var metricas = {
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function(data) {
+        $.get(url, arg, function (data) {
             that.fillPage(data);
         });
     },
-    getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas) {
         var url = "https://localhost:44352/GetGrafica";
         //var url = "https://serviciosedma.gnoss.com/graphicengine/GetGrafica";
         var arg = {};
@@ -34,13 +34,13 @@ var metricas = {
         arg.pLang = lang;
 
         // Petición para obtener los datos de las gráficas.
-        $.get(url, arg, function(data) {
+        $.get(url, arg, function (data) {
             var ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
 
             // TODO: Controlar ChartJS o Cytoscape
             if ("container" in data) {
                 data.container = ctx;
-                data.ready = function() { window.cy = this };
+                data.ready = function () { window.cy = this };
                 var cy = window.cy = cytoscape(data);
 
                 $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append(data.title);
@@ -59,7 +59,7 @@ var metricas = {
                     edges[i]._private.data.name = "";
                 };
 
-                cy.on('click', 'node', function(e) {
+                cy.on('click', 'node', function (e) {
                     e = e.target;
                     var indice = cy.nodes().indexOf(e);
                     if (e._private.data.name === "") {
@@ -69,7 +69,7 @@ var metricas = {
                     }
                 })
 
-                cy.on('click', 'edge', function(e) {
+                cy.on('click', 'edge', function (e) {
                     e = e.target;
                     var indice = cy.edges().indexOf(e);
                     if (e._private.data.name === "") {
@@ -81,11 +81,42 @@ var metricas = {
 
             } else {
                 var myChart = new Chart(ctx, data);
+                if (data.options.indexAxis == "y") {
+                    data.options.maintainAspectRatio = false;
+                    data.options.responsive = true;
+                    data.options.animation.onProgress = () => {
+
+                        var scale = window.devicePixelRatio;
+                        var sourceCanvas = myChart.canvas;
+
+                        var axisArr = [].slice.call(document.getElementsByClassName("myChartAxis"));
+                        axisArr.forEach((axi, index) => {
+
+                            var copyWidth = myChart.width;
+                            // Coje la altura (desde 0,0 al comienzo de la grafica)
+
+                            var copyHeight = index == 0 ? myChart.chartArea.top - 5 : myChart.height - myChart.chartArea.bottom;
+                            targetCtx = axi.getContext('2d');
+
+                            targetCtx.scale(scale, scale);
+                            //establece el tamaño de nuestro canvas
+                            targetCtx.canvas.width = copyWidth * scale;
+                            targetCtx.canvas.height = copyHeight * scale;
+                            //dibuja en nuestro canvas el titulo, letenda y ejes, copiandolos desde el canvas original
+                            targetCtx.drawImage(sourceCanvas, 0, index == 0 ? 0 : myChart.chartArea.bottom, copyWidth * scale, copyHeight * scale, 0, 0, copyWidth * scale, copyHeight * scale);
+
+                        })
+
+
+                    }
+
+                }
+                
             }
 
         });
     },
-    getFaceta: function(pIdPagina, pIdFaceta, pFiltroFacetas) {
+    getFaceta: function (pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
         var url = "https://localhost:44352/GetFaceta";
         //var url = "https://serviciosedma.gnoss.com/graphicengine/GetFaceta";
@@ -96,14 +127,14 @@ var metricas = {
         arg.pLang = lang;
 
         // Petición para obtener los datos de las gráficas.
-        $.get(url, arg, function(data) {
+        $.get(url, arg, function (data) {
 
             var numItemsPintados = 0;
 
             $('div[idfaceta="' + data.id + '"]').append(`
                 <h1>${data.nombre}</h1>
                 `);
-            data.items.forEach(function(item, index, array) {
+            data.items.forEach(function (item, index, array) {
 
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
@@ -138,7 +169,7 @@ var metricas = {
             that.engancharComportamientos();
         });
     },
-    createEmptyPage: function(pIdPagina) {
+    createEmptyPage: function (pIdPagina) {
         $('#containerMetrics').append(`
             <div id="page_${pIdPagina}" class="pageMetrics">
                 <div class="containerGraficas">
@@ -148,19 +179,16 @@ var metricas = {
             </div>
         `);
     },
-    fillPage: function(pPageData) {
+    fillPage: function (pPageData) {
         var that = this;
 
         // Crear estructura para el apartado de gráficas.
 
         var rowNumber = 1;
-        $('#page_' + pPageData.id + ' .containerGraficas').append(`
-                        <div class="row" id="row_${rowNumber}"></div>
-                    `);
         var espacio = 12;
 
-        pPageData.listaConfigGraficas.forEach(function(item, index, array) {
-            if (espacio - item.anchura < 0) {
+        pPageData.listaConfigGraficas.forEach(function (item, index, array) {
+            if (espacio - item.anchura < 0 || index == 0) {
                 rowNumber++;
                 $('#page_' + pPageData.id + ' .containerGraficas').append(`
                         <div class="row" id="row_${rowNumber}"></div>
@@ -174,7 +202,7 @@ var metricas = {
         });
 
         // Crear estructura para el apartado de facetas.
-        pPageData.listaIdsFacetas.forEach(function(item, index, array) {
+        pPageData.listaIdsFacetas.forEach(function (item, index, array) {
             $('#page_' + pPageData.id + ' .containerFacetas').append(`
                         <div class='faceta' idfaceta='${item}'></div>
                     `);
@@ -182,7 +210,7 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    pintarPagina: function(pIdPagina) {
+    pintarPagina: function (pIdPagina) {
         var that = this;
 
         // Vacias contenedores.
@@ -190,32 +218,53 @@ var metricas = {
         $('#page_' + pIdPagina + ' .faceta').empty();
 
         // Recorremos el div de las gráficas.
-        $('#page_' + pIdPagina + ' .grafica').each(function() {
+        $('#page_' + pIdPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <div class="graph-controls" style="position: absolute; top: 24px; right: 20px; z-index: 200;">
+                            <ul class="no-list-style d-flex align-items-center">
+                                <li class="control zoomout-control" id="zoomOut">
+                                    <span class="material-icons">remove</span>
+                                </li>
+                                <li class="control zoomin-control" id="zoomIn">
+                                    <span class="material-icons">add</span>
+                                </li>
+                            </ul>
+                        </div>
                         <div id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
-            } else
-            {
+            } else if ($(this).attr("idgrafica").includes("isHorizontal")) {
                 $(this).append(`
-                        <canvas id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width="600" height="250"></canvas>
-                    `);
+                    <div class="chartWrapper" style="position:relative; ">
+                        <div style="overflow-y: scroll;height:546px;">
+                            <div style="height: 1900px;" class="chartAreaWrapper">
+                                <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}"></canvas>
+                            </div>
+                        </div>
+                        <canvas id="firstAxis" class="myChartAxis" style="background:white;position:absolute;top:0px"></canvas>
+                        <canvas id="secondAxis" class="myChartAxis" style="background:white;position:absolute;bottom:0px"></canvas>
+                    </div>
+                `);
+            } else {
+                $(this).append(`
+                    <canvas id = "grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width = "600" height = "250" ></canvas>
+                        `);
             }
             that.getGrafica(pIdPagina, $(this).attr("idgrafica"), ObtenerHash2());
         });
 
         // Recorremos el div de las facetas.
-        $('#page_' + pIdPagina + ' .faceta').each(function() {
+        $('#page_' + pIdPagina + ' .faceta').each(function () {
             that.getFaceta(pIdPagina, $(this).attr("idfaceta"), ObtenerHash2());
         });
     },
-    engancharComportamientos: function() {
+    engancharComportamientos: function () {
         var that = this;
 
         $('.containerFacetas a.filtroMetrica')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtroActual = $(this).attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -239,6 +288,15 @@ var metricas = {
                 e.preventDefault();
                 that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
             });
-
+        $('#zoomIn')
+            .unbind()
+            .click(function (e) {
+                cy.zoom(cy.zoom() + 0.2);
+            });
+        $('#zoomOut')
+            .unbind()
+            .click(function (e) {
+                cy.zoom(cy.zoom() - 0.2);
+            });
     }
 }
