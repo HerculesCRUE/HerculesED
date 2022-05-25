@@ -9,9 +9,9 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
-    public class Contratos:SeccionBase
+    public class Contratos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
             "http://w3id.org/roh/nonCompetitiveProjects", "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "project";
@@ -31,7 +31,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null)
+            if (listaId != null && listadoIdentificadores != null)
             {
                 listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
                 if (listadoIdentificadores.Count == 0)
@@ -64,7 +64,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.020.020.170", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosFechaInicio),
                     "050.020.020.180", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,"050.020.020.190", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, "050.020.020.190", keyValue.Value);
 
                 string numCuantiaTotal = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ExperienciaCientificaTecnologica.contratosCuantiaTotal))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ExperienciaCientificaTecnologica.contratosCuantiaTotal)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
@@ -158,7 +158,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "050.020.020.120",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadoraNombre)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "050.020.020.140",
-                    UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadora)));  
+                    UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadora)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "050.020.020.150",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadoraOtros)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "050.020.020.350",
