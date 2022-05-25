@@ -30,6 +30,11 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public string order;
 
+        /// <summary>
+        /// Texto auxiliar para el titulo
+        /// </summary>
+        public Dictionary<string,string> auxTitle;
+
         public Utils.PropertyData GenerarPropertyData(string pGraph)
         {
             Utils.PropertyData property = new Utils.PropertyData()
