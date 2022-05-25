@@ -14,6 +14,9 @@
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "listItem": {
             "propertyTitle": {
+              "auxTitle": {
+                "es": "Índice H:"
+              },
               "property": "http://vivoweb.org/ontology/core#relatedBy",
               "graph": "scientificproduction",
               "child": {
