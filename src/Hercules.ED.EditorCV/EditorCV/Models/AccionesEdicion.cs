@@ -990,6 +990,10 @@ namespace EditorCV.Models
                 propertyInTitle = UtilityCV.GetPropComplete(pListItemConfig.listItem.propertyTitle);
             }
             item.title = GetPropValues(pId, propertyInTitle, pData).FirstOrDefault();
+            if(pListItemConfig.listItem?.propertyTitle?.auxTitle!=null)
+            {
+                item.title = UtilityCV.GetTextLang(pLang, pListItemConfig.listItem?.propertyTitle?.auxTitle) + " " + item.title;
+            }
 
 
             if (item.title == null)
