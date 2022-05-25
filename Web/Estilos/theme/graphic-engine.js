@@ -103,7 +103,7 @@ var metricas = {
                             targetCtx.canvas.width = copyWidth * scale;
                             targetCtx.canvas.height = copyHeight * scale;
                             //dibuja en nuestro canvas el titulo, letenda y ejes, copiandolos desde el canvas original
-                            targetCtx.drawImage(sourceCanvas, 0, index == 0 ? 0 : myChart.chartArea.bottom, copyWidth * scale, copyHeight * scale, 0, 0, copyWidth * scale, copyHeight * scale);
+                            targetCtx.drawImage(sourceCanvas, 0, (index == 0 ? 0 : myChart.chartArea.bottom *scale), copyWidth * scale, copyHeight * scale, 0, 0, copyWidth, copyHeight);
 
                         })
 

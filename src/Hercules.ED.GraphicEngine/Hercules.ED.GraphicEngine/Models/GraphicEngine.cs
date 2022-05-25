@@ -67,7 +67,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoNodos + "-" + configPagina.id;
                 }
-                else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal))
+                else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal) && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
