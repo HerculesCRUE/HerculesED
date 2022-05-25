@@ -128,7 +128,7 @@ namespace DesnormalizadorHercules
         /// </summary>
         private void ListenToQueue()
         {
-            _rabbitServiceReaderDenormalizer.ListenToQueue(new RabbitServiceReaderDenormalizer.ReceivedDelegate(ProcessItem), new RabbitServiceReaderDenormalizer.ShutDownDelegate(OnShutDown), _configService.GetDenormalizerQueueRabbit());
+            //_rabbitServiceReaderDenormalizer.ListenToQueue(new RabbitServiceReaderDenormalizer.ReceivedDelegate(ProcessItem), new RabbitServiceReaderDenormalizer.ShutDownDelegate(OnShutDown), _configService.GetDenormalizerQueueRabbit());
         }
 
         /// <summary>
