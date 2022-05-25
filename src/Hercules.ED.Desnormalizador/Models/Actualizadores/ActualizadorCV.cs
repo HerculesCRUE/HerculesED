@@ -330,7 +330,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                             ?document <http://purl.org/ontology/bibo/authorList> ?autor.
                                             ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
                                             ?document <http://w3id.org/roh/scientificActivityDocument> ?scientificActivityDocument.
-                                            ?scientificActivityDocument <http://purl.org/dc/elements/1.1/identifier> ?typeDocument.
+                                            ?scientificActivityDocument  <http://purl.org/dc/elements/1.1/identifier> ?typeDocument.
                                         }}                                        
                                     }}
                                 }}order by desc(?cv) limit {limit}";
