@@ -101,15 +101,15 @@ namespace DesnormalizadorHercules
                 }
             }
 
-            ListenToQueue();
+            //ListenToQueue();
 
-            ProcessComplete();
+            //ProcessComplete();
 
-            ProcessItemsPendingCV();
+            //ProcessItemsPendingCV();
 
-            ProcessItemsPending();
+            //ProcessItemsPending();
 
-            ProcessItemsError();
+            //ProcessItemsError();
         }
 
 
