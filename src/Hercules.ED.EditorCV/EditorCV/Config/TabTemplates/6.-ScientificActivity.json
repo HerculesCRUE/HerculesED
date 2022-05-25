@@ -1,6 +1,9 @@
 {
   "rdftype": "http://w3id.org/roh/ScientificActivity",
   "property": "http://w3id.org/roh/scientificActivity",
+  "title": {
+    "es": "Actividad"
+  },
   "sections": [
     {
       "rdftype": "http://w3id.org/roh/RelatedScientificProduction",

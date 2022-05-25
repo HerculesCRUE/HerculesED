@@ -267,8 +267,9 @@ namespace EditorCV.Models
             }
             else
             {
-                respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);
+                respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);                
             }
+            respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
             return respuesta;
         }
 

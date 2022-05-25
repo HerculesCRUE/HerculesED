@@ -1,6 +1,9 @@
 {
   "rdftype": "http://w3id.org/roh/ProfessionalSituation",
   "property": "http://w3id.org/roh/professionalSituation",
+  "title": {
+    "es": "Situación profesional"
+  },
   "sections": [
     {
       "rdftype": "http://w3id.org/roh/RelatedCurrentProfessionalSituation",
@@ -1454,7 +1457,7 @@
                     ]
                   },
                   {
-                    "properties": [                      
+                    "properties": [
                       {
                         "title": {
                           "es": "Fecha de inicio"
@@ -1971,6 +1974,6 @@
         }
       }
     }
- 
+
   ]
 }

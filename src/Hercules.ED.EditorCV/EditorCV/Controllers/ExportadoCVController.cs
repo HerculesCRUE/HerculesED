@@ -11,6 +11,7 @@ using EditorCV.Models.Utils;
 using EditorCV.Models.API.Templates;
 using EditorCV.Models.API.Response;
 using System.Net.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace EditorCV.Controllers
 {
@@ -27,8 +28,10 @@ namespace EditorCV.Controllers
         }
 
         [HttpGet("GetCV")]
-        public void GetCV(string userID, string lang)
+        public void GetCV([Required][FromQuery] string userID, [Required][FromQuery] string lang, [Required][FromQuery] string listaId)
         {
+            List<string> listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
+
             string pCVId = UtilityCV.GetCVFromUser(userID);
             if (string.IsNullOrEmpty(pCVId))
             {
@@ -46,7 +49,7 @@ namespace EditorCV.Controllers
         /// <param name="pLang"></param>
         /// <returns></returns>
         [HttpGet("GetAllTabs")]
-        public IActionResult GetAllTabs(string userID, string pLang)
+        public IActionResult GetAllTabs([Required] string userID, [Required] string pLang)
         {
             try
             {
@@ -58,14 +61,14 @@ namespace EditorCV.Controllers
                 ConcurrentDictionary<string, string> pListId = AccionesExportacion.GetAllTabs(pCVId);
 
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                ConcurrentDictionary<int,AuxTab> listTabs = new ConcurrentDictionary<int,AuxTab>();
+                ConcurrentDictionary<int, AuxTab> listTabs = new ConcurrentDictionary<int, AuxTab>();
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
 
                 Parallel.ForEach(pListId, new ParallelOptions { MaxDegreeOfParallelism = 6 }, keyValue =>
                 {
-                    int index= tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
-                    listTabs.TryAdd(index,accionesEdicion.GetTab(pCVId, keyValue.Value, keyValue.Key, pLang));
+                    int index = tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
+                    listTabs.TryAdd(index, accionesEdicion.GetTab(pCVId, keyValue.Value, keyValue.Key, pLang));
                 });
 
                 return Ok(listTabs.OrderBy(x => x.Key).Select(x => (object)x.Value));

@@ -36,6 +36,11 @@ namespace EditorCV.Models.API.Templates
         /// Secciones de los datos personales
         /// </summary>
         public ItemEdit personalDataSections;
+
+        /// <summary>
+        /// Título de la sección
+        /// </summary>
+        public Dictionary<string,string> title;
     }
 
     /// <summary>

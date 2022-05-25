@@ -1,6 +1,9 @@
 {
   "rdftype": "http://w3id.org/roh/ResearchObjects",
   "property": "http://w3id.org/roh/researchObject",
+  "title": {
+    "es": "Otros resultados"
+  },
   "sections": [
     {
       "rdftype": "http://w3id.org/roh/RelatedResearchObject",

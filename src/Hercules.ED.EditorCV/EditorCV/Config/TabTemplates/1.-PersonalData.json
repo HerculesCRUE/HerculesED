@@ -1,6 +1,9 @@
 {
   "rdftype": "http://w3id.org/roh/PersonalData",
   "property": "http://w3id.org/roh/personalData",
+  "title": {
+    "es": "Datos de identificación"
+  },
   "personalData": true,
   "personalDataSections": {
     "graph": "curriculumvitae",
@@ -288,7 +291,7 @@
                 },
                 "width": 3,
                 "auxEntityData": {
-                  "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",                  
+                  "rdftype": "https://www.w3.org/2006/vcard/ns#TelephoneType",
                   "properties": [
                     {
                       "name": {
@@ -824,7 +827,7 @@
                       }
                     }
                   ],
-                  "rows": [                    
+                  "rows": [
                     {
                       "properties": [
                         {

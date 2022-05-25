@@ -22,10 +22,12 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVID">Id del CV</param>
         /// <param name="result">archivo pdf a guardar</param>
-        public static void AddFile(ConfigService _Configuracion, string pCVID, string lang)
+        public static void AddFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
+            //TODO eliminar
+            goto Testing;
             //Añado GeneratedPDFFile sin el link al archivo
             string filePredicateTitle = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/title";
             string filePredicateFecha = "http://w3id.org/roh/generatedPDFFile|http://purl.org/dc/terms/issued";
@@ -45,12 +47,16 @@ namespace EditorCV.Models
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
 
+        Testing:
             //Petición al exportador
-            var formContent = new FormUrlEncodedContent(new[]
+            List<KeyValuePair<string, string>> parametros = new List<KeyValuePair<string, string>>();
+            parametros.Add(new KeyValuePair<string, string>("pCVID", pCVID));
+            parametros.Add(new KeyValuePair<string, string>("lang", lang));
+            foreach (string id in listaId)
             {
-                new KeyValuePair<string, string>("pCVID", pCVID),
-                new KeyValuePair<string, string>("lang", lang)
-            });
+                parametros.Add(new KeyValuePair<string, string>("listaId", id));
+            }
+            FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
 
             //Petición al exportador para conseguir el archivo PDF
             HttpClient client = new HttpClient();
@@ -59,6 +65,8 @@ namespace EditorCV.Models
             response.EnsureSuccessStatusCode();
             byte[] result = response.Content.ReadAsByteArrayAsync().Result;
 
+            //TODO
+            goto TestingFin;
 
             string filePredicate = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/filePDF";
             //TODO
@@ -71,7 +79,8 @@ namespace EditorCV.Models
             //Añado el fichero en virtuoso
             mResourceApi.AttachFileToResource(guidCortoCVID, filePredicate, fileName,
                 new List<string>() { "filePDF" }, new List<short>() { 0 }, attachedFile);
-            //new List<string>() { resp.filename }, new List<short>() { 0 }, new List<byte[]>() { resp.dataHandler });
+        //new List<string>() { resp.filename }, new List<short>() { 0 }, new List<byte[]>() { resp.dataHandler });
+        TestingFin:;
         }
 
         /// <summary>
