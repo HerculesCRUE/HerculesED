@@ -406,6 +406,10 @@ function PintarGraficaArania(data,idContenedor) {
 				"z-index": "11"
 			}
 		}],
+		// Zoom
+		userZoomingEnabled: false,
+		minZoom: 0.5,
+		maxZoom: 2.0,
 		// Datos
 		elements: data
 	});
