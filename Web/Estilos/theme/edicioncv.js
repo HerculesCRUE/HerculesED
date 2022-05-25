@@ -1921,7 +1921,7 @@ var edicionCV = {
                                     </div>   
                                 </div>
                             </div>
-                            <div multilang="${language}" class="form-control not-outline ${css} visuell-view" propertyrdf="${property}" ${css.includes("disabled") ? "":"contenteditable"} placeholder="${placeholder}" type="text" >${value}</div>
+                            <div multilang="${language}" class="form-control not-outline ${css} visuell-view" propertyrdf="${property}" ${css.includes("disabled") ? "":"contenteditable"} placeholder="${placeholder}" type="text" >${valorIdioma}</div>
                         </div>`;
 				//html+=`<textarea multilang="${language}" propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}" style="display:none">${valorIdioma}</textarea>`;
 			});
