@@ -225,6 +225,7 @@
                           "es": "Introduce la descripción"
                         },
                         "property": "http://vivoweb.org/ontology/core#description",
+                        "multilang": true,
                         "type": "textarea",
                         "width": 3
                       }
@@ -1197,6 +1198,7 @@
                           "es": "Introduce la descripción"
                         },
                         "property": "http://vivoweb.org/ontology/core#description",
+                        "multilang": true,
                         "type": "textarea",
                         "width": 3
                       }
