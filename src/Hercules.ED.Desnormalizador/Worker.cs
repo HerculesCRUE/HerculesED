@@ -58,48 +58,48 @@ namespace DesnormalizadorHercules
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             //TODO Eliminar
-            bool insertarColas = false;
-            if (insertarColas)
-            {
-                Temporal.InsertarColaDesnormalizador(new RabbitServiceWriterDenormalizer(_configService), _configService.GetDenormalizerQueueRabbit());
-            }
+            //bool insertarColas = false;
+            //if (insertarColas)
+            //{
+            //    Temporal.InsertarColaDesnormalizador(new RabbitServiceWriterDenormalizer(_configService), _configService.GetDenormalizerQueueRabbit());
+            //}
 
 
-            //TODO eliminar
-            bool crearPersonas = false;
-            if (crearPersonas)
-            {
-                Temporal.CrearPersonas();
-            }
+            ////TODO eliminar
+            //bool crearPersonas = false;
+            //if (crearPersonas)
+            //{
+            //    Temporal.CrearPersonas();
+            //}
 
-            //TODO eliminar
-            bool eliminarCVs = false;
-            if (eliminarCVs)
-            {
-                Temporal.EliminarCVs();
-            }
+            ////TODO eliminar
+            //bool eliminarCVs = false;
+            //if (eliminarCVs)
+            //{
+            //    Temporal.EliminarCVs();
+            //}
 
-            //TODO eliminar
-            bool DesnormalizarTodo = false;
-            if (DesnormalizarTodo)
-            {
-                while (true)
-                {
-                    ActualizadorEDMA.DesnormalizarTodo();
-                    Thread.Sleep(5000);
-                }
-            }
+            ////TODO eliminar
+            //bool DesnormalizarTodo = false;
+            //if (DesnormalizarTodo)
+            //{
+            //    while (true)
+            //    {
+            //        ActualizadorEDMA.DesnormalizarTodo();
+            //        Thread.Sleep(5000);
+            //    }
+            //}
 
-            //TODO eliminar
-            bool DesnormalizarCV = false;
-            if (DesnormalizarCV)
-            {
-                while (true)
-                {                 
-                    ActualizadorEDMA.DesnormalizarDatosCV();
-                    Thread.Sleep(5000);
-                }
-            }
+            ////TODO eliminar
+            //bool DesnormalizarCV = false;
+            //if (DesnormalizarCV)
+            //{
+            //    while (true)
+            //    {                 
+            //        ActualizadorEDMA.DesnormalizarDatosCV();
+            //        Thread.Sleep(5000);
+            //    }
+            //}
 
             //ListenToQueue();
 
