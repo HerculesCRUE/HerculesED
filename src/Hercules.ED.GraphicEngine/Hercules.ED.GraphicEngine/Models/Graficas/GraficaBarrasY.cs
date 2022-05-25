@@ -26,6 +26,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public string type { get; set; }
         public string stack { get; set; }
         public float barPercentage { get; set; }
+        public float maxBarThickness { get; set; }
         public string xAxisID { get; set; }
         public int order { get; set; }
     }

@@ -381,6 +381,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     dataset.barPercentage = item.Key.anchura;
                 }
+                // Anchura máxima.
+                dataset.maxBarThickness = 300;
 
                 // Stack.
                 if (!string.IsNullOrEmpty(item.Key.stack))
@@ -646,6 +648,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     dataset.barPercentage = item.Key.anchura;
                 }
+                // Anchura máxima.
+                dataset.maxBarThickness = 300;
 
                 // Stack.
                 if (!string.IsNullOrEmpty(item.Key.stack))
@@ -839,7 +843,7 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.layout.fit = true;
             grafica.layout.padding = 30;
             grafica.layout.randomize = false;
-            grafica.layout.componentSpacing = 100;
+            grafica.layout.componentSpacing = 50;
             grafica.layout.nodeRepulsion = 400000;
             grafica.layout.edgeElasticity = 100;
             grafica.layout.nestingFactor = 5;
