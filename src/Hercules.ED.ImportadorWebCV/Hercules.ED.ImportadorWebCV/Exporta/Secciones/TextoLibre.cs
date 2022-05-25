@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null)
+            if (listaId != null && listadoIdentificadores != null)
             {
                 listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item1)).ToList();
                 if (listadoIdentificadores.Count == 0)
