@@ -36,7 +36,7 @@
     <Content Update="Config\TabTemplates\7.-FreeTextSummary.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Config\TabTemplates\5.-ScientificActivity.json">
+    <Content Update="Config\TabTemplates\6.-ScientificActivity.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
