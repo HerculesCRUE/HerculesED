@@ -324,19 +324,25 @@ var exportacionCV = {
             //recorrer items y por cada uno	
 			for(var i=0;i<data.length;i++){
 				var id = 'x' + RandomGuid();
-				var contenedorTab=`<div about="${id}">
-										<div class="row cvTab">
-											<div class="col-12 col-contenido">
-												<div class="wrapCol">
-													<div class="tab-paneles-cv">
-														<div class="tab-content" id="paneles-cv">
-														</div>
+				var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion" role="tablist" aria-multiselectable="true">
+										<div class="panel">
+											<div class="panel-heading" role="tab" id="datos-tab">
+												<p class="panel-title">
+													<a data-toggle="collapse" data-parent="#datos-accordion" href="#datos-panel" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
+														<span class="texto">${data[i].title}</span>
+														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+													</a>
+												</p>
+											</div>
+											<div about="${id}">
+												<div class="row cvTab">
+													<div class="col-12 col-contenido">
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>`
-				$('#containerCV').append( $(contenedorTab));		
+				$('.cabecera-cv').append( $(contenedorTab));		
 				edicionCV.printTab(id, data[i]);
 			}			
             OcultarUpdateProgress();
@@ -348,16 +354,13 @@ var exportacionCV = {
     }
 };
 
-$(window).load(function(){
+$(window).on('load', function(){
 	exportacionCV.cargarCV();
 	
 	var myForm = `<form action="" id="myForm" method="post">
 					<button type="submit" >Exportar</button>
 				</form>`;
 	$('#containerCV').append(myForm);
-
-
-	
 	
 	$(function() {
 		$('#myForm').submit(function(e) {
@@ -383,7 +386,6 @@ $(window).load(function(){
 		});
 	});
 });
-
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
@@ -432,59 +434,61 @@ edicionCV.printTabSection= function(data) {
 						</a>
 					</p>
 				</div>
-				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
-					<div class="panel-body">
-						<div class="acciones-listado acciones-listado-cv">
-							<div class="wrap">
-								<div class="checkAllCVWrapper">
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="checkAllCV_${id}">
-										<label class="custom-control-label" for="checkAllCV_${id}">
-										</label>
+				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
+						<div class="panel-body">
+							<div class="acciones-listado acciones-listado-cv">
+								<div class="wrap">
+									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
+											<label class="custom-control-label" for="checkAllResources_${id2}">
+											</label>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="wrap">
-								<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
-								<div class="buscador">
-									<div class="fieldsetGroup searchGroup">
-										<div class="textoBusquedaPrincipalInput">
-											<input type="text" class="not-outline txtBusqueda" placeholder="${GetText('CV_ESCRIBE_ALGO')}" autocomplete="off">
-											<span class="botonSearch">
-												<span class="material-icons">search</span>
-											</span>
+								<div class="wrap">
+									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
+									<div class="buscador">
+										<div class="fieldsetGroup searchGroup">
+											<div class="textoBusquedaPrincipalInput">
+												<input type="text" class="not-outline txtBusqueda" placeholder="${GetText('CV_ESCRIBE_ALGO')}" autocomplete="off">
+												<span class="botonSearch">
+													<span class="material-icons">search</span>
+												</span>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="resource-list listView">
-							<div class="resource-list-wrap">
-								${this.printHtmlListItems(data.items)}
-								<div class="panNavegador">
-									<div class="items dropdown">
-										<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-											<span class="texto" items="5">Ver 5 items</span>
-										</a>
-										<div class="dropdown-menu basic-dropdown dropdown-menu-right" x-placement="bottom-end">
-											<a href="javascript: void(0)" class="item-dropdown" items="5">Ver 5 items</a>
-											<a href="javascript: void(0)" class="item-dropdown" items="10">Ver 10 items</a>
-											<a href="javascript: void(0)" class="item-dropdown" items="20">Ver 20 items</a>
-											<a href="javascript: void(0)" class="item-dropdown" items="50">Ver 50 items</a>
-											<a href="javascript: void(0)" class="item-dropdown" items="100">Ver 100 items</a>
+							<div class="resource-list listView">
+								<div class="resource-list-wrap">
+									${this.printHtmlListItems(data.items)}
+									<div class="panNavegador">
+										<div class="items dropdown">
+											<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+												<span class="texto" items="5">Ver 5 items</span>
+											</a>
+											<div class="dropdown-menu basic-dropdown dropdown-menu-right" x-placement="bottom-end">
+												<a href="javascript: void(0)" class="item-dropdown" items="5">Ver 5 items</a>
+												<a href="javascript: void(0)" class="item-dropdown" items="10">Ver 10 items</a>
+												<a href="javascript: void(0)" class="item-dropdown" items="20">Ver 20 items</a>
+												<a href="javascript: void(0)" class="item-dropdown" items="50">Ver 50 items</a>
+												<a href="javascript: void(0)" class="item-dropdown" items="100">Ver 100 items</a>
+											</div>
 										</div>
+										<nav>
+											<ul class="pagination arrows">
+											</ul>
+											<ul class="pagination numbers">	
+												<li class="actual"><a href="javascript: void(0)" page="1">1</a></li>
+											</ul>
+										</nav>
 									</div>
-									<nav>
-										<ul class="pagination arrows">
-										</ul>
-										<ul class="pagination numbers">	
-											<li class="actual"><a href="javascript: void(0)" page="1">1</a></li>
-										</ul>
-									</nav>
 								</div>
 							</div>
 						</div>
-					</div>
+					</div>					
 				</div>
 			</div>
 		</div>`;
