@@ -115,7 +115,6 @@ var menusLateralesManagement = {
 
         $('#menuLateralUsuario').slideReveal({
             trigger: $("#menuLateralUsuarioTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'right',
@@ -130,7 +129,6 @@ var menusLateralesManagement = {
 
         $('#menuLateralMetabuscador').slideReveal({
             trigger: $('#txtBusquedaPrincipal'),
-			autoEscape:false,
             width: 740,
             overlay: true,
             position: 'left',
@@ -173,7 +171,6 @@ var menusLateralesManagement = {
 
         $('#menuLateral').slideReveal({
             trigger: $("#menuLateralTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
@@ -187,7 +184,6 @@ var menusLateralesManagement = {
 
         $('#menuLateralComunidad').slideReveal({
             trigger: $("#menuLateralComunidadTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
@@ -433,10 +429,10 @@ var accionesPlegarDesplegarModal = {
 
         button.off('click').on('click', function () {
             var resource = $(this).parents('.resource');
-            if (resource.hasClass('activo')) {
-                resource.removeClass('activo');
+            if (resource.hasClass('plegado')) {
+                resource.removeClass('plegado');
             } else {
-                resource.addClass('activo');
+                resource.addClass('plegado');
             }
         });
     },
@@ -744,7 +740,7 @@ var operativaFormularioProduccionCientifica = {
             if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
                 that.formularioProyecto.find('> .alert').hide();
                 $(this).attr('data-dismiss', 'modal');
-                mostrarNotificacion('success', 'La publicaciÃ³n permanecerÃ¡ bloqueada hasta que se resuelva el procedimiento');
+                mostrarNotificacion('success', 'La publicación permanecerá bloqueada hasta que se resuelva el procedimiento');
             } else {
                 that.formularioProyecto.find('> .alert').show();
                 $(this).addClass('disabled');
@@ -1112,6 +1108,20 @@ var operativaModalSeleccionarTemas = {
     }
 };
 
+var importarCVN = {
+    init: function (){
+        $('#file_cvn').GnossDragAndDrop({
+            acceptedFiles: '*',
+            onFileAdded: function (plugin, files) {
+                $('.col-contenido .botonera').css('display', 'block');
+            },
+            onFileRemoved: function (plugin, files) {
+                $('.col-contenido .botonera').css('display', 'none');
+            }
+        });
+    }
+};
+
 $(function () {
     accionesBuscadorCabecera.init();
     communityMenuMovil.init();
@@ -1157,6 +1167,10 @@ $(function () {
 
     if (body.hasClass('edicionCluster')) {
         comportamientoAbrirArbol.init();
+    }
+
+    if (body.hasClass('importar-cvn')) {
+        importarCVN.init();
     }
 });
 
