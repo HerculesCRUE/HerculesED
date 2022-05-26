@@ -14,7 +14,7 @@ var metricas = {
     getPage: function (pIdPagina) {
         var that = this;
         var url = "https://localhost:44352/GetPaginaGrafica";
-        //var url = "https://serviciosedma.gnoss.com/graphicengine/GetPaginaGrafica";
+        //var url = url_servicio_graphicengine+"GetPaginaGrafica";
         var arg = {};
         arg.pIdPagina = "123";
         arg.pLang = lang;
@@ -26,7 +26,7 @@ var metricas = {
     },
     getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas) {
         var url = "https://localhost:44352/GetGrafica";
-        //var url = "https://serviciosedma.gnoss.com/graphicengine/GetGrafica";
+        //var url = url_servicio_graphicengine+"GetGrafica";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdGrafica = pIdGrafica;
@@ -119,7 +119,7 @@ var metricas = {
     getFaceta: function (pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
         var url = "https://localhost:44352/GetFaceta";
-        //var url = "https://serviciosedma.gnoss.com/graphicengine/GetFaceta";
+        //var url = url_servicio_graphicengine+"GetFaceta";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdFaceta = pIdFaceta;
