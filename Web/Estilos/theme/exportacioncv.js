@@ -372,15 +372,17 @@ $(window).on('load', function(){
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
 			});
 			
-			listaId = listaId.slice(0,-3);
+			listaId = listaId.slice(0,-3);			
 			
 			$.ajax({
-				type: 'GET',
+				type: 'POST',
 				url: urlExportacionCV+'GetCV',
-				data: { userID: 'd7711fd2-41d2-464b-8838-e42c52213927', 
-						lang: lang,
-						listaId: listaId
-						}
+				dataType: 'json',
+				data: {
+					userID: 'd7711fd2-41d2-464b-8838-e42c52213927', 
+					lang: lang,
+					listaId: listaId
+				}
 			});
 			return false;
 		});
@@ -434,7 +436,7 @@ edicionCV.printTabSection= function(data) {
 						</a>
 					</p>
 				</div>
-				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+				<div id="${id2}" class="panel-collapse collapse" role="tabpanel">				
 					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 						<div class="panel-body">
 							<div class="acciones-listado acciones-listado-cv">
