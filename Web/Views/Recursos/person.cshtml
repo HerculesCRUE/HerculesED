@@ -806,16 +806,6 @@
 
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
-    var depuracion = false; // TODO:
-
-    const localUrlBase = "https://localhost:44347/";
-    const servicioExternoBaseUrlLcl = "@Html.GetBaseUrlContent()/";
-
-    const urlBase = "@Html.GetBaseUrl()";
-    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
-        depuracion = true;
-    }
-
 
     // Datos Garfica Colaboradores
     var dataCB = {};
@@ -823,10 +813,7 @@
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(parametros, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaPublicaciones"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaPublicaciones"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaPublicaciones"
         var arg = {};
         arg.pParametros = parametros;
         $('#' + idContenedor).empty();
@@ -837,10 +824,7 @@
 
     // Datos gráfica proyectos.
     function CargarGraficaProyectos(parametros, idContenedorAnios, idContenedorMiembros, idContenedorAmbito) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaProyectos"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaProyectos"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaProyectos"
         var arg = {};
         arg.pParametros = parametros;
         $('#' + idContenedorAnios).replaceWith('<canvas id="'+idContenedorAnios+'" class="js-chart"></canvas>' );
@@ -862,10 +846,7 @@
         };
 
         CargarGraficaColaboradores = (pIdPersona, parametros, idContenedor, mostrarCargando = false) => {
-            var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaColaboradoresPersonas";
-            if (depuracion) {
-                url = localUrlBase + "Hercules/DatosGraficaColaboradoresPersonas";
-            }
+            var url = url_servicio_externo + "Hercules/DatosGraficaColaboradoresPersonas";
             var self = this;
             var arg = {};
             arg.pIdPersona = pIdPersona;
@@ -917,10 +898,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaAreasTematicas"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaAreasTematicas"
         var arg = {};
         arg.pId = pIdGrupo;
         arg.pType = 'person';
@@ -933,10 +911,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicasArania(pIdGrupo, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaAreasTematicasArania"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaAreasTematicasArania"
         var arg = {};
         arg.pId = pIdGrupo;
         arg.pType = 'person';
