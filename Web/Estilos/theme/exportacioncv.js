@@ -1,5 +1,5 @@
 var urlExportacionCV = "https://localhost:5002/ExportadoCV/";
-//var urlExportacionCV = "http://serviciosedma.gnoss.com/editorcv/ExportadoCV/";
+//var urlExportacionCV = url_servicio_editorcv+"ExportadoCV/";
 
 var exportacionCV = {
     idUsuario: null,
