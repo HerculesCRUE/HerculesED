@@ -616,7 +616,7 @@
     const localUrlBase = "https://localhost:44321/";
 
     // Datos cabeceras de las fichas.
-    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/GetDatosCabeceraDocumento"
+    var url = url_servicio_externo+"Hercules/GetDatosCabeceraDocumento"
     if (depuracion) {
         url = localUrlBase + "Hercules/GetDatosCabeceraDocumento"
     }
@@ -629,7 +629,7 @@
 
     // Datos gráfica referencias.
     function CargarGraficaReferencias(pIdDocumento, parametros) {
-        var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaReferencias"
+        var url = url_servicio_externo+"Hercules/DatosGraficaReferencias"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaReferencias"
         }
@@ -755,7 +755,7 @@
 
     // Datos gráfica citas.
     //function CargarGraficaCitas(pIdDocumento, parametros) {
-    //    var url = "http://serviciosedma.gnoss.com/servicioexterno/Hercules/DatosGraficaCitas"
+    //    var url = url_servicio_externo+"Hercules/DatosGraficaCitas"
     //    if (depuracion) {
     //        url = localUrlBase + "Hercules/DatosGraficaCitas"
     //    }
