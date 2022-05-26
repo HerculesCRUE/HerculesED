@@ -1,5 +1,5 @@
-var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
-var urlGuardadoCV = "http://serviciosedma.gnoss.com/editorcv/GuardadoCV/";
+var urlEdicionCV = url_servicio_editorcv+"EdicionCV/";
+var urlGuardadoCV = url_servicio_editorcv+"GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];
 
 function GetText(id, param1, param2, param3, param4) {
