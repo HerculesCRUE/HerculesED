@@ -4430,6 +4430,9 @@ var edicionCV = {
 
 //Métodos auxiliares
 function EliminarAcentos(texto) {
+	if(texto == null){
+		texto = "";
+	}
     texto = texto.toLowerCase();
     var ts = '';
     for (var i = 0; i < texto.length; i++) {
