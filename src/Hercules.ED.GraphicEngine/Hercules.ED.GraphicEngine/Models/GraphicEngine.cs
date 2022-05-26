@@ -62,6 +62,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 string prefijoNodos = "nodes";
                 string prefijoBarraHorizonal = "isHorizontal";
+                string prefijoAbreviar = "abr";
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
@@ -71,6 +72,11 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
+                    if (itemGrafica.config.abreviar && !itemGrafica.identificador.Contains(prefijoAbreviar))
+                    {
+                        itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
+                        configPagina.id = prefijoAbreviar + "-" + configPagina.id;
+                    }
                 }
 
                 // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.

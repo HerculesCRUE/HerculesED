@@ -224,6 +224,7 @@
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
+        "abreviar": true,
         "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
