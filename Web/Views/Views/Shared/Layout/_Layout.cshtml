@@ -17,7 +17,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="@Html.GetUtilIdiomas().LanguageCode" xmlns:og="http://ogp.me/ns#">
 <head>
-
+	<script>
+		var url_servicio_externo="@Html.Translate("URL_SERVICIO_EXTERNO")";
+		var url_servicio_editorcv="@Html.Translate("URL_SERVICIO_EDITORCV")";
+		var url_servicio_graphicengine="@Html.Translate("URL_SERVICIO_GRAPHICENGINE")";
+	</script>	
 
     @if (Comunidad != null && Comunidad.ProjectExtraHTMLList != null)
     {
@@ -129,7 +133,7 @@
                     {
                         <input type="hidden" id="@inputHidden.Key" class="@inputHidden.Key" value="@inputHidden.Value" />
                     }
-                }
+                }				
                 <input type="submit" style="display: none;" id="enviarHidden" value="enviar" title="enviar" />
             </fieldset>
         </form>

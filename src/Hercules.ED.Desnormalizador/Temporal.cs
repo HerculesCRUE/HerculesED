@@ -225,6 +225,15 @@ namespace DesnormalizadorHercules
                 resourceApi.ModifyPropertiesLoadedResources(triples);
             }
 
+            //Cambio correo Isabel Hernández García
+            if (pID == "74336159")
+            {
+                Dictionary<Guid, List<TriplesToModify>> triples = new Dictionary<Guid, List<TriplesToModify>>();
+                TriplesToModify t = new TriplesToModify("isabel.m.h@um.es", "isabelhg@um.es", "https://www.w3.org/2006/vcard/ns#email");
+                triples.Add(resourceApi.GetShortGuid(idPerona), new List<TriplesToModify>() { t });
+                resourceApi.ModifyPropertiesLoadedResources(triples);
+            }
+
             return user;
         }
 
@@ -281,7 +290,7 @@ namespace DesnormalizadorHercules
                 {
                     items.Add(fila["s"].value);
                 }
-                List<List<string>> listItems = DesnormalizadorHercules.Models.Actualizadores.ActualizadorBase.SplitList(items, 1010).ToList();
+                List<List<string>> listItems = DesnormalizadorHercules.Models.Actualizadores.ActualizadorBase.SplitList(items, 100).ToList();
                 foreach (List<string> itemsIn in listItems)
                 {
                     DenormalizerItemQueue item = new DenormalizerItemQueue(tupla.Item1, new HashSet<string>(itemsIn));

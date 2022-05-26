@@ -52,6 +52,9 @@
 <!-- DATEPICKER -->
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/libraries/jqueryUI/jquery-ui.min.css">
 
+<!-- GNOSS DRAG & DROP -->
+<link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/libraries/GnossDragAndDrop/GnossDragAndDrop.css">
+
 <!-- PERSONALIZACION TEMA -->
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/theme.css">
 
@@ -59,3 +62,11 @@
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/community.css">
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/community_proy.css">
 <link type="text/css" rel="stylesheet" href="@urlPersonalizacion/theme/cluster.css">
+
+@if (Html.GetListaCSS() != null)
+{
+    foreach (string css in Html.GetListaCSS())
+    {
+        <link media="screen" type="text/css" rel="stylesheet" href="@css" />
+    }
+}
