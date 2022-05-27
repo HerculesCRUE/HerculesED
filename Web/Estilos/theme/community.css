@@ -835,6 +835,86 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 /* */
 
 
+/* LISTADO GRAFICOS */
+.resource-list.graphView .resource-list-wrap { display: flex; flex-wrap: wrap; margin-left: -8px; margin-right: -8px; }
+.resource-list.graphView .resource { padding: 0 8px; margin-bottom: 30px; }
+.resource-list.graphView .resource .wrap { border-bottom: 0; }
+.resource-list.graphView .resource > .wrap { border: 1px solid var(--c-gris-borde); height: 100%; }
+
+.resource-list.graphView .resource .title-wrap { padding: 20px 15px; }
+.resource-list.graphView .resource .title-wrap h2 { font-size: .933rem; font-weight: 700; color: #707070; margin-bottom: 0; }
+/**/
+
+
+/* LISTADO CON GRAFICOS */
+.listado.vista-grafico { }
+
+.listado.vista-grafico.scrolling header .logo-wrapper .secundario { display: none; }
+
+.listado.vista-grafico .col-facetas { display: none; }
+.listado.vista-grafico .col-contenido { flex: 0 0 100%; max-width: 100%; }
+.listado.vista-grafico .col-contenido .wrapCol { padding-left: 8px; }
+
+.listado.vista-grafico .cargando { display: none; }
+
+.listado.vista-grafico.facetas-abiertas { overflow: hidden; }
+
+@media (min-width: 1199px) {
+    .listado.vista-grafico .col-buscador form .finderUtils .group .finderSectionText { padding-left: 50px; }
+
+    .listado.vista-grafico .col-buscador form .btn-filtrar-movil { display: block; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--c-texto-medio); z-index: 800; -webkit-transform: translateY(-50%); -moz-transform: translateY(-50%); -ms-transform: translateY(-50%); -o-transform: translateY(-50%); }
+    .listado.vista-grafico.facetas-abiertas .col-buscador form .btn-filtrar-movil:before { content: ''; display: block; position: fixed; top: -158px; left: -145px; width: calc(100vw - 145px); height: 150vh; background: rgba(0,0,0,.2); cursor: pointer; }
+
+    .listado.vista-grafico .col-facetas { position: fixed; width: 320px; max-width: 320px; left: -320px; top: 0; z-index: 811; padding: 0; overflow: auto; background-color: var(--c-blanco); }
+    .listado.vista-grafico .col-facetas .header-facetas { padding-left: 20px; position: relative; padding-right: 50px; background-color: var(--c-primario); height: 60px; }
+    .listado.vista-grafico .col-facetas .header-facetas p { color: var(--c-blanco); }
+    .listado.vista-grafico .col-facetas .header-facetas .cerrar { text-decoration: none !important; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 50%; transform: translateY(-50%); color: var(--c-blanco); width: 40px; }
+    .listado.vista-grafico.facetas-abiertas .col-facetas { display: block; left: 0; }
+    .listado.vista-grafico .col-facetas #panFacetas { padding: 10px 20px 60px 10px; max-height: calc(100vh - 60px); height: calc(100vh - 60px); overflow: auto !important; }
+}
+/**/
+
+
+/* ACCIONES LISTADO GRAFICOS */
+.acciones-listado-graficos { display: flex; justify-content: space-between; }
+.acciones-listado-graficos .dropdown-menu .textoAlternativo { display: none; }
+.acciones-listado-graficos .dropdown .dropdown-toggle.active .textoAlternativo { color: var(--c-texto-claro); }
+.acciones-listado-graficos .dropdown .dropdown-toggle .texto { color: var(--c-negro); font-weight: 500; }
+/**/
+
+
+/* ACCIONES GRAFICO */
+.acciones-grafico { padding: 15px; padding-top: 0; }
+.acciones-grafico .wrap { display: flex; padding-bottom: 0 !important; }
+.acciones-grafico .dropdown { margin-right: 4px; }
+.acciones-grafico .dropdown:last-child { margin-right: 0px; }
+.acciones-grafico .dropdown .dropdown-toggle { user-select: none; cursor: pointer; display: flex; align-items: center; height: 38px; line-height: 38px; border: 1px solid var(--c-gris-borde); padding: 0 6px 0 6px; color: var(--c-texto-claro); text-decoration: none; font-size: 0.875rem; font-weight: 300; }
+.acciones-grafico .dropdown .dropdown-toggle::after { content: '\E5C5'; font-family: 'Material Icons'; width: auto; height: auto; margin-left: 0; vertical-align: bottom; border: 0; font-size: 1.625rem; color: #ababab; }
+.acciones-grafico .dropdown .dropdown-toggle.active { color: var(--c-negro); }
+.acciones-grafico .dropdown .dropdown-toggle span { font-size: 0.933rem; font-weight: 400; padding-left: 10px; }
+.acciones-grafico .dropdown .dropdown-toggle span.textoAlternativo { color: var(--c-texto-claro); }
+.acciones-grafico .dropdown .dropdown-toggle span.texto { color: var(--c-negro); font-weight: 500; }
+.acciones-grafico .dropdown .dropdown-menu span.textoAlternativo { display: none; }
+.acciones-grafico .dropdown .dropdown-toggle .material-icons { font-size: 1.4rem; padding-left: 5px;}
+.acciones-grafico .dropdown-menu .activeView a { text-decoration: none;  color: var(--c-negro) !important; }
+.acciones-grafico .dropdown-select .item-dropdown.activeView { color: var(--c-negro); }
+/**/
+
+
+/* ACCIONES MAPA */
+.acciones-mapa { position: absolute; top: 15px; right: 20px; }
+.acciones-mapa .wrap { display: flex; }
+.acciones-mapa .wrap > div { display: flex; align-items: center; height: 38px; line-height: 38px; border: 1px solid var(--c-gris-borde); padding: 0 6px 0 6px; }
+.acciones-mapa .wrap > div > a { font-size: 0.875rem; font-weight: 300; user-select: none; cursor: pointer; color: var(--c-texto-claro); text-decoration: none; }
+/**/
+
+
+/* HIGHCHARTS */
+/* Lo ocultamos y ponemos el titulo en el HTML */
+.highcharts-title { display: none; }
+/**/
+
+
 /* ICONOS PARA TIPOS DE RECURSO */
 .resource.open-access .icono-recurso.con-icono-before:before,
 .resource.open-access .icono-recurso.con-icono-after:after,
@@ -1726,5 +1806,22 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 
 @media (max-width: 767px) {
     .importar-cvn .panel-group .panel > .panel-heading .btn-update .texto { display: none; }
+}
+/**/
+
+
+/* estilos copiados del theme.css de MyGnoss */
+.span11 { flex: 0 0 100%; max-width: 100%; }
+.span12 { flex: 0 0 calc(100% / 2); max-width: calc(100% / 2); }
+.span13 { flex: 0 0 calc(100% / 3); max-width: calc(100% / 3); }
+.span14 { flex: 0 0 calc(100% / 4); max-width: calc(100% / 4); }
+.span16 { flex: 0 0 calc(100% / 6); max-width: calc(100% / 6); }
+.span23 { flex: 0 0 calc(100% / 3 * 2); max-width: calc(100% / 3 * 2); }
+.span34 { flex: 0 0 calc(100% / 4 * 3); max-width: calc(100% / 4 * 3); }
+.span38 { flex: 0 0 calc(100% / 8 * 3); max-width: calc(100% / 8 * 3); }
+.span58 { flex: 0 0 calc(100% / 8 * 5); max-width: calc(100% / 8 * 5); }
+
+@media (max-width: 767px) {
+    .span12, .span13, .span14, .span16, .span23, .span34, .span38, .span58 { flex: 0 0 100%; max-width: 100%; }
 }
 /**/
