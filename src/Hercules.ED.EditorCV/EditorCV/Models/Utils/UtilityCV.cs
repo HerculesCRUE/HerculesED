@@ -52,7 +52,7 @@ namespace EditorCV.Models.Utils
             {"gn", "http://www.geonames.org/ontology#" }
         };
 
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static ConcurrentBag<Tab> mTabTemplates;
 
         /// <summary>
