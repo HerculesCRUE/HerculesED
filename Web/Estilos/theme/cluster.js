@@ -273,7 +273,7 @@ class StepsCluster {
 
 		// Borrar de los datos
 		if (this.data && this.data.profiles) {
-			this.data.profiles.filter(e => e.entityID != profileId)
+			this.data.profiles = this.data.profiles.filter(e => e.entityID != profileId)
 		}
 		this.checkNumberProfiles()
 		// $(item).parent().parent().remove()
@@ -296,13 +296,22 @@ class StepsCluster {
 		// Evento de guardar el modal
 		_self.modalPerfilEditar.find('.btneditar').off('click').on('click', function() {
 			let name = _self.inputPerfilEditar.val()
-			$('#' + head1).find('.texto').text(name)
-			$('#' + head2).data('name', name)
+			
+			// Comprueba si el nombre existe
+			if (_self.perfilExist(name)) {
+				// Muestra un error
+				_self.errorDivStep2Equals.show()
 
-			// Esitamos los datos
-			if (_self.data && _self.data.profiles) {
-				let profile = _self.data.profiles.find(e => e.entityID == profileId)
-				profile.name = name
+			} else {
+				_self.errorDivStep2Equals.hide()
+				$('#' + head1).find('.texto').text(name)
+				$('#' + head2).data('name', name)
+
+				// Esitamos los datos
+				if (_self.data && _self.data.profiles) {
+					let profile = _self.data.profiles.find(e => e.entityID == profileId)
+					profile.name = name
+				}
 			}
 
 			_self.modalPerfilEditar.modal('hide')
@@ -986,8 +995,8 @@ class StepsCluster {
 			this.modalPerfil.modal('hide')
 			this.inputPerfil.val("") // Set the name empty
 
-			// Comprueba si el perfil existe
-			if (this.perfilExist(name)) {
+			// Comprueba si el perfil existe y no es la carga inicial cuando se carga un perfil
+			if (this.perfilExist(name) && profileObj == null) {
 				// Muestra un error
 				this.errorDivStep2Equals.show()
 
@@ -1056,10 +1065,13 @@ class StepsCluster {
 
 				panel.append(item)
 
-				if (this.data.profiles) {
-					this.data.profiles.push({ name, entityID: profileId })
-				} else {
-					this.data.profiles = [{ name, entityID: profileId }]
+				if (profileObj == null) {
+					// Añade un perfil
+					if (this.data.profiles) {
+						this.data.profiles.push({ name, entityID: profileId })
+					} else {
+						this.data.profiles = [{ name, entityID: profileId }]
+					}
 				}
 
 				this.checkNumberProfiles()
