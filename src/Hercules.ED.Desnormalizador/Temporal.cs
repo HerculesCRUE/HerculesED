@@ -12,7 +12,7 @@ namespace DesnormalizadorHercules
 {
     public static class Temporal
     {
-        private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config";
+        private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
         private static ResourceApi resourceApi = new ResourceApi(rutaOauth);
         private static UserApi userApi = new UserApi(rutaOauth);
         private static CommunityApi communityApi = new CommunityApi(rutaOauth);

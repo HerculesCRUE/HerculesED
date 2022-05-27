@@ -36,6 +36,7 @@ var edicionCV = {
         $('*').on('shown.bs.modal', function(e) {
             $('.modal-backdrop').last().addClass($(this).attr('id'));
         });
+		
 
         //Carga de secciones principales
         var that = this;
