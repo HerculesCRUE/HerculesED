@@ -12,6 +12,7 @@ using EditorCV.Models.API.Templates;
 using EditorCV.Models.API.Response;
 using System.Net.Http;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace EditorCV.Controllers
 {
@@ -27,10 +28,20 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
-        [HttpGet("GetCV")]
-        public void GetCV([Required][FromQuery] string userID, [Required][FromQuery] string lang, [Required][FromQuery] string listaId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="lang"></param>
+        /// <param name="listaId">listado de Identificadores concatenados por "@@@"</param>
+        [HttpPost("GetCV")]
+        public void GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Optional][FromForm] string listaId)
         {
-            List<string> listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> listadoId = new List<string>();
+            if (listaId != null)
+            {
+                listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
+            }
 
             string pCVId = UtilityCV.GetCVFromUser(userID);
             if (string.IsNullOrEmpty(pCVId))
