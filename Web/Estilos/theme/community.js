@@ -161,6 +161,7 @@ var menusLateralesManagement = {
                 $('#txtBusquedaPrincipal').on('click', function(e){
                     e.stopPropagation();
                     $('#menuLateralMetabuscador').slideReveal('show');
+                    $('.col-facetas .cerrar').trigger('click');
                 });
             },
             hide: function () {
@@ -433,10 +434,10 @@ var accionesPlegarDesplegarModal = {
 
         button.off('click').on('click', function () {
             var resource = $(this).parents('.resource');
-            if (resource.hasClass('activo')) {
-                resource.removeClass('activo');
+            if (resource.hasClass('plegado')) {
+                resource.removeClass('plegado');
             } else {
-                resource.addClass('activo');
+                resource.addClass('plegado');
             }
         });
     },
@@ -744,7 +745,7 @@ var operativaFormularioProduccionCientifica = {
             if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
                 that.formularioProyecto.find('> .alert').hide();
                 $(this).attr('data-dismiss', 'modal');
-                mostrarNotificacion('success', 'La publicaciÃ³n permanecerÃ¡ bloqueada hasta que se resuelva el procedimiento');
+                mostrarNotificacion('success', 'La publicación permanecerá bloqueada hasta que se resuelva el procedimiento');
             } else {
                 that.formularioProyecto.find('> .alert').show();
                 $(this).addClass('disabled');
@@ -1112,6 +1113,480 @@ var operativaModalSeleccionarTemas = {
     }
 };
 
+var importarCVN = {
+    init: function (){
+        $('#file_cvn').GnossDragAndDrop({
+            acceptedFiles: '*',
+            onFileAdded: function (plugin, files) {
+                $('.col-contenido .botonera').css('display', 'block');
+            },
+            onFileRemoved: function (plugin, files) {
+                $('.col-contenido .botonera').css('display', 'none');
+            }
+        });
+    }
+};
+
+/**
+ * Este es un ejemplo de lanzamiento de gráficos de prueba
+ */
+var pintarGraficos = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.body = body;
+        this.container = $('.graph-container');
+    },
+    comportamiento: function () {
+        var that = this;
+        var type;
+
+        $.each(this.container, function() {
+            var container = $(this);
+            if (container.attr('data-type') == 'column') {
+                that.initChartColumn(container);
+            } else if (container.attr('data-type') == 'bar') {
+                that.initChartBar(container);
+            } else if (container.attr('data-type') == 'map') {
+                that.initChartMap(container);
+            } else if (container.attr('data-type') == 'pie') {
+                that.initChartPie(container);
+            }
+        });
+    },
+    initChartColumn: function (container) {
+        Highcharts.chart({
+            chart: {
+                type: 'column',
+                renderTo: container[0],
+            },
+            title: {
+                text: 'Expedientes por año'
+            },
+            xAxis: {
+                categories: ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                },
+                stackLabels: {
+                    enabled: true,
+                    style: {
+                        fontWeight: 'bold',
+                        color: ( // theme
+                            Highcharts.defaultOptions.title.style &&
+                            Highcharts.defaultOptions.title.style.color
+                        ) || 'gray'
+                    }
+                }
+            },
+            tooltip: {
+                headerFormat: '<b>{point.x}</b><br/>',
+                pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: false
+                    },
+
+                }
+            },
+            series: [ {
+                name: 'Resto propuestas',
+                data: [2, 2, 2, 1, 3, 2, 4, 7, 2],
+                color: '#d3901c'
+            },{
+                name: 'Proyectos aprobados',
+                data: [3, 7, 10, 12, 15, 15, 10, 7, 7],
+                color: '#6cafe3'
+            }],
+            credits: {
+                enabled: false,
+            },
+            exporting: {
+                enabled: false,
+            }
+        });
+    },
+    initChartBar: function (container) {
+        Highcharts.chart({
+            chart: {
+                type: 'bar',
+                renderTo: container[0],
+            },
+            title: {
+                text: 'Expedientes por'
+            },
+            xAxis: {
+                categories: ['Neotec', 'ID', 'Innterconecta', 'Interempresas Int', 'Instrumentos']
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            plotOptions: {
+                series: {
+                    stacking: 'normal'
+                },
+            },
+            series: [{
+                name: 'Proyectos aprobados',
+                data: [22, 18, 7, 4, 6],
+                color: '#6cafe3'
+            }, {
+                name: 'Resto de propuestas',
+                data: [8, 2, 3, 0, 3],
+                color: '#d3901c'
+            }],
+            credits: {
+                enabled: false,
+            },
+            exporting: {
+                enabled: false,
+            }
+        });
+    },
+    initChartPie: function (container) {
+        Highcharts.chart({
+            chart: {
+                type: 'pie',
+                renderTo: container[0],
+            },
+            title: {
+                text: 'Expedientes por presupuesto'
+            },
+            accessibility: {
+                announceNewData: {
+                    enabled: true
+                },
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: false,
+                        format: '{point.name}: {point.y:.1f}%'
+                    }
+                },
+                pie: {
+                    colorByPoint: true,
+                    showInLegend: true
+                }
+            },
+            colors: [
+                '#d3901c',
+                '#6cafe3',
+                '#e5e5e5'
+            ],
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+            },
+            series: [
+                {
+                    name: "Presupuesto",
+                    colorByPoint: true,
+                    data: [
+                        {
+                            name: "< 400 K€",
+                            y: 62.74,
+                        },
+                        {
+                            name: "400 K€ - 1 M€",
+                            y: 10.57,
+                        },
+                        {
+                            name: "> 1 M€",
+                            y: 7.23,
+                        },
+                    ]
+                }
+            ],
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false,
+            }
+        });
+    },
+    initChartMap: function (container) {
+        (async () => {
+            const mapData = await fetch(
+                'https://code.highcharts.com/mapdata/countries/es/es-all.topo.json'
+            ).then(response => response.json());
+
+            // New map-pie series type that also allows lat/lon as center option.
+            // Also adds a sizeFormatter option to the series, to allow dynamic sizing
+            // of the pies.
+            Highcharts.seriesType('mappie', 'pie', {
+                center: null, // Can't be array by default anymore
+                states: {
+                    hover: {
+                        halo: {
+                            size: 5
+                        }
+                    }
+                },
+                linkedMap: null, // id of linked map
+                dataLabels: {
+                    enabled: false
+                }
+            }, {
+                init: function () {
+                    Highcharts.Series.prototype.init.apply(this, arguments);
+                    // Respond to zooming and dragging the base map
+                    Highcharts.addEvent(this.chart.mapView, 'afterSetView', () => {
+                        this.isDirty = true;
+                    });
+                },
+                render: function () {
+                    const series = this,
+                        chart = series.chart,
+                        linkedSeries = chart.get(series.options.linkedMap);
+                    Highcharts.seriesTypes.pie.prototype.render.apply(
+                        series,
+                        arguments
+                    );
+                    if (series.group && linkedSeries && linkedSeries.is('map')) {
+                        series.group.add(linkedSeries.group);
+                    }
+                },
+                getCenter: function () {
+                    const options = this.options,
+                        chart = this.chart,
+                        slicingRoom = 2 * (options.slicedOffset || 0);
+                    if (!options.center) {
+                        options.center = [null, null]; // Do the default here instead
+                    }
+                    // Handle lat/lon support
+                    if (options.center.lat !== undefined) {
+                        const projectedPos = chart.fromLatLonToPoint(options.center),
+                            pixelPos = chart.mapView.projectedUnitsToPixels(
+                                projectedPos
+                            );
+
+                        options.center = [pixelPos.x, pixelPos.y];
+                    }
+                    // Handle dynamic size
+                    if (options.sizeFormatter) {
+                        options.size = options.sizeFormatter.call(this);
+                    }
+                    // Call parent function
+                    const result = Highcharts.seriesTypes.pie.prototype.getCenter
+                        .call(this);
+                    // Must correct for slicing room to get exact pixel pos
+                    result[0] -= slicingRoom;
+                    result[1] -= slicingRoom;
+                    return result;
+                },
+                translate: function (p) {
+                    this.options.center = this.userOptions.center;
+                    this.center = this.getCenter();
+                    return Highcharts.seriesTypes.pie.prototype.translate.call(this, p);
+                }
+            });
+
+            const data = [
+                // name, aprobados, resto, suma, value, offset (optional)
+                ['La Rioja', 89283, 1318255, 2101660, 9391, 13705895],
+                ['Madrid', 729547, 1318255, 2101660, 9391, 13705895],
+                ['Barcelona', 729547, 89283, 2101660, 9391, 13705895],
+                ['Málaga', 729547, 1318255, 2101660, 9391, 13705895],
+                ['Pontevedra', 729547, 1318255, 2101660, 9391, 13705895],
+                ['Asturias', 729547, 1318255, 2101660, 9391, 13705895],
+                ['Las Palmas', 729547, 1318255, 2101660, 9391, 13705895],
+            ],
+            aproColor = 'rgba(108, 175, 227, 1)',
+            resColor = 'rgba(211, 144, 28, 1)';
+
+            // Compute max votes to find relative sizes of bubbles
+            const maxVotes = data.reduce((max, row) => Math.max(max, row[5]), 0);
+
+            // Build the chart
+            const chart = Highcharts.mapChart({
+                title: {
+                    text: 'USA 2016 Presidential Election Results'
+                },
+                chart: {
+                    animation: false, // Disable animation, especially for zooming
+                    renderTo: container[0],
+                },
+                colorAxis: {
+                    dataClasses: [{
+                        from: -1,
+                        to: 0,
+                        color: resColor,
+                        name: 'Resto de propuestas'
+                    }, {
+                        from: 0,
+                        to: 1,
+                        color: aproColor,
+                        name: 'Proyectos aprobados'
+                    }]
+                },
+                mapNavigation: {
+                    enabled: true
+                },
+                // Limit zoom range
+                yAxis: {
+                    minRange: 2300
+                },
+                tooltip: {
+                    useHTML: true
+                },
+                // Default options for the pies
+                plotOptions: {
+                    mappie: {
+                        borderColor: 'rgba(255,255,255,0.4)',
+                        borderWidth: 1,
+                        tooltip: {
+                            headerFormat: ''
+                        }
+                    }
+                },
+                series: [{
+                    mapData,
+                    data: data,
+                    name: 'Comunidades',
+                    borderColor: '#FFF',
+                    showInLegend: false,
+                    joinBy: ['name', 'id'],
+                    keys: ['id', 'aprobados', 'resto',
+                        'suma', 'value', 'pieOffset'],
+                    tooltip: {
+                        headerFormat: '',
+                        pointFormatter: function () {
+                            const hoverVotes = this.hoverVotes; // Used by pie only
+                            return '<b>' + this.id + ' </b><br/>' +
+                                [
+                                    ['Proyectos aprobados', this.aprobados, aproColor],
+                                    ['Resto de propuestas', this.resto, resColor],
+                                ]
+                                    .sort(function (a, b) {
+                                        // Sort tooltip by most votes
+                                        return b[1] - a[1];
+                                    })
+                                    .map(function (line) {
+                                        return '<span style="color:' + line[2] +
+                                            // Colorized bullet
+                                            '">\u25CF</span> ' +
+                                            // Party and votes
+                                            (line[0] === hoverVotes ? '<b>' : '') +
+                                            line[0] + ': ' +
+                                            Highcharts.numberFormat(line[1], 0) +
+                                            (line[0] === hoverVotes ? '</b>' : '') +
+                                            '<br/>';
+                                    })
+                                    .join('') +
+                                '<hr/>Total: ' + Highcharts.numberFormat(this.suma, 0);
+                        }
+                    }
+                }, {
+                    name: 'Connectors',
+                    type: 'mapline',
+                    color: 'rgba(130, 130, 130, 0.5)',
+                    zIndex: 5,
+                    showInLegend: false,
+                    enableMouseTracking: false
+                }],
+                credits: {
+                    enabled: false,
+                },
+                exporting: {
+                    enabled: false,
+                }
+            });
+
+            // Add the pies after chart load, optionally with offset and connectors
+            chart.series[0].points.forEach(function (state) {
+                if (!state.id) {
+                    return; // Skip points with no data, if any
+                }
+
+                const pieOffset = state.pieOffset || {},
+                    centerLat = parseFloat(state.properties.latitude),
+                    centerLon = parseFloat(state.properties.longitude);
+
+                // Add the pie for this state
+                chart.addSeries({
+                    type: 'mappie',
+                    name: state.id,
+                    linkedMap: 'es-all',
+                    zIndex: 6, // Keep pies above connector lines
+                    sizeFormatter: function () {
+                        const zoomFactor = chart.mapView.zoom / chart.mapView.minZoom;
+
+                        return Math.max(
+                            this.chart.chartWidth / 45 * zoomFactor, // Min size
+                            this.chart.chartWidth /
+                                11 * zoomFactor * state.suma / maxVotes
+                        );
+                    },
+                    tooltip: {
+                        // Use the state tooltip for the pies as well
+                        pointFormatter: function () {
+                            return state.series.tooltipOptions.pointFormatter.call({
+                                id: state.id,
+                                hoverVotes: this.name,
+                                aprobados: state.aprobados,
+                                resto: state.resto,
+                                suma: state.suma
+                            });
+                        }
+                    },
+                    data: [{
+                        name: 'Proyectos aprobados',
+                        y: state.aprobados,
+                        color: aproColor
+                    }, {
+                        name: 'Resto de propuestas',
+                        y: state.resto,
+                        color: resColor
+                    },],
+                    center: {
+                        lat: centerLat + (pieOffset.lat || 0),
+                        lon: centerLon + (pieOffset.lon || 0)
+                    }
+                }, false);
+
+                // Draw connector to state center if the pie has been offset
+                if (pieOffset.drawConnector !== false) {
+                    const centerPoint = chart.fromLatLonToPoint({
+                            lat: centerLat,
+                            lon: centerLon
+                        }),
+                        offsetPoint = chart.fromLatLonToPoint({
+                            lat: centerLat + (pieOffset.lat || 0),
+                            lon: centerLon + (pieOffset.lon || 0)
+                        });
+                    chart.series[1].addPoint({
+                        name: state.id,
+                        path: [
+                            ['M', offsetPoint.x, offsetPoint.y],
+                            ['L', centerPoint.x, centerPoint.y]
+                        ]
+                    }, false);
+                }
+            });
+
+            // Only redraw once all pies and connectors have been added
+            chart.redraw();
+        })();
+    }
+};
+/**/
+
 $(function () {
     accionesBuscadorCabecera.init();
     communityMenuMovil.init();
@@ -1157,6 +1632,14 @@ $(function () {
 
     if (body.hasClass('edicionCluster')) {
         comportamientoAbrirArbol.init();
+    }
+
+    if (body.hasClass('importar-cvn')) {
+        importarCVN.init();
+    }
+
+    if (body.hasClass('vista-grafico')) {
+        pintarGraficos.init();
     }
 });
 

@@ -1,0 +1,88 @@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@model CMSComponentHot
+@{ 
+	CommunityModel Comunidad = Html.GetComunidad();
+    UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
+	string urlExportacionJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/exportacioncv.js";
+    Html.GetListaJS().Add(urlJS);
+    Html.GetListaJS().Add(urlExportacionJS);	
+}
+
+<input type="hidden" id="CV_FIRMANOSELECCIONADOPERSONA" value="@Html.Translate("CV_FIRMANOSELECCIONADOPERSONA")"/>
+<input type="hidden" id="CV_MASRESULTADOS" value="@Html.Translate("CV_MASRESULTADOS")"/>
+<input type="hidden" id="CV_BUSCAR" value="@Html.Translate("CV_BUSCAR")"/>
+<input type="hidden" id="CV_COINCIDENCIA" value="@Html.Translate("CV_COINCIDENCIA")"/>
+<input type="hidden" id="CV_LAFIRMAXESTADUPLICADA" value="@Html.Translate("CV_LAFIRMAXESTADUPLICADA")"/>
+<input type="hidden" id="CV_LAFIRMAXYAESTAINTRODUCIDA" value="@Html.Translate("CV_LAFIRMAXYAESTAINTRODUCIDA")"/>
+<input type="hidden" id="CV_ESTACARGADAPERSONAOTRAFIRMA" value="@Html.Translate("CV_ESTACARGADAPERSONAOTRAFIRMA")"/>
+<input type="hidden" id="CV_NOMBREOBLIGATORIO" value="@Html.Translate("CV_NOMBREOBLIGATORIO")"/>
+<input type="hidden" id="CV_APELLIDOSOBLIGATORIO" value="@Html.Translate("CV_APELLIDOSOBLIGATORIO")"/>
+<input type="hidden" id="CV_AGNADIR" value="@Html.Translate("CV_AGNADIR")"/>
+<input type="hidden" id="CV_ELIMINAR" value="@Html.Translate("CV_ELIMINAR")"/>
+<input type="hidden" id="CV_EDITAR" value="@Html.Translate("CV_EDITAR")"/>
+<input type="hidden" id="CV_NOHASINTRODUCIDONINGUNAFIRMA" value="@Html.Translate("CV_NOHASINTRODUCIDONINGUNAFIRMA")"/>
+<input type="hidden" id="CV_ELCODIGOINTRODUCIDONOESVALIDO" value="@Html.Translate("CV_ELCODIGOINTRODUCIDONOESVALIDO")"/>
+<input type="hidden" id="CV_DATOSPERSONALES" value="@Html.Translate("CV_DATOSPERSONALES")"/>
+<input type="hidden" id="CV_ESCRIBE_ALGO" value="@Html.Translate("CV_ESCRIBE_ALGO")"/>
+<input type="hidden" id="CV_ACCIONES" value="@Html.Translate("CV_ACCIONES")"/>
+<input type="hidden" id="CV_PUBLICAR" value="@Html.Translate("CV_PUBLICAR")"/>
+<input type="hidden" id="CV_DESPUBLICAR" value="@Html.Translate("CV_DESPUBLICAR")"/>
+<input type="hidden" id="CV_PLEGAR" value="@Html.Translate("CV_PLEGAR")"/>
+<input type="hidden" id="CV_DESPLEGAR" value="@Html.Translate("CV_DESPLEGAR")"/>
+<input type="hidden" id="CV_GUARDAR" value="@Html.Translate("CV_GUARDAR")"/>
+<input type="hidden" id="CV_FORMATOIMAGENES" value="@Html.Translate("CV_FORMATOIMAGENES")"/>
+<input type="hidden" id="CV_PESOMAXIMOIMAGENES" value="@Html.Translate("CV_PESOMAXIMOIMAGENES")"/>
+<input type="hidden" id="CV_IMAGENPESADEMASIADO" value="@Html.Translate("CV_IMAGENPESADEMASIADO")"/>
+<input type="hidden" id="CV_RESTABLECER" value="@Html.Translate("CV_RESTABLECER")"/>
+<input type="hidden" id="CV_BLOQUEADO" value="@Html.Translate("CV_BLOQUEADO")"/>
+<input type="hidden" id="CV_VISIBLE" value="@Html.Translate("CV_VISIBLE")"/>
+<input type="hidden" id="CV_OCULTO" value="@Html.Translate("CV_OCULTO")"/>
+<input type="hidden" id="ESPAGNOL" value="@Html.Translate("ESPAGNOL")"/>
+<input type="hidden" id="INGLES" value="@Html.Translate("INGLES")"/>
+<input type="hidden" id="CATALAN" value="@Html.Translate("CATALAN")"/>
+<input type="hidden" id="EUSKERA" value="@Html.Translate("EUSKERA")"/>
+<input type="hidden" id="GALLEGO" value="@Html.Translate("GALLEGO")"/>
+<input type="hidden" id="FRANCES" value="@Html.Translate("FRANCES")"/>
+<input type="hidden" id="CV_SINTRADUCCION" value="@Html.Translate("CV_SINTRADUCCION")"/>
+<input type="hidden" id="CV_CONTRADUCCION" value="@Html.Translate("CV_CONTRADUCCION")"/>
+<input type="hidden" id="CV_OCULTAR_EDICION" value="@Html.Translate("CV_OCULTAR_EDICION")"/>
+
+<div id="containerCV">
+	<div class="row">
+		<div class="col col-12 col-breadcrumb">
+			<ul>
+				<li>
+					<a href="./home.php">Home</a>
+				</li>
+				<li>
+					Editar CV
+				</li>
+			</ul>
+		</div>
+		<div class="col col-12 col-contenido">
+			<div class="wrapCol">
+				<div class="cabecera-cv">
+					<div class="upper-wrap">
+						<div class="h1-container">
+							<h1>Exporta tu CVN</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>
+<script>
+$(function() {
+	edicionCV.init();
+    exportacionCV.init();
+});
+</script>

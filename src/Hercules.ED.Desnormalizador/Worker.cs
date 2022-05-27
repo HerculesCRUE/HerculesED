@@ -95,7 +95,7 @@ namespace DesnormalizadorHercules
             if (DesnormalizarCV)
             {
                 while (true)
-                {                 
+                {
                     ActualizadorEDMA.DesnormalizarDatosCV();
                     Thread.Sleep(5000);
                 }

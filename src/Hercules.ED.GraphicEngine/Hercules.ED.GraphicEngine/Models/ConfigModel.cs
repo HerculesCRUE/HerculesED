@@ -23,7 +23,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public string identificador { get; set; }
         public Dictionary<string, string> nombre { get; set; }
         public EnumGraficas tipo { get; set; }
-        public int anchura12 { get; set; }
+        public int anchura { get; set; }
         public Config config { get; set; }
     }
 
@@ -31,6 +31,7 @@ namespace Hercules.ED.GraphicEngine.Models
     {
         public bool orientacionVertical { get; set; }
         public string ejeX { get; set; }
+        public bool abreviar { get; set; }
         public bool orderDesc { get; set; }
         public string color { get; set; }
         public bool rellenarEjeX { get; set; }

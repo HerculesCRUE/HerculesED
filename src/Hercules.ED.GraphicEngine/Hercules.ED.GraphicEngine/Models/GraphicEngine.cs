@@ -57,26 +57,33 @@ namespace Hercules.ED.GraphicEngine.Models
                 ConfigPagina configPagina = new ConfigPagina()
                 {
                     id = itemGrafica.identificador,
-                    anchura = itemGrafica.anchura12
+                    anchura = itemGrafica.anchura
                 };
 
                 string prefijoNodos = "nodes";
                 string prefijoBarraHorizonal = "isHorizontal";
+                string prefijoAbreviar = "abr";
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoNodos + "-" + configPagina.id;
                 }
-                else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal))
+                else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal) && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
+                    if (itemGrafica.config.abreviar && !itemGrafica.identificador.Contains(prefijoAbreviar))
+                    {
+                        itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
+                        configPagina.id = prefijoAbreviar + "-" + configPagina.id;
+                    }
                 }
 
-                // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
-                if (configPagina.anchura > 12 || configPagina.anchura < 1)
+                // Si la anchura no contiene un valor aceptado, se le asigna 1/2 por defecto.
+                List<int> valoresAceptados = new List<int>() { 11, 12, 13, 14, 16, 23, 34, 38, 58 };
+                if (!valoresAceptados.Contains(configPagina.anchura))
                 {
-                    configPagina.anchura = 6;
+                    configPagina.anchura = 12;
                 }
 
                 pagina.listaConfigGraficas.Add(configPagina);
@@ -381,6 +388,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     dataset.barPercentage = item.Key.anchura;
                 }
+                // Anchura máxima.
+                dataset.maxBarThickness = 300;
 
                 // Stack.
                 if (!string.IsNullOrEmpty(item.Key.stack))
@@ -646,6 +655,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     dataset.barPercentage = item.Key.anchura;
                 }
+                // Anchura máxima.
+                dataset.maxBarThickness = 300;
 
                 // Stack.
                 if (!string.IsNullOrEmpty(item.Key.stack))
@@ -839,7 +850,7 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.layout.fit = true;
             grafica.layout.padding = 30;
             grafica.layout.randomize = false;
-            grafica.layout.componentSpacing = 100;
+            grafica.layout.componentSpacing = 50;
             grafica.layout.nodeRepulsion = 400000;
             grafica.layout.edgeElasticity = 100;
             grafica.layout.nestingFactor = 5;

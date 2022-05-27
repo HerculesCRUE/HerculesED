@@ -16,8 +16,6 @@ $(document).ready(function () {
 	cargarCVId.init();
 });
 
-var urlEdicionCV = "http://serviciosedma.gnoss.com/editorcv/EdicionCV/";
-
 var cargarCVId = {
 	CVId:null,
 	init: function () {
@@ -30,7 +28,7 @@ var cargarCVId = {
 		this.CVId=getCacheWithExpiry(keyCache);
 		if(this.CVId==null)
 		{
-			var urlGetCVUrl = urlEdicionCV+'GetCVUrl?userID='+$('#inpt_usuarioID').val()+ "&lang=" + lang;
+			var urlGetCVUrl = url_servicio_editorcv+'EdicionCV/GetCVUrl?userID='+$('#inpt_usuarioID').val()+ "&lang=" + lang;
 			$.get(urlGetCVUrl, null, function(data) {
 				that.CVId=data;
 				that.printCVId();
@@ -1622,7 +1620,7 @@ var metabuscador = {
         var uri = that.resultadosMetabuscador.data('url');
 
         // Compone la url para la llamada
-        var url = new URL(servicioExternoBaseUrl +  uri);
+        var url = new URL(url_servicio_externo +  uri);
 		
         url.searchParams.set('stringSearch', this.keyInput);
         url.searchParams.set('lang', lang);

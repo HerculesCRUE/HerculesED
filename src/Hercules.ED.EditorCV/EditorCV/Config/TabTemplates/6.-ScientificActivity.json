@@ -1,6 +1,9 @@
 {
   "rdftype": "http://w3id.org/roh/ScientificActivity",
   "property": "http://w3id.org/roh/scientificActivity",
+  "title": {
+    "es": "Actividad"
+  },
   "sections": [
     {
       "rdftype": "http://w3id.org/roh/RelatedScientificProduction",
@@ -14,6 +17,9 @@
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "listItem": {
             "propertyTitle": {
+              "auxTitle": {
+                "es": "Índice H:"
+              },
               "property": "http://vivoweb.org/ontology/core#relatedBy",
               "graph": "scientificproduction",
               "child": {

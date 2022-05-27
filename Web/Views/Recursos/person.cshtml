@@ -590,17 +590,30 @@
                                                     <div class="grafico-wrap">
                                                         <p>@Html.Translate("GRAFICA_AREAS_GRUPO_ARANIA")</p>
                                                         <div class="graph-controls">
-                                                            <ul class="no-list-style d-flex align-items-center">
-                                                                <li class="control remove-control" id="removeNodesAreas">
-                                                                    <span class="material-icons">remove</span>
-                                                                </li>
-                                                                <li class="control text-control">
-                                                                    <span id="numNodosArea">10</span>&nbsp;@Html.Translate("NODOS")
-                                                                </li>
-                                                                <li class="control add-control" id="addNodesAreas">
-                                                                    <span class="material-icons">add</span>
-                                                                </li>
-                                                            </ul>
+                                                            <div class="graph-controls-menu">
+                                                                <ul class="no-list-style d-flex align-items-center mb-2">
+                                                                    <li class="control remove-control" id="removeNodesAreas">
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span id="numNodosArea">10</span>&nbsp;@Html.Translate("NODOS")
+                                                                    </li>
+                                                                    <li class="control add-control" id="addNodesAreas">
+                                                                        <span class="material-icons">add</span>
+                                                                    </li>
+                                                                </ul>
+                                                                <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
+                                                                    <li onclick="zoomCyOut()" class="control zoomout-control" id="zoomOut">
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span class="material-icons">search</span>
+                                                                    </li>
+                                                                    <li onclick="zoomCyIn()" class="control zoomin-control" id="zoomIn">
+                                                                        <span class="material-icons">add</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                         <input type="hidden" id="numAreas" value="10" />
                                                         <div id="areastematicasgrapharania" style="width: 100%; height: 500px;">
@@ -731,17 +744,30 @@
                                                     <div class="grafico-wrap">
                                                         <p>@Html.Translate("GRAFICA_COLABORADORES_GRUPO")</p>
                                                         <div class="graph-controls">
-                                                            <ul class="no-list-style d-flex align-items-center">
-                                                                <li class="control remove-control" id="removeNodesCollaborators">
-                                                                    <span class="material-icons">remove</span>
-                                                                </li>
-                                                                <li class="control text-control">
-                                                                    <span id="numNodosCollaborators">10</span>&nbsp;@Html.Translate("NODOS")
-                                                                </li>
-                                                                <li class="control add-control" id="addNodesCollaborators">
-                                                                    <span class="material-icons">add</span>
-                                                                </li>
-                                                            </ul>
+                                                            <div class="graph-controls-menu">
+                                                                <ul class="no-list-style d-flex align-items-center mb-2">
+                                                                    <li class="control remove-control" id="removeNodesAreas">
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span id="numNodosArea">10</span>&nbsp;nodos
+                                                                    </li>
+                                                                    <li class="control add-control" id="addNodesAreas">
+                                                                        <span class="material-icons">add</span>
+                                                                    </li>
+                                                                </ul>
+                                                                <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
+                                                                    <li onclick="zoomCyOut()" class="control zoomout-control" id="zoomOut">
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span class="material-icons">search</span>
+                                                                    </li>
+                                                                    <li onclick="zoomCyIn()" class="control zoomin-control" id="zoomIn">
+                                                                        <span class="material-icons">add</spanonclick="zoomCyIn()">
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                         <input type="hidden" id="numColaboradores" value="10" />
                                                         <div class="wrapCol" id="colaboratorsgraph" style="width: 100%; height: 500px;"></div>
@@ -780,16 +806,6 @@
 
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
-    var depuracion = false; // TODO:
-
-    const localUrlBase = "https://localhost:44347/";
-    const servicioExternoBaseUrlLcl = "@Html.GetBaseUrlContent()/";
-
-    const urlBase = "@Html.GetBaseUrl()";
-    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
-        depuracion = true;
-    }
-
 
     // Datos Garfica Colaboradores
     var dataCB = {};
@@ -797,10 +813,7 @@
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(parametros, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaPublicaciones"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaPublicaciones"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaPublicaciones"
         var arg = {};
         arg.pParametros = parametros;
         $('#' + idContenedor).empty();
@@ -811,10 +824,7 @@
 
     // Datos gráfica proyectos.
     function CargarGraficaProyectos(parametros, idContenedorAnios, idContenedorMiembros, idContenedorAmbito) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaProyectos"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaProyectos"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaProyectos"
         var arg = {};
         arg.pParametros = parametros;
         $('#' + idContenedorAnios).replaceWith('<canvas id="'+idContenedorAnios+'" class="js-chart"></canvas>' );
@@ -836,10 +846,7 @@
         };
 
         CargarGraficaColaboradores = (pIdPersona, parametros, idContenedor, mostrarCargando = false) => {
-            var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaColaboradoresPersonas";
-            if (depuracion) {
-                url = localUrlBase + "Hercules/DatosGraficaColaboradoresPersonas";
-            }
+            var url = url_servicio_externo + "Hercules/DatosGraficaColaboradoresPersonas";
             var self = this;
             var arg = {};
             arg.pIdPersona = pIdPersona;
@@ -891,10 +898,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaAreasTematicas"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaAreasTematicas"
         var arg = {};
         arg.pId = pIdGrupo;
         arg.pType = 'person';
@@ -907,10 +911,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicasArania(pIdGrupo, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Hercules/DatosGraficaAreasTematicasArania"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaAreasTematicasArania"
-        }
+        var url = url_servicio_externo + "Hercules/DatosGraficaAreasTematicasArania"
         var arg = {};
         arg.pId = pIdGrupo;
         arg.pType = 'person';

@@ -404,16 +404,6 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
 
-    var depuracion = false
-
-    const localUrlBase = "https://localhost:44347/"
-    const servicioExternoBaseUrlLcl = "@Html.GetBaseUrlContent()/"
-
-    const urlBase = "@Html.GetBaseUrl()"
-    if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
-        depuracion = true;
-    }
-
     const persons = [@Html.Raw(String.Join(", ", persons.Select(p => '"' + p.Value.GNOSSID.Split('_')[1].ToUpper() + '"')))]
 
 
@@ -437,7 +427,7 @@
         };
 
         CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
-            var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/DatosGraficaColaboradoresCluster";
+            var url = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
             var self = this;
             $('#' + idContenedor).empty();
             if (mostrarCargando) {
@@ -459,7 +449,7 @@
         };
         
         CargarGraficaSeleccionados = (cluster, idContenedor, mostrarCargando = false) => {
-            var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/DatosGraficaColaboradoresCluster";
+            var url = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
             var self = this;
             $('#' + idContenedor).empty();
             if (mostrarCargando) {
@@ -513,10 +503,7 @@
 
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(personas, idContenedor) {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/DatosGraficaAreasTematicasCluster"
-        if (depuracion) {
-            url = localUrlBase + "Cluster/DatosGraficaAreasTematicasCluster"
-        }
+        var url = url_servicio_externo + "Cluster/DatosGraficaAreasTematicasCluster"
         var arg = {};
         $.post(url, personas, function (data) {
             PintarGraficaAreasTematicas(data, idContenedor);
@@ -526,10 +513,7 @@
 
     // Datos gráfica áreas temáticas
     function borrarCluster() {
-        var url = servicioExternoBaseUrlLcl + "servicioexterno/Cluster/borrarCluster"
-        if (depuracion) {
-            url = localUrlBase + "Cluster/borrarCluster"
-        }
+        var url = url_servicio_externo + "Cluster/borrarCluster"
         var arg = {};
         arg.id = "@pCluster.GNOSSID"
         $.get(url, arg, function (data) {

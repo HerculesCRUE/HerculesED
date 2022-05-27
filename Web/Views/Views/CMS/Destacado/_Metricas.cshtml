@@ -13,4 +13,50 @@
     Html.GetListaJS().Add(urlJS);
 }
 
+
+
+<div class="row containerPage">
+    <div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
+        <div class="wrapCol">
+            <div class="header-facetas">
+                <p>@Html.Translate("FILTROS")</p>
+                <a href="javascript: void(0);" class="cerrar">
+                    <span class="material-icons">close</span>
+                </a>
+            </div>
+            <div id="panFacetas" class="facetas-wrap custom-css-scroll">    
+            </div>                        
+        </div>
+    </div>
+    <div class="col col-12 col-xl-9 col-contenido derecha">
+        <div class="wrapCol">
+            <div class="col-buscador">
+                <form method="post" id="formCajaBusqueda">
+                    <fieldset style="display: block">
+                        <legend class="nota">facetas</legend>
+                        <div class="finderUtils" id="divCajaBusqueda">
+                            <div class="group finderSection">
+                                <label for="finderSection" class="">Encontrar</label>
+                                <input type="text" id="finderSection" class="not-outline finderSectionText autocompletar ac_input" autocomplete="off" placeholder="@Html.Translate("BUSCAR_EN_SECCION")">
+                                <input title="Encontrar" type="button" class="findAction" id="inputLupa">
+                                <a href="javascript: void(0);" class="btn-filtrar-movil">
+                                    <span class="material-icons">filter_list</span>
+                                </a>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>                            
+            </div>
+            <div class="etiquetas" id="panFiltros">
+                <ul class="facetedSearch tags" id="panListadoFiltros">
+                </ul>
+            </div>                            
+            <div class="resource-list graphView">
+                <div class="resource-list-wrap">                    
+                </div>
+            </div>                        
+        </div>
+    </div>
+</div>
+
 <div id="containerMetrics"></div>

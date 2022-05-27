@@ -136,7 +136,7 @@ ul.no-list-style { list-style: none; padding-left: 0; margin-bottom: 0; }
 
 
 
-/* FORMULARIOS GENÃ‰RICOS */
+/* FORMULARIOS GENÉRICOS */
 
 /* Inputs texto: Usar los forms de bootstrap */
 .form-group { margin-bottom: 10px; }
@@ -150,7 +150,7 @@ ul.no-list-style { list-style: none; padding-left: 0; margin-bottom: 0; }
 .form-group .form-control::-ms-input-placeholder { opacity: 0.6; }
 .form-group .helper { font-weight: 300; font-size: 0.76rem; color: var(--c-texto-claro); padding: 5px 0px; display: block;}
 
-/* Inputs con botÃ³n pegado */
+/* Inputs con botón pegado */
 .form-sticky-button { display: flex; flex-wrap: nowrap; margin-bottom: 15px;}
 .form-sticky-button .input[type="text"] { border-right: none; }
 .form-sticky-button .btn { height: 45px; border-radius: 0; }
@@ -165,9 +165,9 @@ ul.no-list-style { list-style: none; padding-left: 0; margin-bottom: 0; }
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after { background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23000' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E"); }
 .custom-control-input:focus ~ .custom-control-label::before { box-shadow: none;}
 
-/* Radio-button/checkbox personalizado, aÃ±adiendo la clase .themed */
+/* Radio-button/checkbox personalizado, añadiendo la clase .themed */
 /* Para ponerle el color primario hay que ponerle la clase .primay*/
-/* Para que sea de tamaÃ±o pequeÃ±o la clase .small */
+/* Para que sea de tamaño pequeño la clase .small */
 .custom-checkbox.themed,
 .custom-radio.themed { padding-left: 40px; min-height: 30px; margin-bottom: 10px; }
 .custom-checkbox.themed .custom-control-label::before,
@@ -403,7 +403,7 @@ main .container .row-content { min-height: calc(100vh - 220px); }
 
 
 
-/* DROPDOWNS GENÃ‰RICO */
+/* DROPDOWNS GENÉRICO */
 .dropdown-toggle.no-flecha:after { display: none; }
 
 /* estilos basic dropdown */
@@ -881,7 +881,7 @@ body.scrolling.comunidad header #community-menu { display: none; }
 
 
 
-/* INTERACCIONES SOCIALES RECURSO (ComÃºn para la ficha y para los listados)*/
+/* INTERACCIONES SOCIALES RECURSO (Común para la ficha y para los listados)*/
 .visualizacion-recurso { margin-right: 25px; display: flex; align-items: center; }
 .visualizacion-recurso .material-icons { color: var(--c-texto-claro);  font-size: 22px; padding-right: 7px;}
 .visualizacion-recurso .number { color: var(--c-texto-claro); }
@@ -1727,7 +1727,7 @@ body.scrolling.comunidad header #community-menu { display: none; }
 
 
 /* EDICION RECURSO */
-/* pÃ¡ginas que simulan un modal */
+/* páginas que simulan un modal */
 .page-modal { background-color: var(--c-gris-fondo); }
 .page-modal .header-tipo-modal { position: fixed; top: 0; left: 0; right: 0; z-index: 800; display: flex; }
 .page-modal header { display: none; height: 0; }
@@ -1778,7 +1778,7 @@ body.scrolling.comunidad header #community-menu { display: none; }
 
 
 
-/* LOGIN y CONTRASEÃ‘A */
+/* LOGIN y CONTRASEÑA */
 .thin-footer #footer .wrapCol,
 .aceptar-invitacion #footer .wrapCol,
 .registro #footer .wrapCol,
@@ -1860,7 +1860,7 @@ table.table > tbody > tr.activo > td { font-weight: 500; color: var(--c-primario
 
 
 
-/* POLÃTICA PRIVACIDAD */
+/* POLÍTICA PRIVACIDAD */
 .modal--legal {}
 .modal--legal .modal-body li,
 .modal--legal .modal-body p { font-weight: 400; font-size: 0.9rem; color: var(--c-texto-oscuro); }

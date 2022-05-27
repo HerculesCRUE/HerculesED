@@ -1,6 +1,9 @@
 {
   "rdftype": "http://w3id.org/roh/FreeTextSummary",
   "property": "http://w3id.org/roh/freeTextSummary",
+  "title": {
+    "es": "Resumen de texto libre"
+  },
   "sections": [
     {
       "rdftype": "http://w3id.org/roh/FreeTextSummaryValues",

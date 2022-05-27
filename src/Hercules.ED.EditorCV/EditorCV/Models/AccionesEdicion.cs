@@ -28,10 +28,10 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
-        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
-        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
+        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro; 
 
         private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> dicAutocompletar = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
         private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();
@@ -95,7 +95,6 @@ namespace EditorCV.Models
 
             if (pCache)
             {
-
                 Dictionary<string, string> dicBuscar = new Dictionary<string, string>();
                 string claveAutocompletar = $"{pProperty}{pRdfType}{pGraph}";
                 if (dicAutocompletar.ContainsKey(claveAutocompletar) && dicAutocompletar[claveAutocompletar].ContainsKey(pLang))
@@ -111,7 +110,7 @@ namespace EditorCV.Models
                         Dictionary<string, string> dicValores = new Dictionary<string, string>();
                         string select = "SELECT * WHERE { SELECT DISTINCT ?s ?o  ";
                         string where = $@"WHERE {{
-                                                            ?s a <{ pRdfType }>. ?s <{ pPropertyAux }> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
+                                                            ?s a <{ pRdfType }>.  ?s <{ pPropertyAux }> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
                                                         }} ORDER BY DESC(?o) DESC (?s) }} LIMIT {limit} OFFSET {offset}";
                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -267,8 +266,9 @@ namespace EditorCV.Models
             }
             else
             {
-                respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);
+                respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);                
             }
+            respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
             return respuesta;
         }
 
@@ -990,6 +990,10 @@ namespace EditorCV.Models
                 propertyInTitle = UtilityCV.GetPropComplete(pListItemConfig.listItem.propertyTitle);
             }
             item.title = GetPropValues(pId, propertyInTitle, pData).FirstOrDefault();
+            if(pListItemConfig.listItem?.propertyTitle?.auxTitle!=null)
+            {
+                item.title = UtilityCV.GetTextLang(pLang, pListItemConfig.listItem?.propertyTitle?.auxTitle) + " " + item.title;
+            }
 
 
             if (item.title == null)

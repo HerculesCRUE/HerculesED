@@ -1,6 +1,9 @@
 {
   "rdftype": "http://w3id.org/roh/ScientificExperience",
   "property": "http://w3id.org/roh/scientificExperience",
+  "title": {
+    "es": "Experiencia"
+  },
   "sections": [
     {
       "rdftype": "http://w3id.org/roh/RelatedCompetitiveProject",
@@ -225,6 +228,7 @@
                           "es": "Introduce la descripción"
                         },
                         "property": "http://vivoweb.org/ontology/core#description",
+                        "multilang": true,
                         "type": "textarea",
                         "width": 3
                       }
@@ -1197,6 +1201,7 @@
                           "es": "Introduce la descripción"
                         },
                         "property": "http://vivoweb.org/ontology/core#description",
+                        "multilang": true,
                         "type": "textarea",
                         "width": 3
                       }

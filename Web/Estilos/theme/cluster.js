@@ -4,8 +4,6 @@ const uriSearchTags = "Cluster/searchTags"
 const uriLoadProfiles = "Cluster/loadProfiles"
 const uriLoadClst = "Cluster/LoadCluster"
 
-var servicioExternoBaseUrl="";
-
 var urlLT = "";
 var urlSC ="";
 var urlSTAGS = "";
@@ -13,12 +11,11 @@ var urlLoadClst ="";
 var urlCargarPerfiles = "";
 
 $(document).ready(function () {
-	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
-	urlLT = new URL(servicioExternoBaseUrl +  uriLoadTaxonomies);
-	urlSC = new URL(servicioExternoBaseUrl +  uriSaveCluster);
-	urlSTAGS = new URL(servicioExternoBaseUrl +  uriSearchTags);
-	urlLoadClst = new URL(servicioExternoBaseUrl +  uriLoadClst);
-	urlCargarPerfiles = new URL(servicioExternoBaseUrl +  uriLoadProfiles);
+	urlLT = new URL(url_servicio_externo +  uriLoadTaxonomies);
+	urlSC = new URL(url_servicio_externo +  uriSaveCluster);
+	urlSTAGS = new URL(url_servicio_externo +  uriSearchTags);
+	urlLoadClst = new URL(url_servicio_externo +  uriLoadClst);
+	urlCargarPerfiles = new URL(url_servicio_externo +  uriLoadProfiles);
 });
 
 
@@ -1268,7 +1265,7 @@ class CargarGraficaProjectoClusterObj {
 	};
 
 	CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
-		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
+		var url = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
@@ -1290,7 +1287,7 @@ class CargarGraficaProjectoClusterObj {
 	};
 	
 	CargarGraficaSeleccionados = (cluster, idContenedor, mostrarCargando = false) => {
-		var url = servicioExternoBaseUrl + "Cluster/DatosGraficaColaboradoresCluster";
+		var url = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
 		var self = this;
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
@@ -1481,7 +1478,7 @@ class ModalSearchTags {
 		this.inputSearchEnter()
 
 		/* if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
-			var urlSTAGS = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSearchTags)
+			var urlSTAGS = new URL(url_servicio_externo + 'servicioexterno/' + uriSearchTags)
 		} */
 	}
 

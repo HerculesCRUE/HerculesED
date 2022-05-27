@@ -11,6 +11,8 @@ using EditorCV.Models.Utils;
 using EditorCV.Models.API.Templates;
 using EditorCV.Models.API.Response;
 using System.Net.Http;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace EditorCV.Controllers
 {
@@ -26,9 +28,21 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
-        [HttpGet("GetCV")]
-        public void GetCV(string userID, string lang)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="lang"></param>
+        /// <param name="listaId">listado de Identificadores concatenados por "@@@"</param>
+        [HttpPost("GetCV")]
+        public void GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Optional][FromForm] string listaId)
         {
+            List<string> listadoId = new List<string>();
+            if (listaId != null)
+            {
+                listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
+            }
+
             string pCVId = UtilityCV.GetCVFromUser(userID);
             if (string.IsNullOrEmpty(pCVId))
             {
@@ -36,7 +50,7 @@ namespace EditorCV.Controllers
             }
 
             //Añado el archivo
-            //AccionesExportacion.AddFile(_Configuracion, pCVId, lang);
+            AccionesExportacion.AddFile(_Configuracion, pCVId, lang, listadoId);
         }
 
         /// <summary>
@@ -46,7 +60,7 @@ namespace EditorCV.Controllers
         /// <param name="pLang"></param>
         /// <returns></returns>
         [HttpGet("GetAllTabs")]
-        public IActionResult GetAllTabs(string userID, string pLang)
+        public IActionResult GetAllTabs([Required] string userID, [Required] string pLang)
         {
             try
             {
@@ -58,14 +72,14 @@ namespace EditorCV.Controllers
                 ConcurrentDictionary<string, string> pListId = AccionesExportacion.GetAllTabs(pCVId);
 
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                ConcurrentDictionary<int,AuxTab> listTabs = new ConcurrentDictionary<int,AuxTab>();
+                ConcurrentDictionary<int, AuxTab> listTabs = new ConcurrentDictionary<int, AuxTab>();
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
 
                 Parallel.ForEach(pListId, new ParallelOptions { MaxDegreeOfParallelism = 6 }, keyValue =>
                 {
-                    int index= tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
-                    listTabs.TryAdd(index,accionesEdicion.GetTab(pCVId, keyValue.Value, keyValue.Key, pLang));
+                    int index = tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
+                    listTabs.TryAdd(index, accionesEdicion.GetTab(pCVId, keyValue.Value, keyValue.Key, pLang));
                 });
 
                 return Ok(listTabs.OrderBy(x => x.Key).Select(x => (object)x.Value));

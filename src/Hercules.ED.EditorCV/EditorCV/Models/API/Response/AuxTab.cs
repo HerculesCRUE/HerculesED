@@ -7,5 +7,9 @@ namespace EditorCV.Models.API.Response
 {
     public abstract class AuxTab
     {
+        /// <summary>
+        /// Título del tab
+        /// </summary>
+        public string title { get; set; }
     }
 }

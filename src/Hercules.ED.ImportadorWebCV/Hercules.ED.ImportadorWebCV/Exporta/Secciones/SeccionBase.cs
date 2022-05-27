@@ -14,7 +14,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
@@ -88,6 +88,13 @@ namespace ImportadorWebCV.Exporta.Secciones
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
             Dictionary<string, List<Dictionary<string, Data>>> listResultCV = new Dictionary<string, List<Dictionary<string, Data>>>();
+
+            //Si no envio un listado devuelvo un diccionario vacio
+            if (listadoId == null || listadoId.Count() == 0)
+            {
+                return new Dictionary<string, Entity>();
+            }
+
             try
             {
                 int numLimit = 10000;
@@ -199,6 +206,13 @@ namespace ImportadorWebCV.Exporta.Secciones
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
+
+            //Si no envio un listado devuelvo un diccionario vacio
+            if (listadoId == null || listadoId.Count() == 0)
+            {
+                return new Dictionary<string, Entity>();
+            }
+
             try
             {
                 int numLimit = 10000;
