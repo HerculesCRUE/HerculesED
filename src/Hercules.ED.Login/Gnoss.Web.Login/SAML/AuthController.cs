@@ -19,7 +19,7 @@ namespace Gnoss.Web.Login.SAML
     [Route("Auth")]
     public class AuthController : Controller
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         const string relayStateReturnUrl = "ReturnUrl";
         private Saml2Configuration config;
         readonly ConfigServiceSAML mConfigServiceSAML;
