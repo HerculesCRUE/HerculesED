@@ -50,7 +50,7 @@ namespace EditorCV.Controllers
             }
 
             //Añado el archivo
-            //AccionesExportacion.AddFile(_Configuracion, pCVId, lang);
+            AccionesExportacion.AddFile(_Configuracion, pCVId, lang, listadoId);
         }
 
         /// <summary>
