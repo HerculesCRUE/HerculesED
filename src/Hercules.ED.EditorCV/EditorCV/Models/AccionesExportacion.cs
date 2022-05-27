@@ -60,6 +60,7 @@ namespace EditorCV.Models
 
             //Petición al exportador para conseguir el archivo PDF
             HttpClient client = new HttpClient();
+            client.Timeout = new TimeSpan(0, 10, 0);
             string urlExportador = _Configuracion.GetUrlExportador();
             HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
             response.EnsureSuccessStatusCode();
