@@ -105,6 +105,7 @@ var menusLateralesManagement = {
 
         $('#menuLateralUsuario').slideReveal({
             trigger: $("#menuLateralUsuarioTrigger"),
+			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'right',
@@ -116,6 +117,7 @@ var menusLateralesManagement = {
 
         $('#menuLateralMetabuscador').slideReveal({
             trigger: $("#menuLateralMetabuscadorTrigger"),
+			autoEscape:false,
             width: 820,
             overlay: true,
             position: 'right',
@@ -133,6 +135,7 @@ var menusLateralesManagement = {
 
         $('#menuLateral').slideReveal({
             trigger: $("#menuLateralTrigger"),
+			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
@@ -146,6 +149,7 @@ var menusLateralesManagement = {
 
         $('#menuLateralComunidad').slideReveal({
             trigger: $("#menuLateralComunidadTrigger"),
+			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
