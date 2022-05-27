@@ -79,7 +79,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         }
 
         [HttpPost("ExportarLimitado")]
-        public FileResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Optional] List<string> listaId)
+        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Optional] List<string> listaId)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -88,6 +88,11 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
             ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
             Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
+
+            if (entity == null)
+            {
+                return Content("El CV no se ha encontrado");
+            }
 
             exporta.ExportaDatosIdentificacion(entity, _Configuracion.GetVersion(), listaId);
             exporta.ExportaSituacionProfesional(entity, listaId);
