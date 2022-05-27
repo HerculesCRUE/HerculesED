@@ -14,7 +14,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
