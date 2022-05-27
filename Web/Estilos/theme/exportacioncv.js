@@ -20,20 +20,20 @@ var exportacionCV = {
 		//TODO cambiar url
         //$.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
         $.get(urlExportacionCV + 'GetAllTabs?userID=d7711fd2-41d2-464b-8838-e42c52213927&pLang=es', null, function(data) {
-            //recorrer items y por cada uno	
+            //recorrer items y por cada uno			
 			for(var i=0;i<data.length;i++){
 				var id = 'x' + RandomGuid();
-				var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion" role="tablist" aria-multiselectable="true">
+				var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
 										<div class="panel">
 											<div class="panel-heading" role="tab" id="datos-tab">
 												<p class="panel-title">
-													<a data-toggle="collapse" data-parent="#datos-accordion" href="#datos-panel" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
+													<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
 														<span class="texto">${data[i].title}</span>
 														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
 													</a>
 												</p>
 											</div>
-											<div about="${id}">
+											<div id="${id}" class="collapse show">
 												<div class="row cvTab">
 													<div class="col-12 col-contenido">
 													</div>
@@ -41,8 +41,19 @@ var exportacionCV = {
 											</div>
 										</div>
 									</div>`
-				$('.cabecera-cv').append( $(contenedorTab));		
-				edicionCV.printTab(id, data[i]);
+				if(i==0){
+					$('.cabecera-cv').append( $(contenedorTab));
+					var html = edicionCV.printPersonalData(id, data[i]);					
+					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
+					$('#'+id+' input[type="checkbox"]').prop('checked',true);
+				}else if(i == 6){
+					$('.cabecera-cv').append( $(contenedorTab));		
+					var html = printFreeText(id, data[i]);
+					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
+				}else{
+					$('.cabecera-cv').append( $(contenedorTab));		
+					edicionCV.printTab(id, data[i]);
+				}
 			}			
             OcultarUpdateProgress();
 			
@@ -57,7 +68,7 @@ $(window).on('load', function(){
 	exportacionCV.cargarCV();
 	
 	var myForm = `<form action="" id="myForm" method="post">
-					<button type="submit" >Exportar</button>
+					<button class="btn btn-primary uppercase" type="submit" >Exportar</button>
 				</form>`;
 	$('#containerCV').append(myForm);
 	
@@ -73,6 +84,11 @@ $(window).on('load', function(){
 			
 			listaId = listaId.slice(0,-3);			
 			
+			if(listaId.length == 0){
+				window.alert("Debes seleccionar alguna opción");
+				return false;
+			}
+			
 			$.ajax({
 				type: 'POST',
 				url: urlExportacionCV+'GetCV',
@@ -83,7 +99,6 @@ $(window).on('load', function(){
 					listaId: listaId
 				}
 			});
-			return false;
 		});
 	});
 });
@@ -100,8 +115,195 @@ function checkAllCVWrapper(){
 	});
 }
 	
-edicionCV.printPersonalData=function(data) {        
-	return 'SECCION DE DATOS PERSONALES';
+function printFreeText(id, data){
+	var id2 = 'x' + RandomGuid();
+	var expanded = "";
+	var show = "";
+	if (data.sections != null) {
+		if (Object.keys(data.sections).length > 0) {
+			//Desplegado
+			expanded = "false";
+			show = "show";
+		} else {
+			//No desplegado	
+			expanded = "true";
+		}
+		var html = `<div class="panel-group pmd-accordion collapse show" section="${data.sections[0].title}" id="${id}" role="tablist" aria-multiselectable="true">
+						<div class="panel">
+							<div class="panel-heading" role="tab" id="publicaciones-tab">
+								<p class="panel-title">
+									<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+										<span class="material-icons pmd-accordion-icon-left">folder_open</span>
+										<span class="texto">${data.title}</span>
+										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+									</a>
+								</p>
+							</div>
+							<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
+								<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
+									<div class="panel-body">
+										<div class="acciones-listado acciones-listado-cv">
+											<div class="wrap">
+												<div class="checkAllCVWrapper" id="checkAllCVWrapper">
+													<div class="custom-control custom-checkbox">
+														<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
+														<label class="custom-control-label" for="checkAllResources_${id2}">
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="resource-list listView">
+											<div class="resource-list-wrap">
+						`
+		var secciones = data.sections[0].item.sections[0].rows;
+		for (var i = 0; i < secciones.length; i++){
+			var id = 'x' + RandomGuid();
+			var html2 = `<article class="resource success" >
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.sections[0].item.entityID + "|||" + secciones[i].properties[0].property}">
+								<label class="custom-control-label" for="check_resource_${id}"></label>
+							</div>
+							<div class="wrap">
+								<div class="middle-wrap">
+									<div class="title-wrap">
+									</div>
+									<div class="title-wrap">
+										<h2 class="resource-title">
+											<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
+										</h2>
+										<span class="material-icons arrow">keyboard_arrow_down</span>
+									</div>
+									<div class="content-wrap">
+										<div class="description-wrap">
+										</div>
+									</div>
+								</div>
+							</div>
+						</article>`;
+			html += html2;
+		}			
+		html += `						</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>`;
+					
+		 return html;
+	}
+}	
+	
+edicionCV.printTab= function(entityID, data) {
+	var that=this;
+	if (data.entityID != null) {
+		$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
+	} else {
+		for (var i = 0; i < data.sections.length; i++) {	
+			$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));				
+			if (data.sections[i].items != null) {
+				this.repintarListadoTab(data.sections[i].identifier,true);
+			} else if (data.sections[i].item != null) {
+				that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[id="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
+				//Si no tiene ningun campo valor se repliega
+				var plegar=true;
+				$('div[section="' + data.sections[i].identifier+'"] input').each(function() {
+					if($(this).val()!='')
+					{
+						plegar=false;
+					}
+				});
+				//
+				$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
+					if($(this).html()!='')
+					{
+						plegar=false;
+					}
+				});
+				if(plegar)
+				{
+					$('div[section="' + data.sections[i].identifier+'"] .panel-collapse.collapse').removeClass('show');
+					$('div[section="' + data.sections[i].identifier+'"] .panel-heading a').attr('aria-expanded','false');
+				}
+			}
+		}
+	}
+	accionesPlegarDesplegarModal.init();
+	this.engancharComportamientosCV();
+	this.mostrarTraducciones();		
+};
+	
+edicionCV.printPersonalData=function(id, data) {	
+	var id2 = 'x' + RandomGuid();
+	var expanded = "";
+	var show = "";
+	if (data.sections != null) {
+		if (Object.keys(data.sections).length > 0) {
+			//Desplegado
+			expanded = "false";
+			show = "show";
+		} else {
+			//No desplegado	
+			expanded = "true";
+		}
+		var nombre = '';
+		for(var i =0; i < data.sections[0].rows[0].properties.length; i++){
+			if(data.sections[0].rows[0].properties[i].values[0] != null){
+				nombre += data.sections[0].rows[0].properties[i].values[0];
+				nombre += " ";				
+			}
+		}
+		
+		var html = `<div class="panel-group pmd-accordion collapse show" section="${data.sections[0].title}" id="${id}" role="tablist" aria-multiselectable="true">
+						<div class="panel">
+							<div class="panel-heading" role="tab" id="publicaciones-tab">
+								<p class="panel-title">
+									<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+										<span class="material-icons pmd-accordion-icon-left">folder_open</span>
+										<span class="texto">${data.title}</span>
+										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+									</a>
+								</p>
+							</div>
+							<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+								<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
+									<div class="panel-body">								
+										<div class="resource-list listView">
+											<div class="resource-list-wrap">									
+												<article class="resource success" >
+													<div class="custom-control custom-checkbox">
+														<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.entityID}">
+														<label class="custom-control-label" for="check_resource_${id}"></label>
+													</div>
+													<div class="wrap">
+														<div class="middle-wrap">
+															<div class="title-wrap">
+															</div>
+															<div class="title-wrap">
+																<h2 class="resource-title">
+																	<a href="#" data-id="${id}" internal-id="${data.entityID}">${nombre}</a>
+																</h2>
+																${this.printHtmlListItemEditable(data)}	
+																${this.printHtmlListItemIdiomas(data)}
+																<span class="material-icons arrow">keyboard_arrow_down</span>
+															</div>
+															<div class="content-wrap">
+																<div class="description-wrap">
+																</div>
+															</div>
+														</div>
+													</div>
+												</article>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>	`;
+		 return html;
+	}
 };
 
 edicionCV.printTabSection= function(data) {
@@ -115,11 +317,11 @@ edicionCV.printTabSection= function(data) {
 	if (data.items != null) {
 		if (Object.keys(data.items).length > 0) {
 			//Desplegado
-			expanded = "true";
+			expanded = "false";
 			show = "show";
 		} else {
 			//No desplegado	
-			expanded = "false";
+			expanded = "true";
 		}
 		//TODO texto ver items
 		var htmlSection = `
@@ -131,11 +333,11 @@ edicionCV.printTabSection= function(data) {
 							<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 							<span class="texto">${data.title}</span>
 							<span class="numResultados">(${Object.keys(data.items).length})</span>
-							<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
+							<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
 						</a>
 					</p>
 				</div>
-				<div id="${id2}" class="panel-collapse collapse" role="tabpanel">				
+				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
 					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 						<div class="panel-body">
 							<div class="acciones-listado acciones-listado-cv">
