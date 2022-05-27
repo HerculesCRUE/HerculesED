@@ -1,11 +1,10 @@
-var urlExportacionCV = "https://localhost:5002/ExportadoCV/";
-//var urlExportacionCV = url_servicio_editorcv+"ExportadoCV/";
+var urlExportacionCV = url_servicio_editorcv+"ExportadoCV/";
 
 var exportacionCV = {
     idUsuario: null,
     init: function() {
         this.config();
-        //TODO this.idUsuario = $('.contenido-cv').attr('userID');
+        this.idUsuario = $('#inpt_usuarioID').val();
 		
         return;
     },
@@ -16,10 +15,8 @@ var exportacionCV = {
     cargarCV: function() {
         var that = this;
 		MostrarUpdateProgressTime(0);
-        //MostrarUpdateProgress();
-		//TODO cambiar url
-        //$.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
-        $.get(urlExportacionCV + 'GetAllTabs?userID=d7711fd2-41d2-464b-8838-e42c52213927&pLang=es', null, function(data) {
+        $.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
+        
             //recorrer items y por cada uno			
 			for(var i=0;i<data.length;i++){
 				var id = 'x' + RandomGuid();
@@ -94,7 +91,7 @@ $(window).on('load', function(){
 				url: urlExportacionCV+'GetCV',
 				dataType: 'json',
 				data: {
-					userID: 'd7711fd2-41d2-464b-8838-e42c52213927', 
+					userID: exportacionCV.idUsuario, 
 					lang: lang,
 					listaId: listaId
 				}
