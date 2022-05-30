@@ -6026,6 +6026,18 @@ cambioTraducciones.comportamiento= function () {
 	});
 };
 
+accionesPlegarDesplegarModal.collapse= function () {
+	var button = $('.arrow');
+	button.off('click').on('click', function () {
+		var resource = $(this).parents('.resource');
+		if (resource.hasClass('activo')) {
+			resource.removeClass('activo');
+		} else {
+			resource.addClass('activo');
+		}
+	});
+};
+
 var edicionListaAutorCV = {
     init: function () {
         this.config();

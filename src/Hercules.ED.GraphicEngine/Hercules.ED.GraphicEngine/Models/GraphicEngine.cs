@@ -1019,7 +1019,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 if (itemsSeleccionados.Count > 0)
                 {
-                    //Recuperamos los nombres de categorías y creamos los nodos
+                    // Recuperamos los nombres de categorías y creamos los nodos.
                     select = new StringBuilder();
                     where = new StringBuilder();
 
@@ -1126,6 +1126,12 @@ namespace Hercules.ED.GraphicEngine.Models
         public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             Faceta faceta = new Faceta();
+
+            faceta.isDate = false;
+            if (pFiltroBase.Contains("roh:year"))
+            {
+                faceta.isDate = true;
+            }
 
             faceta.numeroItemsFaceta = int.MaxValue;
             if (pFacetaConf.numeroItemsFaceta != 0)
