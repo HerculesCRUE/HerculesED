@@ -14,6 +14,8 @@
 	string urlExportacionJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/exportacioncv.js";
     Html.GetListaJS().Add(urlJS);
     Html.GetListaJS().Add(urlExportacionJS);	
+	string urlCSS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.css";
+	Html.GetListaCSS().Add(urlCSS);
 }
 
 <input type="hidden" id="CV_FIRMANOSELECCIONADOPERSONA" value="@Html.Translate("CV_FIRMANOSELECCIONADOPERSONA")"/>
@@ -57,32 +59,37 @@
 
 <div id="containerCV">
 	<div class="row">
-		<div class="col col-12 col-breadcrumb">
-			<ul>
-				<li>
-					<a href="./home.php">Home</a>
-				</li>
-				<li>
-					Editar CV
-				</li>
-			</ul>
+		<div class="col col-12 col-contenido listadoExportacion">
+			<div class="wrapCol">
+				<div class="cabecera-cv-listado">
+					<div class="upper-wrap">
+						<div class="h1-container">
+							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
+						</div>
+					</div>
+				</div>
+				<ul class="listadoCV">
+				</ul>
+				<input type="text" id="exportCvName"/>
+				<a class="btn btn-primary uppercase btGenerarExportarCV" >@Html.Translate("GENERAR_NUEVA_EXPORTACION")</a>
+			</div>
 		</div>
-		<div class="col col-12 col-contenido">
+		<div class="col col-12 col-contenido exportacion" style="display:none">
 			<div class="wrapCol">
 				<div class="cabecera-cv">
 					<div class="upper-wrap">
 						<div class="h1-container">
-							<h1>Exporta tu CVN</h1>
+							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
 						</div>
 					</div>
+					
+					
 				</div>
+				<a class="btn btn-primary uppercase btExportarCV" >@Html.Translate("EXPORTAR")</a>
 			</div>
 		</div>
 	</div>	
 </div>
 <script>
-$(function() {
-	edicionCV.init();
-    exportacionCV.init();
-});
+exportacionCV.init();
 </script>
