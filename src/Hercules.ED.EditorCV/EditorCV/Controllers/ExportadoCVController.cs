@@ -99,6 +99,7 @@ namespace EditorCV.Controllers
             }
         }
 
+        [HttpGet("GetListadoCV")]
         public IActionResult GetListadoCV([Required] string userID)
         {
             try
