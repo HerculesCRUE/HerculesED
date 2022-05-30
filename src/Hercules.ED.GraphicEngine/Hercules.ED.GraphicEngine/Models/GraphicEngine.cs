@@ -19,7 +19,7 @@ namespace Hercules.ED.GraphicEngine.Models
     public static class GraphicEngine
     {
         // Prefijos.
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configJson\prefijos.json")));
+        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configJson/prefijos.json")));
         private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
@@ -57,7 +57,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 ConfigPagina configPagina = new ConfigPagina()
                 {
                     id = itemGrafica.identificador,
-                    anchura = itemGrafica.anchura12
+                    anchura = itemGrafica.anchura
                 };
 
                 string prefijoNodos = "nodes";
@@ -79,10 +79,11 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                 }
 
-                // Si la anchura sobrepasa ambos limites, se le asigna 6 por defecto.
-                if (configPagina.anchura > 12 || configPagina.anchura < 1)
+                // Si la anchura no contiene un valor aceptado, se le asigna 1/2 por defecto.
+                List<int> valoresAceptados = new List<int>() { 11, 12, 13, 14, 16, 23, 34, 38, 58 };
+                if (!valoresAceptados.Contains(configPagina.anchura))
                 {
-                    configPagina.anchura = 6;
+                    configPagina.anchura = 12;
                 }
 
                 pagina.listaConfigGraficas.Add(configPagina);
@@ -1018,7 +1019,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 if (itemsSeleccionados.Count > 0)
                 {
-                    //Recuperamos los nombres de categorías y creamos los nodos
+                    // Recuperamos los nombres de categorías y creamos los nodos.
                     select = new StringBuilder();
                     where = new StringBuilder();
 
@@ -1125,6 +1126,12 @@ namespace Hercules.ED.GraphicEngine.Models
         public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang)
         {
             Faceta faceta = new Faceta();
+
+            faceta.isDate = false;
+            if (pFiltroBase.Contains("roh:year"))
+            {
+                faceta.isDate = true;
+            }
 
             faceta.numeroItemsFaceta = int.MaxValue;
             if (pFacetaConf.numeroItemsFaceta != 0)

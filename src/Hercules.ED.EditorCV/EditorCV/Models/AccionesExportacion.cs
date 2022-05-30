@@ -1,4 +1,7 @@
-﻿using Gnoss.ApiWrapper;
+﻿using EditorCV.Models.API;
+using EditorCV.Models.API.Input;
+using EditorCV.Models.Utils;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -20,68 +24,108 @@ namespace EditorCV.Models
         /// <summary>
         /// Añade el archivo enviado como array de bytes.
         /// </summary>
-        /// <param name="pCVID">Id del CV</param>
-        /// <param name="result">archivo pdf a guardar</param>
+        /// <param name="_Configuracion"></param>
+        /// <param name="pCVID"></param>
+        /// <param name="lang"></param>
+        /// <param name="listaId"></param>
         public static void AddFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
-            //TODO eliminar
-            goto Testing;
             //Añado GeneratedPDFFile sin el link al archivo
             string filePredicateTitle = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/title";
             string filePredicateFecha = "http://w3id.org/roh/generatedPDFFile|http://purl.org/dc/terms/issued";
+            string filePredicateEstado = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/status";
 
             string idEntityAux = $"{mResourceApi.GraphsUrl}items/GeneratedPDFFile_" + guidCortoCVID.ToString() + "_" + Guid.NewGuid();
 
-            //TODO
-            string PDFFileTitle = "prueba.pdf";//resp.filename;
+            string PDFFileTitle = "CV_filePDF" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".pdf";
             string PDFFileFecha = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-
+            string PDFFileEstado = "pendiente";
 
             List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
             TriplesToInclude trTitle = new TriplesToInclude(idEntityAux + "|" + PDFFileTitle, filePredicateTitle);
             listaTriples.Add(trTitle);
             TriplesToInclude trFecha = new TriplesToInclude(idEntityAux + "|" + PDFFileFecha, filePredicateFecha);
             listaTriples.Add(trFecha);
+            TriplesToInclude trEstado = new TriplesToInclude(idEntityAux + "|" + PDFFileEstado, filePredicateEstado);
+            listaTriples.Add(trEstado);
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
 
-        Testing:
-            //Petición al exportador
-            List<KeyValuePair<string, string>> parametros = new List<KeyValuePair<string, string>>();
-            parametros.Add(new KeyValuePair<string, string>("pCVID", pCVID));
-            parametros.Add(new KeyValuePair<string, string>("lang", lang));
-            foreach (string id in listaId)
+            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, listaId, idEntityAux, PDFFileTitle, guidCortoCVID, filePredicateEstado));
+            thread.Start();
+        }
+
+        /// <summary>
+        /// Adjunto el fichero y modifico los triples de <paramref name="idEntityAux"/> para referenciar el archivo y 
+        /// modificar el estado a "procesado". En caso de error durante el proceso cambio el estado a "error".
+        /// </summary>
+        /// <param name="_Configuracion"></param>
+        /// <param name="pCVID">Identificador del CV</param>
+        /// <param name="lang">Lenguaje del CV</param>
+        /// <param name="listaId">listado de identificadores</param>
+        /// <param name="idEntityAux">Identificador de la entidad auxiliar a modificar</param>
+        /// <param name="PDFFileTitle">nombre del fichero</param>
+        /// <param name="guidCortoCVID">GUID corto del CV</param>
+        /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
+        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId,
+            string idEntityAux, string PDFFileTitle, Guid guidCortoCVID, string filePredicateEstado)
+        {
+            try
             {
-                parametros.Add(new KeyValuePair<string, string>("listaId", id));
+                //Petición al exportador
+                List<KeyValuePair<string, string>> parametros = new List<KeyValuePair<string, string>>();
+                parametros.Add(new KeyValuePair<string, string>("pCVID", pCVID));
+                parametros.Add(new KeyValuePair<string, string>("lang", lang));
+                foreach (string id in listaId)
+                {
+                    parametros.Add(new KeyValuePair<string, string>("listaId", id));
+                }
+                FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
+
+                //Petición al exportador para conseguir el archivo PDF
+                HttpClient client = new HttpClient();
+                client.Timeout = new TimeSpan(1, 15, 0);
+                string urlExportador = _Configuracion.GetUrlExportador();
+                HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
+                response.EnsureSuccessStatusCode();
+                byte[] result = response.Content.ReadAsByteArrayAsync().Result;
+
+                //Inserto el archivo
+                string filePredicate = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/filePDF";
+
+                string fileName = idEntityAux + "|" + PDFFileTitle;
+                List<byte[]> attachedFile = new List<byte[]>();
+                attachedFile.Add(result);
+
+                //Añado el fichero en virtuoso
+                mResourceApi.AttachFileToResource(guidCortoCVID, filePredicate, fileName,
+                    new List<string>() { PDFFileTitle }, new List<short>() { 0 }, attachedFile);
+
+                //Cambio el estado a "procesado"
+                string PDFFileEstado = "procesado";
+                Dictionary<Guid, List<TriplesToModify>> triplesModificar = new Dictionary<Guid, List<TriplesToModify>>();
+                triplesModificar[mResourceApi.GetShortGuid(pCVID)] = new List<TriplesToModify>()
+                {
+                    new TriplesToModify(idEntityAux + "|" + PDFFileEstado, idEntityAux + "|pendiente", filePredicateEstado)
+                };
+                mResourceApi.ModifyPropertiesLoadedResources(triplesModificar);
+
             }
-            FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
+            catch (Exception e)
+            {
+                //Cambio el estado a "error"
+                string PDFFileEstado = "error";
+                Dictionary<Guid, List<TriplesToModify>> triplesModificar = new Dictionary<Guid, List<TriplesToModify>>();
+                triplesModificar[mResourceApi.GetShortGuid(pCVID)] = new List<TriplesToModify>()
+                {
+                    new TriplesToModify(idEntityAux + "|" + PDFFileEstado, idEntityAux + "|pendiente", filePredicateEstado)
+                };
+                mResourceApi.ModifyPropertiesLoadedResources(triplesModificar);
 
-            //Petición al exportador para conseguir el archivo PDF
-            HttpClient client = new HttpClient();
-            client.Timeout = new TimeSpan(0, 10, 0);
-            string urlExportador = _Configuracion.GetUrlExportador();
-            HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
-            response.EnsureSuccessStatusCode();
-            byte[] result = response.Content.ReadAsByteArrayAsync().Result;
-
-            //TODO
-            goto TestingFin;
-
-            string filePredicate = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/filePDF";
-            //TODO
-            string fileName = "http://gnoss.com/items/GeneratedPDFFile_44adc517-91fd-40fb-b90e-54f3e3c7c0a0_1fcb4fa6-7ba3-4849-9ba3-be58e1693be8|prueba.pdf";
-            //string fileName = ""+resp.filename;
-            List<byte[]> attachedFile = new List<byte[]>();
-            attachedFile.Add(result);
-
-            //TODO
-            //Añado el fichero en virtuoso
-            mResourceApi.AttachFileToResource(guidCortoCVID, filePredicate, fileName,
-                new List<string>() { "filePDF" }, new List<short>() { 0 }, attachedFile);
-        //new List<string>() { resp.filename }, new List<short>() { 0 }, new List<byte[]>() { resp.dataHandler });
-        TestingFin:;
+                throw new Exception(e.Message);
+            }
         }
 
         /// <summary>
@@ -152,6 +196,10 @@ namespace EditorCV.Models
         /// <returns></returns>
         private static string FirstLetterUpper(string uri, string property)
         {
+            if (property.Length == 0 || property.Length == 1)
+            {
+                return "";
+            }
             string upper = property.Substring(0, 1).ToUpper();
             string substring = property.Substring(1, property.Length - 1);
             return uri + upper + substring;

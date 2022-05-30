@@ -1,29 +1,23 @@
-const uriLoadTaxonomies = "Cluster/GetThesaurus"
-const uriSaveCluster = "Cluster/SaveCluster"
-const uriSearchTags = "Cluster/searchTags"
-const uriLoadProfiles = "Cluster/loadProfiles"
-const uriLoadClst = "Cluster/LoadCluster"
+const uriSaveOffer = "Offer/SaveOffer"
+const uriLoadOffer = "Offer/LoadOffer"
 
-var urlLT = "";
-var urlSC ="";
-var urlSTAGS = "";
-var urlLoadClst ="";
-var urlCargarPerfiles = "";
+var urlSOff ="";
+var urlSTAGSOffer = "";
+var urlLoadOffer ="";
 
 $(document).ready(function () {
-	urlLT = new URL(url_servicio_externo +  uriLoadTaxonomies);
-	urlSC = new URL(url_servicio_externo +  uriSaveCluster);
-	urlSTAGS = new URL(url_servicio_externo +  uriSearchTags);
-	urlLoadClst = new URL(url_servicio_externo +  uriLoadClst);
-	urlCargarPerfiles = new URL(url_servicio_externo +  uriLoadProfiles);
+	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
+	urlSOff = new URL(servicioExternoBaseUrl +  uriSaveOffer);
+	urlSTAGSOffer = new URL(servicioExternoBaseUrl +  uriSearchTags);
+	urlLoadOffer = new URL(servicioExternoBaseUrl +  uriLoadOffer);
 });
 
 
 
 
-class StepsCluster {
+class StepsOffer {
 	/**
-	 * Constructor de la clase StepsCluster
+	 * Constructor de la clase StepsOffer
 	 */
 	constructor() {
 		var _self = this
@@ -32,30 +26,30 @@ class StepsCluster {
 		this.dataTaxonomies = null
 
 		// Secciones principales
-		this.modalCrearCluster = this.body.find('#wrapper-crear-cluster')
-		this.stepProgressWrap = this.modalCrearCluster.find(".step-progress-wrap")
+		this.modalCrearOferta = this.body.find('#wrapper-crear-oferta')
+		this.stepProgressWrap = this.modalCrearOferta.find(".step-progress-wrap")
 		this.stepsCircle = this.stepProgressWrap.find(".step-progress__circle")
 		this.stepsBar = this.stepProgressWrap.find(".step-progress__bar")
 		this.stepsText = this.stepProgressWrap.find(".step-progress__text")
-		this.modalCrearClusterStep1 = this.modalCrearCluster.find("#wrapper-crear-cluster-step1")
-		this.modalCrearClusterStep2 = this.modalCrearCluster.find("#wrapper-crear-cluster-step2")
-		this.modalCrearClusterStep3 = this.modalCrearCluster.find("#wrapper-crear-cluster-step3")
-		this.clusterAccordionPerfil = this.modalCrearCluster.find("#accordion_cluster")
-		this.errorDiv = this.modalCrearCluster.find("#error-modal-cluster")
-		this.errorDivStep2 = this.modalCrearCluster.find("#error-modal-cluster-step2")
-		this.errorDivStep2Equals = this.modalCrearCluster.find("#error-modal-cluster-step2-equals")
-		this.errorDivServer = this.modalCrearCluster.find("#error-modal-server-cluster")
-		this.perfilesStep3 = this.modalCrearClusterStep3.find("#perfiles-stp3-result-cluster")
+		this.modalCrearOfertaStep1 = this.modalCrearOferta.find("#wrapper-crear-oferta-step1")
+		this.modalCrearOfertaStep2 = this.modalCrearOferta.find("#wrapper-crear-oferta-step2")
+		this.modalCrearOfertaStep3 = this.modalCrearOferta.find("#wrapper-crear-oferta-step3")
+		this.ofertaAccordionPerfil = this.modalCrearOferta.find("#accordion_oferta")
+		this.errorDiv = this.modalCrearOferta.find("#error-modal-oferta")
+		this.errorDivStep2 = this.modalCrearOferta.find("#error-modal-oferta-step2")
+		this.errorDivStep2Equals = this.modalCrearOferta.find("#error-modal-oferta-step2-equals")
+		this.errorDivServer = this.modalCrearOferta.find("#error-modal-server-oferta")
+		this.perfilesStep3 = this.modalCrearOfertaStep3.find("#perfiles-stp3-result-oferta")
 
-		this.stepContentWrap = this.modalCrearCluster.find(".steps-content-wrap")
+		this.stepContentWrap = this.modalCrearOferta.find(".steps-content-wrap")
 		this.stepsContent = this.stepContentWrap.find(".section-steps")
 
 		// Añadir perfil
-		this.modalPerfil = this.body.find("#modal-anadir-perfil-cluster")
+		this.modalPerfil = this.body.find("#modal-anadir-perfil-oferta")
 		this.inputPerfil = this.modalPerfil.find("#input-anadir-perfil")
 
 		// Editar perfil
-		this.modalPerfilEditar = this.body.find("#modal-editar-perfil-cluster")
+		this.modalPerfilEditar = this.body.find("#modal-editar-perfil-oferta")
 		this.inputPerfilEditar = this.modalPerfilEditar.find("#input-editar-perfil")
 
 		// Areas temáticas Modal
@@ -68,34 +62,28 @@ class StepsCluster {
 
 		// Información para el guardado 
 		this.userId = document.getElementById('inpt_usuarioID').value
-		this.clusterId = undefined
+		this.ofertaId = undefined
 		this.data = undefined
 		this.editDataSave = undefined
-		this.communityShortName = $(this.modalCrearCluster).data('cshortname')
-		this.communityUrl = $(this.modalCrearCluster).data('comurl')
-		this.communityResourceUrl = this.communityUrl + '/' + $(this.modalCrearCluster).data('urlrecurso')
-		this.communityKey = $(this.modalCrearCluster).data('comkey')
+		this.communityShortName = $(this.modalCrearOferta).data('cshortname')
+		this.communityUrl = $(this.modalCrearOferta).data('comurl')
+		this.communityResourceUrl = this.communityUrl + '/' + $(this.modalCrearOferta).data('urlrecurso')
+		this.communityKey = $(this.modalCrearOferta).data('comkey')
 
 		// Tags
 		this.topicsM = undefined
 
 		// Textos obtenido de los 'data-'
-		this.eliminarText = this.modalCrearCluster.data("eliminartext")
-		this.editarClusterText = this.modalCrearCluster.data("editarcluster")
-		this.AnadirOtroPerfilText = this.modalCrearCluster.data("addotherprofile")
-		this.AnadirNuevoPerfilText = this.modalCrearCluster.data("addnewprofile")
-		this.areasTematicasText = this.modalCrearCluster.data("areastematicastext")
-		this.descriptoresEspecificosText = this.modalCrearCluster.data("descriptoresespecificostext")
-
-		// Incia las funcionalidades iniciales de modal si este se abre
-		// this.modalCrearCluster.on('shown.bs.modal', function () {
-		// 	_self.init()
-		// });
-
+		this.eliminarText = this.modalCrearOferta.data("eliminartext")
+		this.editarOfertaText = this.modalCrearOferta.data("editaroferta")
+		this.AnadirOtroPerfilText = this.modalCrearOferta.data("addotherprofile")
+		this.AnadirNuevoPerfilText = this.modalCrearOferta.data("addnewprofile")
+		this.areasTematicasText = this.modalCrearOferta.data("areastematicastext")
+		this.descriptoresEspecificosText = this.modalCrearOferta.data("descriptoresespecificostext")
 	}
 
 	/**
-	 * Método que inicia el funcionamiento funcionalidades necesarias para el creador de clusters
+	 * Método que inicia el funcionamiento funcionalidades necesarias para el creador de ofertas
 	 */
 	init() {
 
@@ -106,32 +94,32 @@ class StepsCluster {
 			_self.fillDataTaxonomies(data);
 			_self.dataTaxonomies = data['researcharea'];
 
-			// Check if we need load the cluster (after the taxonomies are loaded)
+			// Check if we need load the oferta (after the taxonomies are loaded)
 			var currentUrl = new URL(window.location)
-			_self.clusterId = currentUrl.searchParams.get("id")
-			if (_self.clusterId) {
-				// Load the cluster
-				_self.loadCluster()
+			_self.ofertaId = currentUrl.searchParams.get("id")
+			if (_self.ofertaId) {
+				// Load the oferta
+				_self.loadOffer()
 			}
 		})
 
 
-		this.topicsM = new ModalSearchTags()
+		this.topicsM = new ModalSearchTagsOffer()
 	}
 
 	/**
-	 * Método que carga el clusters indicado e inicializa los datos con los parámetros indicados
+	 * Método que carga el ofertas indicado e inicializa los datos con los parámetros indicados
 	 */
-	loadCluster() {
+	loadOffer() {
 		var _self = this
-		this.callLoadCluster().then((res) => {
+		this.callLoadOffer().then((res) => {
 			this.data = res
 			this.editDataSave = res
-			var nameInput = document.getElementById('nombreclusterinput')
+			var nameInput = document.getElementById('nombreofertainput')
 			var descInput = document.getElementById('txtDescripcion')
-			var selectTerms = this.modalCrearCluster.find('#cluster-modal-sec1-tax-wrapper')
+			var selectTerms = this.modalCrearOferta.find('#oferta-modal-sec1-tax-wrapper')
 
-			$('h1').text(this.editarClusterText)
+			$('h1').text(this.editarOfertaText)
 
 			// Fill section 1
 			nameInput.value = this.data.name
@@ -175,12 +163,12 @@ class StepsCluster {
 		});
 	}
 
-	callLoadCluster() {
+	callLoadOffer() {
 		MostrarUpdateProgress();
-		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId);
+		urlLoadOffer.searchParams.set('pIdOfertaId', this.ofertaId);
 		return new Promise((resolve, reject) => {
 			
-			$.get(urlLoadClst.toString(), function (res) {
+			$.get(urlLoadOffer.toString(), function (res) {
 				resolve(res);
 				OcultarUpdateProgress();
 			});
@@ -218,7 +206,7 @@ class StepsCluster {
 				try {
 					continueStep = await this.saveInit()
 					if (continueStep) {
-						var urlCom = this.communityResourceUrl+"/"+ this.data.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() +"/"+ this.clusterId.split('_')[1];
+						var urlCom = this.communityResourceUrl+"/"+ this.data.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() +"/"+ this.ofertaId.split('_')[1];
 						window.location = urlCom;
 					}
 				} catch(err) {
@@ -249,12 +237,12 @@ class StepsCluster {
 
 	checkNumberProfiles() {
 
-		let panel = this.clusterAccordionPerfil.find('.panel .panel-heading')
+		let panel = this.ofertaAccordionPerfil.find('.panel .panel-heading')
 
 		if (panel.length > 0) {
-			this.modalCrearCluster.find("#wrapper-crear-cluster-step2-add-profile").text(this.AnadirOtroPerfilText + ' *')
+			this.modalCrearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirOtroPerfilText + ' *')
 		} else {
-			this.modalCrearCluster.find("#wrapper-crear-cluster-step2-add-profile").text(this.AnadirNuevoPerfilText + ' *')
+			this.modalCrearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirNuevoPerfilText + ' *')
 		}
 	}
 
@@ -326,15 +314,15 @@ class StepsCluster {
 		var _self = this
 
 		// Get first screen data
-		let name = document.getElementById('nombreclusterinput').value
+		let name = document.getElementById('nombreofertainput').value
 		let description = document.getElementById('txtDescripcion').value
 		let terms = []
-		let inputsTermsItms = this.modalCrearClusterStep1.find('#cluster-modal-sec1-tax-wrapper').find('input')
+		let inputsTermsItms = this.modalCrearOfertaStep1.find('#oferta-modal-sec1-tax-wrapper').find('input')
 		inputsTermsItms.each((i, e) => {terms.push(e.value)})
 
 		this.data = {
 			...this.data,
-			entityID: _self.clusterId,
+			entityID: _self.ofertaId,
 			name,
 			description,
 			terms
@@ -352,7 +340,7 @@ class StepsCluster {
 		var _self = this
 
 		// Get the second screen
-		let profiles = this.modalCrearClusterStep2.find('.panel-collapse')
+		let profiles = this.modalCrearOfertaStep2.find('.panel-collapse')
 		let profilesObjets = []
 
 		profiles.each((i, e) => {
@@ -408,7 +396,7 @@ class StepsCluster {
 	 */
 	getDataTaxonomies() {
 		
-		// https://localhost:44321/Cluster/GetThesaurus?listadoCluster=%5B%22researcharea%22%5D
+		// https://localhost:44321/Oferta/GetThesaurus?listadoOferta=%5B%22researcharea%22%5D
 		let listThesaurus = ["researcharea"];
 		urlLT.searchParams.set('listThesaurus', JSON.stringify(listThesaurus));
 
@@ -624,10 +612,10 @@ class StepsCluster {
 		
 		return new Promise((resolve) => {
 			
-			$.post(urlSC, this.data)
+			$.post(urlSOff, this.data)
 				.done(
 					function (rdata) {
-						_self.clusterId = rdata;
+						_self.ofertaId = rdata;
 						_self.data.entityID=rdata;
 						_self.startStep3();
 						resolve(true);
@@ -847,7 +835,7 @@ class StepsCluster {
 
 
 		if (data != null) {
-			// Entra aquí por primera vez si el cluster ha sido guardado
+			// Entra aquí por primera vez si el oferta ha sido guardado
 
 			let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
 
@@ -970,7 +958,7 @@ class StepsCluster {
 
 	/**
 	 * Método que añade un perfil nuevo en el segundo paso
-	 * @param name, Nombre opcional para crear un perfil guardado en el cluster que se está cargando
+	 * @param name, Nombre opcional para crear un perfil guardado en el oferta que se está cargando
 	 * @return string, devuelve un string con el id del profile generado
 	 */
 	addPerfilSearch(profileObj = null) {
@@ -1001,7 +989,7 @@ class StepsCluster {
 
 				this.errorDivStep2Equals.hide()
 				// Get the image user url
-				let imgUser = this.modalCrearCluster.data('imguser')
+				let imgUser = this.modalCrearOferta.data('imguser')
 
 				// Set The item id
 				let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
@@ -1009,22 +997,22 @@ class StepsCluster {
 				nameId = nameId + rand.toFixed()
 
 				// Get the panel item
-				let panel = this.clusterAccordionPerfil.find('.panel')
+				let panel = this.ofertaAccordionPerfil.find('.panel')
 
 				// 
 				let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
 						<p class="panel-title">
-							<a class="perfil" data-toggle="collapse" data-parent="#accordion_cluster" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
+							<a class="perfil" data-toggle="collapse" data-parent="#accordion_oferta" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
 								<span class="material-icons">keyboard_arrow_down</span>
 								<img src="`+ imgUser +`" alt="person">
 								<span class="texto">`+ name +`</span>
 							</a>
 						</p>
 						<div class="conteditborrbtn">
-							<a href="javascript:void(0)" onclick="stepsCls.editarPerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey edit">
+							<a href="javascript:void(0)" onclick="stepsOffer.editarPerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey edit">
 								<span class="material-icons-outlined px-0">edit</span>
 							</a>
-							<a href="javascript:void(0)" onclick="stepsCls.deletePerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey eliminar">
+							<a href="javascript:void(0)" onclick="stepsOffer.deletePerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey eliminar">
 								` + this.eliminarText + `
 								<span class="material-icons-outlined">delete</span>
 							</a>
@@ -1040,7 +1028,7 @@ class StepsCluster {
 									<div class="tag-list mb-4 d-inline"></div> 
 								</div>
 								<a class="btn btn-outline-primary" href="javascript: void(0)">
-									<span class="material-icons" onclick="stepsCls.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
+									<span class="material-icons" onclick="stepsOffer.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
 								</a>
 							</div>
 							<!-- -->
@@ -1052,7 +1040,7 @@ class StepsCluster {
 									<div class="tag-list mb-4 d-inline"></div> 
 								</div>
 								<a class="btn btn-outline-primary" href="javascript: void(0)">
-									<span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsCls.loadModalTopics(this)">add</span>
+									<span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsOffer.loadModalTopics(this)">add</span>
 								</a>
 							</div>
 							<!-- -->
@@ -1120,9 +1108,9 @@ class StepsCluster {
 	}
 
 	startStep3() { 
-		comportamientoPopupCluster.init(this.data);
+		comportamientoPopupOferta.init(this.data);
 		this.PrintPerfilesstp3 ();
-		$('#sugeridos-cluster-tab').click();
+		$('#sugeridos-oferta-tab').click();
 	}
 
 	/**
@@ -1130,7 +1118,7 @@ class StepsCluster {
 	 */
 	PrintPerfilesstp3 () {
 
-		let imgUser = this.modalCrearCluster.data('imguser')
+		let imgUser = this.modalCrearOferta.data('imguser')
 
 		let profiles = this.data.profiles.map((e, i) => {
 			let idAccordion = (e.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() + "-" + i);
@@ -1176,7 +1164,7 @@ class StepsCluster {
                             <div class="acciones-wrap">
                                 <ul class="no-list-style">
                                     <li>
-                                        <a href="javascript:stepsCls.removeSelectedUserFromProfile('`+e.shortEntityID+`', '`+user.shortUserID+`')" class="texto-gris-claro">
+                                        <a href="javascript:stepsOffer.removeSelectedUserFromProfile('`+e.shortEntityID+`', '`+user.shortUserID+`')" class="texto-gris-claro">
                                             Eliminar
                                             <span class="material-icons-outlined">delete</span>
                                         </a>
@@ -1233,7 +1221,7 @@ class StepsCluster {
 
 	removeSelectedUserFromProfile(idProfile, idUser) {
 
-		let currentProfile = stepsCls.data.profiles.filter(function (perfilInt) {
+		let currentProfile = stepsOffer.data.profiles.filter(function (perfilInt) {
 			return perfilInt.shortEntityID==idProfile;
 		})[0];
 
@@ -1245,8 +1233,8 @@ class StepsCluster {
 }
 
 
-// Clase para las trabajar en las gráficas de los colaboradores en el cluster
-class CargarGraficaProjectoClusterObj {
+// Clase para las trabajar en las gráficas de los colaboradores en el oferta
+class CargarGraficaProjectoOfertaObj {
 	dataCB = {};
 	dataSE = {};
 	idContenedorCB = "";
@@ -1264,8 +1252,8 @@ class CargarGraficaProjectoClusterObj {
 		AjustarGraficaArania(this.dataSE, this.idContenedorSE, this.typesOcultarSE, this.showRelationSE);
 	};
 
-	CargarGraficaColaboradores = (cluster, idContenedor, mostrarCargando = false) => {
-		var url = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
+	CargarGraficaColaboradores = (oferta, idContenedor, mostrarCargando = false) => {
+		var url = servicioExternoBaseUrl + "Oferta/DatosGraficaColaboradoresOferta";
 		var self = this;
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
@@ -1273,8 +1261,8 @@ class CargarGraficaProjectoClusterObj {
 		}
 
 		let optionsRelations = ["relation_project", "relation_document"];
-		cluster.seleccionados=false;
-		$.post(url, cluster, function (data) {
+		oferta.seleccionados=false;
+		$.post(url, oferta, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataCB = data;
 			self.idContenedorCB = idContenedor;
@@ -1286,8 +1274,8 @@ class CargarGraficaProjectoClusterObj {
 		});
 	};
 	
-	CargarGraficaSeleccionados = (cluster, idContenedor, mostrarCargando = false) => {
-		var url = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
+	CargarGraficaSeleccionados = (oferta, idContenedor, mostrarCargando = false) => {
+		var url = servicioExternoBaseUrl + "Oferta/DatosGraficaColaboradoresOferta";
 		var self = this;
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
@@ -1295,8 +1283,8 @@ class CargarGraficaProjectoClusterObj {
 		}
 
 		let optionsRelations = ["relation_project", "relation_document"];
-		cluster.seleccionados=true;
-		$.post(url, cluster, function (data) {
+		oferta.seleccionados=true;
+		$.post(url, oferta, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataSE = data;
 			self.idContenedorSE = idContenedor;
@@ -1310,11 +1298,11 @@ class CargarGraficaProjectoClusterObj {
 };
 
 // Creamos un nuevo objeto
-var newGrafProjClust = new CargarGraficaProjectoClusterObj();
+var newGrafProjClust = new CargarGraficaProjectoOfertaObj();
 
 
 // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
-function actualizarTypesClusterOcultar(type) {
+function actualizarTypesOfertaOcultar(type) {
 	if (type == "relation_todas") {
 		newGrafProjClust.typesOcultar = [];
 	} else {
@@ -1323,7 +1311,7 @@ function actualizarTypesClusterOcultar(type) {
 	newGrafProjClust.actualizarGraficaColaboradores();
 }
 
-function actualizarTypesClusterOcultarSE(type) {
+function actualizarTypesOfertaOcultarSE(type) {
 	if (type == "relation_todas") {
 		newGrafProjClust.typesOcultarSE = [];
 	} else {
@@ -1334,26 +1322,26 @@ function actualizarTypesClusterOcultarSE(type) {
 
 
 // función para actualizar la gráfica de colaboradores
-function ActualizarGraficaClusterolaboradoresCluster(typesOcultar = [], showRelation = true) {
+function ActualizarGraficaOfertaolaboradoresOferta(typesOcultar = [], showRelation = true) {
 	AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
 }
 
 // Comportamiento página proyecto
-var comportamientoPopupCluster = {
+var comportamientoPopupOferta = {
 	tabActive: null,
 
-	init: function (clusterObj) {
+	init: function (ofertaObj) {
 		let that = this
 		this.config();
-		let paramsCl = this.workCO(clusterObj)
-		let paramsProfiles = this.workCOProfiles(clusterObj)
-		let profiles = this.setProfiles(clusterObj)
+		let paramsCl = this.workCO(ofertaObj)
+		let paramsProfiles = this.workCOProfiles(ofertaObj)
+		let profiles = this.setProfiles(ofertaObj)
 
 		buscadorPersonalizado.profile=null;
-		buscadorPersonalizado.search='searchClusterMixto';
+		buscadorPersonalizado.search='searchOfertaMixto';
 		
 		// Iniciar el listado de usuarios
-		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#clusterListUsers", "searchClusterMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=cluster|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
@@ -1366,9 +1354,9 @@ var comportamientoPopupCluster = {
 						<span class="texto">${that.text_mixto}</span>
 					</a>
 					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_mixto}</a>
-						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_volumen}</a>
-						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">${that.text_ajuste}</a>
+						<a href="javascript: void(0)" filter="searchOfertaMixto" class="item-dropdown">${that.text_mixto}</a>
+						<a href="javascript: void(0)" filter="searchOfertaVolumen" class="item-dropdown">${that.text_volumen}</a>
+						<a href="javascript: void(0)" filter="searchOfertaAjuste" class="item-dropdown">${that.text_ajuste}</a>
 					</div>
 				</div>
 			</div>
@@ -1389,9 +1377,9 @@ var comportamientoPopupCluster = {
 		});
 
 		//Enganchamos comportamiento grafica seleccionados
-		$('#seleccionados-cluster-tab').unbind().click(function (e) {			
+		$('#seleccionados-oferta-tab').unbind().click(function (e) {			
 			e.preventDefault();
-			newGrafProjClust.CargarGraficaSeleccionados(stepsCls.data, 'selectedgraphCluster', true);
+			newGrafProjClust.CargarGraficaSeleccionados(stepsOffer.data, 'selectedgraphOferta', true);
 		});
 
 		return;
@@ -1399,7 +1387,7 @@ var comportamientoPopupCluster = {
 	config: function () {
 		var that = this;
 
-		this.printitem = $('#clusterListUsers')
+		this.printitem = $('#ofertaListUsers')
 		this.text_volumen = this.printitem.data('volumen')
 		this.text_ajuste = this.printitem.data('ajuste')
 		this.text_mixto = this.printitem.data('mixto')
@@ -1408,13 +1396,13 @@ var comportamientoPopupCluster = {
 	},
 
 	/*
-	* Convierte el objeto del cluster a los parámetros de consulta 
+	* Convierte el objeto del oferta a los parámetros de consulta 
 	*/
-	workCO: function (clusterObj) {
+	workCO: function (ofertaObj) {
 
 		let results = null
-		if (clusterObj && clusterObj.profiles) {
-			results = clusterObj.profiles.map(e => {
+		if (ofertaObj && ofertaObj.profiles) {
+			results = ofertaObj.profiles.map(e => {
 				let terms = (e.terms.length) ? e.terms.map(itm => '<' + itm + '>').join(',') : "<>"
 				let tags = (e.tags.length) ? e.tags.map(itm => "'" + itm + "'").join(',') : "''"
 				return terms + '@@@' + tags
@@ -1425,11 +1413,11 @@ var comportamientoPopupCluster = {
 	},
 	
 	/*
-	* Convierte el objeto del cluster a los parámetros de consulta 
+	* Convierte el objeto del oferta a los parámetros de consulta 
 	*/
-	workCOProfiles: function (clusterObj) {
+	workCOProfiles: function (ofertaObj) {
 		var dicPerfiles = [];
-		stepsCls.data.profiles.forEach(function(perfil, index) {
+		stepsOffer.data.profiles.forEach(function(perfil, index) {
 			let terms = (perfil.terms.length) ? perfil.terms.map(itm => '<' + itm + '>').join(',') : "<>"
 			let tags = (perfil.tags.length) ? perfil.tags.map(itm => "'" + itm + "'").join(',') : "''"
 			dicPerfiles[perfil.shortEntityID]=terms + '@@@' + tags
@@ -1440,14 +1428,14 @@ var comportamientoPopupCluster = {
 	/*
 	* Convierte los profiles en json 
 	*/
-	setProfiles: function (clusterObj) {
+	setProfiles: function (ofertaObj) {
 
 		let results = null
-		if (clusterObj && clusterObj.profiles) {
-			clusterObj.profiles.forEach((e, i) => {
+		if (ofertaObj && ofertaObj.profiles) {
+			ofertaObj.profiles.forEach((e, i) => {
 
 			})
-			results = clusterObj.profiles.map((e, i) => (
+			results = ofertaObj.profiles.map((e, i) => (
 				{
 					[e.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() + "-" + i]: e.name
 				}
@@ -1459,13 +1447,13 @@ var comportamientoPopupCluster = {
 };
 
 /**
-* Clase que contiene la funcionalidad del modal de los TAGS para el Cluster
+* Clase que contiene la funcionalidad del modal de los TAGS para el Oferta
 */
-class ModalSearchTags {
+class ModalSearchTagsOffer {
 	constructor() {
 		this.body = $('body')
-		this.modal = this.body.find('#modal-anadir-topicos-cluster')
-		this.inputSearch = this.modal.find('#tagsSearchModalCluster')
+		this.modal = this.body.find('#modal-anadir-topicos-oferta')
+		this.inputSearch = this.modal.find('#tagsSearchModalOferta')
 		this.results = this.modal.find('.ac_results')
 		this.resultsUl = this.results.find('ul')
 		this.addedTags = []
@@ -1478,7 +1466,7 @@ class ModalSearchTags {
 		this.inputSearchEnter()
 
 		/* if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
-			var urlSTAGS = new URL(url_servicio_externo + 'servicioexterno/' + uriSearchTags)
+			var urlSTAGSOffer = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSearchTags)
 		} */
 	}
 
@@ -1639,290 +1627,12 @@ class ModalSearchTags {
 	searchCall (inputVal) {
 		var _self = this
 		// Set the url parameters
-		urlSTAGS.searchParams.set('tagInput', inputVal)
+		urlSTAGSOffer.searchParams.set('tagInput', inputVal)
 
 		return new Promise((resolve) => {
-			$.get(urlSTAGS.toString(), function (data) {
+			$.get(urlSTAGSOffer.toString(), function (data) {
 				resolve(data.filter(itm => !_self.addedTags.includes(itm)))
 			});
 		})
-	}
-}
-
-
-function CompletadaCargaRecursosCluster()
-{	
-	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
-	{		
-		$('#clusterListUsers article.investigador h2.resource-title').attr('tagert','_blank');
-		stepsCls.data.pPersons=$('#clusterListUsers article.investigador').toArray().map(e => {return $(e).attr('id')});
-		
-		newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
-		
-		$.post(urlCargarPerfiles, stepsCls.data, function(data) {
-			$('article.investigador .user-perfil').remove();
-			for (const [idperson, datospersona] of Object.entries(data)) {
-				let htmlPerfiles='';				
-				for (const [idProfile, score] of Object.entries(datospersona)) {
-					if(score.numPublicaciones>0)
-					{
-						let idProfileEdit = idProfile;
-						if(idProfileEdit.length!=36)
-						{
-							idProfileEdit=idProfileEdit.split('_')[2]
-						}
-						let nombrePerfil = stepsCls.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit || item.entityID ==idProfileEdit;})[0].name;
-						
-						let publicationsPercent = score.numPublicaciones/score.numPublicacionesTotal*100
-
-
-      					// Print the terms
-      					let termsHtml = ""
-      					if (score.terms) {
-	      					for (const [termId, count] of Object.entries(score.terms))
-	      					{
-	      						let titem = stepsCls.dataTaxonomies.find(e => e.id == termId)
-
-	      						if (titem) {
-		      						termsHtml += `
-		      							<li>
-		                                    ${titem.name}
-		                                    <span class="numResultados">${count}</span>
-		                                </li>
-									`
-	      						}
-	      					}
-      					}
-
-      					// Print the tags
-      					let tagsHtml = ""
-      					if (score.tags) {
-	      					for (const [tag, count] of Object.entries(score.tags))
-	      					{
-	      						tagsHtml += `
-	      							<li>
-	                                    ${tag}
-	                                    <span class="numResultados">${count}</span>
-	                                </li>
-								`
-	      					}
-	      				}
-
-						htmlPerfiles+=`	<div class="perfil-wrap">
-								        <div class="custom-wrap">
-								            <div class="custom-control custom-checkbox">
-								                <input type="checkbox" class="custom-control-input" id="${idperson}-${idProfileEdit}">
-								                <label class="custom-control-label" for="${idperson}-${idProfileEdit}">
-								                    ${nombrePerfil}
-								                </label>
-								            </div>
-								            <div class="check-actions-wrap">
-								                <a href="javascript: void(0);" class="dropdown-toggle check-actions-toggle" data-toggle="dropdown" aria-expanded="true">
-								                    <span class="material-icons">
-								                        arrow_drop_down
-								                    </span>
-								                </a>
-								                <div class="dropdown-menu basic-dropdown check-actions" id="checkActions" x-placement="bottom-start">
-								                    <div class="barras-progreso-wrapper">
-								                        <div class="progreso-wrapper">
-								                            <div class="progress">
-								                                <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								                            </div>
-								                            <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
-								                        </div>
-								                        <div class="progreso-wrapper">
-								                            <div class="progress">
-								                                <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								                            </div>
-								                            <span class="progress-text"><span class="font-weight-bold">${score.numPublicaciones} /</span> ${score.numPublicacionesTotal}</span>
-								                        </div>
-								                    </div>
-								                    <div class="wrap">
-								                        <div class="header-wrap">
-								                            <p>Areas temáticas</p>
-								                            <p>Publicaciones</p>
-								                        </div>
-								                        <div class="areas-tematicas-wrap">
-								                            <ul class="no-list-style">
-								                                ${termsHtml}
-								                            </ul>
-								                        </div>
-								                    </div>
-								                    <div class="wrap">
-								                        <div class="header-wrap">
-								                            <p>Descriptores</p>
-								                        </div>
-								                        <div class="descriptores-wrap">
-								                            <ul class="no-list-style">
-								                                ${tagsHtml}
-								                            </ul>
-								                        </div>
-								                    </div>
-								                </div>
-								            </div>
-								        </div>
-								        <div class="barras-progreso-wrap">
-								            <div class="progreso-wrapper">
-								                <div class="progress">
-								                    <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								                </div>
-								                <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
-								            </div>
-								            <div class="progreso-wrapper">
-								                <div class="progress">
-								                    <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								                </div>
-								                <span class="progress-text"><span class="font-weight-bold">${score.numPublicaciones} /</span> ${score.numPublicacionesTotal}</span>
-								            </div>
-								        </div>
-								    </div>`;
-
-
-					}
-				}
-				let htmlPerfilesPersona=`	<div class="user-perfil pl-0">
-												${htmlPerfiles}
-											</div>`;				
-				$('#'+idperson+' .content-wrap.flex-column').append(htmlPerfilesPersona);
-				try {
-					$('#'+idperson).data('numPublicacionesTotal', Object.values(datospersona)[0].numPublicacionesTotal);
-					$('#'+idperson).data('ipNumber', Object.values(datospersona)[0].ipNumber);
-				} catch (e) { }
-			}
-
-			let repintar = false
-			//Marcamos como checkeados los correspondientes
-			stepsCls.data.profiles.forEach(function(perfil, index) {
-				let idProfile= perfil.shortEntityID;
-				if(perfil.users!=null)
-				{
-					perfil.users.forEach(function(user, index) {
-						var elementUser = $('#'+user.shortUserID)
-						$('#'+user.shortUserID+'-'+idProfile).prop('checked', true);
-					});					
-				}
-			});
-			if (repintar) {
-				stepsCls.PrintPerfilesstp3();
-			}
-			
-			//Enganchamos el chek de los chekbox	
-			$('.perfil-wrap .custom-control-input').change(function() {
-				let id=$(this).attr('id');
-				let idUser=id.substring(0,36);
-				let idProfile=id.substring(37);					
-				let perfil=stepsCls.data.profiles.filter(function (perfilInt) {
-					return perfilInt.shortEntityID==idProfile || perfilInt.entityID==idProfile ;
-				})[0];
-				if(this.checked) {
-					let elementUser = $(this).closest('.resource.investigador')
-					let user = {}
-					let arrInfo = []
-					user.shortUserID = idUser
-					user.name = elementUser.find('h2.resource-title').text().trim()
-
-					// Obtener la descripción
-					elementUser.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
-						arrInfo.push($(elem).text().trim())
-					})
-					user.info = arrInfo.join(', ')
-
-					user.numPublicacionesTotal = elementUser.data('numPublicacionesTotal')
-					user.ipNumber = elementUser.data('ipNumber')
-					if(perfil.users==null)					
-					{
-						perfil.users=[];
-					}
-					perfil.users.push(user);
-				}else
-				{
-					perfil.users=perfil.users.filter(function (userInt) {
-						return userInt.shortUserID!=idUser;
-					});
-				}
-				stepsCls.PrintPerfilesstp3();
-				newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
-			});	
-			
-		});
-	}
-}
-
-
-
-function CompletadaCargaFacetasCluster()
-{	
-	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
-	{
-		if($('#out_roh_profiles').length==0)
-		{
-			//Creamos la faceta
-			let liPerfiles='';
-			stepsCls.data.profiles.forEach(function(perfil, index) {
-				let idProfile= perfil.shortEntityID;
-				let nameProfile= perfil.name;
-				let style="";
-				if(buscadorPersonalizado.profile==idProfile)
-				{
-					style='style="font-weight: 700!important;"';
-				}
-				liPerfiles+=`<li>
-						<a rel="nofollow" ${style} href="javascript: void(0);" class="facetaperfil con-subfaceta ocultarSubFaceta" profile="${idProfile}">
-							<span class="textoFaceta">${nameProfile}</span>
-						</a>
-					</li>`;
-			});
-			let htmlPerfiles=`<div id="out_roh_profiles">
-					<div id="in_roh_profiles">
-						<div class="box " id="roh_profiles">
-							<span class="faceta-title">TODO perfiles</span>
-							<ul class="listadoFacetas">
-								${liPerfiles}
-							</ul>
-						</div>
-					</div>
-				</div>`;
-			$('#facetedSearch').prepend(htmlPerfiles);
-			//Añadimos el comporamiento a la faceta
-			$('.facetedSearch a.facetaperfil')
-				.unbind()
-				.click(function (e) {	
-					if(buscadorPersonalizado.profile==$(this).attr('profile'))
-					{
-						buscadorPersonalizado.profile=null;
-						buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCO(stepsCls.data);
-					}
-					else
-					{
-						buscadorPersonalizado.profile=$(this).attr('profile');
-						buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCOProfiles(stepsCls.data)[buscadorPersonalizado.profile];
-					}
-					FiltrarPorFacetas(ObtenerHash2());
-				});
-		}
-		if(buscadorPersonalizado.profile!=null)
-		{
-			if($('#panFiltros li.profile').length==0)
-			{
-				let liPerfil='';
-				stepsCls.data.profiles.forEach(function(perfil, index) {
-					let idProfile= perfil.shortEntityID;
-					if(buscadorPersonalizado.profile==idProfile)
-					{
-						liPerfil+=`<li class="profile">
-										${perfil.name}
-										<a rel="nofollow" class="remove facetaprofile" profile="idProfile" href="javascript: void(0);">eliminar</a>
-									</li>`;
-					}					
-				});
-				$('#panFiltros ul').prepend(liPerfil);
-				//Añadimos el comporamiento a la faceta
-				$('#panFiltros .profile a').unbind().click(function (e) {	
-					buscadorPersonalizado.profile=null;
-					buscadorPersonalizado.filtro=buscadorPersonalizado.search+'='+comportamientoPopupCluster.workCO(stepsCls.data);
-					FiltrarPorFacetas(ObtenerHash2());
-				});
-			}
-		}
 	}
 }

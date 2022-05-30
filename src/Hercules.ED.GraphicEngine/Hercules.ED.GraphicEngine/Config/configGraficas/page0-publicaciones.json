@@ -11,7 +11,8 @@
         "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Horizontal"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      /*Representa que % del contenedor ocupara la grafica 12 corresponde 1/2 los valores aceptados son 11,12,13,14,16,23,34,38,58*/
+      "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:year",
@@ -80,7 +81,7 @@
         "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Vertical"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:year",
@@ -112,7 +113,7 @@
         "es": "Nombre de la Gráfica Circular de EJEMPLO - Gráfica Circular"
       },
       "tipo": "Circular",
-      "anchura12": 6,
+      "anchura": 12,
       "config": {
         "dimensiones": [
           {
@@ -138,7 +139,7 @@
         "es": "Nombre de la Gráfica Circular de EJEMPLO 2 - Gráfica Circular"
       },
       "tipo": "Circular",
-      "anchura12": 6,
+      "anchura": 12,
       "config": {
         "dimensiones": [
           {
@@ -178,7 +179,7 @@
         "es": "Nombre de la Gráfica Circular de EJEMPLO 3 - Gráfica Circular"
       },
       "tipo": "Circular",
-      "anchura12": 6,
+      "anchura": 12,
       "config": {
         "dimensiones": [
           {
@@ -199,7 +200,7 @@
         "es": "Nombre de la Gráfica Nodos"
       },
       "tipo": "Nodos",
-      "anchura12": 12,
+      "anchura": 11,
       "config": {
         "dimensiones": [
           {
@@ -220,7 +221,7 @@
         "es": "Publicaciones por grupos"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
@@ -253,7 +254,8 @@
         "es": "Publicaciones por proyecto"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      "anchura": 11,
+      "abreviar": true,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:title",
@@ -285,7 +287,7 @@
         "es": "Publicaciones por entidad financiadora"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:grantedBy@@@roh:organizationTitle",
@@ -317,7 +319,7 @@
         "es": "Publicaciones por tipo de proyecto"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:projectType@@@dc:title",
@@ -349,7 +351,7 @@
         "es": "Publicaciones por ámbito"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
@@ -381,7 +383,7 @@
         "es": "Publicaciones por categorías de los investigadores"
       },
       "tipo": "Barras",
-      "anchura12": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
