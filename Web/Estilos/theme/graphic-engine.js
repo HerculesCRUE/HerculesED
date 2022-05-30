@@ -13,8 +13,8 @@ var metricas = {
     },
     getPage: function(pIdPagina) {
         var that = this;
-        //var url = "https://localhost:44352/GetPaginaGrafica";
-        var url = url_servicio_graphicengine + "GetPaginaGrafica";
+        var url = "https://localhost:44352/GetPaginaGrafica";
+        //var url = url_servicio_graphicengine + "GetPaginaGrafica";
         var arg = {};
         arg.pIdPagina = "123";
         arg.pLang = lang;
@@ -26,8 +26,8 @@ var metricas = {
     },
     getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas) {
         var that = this;
-        //var url = "https://localhost:44352/GetGrafica";
-        var url = url_servicio_graphicengine + "GetGrafica";
+        var url = "https://localhost:44352/GetGrafica";
+        //var url = url_servicio_graphicengine + "GetGrafica";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdGrafica = pIdGrafica;
@@ -48,7 +48,7 @@ var metricas = {
 
                 var arrayNodes = [];
                 var nodos = cy.nodes();
-                for (i = 0; i < cy.nodes().length; i++) { 
+                for (i = 0; i < cy.nodes().length; i++) {
                     arrayNodes.push(nodos[i]._private.data.name);
                 };
 
@@ -270,8 +270,8 @@ var metricas = {
     },
     getFaceta: function(pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
-        //var url = "https://localhost:44352/GetFaceta";
-        var url = url_servicio_graphicengine + "GetFaceta";
+        var url = "https://localhost:44352/GetFaceta";
+        //var url = url_servicio_graphicengine + "GetFaceta";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdFaceta = pIdFaceta;
@@ -284,7 +284,8 @@ var metricas = {
             var numItemsPintados = 0;
 
             $('div[idfaceta="' + data.id + '"]').append(`
-                <h1>${data.nombre}</h1>
+                <span class="faceta-title">${data.nombre}</span>
+                <span class="facet-arrow"></span><ul class="listadoFacetas"></ul>
                 `);
             data.items.forEach(function(item, index, array) {
 
@@ -306,12 +307,22 @@ var metricas = {
                 }
 
                 if (contieneFiltro) {
-                    $('div[idfaceta="' + data.id + '"]').append(`
-                        <a href="javascript: void(0);" class="filtroMetrica" filtro="${item.filtro}"><strong>${item.nombre} (${item.numero})</strong></a>
+                    $('div[idfaceta="' + data.id + '"] .listadoFacetas').append(`
+                        <li>
+                            <a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
+                                <span class="textoFaceta">${item.nombre}</span>
+                                <span class="num-resultados">(${item.numero})</span>
+                            </a>
+                        </li>
                     `);
                 } else {
-                    $('div[idfaceta="' + data.id + '"]').append(`
-                        <a href="javascript: void(0);" class="filtroMetrica" filtro="${item.filtro}">${item.nombre} (${item.numero})</a>
+                    $('div[idfaceta="' + data.id + '"] .listadoFacetas').append(`
+                        <li>
+                            <a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
+                                <span class="textoFaceta">${item.nombre}</span>
+                                <span class="num-resultados">(${item.numero})</span>
+                            </a>
+                        </li>
                     `);
                 }
 
@@ -324,6 +335,8 @@ var metricas = {
     createEmptyPage: function(pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
         $('.containerPage').addClass('pageMetrics');
+        $('#panFacetas').attr('idfaceta', 'page_' + pIdPagina);
+        $('#panFacetas').addClass('containerFacetas');
 
         /*$('#containerMetrics').append(`
             <div id="page_${pIdPagina}" class="pageMetrics">
@@ -384,7 +397,9 @@ var metricas = {
         // Crear estructura para el apartado de facetas.
         pPageData.listaIdsFacetas.forEach(function(item, index, array) {
             $('#page_' + pPageData.id + ' .containerFacetas').append(`
-                        <div class='faceta' idfaceta='${item}'></div>
+                    <div class='facetedSearch'>
+                        <div class='box' idfaceta='${item}'></div>
+                        </div>
                     `);
         });
 
@@ -395,7 +410,7 @@ var metricas = {
 
         // Vacias contenedores.
         $('#page_' + pIdPagina + ' .grafica').empty();
-        $('#page_' + pIdPagina + ' .faceta').empty();
+        $('#page_' + pIdPagina + ' .box').empty();
 
         // Recorremos el div de las gráficas.
         $('#page_' + pIdPagina + ' .grafica').each(function() {
@@ -450,7 +465,7 @@ var metricas = {
         });
 
         // Recorremos el div de las facetas.
-        $('#page_' + pIdPagina + ' .faceta').each(function() {
+        $('#page_' + pIdPagina + ' .box').each(function() {
             that.getFaceta(pIdPagina, $(this).attr("idfaceta"), ObtenerHash2());
         });
     },
@@ -459,7 +474,7 @@ var metricas = {
 
         $('.containerFacetas a.filtroMetrica')
             .unbind()
-            .click(function(e) {
+            .click(function(e) {                
                 var filtroActual = $(this).attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -482,6 +497,9 @@ var metricas = {
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
                 that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+
+                // TODO: Poner negrita a la faceta seleccionada.
+                $(this).addClass('applied con-subfaceta');
             });
 
         $('#zoomIn')

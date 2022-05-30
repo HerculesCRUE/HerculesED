@@ -255,6 +255,7 @@
       },
       "tipo": "Barras",
       "anchura": 11,
+      "abreviar": true,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:title",
