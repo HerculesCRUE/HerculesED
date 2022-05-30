@@ -48,13 +48,13 @@ var metricas = {
 
                 var arrayNodes = [];
                 var nodos = cy.nodes();
-                for (i = 0; i < cy.nodes().length; i++) { //starts loop
+                for (i = 0; i < cy.nodes().length; i++) { 
                     arrayNodes.push(nodos[i]._private.data.name);
                 };
 
                 var arrayEdges = [];
                 var edges = cy.edges();
-                for (i = 0; i < cy.edges().length; i++) { //starts loop
+                for (i = 0; i < cy.edges().length; i++) {
                     var data = edges[i]._private.data.id.split('~');
                     arrayEdges.push(data[data.length - 1]);
                     edges[i]._private.data.name = "";
