@@ -9,12 +9,77 @@ var exportacionCV = {
         return;
     },
 	config: function(){
+		var that = this;
 		$('body').addClass('page-cv');
+		that.cargarListadoCV();
+		
+		//Preparar exportación
+		$('.btGenerarExportarCV').off('click').on('click', function(e) {
+            e.preventDefault();
+			if($('#exportCvName').val().length == 0){
+				window.alert("Debes Añadir un nombre al fichero");
+				return false;
+			}
+			that.cargarCV();
+		});
+		
+		
+		//Generar exportación
+		$('.btExportarCV').off('click').on('click', function(e) {
+            e.preventDefault();
+						
+			var listaId = "";
+			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
+				listaId += (this.checked ? $(this).val()+"@@@" : "")
+			});
+			
+			listaId = listaId.slice(0,-3);			
+			
+			if(listaId.length == 0){
+				window.alert("Debes seleccionar alguna opción");
+				return false;
+			}
+			
+			var data = {};
+			data.userID= that.idUsuario;
+			data.lang= lang;
+			data.listaId= listaId;
+			data.nombreCV= $('#exportCvName').val();
+			
+			MostrarUpdateProgress();
+			$.post(urlExportacionCV + 'GetCV', data, function(data) {
+				that.cargarListadoCV();		
+			});
+        });		
+		
+		
 	},
-	//Métodos de pestañas
+	//Carga los CV exporatdos
+    cargarListadoCV: function() {
+		$('.listadoCV li').remove();
+
+        var that = this;
+		that.idUsuario = $('#inpt_usuarioID').val();
+		$('.col-contenido.listadoExportacion').show();
+		$('.col-contenido.exportacion').hide();
+		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
+            //recorrer items y por cada uno			
+			for(var i=0;i<data.length;i++){
+				
+				$('.listadoCV').append($('<li>'+data[i].titulo+'</li>'));
+				$('.listadoCV').append($('<li>'+data[i].fecha+'</li>'));
+				$('.listadoCV').append($('<li>'+data[i].estado+'</li>'));
+				$('.listadoCV').append($('<li>'+data[i].fichero+'</li>'));
+			}
+		});
+	},
+	//Carga los datos del CV para la exportacion
     cargarCV: function() {
+		$('.col-contenido.listadoExportacion').hide();
+		$('.col-contenido.exportacion').show();
         var that = this;
 		MostrarUpdateProgressTime(0);
+		$('.panel-group.pmd-accordion').remove();
         $.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
         
             //recorrer items y por cada uno			
@@ -26,7 +91,7 @@ var exportacionCV = {
 												<p class="panel-title">
 													<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
 														<span class="texto">${data[i].title}</span>
-														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 													</a>
 												</p>
 											</div>
@@ -61,44 +126,6 @@ var exportacionCV = {
     }
 };
 
-$(window).on('load', function(){
-	exportacionCV.cargarCV();
-	
-	var myForm = `<form action="" id="myForm" method="post">
-					<button class="btn btn-primary uppercase" type="submit" >Exportar</button>
-				</form>`;
-	$('#containerCV').append(myForm);
-	
-	$(function() {
-		$('#myForm').submit(function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			
-			var listaId = "";
-			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
-				listaId += (this.checked ? $(this).val()+"@@@" : "")
-			});
-			
-			listaId = listaId.slice(0,-3);			
-			
-			if(listaId.length == 0){
-				window.alert("Debes seleccionar alguna opción");
-				return false;
-			}
-			
-			$.ajax({
-				type: 'POST',
-				url: urlExportacionCV+'GetCV',
-				dataType: 'json',
-				data: {
-					userID: exportacionCV.idUsuario, 
-					lang: lang,
-					listaId: listaId
-				}
-			});
-		});
-	});
-});
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
@@ -119,11 +146,11 @@ function printFreeText(id, data){
 	if (data.sections != null) {
 		if (Object.keys(data.sections).length > 0) {
 			//Desplegado
-			expanded = "false";
+			expanded = "true";
 			show = "show";
 		} else {
 			//No desplegado	
-			expanded = "true";
+			expanded = "false";
 		}
 		var html = `<div class="panel-group pmd-accordion collapse show" section="${data.sections[0].title}" id="${id}" role="tablist" aria-multiselectable="true">
 						<div class="panel">
@@ -238,11 +265,11 @@ edicionCV.printPersonalData=function(id, data) {
 	if (data.sections != null) {
 		if (Object.keys(data.sections).length > 0) {
 			//Desplegado
-			expanded = "false";
+			expanded = "true";
 			show = "show";
 		} else {
 			//No desplegado	
-			expanded = "true";
+			expanded = "false";
 		}
 		var nombre = '';
 		for(var i =0; i < data.sections[0].rows[0].properties.length; i++){
@@ -314,11 +341,11 @@ edicionCV.printTabSection= function(data) {
 	if (data.items != null) {
 		if (Object.keys(data.items).length > 0) {
 			//Desplegado
-			expanded = "false";
+			expanded = "true";
 			show = "show";
 		} else {
 			//No desplegado	
-			expanded = "true";
+			expanded = "false";
 		}
 		//TODO texto ver items
 		var htmlSection = `
@@ -330,7 +357,7 @@ edicionCV.printTabSection= function(data) {
 							<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 							<span class="texto">${data.title}</span>
 							<span class="numResultados">(${Object.keys(data.items).length})</span>
-							<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+							<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 						</a>
 					</p>
 				</div>
