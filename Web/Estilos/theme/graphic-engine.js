@@ -13,8 +13,8 @@ var metricas = {
     },
     getPage: function (pIdPagina) {
         var that = this;
-        var url = "https://localhost:44352/GetPaginaGrafica";
-        //var url = url_servicio_graphicengine+"GetPaginaGrafica";
+        //var url = "https://localhost:44352/GetPaginaGrafica";
+        var url = url_servicio_graphicengine + "GetPaginaGrafica";
         var arg = {};
         arg.pIdPagina = "123";
         arg.pLang = lang;
@@ -26,8 +26,8 @@ var metricas = {
     },
     getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas) {
         var that = this;
-        var url = "https://localhost:44352/GetGrafica";
-        //var url = url_servicio_graphicengine+"GetGrafica";
+        //var url = "https://localhost:44352/GetGrafica";
+        var url = url_servicio_graphicengine + "GetGrafica";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdGrafica = pIdGrafica;
@@ -38,7 +38,7 @@ var metricas = {
         $.get(url, arg, function (data) {
             var ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
 
-            // TODO: Controlar ChartJS o Cytoscape
+            // Controla si el objeto es de ChartJS o Cytoscape.
             if ("container" in data) {
                 data.container = ctx;
                 data.ready = function () { window.cy = this };
@@ -83,26 +83,26 @@ var metricas = {
             } else {
                 var myChart = new Chart(ctx, data);
 
-                var numBars = data.data.labels.length; //numero de barras
-                var barSize = 100; //tamaño arbitrario de las barras 
-                var canvasSize = (numBars * barSize); // y establezco el tamaño del canvas 
+                var numBars = data.data.labels.length; // Número de barras.
+                var barSize = 100; // Tamaño arbitrario de las barras.
+                var canvasSize = (numBars * barSize); // Tamaño del canvas.
 
-                //solo si es una grafica horizontal
+                // Solo si es una gráfica horizontal.
                 if (data.options.indexAxis == "y") {
-                    //obtenemos los elementos de la grafica  
+                    // Obtenemos los elementos de la gráfica.
                     var canvas = myChart.canvas;
                     var chartAreaWrapper = canvas.parentNode;
                     var scrollContainer = chartAreaWrapper.parentNode;
                     var chartContainer = scrollContainer.parentNode;
 
-                    // En caso de que los labels de la grafica deban de estar abreviados
+                    // En caso de que los labels de la gráfica deban de estar abreviados...
                     if (pIdGrafica.includes("abr")) { 
-                        //Se modifica la propiedad que usa chart.js para obtener los labels de la grafica
+                        // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
                         data.options.scales.y.ticks.callback = function (value) { 
-                            const labels = data.data.labels; //obtenemos los labels
+                            const labels = data.data.labels; // Obtención de los labels.
                             if (value >= 0 && value < labels.length) {
                                 if (labels[value].length >= 3) {
-                                    return labels[value].substring(0, 3) + "."; //y mostramos solo los 3 primeros caracteres
+                                    return labels[value].substring(0, 3) + "."; // Se muestran solo los 3 primeros caractéres.
                                 }
                                 return labels[value];
                             }
@@ -111,26 +111,21 @@ var metricas = {
                         myChart.update();
                     }
 
-                    //si el canvas no supera el tamaño del contenedor, no se hace scroll
+                    // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
                     if (canvasSize < 456) {
                         chartAreaWrapper.style.height = canvasSize + 'px';
-                        scrollContainer.style.overflowY = 'hidden';
-
-
-                    // de lo contrario se prepara todo para el scroll
-                    } else {
-                        //importante que no mantega el ratio para poder reescalarlo
+                        scrollContainer.style.overflowY = 'hidden';                    
+                    } else { 
+                        // De lo contrario se prepara todo para el scroll.
+                        // Importante que no mantega el ratio para poder reescalarlo.
                         data.options.maintainAspectRatio = false;
                         data.options.responsive = true;
 
                         var hasTopAxis = false;
                         var hasBottomAxis = false;
 
-
-
-                        // compruebo que si tiene eje inferior y superior
+                        // Se comprueba si tiene eje inferior y superior.
                         Object.entries(data.options.scales).forEach((scale) => {
-
                             if (scale[1].axis == "x") {
                                 if (scale[1].position == "top" && !hasTopAxis) {
                                     hasTopAxis = true;
@@ -140,10 +135,9 @@ var metricas = {
                             }
                         });
 
-
-                        //si existe un eje superior creo los elementos necesarios para la leyenda y el eje
+                        // Si existe un eje superior se crea los elementos necesarios para la leyenda y el eje.
                         if (hasTopAxis) { 
-                            //contenedor de la leyenda
+                            // Contenedor de la leyenda.
                             var legend = document.createElement('div');
                             legend.id = 'chartLegend';
                             legend.style.textAlign = 'center';
@@ -151,7 +145,8 @@ var metricas = {
                             legend.style.top = '0px';
                             legend.style.backgroundColor = 'white';
                             chartContainer.appendChild(legend);
-                            //titulo del canvas
+
+                            // Título del canvas.
                             var legendTitle = document.createElement('h4');
                             legendTitle.innerHTML = data.options.plugins.title.text; //obtenido de data
                             legendTitle.id = 'legendTitle';
@@ -160,14 +155,16 @@ var metricas = {
                             legendTitle.style.fontSize = '90%';
                             legendTitle.style.fontWeight = 'bold';
                             legend.appendChild(legendTitle);
-                            //contenedor de los elementos de la leyenda
+
+                            // Contenedor de los elementos de la leyenda.
                             var dataSetLabels = document.createElement('div');
                             dataSetLabels.id = 'dataSetLabels';
                             dataSetLabels.style.display = 'flex';
                             dataSetLabels.style.flexFlow = 'row wrap';
                             dataSetLabels.style.justifyContent = 'center';
                             legend.appendChild(dataSetLabels);
-                            //eje superior 
+                            
+                            // Eje superior. 
                             var topAxis = document.createElement('canvas');
                             topAxis.id = 'topAxis';
                             topAxis.className = 'myChartAxis';
@@ -176,7 +173,8 @@ var metricas = {
                             topAxis.style.bottom = '0px';
                             topAxis.style.left = '0px';
                             legend.appendChild(topAxis);
-                            //ahora por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels
+
+                            // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
                             var datasets = data.data.datasets;
                             datasets.forEach((dataset, index) => {
                                 var labelContainer = document.createElement('div');
@@ -192,7 +190,6 @@ var metricas = {
                                 barLabel.style.fontFamily = "Calibri";
                                 barLabel.style.margin = "5px";
 
-
                                 labelContainer.style.margin = "5px";
                                 labelContainer.style.height = "15px";
                                 labelContainer.style.display = "flex";
@@ -206,12 +203,10 @@ var metricas = {
                                 labelContainer.appendChild(colorDiv);
                                 labelContainer.appendChild(barLabel);
                                 dataSetLabels.appendChild(labelContainer);
-
                             });
-
                         }
 
-                        //si existe un eje inferior, lo añado y le aplico estilos
+                        // Si existe un eje inferior, se agrega con estilos.
                         if (hasBottomAxis) {
                             var bottomAxis = document.createElement('canvas');
                             bottomAxis.id = 'bottomAxis';
@@ -223,32 +218,30 @@ var metricas = {
                             chartContainer.appendChild(bottomAxis);
                         }
 
-                        //cuando se acutaliza el canvas
+                        // Cuando se acutaliza el canvas.
                         data.options.animation.onProgress = reDrawChart;
-                        //y cuando se reescala el navegador se redibuja la leyenda
+                        // Cuando se reescala el navegador se redibuja la leyenda.
                         window.addEventListener('resize', (e) => {
                             reDrawChart();
                             myChart.update();
 
                         });
 
-                        //funcion que dibuja la leyenda y los ejes, tambien reescala todo para que coincida con el chart
+                        // Función que dibuja la leyenda y los ejes, también reescala todo para que coincida con el chart.
                         function reDrawChart() {
-                            console.log("sdads");
-
-
-                            //se obtiene la escala del navegador (afecta cuando el usuario hace zoom)
+                            // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
                             var scale = window.devicePixelRatio;
                             chartAreaWrapper.style.height = canvasSize + 'px';
 
                             var copyWidth = myChart.width;
-                            /*la altura del titulo, leyenda y eje superior menos el margen*/
+
+                            // Altura del titulo, leyenda y eje superior menos el margen.
                             var copyHeight = myChart.boxes[0].height + myChart.boxes[1].height + myChart.boxes[2].height - 5;
 
-                            /*Le asignamos tamaño a la leyenda */
-
+                            // Le asignamos tamaño a la leyenda.
                             var axisHeight = myChart.boxes[2].height;
-                            /*Preparamos el eje superior */
+
+                            // Preparamos el eje superior.
                             if (topAxis) {
                                 legend.style.height = copyHeight + "px";
                                 legend.style.width = copyWidth + "px";
@@ -258,7 +251,8 @@ var metricas = {
                                 topAxisCtx.canvas.height = axisHeight;
                                 topAxisCtx.drawImage(myChart.canvas, 0, (copyHeight - axisHeight) * scale, copyWidth * scale, axisHeight * scale, 0, 0, copyWidth, axisHeight);
                             }
-                            /*Preparamos el eje inferior*/
+
+                            // Preparamos el eje inferior.
                             if (bottomAxis) {
                                 var bottomAxisCtx = bottomAxis.getContext('2d');
 
@@ -267,23 +261,17 @@ var metricas = {
                                 bottomAxisCtx.canvas.height = axisHeight;
                                 bottomAxisCtx.drawImage(myChart.canvas, 0, myChart.chartArea.bottom * scale, copyWidth * scale, axisHeight * scale, 0, 0, copyWidth, axisHeight);
                             }
-
-
-
                         }
-
-
                     }
                 }
-
             }
             that.engancharComportamientos();
         });
     },
     getFaceta: function (pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
-        var url = "https://localhost:44352/GetFaceta";
-        //var url = url_servicio_graphicengine+"GetFaceta";
+        //var url = "https://localhost:44352/GetFaceta";
+        var url = url_servicio_graphicengine + "GetFaceta";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdFaceta = pIdFaceta;
@@ -355,8 +343,6 @@ var metricas = {
         var espacio = 12;
 
         pPageData.listaConfigGraficas.forEach(function (item, index, array) {
-            console.log($(item.nombre));
-
             /*if (espacio - item.anchura < 0 || index == 0) {
                 rowNumber++;
                 $('#page_' + pPageData.id + ' .containerGraficas').append(`
@@ -501,6 +487,7 @@ var metricas = {
                 e.preventDefault();
                 that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
             });
+
         $('#zoomIn')
             .unbind()
             .click(function (e) {
@@ -513,19 +500,19 @@ var metricas = {
                 cy.zoom(cy.zoom() - 0.2);
             });
 
-
         //Labels de la leyenda
         $('div.labelContainer')
             .unbind()
             .click(function (e) {
-                //obtenemos el chart desde el canvas
+                // Se obtiene el chart desde el canvas.
                 var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
                 var chart = Chart.getChart(canvas);
-                //la id del dataset esta en la id del contenedor del label
+
+                // El ID del dataset está en el ID del contenedor del label.
                 var id = $(this).attr('id').split('-')[1];
                 var label = $(this).find('p.dataSetLabel');
 
-                //si el label no esta tachado se tacha y oculta el dataset
+                // Si el label no está tachado se tacha y oculta el dataset.
                 if (label.css('text-decoration').indexOf("line-through") == -1) {
                     label.css("text-decoration", "line-through");
                     chart.setDatasetVisibility(id, false);
@@ -533,16 +520,16 @@ var metricas = {
                     label.css("text-decoration", "none");
                     chart.setDatasetVisibility(id, true);
                 }
-                try {//hay problemas con el grafico de lineas, si falla se redibuja el chart
+
+                try { // Hay problemas con el gráfico de líneas, si falla se repinta el chart.
                     chart.update();
                     chart.redraw();
                 } catch (e) {
                     chart.draw();
-                    console.log(e);
                 }
             });
 
-        //Boton de desacarga
+        // Botón de desacarga.
         $('div.descargar')
             .unbind()
             .click(function (e) {
@@ -556,9 +543,6 @@ var metricas = {
                 a.href = image;
                 a.download = (chart.id) + '.png';
                 a.click();
-
             });
-
-
     }
 }
