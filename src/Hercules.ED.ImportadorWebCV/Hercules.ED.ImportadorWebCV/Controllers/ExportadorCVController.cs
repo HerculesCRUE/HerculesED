@@ -49,7 +49,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
             Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
 
-            if(entity == null)
+            if (entity == null)
             {
                 return Content("El CV no se ha encontrado");
             }
@@ -106,8 +106,8 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
             //Aumento el tiempo de espera a 10 minutos como maximo
-            client.Endpoint.Binding.CloseTimeout = new TimeSpan(0, 10, 0);
-            client.Endpoint.Binding.SendTimeout = new TimeSpan(0, 10, 0);
+            client.Endpoint.Binding.CloseTimeout = new TimeSpan(1, 0, 0);
+            client.Endpoint.Binding.SendTimeout = new TimeSpan(1, 0, 0);
 
             var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", "spa");
             var resp = peticion.Result.@return;
