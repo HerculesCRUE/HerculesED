@@ -140,7 +140,7 @@ namespace EditorCV.Models
     OPTIONAL{{ ?pdfFile <http://purl.org/dc/terms/issued> ?fecha }}
     OPTIONAL{{ ?pdfFile <http://w3id.org/roh/status> ?estado }}
     OPTIONAL{{ ?pdfFile <http://w3id.org/roh/filePDF> ?fichero }}
-}}group by ?pdfFile";
+}}group by ?pdfFile order by ?fecha";
 
             SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
