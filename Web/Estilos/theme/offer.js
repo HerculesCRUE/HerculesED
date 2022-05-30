@@ -1,24 +1,15 @@
-const uriLoadTaxonomies = "Offer/GetThesaurus"
 const uriSaveOffer = "Offer/SaveOffer"
-const uriSearchTags = "Offer/searchTags"
-const uriLoadProfiles = "Offer/loadProfiles"
-const uriLoadClst = "Offer/LoadOffer"
+const uriLoadOffer = "Offer/LoadOffer"
 
-var servicioExternoBaseUrl="";
-
-var urlLT = "";
-var urlSC ="";
-var urlSTAGS = "";
-var urlLoadClst ="";
-var urlCargarPerfiles = "";
+var urlSOff ="";
+var urlSTAGSOffer = "";
+var urlLoadOffer ="";
 
 $(document).ready(function () {
 	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
-	urlLT = new URL(servicioExternoBaseUrl +  uriLoadTaxonomies);
-	urlSC = new URL(servicioExternoBaseUrl +  uriSaveOffer);
-	urlSTAGS = new URL(servicioExternoBaseUrl +  uriSearchTags);
-	urlLoadClst = new URL(servicioExternoBaseUrl +  uriLoadClst);
-	urlCargarPerfiles = new URL(servicioExternoBaseUrl +  uriLoadProfiles);
+	urlSOff = new URL(servicioExternoBaseUrl +  uriSaveOffer);
+	urlSTAGSOffer = new URL(servicioExternoBaseUrl +  uriSearchTags);
+	urlLoadOffer = new URL(servicioExternoBaseUrl +  uriLoadOffer);
 });
 
 
@@ -113,7 +104,7 @@ class StepsOffer {
 		})
 
 
-		this.topicsM = new ModalSearchTags()
+		this.topicsM = new ModalSearchTagsOffer()
 	}
 
 	/**
@@ -174,10 +165,10 @@ class StepsOffer {
 
 	callLoadOffer() {
 		MostrarUpdateProgress();
-		urlLoadClst.searchParams.set('pIdOfertaId', this.ofertaId);
+		urlLoadOffer.searchParams.set('pIdOfertaId', this.ofertaId);
 		return new Promise((resolve, reject) => {
 			
-			$.get(urlLoadClst.toString(), function (res) {
+			$.get(urlLoadOffer.toString(), function (res) {
 				resolve(res);
 				OcultarUpdateProgress();
 			});
@@ -621,7 +612,7 @@ class StepsOffer {
 		
 		return new Promise((resolve) => {
 			
-			$.post(urlSC, this.data)
+			$.post(urlSOff, this.data)
 				.done(
 					function (rdata) {
 						_self.ofertaId = rdata;
@@ -1458,7 +1449,7 @@ var comportamientoPopupOferta = {
 /**
 * Clase que contiene la funcionalidad del modal de los TAGS para el Oferta
 */
-class ModalSearchTags {
+class ModalSearchTagsOffer {
 	constructor() {
 		this.body = $('body')
 		this.modal = this.body.find('#modal-anadir-topicos-oferta')
@@ -1475,7 +1466,7 @@ class ModalSearchTags {
 		this.inputSearchEnter()
 
 		/* if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
-			var urlSTAGS = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSearchTags)
+			var urlSTAGSOffer = new URL(servicioExternoBaseUrl + 'servicioexterno/' + uriSearchTags)
 		} */
 	}
 
@@ -1636,10 +1627,10 @@ class ModalSearchTags {
 	searchCall (inputVal) {
 		var _self = this
 		// Set the url parameters
-		urlSTAGS.searchParams.set('tagInput', inputVal)
+		urlSTAGSOffer.searchParams.set('tagInput', inputVal)
 
 		return new Promise((resolve) => {
-			$.get(urlSTAGS.toString(), function (data) {
+			$.get(urlSTAGSOffer.toString(), function (data) {
 				resolve(data.filter(itm => !_self.addedTags.includes(itm)))
 			});
 		})
