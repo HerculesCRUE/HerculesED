@@ -48,6 +48,7 @@ var exportacionCV = {
 			
 			MostrarUpdateProgress();
 			$.post(urlExportacionCV + 'GetCV', data, function(data) {
+				OcultarUpdateProgress();
 				that.cargarListadoCV();		
 			});
         });		
@@ -62,15 +63,16 @@ var exportacionCV = {
 		that.idUsuario = $('#inpt_usuarioID').val();
 		$('.col-contenido.listadoExportacion').show();
 		$('.col-contenido.exportacion').hide();
+		MostrarUpdateProgress();
 		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
             //recorrer items y por cada uno			
-			for(var i=0;i<data.length;i++){
-				
+			for(var i=0;i<data.length;i++){				
 				$('.listadoCV').append($('<li>'+data[i].titulo+'</li>'));
 				$('.listadoCV').append($('<li>'+data[i].fecha+'</li>'));
 				$('.listadoCV').append($('<li>'+data[i].estado+'</li>'));
 				$('.listadoCV').append($('<li>'+data[i].fichero+'</li>'));
 			}
+			OcultarUpdateProgress();
 		});
 	},
 	//Carga los datos del CV para la exportacion
