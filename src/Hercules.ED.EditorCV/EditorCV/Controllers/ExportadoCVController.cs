@@ -35,22 +35,31 @@ namespace EditorCV.Controllers
         /// <param name="lang"></param>
         /// <param name="listaId">listado de Identificadores concatenados por "@@@"</param>
         [HttpPost("GetCV")]
-        public void GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Optional][FromForm] string listaId)
+        public IActionResult GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Required][FromForm] string nombreCV, [Optional][FromForm] string listaId)
         {
-            List<string> listadoId = new List<string>();
-            if (listaId != null)
+            try
             {
-                listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
-            }
+                List<string> listadoId = new List<string>();
+                if (listaId != null)
+                {
+                    listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
 
-            string pCVId = UtilityCV.GetCVFromUser(userID);
-            if (string.IsNullOrEmpty(pCVId))
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+
+                //Añado el archivo
+                AccionesExportacion.AddFile(_Configuracion, pCVId, nombreCV, lang, listadoId);
+                return Ok(new Models.API.Response.JsonResult() { ok=true });
+            }
+            catch(Exception ex)
             {
-                throw new Exception("Usuario no encontrado " + userID);
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
-
-            //Añado el archivo
-            AccionesExportacion.AddFile(_Configuracion, pCVId, lang, listadoId);
+           
         }
 
         /// <summary>
@@ -89,5 +98,25 @@ namespace EditorCV.Controllers
                 return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
         }
+
+        public IActionResult GetListadoCV([Required] string userID)
+        {
+            try
+            {
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+                List<Tuple <string, string, string>> pListId = AccionesExportacion.GetListPDFFile(pCVId);
+
+                return Ok(pListId.OrderBy(x => x.Item1));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
     }
 }
