@@ -75,7 +75,6 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
 
             return File(resp.dataHandler, "application/pdf");
-
         }
 
         [HttpPost("ExportarLimitado")]
