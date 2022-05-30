@@ -13,8 +13,8 @@ var metricas = {
     },
     getPage: function(pIdPagina) {
         var that = this;
-        var url = "https://localhost:44352/GetPaginaGrafica";
-        //var url = url_servicio_graphicengine + "GetPaginaGrafica";
+        //var url = "https://localhost:44352/GetPaginaGrafica";
+        var url = url_servicio_graphicengine + "GetPaginaGrafica";
         var arg = {};
         arg.pIdPagina = "123";
         arg.pLang = lang;
@@ -26,8 +26,8 @@ var metricas = {
     },
     getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas) {
         var that = this;
-        var url = "https://localhost:44352/GetGrafica";
-        //var url = url_servicio_graphicengine + "GetGrafica";
+        //var url = "https://localhost:44352/GetGrafica";
+        var url = url_servicio_graphicengine + "GetGrafica";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdGrafica = pIdGrafica;
@@ -270,8 +270,8 @@ var metricas = {
     },
     getFaceta: function(pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
-        var url = "https://localhost:44352/GetFaceta";
-        //var url = url_servicio_graphicengine + "GetFaceta";
+        //var url = "https://localhost:44352/GetFaceta";
+        var url = url_servicio_graphicengine + "GetFaceta";
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdFaceta = pIdFaceta;
@@ -543,20 +543,37 @@ var metricas = {
                 }
             });
 
-        // Botón de desacarga.
+        // Botón de descarga.
         $('div.descargar')
             .unbind()
             .click(function(e) {
-                // Obtención del chart usando el elemento canvas.
+                // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
                 var chart = Chart.getChart(canvas);
-                // Transformación a imagen.
-                var image = chart.toBase64Image();
+
+                // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
+                if(chart == null)
+                {
+                    canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
+                    chart = Chart.getChart(canvas);
+                }                
+
+                // Obtención del chart usando el elemento canvas de graficas sin scroll y de Cytoscape.js
+                var image;
+                if(chart == null)
+                {
+                    image = cy.png();
+                }
+                else
+                {                    
+                    image = chart.toBase64Image();                    
+                }    
+
                 // Creación del elemento para empezar la descarga.
                 var a = document.createElement('a');
                 a.href = image;
-                a.download = (chart.id) + '.png';
-                a.click();
+                a.download = Date.now() + '.jpg';
+                a.click();                         
             });
     }
 }
