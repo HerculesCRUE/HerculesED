@@ -1,5 +1,6 @@
 ﻿using EditorCV.Models.API;
 using EditorCV.Models.API.Input;
+using EditorCV.Models.API.Response;
 using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
@@ -29,7 +30,7 @@ namespace EditorCV.Models
         /// <param name="pCVID"></param>
         /// <param name="lang"></param>
         /// <param name="listaId"></param>
-        public static void AddFile(ConfigService _Configuracion, string pCVID,string nombreCV, string lang, List<string> listaId)
+        public static void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
@@ -129,30 +130,47 @@ namespace EditorCV.Models
             }
         }
 
-        public static List<Tuple<string, string, string>> GetListPDFFile(string pCVId)
+        public static List<FilePDF> GetListPDFFile(string pCVId)
         {
-            List<Tuple<string,string,string>> listadoArchivos = new List<Tuple<string, string, string>>();
-            string select = "SELECT *";
+            List<FilePDF> listadoArchivos = new List<FilePDF>();
+            string select = "SELECT ?titulo ?fecha ?estado ?fichero";
             string where = $@"WHERE{{
     <{pCVId}> <http://w3id.org/roh/generatedPDFFile> ?pdfFile .
-    ?pdfFile ?p ?o .
-}}";
+    ?pdfFile <http://w3id.org/roh/title> ?titulo.
+    OPTIONAL{{ ?pdfFile <http://purl.org/dc/terms/issued> ?fecha }}
+    OPTIONAL{{ ?pdfFile <http://w3id.org/roh/status> ?estado }}
+    OPTIONAL{{ ?pdfFile <http://w3id.org/roh/filePDF> ?fichero }}
+}}group by ?pdfFile";
 
             SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-                if (!fila.ContainsKey("p") || !fila.ContainsKey("o"))
+                if (!fila.ContainsKey("titulo"))
                 {
                     continue;
                 }
-                string s = fila["s"].value;
-                string p = fila["p"].value;
-                string o = fila["o"].value;
 
-                if (p != "http://www.w3.org/2000/01/rdf-schema#label" && p != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                FilePDF file = new FilePDF();
+                file.titulo = fila["titulo"].value;
+                file.fecha = "";
+                file.estado = "";
+                file.fichero = "";
+                if (fila.ContainsKey("fecha"))
                 {
-                    listadoArchivos.Add(new Tuple<string, string, string>(fila["s"].value, fila["p"].value, fila["o"].value));
-                }                 
+                    file.fecha = fila["fecha"].value;
+                }
+                if (fila.ContainsKey("estado"))
+                {
+                    file.estado = fila["estado"].value;
+                }
+                if (fila.ContainsKey("fichero"))
+                {
+                    string uri = "http://edma.gnoss.com/download-file?doc=" + mResourceApi.GetShortGuid(pCVId) + "&ext=.pdf&archivoAdjuntoSem="
+                        +fila["fichero"].value.Split(".").First()+ "&ontologiaAdjuntoSem=88129721-ecf9-4ea3-afc6-db253f1cb480&ID=15ff250b-510d-4a08-b4a8-ac7526fbc53b&proy=b836078b-78a0-4939-b809-3f2ccf4e5c01";
+                    file.fichero = uri;
+                }
+
+                listadoArchivos.Add(file);
             }
 
             return listadoArchivos;

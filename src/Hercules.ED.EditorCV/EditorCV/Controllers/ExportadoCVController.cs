@@ -109,9 +109,9 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
-                List<Tuple <string, string, string>> pListId = AccionesExportacion.GetListPDFFile(pCVId);
+                List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId);
 
-                return Ok(pListId.OrderBy(x => x.Item1));
+                return Ok(pListId.OrderBy(x => x.fecha));
             }
             catch (Exception ex)
             {
