@@ -25,10 +25,11 @@ namespace EditorCV.Models
         /// Añade el archivo enviado como array de bytes.
         /// </summary>
         /// <param name="_Configuracion"></param>
+        /// <param name="nombreCV"></param>
         /// <param name="pCVID"></param>
         /// <param name="lang"></param>
         /// <param name="listaId"></param>
-        public static void AddFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId)
+        public static void AddFile(ConfigService _Configuracion, string pCVID,string nombreCV, string lang, List<string> listaId)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
@@ -39,12 +40,12 @@ namespace EditorCV.Models
 
             string idEntityAux = $"{mResourceApi.GraphsUrl}items/GeneratedPDFFile_" + guidCortoCVID.ToString() + "_" + Guid.NewGuid();
 
-            string PDFFileTitle = "CV_filePDF" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".pdf";
+            string PDFFilePDF = "CV_filePDF" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".pdf";
             string PDFFileFecha = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             string PDFFileEstado = "pendiente";
 
             List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
-            TriplesToInclude trTitle = new TriplesToInclude(idEntityAux + "|" + PDFFileTitle, filePredicateTitle);
+            TriplesToInclude trTitle = new TriplesToInclude(idEntityAux + "|" + nombreCV, filePredicateTitle);
             listaTriples.Add(trTitle);
             TriplesToInclude trFecha = new TriplesToInclude(idEntityAux + "|" + PDFFileFecha, filePredicateFecha);
             listaTriples.Add(trFecha);
@@ -53,7 +54,7 @@ namespace EditorCV.Models
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
 
-            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, listaId, idEntityAux, PDFFileTitle, guidCortoCVID, filePredicateEstado));
+            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, listaId, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado));
             thread.Start();
         }
 
@@ -66,11 +67,11 @@ namespace EditorCV.Models
         /// <param name="lang">Lenguaje del CV</param>
         /// <param name="listaId">listado de identificadores</param>
         /// <param name="idEntityAux">Identificador de la entidad auxiliar a modificar</param>
-        /// <param name="PDFFileTitle">nombre del fichero</param>
+        /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
         static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId,
-            string idEntityAux, string PDFFileTitle, Guid guidCortoCVID, string filePredicateEstado)
+            string idEntityAux, string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado)
         {
             try
             {
@@ -95,13 +96,13 @@ namespace EditorCV.Models
                 //Inserto el archivo
                 string filePredicate = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/filePDF";
 
-                string fileName = idEntityAux + "|" + PDFFileTitle;
+                string fileName = idEntityAux + "|" + PDFFilePDF;
                 List<byte[]> attachedFile = new List<byte[]>();
                 attachedFile.Add(result);
 
                 //Añado el fichero en virtuoso
                 mResourceApi.AttachFileToResource(guidCortoCVID, filePredicate, fileName,
-                    new List<string>() { PDFFileTitle }, new List<short>() { 0 }, attachedFile);
+                    new List<string>() { PDFFilePDF }, new List<short>() { 0 }, attachedFile);
 
                 //Cambio el estado a "procesado"
                 string PDFFileEstado = "procesado";
@@ -126,6 +127,35 @@ namespace EditorCV.Models
 
                 throw new Exception(e.Message);
             }
+        }
+
+        public static List<Tuple<string, string, string>> GetListPDFFile(string pCVId)
+        {
+            List<Tuple<string,string,string>> listadoArchivos = new List<Tuple<string, string, string>>();
+            string select = "SELECT *";
+            string where = $@"WHERE{{
+    <{pCVId}> <http://w3id.org/roh/generatedPDFFile> ?pdfFile .
+    ?pdfFile ?p ?o .
+}}";
+
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (!fila.ContainsKey("p") || !fila.ContainsKey("o"))
+                {
+                    continue;
+                }
+                string s = fila["s"].value;
+                string p = fila["p"].value;
+                string o = fila["o"].value;
+
+                if (p != "http://www.w3.org/2000/01/rdf-schema#label" && p != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                {
+                    listadoArchivos.Add(new Tuple<string, string, string>(fila["s"].value, fila["p"].value, fila["o"].value));
+                }                 
+            }
+
+            return listadoArchivos;
         }
 
         /// <summary>
