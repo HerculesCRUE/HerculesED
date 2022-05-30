@@ -152,6 +152,10 @@ namespace EditorCV.Models
         /// <returns></returns>
         private static string FirstLetterUpper(string uri, string property)
         {
+            if (property.Length == 0 || property.Length == 1)
+            {
+                return "";
+            }
             string upper = property.Substring(0, 1).ToUpper();
             string substring = property.Substring(1, property.Length - 1);
             return uri + upper + substring;
