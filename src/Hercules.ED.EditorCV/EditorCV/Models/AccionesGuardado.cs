@@ -115,23 +115,26 @@ namespace EditorCV.Models
             {
                 //Si tiene autores eliminamos la persona actual de la lista de autores de la entidad                
                 Entity entityBBDD = GetLoadedEntity(entityDestino, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
-                if (entityBBDD.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property))
+                if (entityBBDD != null)
                 {
-                    Entity.Property property = entityBBDD.properties.FirstOrDefault(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property);
-                    if (property != null && property.values != null)
+                    if (entityBBDD.properties.Exists(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property))
                     {
-                        string autorEliminar = property.values.FirstOrDefault(x => x.Contains(personCV));
-                        if (!string.IsNullOrEmpty(autorEliminar))
+                        Entity.Property property = entityBBDD.properties.FirstOrDefault(x => x.prop == templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property);
+                        if (property != null && property.values != null)
                         {
-                            string auxEntityEliminar = autorEliminar.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                            RemoveTriples t = new();
-                            t.Predicate = templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                            t.Value = auxEntityEliminar;
-                            mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(entityDestino), new List<RemoveTriples>() { t } } });
+                            string autorEliminar = property.values.FirstOrDefault(x => x.Contains(personCV));
+                            if (!string.IsNullOrEmpty(autorEliminar))
+                            {
+                                string auxEntityEliminar = autorEliminar.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                                RemoveTriples t = new();
+                                t.Predicate = templateSection.presentation.listItemsPresentation.listItemEdit.propAuthor.property.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                                t.Value = auxEntityEliminar;
+                                mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(entityDestino), new List<RemoveTriples>() { t } } });
+                            }
                         }
                     }
+                    ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion);
                 }
-                ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion);
             }
 
             List<RemoveTriples> lista = new List<RemoveTriples>();
@@ -154,7 +157,13 @@ namespace EditorCV.Models
             //Si la entidaad no está referenciada desde ningún CV se elimina también la entidad
             if (mResourceApi.VirtuosoQuery("select ?s", "where{?s ?p <" + entityDestino + ">}", "curriculumvitae").results.bindings.Count == 0)
             {
-                mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(entityDestino), true);
+                try
+                {
+                    mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(entityDestino), true);
+                }catch(Exception ex)
+                {
+
+                }
             }
 
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
