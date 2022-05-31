@@ -110,8 +110,8 @@ namespace EditorCV.Models
             Dictionary<string, string> dicDatosProyecto = GetDatosProyecto(pIdProyecto);
 
             NotificacionProyecto notificacion = new NotificacionProyecto();
-            //notificacion.proyectoCVNId = pIdProyecto;
-            notificacion.proyectoCVNId = mResourceApi.GetShortGuid(pIdProyecto).ToString();
+            notificacion.proyectoCVNId = pIdProyecto;
+            //notificacion.proyectoCVNId = mResourceApi.GetShortGuid(pIdProyecto).ToString();
             notificacion.autorizacionId = GetAutorizacion(pIdAutorizacion); // Obtención del crisIdentifier de la autorización.
             notificacion.solicitanteRef = GetSolicitanteRef(pIdPersona); // Obtención del crisIdentifier de la persona solicitante.
             notificacion.titulo = dicDatosProyecto["titulo"];

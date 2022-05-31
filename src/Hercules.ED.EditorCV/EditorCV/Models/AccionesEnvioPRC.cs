@@ -52,8 +52,8 @@ namespace EditorCV.Models
             ProduccionCientifica PRC = new ProduccionCientifica();
 
             // Identificador.
-            //PRC.idRef = pIdDocumento;
-            PRC.idRef = mResourceApi.GetShortGuid(pIdDocumento).ToString();
+            PRC.idRef = pIdDocumento;
+            //PRC.idRef = mResourceApi.GetShortGuid(pIdDocumento).ToString();
             //PRC.idRef = pIdDocumento.Substring(pIdDocumento.LastIndexOf("/") + 1);
             PRC.estado = "PENDIENTE";
             PRC.campos = new List<CampoProduccionCientifica>();
