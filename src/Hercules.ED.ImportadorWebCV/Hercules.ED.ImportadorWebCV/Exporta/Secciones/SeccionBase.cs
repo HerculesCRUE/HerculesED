@@ -106,11 +106,14 @@ namespace ImportadorWebCV.Exporta.Secciones
                     string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
                     //TODO
                     string from = "";
-                    foreach(string cadena in listadoFrom)
+                    if (listadoFrom != null)
                     {
-                        from += " FROM <" + mResourceApi.GraphsUrl + cadena + ".owl>";
+                        foreach (string cadena in listadoFrom)
+                        {
+                            from += " FROM <" + mResourceApi.GraphsUrl + cadena + ".owl>";
+                        }
+                        selectID = selectID + from;
                     }
-                    selectID = selectID + from;
 
                     string whereID = $@"where{{
         ?x <http://gnoss/hasEntidad> ?s . 
