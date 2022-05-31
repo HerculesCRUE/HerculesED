@@ -65,8 +65,8 @@ namespace EditorCV.Controllers
         /// <summary>
         /// Obtiene los datos de todas las pestaña dentro del editor
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="pLang"></param>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <param name="pLang">lenguaje </param>
         /// <returns></returns>
         [HttpGet("GetAllTabs")]
         public IActionResult GetAllTabs([Required] string userID, [Required] string pLang)
