@@ -42,7 +42,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 }
             }
 
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp, new List<string>() { "maindocument" });
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
                 CvnItemBean itemBean = new CvnItemBean();
@@ -106,8 +106,24 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.070", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial),
                     "060.010.010.100", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnStringTipoSoporte(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
+
+                //Compruebo si hay algun tipo de soporte
+                if (itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).Any())
+                {
+                    //Compruebo si el soporte es una revista
+                    CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).First();
+                    if (itemBeanCvnString.Value.Equals("057"))
+                    {
+                        UtilityExportar.AddCvnItemBeanCvnStringTipoSoporte(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista),
+                        "060.010.010.210", keyValue.Value);
+                    }
+                }
+                else
+                {
+                    UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
                     "060.010.010.210", keyValue.Value);
+                }
+
 
                 // Autores 
                 //Selecciono las firmas de las personas

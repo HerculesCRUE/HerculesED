@@ -83,7 +83,8 @@ namespace ImportadorWebCV.Exporta.Secciones
             return null;
         }
 
-        public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
+        public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string, string>> listadoId, string pGraph,
+            Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null, List<string> listadoFrom = null)
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
@@ -103,6 +104,14 @@ namespace ImportadorWebCV.Exporta.Secciones
                 while (cargar)
                 {
                     string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
+                    //TODO
+                    string from = "";
+                    foreach(string cadena in listadoFrom)
+                    {
+                        from += " FROM <" + mResourceApi.GraphsUrl + cadena + ".owl>";
+                    }
+                    selectID = selectID + from;
+
                     string whereID = $@"where{{
         ?x <http://gnoss/hasEntidad> ?s . 
         ?s ?p ?o .
