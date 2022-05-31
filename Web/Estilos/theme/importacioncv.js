@@ -35,8 +35,7 @@ var importarCVN = {
 		$.ajax({
 			url: 'https://localhost:5001/ImportadorCV/Preimportar',
 			type: 'POST',
-			data: formData,
-			headers: { 'Accept': 'application/json' },			
+			data: formData,	
 			cache: false,
 			processData: false,
             enctype: 'multipart/form-data',
