@@ -27,20 +27,24 @@ var importarCVN = {
     cargarCV: function() {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
+		
 		var formData = new FormData();
 		formData.append('pCVID', 'idcv');
 		formData.append('File', $('#file_cvn')[0].files[0]);
-		 
+				 
 		$.ajax({
-			url: 'http://serviciosedma.gnoss.com/importadorcv/ImportadorCV/Preimportar',
-			headers: { 'Content-Type': 'multipart/form-data;' },
-			data: formData,
-			processData: false,
+			url: 'https://localhost:5001/ImportadorCV/Preimportar',
 			type: 'POST',
+			data: formData,
+			headers: { 'Accept': 'application/json' },			
+			cache: false,
+			processData: false,
+            enctype: 'multipart/form-data',
+            contentType: false,
 			success: function ( data ) {
 				alert( data );
 			}
-		});
+		});	
         
     }
 };
