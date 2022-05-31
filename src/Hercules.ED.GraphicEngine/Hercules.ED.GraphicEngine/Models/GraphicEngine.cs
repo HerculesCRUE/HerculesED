@@ -1138,7 +1138,7 @@ namespace Hercules.ED.GraphicEngine.Models
             Faceta faceta = new Faceta();
 
             faceta.isDate = false;
-            if (pFiltroBase.Contains("roh:year"))
+            if (pFacetaConf.filtro.Contains("roh:year"))
             {
                 faceta.isDate = true;
             }
