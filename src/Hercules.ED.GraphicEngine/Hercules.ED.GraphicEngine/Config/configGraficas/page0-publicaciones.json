@@ -292,6 +292,7 @@
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:grantedBy@@@roh:organizationTitle",
         "orderDesc": false,
+        "abreviar": true,
         "rellenarEjeX": false,
         "xAxisPrint": [
           {
@@ -392,7 +393,7 @@
         "xAxisPrint": [
           {
             "xAxisID": "x1",
-            "posicion": "top"
+            "posicion": "bottom"
           }
         ],
         "dimensiones": [
