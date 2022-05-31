@@ -125,7 +125,7 @@ namespace EditorCV.Models
                     new TriplesToModify(idEntityAux + "|" + PDFFileEstado, idEntityAux + "|pendiente", filePredicateEstado)
                 };
                 mResourceApi.ModifyPropertiesLoadedResources(triplesModificar);
-
+                mResourceApi.Log.Error("Error: " + e.Message + ". Traza:" + e.StackTrace);
                 throw new Exception(e.Message);
             }
         }
