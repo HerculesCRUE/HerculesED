@@ -15,16 +15,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "document";
+
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
+
         }
+
         /// <summary>
         /// Exporta los datos de la sección "060.010.010.000" a cvn.cvnRootResultBean
         /// </summary>
-        /// <param name="entity"></param>
         /// <param name="seccion"></param>
-        /// <param name="secciones"></param>
-        /// <param name="preimportar"></param>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaPublicacionesDocumentos(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -39,6 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -48,6 +51,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 {
                     itemBean.Items = new List<CVNObject>();
                 }
+
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd),
                     "060.010.010.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros),

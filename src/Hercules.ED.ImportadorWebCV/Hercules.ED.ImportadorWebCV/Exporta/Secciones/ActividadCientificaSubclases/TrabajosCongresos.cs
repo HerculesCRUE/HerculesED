@@ -19,9 +19,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public TrabajosCongresos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+
         /// <summary>
         /// Exporta los datos de la sección "060.010.020.000" a cvn.cvnRootResultBean
         /// </summary>
+        /// <param name="seccion"></param>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaTrabajosCongresos(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();

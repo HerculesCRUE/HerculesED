@@ -22,6 +22,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="seccion"></param>
+        /// <param name="listaId"></param>
         public void ExportaDatosIdentificacion(Entity entity, string seccion, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();

@@ -130,6 +130,11 @@ namespace EditorCV.Models
             }
         }
 
+        /// <summary>
+        /// Devuelve el listado de ficheros PDF guardados.
+        /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
+        /// <returns></returns>
         public static List<FilePDF> GetListPDFFile(string pCVId)
         {
             List<FilePDF> listadoArchivos = new List<FilePDF>();
@@ -166,7 +171,8 @@ namespace EditorCV.Models
                 if (fila.ContainsKey("fichero"))
                 {
                     string uri = "http://edma.gnoss.com/download-file?doc=" + mResourceApi.GetShortGuid(pCVId) + "&ext=.pdf&archivoAdjuntoSem="
-                        +fila["fichero"].value.Split(".").First()+ "&ontologiaAdjuntoSem=88129721-ecf9-4ea3-afc6-db253f1cb480&ID=15ff250b-510d-4a08-b4a8-ac7526fbc53b&proy=b836078b-78a0-4939-b809-3f2ccf4e5c01&dscr=true";
+                        + fila["fichero"].value.Split(".").First()
+                        + "&ontologiaAdjuntoSem=88129721-ecf9-4ea3-afc6-db253f1cb480&ID=15ff250b-510d-4a08-b4a8-ac7526fbc53b&proy=b836078b-78a0-4939-b809-3f2ccf4e5c01&dscr=true";
                     file.fichero = uri;
                 }
 
@@ -179,7 +185,7 @@ namespace EditorCV.Models
         /// <summary>
         /// Devuelve todas las pestañas del CV de <paramref name="pCVId"/>
         /// </summary>
-        /// <param name="pCVId"></param>
+        /// <param name="pCVId">Identificador del CV</param>
         /// <returns></returns>
         public static ConcurrentDictionary<string, string> GetAllTabs(string pCVId)
         {
