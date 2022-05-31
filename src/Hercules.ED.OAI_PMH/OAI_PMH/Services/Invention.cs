@@ -45,20 +45,10 @@ namespace OAI_PMH.Services
             IRestResponse response = client.Execute(request);
             Invencion invencion = JsonConvert.DeserializeObject<Invencion>(response.Content);
             invencion.sectoresAplicacion = GetSectores(identifier, pConfig);
-            invencion.areasConocimiento = GetAreasConocimiento(identifier, pConfig);
+            invencion.invencionDocumentos = GetDocumentos(identifier, pConfig);
+            invencion.gastos = GetGastos(identifier, pConfig);
             invencion.palabrasClave = GetPalabrasClaves(identifier, pConfig);
             invencion.inventores = GetInventores(identifier, pConfig);
-            invencion.periodosTitularidad = GetPeriodosTitularidad(identifier, pConfig);
-            invencion.solicitudesProteccion = GetSolicitudProteccion(identifier, pConfig);           
-            if (invencion.periodosTitularidad != null)
-            {
-                List<Titular> listaTitularAux = new List<Titular>();
-                foreach (PeriodoTitularidad item in invencion.periodosTitularidad)
-                {
-                    listaTitularAux.AddRange(GetTitular(item.id.ToString(), pConfig));
-                }
-                invencion.titulares = listaTitularAux;
-            }
             return invencion;
         }
 
@@ -80,17 +70,35 @@ namespace OAI_PMH.Services
             }
         }
 
-        public static List<AreaConocimiento> GetAreasConocimiento(string id, ConfigService pConfig)
+        public static List<InvencionDocumento> GetDocumentos(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
-            string identifier = id.Replace("\"", ""); 
-            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/areasconocimiento");
+            string identifier = id.Replace("\"", "");
+            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/invenciondocumentos");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             try
             {
-                return JsonConvert.DeserializeObject<List<AreaConocimiento>>(response.Content);
+                return JsonConvert.DeserializeObject<List<InvencionDocumento>>(response.Content);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static List<InvencionGastos> GetGastos(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
+            string identifier = id.Replace("\"", "");
+            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/gastos");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            try
+            {
+                return JsonConvert.DeserializeObject<List<InvencionGastos>>(response.Content);
             }
             catch (Exception e)
             {
@@ -120,67 +128,13 @@ namespace OAI_PMH.Services
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
             string identifier = id.Replace("\"", ""); 
-            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/invencion-inventores");
+            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invencion-inventores/" + identifier + "/inventores");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             try
             {
                 return JsonConvert.DeserializeObject<List<Inventor>>(response.Content);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        public static List<PeriodoTitularidad> GetPeriodosTitularidad(string id, ConfigService pConfig)
-        {
-            string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
-            string identifier = id.Replace("\"", ""); 
-            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/periodostitularidad");
-            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
-            var request = new RestRequest(Method.GET);
-            IRestResponse response = client.Execute(request);
-            try
-            {
-                return JsonConvert.DeserializeObject<List<PeriodoTitularidad>>(response.Content);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        public static List<SolicitudProteccion> GetSolicitudProteccion(string id, ConfigService pConfig)
-        {
-            string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
-            string identifier = id.Replace("\"", "");
-            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/solicitudesproteccion");
-            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
-            var request = new RestRequest(Method.GET);
-            IRestResponse response = client.Execute(request);
-            try
-            {
-                return JsonConvert.DeserializeObject<List<SolicitudProteccion>>(response.Content);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        public static List<Titular> GetTitular(string id, ConfigService pConfig)
-        {
-            string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
-            string identifier = id.Replace("\"", "");
-            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "periodostitularidad/" + identifier + "/titulares");
-            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
-            var request = new RestRequest(Method.GET);
-            IRestResponse response = client.Execute(request);
-            try
-            {
-                return JsonConvert.DeserializeObject<List<Titular>>(response.Content);
             }
             catch (Exception e)
             {

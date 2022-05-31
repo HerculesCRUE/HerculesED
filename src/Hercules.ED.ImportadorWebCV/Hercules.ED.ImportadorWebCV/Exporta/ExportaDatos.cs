@@ -49,8 +49,6 @@ namespace ImportadorWebCV.Exporta
 
         public void ExportaSituacionProfesional(Entity entity, [Optional] List<string> listaId)
         {
-            string seccion = "http://w3id.org/roh/professionalSituation";
-
             SituacionProfesionalActual situacionProfesional = new SituacionProfesionalActual(cvn, cvID);
             situacionProfesional.ExportaSituacionProfesional(MultilangProp, listaId);
 
@@ -61,8 +59,6 @@ namespace ImportadorWebCV.Exporta
 
         public void ExportaFormacionAcademica(Entity entity, [Optional] List<string> listaId)
         {
-            string seccion = "http://w3id.org/roh/qualifications";
-
             EstudiosCiclos estudiosCiclos = new EstudiosCiclos(cvn, cvID);
             estudiosCiclos.ExportaEstudiosCiclos(MultilangProp, listaId);
 
@@ -83,8 +79,6 @@ namespace ImportadorWebCV.Exporta
         }
         public void ExportaActividadDocente(Entity entity, [Optional] List<string> listaId)
         {
-            string seccion = "http://w3id.org/roh/teachingExperience";
-
             DireccionTesis direccionTesis = new DireccionTesis(cvn, cvID);
             direccionTesis.ExportaDireccionTesis(MultilangProp, listaId);
 

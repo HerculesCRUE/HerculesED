@@ -77,6 +77,13 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             return File(resp.dataHandler, "application/pdf");
         }
 
+        /// <summary>
+        /// Devuelve un fichero PDF con los datos pasados en el listado.
+        /// </summary>
+        /// <param name="pCVID">ID curriculum</param>
+        /// <param name="lang">Lenguaje del CV</param>
+        /// <param name="listaId">Listado de identificadores de los recursos a devolver</param>
+        /// <returns></returns>
         [HttpPost("ExportarLimitado")]
         public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Optional] List<string> listaId)
         {
@@ -91,6 +98,10 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             if (entity == null)
             {
                 return Content("El CV no se ha encontrado");
+            }
+            if(listaId == null || listaId.Count == 0)
+            {
+                return Content("No hay elementos en el listado");
             }
 
             exporta.ExportaDatosIdentificacion(entity, _Configuracion.GetVersion(), listaId);
