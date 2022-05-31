@@ -166,7 +166,7 @@ namespace EditorCV.Models
                 if (fila.ContainsKey("fichero"))
                 {
                     string uri = "http://edma.gnoss.com/download-file?doc=" + mResourceApi.GetShortGuid(pCVId) + "&ext=.pdf&archivoAdjuntoSem="
-                        +fila["fichero"].value.Split(".").First()+ "&ontologiaAdjuntoSem=88129721-ecf9-4ea3-afc6-db253f1cb480&ID=15ff250b-510d-4a08-b4a8-ac7526fbc53b&proy=b836078b-78a0-4939-b809-3f2ccf4e5c01";
+                        +fila["fichero"].value.Split(".").First()+ "&ontologiaAdjuntoSem=88129721-ecf9-4ea3-afc6-db253f1cb480&ID=15ff250b-510d-4a08-b4a8-ac7526fbc53b&proy=b836078b-78a0-4939-b809-3f2ccf4e5c01&dscr=true";
                     file.fichero = uri;
                 }
 
