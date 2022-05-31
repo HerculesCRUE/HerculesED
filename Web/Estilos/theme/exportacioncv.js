@@ -10,9 +10,7 @@ var exportacionCV = {
     },
 	config: function(){
 		var that = this;
-		$('body').addClass('page-cv');
-		that.cargarListadoCV();
-		
+		that.cargarListadoCV();		
 		//Preparar exportación
 		$('.btGenerarExportarCV').off('click').on('click', function(e) {
             e.preventDefault();
@@ -106,16 +104,16 @@ var exportacionCV = {
 										</div>
 									</div>`
 				if(i==0){
-					$('.cabecera-cv').append( $(contenedorTab));
+					$('.contenido-cv').append( $(contenedorTab));
 					var html = edicionCV.printPersonalData(id, data[i]);					
 					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
 					$('#'+id+' input[type="checkbox"]').prop('checked',true);
 				}else if(i == 6){
-					$('.cabecera-cv').append( $(contenedorTab));		
+					$('.contenido-cv').append( $(contenedorTab));		
 					var html = printFreeText(id, data[i]);
 					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
 				}else{
-					$('.cabecera-cv').append( $(contenedorTab));		
+					$('.contenido-cv').append( $(contenedorTab));		
 					edicionCV.printTab(id, data[i]);
 				}
 			}			
@@ -161,7 +159,7 @@ function printFreeText(id, data){
 									<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
 										<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 										<span class="texto">${data.title}</span>
-										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 									</a>
 								</p>
 							</div>
@@ -184,30 +182,32 @@ function printFreeText(id, data){
 						`
 		var secciones = data.sections[0].item.sections[0].rows;
 		for (var i = 0; i < secciones.length; i++){
-			var id = 'x' + RandomGuid();
-			var html2 = `<article class="resource success" >
-							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.sections[0].item.entityID + "|||" + secciones[i].properties[0].property}">
-								<label class="custom-control-label" for="check_resource_${id}"></label>
-							</div>
-							<div class="wrap">
-								<div class="middle-wrap">
-									<div class="title-wrap">
-									</div>
-									<div class="title-wrap">
-										<h2 class="resource-title">
-											<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
-										</h2>
-										<span class="material-icons arrow">keyboard_arrow_down</span>
-									</div>
-									<div class="content-wrap">
-										<div class="description-wrap">
+			//Si no hay datos no pinto esa sección
+			if(secciones[i].properties[0].values.length>0 && secciones[i].properties[0].values[0].length>0){
+				var id = 'x' + RandomGuid();
+				var html2 = `<article class="resource success" >
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.sections[0].item.entityID + "|||" + secciones[i].properties[0].property}">
+									<label class="custom-control-label" for="check_resource_${id}"></label>
+								</div>
+								<div class="wrap">
+									<div class="middle-wrap">
+										<div class="title-wrap">
+										</div>
+										<div class="title-wrap">
+											<h2 class="resource-title">
+												<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
+											</h2>
+										</div>
+										<div class="content-wrap">
+											<div class="description-wrap">
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</article>`;
-			html += html2;
+							</article>`;
+				html += html2;
+			}
 		}			
 		html += `						</div>
 									</div>
@@ -288,7 +288,7 @@ edicionCV.printPersonalData=function(id, data) {
 									<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
 										<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 										<span class="texto">${data.title}</span>
-										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 									</a>
 								</p>
 							</div>
@@ -312,7 +312,6 @@ edicionCV.printPersonalData=function(id, data) {
 																</h2>
 																${this.printHtmlListItemEditable(data)}	
 																${this.printHtmlListItemIdiomas(data)}
-																<span class="material-icons arrow">keyboard_arrow_down</span>
 															</div>
 															<div class="content-wrap">
 																<div class="description-wrap">
