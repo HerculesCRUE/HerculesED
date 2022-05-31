@@ -1138,7 +1138,7 @@ namespace Hercules.ED.GraphicEngine.Models
             Faceta faceta = new Faceta();
 
             faceta.isDate = false;
-            if (pFacetaConf.filtro.Contains("roh:year"))
+            if (pFacetaConf.rangoAnio)
             {
                 faceta.isDate = true;
             }
@@ -1288,8 +1288,11 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pAux">Iterador incremental.</param>
         /// <param name="pNombreVar">Nombre de la última variable.</param>
         /// <returns></returns>
-        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux, string pNombreVar = null)
+        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux, string pNombreVar = null, bool isDate = false)
         {
+            // Lista de propiedades de fecha
+            List<string> listaPropFechas = new List<string>() { "roh:year" }; 
+
             StringBuilder filtro = new StringBuilder();
             string[] filtros = pFiltro.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries);
             int i = 0;
@@ -1315,6 +1318,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
                 else
                 {
+                    string rdfType = $@"{parteFiltro.Split("=")[0]}";
                     string varActual = $@"{parteFiltro.Split("=")[1]}";
                     if (varActual.StartsWith("'"))
                     {
@@ -1330,11 +1334,22 @@ namespace Hercules.ED.GraphicEngine.Models
                             filtro.Append($@"{varActual}. ");
                         }
                     }
+                    else if (listaPropFechas.Contains(rdfType) && varActual.Contains("-"))
+                    {
+                        // Fechas.
+                        string fechaInicio = varActual.Split("-")[0];
+                        string fechaFin = varActual.Split("-")[1];
+                        string varActualAux = $@"?{parteFiltro.Split("=")[0].Substring(parteFiltro.IndexOf(":") + 1)}{pAux}";
+
+                        filtro.Append($@"{pVarAnterior} ");
+                        filtro.Append($@"{parteFiltro.Split("=")[0]} ");
+                        filtro.Append($@"{varActualAux}. ");
+                        filtro.Append($@"FILTER({varActualAux} >= {fechaInicio} && {varActualAux} <= {fechaFin}) ");
+                    }
                     else
                     {
                         // Si el valor es númerico, se le asigna con el FILTER.
                         string varActualAux = $@"?{parteFiltro.Split("=")[0].Substring(parteFiltro.IndexOf(":") + 1)}{pAux}";
-
                         filtro.Append($@"{pVarAnterior} ");
                         filtro.Append($@"{parteFiltro.Split("=")[0]} ");
                         filtro.Append($@"{varActualAux}. ");
