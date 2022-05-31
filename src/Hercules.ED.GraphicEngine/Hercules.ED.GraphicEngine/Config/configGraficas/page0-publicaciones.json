@@ -424,6 +424,7 @@
         "es": "Año"
       },
       "filtro": "roh:year",
+      "rangoAnio": true,
       "numeroItemsFaceta": 100
     },
     {

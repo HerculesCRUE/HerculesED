@@ -14,6 +14,7 @@ namespace Hercules.ED.GraphicEngine.Models
     public class FacetaConf
     {
         public Dictionary<string, string> nombre { get; set; }
+        public bool rangoAnio { get; set; }
         public string filtro { get; set; }
         public int numeroItemsFaceta { get; set; }
     }
