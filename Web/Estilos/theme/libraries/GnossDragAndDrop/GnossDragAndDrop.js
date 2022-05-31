@@ -155,8 +155,7 @@
          * @returns {String}
          */
         plugin._getHtml = function (texts) {
-            return `
-            <div class="gdd-wrap">
+            return `<div class="gdd-wrap">
                 <div class="gdd-area">
                     <div class="gdd-loader-wrapper">
                         <div class="gdd-loader">
@@ -185,8 +184,7 @@
                 <div class="gdd-error">
                     <p class="ko"></p>
                 </div>
-            </div>
-            `
+            </div>`
         };
 
         /**
