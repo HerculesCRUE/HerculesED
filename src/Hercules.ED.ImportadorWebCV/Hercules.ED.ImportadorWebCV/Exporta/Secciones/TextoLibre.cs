@@ -10,7 +10,8 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class TextoLibre : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/freeTextSummary",
+            "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
 
         public TextoLibre(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
@@ -21,6 +22,7 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// Exporta los datos de la sección "070.010.000.000" a cvn.cvnRootResultBean.
         /// </summary>
         /// <param name="entity"></param>
+        /// <param name="listaId"></param>
         public void ExportaTextoLibre(Entity entity, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();

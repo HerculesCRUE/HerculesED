@@ -21,9 +21,12 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
         public CargosActividades(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+
         /// <summary>
         /// Exporta los datos de la sección "010.020.000.000" a cvn.cvnRootResultBean
         /// </summary>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaCargosActividades(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -38,6 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {

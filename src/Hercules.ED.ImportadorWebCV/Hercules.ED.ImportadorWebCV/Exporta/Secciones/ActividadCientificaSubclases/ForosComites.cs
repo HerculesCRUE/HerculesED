@@ -11,19 +11,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class ForosComites:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/forums",
-            "http://vivoweb.org/ontology/core#relatedBy" };
+        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+            "http://w3id.org/roh/forums", "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "activity";
         public ForosComites(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+
         /// <summary>
         /// Exporta los datos de la sección "060.020.050.000" a cvn.cvnRootResultBean
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="seccion"></param>
-        /// <param name="secciones"></param>
-        /// <param name="preimportar"></param>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaForosComites(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();

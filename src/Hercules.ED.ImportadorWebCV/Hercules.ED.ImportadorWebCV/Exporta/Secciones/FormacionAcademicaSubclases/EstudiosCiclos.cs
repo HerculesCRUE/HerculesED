@@ -19,9 +19,12 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
         {
 
         }
+
         /// <summary>
         /// Exporta los datos de la sección "020.010.010.000" a cvn.cvnRootResultBean
         /// </summary>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaEstudiosCiclos(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -36,6 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
