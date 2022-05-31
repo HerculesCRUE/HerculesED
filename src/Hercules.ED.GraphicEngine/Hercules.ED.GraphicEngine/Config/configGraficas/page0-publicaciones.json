@@ -255,10 +255,10 @@
       },
       "tipo": "Barras",
       "anchura": 11,
-      "abreviar": true,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:title",
+        "abreviar": true,
         "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
@@ -306,7 +306,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#000000",
+            "color": "#BF4858",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -392,7 +392,7 @@
         "xAxisPrint": [
           {
             "xAxisID": "x1",
-            "posicion": "bottom"
+            "posicion": "top"
           }
         ],
         "dimensiones": [

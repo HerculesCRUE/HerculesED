@@ -261,6 +261,10 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append($@"FILTER(LANG(?aux) = 'es' OR LANG(?aux) = '' OR !isLiteral(?aux))");
                     }
+                    else
+                    {
+                        where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
+                    }
                     where.Append($@"}} ORDER BY {orden}(?ejeX) ");
                 }
                 else
@@ -279,6 +283,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append(item);
                     }
+                    where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
                     where.Append($@"}} ORDER BY {orden}(?ejeX) ");
                 }
 
@@ -528,6 +533,10 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append($@"FILTER(LANG(?aux) = 'es' OR LANG(?aux) = '' OR !isLiteral(?aux))");
                     }
+                    else
+                    {
+                        where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
+                    }
                     where.Append($@"}} ORDER BY {orden}(?ejeX) ");
                 }
                 else
@@ -546,6 +555,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append(item);
                     }
+                    where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
                     where.Append($@"}} ORDER BY {orden}(?ejeX) ");
                 }
 
