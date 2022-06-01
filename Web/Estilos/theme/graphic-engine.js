@@ -140,13 +140,16 @@ var metricas = {
                         });
 
                         // Si existe un eje superior se crea los elementos necesarios para la leyenda y el eje.
+
                         // Contenedor de la leyenda.
-                        var legend = $(`
-                        <div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
-                            <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
+
+                        var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
+                        <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
+            
                         </div>`);
             
                         $(chartContainer).append(legend);
+
 
                         // Contenedor de los elementos de la leyenda.
                         var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"/>`);
@@ -155,18 +158,19 @@ var metricas = {
                         // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
                         var datasets = data.data.datasets;
                         datasets.forEach((dataset, index) => {
-                            var labelContainer = $(`
-                            <div id="label-${index}" class="labelContainer" style="margin: 5px; height: 15px; display: flex; align-items: center;">
-                                <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"/>
-                                <p class="dataSetLabel" style="font-family: Calibri; margin: 5px;">${dataset.label}</p>
-                            </div>`);                           
+                            var labelContainer = $(`<div id="label-${index}" class="labelContainer" style="margin: 5px; height: 15px; display: flex; align-items: center;">
+                            <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"/>
+                            <p class="dataSetLabel" style="font-family: Calibri; margin: 5px;">${dataset.label}</p>
+                            </div>`);
+                           
 
                             //labelContainer.appendChild(colorDiv);
-                            $(dataSetLabels).append(labelContainer);                      
-                        });
+                            $(dataSetLabels).append(labelContainer);
+                           
 
+                        });
                         // Eje superior. 
-                        if (hasTopAxis) {                           
+                        if (hasTopAxis) {   
                             var topAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"/>`);
                             $(legend).append(topAxis);
                         }
@@ -176,37 +180,31 @@ var metricas = {
                             var bottomAxis = $(`<canvas id="bottomAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"/>`);
                             $(chartContainer).append(bottomAxis);
                         }
-
                         // Cuando se acutaliza el canvas.
                         data.options.animation.onProgress = reDrawChart;
-
                         // Cuando se reescala el navegador se redibuja la leyenda.
                         window.addEventListener('resize', (e) => {
                             reDrawChart();
                             myChart.update();
                         });
-
                         // Función que dibuja la leyenda y los ejes, también reescala todo para que coincida con el chart.
                         function reDrawChart() {
                             // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
                             var scale = window.devicePixelRatio;
                             chartAreaWrapper.style.height = canvasSize + 'px';
-
                             var copyWidth = myChart.width;
-
                             // Altura del titulo, leyenda y eje superior menos el margen.
                             var copyHeight = myChart.boxes[0].height + myChart.boxes[1].height + myChart.boxes[2].height - 5;
-
                             // Le asignamos tamaño a la leyenda.
                             var axisHeight = myChart.boxes[2].height;
 
                             // Preparamos el eje superior.
                             $(legend).css("height", copyHeight + "px");
                             $(legend).css("width", copyWidth + "px");
+
                 
                             if (topAxis) {
                                 var topAxisCtx = topAxis[0].getContext('2d');
-
                                 topAxisCtx.scale(scale, scale); // Escala del zoom.
                                 topAxisCtx.canvas.width = copyWidth;
                                 topAxisCtx.canvas.height = axisHeight;
@@ -353,6 +351,7 @@ var metricas = {
                             <div class='grafica col-xl-${item.anchura}' idgrafica='${item.id}'></div>
                     `);
             espacio = espacio - item.anchura;*/
+            
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item.anchura}"> 
                     <div class="wrap">
