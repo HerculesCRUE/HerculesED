@@ -345,10 +345,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                     //Añadimos la referencia a BBDD para usarla en caso de añadir elementos en el CV.
                     idBBDD = equivalencias[idXML];
                 }
-                itemsNuevosOModificados.Add(idBBDD);
-                if (!string.IsNullOrEmpty(pPropertyCV) && !string.IsNullOrEmpty(pRdfTypeCV))
+                if (!string.IsNullOrEmpty(idBBDD))
                 {
-                    valoresPropertiesCV(entityXML, propiedadesItem, pPropertyCV, pRdfTypeCV, idBBDD, RdfTypeTab);
+                    itemsNuevosOModificados.Add(idBBDD);
+                    if (!string.IsNullOrEmpty(pPropertyCV) && !string.IsNullOrEmpty(pRdfTypeCV))
+                    {
+                        valoresPropertiesCV(entityXML, propiedadesItem, pPropertyCV, pRdfTypeCV, idBBDD, RdfTypeTab);
+                    }
                 }
             }
 
@@ -562,32 +565,35 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entityXML.ontology = graph;
                     entityXML.rdfType = rdfType;
                     idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
-                    modificado = true;
-                    //Notificar
-                    foreach (Persona autor in entityXML.autores)
+                    if (!string.IsNullOrEmpty(idBBDD))
                     {
-                        //No notifico a quien suben el documento
-                        if (autor.personid == idPersona)
+                        modificado = true;
+                        //Notificar
+                        foreach (Persona autor in entityXML.autores)
                         {
-                            continue;
-                        }
-                        //Compruebo que la persona propietaria de la notificación está en BBDD
-                        if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
-                        {
-                            continue;
-                        }
+                            //No notifico a quien suben el documento
+                            if (autor.personid == idPersona)
+                            {
+                                continue;
+                            }
+                            //Compruebo que la persona propietaria de la notificación está en BBDD
+                            if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                            {
+                                continue;
+                            }
 
-                        Notification notificacion = new Notification();
-                        notificacion.IdRoh_trigger = idPersona;
-                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                        notificacion.Roh_entity = idBBDD;
-                        notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
-                        notificacion.Dct_issued = DateTime.Now;
-                        notificacion.Roh_type = "create";
-                        notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
-                            .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
+                            Notification notificacion = new Notification();
+                            notificacion.IdRoh_trigger = idPersona;
+                            notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                            notificacion.Roh_entity = idBBDD;
+                            notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Roh_type = "create";
+                            notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
-                        notificaciones.Add(notificacion);
+                            notificaciones.Add(notificacion);
+                        }
                     }
                 }
                 else
@@ -626,21 +632,24 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
 
-                //Si el documento se ha cargado nuevo o se ha podido modificar añado los autores.
-                if (modificado)
+                if (!string.IsNullOrEmpty(idBBDD))
                 {
-                    personasUsadas.UnionWith(entityXML.properties
-                            .Where(x => x.prop == BFO_member)
-                            .SelectMany(x => x.values)
-                            .Select(x => x.Split("@@@")[1]));
-                }
+                    //Si el documento se ha cargado nuevo o se ha podido modificar añado los autores.
+                    if (modificado)
+                    {
+                        personasUsadas.UnionWith(entityXML.properties
+                                .Where(x => x.prop == BFO_member)
+                                .SelectMany(x => x.values)
+                                .Select(x => x.Split("@@@")[1]));
+                    }
 
-                if (!string.IsNullOrEmpty(pPropertyCV) && !string.IsNullOrEmpty(pRdfTypeCV))
-                {
-                    valoresPropertiesCV(entityXML, propiedadesItem, pPropertyCV, pRdfTypeCV, idBBDD, RdfTypeTab);
-                }
+                    if (!string.IsNullOrEmpty(pPropertyCV) && !string.IsNullOrEmpty(pRdfTypeCV))
+                    {
+                        valoresPropertiesCV(entityXML, propiedadesItem, pPropertyCV, pRdfTypeCV, idBBDD, RdfTypeTab);
+                    }
 
-                documentosDesnormalizar.Add(idBBDD);
+                    documentosDesnormalizar.Add(idBBDD);
+                }
             }
 
             //Elimino las personas repetidas.
@@ -876,39 +885,45 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
                 result = mResourceApi.LoadComplexSemanticResource(resource);
             }
-
-            //Obtenemos la auxiliar en la que cargar la entidad
-            SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> ?s ?o. ?o a <" + pRdfTypeTab + "> }", "curriculumvitae");
-            string idTab = tab.results.bindings[0]["o"].value;
-
-            rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
-            string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
-
-            List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
-            string idEntityAux = idTab + "|" + idNewAux;
-            string valorEntityAux = pPropertyIDs[0] + "|" + pPropertyIDs[1];
-
-            //Privacidad, por defecto falso
-            string valorPrivacidad = idEntityAux + "|false";
-            string predicadoPrivacidad = valorEntityAux + "|http://w3id.org/roh/isPublic";
-            TriplesToInclude tr2 = new TriplesToInclude(valorPrivacidad, predicadoPrivacidad);
-            listaTriples.Add(tr2);
-
-            //Entidad
-            string valorEntidad = idEntityAux + "|" + result;
-            string predicadoEntidad = valorEntityAux + "|" + pPropertyIDs[2];
-            TriplesToInclude tr1 = new TriplesToInclude(valorEntidad, predicadoEntidad);
-            listaTriples.Add(tr1);
-
-            Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
+            if (resource.Uploaded)
             {
-                {
-                    mResourceApi.GetShortGuid(pCvID), listaTriples
-                }
-            };
+                //Obtenemos la auxiliar en la que cargar la entidad
+                SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> ?s ?o. ?o a <" + pRdfTypeTab + "> }", "curriculumvitae");
+                string idTab = tab.results.bindings[0]["o"].value;
 
-            mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
-            return result;
+                rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
+                string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
+
+                List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                string idEntityAux = idTab + "|" + idNewAux;
+                string valorEntityAux = pPropertyIDs[0] + "|" + pPropertyIDs[1];
+
+                //Privacidad, por defecto falso
+                string valorPrivacidad = idEntityAux + "|false";
+                string predicadoPrivacidad = valorEntityAux + "|http://w3id.org/roh/isPublic";
+                TriplesToInclude tr2 = new TriplesToInclude(valorPrivacidad, predicadoPrivacidad);
+                listaTriples.Add(tr2);
+
+                //Entidad
+                string valorEntidad = idEntityAux + "|" + result;
+                string predicadoEntidad = valorEntityAux + "|" + pPropertyIDs[2];
+                TriplesToInclude tr1 = new TriplesToInclude(valorEntidad, predicadoEntidad);
+                listaTriples.Add(tr1);
+
+                Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
+                {
+                    {
+                        mResourceApi.GetShortGuid(pCvID), listaTriples
+                    }
+                };
+
+                mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
