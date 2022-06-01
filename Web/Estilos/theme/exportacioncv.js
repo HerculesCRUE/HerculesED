@@ -47,11 +47,9 @@ var exportacionCV = {
 			MostrarUpdateProgress();
 			$.post(urlExportacionCV + 'GetCV', data, function(data) {
 				OcultarUpdateProgress();
-				that.cargarListadoCV();		
+				that.cargarListadoCV();
 			});
-        });		
-		
-		
+        });
 	},
 	//Carga los CV exporatdos
     cargarListadoCV: function() {
@@ -111,12 +109,13 @@ var exportacionCV = {
 				}else if(i == 6){
 					$('.contenido-cv').append( $(contenedorTab));		
 					var html = printFreeText(id, data[i]);
-					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
+					$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
 				}else{
 					$('.contenido-cv').append( $(contenedorTab));		
 					edicionCV.printTab(id, data[i]);
-				}
+				}				
 			}			
+			
             OcultarUpdateProgress();
 			
 			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
@@ -137,6 +136,73 @@ function checkAllCVWrapper(){
 			$(this).closest('.panel-body').find('.checkAllCVWrapper input[type="checkbox"]').prop('checked', false);
 		}
 	});
+}
+
+function printCientificProduction(id, data){
+	//Pintado sección listado
+	//css mas generico
+	var id = 'x' + RandomGuid();
+	var id2 = 'x' + RandomGuid();
+
+	var expanded = "";
+	var show = "";
+	if (data.item != null) {
+		if (Object.keys(data.item).length > 0) {
+			//Desplegado
+			expanded = "true";
+			show = "show";
+		} else {
+			//No desplegado	
+			expanded = "false";
+		}
+		//TODO texto ver items
+		var htmlSection = `
+		<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
+			<div class="panel">
+				<div class="panel-heading" role="tab" id="publicaciones-tab">
+					<p class="panel-title">
+						<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+							<span class="material-icons pmd-accordion-icon-left">folder_open</span>
+							<span class="texto">${data.title}</span>
+						</a>
+					</p>
+				</div>
+				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
+						<div class="panel-body">								
+							<div class="resource-list listView">
+								<div class="resource-list-wrap">
+									<article class="resource success" >
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.item.entityID}">
+											<label class="custom-control-label" for="check_resource_${id}"></label>
+										</div>
+										<div class="wrap">
+											<div class="middle-wrap">
+												<div class="title-wrap">
+												</div>
+												<div class="title-wrap">
+													<h2 class="resource-title">
+														<a href="#" data-id="${id}" internal-id="${data.item.entityID}">Indicadores generales de calidad de la producción científica</a>
+													</h2>
+												</div>
+												<div class="content-wrap">
+													<div class="description-wrap">
+													</div>
+												</div>
+											</div>
+										</div>
+									</article>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>`;
+		return htmlSection;
+	}
+	return '';
 }
 	
 function printFreeText(id, data){
@@ -222,35 +288,42 @@ function printFreeText(id, data){
 }	
 	
 edicionCV.printTab= function(entityID, data) {
-	var that=this;
+	var that=this;	
 	if (data.entityID != null) {
 		$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
 	} else {
 		for (var i = 0; i < data.sections.length; i++) {	
-			$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));				
-			if (data.sections[i].items != null) {
-				this.repintarListadoTab(data.sections[i].identifier,true);
-			} else if (data.sections[i].item != null) {
-				that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[id="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
-				//Si no tiene ningun campo valor se repliega
-				var plegar=true;
-				$('div[section="' + data.sections[i].identifier+'"] input').each(function() {
-					if($(this).val()!='')
+			if(data.sections[i].identifier=="http://w3id.org/roh/generalQualityIndicators")
+			{
+				$('div[id="' + entityID + '"] .col-12.col-contenido').append(printCientificProduction(entityID, data.sections[i]));
+			}
+			else
+			{			
+				$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
+				if (data.sections[i].items != null) {
+					this.repintarListadoTab(data.sections[i].identifier,true);
+				} else if (data.sections[i].item != null) {
+					that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[id="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
+					//Si no tiene ningun campo valor se repliega
+					var plegar=true;
+					$('div[section="' + data.sections[i].identifier+'"] input').each(function() {
+						if($(this).val()!='')
+						{
+							plegar=false;
+						}
+					});
+					//
+					$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
+						if($(this).html()!='')
+						{
+							plegar=false;
+						}
+					});
+					if(plegar)
 					{
-						plegar=false;
+						$('div[section="' + data.sections[i].identifier+'"] .panel-collapse.collapse').removeClass('show');
+						$('div[section="' + data.sections[i].identifier+'"] .panel-heading a').attr('aria-expanded','false');
 					}
-				});
-				//
-				$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
-					if($(this).html()!='')
-					{
-						plegar=false;
-					}
-				});
-				if(plegar)
-				{
-					$('div[section="' + data.sections[i].identifier+'"] .panel-collapse.collapse').removeClass('show');
-					$('div[section="' + data.sections[i].identifier+'"] .panel-heading a').attr('aria-expanded','false');
 				}
 			}
 		}
