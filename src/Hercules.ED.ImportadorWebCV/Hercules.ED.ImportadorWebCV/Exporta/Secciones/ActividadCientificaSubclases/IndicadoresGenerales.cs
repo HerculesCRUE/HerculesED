@@ -18,13 +18,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public IndicadoresGenerales(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
+
         /// <summary>
         /// Exporta los datos de la sección "060.010.060.000" a cvn.cvnRootResultBean
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="seccion"></param>
-        /// <param name="secciones"></param>
-        /// <param name="preimportar"></param>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaIndicadoresGenerales(Entity entity, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -33,7 +33,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item1)).ToList();
                 if (listadoIdentificadores.Count == 0)
                 {
                     return;

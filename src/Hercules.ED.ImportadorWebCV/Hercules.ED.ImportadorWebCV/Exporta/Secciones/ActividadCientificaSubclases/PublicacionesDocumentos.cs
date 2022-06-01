@@ -15,16 +15,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
         string graph = "document";
+
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
+
         }
+
         /// <summary>
         /// Exporta los datos de la sección "060.010.010.000" a cvn.cvnRootResultBean
         /// </summary>
-        /// <param name="entity"></param>
         /// <param name="seccion"></param>
-        /// <param name="secciones"></param>
-        /// <param name="preimportar"></param>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaPublicacionesDocumentos(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -39,7 +41,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     return;
                 }
             }
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
+
+            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp, new List<string>() { "maindocument" });
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
                 CvnItemBean itemBean = new CvnItemBean();
@@ -48,6 +51,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 {
                     itemBean.Items = new List<CVNObject>();
                 }
+
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd),
                     "060.010.010.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros),
@@ -102,8 +106,29 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.070", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial),
                     "060.010.010.100", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
+
+                //Compruebo si hay algun tipo de soporte
+                if (itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).Any())
+                {
+                    //Compruebo si el soporte es una revista
+                    CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).First();
+                    if (itemBeanCvnString.Value.Equals("057"))
+                    {
+                        UtilityExportar.AddCvnItemBeanCvnStringTipoSoporte(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista),
+                        "060.010.010.210", keyValue.Value);
+                    }
+                    else
+                    {
+                        UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
+                        "060.010.010.210", keyValue.Value);
+                    }
+                }
+                else
+                {
+                    UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
                     "060.010.010.210", keyValue.Value);
+                }
+
 
                 // Autores 
                 //Selecciono las firmas de las personas

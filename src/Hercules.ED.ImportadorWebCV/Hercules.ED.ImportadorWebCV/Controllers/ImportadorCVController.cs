@@ -53,7 +53,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         /// <param name="File">Archivo en formato PDF o XML</param>
         /// <returns>Json con los datos a preimportar</returns>
         [HttpPost("Preimportar")]
-        public ActionResult Preimportar([FromHeader][Required] string pCVID, [FromHeader][Optional] List<string> Secciones, [Required] IFormFile File)
+        public ActionResult Preimportar([FromForm][Required] string pCVID, [FromForm][Optional] List<string> Secciones, [Required] IFormFile File)
         {
             SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
             Preimport preimportar = new Preimport();

@@ -53,6 +53,9 @@ namespace OAI_PMH.Services
             proyecto.ResumenAnualidades = GetAnualidades(identifier, pConfig);
             proyecto.ProyectoClasificacion = GetProyectoClasificaciones(identifier, pConfig);
             proyecto.NotificacionProyectoExternoCVN = GetNotificacionProyectoExternoCVN(identifier, pConfig);
+            proyecto.PresupuestosTotales = GetPresupuestosProyecto(identifier, pConfig);
+            proyecto.AreasConocimiento = GetAreasConocimiento(identifier, pConfig);
+            proyecto.PalabrasClaves = GetPalabrasClave(identifier, pConfig);
             return proyecto;
         }
 
@@ -150,6 +153,42 @@ namespace OAI_PMH.Services
             IRestResponse response = client.Execute(request);
             notificacionProyectos = JsonConvert.DeserializeObject<List<NotificacionProyectoExternoCVN>>(response.Content);
             return notificacionProyectos;
+        }
+    
+        public static ProyectoPresupuestoTotales GetPresupuestosProyecto(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            ProyectoPresupuestoTotales presupuestos = new();
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/presupuesto-totales");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            presupuestos = JsonConvert.DeserializeObject<ProyectoPresupuestoTotales>(response.Content);
+            return presupuestos;
+        }
+
+        public static List<ProyectoAreaConocimiento> GetAreasConocimiento(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            List<ProyectoAreaConocimiento> areasConocimiento = new();
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/areasconocimento");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            areasConocimiento = JsonConvert.DeserializeObject<List<ProyectoAreaConocimiento>>(response.Content);
+            return areasConocimiento;
+        }
+
+        public static List<PalabraClave> GetPalabrasClave(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            List<PalabraClave> palabrasClave = new();
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/palabrasclave");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            palabrasClave = JsonConvert.DeserializeObject<List<PalabraClave>>(response.Content);
+            return palabrasClave;
         }
     }
 }

@@ -76,12 +76,45 @@
       }
     },
     {
+      "identificador": "2222",
+      "nombre": {
+        "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Vertical"
+      },
+      "tipo": "Barras",
+      "anchura": 11,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "y1",
+            "posicion": "top"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "y1",
+            "orden": 2
+          }
+        ]
+      }
+    },
+    {
       "identificador": "222",
       "nombre": {
         "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Vertical"
       },
       "tipo": "Barras",
       "anchura": 11,
+      "idGrupo": "123",
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:year",
@@ -114,6 +147,7 @@
       },
       "tipo": "Circular",
       "anchura": 12,
+      "idGrupo": "123",
       "config": {
         "dimensiones": [
           {
@@ -258,6 +292,7 @@
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:title",
+        "abreviar": true,
         "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
@@ -291,6 +326,7 @@
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:grantedBy@@@roh:organizationTitle",
         "orderDesc": false,
+        "abreviar": true,
         "rellenarEjeX": false,
         "xAxisPrint": [
           {
@@ -305,7 +341,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#000000",
+            "color": "#BF4858",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -422,6 +458,7 @@
         "es": "Año"
       },
       "filtro": "roh:year",
+      "rangoAnio": true,
       "numeroItemsFaceta": 100
     },
     {

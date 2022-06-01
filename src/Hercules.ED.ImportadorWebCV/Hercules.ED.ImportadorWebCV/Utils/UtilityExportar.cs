@@ -370,6 +370,36 @@ namespace Utils
         }
 
         /// <summary>
+        ///  Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/> 
+        ///  concatenado por "@@@"
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="property"></param>
+        /// <param name="code"></param>
+        /// <param name="entity"></param>
+        public static void AddCvnItemBeanCvnStringTipoSoporte(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+
+            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            {
+                itemBean.Items.Add(new CvnItemBeanCvnString()
+                {
+                    Code = code,
+                    Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
+                        .Split("@@@").Last()
+                });
+            }
+
+        }
+
+        /// <summary>
         /// Añade un listado de <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
         /// <param name="itemBean"></param>
@@ -758,7 +788,7 @@ namespace Utils
                     familyNameBean.SecondFamilyName = keyValuePair.Where(x => x.Key.Item2.Equals("SegundoApellido")).Select(x => x.Value).FirstOrDefault();
                     authorBean.GivenName = keyValuePair.Where(x => x.Key.Item2.Equals("Nombre")).Select(x => x.Value).FirstOrDefault();
                     authorBean.Signature = keyValuePair.Where(x => x.Key.Item2.Equals("Firma")).Select(x => x.Value).FirstOrDefault();
-                    if(int.TryParse(keyValuePair.Where(x => x.Key.Item2.Equals("Orden")).Select(x => x.Value).FirstOrDefault(), out int order))
+                    if (int.TryParse(keyValuePair.Where(x => x.Key.Item2.Equals("Orden")).Select(x => x.Value).FirstOrDefault(), out int order))
                     {
                         authorBean.SignatureOrder = order;
                         authorBean.SignatureOrderSpecified = true;
@@ -1600,19 +1630,15 @@ namespace Utils
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).FirstOrDefault().FirstOrDefault();
 
-                string anio = gnossDate.Substring(0, 4);
-                string mes = gnossDate.Substring(4, 2);
-                string dia = gnossDate.Substring(6, 2);
-                string hora = gnossDate.Substring(8, 2);
-                string minuto = gnossDate.Substring(10, 2);
-                string segundos = gnossDate.Substring(12, 2);
-                string fecha = anio + "-" + mes + "-" + dia + "T" + hora + ":" + minuto + ":" + segundos + "+01:00";
+                int anio = int.Parse(gnossDate.Substring(0, 4));
+                int mes = int.Parse(gnossDate.Substring(4, 2));
+                int dia = int.Parse(gnossDate.Substring(6, 2));
 
-                DateTime fechaDateTime = DateTime.Parse(fecha);
+                DateTime fechaDateTimeUtc = new DateTime(anio, mes, dia, 0, 0, 0, DateTimeKind.Utc);
                 itemBean.Items.Add(new CvnItemBeanCvnDateDayMonthYear()
                 {
                     Code = code,
-                    Value = fechaDateTime
+                    Value = fechaDateTimeUtc
                 });
             }
         }

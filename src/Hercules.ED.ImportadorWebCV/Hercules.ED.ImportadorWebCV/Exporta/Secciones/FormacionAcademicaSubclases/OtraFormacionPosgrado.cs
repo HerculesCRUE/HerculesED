@@ -23,6 +23,9 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
         /// <summary>
         /// Exporta los datos de la sección "020.010.030.000" a cvn.cvnRootResultBean
         /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaOtraFormacionPosgrado(Entity entity, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -37,6 +40,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -77,7 +81,6 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                     "020.010.030.100", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionTipoEntidadTitulacionOtros),
                     "020.010.030.110", keyValue.Value);
-
 
                 listado.Add(itemBean);
             }

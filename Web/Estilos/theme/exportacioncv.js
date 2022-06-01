@@ -9,71 +9,23 @@ var exportacionCV = {
         return;
     },
 	config: function(){
-		$('body').addClass('page-cv');
-	},
-	//Métodos de pestañas
-    cargarCV: function() {
-        var that = this;
-		MostrarUpdateProgressTime(0);
-        $.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
-        
-            //recorrer items y por cada uno			
-			for(var i=0;i<data.length;i++){
-				var id = 'x' + RandomGuid();
-				var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
-										<div class="panel">
-											<div class="panel-heading" role="tab" id="datos-tab">
-												<p class="panel-title">
-													<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
-														<span class="texto">${data[i].title}</span>
-														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
-													</a>
-												</p>
-											</div>
-											<div id="${id}" class="collapse show">
-												<div class="row cvTab">
-													<div class="col-12 col-contenido">
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>`
-				if(i==0){
-					$('.cabecera-cv').append( $(contenedorTab));
-					var html = edicionCV.printPersonalData(id, data[i]);					
-					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
-					$('#'+id+' input[type="checkbox"]').prop('checked',true);
-				}else if(i == 6){
-					$('.cabecera-cv').append( $(contenedorTab));		
-					var html = printFreeText(id, data[i]);
-					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
-				}else{
-					$('.cabecera-cv').append( $(contenedorTab));		
-					edicionCV.printTab(id, data[i]);
-				}
-			}			
-            OcultarUpdateProgress();
-			
-			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
-			checkAllCVWrapper();
-        });
-        return;
-    }
-};
-
-$(window).on('load', function(){
-	exportacionCV.cargarCV();
-	
-	var myForm = `<form action="" id="myForm" method="post">
-					<button class="btn btn-primary uppercase" type="submit" >Exportar</button>
-				</form>`;
-	$('#containerCV').append(myForm);
-	
-	$(function() {
-		$('#myForm').submit(function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			
+		var that = this;
+		that.cargarListadoCV();		
+		//Preparar exportación
+		$('.btGenerarExportarCV').off('click').on('click', function(e) {
+            e.preventDefault();
+			if($('#exportCvName').val().length == 0){
+				window.alert("Debes Añadir un nombre al fichero");
+				return false;
+			}
+			that.cargarCV();
+		});
+		
+		
+		//Generar exportación
+		$('.btExportarCV').off('click').on('click', function(e) {
+            e.preventDefault();
+						
 			var listaId = "";
 			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
@@ -86,19 +38,93 @@ $(window).on('load', function(){
 				return false;
 			}
 			
-			$.ajax({
-				type: 'POST',
-				url: urlExportacionCV+'GetCV',
-				dataType: 'json',
-				data: {
-					userID: exportacionCV.idUsuario, 
-					lang: lang,
-					listaId: listaId
-				}
+			var data = {};
+			data.userID= that.idUsuario;
+			data.lang= lang;
+			data.listaId= listaId;
+			data.nombreCV= $('#exportCvName').val();
+			
+			MostrarUpdateProgress();
+			$.post(urlExportacionCV + 'GetCV', data, function(data) {
+				OcultarUpdateProgress();
+				that.cargarListadoCV();
 			});
+        });
+	},
+	//Carga los CV exporatdos
+    cargarListadoCV: function() {
+		$('.listadoCV li').remove();
+
+        var that = this;
+		that.idUsuario = $('#inpt_usuarioID').val();
+		$('.col-contenido.listadoExportacion').show();
+		$('.col-contenido.exportacion').hide();
+		MostrarUpdateProgress();
+		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
+            //recorrer items y por cada uno			
+			for(var i=0;i<data.length;i++){				
+				$('.listadoCV').append($('<li>'+data[i].titulo+'</li>'));
+				$('.listadoCV').append($('<li>'+data[i].fecha+'</li>'));
+				$('.listadoCV').append($('<li>'+data[i].estado+'</li>'));
+				$('.listadoCV').append($('<li>'+data[i].fichero+'</li>'));
+			}
+			OcultarUpdateProgress();
 		});
-	});
-});
+	},
+	//Carga los datos del CV para la exportacion
+    cargarCV: function() {
+		$('.col-contenido.listadoExportacion').hide();
+		$('.col-contenido.exportacion').show();
+        var that = this;
+		MostrarUpdateProgressTime(0);
+		$('.panel-group.pmd-accordion').remove();
+        $.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
+        
+            //recorrer items y por cada uno			
+			for(var i=0;i<data.length;i++){
+				var id = 'x' + RandomGuid();
+				var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
+										<div class="panel">
+											<div class="panel-heading" role="tab" id="datos-tab">
+												<p class="panel-title">
+													<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
+														<span class="texto">${data[i].title}</span>
+														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
+													</a>
+												</p>
+											</div>
+											<div id="${id}" class="collapse show">
+												<div class="row cvTab">
+													<div class="col-12 col-contenido">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>`
+				if(i==0){
+					$('.contenido-cv').append( $(contenedorTab));
+					var html = edicionCV.printPersonalData(id, data[i]);					
+					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
+					$('#'+id+' input[type="checkbox"]').prop('checked',true);
+				}else if(i == 6){
+					$('.contenido-cv').append( $(contenedorTab));		
+					var html = printFreeText(id, data[i]);
+					$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
+				}else{
+					$('.contenido-cv').append( $(contenedorTab));		
+					edicionCV.printTab(id, data[i]);
+				}				
+			}			
+			
+            OcultarUpdateProgress();
+			
+			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
+			checkAllCVWrapper();
+        });
+        return;
+    }
+};
+
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
@@ -111,6 +137,73 @@ function checkAllCVWrapper(){
 		}
 	});
 }
+
+function printCientificProduction(id, data){
+	//Pintado sección listado
+	//css mas generico
+	var id = 'x' + RandomGuid();
+	var id2 = 'x' + RandomGuid();
+
+	var expanded = "";
+	var show = "";
+	if (data.item != null) {
+		if (Object.keys(data.item).length > 0) {
+			//Desplegado
+			expanded = "true";
+			show = "show";
+		} else {
+			//No desplegado	
+			expanded = "false";
+		}
+		//TODO texto ver items
+		var htmlSection = `
+		<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
+			<div class="panel">
+				<div class="panel-heading" role="tab" id="publicaciones-tab">
+					<p class="panel-title">
+						<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+							<span class="material-icons pmd-accordion-icon-left">folder_open</span>
+							<span class="texto">${data.title}</span>
+						</a>
+					</p>
+				</div>
+				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
+						<div class="panel-body">								
+							<div class="resource-list listView">
+								<div class="resource-list-wrap">
+									<article class="resource success" >
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.item.entityID}">
+											<label class="custom-control-label" for="check_resource_${id}"></label>
+										</div>
+										<div class="wrap">
+											<div class="middle-wrap">
+												<div class="title-wrap">
+												</div>
+												<div class="title-wrap">
+													<h2 class="resource-title">
+														<a href="#" data-id="${id}" internal-id="${data.item.entityID}">Indicadores generales de calidad de la producción científica</a>
+													</h2>
+												</div>
+												<div class="content-wrap">
+													<div class="description-wrap">
+													</div>
+												</div>
+											</div>
+										</div>
+									</article>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>`;
+		return htmlSection;
+	}
+	return '';
+}
 	
 function printFreeText(id, data){
 	var id2 = 'x' + RandomGuid();
@@ -119,11 +212,11 @@ function printFreeText(id, data){
 	if (data.sections != null) {
 		if (Object.keys(data.sections).length > 0) {
 			//Desplegado
-			expanded = "false";
+			expanded = "true";
 			show = "show";
 		} else {
 			//No desplegado	
-			expanded = "true";
+			expanded = "false";
 		}
 		var html = `<div class="panel-group pmd-accordion collapse show" section="${data.sections[0].title}" id="${id}" role="tablist" aria-multiselectable="true">
 						<div class="panel">
@@ -132,7 +225,7 @@ function printFreeText(id, data){
 									<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
 										<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 										<span class="texto">${data.title}</span>
-										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 									</a>
 								</p>
 							</div>
@@ -155,30 +248,32 @@ function printFreeText(id, data){
 						`
 		var secciones = data.sections[0].item.sections[0].rows;
 		for (var i = 0; i < secciones.length; i++){
-			var id = 'x' + RandomGuid();
-			var html2 = `<article class="resource success" >
-							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.sections[0].item.entityID + "|||" + secciones[i].properties[0].property}">
-								<label class="custom-control-label" for="check_resource_${id}"></label>
-							</div>
-							<div class="wrap">
-								<div class="middle-wrap">
-									<div class="title-wrap">
-									</div>
-									<div class="title-wrap">
-										<h2 class="resource-title">
-											<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
-										</h2>
-										<span class="material-icons arrow">keyboard_arrow_down</span>
-									</div>
-									<div class="content-wrap">
-										<div class="description-wrap">
+			//Si no hay datos no pinto esa sección
+			if(secciones[i].properties[0].values.length>0 && secciones[i].properties[0].values[0].length>0){
+				var id = 'x' + RandomGuid();
+				var html2 = `<article class="resource success" >
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.sections[0].item.entityID + "|||" + secciones[i].properties[0].property}">
+									<label class="custom-control-label" for="check_resource_${id}"></label>
+								</div>
+								<div class="wrap">
+									<div class="middle-wrap">
+										<div class="title-wrap">
+										</div>
+										<div class="title-wrap">
+											<h2 class="resource-title">
+												<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
+											</h2>
+										</div>
+										<div class="content-wrap">
+											<div class="description-wrap">
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</article>`;
-			html += html2;
+							</article>`;
+				html += html2;
+			}
 		}			
 		html += `						</div>
 									</div>
@@ -193,35 +288,42 @@ function printFreeText(id, data){
 }	
 	
 edicionCV.printTab= function(entityID, data) {
-	var that=this;
+	var that=this;	
 	if (data.entityID != null) {
 		$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
 	} else {
 		for (var i = 0; i < data.sections.length; i++) {	
-			$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));				
-			if (data.sections[i].items != null) {
-				this.repintarListadoTab(data.sections[i].identifier,true);
-			} else if (data.sections[i].item != null) {
-				that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[id="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
-				//Si no tiene ningun campo valor se repliega
-				var plegar=true;
-				$('div[section="' + data.sections[i].identifier+'"] input').each(function() {
-					if($(this).val()!='')
+			if(data.sections[i].identifier=="http://w3id.org/roh/generalQualityIndicators")
+			{
+				$('div[id="' + entityID + '"] .col-12.col-contenido').append(printCientificProduction(entityID, data.sections[i]));
+			}
+			else
+			{			
+				$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
+				if (data.sections[i].items != null) {
+					this.repintarListadoTab(data.sections[i].identifier,true);
+				} else if (data.sections[i].item != null) {
+					that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[id="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
+					//Si no tiene ningun campo valor se repliega
+					var plegar=true;
+					$('div[section="' + data.sections[i].identifier+'"] input').each(function() {
+						if($(this).val()!='')
+						{
+							plegar=false;
+						}
+					});
+					//
+					$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
+						if($(this).html()!='')
+						{
+							plegar=false;
+						}
+					});
+					if(plegar)
 					{
-						plegar=false;
+						$('div[section="' + data.sections[i].identifier+'"] .panel-collapse.collapse').removeClass('show');
+						$('div[section="' + data.sections[i].identifier+'"] .panel-heading a').attr('aria-expanded','false');
 					}
-				});
-				//
-				$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
-					if($(this).html()!='')
-					{
-						plegar=false;
-					}
-				});
-				if(plegar)
-				{
-					$('div[section="' + data.sections[i].identifier+'"] .panel-collapse.collapse').removeClass('show');
-					$('div[section="' + data.sections[i].identifier+'"] .panel-heading a').attr('aria-expanded','false');
 				}
 			}
 		}
@@ -238,11 +340,11 @@ edicionCV.printPersonalData=function(id, data) {
 	if (data.sections != null) {
 		if (Object.keys(data.sections).length > 0) {
 			//Desplegado
-			expanded = "false";
+			expanded = "true";
 			show = "show";
 		} else {
 			//No desplegado	
-			expanded = "true";
+			expanded = "false";
 		}
 		var nombre = '';
 		for(var i =0; i < data.sections[0].rows[0].properties.length; i++){
@@ -259,7 +361,7 @@ edicionCV.printPersonalData=function(id, data) {
 									<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
 										<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 										<span class="texto">${data.title}</span>
-										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+										<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 									</a>
 								</p>
 							</div>
@@ -283,7 +385,6 @@ edicionCV.printPersonalData=function(id, data) {
 																</h2>
 																${this.printHtmlListItemEditable(data)}	
 																${this.printHtmlListItemIdiomas(data)}
-																<span class="material-icons arrow">keyboard_arrow_down</span>
 															</div>
 															<div class="content-wrap">
 																<div class="description-wrap">
@@ -314,11 +415,11 @@ edicionCV.printTabSection= function(data) {
 	if (data.items != null) {
 		if (Object.keys(data.items).length > 0) {
 			//Desplegado
-			expanded = "false";
+			expanded = "true";
 			show = "show";
 		} else {
 			//No desplegado	
-			expanded = "true";
+			expanded = "false";
 		}
 		//TODO texto ver items
 		var htmlSection = `
@@ -330,7 +431,7 @@ edicionCV.printTabSection= function(data) {
 							<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 							<span class="texto">${data.title}</span>
 							<span class="numResultados">(${Object.keys(data.items).length})</span>
-							<span class="material-icons pmd-accordion-arrow">keyboard_arrow_down</span>
+							<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 						</a>
 					</p>
 				</div>

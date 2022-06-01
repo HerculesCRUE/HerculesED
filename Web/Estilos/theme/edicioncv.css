@@ -293,3 +293,25 @@ input.form-group-date {
 	opacity: 0.5;
 	background: #CCC;
 }
+
+.exportar-cv .contenido-cv {
+    border: 1px solid var(--c-gris-borde);
+    border-bottom: 0;
+}
+.exportar-cv .contenido-cv>.panel-group {
+    margin: 22px 0;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--c-gris-borde);
+    box-shadow: none;
+}
+
+.page-cv .panel-group .panel {
+    border-bottom: none!important;
+    
+}
+
+.exportar-cv .panel-group>div .panel {
+    margin: 22px 24px;
+    border-bottom: 1px solid var(--c-gris-borde)!important;
+    box-shadow: none;
+}

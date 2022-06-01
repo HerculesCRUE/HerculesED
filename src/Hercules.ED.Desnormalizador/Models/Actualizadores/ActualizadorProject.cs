@@ -755,7 +755,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
         /// <summary>
         /// Actualizamos en la propiedad http://w3id.org/roh/researchersNumber de los http://vivoweb.org/ontology/core#Project
-        /// el nº de miembros 
+        /// el nº de miembros  (sólo para los validados, los no validados no tienen 'miembros' reales)
         /// Depende de ActualizadorProject.ActualizarMiembrosUnificados
         /// </summary>
         /// <param name="pProjects">IDs de los proyectos</param>
@@ -782,6 +782,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     String select = @"select ?project ?numMiembrosCargados ?numMiembrosACargar  from <http://gnoss.com/person.owl> from <http://gnoss.com/document.owl> ";
                     String where = @$"where{{
                             ?project a <http://vivoweb.org/ontology/core#Project>.
+                            ?project <http://w3id.org/roh/isValidated> 'true'.
                             {filter}
                             OPTIONAL
                             {{

@@ -23,6 +23,8 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
         /// <summary>
         /// Exporta los datos de la sección "010.010.000.000" a cvn.cvnRootResultBean
         /// </summary>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaSituacionProfesional(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -37,6 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -46,6 +49,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                 {
                     itemBean.Items = new List<CVNObject>();
                 }
+
                 UtilityExportar.AddCvnItemBeanCvnBoolean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalGestionDocente),
                     "010.010.000.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.SituacionProfesional.situacionProfesionalFacultadEscuela),

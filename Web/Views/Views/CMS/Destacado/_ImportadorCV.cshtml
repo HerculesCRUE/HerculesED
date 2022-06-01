@@ -11,11 +11,9 @@
 	CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
 	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
-	string urlExportacionJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/exportacioncv.js";
+	string urlImportacionJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/importacioncv.js";
     Html.GetListaJS().Add(urlJS);
-    Html.GetListaJS().Add(urlExportacionJS);	
-	string urlCSS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.css";
-	Html.GetListaCSS().Add(urlCSS);
+    Html.GetListaJS().Add(urlImportacionJS);	
 }
 
 <input type="hidden" id="CV_FIRMANOSELECCIONADOPERSONA" value="@Html.Translate("CV_FIRMANOSELECCIONADOPERSONA")"/>
@@ -58,38 +56,35 @@
 <input type="hidden" id="CV_OCULTAR_EDICION" value="@Html.Translate("CV_OCULTAR_EDICION")"/>
 
 <div id="containerCV">
-	<div class="row">
-		<div class="col col-12 col-contenido listadoExportacion">
-			<div class="wrapCol">
-				<div class="cabecera-cv-listado">
-					<div class="upper-wrap">
-						<div class="h1-container">
-							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
-						</div>
-					</div>
-				</div>
-				<ul class="listadoCV">
-				</ul>
-				<input type="text" id="exportCvName"/>
-				<a class="btn btn-primary uppercase btGenerarExportarCV" >@Html.Translate("GENERAR_NUEVA_EXPORTACION")</a>
-			</div>
-		</div>
-		<div class="col col-12 col-contenido exportacion" style="display:none">
-			<div class="wrapCol">
-				<div class="cabecera-cv">
-					<div class="upper-wrap">
-						<div class="h1-container">
-							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
-						</div>
-					</div>
-				</div>
-				<div class="contenido-cv">
-				</div>
-				<a class="btn btn-primary uppercase btExportarCV" >@Html.Translate("EXPORTAR")</a>
-			</div>
-		</div>
-	</div>	
+	
 </div>
-<script>
-exportacionCV.init();
-</script>
+<div class="row">
+	<div class="col col-12 col-xl-8 col-contenido izquierda paso1">
+		<div class="wrapCol">
+			<div class="header-contenido">
+				<div class="h1-container">
+					<h1>@Html.Translate("IMPORTA_TU_CVN")</h1>
+				</div>
+			</div>
+			<p>@Html.Translate("IMPORTA_TU_CVN_CON_UN_CLICK")</p>
+			<input type="file" name="" id="file_cvn" accept="application/pdf" data-title-text="@Html.Translate("SUBE_PDF_CV")" data-size-text="@Html.Translate("MAXIMO_PESO_CV")" data-format-text="@Html.Translate("FORMATOS_ADMITIDOS_CV")" data-format-error="@Html.Translate("FORMATO_ERROR_CV")" data-size-error="@Html.Translate("TAMANIO_ERROR_CV")">
+			<div class="botonera">
+				<a href="javascript: void(0);" class="btn btn-primary uppercase btProcesarCV">@Html.Translate("PROCESAR")</a>
+			</div>
+		</div>
+	</div>
+	<div class="col col-12 col-contenido paso2" style="display:none">
+		<div class="wrapCol">
+			<div class="cabecera-cv">
+				<div class="upper-wrap">
+					<div class="h1-container">
+						<h1>@Html.Translate("IMPORTA_TU_CVN")</h1>
+					</div>
+				</div>
+			</div>
+			<div class="contenido-cv">
+			</div>
+			<a class="btn btn-primary uppercase btImportarCV" >@Html.Translate("IMPORTAR")</a>
+		</div>
+	</div>
+</div>

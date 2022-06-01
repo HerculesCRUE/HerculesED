@@ -23,10 +23,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// <summary>
         /// Exporta los datos de la sección "030.070.000.000" a cvn.cvnRootResultBean
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="seccion"></param>
-        /// <param name="secciones"></param>
-        /// <param name="preimportar"></param>
+        /// <param name="MultilangProp"></param>
+        /// <param name="listaId"></param>
         public void ExportaPublicacionesDocentes( Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
@@ -41,6 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -54,8 +53,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.070.000.010", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocentePerfilDestinatario),
                     "030.070.000.020", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocentePosicionFirma),
-                    "030.070.000.040", keyValue.Value);
+
+                string posicionFirma = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.publicacionDocentePosicionFirma))) ?
+                    keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadDocente.publicacionDocentePosicionFirma)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
+                    : null;
+                if (!string.IsNullOrEmpty(posicionFirma))
+                {
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean,"030.070.000.040", posicionFirma);
+                }
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteFechaElaboracion),
                     "030.070.000.050", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteTipologiaSoporte),

@@ -602,7 +602,7 @@ namespace Utils
                 }
                 if (Y == -1)
                 {
-                    return aux.Substring(0, M - 1);
+                    return aux.Substring(0, M);
                 }
                 return aux.Substring(Y + 1, M - Y - 1);
             }
@@ -1892,7 +1892,7 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
-            string fechaString = dateTime.Value.ToString("yyyyMMdd");
+            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToString("yyyyMMdd");
             fechaString += "000000";
             return fechaString;
         }
@@ -1905,7 +1905,7 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
         {
-            string fechaString = dateTime.Value.ToString("yyyyMMdd");
+            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToString("yyyyMMdd");
             fechaString += "000000";
             return fechaString;
         }
@@ -1918,7 +1918,7 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateYear dateTime)
         {
-            string fechaString = dateTime.Value.ToString("yyyyMMdd");
+            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToString("yyyyMMdd");
             fechaString += "000000";
             return fechaString;
         }

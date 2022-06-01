@@ -18,6 +18,11 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
             
         }
 
+        /// <summary>
+        /// Exporta los datos de la sección "000.020.000.000" a cvn.cvnRootResultBean.
+        /// </summary>
+        /// <param name="MultilangProp"></param>
+        /// <param name="version"></param>
         public void ExportaIdentificacionCurriculum(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, string version)
         {
             CvnItemBean itemBean = new CvnItemBean()
