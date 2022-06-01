@@ -32,32 +32,7 @@ namespace EditorCV.Models
         /// <param name="listaId"></param>
         public static void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId)
         {
-            Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
-
-            //Añado GeneratedPDFFile sin el link al archivo
-            string filePredicateTitle = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/title";
-            string filePredicateFecha = "http://w3id.org/roh/generatedPDFFile|http://purl.org/dc/terms/issued";
-            string filePredicateEstado = "http://w3id.org/roh/generatedPDFFile|http://w3id.org/roh/status";
-
-            string idEntityAux = $"{mResourceApi.GraphsUrl}items/GeneratedPDFFile_" + guidCortoCVID.ToString() + "_" + Guid.NewGuid();
-
-            string PDFFilePDF = "CV_filePDF" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".pdf";
-            string PDFFileFecha = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-            string PDFFileEstado = "pendiente";
-
-            List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
-            TriplesToInclude trTitle = new TriplesToInclude(idEntityAux + "|" + nombreCV, filePredicateTitle);
-            listaTriples.Add(trTitle);
-            TriplesToInclude trFecha = new TriplesToInclude(idEntityAux + "|" + PDFFileFecha, filePredicateFecha);
-            listaTriples.Add(trFecha);
-            TriplesToInclude trEstado = new TriplesToInclude(idEntityAux + "|" + PDFFileEstado, filePredicateEstado);
-            listaTriples.Add(trEstado);
-
-            var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
-            string urlExportador = _Configuracion.GetUrlExportador();
-            mResourceApi.Log.Error(urlExportador);
-            Thread thread = new Thread(() => AddPDFFile(urlExportador, pCVID, lang, listaId, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado));
-            thread.Start();
+            
         }
 
         /// <summary>
