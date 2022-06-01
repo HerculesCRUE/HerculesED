@@ -140,86 +140,48 @@ var metricas = {
                         });
 
                         // Si existe un eje superior se crea los elementos necesarios para la leyenda y el eje.
+
+                        // Contenedor de la leyenda.
+
+                        var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
+                        <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
+            
+                        </div>`);
+            
+                        $(chartContainer).append(legend);
+
+
+                        // Contenedor de los elementos de la leyenda.
+                        var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"/>`);
+                        $(legend).append(dataSetLabels);
+    
+                        // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
+                        var datasets = data.data.datasets;
+                        datasets.forEach((dataset, index) => {
+                            var labelContainer = $(`<div id="label-${index}" class="labelContainer" style="margin: 5px; height: 15px; display: flex; align-items: center;">
+                            <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"/>
+                            <p class="dataSetLabel" style="font-family: Calibri; margin: 5px;">${dataset.label}</p>
+                            </div>`);
+                           
+
+                            //labelContainer.appendChild(colorDiv);
+                            $(dataSetLabels).append(labelContainer);
+                           
+
+                        });
+                        // Eje superior. 
                         if (hasTopAxis) {
-                            // Contenedor de la leyenda.
-                            var legend = document.createElement('div');
-                            legend.id = 'chartLegend';
-                            legend.style.textAlign = 'center';
-                            legend.style.position = 'absolute';
-                            legend.style.top = '0px';
-                            legend.style.backgroundColor = 'white';
-                            chartContainer.appendChild(legend);
+                           
+                            var topAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"/>`);
+                            $(legend).append(topAxis);
+                            console.log(legend);
 
-                            // Título del canvas.
-                            var legendTitle = document.createElement('h4');
-                            legendTitle.innerHTML = data.options.plugins.title.text; // Obtenido del data.
-                            legendTitle.id = 'legendTitle';
-                            legendTitle.style.margin = '10px';
-                            legendTitle.style.fontFamily = 'Calibri,sans-serif';
-                            legendTitle.style.fontSize = '90%';
-                            legendTitle.style.fontWeight = 'bold';
-                            legend.appendChild(legendTitle);
-
-                            // Contenedor de los elementos de la leyenda.
-                            var dataSetLabels = document.createElement('div');
-                            dataSetLabels.id = 'dataSetLabels';
-                            dataSetLabels.style.display = 'flex';
-                            dataSetLabels.style.flexFlow = 'row wrap';
-                            dataSetLabels.style.justifyContent = 'center';
-                            legend.appendChild(dataSetLabels);
-
-                            // Eje superior. 
-                            var topAxis = document.createElement('canvas');
-                            topAxis.id = 'topAxis';
-                            topAxis.className = 'myChartAxis';
-                            topAxis.style.background = 'white';
-                            topAxis.style.position = 'absolute';
-                            topAxis.style.bottom = '0px';
-                            topAxis.style.left = '0px';
-                            legend.appendChild(topAxis);
-
-                            // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
-                            var datasets = data.data.datasets;
-                            datasets.forEach((dataset, index) => {
-                                var labelContainer = document.createElement('div');
-                                var colorDiv = document.createElement('div');
-                                var barLabel = document.createElement('p');
-
-                                colorDiv.style.height = "15px";
-                                colorDiv.style.width = "45px";
-                                colorDiv.style.backgroundColor = dataset.backgroundColor[0];
-                                colorDiv.style.border = "1px solid lightgrey";
-                                colorDiv.style.boxSizing = "border-box";
-
-                                barLabel.style.fontFamily = "Calibri";
-                                barLabel.style.margin = "5px";
-
-                                labelContainer.style.margin = "5px";
-                                labelContainer.style.height = "15px";
-                                labelContainer.style.display = "flex";
-                                labelContainer.id = "label-" + index;
-                                labelContainer.className = "labelContainer";
-                                labelContainer.style.alignItems = "center";
-
-                                barLabel.className = 'dataSetLabel';
-                                barLabel.innerHTML = dataset.label;
-
-                                labelContainer.appendChild(colorDiv);
-                                labelContainer.appendChild(barLabel);
-                                dataSetLabels.appendChild(labelContainer);
-                            });
                         }
 
                         // Si existe un eje inferior, se agrega con estilos.
                         if (hasBottomAxis) {
-                            var bottomAxis = document.createElement('canvas');
-                            bottomAxis.id = 'bottomAxis';
-                            bottomAxis.className = 'myChartAxis';
-                            bottomAxis.style.background = 'white';
-                            bottomAxis.style.position = 'absolute';
-                            bottomAxis.style.bottom = '0px';
-                            bottomAxis.style.left = '0px';
-                            chartContainer.appendChild(bottomAxis);
+                            var bottomAxis = $(`<canvas id="bottomAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"/>`);
+                            $(chartContainer).append(bottomAxis);
                         }
 
                         // Cuando se acutaliza el canvas.
@@ -228,7 +190,6 @@ var metricas = {
                         window.addEventListener('resize', (e) => {
                             reDrawChart();
                             myChart.update();
-
                         });
 
                         // Función que dibuja la leyenda y los ejes, también reescala todo para que coincida con el chart.
@@ -246,10 +207,12 @@ var metricas = {
                             var axisHeight = myChart.boxes[2].height;
 
                             // Preparamos el eje superior.
+                            $(legend).css("height", copyHeight + "px");
+                            $(legend).css("width", copyWidth + "px");
+
+                
                             if (topAxis) {
-                                legend.style.height = copyHeight + "px";
-                                legend.style.width = copyWidth + "px";
-                                var topAxisCtx = topAxis.getContext('2d');
+                                var topAxisCtx = topAxis[0].getContext('2d');
                                 topAxisCtx.scale(scale, scale); // Escala del zoom.
                                 topAxisCtx.canvas.width = copyWidth;
                                 topAxisCtx.canvas.height = axisHeight;
@@ -258,8 +221,7 @@ var metricas = {
 
                             // Preparamos el eje inferior.
                             if (bottomAxis) {
-                                var bottomAxisCtx = bottomAxis.getContext('2d');
-
+                                var bottomAxisCtx = bottomAxis[0].getContext('2d');
                                 bottomAxisCtx.scale(scale, scale); // Escala del zoom.
                                 bottomAxisCtx.canvas.width = copyWidth;
                                 bottomAxisCtx.canvas.height = axisHeight;
@@ -368,12 +330,6 @@ var metricas = {
         $('#panFacetas').attr('idfaceta', 'page_' + pIdPagina);
         $('#panFacetas').addClass('containerFacetas');
 
-        $('main').append(`
-        <div class="modal-backdrop fade">
-            <canvas></canvas>
-        </div>"
-        `);
-
         /*$('#containerMetrics').append(`
             <div id="page_${pIdPagina}" class="pageMetrics">
                 <div class="containerGraficas">
@@ -387,27 +343,22 @@ var metricas = {
         var that = this;
 
         // Crear estructura para el apartado de gráficas.
-        var tmp = [];
-        var id = 0;
-        var gruposDeIDs = [];
-        while (pPageData.listaGraficas.length > 0) {
-            tmp = [];
-            var grafica = pPageData.listaGraficas.shift();
-            tmp.push(grafica);
-            id = grafica.idGrupo;
-            if (!id) { // si la id es nula la mete en un grupo nuevo
-                tmp.push(grafica);
-            } else {
-                pPageData.listaGraficas.forEach(function (grafica, index, array) {
-                    tmp.push(grafica);
-                    pPageData.listaGraficas.splice(index, 1);
 
-                });
+        var rowNumber = 0;
+        var espacio = 12;
+
+        pPageData.listaConfigGraficas.forEach(function (item, index, array) {
+            /*if (espacio - item.anchura < 0 || index == 0) {
+                rowNumber++;
+                $('#page_' + pPageData.id + ' .containerGraficas').append(`
+                        <div class="row" id="row_${rowNumber}"></div>
+                    `);
+                espacio = 12;
             }
-            gruposDeIDs.push(tmp);
-        }
-        gruposDeIDs.forEach(function (item, index, array) {
-
+            $('#row_' + rowNumber).append(`
+                            <div class='grafica col-xl-${item.anchura}' idgrafica='${item.id}'></div>
+                    `);
+            espacio = espacio - item.anchura;*/
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item.anchura}"> 
                     <div class="wrap">
@@ -426,22 +377,9 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
-                                ${item.length != 1 ? `<div class="toggleChart">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">sync_alt</span>
-                                    </a>
-                                </div>`: ""}
                             </div>
-                        </div>     
-                        ${() => {
-                    var tmp = '';
-                    item.forEach(function (grafica, index, array) {
-                        tmp += `<div style="display:${index == 0 ? "block" : "none"}" class="${index == 0 ? "show" : "hide"} grafica-item" idgrafica='${grafica.id}'></div>`;
-                    });
-                    return tmp;
-
-                }
-                }
+                        </div>                      
+                        <div class="grafica " idgrafica='${item.id}'>
                         </div>
                 </article>
 
@@ -467,7 +405,7 @@ var metricas = {
         $('#page_' + pIdPagina + ' .box').empty();
 
         // Recorremos el div de las gráficas.
-        $('#page_' + pIdPagina + ' .grafica').each(function () { //TODO modificar loop para añadir toggle
+        $('#page_' + pIdPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
@@ -493,6 +431,7 @@ var metricas = {
                     </div>
                 </div>
                 `);
+
                 /*
                 <div class="chartWrapper" style="position:relative;">
                     <div style="overflow-y: scroll;height:546px;">
@@ -564,8 +503,8 @@ var metricas = {
         });
 
         $(".faceta-date-range").find("input.filtroFacetaFecha").on("input", function (event, ui) {
-            var valores = $(".faceta-date-range .ui-slider").slider( "option", "values" );
-            
+            var valores = $(".faceta-date-range .ui-slider").slider("option", "values");
+
             if ($(this).attr("id") === "gmd_ci_datef1") {
                 valores[0] = this.value;
             } else {
@@ -664,6 +603,7 @@ var metricas = {
                 e.preventDefault();
                 that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
             });
+
 
         $('#fiveyears')
             .unbind()
@@ -854,34 +794,6 @@ var metricas = {
                 a.href = image;
                 a.download = Date.now() + '.jpg';
                 a.click();
-            });
-        $('div.zoom')
-            .unbind()
-            .click(function (e) {
-                var backdrop = $(document).find('div.modal-backdrop');
-                backdrop.addClass('show');
-
-                var canvas = backdrop.children[0];
-                var cloneChart = new Chart(canvas, {
-                    type: chart.config.type,
-                    data: chart.data,
-                    options: chart.config.options
-                })
-            });
-
-        $('div.toggleChart')
-            .unbind()
-            .click(function (e) {
-                var article = $(this).parent("article");
-                if ($(this).style(backgroundColor,'#D3D3D3')){
-                $(this).css("backgroundColor","#FFF");
-            }else{
-                $(this).css("backgroundColor","#FFF");
-            }
-            article.children("div.show").css("display", "none");
-            article.children("div.hide").css("display", "block");
-            article.children("div.show").removeClass("show").addClass("hide");
-            article.children("div.hide").removeClass("hide").addClass("show");
             });
     }
 }
