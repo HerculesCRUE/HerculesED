@@ -1,4 +1,5 @@
-﻿using DesnormalizadorHercules.Models.Services;
+﻿using DesnormalizadorHercules.Models.Actualizadores;
+using DesnormalizadorHercules.Models.Services;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
@@ -74,11 +75,21 @@ namespace DesnormalizadorHercules
                     List<string> ids = new List<string>() { id };
                     resourceApi.DeleteSecondaryEntitiesList(ref ids);
                 }
-            }*/            
+            }*/
 
+            //string cv = "http://gnoss.com/items/CV_dace1896-297f-4906-8d58-d26efeaf4f16_d4fc594a-1ddd-4317-9e47-a2e6a3ea4c81";
+            //List<string> filesPDF = resourceApi.VirtuosoQuery("select *", $@"where
+            //                                                                        {{
+            //                                                                            ?s <http://w3id.org/roh/generatedPDFFile> ?gpdff.
+            //                                                                        }}", "curriculumvitae").results.bindings.Select(x=>x["gpdff"].value).ToList();
+            //List<RemoveTriples> triplesRemove = filesPDF.Select(x => new RemoveTriples() { Predicate = "http://w3id.org/roh/generatedPDFFile", Value = x }).ToList();
+            //if (triplesRemove.Count > 0)
+            //{
+            //    var resultadox = resourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { resourceApi.GetShortGuid(cv), triplesRemove } });
+            //}
 
-            //Antonio Skaremta 28710458
-            AltaUsuarioGnoss("Antonio", "Skarmeta", "antonio--skarmeta@pruebagnoss.com", "skarmeta22", "28710458", "AdrianSaavedra-GNOSS", "12070100");
+           //Antonio Skaremta 28710458
+           AltaUsuarioGnoss("Antonio", "Skarmeta", "antonio--skarmeta@pruebagnoss.com", "skarmeta22", "28710458", "AdrianSaavedra-GNOSS", "12070100");
 
             //Manuel Campos 34822542
             AltaUsuarioGnoss("Manuel", "Campos", "manuel--campos@pruebagnoss.com", "manuel-camp2", "34822542", "manuelCampos-github", "22222222");
@@ -131,6 +142,12 @@ namespace DesnormalizadorHercules
 
             //Isabel Hernández García
             AltaUsuarioGnoss("Isabel", "Hernandez", "isabel--hernandez@pruebagnoss.com", "isabel-herna", "74336159", "", "");
+
+            //Pedro Martín Peña
+            AltaUsuarioGnoss("Pedro", "Martin Pena", "sugerencias.cvn@pruebagnoss.es", "pedro-martin", "46462369", "", "");
+
+            //Test Fecyt Vacio
+            AltaUsuarioGnoss("Test", "Fecyt Vacio", "test-fecyt-vacio@pruebagnoss.com", "test-fecyt-v", "22559987903", "", "");
         }
 
         public static User AltaUsuarioGnoss(string pNombre, string pApellidos, string pEmail, string pNombreCorto, string pID, string pUsuarioGitHub, string pUsuarioFigShare)
@@ -300,6 +317,62 @@ namespace DesnormalizadorHercules
 
 
         }
+
+        public static void ActualizarPertenenciaDocumentosProyectos()
+        {
+            ActualizadorDocument actualizadorDocument = new ActualizadorDocument(resourceApi);
+
+            HashSet<string> filters = new HashSet<string>();
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    //Añadimos a documentos
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"select distinct ?doc max(?project) as ?project  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl> from <http://gnoss.com/project.owl>  ";
+                    String where = @$"where{{
+                                    {filter}
+                                    {{
+                                        select distinct ?project as ?project ?doc
+                                        Where{{
+                                            ?project a <http://vivoweb.org/ontology/core#Project>.
+                                            ?project <http://vivoweb.org/ontology/core#relates> ?members.
+                                            ?members <http://w3id.org/roh/roleOf> ?person.
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                            OPTIONAL{{?members <http://vivoweb.org/ontology/core#start> ?fechaPersonaInit.}}
+                                            OPTIONAL{{?members <http://vivoweb.org/ontology/core#end> ?fechaPersonaEnd.}}
+                                            BIND(IF(bound(?fechaPersonaEnd), xsd:integer(?fechaPersonaEnd), 30000000000000) as ?fechaPersonaEndAux)
+                                            BIND(IF(bound(?fechaPersonaInit), xsd:integer(?fechaPersonaInit), 10000000000000) as ?fechaPersonaInitAux)
+                                            ?doc a <http://purl.org/ontology/bibo/Document>.
+                                            ?doc <http://w3id.org/roh/isValidated> 'true'.
+                                            ?doc <http://purl.org/ontology/bibo/authorList> ?autores.
+                                            ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                            ?doc <http://purl.org/dc/terms/issued> ?fechaPublicacion.
+                                            FILTER(xsd:integer(?fechaPublicacion)>= ?fechaPersonaInitAux AND xsd:integer(?fechaPublicacion)<= ?fechaPersonaEndAux)
+                                        }}
+                                    }}
+                                    MINUS
+                                    {{
+                                        ?doc a <http://purl.org/ontology/bibo/Document>.
+                                        ?doc <http://w3id.org/roh/project> ?X.
+                                    }}
+                                }}order by desc(?doc) limit {limit}";
+                    SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, "document");
+                    actualizadorDocument.InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/project", "doc", "project");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
 
     }
 }
