@@ -110,10 +110,14 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
+
+            // Obtiene los filtros relacionados con las fechas.
+            List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
+
             if (configModel != null)
             {
                 Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
-                return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang);
+                return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
             return null;
         }
@@ -127,7 +131,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
             switch (pGrafica.tipo)
@@ -136,18 +140,18 @@ namespace Hercules.ED.GraphicEngine.Models
                     if (pGrafica.config.orientacionVertical)
                     {
                         ControlarExcepcionesBarrasX(pGrafica);
-                        return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                        return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates);
                     }
                     else
                     {
                         ControlarExcepcionesBarrasY(pGrafica);
-                        return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                        return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates);
                     }
                 case EnumGraficas.Circular:
                     ControlarExcepcionesCircular(pGrafica);
-                    return CrearGraficaCircular(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                    return CrearGraficaCircular(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates);
                 case EnumGraficas.Nodos:
-                    return CrearGraficaNodos(pGrafica, pFiltroBase, pFiltroFacetas, pLang);
+                    return CrearGraficaNodos(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates);
                 default:
                     return null;
             }
@@ -161,7 +165,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static GraficaBarras CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static GraficaBarras CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             // Objeto a devolver.
             GraficaBarras grafica = new GraficaBarras();
@@ -227,7 +231,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
-                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }, pListaDates: pListaDates));
                 }
                 if (filtroEspecial)
                 {
@@ -433,7 +437,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static GraficaBarrasY CrearGraficaBarrasY(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static GraficaBarrasY CrearGraficaBarrasY(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             // Objeto a devolver.
             GraficaBarrasY grafica = new GraficaBarrasY();
@@ -499,7 +503,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
-                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }, pListaDates: pListaDates));
                 }
                 if (filtroEspecial)
                 {
@@ -705,7 +709,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static GraficaCircular CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static GraficaCircular CrearGraficaCircular(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             // Objeto a devolver.
             GraficaCircular grafica = new GraficaCircular();
@@ -746,7 +750,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
-                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }, pListaDates: pListaDates));
                 }
                 if (!string.IsNullOrEmpty(itemGrafica.filtro))
                 {
@@ -840,7 +844,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             GraficaNodos grafica = new GraficaNodos();
 
@@ -936,7 +940,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
-                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }, pListaDates: pListaDates));
                 }
                 if (!string.IsNullOrEmpty(itemGrafica.filtro))
                 {
@@ -1113,13 +1117,17 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Decode de los filtros.
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
-
+                       
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
+
+            // Obtiene los filtros relacionados con las fechas.
+            List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
+
             if (configModel != null)
             {
                 FacetaConf faceta = configModel.facetas.FirstOrDefault(x => x.filtro == pIdFaceta);
-                return CrearFaceta(faceta, configModel.filtro, pFiltroFacetas, pLang);
+                return CrearFaceta(faceta, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
 
             return null;
@@ -1133,7 +1141,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang)
+        public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             Faceta faceta = new Faceta();
 
@@ -1159,7 +1167,7 @@ namespace Hercules.ED.GraphicEngine.Models
             filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "nombreFaceta"));
             if (!string.IsNullOrEmpty(pFiltroFacetas))
             {
-                filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }));
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }, pListaDates: pListaDates));
             }
             Dictionary<string, float> dicResultados = new Dictionary<string, float>();
             SparqlObject resultadoQuery = null;
@@ -1257,7 +1265,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pListaFiltros">Listado de filtros.</param>
         /// <param name="pNombreVar">Nombre a poner a la última variable.</param>
         /// <returns></returns>
-        public static List<string> ObtenerFiltros(List<string> pListaFiltros, string pNombreVar = null)
+        public static List<string> ObtenerFiltros(List<string> pListaFiltros, string pNombreVar = null, List<string> pListaDates = null)
         {
             // Split por filtro.
             List<string> listaAux = new List<string>();
@@ -1273,7 +1281,13 @@ namespace Hercules.ED.GraphicEngine.Models
             int i = 0;
             foreach (string item in listaAux)
             {
-                filtrosQuery.Add(TratarParametros(item, "?s", i, pNombreVar));
+                bool isDate = false;
+                if(pListaDates != null && pListaDates.Any() && pListaDates.Contains(item.Split("=")[0]))
+                {
+                    isDate = true;
+                }
+
+                filtrosQuery.Add(TratarParametros(item, "?s", i, pNombreVar, isDate));
                 i += 10;
             }
 
@@ -1288,11 +1302,8 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pAux">Iterador incremental.</param>
         /// <param name="pNombreVar">Nombre de la última variable.</param>
         /// <returns></returns>
-        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux, string pNombreVar = null, bool isDate = false)
+        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux, string pNombreVar = null, bool pIsDate = false)
         {
-            // Lista de propiedades de fecha
-            List<string> listaPropFechas = new List<string>() { "roh:year" }; 
-
             StringBuilder filtro = new StringBuilder();
             string[] filtros = pFiltro.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries);
             int i = 0;
@@ -1318,7 +1329,6 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
                 else
                 {
-                    string rdfType = $@"{parteFiltro.Split("=")[0]}";
                     string varActual = $@"{parteFiltro.Split("=")[1]}";
                     if (varActual.StartsWith("'"))
                     {
@@ -1334,7 +1344,7 @@ namespace Hercules.ED.GraphicEngine.Models
                             filtro.Append($@"{varActual}. ");
                         }
                     }
-                    else if (listaPropFechas.Contains(rdfType) && varActual.Contains("-"))
+                    else if (pIsDate && varActual.Contains("-"))
                     {
                         // Fechas.
                         string fechaInicio = varActual.Split("-")[0];

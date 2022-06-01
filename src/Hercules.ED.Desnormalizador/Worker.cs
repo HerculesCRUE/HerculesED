@@ -73,6 +73,13 @@ namespace DesnormalizadorHercules
             }
 
             //TODO eliminar
+            bool vincularDocsProy = false;
+            if (vincularDocsProy)
+            {
+                Temporal.ActualizarPertenenciaDocumentosProyectos();
+            }
+
+            //TODO eliminar
             bool eliminarCVs = false;
             if (eliminarCVs)
             {
@@ -110,6 +117,8 @@ namespace DesnormalizadorHercules
             ProcessItemsPending();
 
             ProcessItemsError();
+
+            //TODO exporatciones pendientes que lleven mucho tiempo pasar a error
         }
 
 
