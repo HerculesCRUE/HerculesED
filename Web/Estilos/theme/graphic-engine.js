@@ -2,6 +2,10 @@ $(document).ready(function () {
     metricas.init();
 });
 
+// Año máximo y mínimo para las facetas de años
+var minYear = 10000;
+var maxYear = 0;
+
 var metricas = {
     init: function () {
         this.createEmptyPage('123');
@@ -277,13 +281,10 @@ var metricas = {
         arg.pIdFaceta = pIdFaceta;
         arg.pFiltroFacetas = pFiltroFacetas;
         arg.pLang = lang;
-
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
 
             var numItemsPintados = 0;
-            var min = 10000;
-            var max = 0;
             if (data.isDate) {
                 $('div[idfaceta="' + data.id + '"]').append(`
                 <span class="faceta-title">${data.nombre}</span>
@@ -292,8 +293,8 @@ var metricas = {
                 <div id="gmd_ci_daterange" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
                     <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
-                    <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
-                <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div></div>
+                    <span tabindex="1" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
+                    </div>
                 <div class="d-flex" id="inputs_rango"></div>
                     <a name="gmd_ci:date" class="searchButton">Aplicar</a>
                     <ul class="no-list-style">
@@ -333,8 +334,8 @@ var metricas = {
                     }
                 }
                 if (data.isDate) {
-                    min = Math.min(min, item.nombre);
-                    max = Math.max(max, item.nombre);
+                    minYear = Math.min(minYear, item.nombre);
+                    maxYear = Math.max(maxYear, item.nombre);
                 } else {
                     $('div[idfaceta="' + data.id + '"] .listadoFacetas').append(`
                         <li>
@@ -353,8 +354,8 @@ var metricas = {
             });
             if (data.isDate) {
                 $('div[idfaceta="' + data.id + '"] #inputs_rango').append(`
-                    <input title="Año" type="number" min="${min}" max="${max}" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="${min}" name="gmd_ci_datef1" id="gmd_ci_datef1" onchange="actualizarValoresSlider(this,0)">
-                    <input title="Año" type="number" min="${min}" max="${max}" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="${max}" name="gmd_ci_datef2" id="gmd_ci_datef2" onchange="actualizarValoresSlider(this,1)">
+                    <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker minVal" placeholder="${minYear}" value="${minYear}" name="gmd_ci_datef1" id="gmd_ci_datef1">
+                    <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker maxVal" placeholder="${maxYear}" value="${maxYear}" name="gmd_ci_datef2" id="gmd_ci_datef2">
                 `)
             }
 
@@ -551,6 +552,28 @@ var metricas = {
     engancharComportamientos: function () {
         var that = this;
 
+        $(".faceta-date-range .ui-slider").slider({
+            range: true,
+            min: minYear,
+            max: maxYear,
+            values: [minYear, maxYear],
+            slide: function (event, ui) {
+                $("#gmd_ci_datef1").val(ui.values[0]);
+                $("#gmd_ci_datef2").val(ui.values[1]);
+            }
+        });
+
+        $(".faceta-date-range").find("input.filtroFacetaFecha").on("input", function (event, ui) {
+            var valores = $(".faceta-date-range .ui-slider").slider( "option", "values" );
+            
+            if ($(this).attr("id") === "gmd_ci_datef1") {
+                valores[0] = this.value;
+            } else {
+                valores[1] = this.value;
+            }
+            $(".faceta-date-range .ui-slider").slider("values", valores);
+        });
+
         $('.containerFacetas a.filtroMetrica')
             .unbind()
             .click(function (e) {
@@ -649,21 +672,21 @@ var metricas = {
                 // Cojo el valor del input y si no tiene le pongo el placeholder
                 min = $("#gmd_ci_datef2").attr("placeholder") - 5;
                 max = $("#gmd_ci_datef2").attr("placeholder");
-                var filtroActual = $(this).parent().parent().parent().parent().attr('idfaceta');
-                filtroActual += `=${min}-${max}`;
+                var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
-                var filtroYear = '';
                 filtros = '';
                 for (var i = 0; i < filtrosArray.length; i++) {
                     if (filtrosArray[i] != '') {
-                        if (filtrosArray[i].includes($(this).parent().parent().parent().parent().attr('idfaceta'))) {
-                            filtroYear = filtrosArray[i];
-                        }
                         filtros += filtrosArray[i] + '&';
                     }
                 }
-                filtros -= filtroYear;
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
                 filtros += filtroActual;
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
@@ -679,21 +702,21 @@ var metricas = {
                 // Cojo el valor del input y si no tiene le pongo el placeholder
                 min = $("#gmd_ci_datef2").attr("placeholder");
                 max = $("#gmd_ci_datef2").attr("placeholder");
-                var filtroActual = $(this).parent().parent().parent().parent().attr('idfaceta');
-                filtroActual += `=${min}-${max}`;
+                var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
-                var filtroYear = '';
                 filtros = '';
                 for (var i = 0; i < filtrosArray.length; i++) {
                     if (filtrosArray[i] != '') {
-                        if (filtrosArray[i].includes($(this).parent().parent().parent().parent().attr('idfaceta'))) {
-                            filtroYear = filtrosArray[i];
-                        }
                         filtros += filtrosArray[i] + '&';
                     }
                 }
-                filtros -= filtroYear;
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
                 filtros += filtroActual;
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
@@ -709,21 +732,21 @@ var metricas = {
                 // Cojo el valor del input y si no tiene le pongo el placeholder
                 min = $("#gmd_ci_datef1").attr("placeholder");
                 max = $("#gmd_ci_datef2").attr("placeholder");
-                var filtroActual = $(this).parent().parent().parent().parent().attr('idfaceta');
-                filtroActual += `=${min}-${max}`;
+                var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
-                var filtroYear = '';
                 filtros = '';
                 for (var i = 0; i < filtrosArray.length; i++) {
                     if (filtrosArray[i] != '') {
-                        if (filtrosArray[i].includes($(this).parent().parent().parent().parent().attr('idfaceta'))) {
-                            filtroYear = filtrosArray[i];
-                        }
                         filtros += filtrosArray[i] + '&';
                     }
                 }
-                filtros -= filtroYear;
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
                 filtros += filtroActual;
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
@@ -739,21 +762,21 @@ var metricas = {
                 // Cojo el valor del input y si no tiene le pongo el placeholder
                 $("#gmd_ci_datef1").val() === '' ? min = $("#gmd_ci_datef1").attr("placeholder") : min = $("#gmd_ci_datef1").val();
                 $("#gmd_ci_datef2").val() === '' ? max = $("#gmd_ci_datef2").attr("placeholder") : max = $("#gmd_ci_datef2").val();
-                var filtroActual = $(this).parent().parent().attr('idfaceta');
-                filtroActual += `=${min}-${max}`;
+                var filtro = $(this).parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
-                var filtroYear = '';
                 filtros = '';
                 for (var i = 0; i < filtrosArray.length; i++) {
                     if (filtrosArray[i] != '') {
-                        if (filtrosArray[i].includes($(this).parent().parent().attr('idfaceta'))) {
-                            filtroYear = filtrosArray[i];
-                        }
                         filtros += filtrosArray[i] + '&';
                     }
                 }
-                filtros -= filtroYear;
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
                 filtros += filtroActual;
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);

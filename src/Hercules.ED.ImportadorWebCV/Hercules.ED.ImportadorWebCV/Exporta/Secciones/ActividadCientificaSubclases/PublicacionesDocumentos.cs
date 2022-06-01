@@ -117,6 +117,11 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                         UtilityExportar.AddCvnItemBeanCvnStringTipoSoporte(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista),
                         "060.010.010.210", keyValue.Value);
                     }
+                    else
+                    {
+                        UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
+                        "060.010.010.210", keyValue.Value);
+                    }
                 }
                 else
                 {

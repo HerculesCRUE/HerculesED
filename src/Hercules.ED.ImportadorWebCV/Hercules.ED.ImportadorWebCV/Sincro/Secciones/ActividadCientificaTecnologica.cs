@@ -1827,7 +1827,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.040.220")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.040.230")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.040.230")),
-                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulResponsableEditorial, item.GetStringBooleanPorIDCampo("060.010.040.240")),
+                            new Property(Variables.ActividadCientificaTecnologica.otrasActDivulResponsableEditorial, item.GetStringPorIDCampo("060.010.040.240")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubPais, item.GetPaisPorIDCampo("060.010.040.250")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubCCAA, item.GetRegionPorIDCampo("060.010.040.260")),
                             new Property(Variables.ActividadCientificaTecnologica.otrasActDivulPubFecha, item.GetStringDatetimePorIDCampo("060.010.040.280")),
