@@ -55,6 +55,7 @@ namespace EditorCV.Models
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
             string urlExportador = _Configuracion.GetUrlExportador();
+            mResourceApi.Log.Error(urlExportador);
             Thread thread = new Thread(() => AddPDFFile(urlExportador, pCVID, lang, listaId, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado));
             thread.Start();
         }
