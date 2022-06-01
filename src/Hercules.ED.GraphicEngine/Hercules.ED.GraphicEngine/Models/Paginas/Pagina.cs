@@ -13,5 +13,6 @@ namespace Hercules.ED.GraphicEngine.Models.Paginas
     {
         public string id { get; set; }
         public int anchura { get; set; }
+        public string idGrupo { get; set; }
     }
 }
