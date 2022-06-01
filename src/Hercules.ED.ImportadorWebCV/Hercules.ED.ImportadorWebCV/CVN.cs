@@ -151,7 +151,7 @@ namespace ImportadorWebCV
     {
 
         /// <remarks/>
-        public decimal Value { get; set; }
+        public string Value { get; set; }
     }
 
     /// <remarks/>
