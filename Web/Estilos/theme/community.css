@@ -360,6 +360,11 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 /**/
 
 
+/* CATEGORIAS */
+.categoria-wrap .categoria.investigacion .custom-checkbox .custom-control-input:not(:checked) ~ .custom-control-label::before { content: 'bookmark'; }
+/**/
+
+
 /* NAV TABS */
 .nav-tabs .nav-item .nav-link:not(.active) { border: 0; }
 /**/
@@ -372,6 +377,16 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .edicionRecurso .header-tipo-modal .modal-header { padding-left: 70px; }
 
 .edicionRecurso .col-edicion .formulario-edicion legend { font-size: 20px; font-weight: 700; color: var(--c-negro); line-height: 25px; letter-spacing: .2px; margin-bottom: 20px; }
+
+.edicionRecurso .formulario-edicion .edit-etiquetas { display: flex; flex-wrap: wrap; margin-bottom: 40px !important; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .control-label { width: 100%; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar { margin-bottom: 0 !important; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar input { width: 480px; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar .tag-list { margin-bottom: 0 !important; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary { padding: 0; border-radius: 0; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .btn-wrap { display: flex; align-items: center; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .btn-wrap .btn-text { padding: 11px 16px; border-right: 1px solid; font-size: 15px; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .material-icons { font-size: 30px; padding: 4px; }
 
 .edicionRecurso .form-group .control-label { font-size: 13px; font-weight: 500; letter-spacing: .26px; }
 .edicionRecurso .form-group.edit-areas-tematicas .control-label { font-size: .9rem; }
@@ -424,14 +439,6 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .edicionCluster .formulario-edicion .panel-heading .btn.eliminar { display: inline-flex; font-size: 15px; font-weight: 400; position: absolute; top: -5px; right: 0; }
 .edicionCluster .formulario-edicion .panel-heading .btn.eliminar .material-icons-outlined { padding-left: 10px; padding-right: 0; }
 .edicionCluster .formulario-edicion .panel-body { padding-left: 72px; margin-bottom: 30px; }
-.edicionCluster .formulario-edicion .panel-body .form-group { display: flex; flex-wrap: wrap; margin-bottom: 20px !important; }
-.edicionCluster .formulario-edicion .panel-body .form-group .control-label { width: 100%; }
-.edicionCluster .formulario-edicion .panel-body .autocompletar { margin-bottom: 0 !important; }
-.edicionCluster .formulario-edicion .panel-body .autocompletar .tag-list { margin-bottom: 0 !important; }
-.edicionCluster .formulario-edicion .panel-body .btn-outline-primary { padding: 0; border-radius: 0; }
-.edicionCluster .formulario-edicion .panel-body .btn-outline-primary .btn-wrap { display: flex; align-items: center; }
-.edicionCluster .formulario-edicion .panel-body .btn-outline-primary .btn-wrap .btn-text { padding: 11px 16px; border-right: 1px solid; font-size: 15px; }
-.edicionCluster .formulario-edicion .panel-body .btn-outline-primary .material-icons { font-size: 30px; padding: 4px; }
 
 .edicionCluster .formulario-edicion .anadir-perfil { padding-left: 72px; }
 .edicionCluster .formulario-edicion .anadir-perfil .btn { font-size: 15px; }
@@ -459,9 +466,12 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .edicionCluster .resource-list.listView .resource .wrap { display: flex; flex-wrap: wrap; margin-left: 0; border-bottom: 0; }
 .edicionCluster .resource-list.listView .resource .wrap > div { font-size: 15px; font-weight: 700; color: var(--c-negro); padding: 10px 0; padding-bottom: 0; }
 
-.acciones-listado-personas { margin-bottom: 0; }
-.acciones-listado-personas .wrap { border-bottom: 1px solid var(--c-gris-borde); }
-.acciones-listado-personas .wrap > div { font-size: 13px; font-weight: 400; color: #999; padding: 10px 0; }
+.acciones-listado-personas,
+.acciones-listado-investigadores { margin-bottom: 0; }
+.acciones-listado-personas .wrap,
+.acciones-listado-investigadores .wrap { border-bottom: 1px solid var(--c-gris-borde); }
+.acciones-listado-personas .wrap > div,
+.acciones-listado-investigadores .wrap > div { font-size: 13px; font-weight: 400; color: #999; padding: 10px 0; }
 
 .edicionCluster .col-contenido .acciones-listado .usuario-wrap,
 .edicionCluster .resource-list.listView .resource .wrap .usuario-wrap { flex: 1; padding-left: 68px; }
@@ -510,6 +520,8 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 
     .edicionCluster .col-contenido .panel-body { padding-left: 0; }
 
+    .acciones-listado-personas,
+    .acciones-listado-investigadores { display: none; }
     .acciones-listado-personas .usuario-wrap { display: none; }
     .edicionCluster .resource-list.listView .resource .wrap .usuario-wrap { flex: 0 0 100%; }
     .acciones-listado-personas .publicaciones-wrap,
@@ -519,10 +531,85 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 
     .edicionCluster .resource-list.listView .resource .wrap .description-wrap,
     .edicionCluster .resource-list .resource .user-perfil { padding-left: 0; }
+
+    .formulario-edicion .edit-etiquetas .autocompletar input { width: 100%; }
 }
 
 @media (max-width: 575px) {
     .edicionCluster .formulario-edicion .botonera .btn { height: 38px; }
+}
+/**/
+
+
+/* EDICION OFERTA TECNOLOGICA */
+.edicionOfertaTecnologica .step-progress-wrap { position: relative; }
+.edicionOfertaTecnologica .step-progress__circle { position: inherit; }
+
+.edicionOfertaTecnologica .nav-tabs { border-color: var(--c-negro); }
+.edicionOfertaTecnologica .nav-tabs .nav-item .nav-link { font-weight: 300 ;}
+.edicionOfertaTecnologica .nav-tabs .nav-item .nav-link.active { border-color: var(--c-negro); color: var(--c-negro); font-weight: 700; }
+
+.edicionOfertaTecnologica .header-listado .h1-container h1 { font-size: 1.333rem; font-weight: 700; color: var(--c-texto); }
+
+.edicionOfertaTecnologica .formulario-edicion { position: relative; }
+.edicionOfertaTecnologica .formulario-edicion > h2 { margin-bottom: 50px; }
+
+.edicionOfertaTecnologica .botonera { position: absolute; top: 0; right: 0; }
+.edicionOfertaTecnologica .botonera .btn { height: 50px; }
+
+.edicionOfertaTecnologica .step-progress-wrap { width: 100%; }
+
+.edicionOfertaTecnologica .formulario-edicion legend { font-size: 20px; font-weight: 700; margin-bottom: 30px; }
+
+.edicionOfertaTecnologica a.remove::after { display: none; }
+
+.edicionOfertaTecnologica .form-group.edit-titulo { width: 740px; }
+
+.edicionOfertaTecnologica .formulario-edicion .tab-content .row { margin: 0; }
+.edicionOfertaTecnologica .formulario-edicion .tab-content .row .col { padding: 0; }
+.edicionOfertaTecnologica .formulario-edicion .tab-content .row .col-section-title .wrapCol,
+.edicionOfertaTecnologica .formulario-edicion .tab-content .row .col-grafo .wrapCol,
+.edicionOfertaTecnologica .formulario-edicion .tab-content .row .col-facetas .wrapCol { padding-left: 0; }
+
+.edicionOfertaTecnologica .resource-list.listView { margin-top: 0; }
+.edicionOfertaTecnologica .resource-list.listView .resource { border-bottom: 1px solid var(--c-gris-borde); padding-bottom: 0; }
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap { display: flex; flex-wrap: wrap; border-bottom: 0; }
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap > div { font-size: 15px; font-weight: 700; color: var(--c-negro); padding: 10px 0; padding-bottom: 0; }
+.edicionOfertaTecnologica .resource-list.listView .resource .custom-control { position: absolute; top: 10px; }
+.edicionOfertaTecnologica .resource-list.listView .resource .custom-control .custom-control-label::before { height: 20px; width: 20px; }
+.edicionOfertaTecnologica .resource-list.listView .resource .custom-control .custom-control-label::after { height: 20px; width: 20px; }
+
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .usuario-wrap { flex: 1; padding-left: 68px; }
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .usuario-wrap .user-miniatura .imagen-usuario-wrap { position: absolute; top: 10px; left: 0; }
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .usuario-wrap .user-miniatura .nombre-usuario-wrap { margin-bottom: 8px; }
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .usuario-wrap .list-wrap ul > li > a { font-size: .866rem; color: var(--c-texto); }
+.edicionOfertaTecnologica .col-contenido .acciones-listado .publicaciones-wrap,
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .publicaciones-wrap { flex: 0 0 15%; }
+.edicionOfertaTecnologica .col-contenido .acciones-listado .acciones-wrap,
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .acciones-wrap { flex: 0 0 5%; }
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .acciones-wrap a { font-size: 0; text-indent: -9999em; }
+
+.edicionOfertaTecnologica .resource-list.listView .resource .wrap .description-wrap { font-size: .866rem; font-weight: 400; padding-left: 68px; padding-top: 0; }
+
+.edicionOfertaTecnologica .resource-list.resource-list-buscador .resource .wrap .title-wrap { padding-left: 35px; }
+.edicionOfertaTecnologica .resource-list.resource-list-buscador .resource .wrap .description-wrap { padding-left: 35px; }
+.edicionOfertaTecnologica .resource-list.resource-list-proyectos .resource .wrap .description-wrap,
+.edicionOfertaTecnologica .resource-list.resource-list-publicaciones .resource .wrap .description-wrap,
+.edicionOfertaTecnologica .resource-list.resource-list-prop-industrial-intelectual .resource .wrap .description-wrap { padding-left: 0; }
+
+@media (max-width: 767px) {
+    .edicionOfertaTecnologica .form-group.edit-titulo { width: 100%; }
+
+    .edicionOfertaTecnologica .resource-list.listView .resource .wrap .usuario-wrap { flex: 0 0 100%; }
+    .edicionOfertaTecnologica .resource-list.listView .resource .wrap .publicaciones-wrap,
+    .edicionOfertaTecnologica .resource-list.listView .resource .wrap .principal-wrap { flex: 0 0 50%; }
+
+    .edicionOfertaTecnologica .resource-list.listView .resource .wrap .description-wrap { padding-left: 0; }
+}
+
+@media (max-width: 575px) {
+    .edicionOfertaTecnologica .formulario-edicion > h2 { margin-bottom: 20px; }
+    .edicionOfertaTecnologica .botonera { position: relative; margin-bottom: 20px; }
 }
 /**/
 
@@ -666,6 +753,8 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .list-wrap.website { display: flex; flex-wrap: wrap; }
 .list-wrap.website ul li::after { display: none; }
 .list-wrap.website ul li a { color: var(--c-primario); }
+
+.list-wrap.offers ul li::after { display: none; }
 /* */
 
 
@@ -717,6 +806,7 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .resource-list .resource.proyecto .middle-wrap .title-wrap .resource-title:before { content: 'work'; }
 .resource-list .resource.success .middle-wrap .title-wrap .resource-title:before { color: #00bc13; opacity: 1 !important; }
 .resource-list .resource.pending .middle-wrap .title-wrap .resource-title:before { color: var(--c-amarillo); }
+.resource-list .resource.offer .middle-wrap .title-wrap .resource-title:before { content: 'engineering'; }
 
 .resource-list .resource .middle-wrap .content-wrap { }
 .resource-list .resource .middle-wrap .content-wrap .description-wrap { }
@@ -769,7 +859,7 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
     .listado.scrolling .col-buscador { top: 0; }
 
     .resource-list .resource .middle-wrap .title-wrap { flex-wrap: wrap; justify-content: flex-end; }
-    .resource-list .resource .middle-wrap .title-wrap .resource-title { flex: none; width: 100%; }
+    .resource-list .resource .middle-wrap .title-wrap .resource-title { /*flex: none;*/ width: 100%; margin-bottom: 5px !important; }
 }
 /* */
 
@@ -843,6 +933,16 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 
 .resource-list.graphView .resource .title-wrap { padding: 20px 15px; }
 .resource-list.graphView .resource .title-wrap h2 { font-size: .933rem; font-weight: 700; color: #707070; margin-bottom: 0; }
+/**/
+
+
+/* INDICADOR */
+.indicador { font-size: .8rem; font-weight: 500; background-color: #e5e5e5; color: var(--c-texto-claro); padding: 3px 15px; }
+.indicador.validada { background-color: #0BD140; color: var(--c-blanco); }
+.indicador.borrador { background-color: #CCAD15; color: var(--c-blanco); }
+.indicador.revision { background-color: #C710C8; color: var(--c-blanco); }
+.indicador.denegada { background-color: #CF470B; color: var(--c-blanco); }
+.indicador.archivada { background-color: #0BB5CF; color: var(--c-blanco); }
 /**/
 
 
@@ -1088,7 +1188,7 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 /* CABECERA FICHAS */
 .cabecera-ficha { margin-bottom: 30px; }
 .cabecera-ficha > div { padding-left: 40px; }
-.cabecera-ficha .ficha-upper-row { display: flex; align-items: center; margin-bottom: 0; position: relative; flex-wrap: wrap;}
+.cabecera-ficha .ficha-upper-row { display: flex; align-items: center; margin-bottom: 0; position: relative; flex-wrap: wrap; margin-bottom: 5px; }
 .cabecera-ficha .ficha-upper-row .ficha-icon-wrap { position: absolute; left: 0; top: 0; }
 .cabecera-ficha .ficha-upper-row .ficha-icon-wrap { top: 7px; }
 .cabecera-ficha .ficha-upper-row .ficha-icon-wrap .imagen { height: 75px; width: 75px; border: 0; background-color: var(--c-gris-fondo); }
@@ -1246,6 +1346,30 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
     .fichaRecurso-cluster .resource-list.listView .resource .wrap .principal-wrap { flex: 0 0 33.33%; }
 }
 /* */
+
+
+/* FICHA OFERTAS TECNOLOGICAS */
+.fichaRecurso-ofertas-tecnologicas .tab-paneles-ficha .tab-content .tab-pane .col-contenido { padding-left: 8px; }
+
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource { border-bottom: 1px solid var(--c-gris-borde); padding-bottom: 0; }
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap { display: flex; flex-wrap: wrap; margin-left: 0; border-bottom: 0; padding-bottom: 10px; }
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap > div { font-size: 15px; color: var(--c-negro); padding: 10px 0; padding-bottom: 0; }
+
+.acciones-listado-investigadores .usuario-wrap,
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap .usuario-wrap { flex: 1; padding-left: 68px; }
+
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap .usuario-wrap .user-miniatura .imagen-usuario-wrap { position: absolute; top: 10px; left: 0; }
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap .usuario-wrap .user-miniatura .nombre-usuario-wrap { margin-bottom: 8px; }
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap .usuario-wrap .list-wrap ul > li > a { font-size: .866rem; color: var(--c-texto); }
+.acciones-listado-investigadores .publicaciones-wrap,
+.fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap .publicaciones-wrap { flex: 0 0 15%; }
+
+@media (max-width: 767px) {
+    .fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap .usuario-wrap { flex: 0 0 100%; }
+    .acciones-listado-investigadores .publicaciones-wrap,
+    .fichaRecurso-ofertas-tecnologicas .resource-list.listView .resource .wrap .publicaciones-wrap { flex: 0 0 33.33%; }
+}
+/**/
 
 
 /* FOOTER */
