@@ -554,8 +554,70 @@ var metricas = {
                 e.preventDefault();
 
                 that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
-
             });
+        $('a.remove.faceta')
+            .unbind()
+            .click(function (e) {
+                var filtroActual = $(this).parent().attr('filtro');
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                var contieneFiltro = false;
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        if (filtrosArray[i] == filtroActual) {
+                            contieneFiltro = true;
+                        } else {
+                            filtros += filtrosArray[i] + '&';
+                        }
+
+                    }
+                }
+                if (!contieneFiltro) {
+                    filtros += filtroActual;
+                }
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+            });
+
+        $('a.remove.faceta')
+            .unbind()
+            .click(function (e) {
+                var filtroActual = $(this).parent().attr('filtro');
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                var contieneFiltro = false;
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        if (filtrosArray[i] == filtroActual) {
+                            contieneFiltro = true;
+                        } else {
+                            filtros += filtrosArray[i] + '&';
+                        }
+
+                    }
+                }
+                if (!contieneFiltro) {
+                    filtros += filtroActual;
+                }
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+            });
+
+        $('.borrarFiltros')
+            .unbind()
+            .click(function (e) {
+                history.pushState('', 'New URL: ', '?');
+                e.preventDefault();
+                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+        });
 
         $('#zoomIn')
             .unbind()
