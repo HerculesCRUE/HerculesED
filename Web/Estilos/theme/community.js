@@ -115,11 +115,11 @@ var menusLateralesManagement = {
 
         $('#menuLateralUsuario').slideReveal({
             trigger: $("#menuLateralUsuarioTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'right',
             push: false,
+            autoEscape: false,
         });
     },
     montarMenuLateralMetabuscador: function () {
@@ -130,11 +130,11 @@ var menusLateralesManagement = {
 
         $('#menuLateralMetabuscador').slideReveal({
             trigger: $('#txtBusquedaPrincipal'),
-			autoEscape:false,
             width: 740,
             overlay: true,
             position: 'left',
             push: false,
+            autoEscape: false,
             show: function (slider) {
                 that.body.addClass('metabuscador-abierto');
 
@@ -174,11 +174,11 @@ var menusLateralesManagement = {
 
         $('#menuLateral').slideReveal({
             trigger: $("#menuLateralTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
             push: false,
+            autoEscape: false,
         });
     },
     montarMenuLateralComunidad: function () {
@@ -188,11 +188,11 @@ var menusLateralesManagement = {
 
         $('#menuLateralComunidad').slideReveal({
             trigger: $("#menuLateralComunidadTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
             push: false,
+            autoEscape: false,
         });
     },
     comportamientoBotonCerrar: function () {
@@ -1587,6 +1587,15 @@ var pintarGraficos = {
 };
 /**/
 
+function comportamientoCargaFacetasComunidad() {
+    alturizarBodyTamanoFacetas.init();
+    plegarFacetasCabecera.init();
+    plegarSubFacetas.init();
+    comportamientoVerMasVerMenos.init();
+    comportamientoVerMasVerMenosTags.init();
+    comportamientosModalFacetas.init();
+};
+
 $(function () {
     accionesBuscadorCabecera.init();
     communityMenuMovil.init();
@@ -1595,9 +1604,6 @@ $(function () {
     tooltipsAccionesRecursos.init();
     contarLineasDescripcion.init();
     cambioTraducciones.init();
-
-    comportamientoVerMasVerMenos.init();
-    comportamientoVerMasVerMenosTags.init();
 
     accionesPlegarDesplegarModal.init();
 
