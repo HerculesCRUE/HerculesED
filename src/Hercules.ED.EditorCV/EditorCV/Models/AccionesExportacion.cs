@@ -54,8 +54,8 @@ namespace EditorCV.Models
             listaTriples.Add(trEstado);
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
-
-            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, listaId, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado));
+            string urlExportador = _Configuracion.GetUrlExportador();
+            Thread thread = new Thread(() => AddPDFFile(urlExportador, pCVID, lang, listaId, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado));
             thread.Start();
         }
 
@@ -63,7 +63,7 @@ namespace EditorCV.Models
         /// Adjunto el fichero y modifico los triples de <paramref name="idEntityAux"/> para referenciar el archivo y 
         /// modificar el estado a "procesado". En caso de error durante el proceso cambio el estado a "error".
         /// </summary>
-        /// <param name="_Configuracion"></param>
+        /// <param name="urlExportador"></param>
         /// <param name="pCVID">Identificador del CV</param>
         /// <param name="lang">Lenguaje del CV</param>
         /// <param name="listaId">listado de identificadores</param>
@@ -71,7 +71,7 @@ namespace EditorCV.Models
         /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
-        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId,
+        static void AddPDFFile(string urlExportador, string pCVID, string lang, List<string> listaId,
             string idEntityAux, string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado)
         {
             try
@@ -89,7 +89,6 @@ namespace EditorCV.Models
                 //Petición al exportador para conseguir el archivo PDF
                 HttpClient client = new HttpClient();
                 client.Timeout = new TimeSpan(1, 15, 0);
-                string urlExportador = _Configuracion.GetUrlExportador();
                 HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
                 response.EnsureSuccessStatusCode();
                 byte[] result = response.Content.ReadAsByteArrayAsync().Result;
