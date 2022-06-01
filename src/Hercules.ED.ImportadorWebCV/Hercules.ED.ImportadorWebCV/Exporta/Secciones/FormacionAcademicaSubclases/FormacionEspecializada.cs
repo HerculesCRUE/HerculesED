@@ -83,7 +83,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
                 listadoPropiedades.Add("PrimerApellido",Variables.FormacionAcademica.formacionEspeResponsablePrimerApellido);
                 listadoPropiedades.Add("SegundoApellido",Variables.FormacionAcademica.formacionEspeResponsableSegundoApellido);
 
-                UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoPropiedades, "020.020.000.130", entity);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoPropiedades, "020.020.000.130", keyValue.Value);
 
                 listado.Add(itemBean);
             }

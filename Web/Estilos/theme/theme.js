@@ -105,11 +105,11 @@ var menusLateralesManagement = {
 
         $('#menuLateralUsuario').slideReveal({
             trigger: $("#menuLateralUsuarioTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'right',
             push: false,
+            autoEscape: false,
         });
     },
     montarMenuLateralMetabuscador: function () {
@@ -117,11 +117,11 @@ var menusLateralesManagement = {
 
         $('#menuLateralMetabuscador').slideReveal({
             trigger: $("#menuLateralMetabuscadorTrigger"),
-			autoEscape:false,
             width: 820,
             overlay: true,
             position: 'right',
             push: false,
+            autoEscape: false,
             show: function (slider, trigger) {
                 var width = 820
                 var windowWidth = $(window).width();
@@ -135,11 +135,11 @@ var menusLateralesManagement = {
 
         $('#menuLateral').slideReveal({
             trigger: $("#menuLateralTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
             push: false,
+            autoEscape: false,
         });
     },
     montarMenuLateralComunidad: function () {
@@ -149,11 +149,11 @@ var menusLateralesManagement = {
 
         $('#menuLateralComunidad').slideReveal({
             trigger: $("#menuLateralComunidadTrigger"),
-			autoEscape:false,
             width: 320,
             overlay: true,
             position: 'left',
             push: false,
+            autoEscape: false,
         });
     },
     comportamientoBotonCerrar: function () {

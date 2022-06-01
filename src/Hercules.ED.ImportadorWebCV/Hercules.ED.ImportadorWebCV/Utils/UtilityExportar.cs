@@ -622,20 +622,20 @@ namespace Utils
             familyNameBean.Code = code;
 
             familyNameBean.FirstFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
             familyNameBean.SecondFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
             if (!string.IsNullOrEmpty(familyNameBean.FirstFamilyName) && !string.IsNullOrEmpty(familyNameBean.SecondFamilyName))
             {
                 authorBean.CvnFamilyNameBean = familyNameBean;
             }
             authorBean.GivenName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
             authorBean.Signature = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
 
             if (!string.IsNullOrEmpty(authorBean.GivenName)
@@ -1592,19 +1592,15 @@ namespace Utils
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).Where(x => x.Count() == 1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
 
-                string anio = gnossDate.Substring(0, 4);
-                string mes = gnossDate.Substring(4, 2);
-                string dia = gnossDate.Substring(6, 2);
-                string hora = gnossDate.Substring(8, 2);
-                string minuto = gnossDate.Substring(10, 2);
-                string segundos = gnossDate.Substring(12, 2);
-                string fecha = anio + "-" + mes + "-" + dia + "T" + hora + ":" + minuto + ":" + segundos + "+01:00";
+                int anio = int.Parse(gnossDate.Substring(0, 4));
+                int mes = int.Parse(gnossDate.Substring(4, 2));
+                int dia = int.Parse(gnossDate.Substring(6, 2));
 
-                DateTime fechaDateTime = DateTime.Parse(fecha);
+                DateTime fechaDateTimeUtc = new DateTime(anio, mes, dia, 0, 0, 0, DateTimeKind.Utc);
                 itemBean.Items.Add(new CvnItemBeanCvnDateDayMonthYear()
                 {
                     Code = code,
-                    Value = fechaDateTime
+                    Value = fechaDateTimeUtc
                 });
             }
         }

@@ -176,6 +176,7 @@ var metricas = {
                             $(legend).append(topAxis);
                             console.log(legend);
 
+
                         }
 
                         // Si existe un eje inferior, se agrega con estilos.
@@ -207,12 +208,14 @@ var metricas = {
                             var axisHeight = myChart.boxes[2].height;
 
                             // Preparamos el eje superior.
+
                             $(legend).css("height", copyHeight + "px");
                             $(legend).css("width", copyWidth + "px");
 
                 
                             if (topAxis) {
                                 var topAxisCtx = topAxis[0].getContext('2d');
+
                                 topAxisCtx.scale(scale, scale); // Escala del zoom.
                                 topAxisCtx.canvas.width = copyWidth;
                                 topAxisCtx.canvas.height = axisHeight;

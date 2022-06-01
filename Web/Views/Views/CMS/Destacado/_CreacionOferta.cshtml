@@ -38,30 +38,53 @@
 			
 			<div id="wrapper-crear-oferta" class="edicionRecurso edicionoferta" tabindex="-1" data-eliminartext="@Html.Translate("ELIMINAR")" data-areastematicastext="@Html.Translate("AREAS_TEMATICAS")" data-descriptoresespecificostext="@Html.Translate("DESCRIPTORES_ESPECIFICOS")" data-comurl="@Comunidad.Url" data-comkey="@Comunidad.Key.ToString()" data-cshortname="@Comunidad.ShortName" data-urlrecurso="@Html.GetText("URLSEM", "RECURSO")" data-editaroferta="@Html.Translate("EDITAR_OFERTA")" data-addotherprofile="@Html.Translate("ANADIR_OTRO_PERFIL")" data-addnewprofile="@Html.Translate("ANADIR_UN_PERFIL")" data-imguser="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png">
 				<div class="formulario-edicion background-blanco">
-					<h1>@Model.Title</h1>
-				    <div class="d-flex flex-wrap mb-2">
-				        <div class="step-progress-wrap mb-5">
-				            <ul class="step-progress">
-				                <li class="step-progress__circle active" id="step1">
-				                    <a href="javascript: void(0);">
-				                        <span class="step-progress__text current">@Html.Translate("DEFINIR_OFERTA")</span>
-				                    </a>
-				                </li>
-				                <li class="step-progress__bar"></li>
-				                <li class="step-progress__circle" id="step2">
-				                    <a href="javascript: void(0);">
-				                        <span class="step-progress__text">@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</span>
-				                    </a>
-				                </li>
-				                <li class="step-progress__bar"></li>
-				                <li class="step-progress__circle" id="step3">
-				                    <a href="javascript: void(0);">
-				                        <span class="step-progress__text">@Html.Translate("RECOMENDACIONES_SELECCION_INVESTIGADORES")</span>
-				                    </a>
-				                </li>
-				            </ul>
-				        </div>
-				    </div>
+					<h1 class="mb-5">@Model.Title</h1>
+			    	<div class="botonera" id="botonera-steps">
+		                <a href="javascript:stepsOffer.goBack()" class="btn btn-outline-primary uppercase beforeStep" style="display:none">
+		                    <span class="material-icons">keyboard_arrow_left</span>
+		                    @Html.Translate("ANTERIOR")
+		                </a>
+		                <a href="javascript:stepsOffer.goNext()" class="btn btn-primary uppercase nextStep">
+		                    @Html.Translate("SIGUIENTE")
+		                    <span class="material-icons">keyboard_arrow_right</span>
+		                </a>
+		                <a href="javascript:stepsOffer.goEnd()" class="btn btn-primary uppercase endStep" style="display:none">
+		                    @Html.Translate("GUARDAR_TERMINAR")
+		                    <span class="material-icons">keyboard_arrow_right</span>
+		                </a>
+		            </div>
+			        <div class="step-progress-wrap d-inline-flex mb-5">
+			            <ul class="step-progress">
+			                <li class="step-progress__circle active" id="step1">
+			                    <a href="javascript: void(0);">
+			                        <span class="step-progress__text current">@Html.Translate("DATOS_INICIALES")</span>
+			                    </a>
+			                </li>
+			                <li class="step-progress__bar"></li>
+			                <li class="step-progress__circle" id="step2">
+			                    <a href="javascript: void(0);">
+			                        <span class="step-progress__text">@Html.Translate("INVESTIGADORES")</span>
+			                    </a>
+			                </li>
+			                <li class="step-progress__bar"></li>
+			                <li class="step-progress__circle" id="step3">
+			                    <a href="javascript: void(0);">
+			                        <span class="step-progress__text">@Html.Translate("ESTADO")</span>
+			                    </a>
+			                </li>
+			                <li class="step-progress__bar"></li>
+			                <li class="step-progress__circle" id="step4">
+			                    <a href="javascript: void(0);">
+			                        <span class="step-progress__text">@Html.Translate("DATOS_DESCRIPTIVOS")</span>
+			                    </a>
+			                </li><li class="step-progress__bar"></li>
+			                <li class="step-progress__circle" id="step5">
+			                    <a href="javascript: void(0);">
+			                        <span class="step-progress__text">@Html.Translate("EXPERIENCIA_DESTACABLE")</span>
+			                    </a>
+			                </li>
+			            </ul>
+			        </div>
 				    <div class="steps-content-wrap">
 				        <div class="p-3 mb-2 bg-danger text-white" id="error-modal-oferta" style="display:none">@Html.Translate("REVISE_ERRORES_CAMPOS_RELLENADOS")</div>
 				        <div class="p-3 mb-2 bg-danger text-white" id="error-modal-oferta-step2" style="display:none">@Html.Translate("REVISE_ERRORES_CAMPOS_ETIQUETAS_TAGS")</div>
@@ -81,6 +104,9 @@
 				                        <label class="control-label d-block">@Html.Translate("DESCRIPCION")</label>
 				                        <textarea id="txtDescripcion" placeholder="Introduce una descripción" name="txtdescripcion" class="cke form-control recursos" cols="20" rows="2"></textarea>
 				                    </div>
+
+
+
 				                    <!-- Areas temáticas -->
 				                    <div class="panel-body mb-5 edit-etiquetas pl-0">
 				                        <div class="form-group">
@@ -94,35 +120,52 @@
 				                            </a>
 				                        </div>
 				                    </div>
-				                    <!-- -->
+				                    <!-- Fin Areas temáticas -->
+
+				                    <!-- Investigadores del grupo -->
+				                    <div class="form-group mb-5">
+                                        <label class="control-label d-block">@Html.Translate("ANADIR_PERSONAL_INVESTIGADOR")</label>
+                                        <div class="acciones-listado acciones-listado-investigadores">
+										    <div class="wrap">
+										        <div class="usuario-wrap">@Html.Translate("INVESTIGADOR")</div>
+										        <div class="publicaciones-wrap d-none">@Html.Translate("PUBLICACIONES")</div>
+										    </div>
+										</div>
+										<div class="resource-list listView resource-list-investigadores list-con-checks">
+										    <div class="resource-list-wrap">
+										        <article class="resource">
+										            <div class="custom-control custom-checkbox">
+										                <input type="checkbox" class="custom-control-input" id="check_1">
+										                <label class="custom-control-label" for="check_1"></label>
+										            </div>
+										            <div class="wrap">
+										                <div class="usuario-wrap">
+										                    <div class="user-miniatura">
+										                        <div class="imagen-usuario-wrap">
+										                            <a href="./fichaPerfil.php">
+										                                <div class="imagen">
+										                                    <span style="background-image: url(theme/resources/imagenes-pre/foto-usuario-2.jpg)"></span>
+										                                </div>
+										                            </a>
+										                        </div>
+										                        <div class="nombre-usuario-wrap">
+										                            <a href="./fichaPerfil.php">
+										                                <p class="nombre">Nombre Apellido Investigador</p>
+										                                <p class="nombre-completo">Categoria profesional, Departamento interno / externo</p>
+										                            </a>
+										                        </div>
+										                    </div>
+										                </div>
+										                <div class="publicaciones-wrap">40</div>
+										            </div>
+										        </article>
+									        
+									    	</div>
+										</div>
+									</div>
+									<!-- Fin investigadores del grupo -->
+
 				                </fieldset>
-				                <fieldset class="d-none">
-				                    <div class="form-group mb-4 edit-areas-tematicas">
-				                        <label class="control-label d-block mb-3">@Html.Translate("CLASIFICACION_AREAS_TEMATICAS")</label>
-				                        <div class="custom-control themed little custom-radio">
-				                            <input type="radio" id="clasificacion-area-hercules" name="clasificacion-area" class="custom-control-input at-input" checked="">
-				                            <label class="custom-control-label" for="clasificacion-area-hercules">Hércules</label>
-				                        </div>
-				                        <div class="custom-control themed little custom-radio">
-				                            <input type="radio" id="clasificacion-area-horizon-europa" name="clasificacion-area" class="custom-control-input at-input">
-				                            <label class="custom-control-label" for="clasificacion-area-horizon-europa">Horizon Europa</label>
-				                        </div>
-				                        <div class="custom-control themed little custom-radio">
-				                            <input type="radio" id="clasificacion-area-ods" name="clasificacion-area" class="custom-control-input">
-				                            <label class="custom-control-label" for="clasificacion-area-ods">ODS</label>
-				                        </div>
-				                        <div class="custom-control themed little custom-radio">
-				                            <input type="radio" id="clasificacion-area-plan-espana" name="clasificacion-area" class="custom-control-input">
-				                            <label class="custom-control-label" for="clasificacion-area-plan-espana">Plan España Digital 2025</label>
-				                        </div>
-				                    </div>
-				                </fieldset>
-				                <div class="botonera">
-				                    <a class="btn btn-primary uppercase" href="javascript:stepsOffer.goStep(2)" follow="nofollow">
-				                        @Html.Translate("SIGUIENTE")
-				                        <span class="material-icons">keyboard_arrow_right</span>
-				                    </a>
-				                </div>
 				            </form>
 				        </div>
 				        <!-- END STEP 1 -->
@@ -294,13 +337,41 @@
 				                    <span class="material-icons">keyboard_arrow_left</span>
 				                    @Html.Translate("ANTERIOR")
 				                </a>
-				                <a href="javascript:stepsOffer.goStep(3)" class="btn btn-primary uppercase">
+				                <a href="javascript:stepsOffer.goStep(4)" class="btn btn-primary uppercase">
 				                    @Html.Translate("GUARDAR_TERMINAR")
 				                    <span class="material-icons">keyboard_arrow_right</span>
 				                </a>
 				            </div>
 				        </div>
 				        <!-- END STEP 3 -->
+				        <!-- START STEP 4 -->
+				        <div id="wrapper-crear-oferta-step4" class="fade section-steps">
+				            <div class="botonera">
+				                <a href="javascript:stepsOffer.goStep(3)" class="btn btn-outline-primary uppercase">
+				                    <span class="material-icons">keyboard_arrow_left</span>
+				                    @Html.Translate("ANTERIOR")
+				                </a>
+				                <a href="javascript:stepsOffer.goStep(5)" class="btn btn-primary uppercase">
+				                    @Html.Translate("GUARDAR_TERMINAR")
+				                    <span class="material-icons">keyboard_arrow_right</span>
+				                </a>
+				            </div>
+				        </div>
+				        <!-- END STEP 4 -->
+				        <!-- START STEP 5 -->
+				        <div id="wrapper-crear-oferta-step4" class="fade section-steps">
+				            <div class="botonera">
+				                <a href="javascript:stepsOffer.goStep(4)" class="btn btn-outline-primary uppercase">
+				                    <span class="material-icons">keyboard_arrow_left</span>
+				                    @Html.Translate("ANTERIOR")
+				                </a>
+				                <a href="javascript:stepsOffer.goStep(6)" class="btn btn-primary uppercase">
+				                    @Html.Translate("GUARDAR_TERMINAR")
+				                    <span class="material-icons">keyboard_arrow_right</span>
+				                </a>
+				            </div>
+				        </div>
+				        <!-- END STEP 5 -->
 				    </div>
 				</div>
 			</div>

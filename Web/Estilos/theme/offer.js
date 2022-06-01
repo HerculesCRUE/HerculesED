@@ -1,15 +1,17 @@
 const uriSaveOffer = "Offer/SaveOffer"
 const uriLoadOffer = "Offer/LoadOffer"
+const uriLoadUsersGroup = "Offer/LoadUsersGroup"
 
 var urlSOff ="";
 var urlSTAGSOffer = "";
-var urlLoadOffer ="";
+var urlLoadUsersGroup ="";
 
 $(document).ready(function () {
 	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
 	urlSOff = new URL(servicioExternoBaseUrl +  uriSaveOffer);
 	urlSTAGSOffer = new URL(servicioExternoBaseUrl +  uriSearchTags);
 	urlLoadOffer = new URL(servicioExternoBaseUrl +  uriLoadOffer);
+	urlLoadUsersGroup = new URL(servicioExternoBaseUrl +  uriLoadUsersGroup);
 });
 
 
@@ -34,6 +36,8 @@ class StepsOffer {
 		this.modalCrearOfertaStep1 = this.modalCrearOferta.find("#wrapper-crear-oferta-step1")
 		this.modalCrearOfertaStep2 = this.modalCrearOferta.find("#wrapper-crear-oferta-step2")
 		this.modalCrearOfertaStep3 = this.modalCrearOferta.find("#wrapper-crear-oferta-step3")
+		this.modalCrearOfertaStep4 = this.modalCrearOferta.find("#wrapper-crear-oferta-step4")
+		this.modalCrearOfertaStep5 = this.modalCrearOferta.find("#wrapper-crear-oferta-step5")
 		this.ofertaAccordionPerfil = this.modalCrearOferta.find("#accordion_oferta")
 		this.errorDiv = this.modalCrearOferta.find("#error-modal-oferta")
 		this.errorDivStep2 = this.modalCrearOferta.find("#error-modal-oferta-step2")
@@ -43,6 +47,16 @@ class StepsOffer {
 
 		this.stepContentWrap = this.modalCrearOferta.find(".steps-content-wrap")
 		this.stepsContent = this.stepContentWrap.find(".section-steps")
+
+		// Buttons
+		this.botoneraSteps = this.modalCrearOferta.find('#botonera-steps')
+		this.btnBefore = this.botoneraSteps.find('.beforeStep')
+		this.nextStep = this.botoneraSteps.find('.nextStep')
+		this.endStep = this.botoneraSteps.find('.endStep')
+
+		// Step 1
+		this.listInvestigadoresSTP1 = this.modalCrearOfertaStep1.find(".resource-list-investigadores > div")
+
 
 		// Añadir perfil
 		this.modalPerfil = this.body.find("#modal-anadir-perfil-oferta")
@@ -91,8 +105,11 @@ class StepsOffer {
 
 		// Fill taxonomies data
 		this.getDataTaxonomies().then((data) => {
-			_self.fillDataTaxonomies(data);
-			_self.dataTaxonomies = data['researcharea'];
+			_self.fillDataTaxonomies(data)
+			_self.dataTaxonomies = data['researcharea']
+
+			// Carga los usuarios del grupo al que perteneces 
+			_self.LoadUsersGroup()
 
 			// Check if we need load the oferta (after the taxonomies are loaded)
 			var currentUrl = new URL(window.location)
@@ -174,6 +191,72 @@ class StepsOffer {
 			});
 		})
 	}
+
+
+	LoadUsersGroup() {
+		var _self = this
+		MostrarUpdateProgress();
+		this.callLoadUsersGroup().then((res) => {
+			console.log("users", res)
+			let imgUser = this.modalCrearOferta.data('imguser')
+			let resHtml = ""
+			for (const [idperson, datospersona] of Object.entries(res)) {
+				resHtml += `
+					<article class="resource">
+			            <div class="custom-control custom-checkbox">
+			                <input type="checkbox" class="custom-control-input" id="check_1">
+			                <label class="custom-control-label" for="check_1"></label>
+			            </div>
+			            <div class="wrap">
+			                <div class="usuario-wrap">
+			                    <div class="user-miniatura">
+			                        <div class="imagen-usuario-wrap">
+			                            <a href="./fichaPerfil.php">
+			                                <div class="imagen">
+			                                    <span style=""background-image: url(${imgUser})"></span>
+			                                </div>
+			                            </a>
+			                        </div>
+			                        <div class="nombre-usuario-wrap">
+			                            <a href="#" target="_blank">
+			                                <p class="nombre">${datospersona.name}</p>
+			                                <p class="nombre-completo">${datospersona.tituloOrg	}, ${datospersona.hasPosition} ${datospersona.departamento}</p>
+			                            </a>
+			                        </div>
+			                    </div>
+			                </div>
+			                <div class="publicaciones-wrap d-none"></div>
+			            </div>
+			        </article>
+				`
+			}
+			_self.listInvestigadoresSTP1.html(resHtml)
+
+			OcultarUpdateProgress();
+		});
+	}
+
+	callLoadUsersGroup() {
+		MostrarUpdateProgress();
+		urlLoadUsersGroup.searchParams.set('pIdCurrentUser', this.userId);
+		return new Promise((resolve, reject) => {
+			
+			$.get(urlLoadUsersGroup.toString(), function (res) {
+				resolve(res);
+				OcultarUpdateProgress();
+			});
+		})
+	}
+
+	goNext() {
+		this.goStep(this.step + 1)
+	}
+
+	goBack() {
+		if (this.step > 1) {
+			this.goStep(this.step - 1)
+		}
+	}
 	
 	/**
 	 * Método que inicia las comprobaciones para pasar a la siguiente sección
@@ -181,28 +264,25 @@ class StepsOffer {
 	 */
 	async goStep(pos) {
 		var _self = this
-		if (pos > 0 && this.step > pos) {
+		if (pos > 0) {
 
 			this.errorDiv.hide()
 			this.errorDivStep2.hide()
 			this.errorDivStep2Equals.hide()
 			this.errorDivServer.hide()
-			this.setStep(pos)
-
-		} else if(pos > 0) {
 
 			let continueStep = true
 			switch (this.step) {
-				case 1:
+				case 2:
 				continueStep = this.checkContinue1()
 				break;
-				case 2:
+				case 3:
 				continueStep = this.checkContinue2()
 				if (continueStep) {
 					_self.startStep3()
 				}
 				break;
-				case 3:
+				case 4:
 				try {
 					continueStep = await this.saveInit()
 					if (continueStep) {
