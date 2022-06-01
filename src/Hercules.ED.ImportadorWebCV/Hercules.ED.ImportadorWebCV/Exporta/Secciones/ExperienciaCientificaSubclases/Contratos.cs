@@ -139,6 +139,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadRealizacionOtros),
                     "050.020.020.380", keyValue.Value);
 
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosPaisEntidadRealizacion),
+                    "050.020.020.060", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosCCAAEntidadRealizacion),
+                    "050.020.020.070", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosCiudadEntidadRealizacion),
+                    "050.020.020.090", keyValue.Value);
+
                 // Entidad Participante
                 UtilityExportar.AddCvnItemBeanCvnEntityBeanList(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosEntidadParticipanteNombre),
                     "050.020.020.320", keyValue.Value);
@@ -152,7 +159,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 listadoPropiedadesAutor.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosIPSegundoApellido));
                 UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoPropiedadesAutor, "050.020.020.250", keyValue.Value);
 
-                // Entidad Financiera
+                // Entidad Financiadora
                 List<Tuple<string, string, string>> dicCodigos = new List<Tuple<string, string, string>>();
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "050.020.020.120",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadoraNombre)));
