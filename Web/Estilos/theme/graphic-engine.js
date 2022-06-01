@@ -2,6 +2,10 @@ $(document).ready(function () {
     metricas.init();
 });
 
+// Año máximo y mínimo para las facetas de años
+var minYear = 10000;
+var maxYear = 0;
+
 var metricas = {
     init: function () {
         this.createEmptyPage('123');
@@ -277,13 +281,10 @@ var metricas = {
         arg.pIdFaceta = pIdFaceta;
         arg.pFiltroFacetas = pFiltroFacetas;
         arg.pLang = lang;
-
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
 
             var numItemsPintados = 0;
-            var min = 10000;
-            var max = 0;
             if (data.isDate) {
                 $('div[idfaceta="' + data.id + '"]').append(`
                 <span class="faceta-title">${data.nombre}</span>
@@ -292,19 +293,19 @@ var metricas = {
                 <div id="gmd_ci_daterange" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
                     <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
-                    <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
-                <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div></div>
+                    <span tabindex="1" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
+                    </div>
                 <div class="d-flex" id="inputs_rango"></div>
                     <a name="gmd_ci:date" class="searchButton">Aplicar</a>
                     <ul class="no-list-style">
                     <li>
-                        <a href="javascript: void(0);">Últimos cinco años</a>
+                        <a href="javascript: void(0);" id="fiveyears">Últimos cinco años</a>
                     </li>
                     <li>
-                        <a href="javascript: void(0);">Último año</a>
+                        <a href="javascript: void(0);" id="lastyear">Último año</a>
                     </li>
                     <li>
-                        <a href="javascript: void(0);">Todos</a>
+                        <a href="javascript: void(0);" id="allyears">Todos</a>
                     </li>
                     </ul>
                 </div>
@@ -333,8 +334,8 @@ var metricas = {
                     }
                 }
                 if (data.isDate) {
-                    min = Math.min(min, item.nombre);
-                    max = Math.max(max, item.nombre);
+                    minYear = Math.min(minYear, item.nombre);
+                    maxYear = Math.max(maxYear, item.nombre);
                 } else {
                     $('div[idfaceta="' + data.id + '"] .listadoFacetas').append(`
                         <li>
@@ -353,8 +354,8 @@ var metricas = {
             });
             if (data.isDate) {
                 $('div[idfaceta="' + data.id + '"] #inputs_rango').append(`
-                    <input title="Año" type="number" min="${min}" max="${max}" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="${min}" name="gmd_ci_datef1" id="gmd_ci_datef1" onchange="actualizarValoresSlider(this,0)">
-                    <input title="Año" type="number" min="${min}" max="${max}" autocomplete="off" class="filtroFacetaFecha hasDatepicker" placeholder="${max}" name="gmd_ci_datef2" id="gmd_ci_datef2" onchange="actualizarValoresSlider(this,1)">
+                    <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker minVal" placeholder="${minYear}" value="${minYear}" name="gmd_ci_datef1" id="gmd_ci_datef1">
+                    <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker maxVal" placeholder="${maxYear}" value="${maxYear}" name="gmd_ci_datef2" id="gmd_ci_datef2">
                 `)
             }
 
@@ -366,6 +367,12 @@ var metricas = {
         $('.containerPage').addClass('pageMetrics');
         $('#panFacetas').attr('idfaceta', 'page_' + pIdPagina);
         $('#panFacetas').addClass('containerFacetas');
+
+        $('main').append(`
+        <div class="modal-backdrop fade">
+            <canvas></canvas>
+        </div>"
+        `);
 
         /*$('#containerMetrics').append(`
             <div id="page_${pIdPagina}" class="pageMetrics">
@@ -380,22 +387,27 @@ var metricas = {
         var that = this;
 
         // Crear estructura para el apartado de gráficas.
+        var tmp = [];
+        var id = 0;
+        var gruposDeIDs = [];
+        while (pPageData.listaGraficas.length > 0) {
+            tmp = [];
+            var grafica = pPageData.listaGraficas.shift();
+            tmp.push(grafica);
+            id = grafica.idGrupo;
+            if (!id) { // si la id es nula la mete en un grupo nuevo
+                tmp.push(grafica);
+            } else {
+                pPageData.listaGraficas.forEach(function (grafica, index, array) {
+                    tmp.push(grafica);
+                    pPageData.listaGraficas.splice(index, 1);
 
-        var rowNumber = 0;
-        var espacio = 12;
-
-        pPageData.listaConfigGraficas.forEach(function (item, index, array) {
-            /*if (espacio - item.anchura < 0 || index == 0) {
-                rowNumber++;
-                $('#page_' + pPageData.id + ' .containerGraficas').append(`
-                        <div class="row" id="row_${rowNumber}"></div>
-                    `);
-                espacio = 12;
+                });
             }
-            $('#row_' + rowNumber).append(`
-                            <div class='grafica col-xl-${item.anchura}' idgrafica='${item.id}'></div>
-                    `);
-            espacio = espacio - item.anchura;*/
+            gruposDeIDs.push(tmp);
+        }
+        gruposDeIDs.forEach(function (item, index, array) {
+
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item.anchura}"> 
                     <div class="wrap">
@@ -414,9 +426,22 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
+                                ${item.length != 1 ? `<div class="toggleChart">
+                                    <a href="javascript: void(0);" style="height:24px" >
+                                        <span class="material-icons">sync_alt</span>
+                                    </a>
+                                </div>`: ""}
                             </div>
-                        </div>                      
-                        <div class="grafica " idgrafica='${item.id}'>
+                        </div>     
+                        ${() => {
+                    var tmp = '';
+                    item.forEach(function (grafica, index, array) {
+                        tmp += `<div style="display:${index == 0 ? "block" : "none"}" class="${index == 0 ? "show" : "hide"} grafica-item" idgrafica='${grafica.id}'></div>`;
+                    });
+                    return tmp;
+
+                }
+                }
                         </div>
                 </article>
 
@@ -442,7 +467,7 @@ var metricas = {
         $('#page_' + pIdPagina + ' .box').empty();
 
         // Recorremos el div de las gráficas.
-        $('#page_' + pIdPagina + ' .grafica').each(function () {
+        $('#page_' + pIdPagina + ' .grafica').each(function () { //TODO modificar loop para añadir toggle
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
@@ -468,7 +493,6 @@ var metricas = {
                     </div>
                 </div>
                 `);
-
                 /*
                 <div class="chartWrapper" style="position:relative;">
                     <div style="overflow-y: scroll;height:546px;">
@@ -505,7 +529,7 @@ var metricas = {
         for (let i = 0; i < filtrosArray.length; i++) {
             let filtro = filtrosArray[i];
             let nombre;
-            if (filtro === "" || !filtro ) {
+            if (filtro === "" || !filtro) {
                 continue;
             }
             if (filtro.split('=')[1].includes('@')) {
@@ -527,6 +551,28 @@ var metricas = {
     },
     engancharComportamientos: function () {
         var that = this;
+
+        $(".faceta-date-range .ui-slider").slider({
+            range: true,
+            min: minYear,
+            max: maxYear,
+            values: [minYear, maxYear],
+            slide: function (event, ui) {
+                $("#gmd_ci_datef1").val(ui.values[0]);
+                $("#gmd_ci_datef2").val(ui.values[1]);
+            }
+        });
+
+        $(".faceta-date-range").find("input.filtroFacetaFecha").on("input", function (event, ui) {
+            var valores = $(".faceta-date-range .ui-slider").slider( "option", "values" );
+            
+            if ($(this).attr("id") === "gmd_ci_datef1") {
+                valores[0] = this.value;
+            } else {
+                valores[1] = this.value;
+            }
+            $(".faceta-date-range .ui-slider").slider("values", valores);
+        });
 
         $('.containerFacetas a.filtroMetrica')
             .unbind()
@@ -617,7 +663,127 @@ var metricas = {
                 history.pushState('', 'New URL: ', '?');
                 e.preventDefault();
                 that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
-        });
+            });
+
+        $('#fiveyears')
+            .unbind()
+            .click(function (e) {
+                var min, max;
+                // Cojo el valor del input y si no tiene le pongo el placeholder
+                min = $("#gmd_ci_datef2").attr("placeholder") - 5;
+                max = $("#gmd_ci_datef2").attr("placeholder");
+                var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        filtros += filtrosArray[i] + '&';
+                    }
+                }
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
+                filtros += filtroActual;
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+            });
+
+        $('#lastyear')
+            .unbind()
+            .click(function (e) {
+                var min, max;
+                // Cojo el valor del input y si no tiene le pongo el placeholder
+                min = $("#gmd_ci_datef2").attr("placeholder");
+                max = $("#gmd_ci_datef2").attr("placeholder");
+                var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        filtros += filtrosArray[i] + '&';
+                    }
+                }
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
+                filtros += filtroActual;
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+            });
+
+        $('#allyears')
+            .unbind()
+            .click(function (e) {
+                var min, max;
+                // Cojo el valor del input y si no tiene le pongo el placeholder
+                min = $("#gmd_ci_datef1").attr("placeholder");
+                max = $("#gmd_ci_datef2").attr("placeholder");
+                var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        filtros += filtrosArray[i] + '&';
+                    }
+                }
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
+                filtros += filtroActual;
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+            });
+
+        $('.faceta-date-range a.searchButton')
+            .unbind()
+            .click(function (e) {
+                var min, max;
+                // Cojo el valor del input y si no tiene le pongo el placeholder
+                $("#gmd_ci_datef1").val() === '' ? min = $("#gmd_ci_datef1").attr("placeholder") : min = $("#gmd_ci_datef1").val();
+                $("#gmd_ci_datef2").val() === '' ? max = $("#gmd_ci_datef2").attr("placeholder") : max = $("#gmd_ci_datef2").val();
+                var filtro = $(this).parent().parent().attr('idfaceta');
+                var filtroActual = `${filtro}=${min}-${max}`;
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        filtros += filtrosArray[i] + '&';
+                    }
+                }
+                // Borrar filtros año anteriores
+                var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
+                if (filtros.includes(filtro)) {
+                    filtros = filtros.replace(reg, "");
+                }
+                filtros += filtroActual;
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+            });
 
         $('#zoomIn')
             .unbind()
@@ -688,6 +854,34 @@ var metricas = {
                 a.href = image;
                 a.download = Date.now() + '.jpg';
                 a.click();
+            });
+        $('div.zoom')
+            .unbind()
+            .click(function (e) {
+                var backdrop = $(document).find('div.modal-backdrop');
+                backdrop.addClass('show');
+
+                var canvas = backdrop.children[0];
+                var cloneChart = new Chart(canvas, {
+                    type: chart.config.type,
+                    data: chart.data,
+                    options: chart.config.options
+                })
+            });
+
+        $('div.toggleChart')
+            .unbind()
+            .click(function (e) {
+                var article = $(this).parent("article");
+                if ($(this).style(backgroundColor,'#D3D3D3')){
+                $(this).css("backgroundColor","#FFF");
+            }else{
+                $(this).css("backgroundColor","#FFF");
+            }
+            article.children("div.show").css("display", "none");
+            article.children("div.hide").css("display", "block");
+            article.children("div.show").removeClass("show").addClass("hide");
+            article.children("div.hide").removeClass("hide").addClass("show");
             });
     }
 }

@@ -25,6 +25,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public Dictionary<string, string> nombre { get; set; }
         public EnumGraficas tipo { get; set; }
         public int anchura { get; set; }
+        public string idGrupo { get; set; }
         public Config config { get; set; }
     }
 

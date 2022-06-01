@@ -57,7 +57,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 ConfigPagina configPagina = new ConfigPagina()
                 {
                     id = itemGrafica.identificador,
-                    anchura = itemGrafica.anchura
+                    anchura = itemGrafica.anchura,
+                    idGrupo = itemGrafica.idGrupo
                 };
 
                 string prefijoNodos = "nodes";
