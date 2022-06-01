@@ -1144,11 +1144,11 @@ namespace Utils
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
             cvnDouble.Code = code;
-            if (value.Contains("."))
+            if (value.Contains(","))
             {
-                value = value.Replace(".", ",");
+                value = value.Replace(",", ".");
             }
-            cvnDouble.Value = Convert.ToDecimal(value);
+            cvnDouble.Value = value;
 
             itemBean.Items.Add(cvnDouble);
         }
