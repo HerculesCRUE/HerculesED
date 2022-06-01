@@ -33,7 +33,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item1)).ToList();
                 if (listadoIdentificadores.Count == 0)
                 {
                     return;
