@@ -39,9 +39,10 @@ namespace EditorCV.Controllers
         {
             try
             {
-                List<string> listadoId = new List<string>();
+                List<string> listadoId = null;
                 if (listaId != null)
                 {
+                    listadoId = new List<string>();
                     listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
                 }
 
