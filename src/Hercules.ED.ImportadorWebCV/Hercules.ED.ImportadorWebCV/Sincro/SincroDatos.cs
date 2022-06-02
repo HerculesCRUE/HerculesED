@@ -73,6 +73,8 @@ namespace ImportadorWebCV.Sincro
             fileStream.Read(bytes, 0, (int)pInput.Length);
 
             Cvn2RootBeanClient cvnRootBeanClient = new Cvn2RootBeanClient();
+            cvnRootBeanClient.Endpoint.Binding.ReceiveTimeout = new System.TimeSpan(0, 15, 0);
+            cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new System.TimeSpan(0, 15, 0);
             var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
             Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
 
