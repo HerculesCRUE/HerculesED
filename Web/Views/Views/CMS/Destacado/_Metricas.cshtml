@@ -9,12 +9,12 @@
 @model CMSComponentHot
 @{ CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
-	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
+    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
     Html.GetListaJS().Add(urlJS);
 }
 
 
-
+<ul class="listadoMenuPaginas"></ul>
 <div class="row containerPage">
     <div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
         <div class="wrapCol">
@@ -24,8 +24,8 @@
                     <span class="material-icons">close</span>
                 </a>
             </div>
-            <div id="panFacetas" class="facetas-wrap custom-css-scroll">    
-            </div>                        
+            <div id="panFacetas" class="facetas-wrap custom-css-scroll">
+            </div>
         </div>
     </div>
     <div class="col col-12 col-xl-9 col-contenido derecha">
@@ -45,20 +45,15 @@
                             </div>
                         </div>
                     </fieldset>
-                </form>                            
+                </form>
             </div>
-
             <div class="etiquetas" id="panFiltros">
-                <ul class="facetedSearch tags" id="panListadoFiltros">
-                </ul>
-            </div>                 
-                       
-            <div class="resource-list graphView">
-                <div class="resource-list-wrap">                    
+                <ul class="facetedSearch tags" id="panListadoFiltros"></ul>
+            </div>
+            <div class="resource-list graphView ">
+                <div class="resource-list-wrap">
                 </div>
-            </div>                        
+            </div>
         </div>
     </div>
 </div>
-
-<div id="containerMetrics"></div>
