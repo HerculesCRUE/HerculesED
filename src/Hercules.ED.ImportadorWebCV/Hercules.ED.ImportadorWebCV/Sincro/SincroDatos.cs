@@ -74,7 +74,6 @@ namespace ImportadorWebCV.Sincro
             fileStream.Read(bytes, 0, (int)pInput.Length);
 
             Cvn2RootBeanClient cvnRootBeanClient = new Cvn2RootBeanClient();
-
             //Aumento el tiempo de espera a 1 hora como máximo
             cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new TimeSpan(1, 0, 0);
             cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(1, 0, 0);

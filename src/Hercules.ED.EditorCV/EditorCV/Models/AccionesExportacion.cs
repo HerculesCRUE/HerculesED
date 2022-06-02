@@ -80,16 +80,27 @@ namespace EditorCV.Models
                 List<KeyValuePair<string, string>> parametros = new List<KeyValuePair<string, string>>();
                 parametros.Add(new KeyValuePair<string, string>("pCVID", pCVID));
                 parametros.Add(new KeyValuePair<string, string>("lang", lang));
-                foreach (string id in listaId)
+
+                string urlExportador = "";
+                if (listaId == null)
                 {
-                    parametros.Add(new KeyValuePair<string, string>("listaId", id));
+                    urlExportador = _Configuracion.GetUrlExportador()+"/Exportar";
+                    foreach (string id in listaId)
+                    {
+                        parametros.Add(new KeyValuePair<string, string>("listaId", id));
+                    }
                 }
+                else
+                {
+                    urlExportador = _Configuracion.GetUrlExportador()+"/ExportarLimitado";
+                }
+                
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
 
                 //Petición al exportador para conseguir el archivo PDF
                 HttpClient client = new HttpClient();
                 client.Timeout = new TimeSpan(1, 15, 0);
-                string urlExportador = _Configuracion.GetUrlExportador();
+                
                 HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
                 response.EnsureSuccessStatusCode();
                 byte[] result = response.Content.ReadAsByteArrayAsync().Result;

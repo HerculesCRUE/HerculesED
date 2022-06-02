@@ -77,6 +77,7 @@ namespace ImportadorWebCV.Exporta
             ConocimientoIdiomas conocimientoIdiomas = new ConocimientoIdiomas(cvn, cvID);
             conocimientoIdiomas.ExportaConocimientoIdiomas(MultilangProp, listaId);
         }
+
         public void ExportaActividadDocente(Entity entity, [Optional] List<string> listaId)
         {
             DireccionTesis direccionTesis = new DireccionTesis(cvn, cvID);
