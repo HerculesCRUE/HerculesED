@@ -23,7 +23,7 @@ var exportacionCV = {
 					//Exportacion completa
 					var data = {};
 					data.userID= that.idUsuario;
-					data.lang= lang;
+					data.lang= $('#ddlIdioma').val();
 					data.nombreCV= $('#exportCvName').val();
 					
 					$.post(urlExportacionCV + 'GetCV', data, function(data) {
@@ -57,7 +57,7 @@ var exportacionCV = {
 			
 			var data = {};
 			data.userID= that.idUsuario;
-			data.lang= lang;
+			data.lang= $('#ddlIdioma').val();
 			data.listaId= listaId;
 			data.nombreCV= $('#exportCvName').val();
 			
@@ -94,7 +94,7 @@ var exportacionCV = {
 															<div class="label">Estado</div>
 															<ul>
 																<li class="entity">
-																	${data[i].estado}
+																	${GetText("CV_EXPORTAR_"+data[i].estado.toUpperCase())}
 																</li>
 															</ul>
 														</div>
