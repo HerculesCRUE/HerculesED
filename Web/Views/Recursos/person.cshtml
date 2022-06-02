@@ -267,14 +267,14 @@
                 </div>
             }
 
-            @if (!string.IsNullOrEmpty(pPerson.Roh_ORCID) && !string.IsNullOrEmpty(pPerson.GNOSSID)) 
+            @if (!string.IsNullOrEmpty(pPerson.Roh_ORCID) && !string.IsNullOrEmpty(pPerson.GNOSSID))
             {
                 <div class="list-wrap tags">
                     <div class="bloque">
                         <div class="label">ORCID</div>
-                        
+
                         <a href="https://orcid.org/@pPerson.Roh_ORCID" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_ORCID))" class="nombre">@pPerson.Roh_ORCID</a>
-                            
+
                     </div>
                 </div>
             }
@@ -286,7 +286,7 @@
                         <div class="label">@Html.Translate("PAGINA_WEB")</div>
 
                         <ul>
-                            
+
                             @foreach (var item in pPerson.Foaf_homepage)
                             {
                                 <li>
@@ -297,7 +297,7 @@
                     </div>
                 </div>
             }
-            
+
             @if ((pPerson.Vcard_email != null && pPerson.Vcard_email.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID)) || (pPerson.Vcard_hasTelephone != null && pPerson.Vcard_hasTelephone.Count > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID)) || (!string.IsNullOrEmpty(pPerson.Vcard_address) && !string.IsNullOrEmpty(pPerson.GNOSSID)))
             {
                 <hr />
@@ -331,7 +331,7 @@
                                 <div class="list-wrap bloque">
                                     <div class="label">@Html.Translate("TELEFONO")</div>
                                     <ul>
-                                        
+
                                         @foreach (var item in pPerson.Vcard_hasTelephone)
                                         {
                                             <li>
@@ -471,9 +471,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
-                                <div class="wrapCol">                                    
+                                <div class="wrapCol">
                                     <p>@Html.Translate("LISTADO_PUBLICACIONES")</p>
                                 </div>
                             </div>
@@ -527,9 +527,9 @@
                                 <div class="wrapCol">
                                     <p></p>
                                 </div>
-                            </div>                        
+                            </div>
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
-                                <div class="wrapCol">                                    
+                                <div class="wrapCol">
                                     <p>@Html.Translate("LISTADO_RESEARCHOBJECTS")</p>
                                 </div>
                             </div>
@@ -542,7 +542,8 @@
                                 <div class="wrapCol">
                                     <div class="chart-wrap">
                                         <div class="acciones-grafico">
-                                            <div class="periodo dropdown dropdown-select">
+                                            <div class="periodo dropdown dropdown-select"></div>
+                                            <div class="dropdown dropdown-select">
                                                 <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownPeriodo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     @Html.Translate("PERIODO_TEMPORAL"):
                                                     <span class="texto">@Html.Translate("TODOS")</span>
@@ -684,7 +685,7 @@
                                                     </div>
                                                 </div> -->
                                             </div>
-                                            
+
                                             <div class="vista-red dropdown dropdown-select show">
                                                 <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                     @Html.Translate("RELACIONES"):
@@ -714,7 +715,7 @@
                                                 </div>
                                             </div>
 
-                                            
+
                                             <div class="vista-red dropdown dropdown-select show">
                                                 <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                     @Html.Translate("RELACIONES_MIEMBROS"):
@@ -746,13 +747,13 @@
                                                         <div class="graph-controls">
                                                             <div class="graph-controls-menu">
                                                                 <ul class="no-list-style d-flex align-items-center mb-2">
-                                                                    <li class="control remove-control" id="removeNodesAreas">
+                                                                    <li class="control remove-control" id="removeNodesCollaborators">
                                                                         <span class="material-icons">remove</span>
                                                                     </li>
                                                                     <li class="control text-control">
-                                                                        <span id="numNodosArea">10</span>&nbsp;nodos
+                                                                        <span id="numNodosCollaborators">10</span>&nbsp;@Html.Translate("NODOS")
                                                                     </li>
-                                                                    <li class="control add-control" id="addNodesAreas">
+                                                                    <li class="control add-control" id="addNodesCollaborators">
                                                                         <span class="material-icons">add</span>
                                                                     </li>
                                                                 </ul>
@@ -769,6 +770,7 @@
                                                                 </ul>
                                                             </div>
                                                         </div>
+
                                                         <input type="hidden" id="numColaboradores" value="10" />
                                                         <div class="wrapCol" id="colaboratorsgraph" style="width: 100%; height: 500px;"></div>
                                                     </div>
@@ -1035,7 +1037,7 @@
 
             $('#publicaciones-tab').unbind().click(function (e) {
                 e.preventDefault();
-                that.tabActive = "publicaciones";				
+                that.tabActive = "publicaciones";
 				buscadorPersonalizado.orders=[];
 				buscadorPersonalizado.orders[0]={"name":"@Html.Translate("FECHA_DESCENDENTE")","orderby":"dct:issued|desc"};
 				buscadorPersonalizado.orders[1]={"name":"@Html.Translate("FECHA_ASCENDENTE")","orderby":"dct:issued|asc"};
@@ -1048,7 +1050,7 @@
 				buscadorPersonalizado.orders=[];
 				buscadorPersonalizado.orders[0]={"name":"@Html.Translate("FECHA_INICIO_DESCENDENTE")","orderby":"vivo:start|desc"};
 				buscadorPersonalizado.orders[1]={"name":"@Html.Translate("FECHA_INICIO_ASCENDENTE")","orderby":"vivo:start|asc"};
-				buscadorPersonalizado.orders[2]={"name":"@Html.Translate("FECHA_FIN_DESCENDENTE")","orderby":"vivo:end|desc"};				
+				buscadorPersonalizado.orders[2]={"name":"@Html.Translate("FECHA_FIN_DESCENDENTE")","orderby":"vivo:end|desc"};
 				buscadorPersonalizado.orders[2]={"name":"@Html.Translate("FECHA_FIN_ASCENDENTE")","orderby":"vivo:end|asc"};
                 buscadorPersonalizado.init("Proyectos", "#contenedorBuscadorProyectos", "searchProyectosPublicosPerson=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=project", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
@@ -1082,7 +1084,7 @@
     // Acciones a llevar a cabo en el filtrado.
     function accionFiltrado() {
         console.log("ejectuado: ", comportamientoPaginaInvestigador.tabActive);
-		var hash2=ObtenerHash2();		
+		var hash2=ObtenerHash2();
 		var filtrosArray = hash2.split('&');
 
 		hash2='';
@@ -1091,8 +1093,8 @@
 			{
 				hash2+=filtrosArray[i] + '&';
 			}
-		}				
-		
+		}
+
         var parametros = hash2 + "&" + buscadorPersonalizado.filtro;
         if (comportamientoPaginaInvestigador.tabActive == "publicaciones") {
             CargarGraficaPublicaciones(parametros,'publicaciongraph');
@@ -1113,11 +1115,11 @@
 
         if (pOrganization != null && !string.IsNullOrEmpty(pOrganization.Roh_title) && !string.IsNullOrEmpty(pOrganization.GNOSSID))
         {
-            <li about="@pOrganization.GNOSSID" property="@pOrganization.GetPropertyURI(nameof(pOrganization.Roh_title))">@pOrganization.Roh_title</li>
+    < li about = "@pOrganization.GNOSSID" property = "@pOrganization.GetPropertyURI(nameof(pOrganization.Roh_title))" > @pOrganization.Roh_title </ li >
         }
         else
         {
-            <li>Organización Externa</li>
+    < li > Organización Externa </ li >
         }
     }
 }
@@ -1728,13 +1730,13 @@
         public List<CategoryPath> Vivo_hasResearchArea { get; set; }
 
         [RDFProperty("http://w3id.org/roh/publicPublicationsNumber")]
-		public  int? Roh_publicPublicationsNumber { get; set;}
+        public int? Roh_publicPublicationsNumber { get; set; }
 
         [RDFProperty("http://w3id.org/roh/publicProjectsNumber")]
-		public  int? Roh_publicProjectsNumber { get; set;}
+        public int? Roh_publicProjectsNumber { get; set; }
 
         [RDFProperty("http://w3id.org/roh/publicCollaboratorsNumber")]
-		public  int? Roh_publicCollaboratorsNumber { get; set;}
+        public int? Roh_publicCollaboratorsNumber { get; set; }
 
         [LABEL(LanguageEnum.es, "http://w3id.org/roh/h-index")]
         [RDFProperty("http://w3id.org/roh/h-index")]
