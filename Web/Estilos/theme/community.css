@@ -384,6 +384,7 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar input { width: 480px; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar .tag-list { margin-bottom: 0 !important; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary { padding: 0; border-radius: 0; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar .btn-outline-primary { padding: 0 20px; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .btn-wrap { display: flex; align-items: center; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .btn-wrap .btn-text { padding: 11px 16px; border-right: 1px solid; font-size: 15px; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .material-icons { font-size: 30px; padding: 4px; }
@@ -829,10 +830,10 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .resource-list .resource.plegado .middle-wrap { margin-bottom: 0; }
 .resource-list .resource.plegado .middle-wrap .title-wrap { }
 .resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap { }
-.resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap > *:not(h3, .authors) { display: none; }
-.resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap h3 { margin-right: 5px; margin-bottom: 0; }
+.resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap h3 { margin-right: 5px; }
 .resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap .title { display: none; }
 .resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap .list-wrap { margin-bottom: 0 !important; }
+.resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap .list-wrap .label { display: none; }
 .resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap .group { margin-bottom: 0; }
 
 .resource-list .resource.actualizar { background-color: rgba(239, 108, 0, .2); padding: 0; }
@@ -1176,6 +1177,8 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .row.community-row .page-name-wrapper { display: none; }
 
 .scrolling .row.community-row { position: fixed; top: inherit; left: 0; z-index: 10; width: 100%; margin: 0; background-color: var(--c-blanco); }
+
+body:not(.listado) header .row.community-row { display: none; }
 /* */
 
 
@@ -1429,7 +1432,7 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 
 /* USUARIO */
 .page-alertas .menuLateral.usuario.clonado,
-.page-ros .menuLateral.usuario.clonado,
+.page-management .menuLateral.usuario.clonado,
 .importar-cvn .menuLateral.usuario.clonado { display: block; width: 100%; max-width: 100%; background-color: var(--c-blanco); border: 1px solid var(--c-gris-borde); }
 
 .menuLateral.usuario .menuUsuario .group-collapse ul li a .numResultados { font-weight: 500; }
@@ -1873,16 +1876,20 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 /**/
 
 
-/* PAGE ROS */
-.page-ros .col-contenido .header-contenido { margin-bottom: 0; padding-bottom: 12px; }
-.page-ros .col-contenido .header-contenido .h1-container h1 { font-size: 1.266rem; font-weight: 500; }
-.page-ros .col-contenido .wrapCol > p { font-size: 1.066rem; line-height: 20px; color: var(--c-texto-medio); }
+/* PAGE MANAGEMENT */
+.page-management .col-contenido .header-contenido { margin-bottom: 0; padding-bottom: 12px; }
+.page-management .col-contenido .header-contenido .h1-container h1 { font-size: 1.266rem; font-weight: 500; }
+.page-management .col-contenido .wrapCol > p { font-size: 1.066rem; line-height: 20px; color: var(--c-texto-medio); }
 
-.page-ros .page-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--c-gris-borde); margin-left: 40px; position: relative; }
-.page-ros .page-section h2 { font-size: 1.066rem; }
-.page-ros .page-section > p { font-size: 1.066rem; font-weight: 300; color: var(--c-texto-medio); margin-bottom: 12px; }
-.page-ros .page-section > .material-icons { position: absolute; left: -40px; top: 0; }
-.page-ros .page-section a { display: flex; align-items: center; }
+.page-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--c-gris-borde); margin-left: 40px; }
+.page-section .page-section-title { display: flex; align-items: center; height: 24px; margin-bottom: 10px; position: relative; }
+.page-section .page-section-title h2 { font-size: 1.066rem; margin-bottom: 0; }
+.page-section > p { font-size: 1.066rem; font-weight: 300; color: var(--c-texto-medio); margin-bottom: 12px; }
+.page-section .page-section-title .material-icons { position: absolute; left: -40px; top: 0; }
+.page-section a { display: flex; align-items: center; }
+
+.page-management .resource-list .resource .middle-wrap .title-wrap .resource-title:before { color: var(--c-texto-claro); }
+.page-management .resource-list .resource.plegado .middle-wrap .content-wrap .description-wrap { display: flex; }
 /**/
 
 
@@ -1949,3 +1956,16 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
     .span12, .span13, .span14, .span16, .span23, .span34, .span38, .span58 { flex: 0 0 100%; max-width: 100%; }
 }
 /**/
+
+.edicionRecurso .custom-control.custom-checkbox-resource { padding-left: 0; }
+.edicionRecurso .custom-control.custom-checkbox-resource .material-icons { color: var(--c-texto-claro); cursor: pointer; user-select: none; border: 1px solid; height: 20px; width: 20px; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+.edicionRecurso .custom-control.custom-checkbox-resource.done .material-icons { color: var(--c-primario); }
+
+.user-miniatura .imagen-usuario-wrap .imagen.sinImagen { border: 0; height: 30px; }
+
+.resource.seleccionado .user-miniatura .imagen-usuario-wrap .imagen.sinImagen span { color: var(--c-primario); }
+.resource.seleccionado .user-miniatura .imagen-usuario-wrap .imagen:not(.sinImagen) span { opacity: .7; }
+.resource-list .resource.seleccionado .middle-wrap .title-wrap .resource-title:before { color: var(--c-primario); }
+
+.edicionOfertaTecnologica .resource-list.listView:not(.list-con-checks) .resource .wrap { margin-left: 0; }
+.edicionOfertaTecnologica .resource-list.resource-list-proyectos .resource .wrap { margin-left: 35px !important; }
