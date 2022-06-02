@@ -55,7 +55,7 @@ namespace EditorCV.Models
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
 
-            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, listaId, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado));
+            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado, listaId));
             thread.Start();
         }
 
@@ -71,8 +71,8 @@ namespace EditorCV.Models
         /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
-        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId,
-            string idEntityAux, string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado)
+        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
+            string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado, List<string> listaId)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace EditorCV.Models
                 string urlExportador = "";
                 if (listaId == null)
                 {
-                    urlExportador = _Configuracion.GetUrlExportador()+"/Exportar";
+                    urlExportador = _Configuracion.GetUrlExportador() + "/Exportar";
                     foreach (string id in listaId)
                     {
                         parametros.Add(new KeyValuePair<string, string>("listaId", id));
@@ -92,15 +92,15 @@ namespace EditorCV.Models
                 }
                 else
                 {
-                    urlExportador = _Configuracion.GetUrlExportador()+"/ExportarLimitado";
+                    urlExportador = _Configuracion.GetUrlExportador() + "/ExportarLimitado";
                 }
-                
+
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
 
                 //Petición al exportador para conseguir el archivo PDF
                 HttpClient client = new HttpClient();
                 client.Timeout = new TimeSpan(1, 15, 0);
-                
+
                 HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
                 response.EnsureSuccessStatusCode();
                 byte[] result = response.Content.ReadAsByteArrayAsync().Result;
