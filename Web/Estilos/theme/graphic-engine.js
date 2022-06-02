@@ -85,6 +85,19 @@ var metricas = {
                 });
 
             } else {
+                // Plugin para color de fondo, le pongo el color blanco.
+                var plugin = {
+                    id: 'custom_canvas_background_color',
+                    beforeDraw: (chart) => {
+                        chart.ctx.save();
+                        chart.ctx.globalCompositeOperation = 'destination-over';
+                        chart.ctx.fillStyle = '#FFFFFF';
+                        chart.ctx.fillRect(0, 0, chart.width, chart.height);
+                        chart.ctx.restore();
+                    }
+                  };
+                data.plugins = [plugin];
+
                 var myChart = new Chart(ctx, data);
 
                 var numBars = data.data.labels.length; // Número de barras.
