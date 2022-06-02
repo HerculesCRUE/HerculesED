@@ -70,7 +70,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             client.Endpoint.Binding.CloseTimeout = new TimeSpan(1, 0, 0);
             client.Endpoint.Binding.SendTimeout = new TimeSpan(1, 0, 0);
 
-            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", "spa");
+            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", Utils.UtilityExportar.CvnLangCode(lang));
             var resp = peticion.Result.@return;
             client.Close();
 
