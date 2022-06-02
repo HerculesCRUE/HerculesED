@@ -50,8 +50,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 ProyectosIDI proyectosIDI = new ProyectosIDI();
                 proyectosIDI.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDINombre)?.values.FirstOrDefault();
-                proyectosIDI.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIFechaInicio)?.values.FirstOrDefault();
-                proyectosIDI.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadRealizacionNombre)?.values.FirstOrDefault();
                 proyectosIDI.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(proyectosIDI.ID, proyectosIDI);
             }
@@ -95,8 +93,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 Contratos contratos = new Contratos();
                 contratos.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosNombreProyecto)?.values.FirstOrDefault();
-                contratos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosFechaInicio)?.values.FirstOrDefault();
-                contratos.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosEntidadRealizacionNombre)?.values.FirstOrDefault();
                 contratos.ID = Guid.NewGuid().ToString();
                 entidadesXML.Add(contratos.ID, contratos);
             }

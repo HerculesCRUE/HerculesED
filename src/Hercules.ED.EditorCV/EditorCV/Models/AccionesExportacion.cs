@@ -55,7 +55,7 @@ namespace EditorCV.Models
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
 
-            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, listaId, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado));
+            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado, listaId));
             thread.Start();
         }
 
@@ -71,8 +71,8 @@ namespace EditorCV.Models
         /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
-        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, List<string> listaId,
-            string idEntityAux, string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado)
+        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
+            string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado, List<string> listaId)
         {
             try
             {
@@ -80,16 +80,28 @@ namespace EditorCV.Models
                 List<KeyValuePair<string, string>> parametros = new List<KeyValuePair<string, string>>();
                 parametros.Add(new KeyValuePair<string, string>("pCVID", pCVID));
                 parametros.Add(new KeyValuePair<string, string>("lang", lang));
-                foreach (string id in listaId)
+
+                string urlExportador = "";
+                if (listaId == null)
                 {
-                    parametros.Add(new KeyValuePair<string, string>("listaId", id));
+                    urlExportador = _Configuracion.GetUrlExportador() + "/Exportar";
+
                 }
+                else
+                {
+                    urlExportador = _Configuracion.GetUrlExportador() + "/ExportarLimitado";
+                    foreach (string id in listaId)
+                    {
+                        parametros.Add(new KeyValuePair<string, string>("listaId", id));
+                    }
+                }
+
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
 
                 //Petición al exportador para conseguir el archivo PDF
                 HttpClient client = new HttpClient();
                 client.Timeout = new TimeSpan(1, 15, 0);
-                string urlExportador = _Configuracion.GetUrlExportador();
+
                 HttpResponseMessage response = client.PostAsync($"{urlExportador}", formContent).Result;
                 response.EnsureSuccessStatusCode();
                 byte[] result = response.Content.ReadAsByteArrayAsync().Result;
@@ -126,7 +138,6 @@ namespace EditorCV.Models
                 };
                 mResourceApi.ModifyPropertiesLoadedResources(triplesModificar);
                 mResourceApi.Log.Error("Error: " + e.Message + ". Traza:" + e.StackTrace);
-                throw new Exception(e.Message);
             }
         }
 
@@ -142,10 +153,10 @@ namespace EditorCV.Models
             string where = $@"WHERE{{
     <{pCVId}> <http://w3id.org/roh/generatedPDFFile> ?pdfFile .
     ?pdfFile <http://w3id.org/roh/title> ?titulo.
-    OPTIONAL{{ ?pdfFile <http://purl.org/dc/terms/issued> ?fecha }}
-    OPTIONAL{{ ?pdfFile <http://w3id.org/roh/status> ?estado }}
+    ?pdfFile <http://purl.org/dc/terms/issued> ?fecha.
+    ?pdfFile <http://w3id.org/roh/status> ?estado.
     OPTIONAL{{ ?pdfFile <http://w3id.org/roh/filePDF> ?fichero }}
-}}group by ?pdfFile order by ?fecha";
+}}order by desc(xsd:long(?fecha))";
 
             SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
@@ -157,19 +168,19 @@ namespace EditorCV.Models
 
                 FilePDF file = new FilePDF();
                 file.titulo = fila["titulo"].value;
-                file.fecha = "";
-                file.estado = "";
                 file.fichero = "";
-                if (fila.ContainsKey("fecha"))
-                {
-                    file.fecha = fila["fecha"].value;
-                }
-                if (fila.ContainsKey("estado"))
-                {
-                    file.estado = fila["estado"].value;
-                }
+                file.fecha = fila["fecha"].value;
+                string dd = file.fecha.Substring(6, 2);
+                string mm = file.fecha.Substring(4, 2);
+                string yyyy = file.fecha.Substring(0, 4);
+                string HH = file.fecha.Substring(8, 2);
+                string MM = file.fecha.Substring(10, 2);
+                string SS = file.fecha.Substring(12, 2);
+                file.fecha = $"{dd}/{mm}/{yyyy} {HH}:{MM}:{SS}";
+                file.estado = fila["estado"].value;
                 if (fila.ContainsKey("fichero"))
                 {
+                    //TODO
                     string uri = "http://edma.gnoss.com/download-file?doc=" + mResourceApi.GetShortGuid(pCVId) + "&ext=.pdf&archivoAdjuntoSem="
                         + fila["fichero"].value.Split(".").First()
                         + "&ontologiaAdjuntoSem=88129721-ecf9-4ea3-afc6-db253f1cb480&ID=15ff250b-510d-4a08-b4a8-ac7526fbc53b&proy=b836078b-78a0-4939-b809-3f2ccf4e5c01&dscr=true";

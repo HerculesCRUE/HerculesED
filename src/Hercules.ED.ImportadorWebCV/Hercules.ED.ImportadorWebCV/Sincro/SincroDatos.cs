@@ -3,6 +3,7 @@ using Hercules.ED.ImportadorWebCV.Models;
 using Import;
 using ImportadorWebCV.Sincro.Secciones;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -73,6 +74,9 @@ namespace ImportadorWebCV.Sincro
             fileStream.Read(bytes, 0, (int)pInput.Length);
 
             Cvn2RootBeanClient cvnRootBeanClient = new Cvn2RootBeanClient();
+            //Aumento el tiempo de espera a 1 hora como máximo
+            cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new TimeSpan(1, 0, 0);
+            cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(1, 0, 0);
             var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
             Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
 

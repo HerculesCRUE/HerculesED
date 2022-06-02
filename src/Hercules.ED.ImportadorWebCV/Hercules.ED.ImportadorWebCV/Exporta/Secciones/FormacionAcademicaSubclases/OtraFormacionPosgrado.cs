@@ -74,9 +74,9 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 
                 //Entidad titulacion
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionEntidadTitulacionNombre),
-                    "020.010.030.080",entity);
+                    "020.010.030.080", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionFacultadEscuela),
-                    "020.010.030.140",entity);
+                    "020.010.030.140", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionTipoEntidadTitulacion),
                     "020.010.030.100", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.FormacionAcademica.otraFormacionTipoEntidadTitulacionOtros),

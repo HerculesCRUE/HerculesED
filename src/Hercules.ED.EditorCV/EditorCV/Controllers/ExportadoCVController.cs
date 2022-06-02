@@ -39,9 +39,10 @@ namespace EditorCV.Controllers
         {
             try
             {
-                List<string> listadoId = new List<string>();
+                List<string> listadoId = null;
                 if (listaId != null)
                 {
+                    listadoId = new List<string>();
                     listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
                 }
 
@@ -111,7 +112,7 @@ namespace EditorCV.Controllers
                 }
                 List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId);
 
-                return Ok(pListId.OrderBy(x => x.fecha));
+                return Ok(pListId);
             }
             catch (Exception ex)
             {

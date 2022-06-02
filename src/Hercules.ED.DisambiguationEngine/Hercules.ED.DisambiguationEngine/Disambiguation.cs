@@ -1834,7 +1834,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
             if (!string.IsNullOrEmpty(pValorA) && !string.IsNullOrEmpty(pValorB))
             {
                 float peso = 0;
-                if (pValorA.Equals(pValorB))
+                if (pValorA.ToLower().Equals(pValorB.ToLower()))
                 {
                     peso = 1;
                 }

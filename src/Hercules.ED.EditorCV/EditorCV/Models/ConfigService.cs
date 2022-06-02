@@ -26,6 +26,7 @@ namespace EditorCV.Models
         private string urlProduccionCientifica { get; set; }
         private string urlEnvioProyecto { get; set; }
         private string urlExportador { get; set; }
+        private string urlExportadorLimitado { get; set; }
 
         /// <summary>
         /// Constructor.

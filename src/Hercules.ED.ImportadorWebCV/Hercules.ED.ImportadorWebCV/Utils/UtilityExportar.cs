@@ -5,7 +5,6 @@ using Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -25,6 +24,18 @@ namespace Utils
                 return true;
             }
             return false;
+        }
+
+        public static string CvnLangCode(string lang)
+        {
+            Dictionary<string, string> langCodeGnossCVN = new Dictionary<string, string>();
+            langCodeGnossCVN.Add("es","spa");
+            langCodeGnossCVN.Add("ca", "cat");
+            langCodeGnossCVN.Add("eu", "eus");
+            langCodeGnossCVN.Add("gl", "glg");
+            langCodeGnossCVN.Add("fr", "fra");
+            langCodeGnossCVN.Add("en", "eng");            
+            return langCodeGnossCVN[lang];
         }
         /// <summary>
         /// Devuelve una lista de tuplas con la persona, nombre, apellidos.
@@ -622,20 +633,20 @@ namespace Utils
             familyNameBean.Code = code;
 
             familyNameBean.FirstFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
             familyNameBean.SecondFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
             if (!string.IsNullOrEmpty(familyNameBean.FirstFamilyName) && !string.IsNullOrEmpty(familyNameBean.SecondFamilyName))
             {
                 authorBean.CvnFamilyNameBean = familyNameBean;
             }
             authorBean.GivenName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
             authorBean.Signature = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
                 : null;
 
             if (!string.IsNullOrEmpty(authorBean.GivenName)
@@ -960,7 +971,7 @@ namespace Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
-                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last());
+                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last()).ToString();
 
                         listadoDouble.Add(cvnDouble);
                         continue;
@@ -1050,7 +1061,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1064,7 +1075,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1079,7 +1090,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1094,7 +1105,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1144,11 +1155,11 @@ namespace Utils
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
             cvnDouble.Code = code;
-            if (value.Contains("."))
+            if (value.Contains(","))
             {
-                value = value.Replace(".", ",");
+                value = value.Replace(",", ".");
             }
-            cvnDouble.Value = Convert.ToDecimal(value);
+            cvnDouble.Value = value;
 
             itemBean.Items.Add(cvnDouble);
         }
@@ -1592,19 +1603,15 @@ namespace Utils
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).Where(x => x.Count() == 1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
 
-                string anio = gnossDate.Substring(0, 4);
-                string mes = gnossDate.Substring(4, 2);
-                string dia = gnossDate.Substring(6, 2);
-                string hora = gnossDate.Substring(8, 2);
-                string minuto = gnossDate.Substring(10, 2);
-                string segundos = gnossDate.Substring(12, 2);
-                string fecha = anio + "-" + mes + "-" + dia + "T" + hora + ":" + minuto + ":" + segundos + "+01:00";
+                int anio = int.Parse(gnossDate.Substring(0, 4));
+                int mes = int.Parse(gnossDate.Substring(4, 2));
+                int dia = int.Parse(gnossDate.Substring(6, 2));
 
-                DateTime fechaDateTime = DateTime.Parse(fecha);
+                DateTime fechaDateTimeUtc = new DateTime(anio, mes, dia, 0, 0, 0, DateTimeKind.Utc);
                 itemBean.Items.Add(new CvnItemBeanCvnDateDayMonthYear()
                 {
                     Code = code,
-                    Value = fechaDateTime
+                    Value = fechaDateTimeUtc
                 });
             }
         }

@@ -6,7 +6,6 @@ using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -866,7 +865,7 @@ namespace Utils
                 CvnItemBeanCvnDouble campo = listadoCamposAux.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnDouble).Cast<CvnItemBeanCvnDouble>().FirstOrDefault();
                 if (campo != null)
                 {
-                    return campo.Value.ToString(CultureInfo.InvariantCulture);
+                    return campo.Value.ToString();
                 }
                 return null;
             }

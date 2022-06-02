@@ -12,13 +12,30 @@ var exportacionCV = {
 		var that = this;
 		that.cargarListadoCV();		
 		//Preparar exportación
-		$('.btGenerarExportarCV').off('click').on('click', function(e) {
-            e.preventDefault();
+		$('.btGenerarExportarCV').off('click').on('click', function(e) {            
+			e.preventDefault();
 			if($('#exportCvName').val().length == 0){
-				window.alert("Debes Añadir un nombre al fichero");
+				window.alert("Debes añadir un nombre al fichero");
 				return false;
+			}else{
+				if($('#todas:checked').length){
+					MostrarUpdateProgress();
+					//Exportacion completa
+					var data = {};
+					data.userID= that.idUsuario;
+					data.lang= $('#ddlIdioma').val();
+					data.nombreCV= $('#exportCvName').val();
+					
+					$.post(urlExportacionCV + 'GetCV', data, function(data) {
+						OcultarUpdateProgress();
+						that.cargarListadoCV();
+					});
+				}
+				else if($('#seleccionar:checked').length){
+					//Exportacion parcial
+					that.cargarCV();
+				}				
 			}
-			that.cargarCV();
 		});
 		
 		
@@ -40,7 +57,7 @@ var exportacionCV = {
 			
 			var data = {};
 			data.userID= that.idUsuario;
-			data.lang= lang;
+			data.lang= $('#ddlIdioma').val();
 			data.listaId= listaId;
 			data.nombreCV= $('#exportCvName').val();
 			
@@ -53,7 +70,7 @@ var exportacionCV = {
 	},
 	//Carga los CV exporatdos
     cargarListadoCV: function() {
-		$('.listadoCV li').remove();
+		$('.resource-list-wrap.listadoCV article').remove();
 
         var that = this;
 		that.idUsuario = $('#inpt_usuarioID').val();
@@ -61,12 +78,58 @@ var exportacionCV = {
 		$('.col-contenido.exportacion').hide();
 		MostrarUpdateProgress();
 		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
-            //recorrer items y por cada uno			
+            //recorrer items y por cada uno
 			for(var i=0;i<data.length;i++){				
-				$('.listadoCV').append($('<li>'+data[i].titulo+'</li>'));
-				$('.listadoCV').append($('<li>'+data[i].fecha+'</li>'));
-				$('.listadoCV').append($('<li>'+data[i].estado+'</li>'));
-				$('.listadoCV').append($('<li>'+data[i].fichero+'</li>'));
+				var ref = '';
+				var estado = '';
+				
+				if(data[i].fichero == '' && data[i].estado=='error'){
+					//Añado icono de Warning en caso de producirse error
+					ref = '<span class="material-icons warning">warning</span>' + data[i].titulo;
+				}
+				else if(data[i].fichero == ''){
+					ref = data[i].titulo; 
+				}
+				else{
+					ref = '<a href="' + data[i].fichero + '">' + data[i].titulo + '</a>';
+				}
+				//Cambio los colores del ::before dependiendo del estado del archivo
+				if(data[i].estado=='procesado'){
+					estado = 'success';
+				}
+				else if(data[i].estado=='pendiente'){
+					estado = 'pending';
+				}
+				
+				var articleHTML = `<article class="resource plegado ${estado}">
+										<div class="middle-wrap">
+											<div class="title-wrap">
+												<h2 class="resource-title">
+													${ref}
+												</h2>
+											</div>
+											<div class="content-wrap">
+												<div class="description-wrap counted">												
+														<div class="list-wrap no-oculto">
+															<div class="label">Estado</div>
+															<ul>
+																<li class="entity">
+																	${GetText("CV_EXPORTAR_"+data[i].estado.toUpperCase())}
+																</li>
+															</ul>
+														</div>
+														<div class="list-wrap no-oculto">
+															<div class="label">Fecha</div>
+															<ul>
+																<li>${data[i].fecha}</li>
+															</ul>
+														</div>
+													</div>
+													
+											</div>
+										</div>
+									</article>`;
+				$('.listadoCV').append(articleHTML);
 			}
 			OcultarUpdateProgress();
 		});
@@ -124,7 +187,6 @@ var exportacionCV = {
         return;
     }
 };
-
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
