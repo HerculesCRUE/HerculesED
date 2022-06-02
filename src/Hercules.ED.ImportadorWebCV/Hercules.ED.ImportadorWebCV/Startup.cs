@@ -71,6 +71,7 @@ namespace Hercules.ED.ImportadorWebCV
                       });
             });
             app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "ImportadorCV v1"));
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
         }
     }
 }
