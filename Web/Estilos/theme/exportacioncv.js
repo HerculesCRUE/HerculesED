@@ -79,17 +79,37 @@ var exportacionCV = {
 		MostrarUpdateProgress();
 		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
             //recorrer items y por cada uno
-			for(var i=0;i<data.length;i++){			
-				var articleHTML = `<article class="resource plegado">
+			for(var i=0;i<data.length;i++){				
+				var ref = '';
+				var estado = '';
+				
+				if(data[i].fichero == '' && data[i].estado=='error'){
+					//Añado icono de Warning en caso de producirse error
+					ref = '<span class="material-icons warning">warning</span>' + data[i].titulo;
+				}
+				else if(data[i].fichero == ''){
+					ref = data[i].titulo; 
+				}
+				else{
+					ref = '<a href="' + data[i].fichero + '">' + data[i].titulo + '</a>';
+				}
+				//Cambio los colores del ::before dependiendo del estado del archivo
+				if(data[i].estado=='procesado'){
+					estado = 'success';
+				}
+				else if(data[i].estado=='pendiente'){
+					estado = 'pending';
+				}
+				
+				var articleHTML = `<article class="resource plegado ${estado}">
 										<div class="middle-wrap">
 											<div class="title-wrap">
 												<h2 class="resource-title">
-													<a href="${data[i].fichero}">${data[i].titulo}</a>
+													${ref}
 												</h2>
 											</div>
 											<div class="content-wrap">
-												<div class="description-wrap counted">
-												
+												<div class="description-wrap counted">												
 														<div class="list-wrap no-oculto">
 															<div class="label">Estado</div>
 															<ul>

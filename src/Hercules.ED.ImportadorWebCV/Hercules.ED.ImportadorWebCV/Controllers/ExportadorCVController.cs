@@ -74,6 +74,11 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             var resp = peticion.Result.@return;
             client.Close();
 
+            if (resp.returnCode != "00")
+            {
+                return NotFound();
+            }
+
             return File(resp.dataHandler, "application/pdf", resp.filename);
         }
 
@@ -122,6 +127,11 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", Utils.UtilityExportar.CvnLangCode(lang));
             var resp = peticion.Result.@return;
             client.Close();
+
+            if (resp.returnCode != "00")
+            {
+                return NotFound();
+            }
 
             return File(resp.dataHandler, "application/pdf");
         }
