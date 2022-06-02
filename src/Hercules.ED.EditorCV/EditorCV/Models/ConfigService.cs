@@ -26,6 +26,7 @@ namespace EditorCV.Models
         private string urlProduccionCientifica { get; set; }
         private string urlEnvioProyecto { get; set; }
         private string urlExportador { get; set; }
+        private string urlExportadorLimitado { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -325,6 +326,26 @@ namespace EditorCV.Models
             }
 
             return urlExportador;
+        }
+        public string GetUrlExportadorLimitado()
+        {
+            if (string.IsNullOrEmpty(urlExportadorLimitado))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("url_exportador_limitado"))
+                {
+                    connectionString = environmentVariables["url_exportador_limitado"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["url_exportador_limitado"];
+                }
+
+                urlExportadorLimitado = connectionString;
+            }
+
+            return urlExportadorLimitado;
         }
     }
 }

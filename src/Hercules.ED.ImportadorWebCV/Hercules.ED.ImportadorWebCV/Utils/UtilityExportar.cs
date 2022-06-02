@@ -5,7 +5,6 @@ using Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -960,7 +959,7 @@ namespace Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                         cvnDouble.Code = tupla.ElementAt(j).Item2;
-                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last());
+                        cvnDouble.Value = int.Parse(tupla.ElementAt(j).Item4.Split("@@@").Last()).ToString();
 
                         listadoDouble.Add(cvnDouble);
                         continue;
@@ -1050,7 +1049,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1064,7 +1063,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1079,7 +1078,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1094,7 +1093,7 @@ namespace Utils
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault());
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1144,11 +1143,11 @@ namespace Utils
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
             cvnDouble.Code = code;
-            if (value.Contains("."))
+            if (value.Contains(","))
             {
-                value = value.Replace(".", ",");
+                value = value.Replace(",", ".");
             }
-            cvnDouble.Value = Convert.ToDecimal(value);
+            cvnDouble.Value = value;
 
             itemBean.Items.Add(cvnDouble);
         }
