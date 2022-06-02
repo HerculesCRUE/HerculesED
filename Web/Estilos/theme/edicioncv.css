@@ -315,3 +315,11 @@ input.form-group-date {
     border-bottom: 1px solid var(--c-gris-borde)!important;
     box-shadow: none;
 }
+
+.exportar-cv .form-group .select2-container {
+    width: 200px !important;
+}
+
+.exportar-cv .page-section a {
+    display: inline-flex;
+}
