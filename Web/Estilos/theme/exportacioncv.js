@@ -83,10 +83,14 @@ var exportacionCV = {
 				var ref = '';
 				var estado = '';
 				
-				//Añado icono de Warning en caso de producirse error
-				if(data[i].fichero == ''){
+				if(data[i].fichero == '' && data[i].estado=='error'){
+					//Añado icono de Warning en caso de producirse error
 					ref = '<span class="material-icons warning">warning</span>' + data[i].titulo;
-				}else{
+				}
+				else if(data[i].fichero == ''){
+					ref = data[i].titulo; 
+				}
+				else{
 					ref = '<a href="' + data[i].fichero + '">' + data[i].titulo + '</a>';
 				}
 				//Cambio los colores del ::before dependiendo del estado del archivo
