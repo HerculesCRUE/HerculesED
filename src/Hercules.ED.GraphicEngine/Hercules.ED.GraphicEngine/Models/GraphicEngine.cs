@@ -832,8 +832,14 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                 }
             }
-
-            data.labels = listaLabels;
+            if (listaLabels.Any())
+            {
+                data.labels = listaLabels;
+            }
+            else
+            {
+                data.labels = listaNombres;
+            }
             dataset.backgroundColor = listaColores;
 
             // HoverOffset por defecto.
