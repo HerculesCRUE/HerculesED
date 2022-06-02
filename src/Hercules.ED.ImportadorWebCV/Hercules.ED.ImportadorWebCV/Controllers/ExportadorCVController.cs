@@ -66,16 +66,15 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
             Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
-            //Aumento el tiempo de espera a 10 minutos como maximo
-            client.Endpoint.Binding.CloseTimeout = new TimeSpan(0, 10, 0);
-            client.Endpoint.Binding.SendTimeout = new TimeSpan(0, 10, 0);
+            //Aumento el tiempo de espera a 1 hora como maximo
+            client.Endpoint.Binding.CloseTimeout = new TimeSpan(1, 0, 0);
+            client.Endpoint.Binding.SendTimeout = new TimeSpan(1, 0, 0);
 
             var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", "spa");
             var resp = peticion.Result.@return;
             client.Close();
 
-
-            return File(resp.dataHandler, "application/pdf");
+            return File(resp.dataHandler, "application/pdf", resp.filename);
         }
 
         /// <summary>
@@ -116,11 +115,11 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
             Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
-            //Aumento el tiempo de espera a 10 minutos como maximo
+            //Aumento el tiempo de espera a 1 hora como máximo
             client.Endpoint.Binding.CloseTimeout = new TimeSpan(1, 0, 0);
             client.Endpoint.Binding.SendTimeout = new TimeSpan(1, 0, 0);
 
-            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", "spa");
+            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", Utils.UtilityExportar.CvnLangCode(lang));
             var resp = peticion.Result.@return;
             client.Close();
 
