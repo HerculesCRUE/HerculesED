@@ -822,7 +822,7 @@ var metricas = {
                     image = cy.jpg();
                 }
                 else {
-                    image = chart.toBase64Image('image/jpg', 1);
+                    image = chart.toBase64Image('image/jpeg', 1);
                 }
 
                 // Creación del elemento para empezar la descarga.
