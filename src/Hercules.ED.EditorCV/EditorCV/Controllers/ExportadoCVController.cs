@@ -112,7 +112,7 @@ namespace EditorCV.Controllers
                 }
                 List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId);
 
-                return Ok(pListId.OrderBy(x => x.fecha));
+                return Ok(pListId);
             }
             catch (Exception ex)
             {
