@@ -790,6 +790,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Lista de los ordenes de las revistas.
             List<string> listaNombres = new List<string>();
+            List<string> listaLabels = new List<string>();
 
             List<float> listaData = new List<float>();
             foreach (KeyValuePair<string, float> nombreData in dicNombreData)
@@ -818,7 +819,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         {
                             // Nombre del dato en leyenda.
                             dataset.label = GetTextLang(pLang, item.Key.nombre);
-
+                            listaLabels.Add(GetTextLang(pLang, item.Key.nombre));
                             // Color. 
                             listaColores.Add(item.Key.color);
                         }
@@ -826,7 +827,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            data.labels = listaNombres;
+            data.labels = listaLabels;
             dataset.backgroundColor = listaColores;
 
             // HoverOffset por defecto.
