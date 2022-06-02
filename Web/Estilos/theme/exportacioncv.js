@@ -12,17 +12,8 @@ var exportacionCV = {
 		var that = this;
 		that.cargarListadoCV();		
 		//Preparar exportación
-		$('.btGenerarExportarCV').off('click').on('click', function(e) {
-            e.preventDefault();
-			if($('#exportCvName').val().length == 0){
-				window.alert("Debes añadir un nombre al fichero");
-				return false;
-			}
-			that.cargarCV();
-		});
-		//Preparar exportación parcial
-		$('.btGenerarExportarCVParcial').off('click').on('click', function(e) {
-            e.preventDefault();
+		$('.btGenerarExportarCV').off('click').on('click', function(e) {            
+			e.preventDefault();
 			if($('#exportCvName').val().length == 0){
 				window.alert("Debes añadir un nombre al fichero");
 				return false;
@@ -39,6 +30,15 @@ var exportacionCV = {
 					that.cargarListadoCV();
 				});
 			}
+		});
+		//Preparar exportación parcial
+		$('.btGenerarExportarCVParcial').off('click').on('click', function(e) {
+            e.preventDefault();
+			if($('#exportCvName').val().length == 0){
+				window.alert("Debes añadir un nombre al fichero");
+				return false;
+			}
+			that.cargarCV();
 		});
 		
 		
