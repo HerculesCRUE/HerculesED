@@ -64,6 +64,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 string prefijoNodos = "nodes";
                 string prefijoBarraHorizonal = "isHorizontal";
                 string prefijoAbreviar = "abr";
+                string prefijoPorcentaje = "prc";
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
@@ -78,6 +79,11 @@ namespace Hercules.ED.GraphicEngine.Models
                         itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
                         configPagina.id = prefijoAbreviar + "-" + configPagina.id;
                     }
+                }
+                if (itemGrafica.config.porcentual)
+                {
+                    itemGrafica.identificador = prefijoPorcentaje + "-" + itemGrafica.identificador;
+                    configPagina.id = prefijoPorcentaje + "-" + configPagina.id;
                 }
 
                 // Si la anchura no contiene un valor aceptado, se le asigna 1/2 por defecto.

@@ -1,20 +1,91 @@
 {
   "nombre": {
-    "es": "Página de proyectos"
+    "es": "Página de EJEMPLO"
   },
-  "filtro": "rdf:type='project'&roh:isValidated='true'",
+  "filtro": "rdf:type='document'&roh:isValidated='true'",
   "identificador": "123",
   "graficas": [
     {
       "identificador": "111",
       "nombre": {
-        "es": "Proyectos concedidos y solicitados"
+        "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Horizontal"
+      },
+      "tipo": "Barras",
+      /*Representa que % del contenedor ocupara la grafica 12 corresponde 1/2 los valores aceptados son 11,12,13,14,16,23,34,38,58*/
+      "anchura": 11,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x2",
+            "posicion": "top"
+          },
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Citas Media por Año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "AVG",
+            "tipoDimension": "line",
+            "color": "#000000",
+            "xAxisID": "x2",
+            "orden": 1
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 2
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Artículo Científico"
+            },
+            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "stack": "stack1",
+            "xAxisID": "x1",
+            "orden": 3
+          },
+          {
+            "nombre": {
+              "es": "Publicaciones de tipo Capítulo de Libro"
+            },
+            "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
+            "tipoDimension": "bar",
+            "color": "#6CAFD3",
+            "stack": "stack1",
+            "xAxisID": "x1",
+            "orden": 4
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "222",
+      "nombre": {
+        "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Vertical"
       },
       "tipo": "Barras",
       "anchura": 11,
+      "idGrupo": "123",
       "config": {
         "orientacionVertical": true,
-        "ejeX": "vivo:start",
+        "ejeX": "roh:year",
         "orderDesc": false,
         "rellenarEjeX": false,
         "yAxisPrint": [
@@ -26,61 +97,13 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Proyectos concedidos competitivos"
+              "es": "Publicaciones por año"
             },
-            "filtro": "roh:scientificExperienceProject@@@dc:title='Competitivos'@es",
-            "tipoDimension": "bar",
-            "color": "#7CBFE3",
-            "stack": "stack1",
-            "yAxisID": "y1",
-            "orden": 1
-          },
-          {
-            "nombre": {
-              "es": "Proyectos concedidos no competitivos"
-            },
-            "filtro": "roh:scientificExperienceProject@@@dc:title='No competitivos'@es",
+            "filtro": "",
             "tipoDimension": "bar",
             "color": "#BF4858",
-            "stack": "stack1",
             "yAxisID": "y1",
             "orden": 2
-          },
-          {
-            "nombre": {
-              "es": "Proyectos solicitados"
-            },
-            "filtro": "roh:scientificExperienceProject@@@dc:title='No competitivos'@es",
-            "tipoDimension": "bar",
-            "color": "#e397dc",
-            "yAxisID": "y1",
-            "orden": 3
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "222",
-      "nombre": {
-        "es": "IP principal de la UMU"
-      },
-      "tipo": "Circular",
-      "anchura": 11,
-      "config": {
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "IP principal de la UMU"
-            },
-            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive='true'",
-            "color": "#e7c284"
-          },
-          {
-            "nombre": {
-              "es": "IP principal fuera de la UMU"
-            },
-            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive='false'",
-            "color": "#3ed3bb"
           }
         ]
       }

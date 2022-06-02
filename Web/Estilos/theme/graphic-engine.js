@@ -95,7 +95,7 @@ var metricas = {
                         chart.ctx.fillRect(0, 0, chart.width, chart.height);
                         chart.ctx.restore();
                     }
-                  };
+                };
                 data.plugins = [plugin];
 
                 var myChart = new Chart(ctx, data);
@@ -103,6 +103,23 @@ var metricas = {
                 var numBars = data.data.labels.length; // Número de barras.
                 var barSize = 100; // Tamaño arbitrario de las barras.
                 var canvasSize = (numBars * barSize); // Tamaño del canvas.
+
+                // En caso de que los datos de la gráfica se representen con porcentajes
+                if (pIdGrafica.includes("prc")) {
+                    data.options.plugins.tooltip = {
+                        callbacks: {
+                            afterLabel: function (context) {
+                                let label = "Porcentaje: ";
+                                let sum = context.dataset.data.reduce((a,b)=> a+b,0);
+                                let porcentaje = context.dataset.data[context.dataIndex]*100/sum;
+                                label += porcentaje.toFixed(2)+'%';
+                                return label;
+                            }
+                        }
+                    }
+                    myChart.update();
+                }
+
 
                 // Solo si es una gráfica horizontal.
                 if (data.options.indexAxis == "y") {
@@ -818,8 +835,9 @@ var metricas = {
             .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas');
-                if (!canvas){
-                canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');}
+                if (!canvas) {
+                    canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                }
 
                 var chart = Chart.getChart(canvas);
 
