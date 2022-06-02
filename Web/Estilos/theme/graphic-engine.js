@@ -147,14 +147,14 @@ var metricas = {
                         <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
             
                         </div>`);
-            
+
                         $(chartContainer).append(legend);
 
 
                         // Contenedor de los elementos de la leyenda.
                         var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"/>`);
                         $(legend).append(dataSetLabels);
-    
+
                         // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
                         var datasets = data.data.datasets;
                         datasets.forEach((dataset, index) => {
@@ -162,15 +162,15 @@ var metricas = {
                             <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"/>
                             <p class="dataSetLabel" style="font-family: Calibri; margin: 5px;">${dataset.label}</p>
                             </div>`);
-                           
+
 
                             //labelContainer.appendChild(colorDiv);
                             $(dataSetLabels).append(labelContainer);
-                           
+
 
                         });
                         // Eje superior. 
-                        if (hasTopAxis) {   
+                        if (hasTopAxis) {
                             var topAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"/>`);
                             $(legend).append(topAxis);
                         }
@@ -202,7 +202,7 @@ var metricas = {
                             $(legend).css("height", copyHeight + "px");
                             $(legend).css("width", copyWidth + "px");
 
-                
+
                             if (topAxis) {
                                 var topAxisCtx = topAxis[0].getContext('2d');
                                 topAxisCtx.scale(scale, scale); // Escala del zoom.
@@ -339,21 +339,55 @@ var metricas = {
         var rowNumber = 0;
         var espacio = 12;
 
-        pPageData.listaConfigGraficas.forEach(function (item, index, array) {
-            /*if (espacio - item.anchura < 0 || index == 0) {
-                rowNumber++;
-                $('#page_' + pPageData.id + ' .containerGraficas').append(`
-                        <div class="row" id="row_${rowNumber}"></div>
-                    `);
-                espacio = 12;
+
+        /*if (espacio - item.anchura < 0 || index == 0) {
+            rowNumber++;
+            $('#page_' + pPageData.id + ' .containerGraficas').append(`
+                    <div class="row" id="row_${rowNumber}"></div>
+                `);
+            espacio = 12;
+        }
+        $('#row_' + rowNumber).append(`
+                        <div class='grafica col-xl-${item.anchura}' idgrafica='${item.id}'></div>
+                `);
+        espacio = espacio - item.anchura;*/
+        var tmp = [];
+        var id = "";
+        var gruposDeIDs = [];
+        var lista = pPageData.listaConfigGraficas.slice();
+        while (lista.length > 0) {
+            tmp = [];
+            var grafica = lista.shift();
+            id = grafica.idGrupo;
+            if (id == null) { // si la id es nula la mete en un grupo nuevo
+                tmp.push(grafica);
+            } else {
+                tmp.push(grafica);
+                lista.forEach(function (grafica, index, array) {
+                    if (grafica.idGrupo == id) {
+                        tmp.push(grafica);
+                        lista.splice(index, 1);
+                    }
+
+                });
             }
-            $('#row_' + rowNumber).append(`
-                            <div class='grafica col-xl-${item.anchura}' idgrafica='${item.id}'></div>
-                    `);
-            espacio = espacio - item.anchura;*/
-            
+            gruposDeIDs.push(tmp);
+            console.log(tmp);
+        }
+
+
+
+        gruposDeIDs.forEach(function (item, index, array) {
+
+            var graficasGrupo;
+            var tmp = '';
+            item.forEach(function (grafica, index, array) {
+                tmp += `<div style="display:${index == 0 ? "block" : "none"}" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
+            });
+            graficasGrupo = tmp;
+
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
-                <article class="resource span${item.anchura}"> 
+                <article class="resource span${item[0].anchura}"> 
                     <div class="wrap">
                         <div class="title-wrap">
                             <h2></h2>
@@ -370,14 +404,20 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
+                                ${item.length != 1 ? `<div class="toggleChart">
+                                    <a href="javascript: void(0);" style="height:24px" >
+                                        <span class="material-icons">sync_alt</span>
+                                    </a>
+                                </div>`: ""}
                             </div>
                         </div>                      
-                        <div class="grafica " idgrafica='${item.id}'>
+                        ${graficasGrupo}
                         </div>
                 </article>
 
             `);
         });
+
 
         // Crear estructura para el apartado de facetas.
         pPageData.listaIdsFacetas.forEach(function (item, index, array) {
@@ -764,7 +804,10 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
-                var canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas');
+                if (!canvas){
+                canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');}
+
                 var chart = Chart.getChart(canvas);
 
                 // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
@@ -787,6 +830,24 @@ var metricas = {
                 a.href = image;
                 a.download = Date.now() + '.jpg';
                 a.click();
+            });
+        $('div.toggleChart')
+            .unbind()
+            .click(function (e) {
+                var parent = $(this).parents('div.wrap');
+                var shown = parent.find('div.show');
+                var hidden = parent.find('div.hide');
+                console.log(parent);
+
+                shown.css('display', 'none');
+                hidden.css('display', 'block');
+                shown.removeClass('show');
+                hidden.removeClass('hide');
+                shown.addClass('hide');
+                hidden.addClass('show');
+
+
+
             });
     }
 }
