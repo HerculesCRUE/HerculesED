@@ -151,7 +151,7 @@ namespace ImportadorWebCV
     {
 
         /// <remarks/>
-        public string Value { get; set; }
+        public decimal Value { get; set; }
     }
 
     /// <remarks/>
@@ -240,7 +240,7 @@ namespace ImportadorWebCV
     {
 
         /// <remarks/>
-        public string Value { get; set; }
+        public decimal Value { get; set; }
     }
 
     /// <remarks/>
