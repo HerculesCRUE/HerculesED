@@ -5,7 +5,6 @@ using Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -1144,9 +1143,9 @@ namespace Utils
         {
             CvnItemBeanCvnDouble cvnDouble = new CvnItemBeanCvnDouble();
             cvnDouble.Code = code;
-            if (value.Contains("."))
+            if (value.Contains(","))
             {
-                value = value.Replace(".", ",");
+                value = value.Replace(",", ".");
             }
             cvnDouble.Value = Convert.ToDecimal(value);
 

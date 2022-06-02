@@ -82,6 +82,7 @@
       },
       "tipo": "Barras",
       "anchura": 11,
+      "idGrupo": "123",
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:year",
@@ -349,44 +350,13 @@
       }
     },
     {
-      "identificador": "4ga",
-      "nombre": {
-        "es": "Publicaciones por tipo de proyecto"
-      },
-      "tipo": "Barras",
-      "anchura": 11,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:project@@@roh:projectType@@@dc:title",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de publicaciones"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
       "identificador": "5ga",
       "nombre": {
-        "es": "Publicaciones por ámbito"
+        "es": "Publicaciones por ámbito (vertical)"
       },
       "tipo": "Barras",
       "anchura": 11,
+      "idGrupo": "987",
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
@@ -415,10 +385,11 @@
     {
       "identificador": "6ga",
       "nombre": {
-        "es": "Publicaciones por categorías de los investigadores"
+        "es": "Publicaciones por ámbito (horizontal)"
       },
       "tipo": "Barras",
       "anchura": 11,
+      "idGrupo": "987",
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
