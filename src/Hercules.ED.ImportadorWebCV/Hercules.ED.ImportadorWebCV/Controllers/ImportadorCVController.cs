@@ -19,6 +19,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
 
         public ImportadorCVController(ILogger<ImportadorCVController> logger, ConfigService pConfig)
         {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             _logger = logger;
             _Configuracion = pConfig;
         }
