@@ -85,14 +85,15 @@ namespace EditorCV.Models
                 if (listaId == null)
                 {
                     urlExportador = _Configuracion.GetUrlExportador() + "/Exportar";
-                    foreach (string id in listaId)
-                    {
-                        parametros.Add(new KeyValuePair<string, string>("listaId", id));
-                    }
+                    
                 }
                 else
                 {
                     urlExportador = _Configuracion.GetUrlExportador() + "/ExportarLimitado";
+                    foreach (string id in listaId)
+                    {
+                        parametros.Add(new KeyValuePair<string, string>("listaId", id));
+                    }
                 }
 
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
