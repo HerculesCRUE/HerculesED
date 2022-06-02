@@ -25,6 +25,18 @@ namespace Utils
             }
             return false;
         }
+
+        public static string CvnLangCode(string lang)
+        {
+            Dictionary<string, string> langCodeGnossCVN = new Dictionary<string, string>();
+            langCodeGnossCVN.Add("es","spa");
+            langCodeGnossCVN.Add("ca", "cat");
+            langCodeGnossCVN.Add("eu", "eus");
+            langCodeGnossCVN.Add("gl", "glg");
+            langCodeGnossCVN.Add("fr", "fra");
+            langCodeGnossCVN.Add("en", "eng");            
+            return langCodeGnossCVN[lang];
+        }
         /// <summary>
         /// Devuelve una lista de tuplas con la persona, nombre, apellidos.
         /// </summary>
