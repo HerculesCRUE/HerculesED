@@ -124,7 +124,6 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             var resp = peticion.Result.@return;
             client.Close();
 
-            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("es-ES");
             return File(resp.dataHandler, "application/pdf");
         }
     }
