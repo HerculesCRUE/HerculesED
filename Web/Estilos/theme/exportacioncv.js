@@ -105,7 +105,7 @@ var exportacionCV = {
 															<div class="label">Fecha</div>
 															<ul>
 																<li>
-																	${data[i].fecha}
+																	${GnossDateToDate(data[i].fecha)}
 																</li>
 															</ul>
 														</div>
@@ -173,6 +173,16 @@ var exportacionCV = {
     }
 };
 
+function GnossDateToDate(fecha){
+	if(fecha.length<8){
+		return '';
+	}
+	var anio = fecha.substring(0,4);
+	var mes = fecha.substring(4,6);
+	var dia = fecha.substring(6,8);
+	var date = new Date(anio, mes, dia);
+	return date;
+}
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
