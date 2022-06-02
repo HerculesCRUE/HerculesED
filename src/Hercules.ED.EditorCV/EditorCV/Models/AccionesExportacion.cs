@@ -157,7 +157,7 @@ namespace EditorCV.Models
     ?pdfFile <http://purl.org/dc/terms/issued> ?fecha.
     ?pdfFile <http://w3id.org/roh/status> ?estado.
     OPTIONAL{{ ?pdfFile <http://w3id.org/roh/filePDF> ?fichero }}
-}}order by asc(xsd:int(?fecha))";
+}}order by desc(xsd:int(?fecha))";
 
             SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
