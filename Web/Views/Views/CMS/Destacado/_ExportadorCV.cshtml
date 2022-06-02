@@ -78,8 +78,16 @@
 						<input id="exportCvName" placeholder="@Html.Translate("INTRODUCE_UN_TITULO_PARA_EL_FICHERO")" type="text" class="form-control not-outline">
 					</div>
 					<div class="form-group mb-3">
-						<a class="btn btn-primary uppercase btGenerarExportarCV" >@Html.Translate("GENERAR_NUEVA_EXPORTACION")</a>	
-						<a class="btn btn-primary uppercase btGenerarExportarCVParcial" >@Html.Translate("GENERAR_NUEVA_EXPORTACION_PARCIAL")</a>
+						<label class="control-label d-block mb-3">Secciones</label>
+						<div class="custom-control themed little custom-radio">
+							<input type="radio" id="todas" name="secciones" class="custom-control-input">
+							<label class="custom-control-label" for="todas">Todas</label>
+						</div>
+						<div class="custom-control themed little custom-radio">
+							<input type="radio" id="seleccionar" name="secciones" class="custom-control-input">
+							<label class="custom-control-label" for="seleccionar">Seleccionar</label>
+						</div>
+						<a class="btn btn-primary uppercase btGenerarExportarCV" >@Html.Translate("GENERAR_NUEVA_EXPORTACION")</a>
 					</div>
 				</div>
 				<div class="page-section">
