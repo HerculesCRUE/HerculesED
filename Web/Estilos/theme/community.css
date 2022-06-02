@@ -384,6 +384,7 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar input { width: 480px; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar .tag-list { margin-bottom: 0 !important; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary { padding: 0; border-radius: 0; }
+.edicionRecurso .formulario-edicion .edit-etiquetas .autocompletar .btn-outline-primary { padding: 0 20px; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .btn-wrap { display: flex; align-items: center; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .btn-wrap .btn-text { padding: 11px 16px; border-right: 1px solid; font-size: 15px; }
 .edicionRecurso .formulario-edicion .edit-etiquetas .btn-outline-primary .material-icons { font-size: 30px; padding: 4px; }
@@ -1176,6 +1177,8 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
 .row.community-row .page-name-wrapper { display: none; }
 
 .scrolling .row.community-row { position: fixed; top: inherit; left: 0; z-index: 10; width: 100%; margin: 0; background-color: var(--c-blanco); }
+
+body:not(.listado) header .row.community-row { display: none; }
 /* */
 
 
@@ -1949,3 +1952,16 @@ header .row .col.col02 .col-buscador form .btn-filtrar-movil { border: 0; color:
     .span12, .span13, .span14, .span16, .span23, .span34, .span38, .span58 { flex: 0 0 100%; max-width: 100%; }
 }
 /**/
+
+.edicionRecurso .custom-control.custom-checkbox-resource { padding-left: 0; }
+.edicionRecurso .custom-control.custom-checkbox-resource .material-icons { color: var(--c-texto-claro); cursor: pointer; user-select: none; border: 1px solid; height: 20px; width: 20px; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+.edicionRecurso .custom-control.custom-checkbox-resource.done .material-icons { color: var(--c-primario); }
+
+.user-miniatura .imagen-usuario-wrap .imagen.sinImagen { border: 0; height: 30px; }
+
+.resource.seleccionado .user-miniatura .imagen-usuario-wrap .imagen.sinImagen span { color: var(--c-primario); }
+.resource.seleccionado .user-miniatura .imagen-usuario-wrap .imagen:not(.sinImagen) span { opacity: .7; }
+.resource-list .resource.seleccionado .middle-wrap .title-wrap .resource-title:before { color: var(--c-primario); }
+
+.edicionOfertaTecnologica .resource-list.listView:not(.list-con-checks) .resource .wrap { margin-left: 0; }
+.edicionOfertaTecnologica .resource-list.resource-list-proyectos .resource .wrap { margin-left: 35px !important; }
