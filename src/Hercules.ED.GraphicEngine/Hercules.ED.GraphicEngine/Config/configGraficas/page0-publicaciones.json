@@ -82,6 +82,7 @@
       },
       "tipo": "Barras",
       "anchura": 11,
+      "idGrupo": "123",
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:year",
@@ -327,38 +328,6 @@
         "ejeX": "roh:project@@@roh:grantedBy@@@roh:organizationTitle",
         "orderDesc": false,
         "abreviar": true,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de publicaciones"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "4ga",
-      "nombre": {
-        "es": "Publicaciones por tipo de proyecto"
-      },
-      "tipo": "Barras",
-      "anchura": 11,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:project@@@roh:projectType@@@dc:title",
-        "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
           {
