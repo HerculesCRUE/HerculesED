@@ -18,27 +18,24 @@ var exportacionCV = {
 				window.alert("Debes añadir un nombre al fichero");
 				return false;
 			}else{
-				MostrarUpdateProgress();
-				
-				var data = {};
-				data.userID= that.idUsuario;
-				data.lang= lang;
-				data.nombreCV= $('#exportCvName').val();
-				
-				$.post(urlExportacionCV + 'GetCV', data, function(data) {
-					OcultarUpdateProgress();
-					that.cargarListadoCV();
-				});
+				if($('#todas:checked').length){
+					MostrarUpdateProgress();
+					//Exportacion completa
+					var data = {};
+					data.userID= that.idUsuario;
+					data.lang= lang;
+					data.nombreCV= $('#exportCvName').val();
+					
+					$.post(urlExportacionCV + 'GetCV', data, function(data) {
+						OcultarUpdateProgress();
+						that.cargarListadoCV();
+					});
+				}
+				else if($('#seleccionar:checked').length){
+					//Exportacion parcial
+					that.cargarCV();
+				}				
 			}
-		});
-		//Preparar exportación parcial
-		$('.btGenerarExportarCVParcial').off('click').on('click', function(e) {
-            e.preventDefault();
-			if($('#exportCvName').val().length == 0){
-				window.alert("Debes añadir un nombre al fichero");
-				return false;
-			}
-			that.cargarCV();
 		});
 		
 		
