@@ -28,6 +28,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
         public ExportadorCVController(ILogger<ExportadorCVController> logger, ConfigService pConfig)
         {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             _logger = logger;
             _Configuracion = pConfig;
             _cvn = new cvnRootResultBean();
