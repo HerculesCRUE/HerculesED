@@ -42,11 +42,22 @@ var metricas = {
         $.get(url, arg, function (data) {
             var ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
 
+
+
+
             // Controla si el objeto es de ChartJS o Cytoscape.
             if ("container" in data) {
                 data.container = ctx;
                 data.ready = function () { window.cy = this };
                 var cy = window.cy = cytoscape(data);
+
+                var combo = $(ctx).parents("article").find("select");
+                if (combo) {
+                    combo.append(`
+                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.title}</options>
+                    `)
+                }
+
 
                 $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append(data.title);
 
@@ -85,6 +96,15 @@ var metricas = {
                 });
 
             } else {
+
+                var combo = $(ctx).parents("article").find("select");
+                if (combo) {
+                    combo.append(`
+                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.options.plugins.title.text}</options>
+                    `)
+                }
+
+
                 var myChart = new Chart(ctx, data);
 
                 var numBars = data.data.labels.length; // Número de barras.
@@ -145,21 +165,20 @@ var metricas = {
 
                         var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
                         <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
-            
                         </div>`);
 
                         $(chartContainer).append(legend);
 
 
                         // Contenedor de los elementos de la leyenda.
-                        var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"/>`);
+                        var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"></div>`);
                         $(legend).append(dataSetLabels);
 
                         // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
                         var datasets = data.data.datasets;
                         datasets.forEach((dataset, index) => {
                             var labelContainer = $(`<div id="label-${index}" class="labelContainer" style="margin: 5px; height: 15px; display: flex; align-items: center;">
-                            <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"/>
+                            <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"></div>
                             <p class="dataSetLabel" style="font-family: Calibri; margin: 5px;">${dataset.label}</p>
                             </div>`);
 
@@ -171,55 +190,23 @@ var metricas = {
                         });
                         // Eje superior. 
                         if (hasTopAxis) {
-                            var topAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"/>`);
+                            var topAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
                             $(legend).append(topAxis);
                         }
 
                         // Si existe un eje inferior, se agrega con estilos.
                         if (hasBottomAxis) {
-                            var bottomAxis = $(`<canvas id="bottomAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"/>`);
+                            var bottomAxis = $(`<canvas id="bottomAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
                             $(chartContainer).append(bottomAxis);
                         }
                         // Cuando se acutaliza el canvas.
-                        data.options.animation.onProgress = reDrawChart;
+                        data.options.animation.onProgress = ()=>that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
                         // Cuando se reescala el navegador se redibuja la leyenda.
                         window.addEventListener('resize', (e) => {
-                            reDrawChart();
+                           that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
                             myChart.update();
                         });
-                        // Función que dibuja la leyenda y los ejes, también reescala todo para que coincida con el chart.
-                        function reDrawChart() {
-                            // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
-                            var scale = window.devicePixelRatio;
-                            chartAreaWrapper.style.height = canvasSize + 'px';
-                            var copyWidth = myChart.width;
-                            // Altura del titulo, leyenda y eje superior menos el margen.
-                            var copyHeight = myChart.boxes[0].height + myChart.boxes[1].height + myChart.boxes[2].height - 5;
-                            // Le asignamos tamaño a la leyenda.
-                            var axisHeight = myChart.boxes[2].height;
 
-                            // Preparamos el eje superior.
-                            $(legend).css("height", copyHeight + "px");
-                            $(legend).css("width", copyWidth + "px");
-
-
-                            if (topAxis) {
-                                var topAxisCtx = topAxis[0].getContext('2d');
-                                topAxisCtx.scale(scale, scale); // Escala del zoom.
-                                topAxisCtx.canvas.width = copyWidth;
-                                topAxisCtx.canvas.height = axisHeight;
-                                topAxisCtx.drawImage(myChart.canvas, 0, (copyHeight - axisHeight) * scale, copyWidth * scale, axisHeight * scale, 0, 0, copyWidth, axisHeight);
-                            }
-
-                            // Preparamos el eje inferior.
-                            if (bottomAxis) {
-                                var bottomAxisCtx = bottomAxis[0].getContext('2d');
-                                bottomAxisCtx.scale(scale, scale); // Escala del zoom.
-                                bottomAxisCtx.canvas.width = copyWidth;
-                                bottomAxisCtx.canvas.height = axisHeight;
-                                bottomAxisCtx.drawImage(myChart.canvas, 0, myChart.chartArea.bottom * scale, copyWidth * scale, axisHeight * scale, 0, 0, copyWidth, axisHeight);
-                            }
-                        }
                     }
                 }
             }
@@ -363,13 +350,30 @@ var metricas = {
                 tmp.push(grafica);
             } else {
                 tmp.push(grafica);
-                lista.forEach(function (grafica, index, array) {
+
+
+               /* lista.forEach(function (grafica, index, array) {
+                    console.log(grafica);
+                    console.log(id);
+                    console.log(lista);
                     if (grafica.idGrupo == id) {
+
                         tmp.push(grafica);
                         lista.splice(index, 1);
+                        index--;
                     }
 
-                });
+                });*/
+                
+                for (let i = 0; i<lista.length; i++) {
+                    console.log(i);
+                    if (lista[i].idGrupo == id) {
+                        tmp.push(lista[i]);
+                        lista.splice(i, 1);
+                        i--;
+                    }
+                    
+                }
             }
             gruposDeIDs.push(tmp);
             console.log(tmp);
@@ -378,14 +382,12 @@ var metricas = {
 
 
         gruposDeIDs.forEach(function (item, index, array) {
-
             var graficasGrupo;
             var tmp = '';
             item.forEach(function (grafica, index, array) {
                 tmp += `<div style="display:${index == 0 ? "block" : "none"}" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
-
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item[0].anchura}"> 
                     <div class="wrap">
@@ -404,11 +406,11 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
-                                ${item.length != 1 ? `<div class="toggleChart">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">sync_alt</span>
-                                    </a>
-                                </div>`: ""}
+                                ${item.length != 1 ? `
+                                    <select class="chartMenu" href="javascript: void(0);" style="height:24px">
+                                       
+                                    </select>
+                                `: ""}
                             </div>
                         </div>                      
                         ${graficasGrupo}
@@ -521,6 +523,45 @@ var metricas = {
             `);
         }
     },
+    reDrawChart: function (myChart, topAxis, bottomAxis, canvasSize, legend) {
+        // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
+        /*
+        var canvas = myChart.canvas;
+        var chartAreaWrapper = canvas.parentNode;
+        */
+        var scale = window.devicePixelRatio;
+        myChart.canvas.parentNode.style.height = canvasSize + 'px';
+        var copyWidth = myChart.width;
+        // Altura del titulo, leyenda y eje superior menos el margen.
+        var copyHeight = myChart.boxes[0].height + myChart.boxes[1].height + myChart.boxes[2].height - 5;
+        // Le asignamos tamaño a la leyenda.
+        var axisHeight = myChart.boxes[2].height;
+
+        // Preparamos el eje superior.
+        $(legend).css("height", copyHeight + "px");
+        $(legend).css("width", copyWidth + "px");
+
+
+        if (topAxis) {
+            var topAxisCtx = topAxis[0].getContext('2d');
+            topAxisCtx.scale(scale, scale); // Escala del zoom.
+            topAxisCtx.canvas.width = copyWidth;
+            topAxisCtx.canvas.height = axisHeight;
+            topAxisCtx.drawImage(myChart.canvas, 0, (copyHeight - axisHeight) * scale, copyWidth * scale, axisHeight * scale, 0, 0, copyWidth, axisHeight);
+        }
+
+        // Preparamos el eje inferior.
+        
+        if (bottomAxis) {
+            var bottomAxisCtx = bottomAxis[0].getContext('2d');
+            bottomAxisCtx.scale(scale, scale); // Escala del zoom.
+            bottomAxisCtx.canvas.width = copyWidth;
+            bottomAxisCtx.canvas.height = axisHeight;
+
+            bottomAxisCtx.drawImage(myChart.canvas, 0, myChart.chartArea.bottom * scale, copyWidth * scale, axisHeight * scale, 0, 0, copyWidth, axisHeight);
+        }
+    },
+
     engancharComportamientos: function () {
         var that = this;
 
@@ -804,9 +845,13 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
-                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas');
-                if (!canvas){
-                canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');}
+                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+
+                /*
+                if (!canvas) {
+                    canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                }
+                */
 
                 var chart = Chart.getChart(canvas);
 
@@ -837,8 +882,6 @@ var metricas = {
                 var parent = $(this).parents('div.wrap');
                 var shown = parent.find('div.show');
                 var hidden = parent.find('div.hide');
-                console.log(parent);
-
                 shown.css('display', 'none');
                 hidden.css('display', 'block');
                 shown.removeClass('show');
@@ -849,5 +892,21 @@ var metricas = {
 
 
             });
+        $("select.chartMenu")
+            .unbind()
+            .change(function (e) {
+                var parent = $(this).parents('div.wrap');
+                var shown = parent.find('div.show');
+                shown.css('display', 'none');
+                shown.removeClass('show');
+                shown.addClass('hide');
+                var selected = parent.find('canvas#' + $(this).val()).parents('div.hide');
+                if (selected.length) {
+                    selected.css('display', 'block');
+                    selected.removeClass('hide');
+                    selected.addClass('show');
+                }
+            });
+
     }
 }
