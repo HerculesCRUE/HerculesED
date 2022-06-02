@@ -15,10 +15,30 @@ var exportacionCV = {
 		$('.btGenerarExportarCV').off('click').on('click', function(e) {
             e.preventDefault();
 			if($('#exportCvName').val().length == 0){
-				window.alert("Debes Añadir un nombre al fichero");
+				window.alert("Debes añadir un nombre al fichero");
 				return false;
 			}
 			that.cargarCV();
+		});
+		//Preparar exportación parcial
+		$('.btGenerarExportarCVParcial').off('click').on('click', function(e) {
+            e.preventDefault();
+			if($('#exportCvName').val().length == 0){
+				window.alert("Debes añadir un nombre al fichero");
+				return false;
+			}else{
+				MostrarUpdateProgress();
+				
+				var data = {};
+				data.userID= that.idUsuario;
+				data.lang= lang;
+				data.nombreCV= $('#exportCvName').val();
+				
+				$.post(urlExportacionCV + 'GetCV', data, function(data) {
+					OcultarUpdateProgress();
+					that.cargarListadoCV();
+				});
+			}
 		});
 		
 		
@@ -53,7 +73,7 @@ var exportacionCV = {
 	},
 	//Carga los CV exporatdos
     cargarListadoCV: function() {
-		$('.listadoCV li').remove();
+		$('.resource-list-wrap.listadoCV article').remove();
 
         var that = this;
 		that.idUsuario = $('#inpt_usuarioID').val();
@@ -61,12 +81,40 @@ var exportacionCV = {
 		$('.col-contenido.exportacion').hide();
 		MostrarUpdateProgress();
 		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
-            //recorrer items y por cada uno			
-			for(var i=0;i<data.length;i++){				
-				$('.listadoCV').append($('<li>'+data[i].titulo+'</li>'));
-				$('.listadoCV').append($('<li>'+data[i].fecha+'</li>'));
-				$('.listadoCV').append($('<li>'+data[i].estado+'</li>'));
-				$('.listadoCV').append($('<li>'+data[i].fichero+'</li>'));
+            //recorrer items y por cada uno
+			for(var i=0;i<data.length;i++){			
+				var articleHTML = `<article class="resource plegado">
+										<div class="middle-wrap">
+											<div class="title-wrap">
+												<h2 class="resource-title">
+													<a href="${data[i].fichero}">${data[i].titulo}</a>
+												</h2>
+											</div>
+											<div class="content-wrap">
+												<div class="description-wrap counted">
+												
+														<div class="list-wrap no-oculto">
+															<div class="label">Estado</div>
+															<ul>
+																<li class="entity">
+																	${data[i].estado}
+																</li>
+															</ul>
+														</div>
+														<div class="list-wrap no-oculto">
+															<div class="label">Fecha</div>
+															<ul>
+																<li>
+																	${data[i].fecha}
+																</li>
+															</ul>
+														</div>
+													</div>
+													
+											</div>
+										</div>
+									</article>`;
+				$('.listadoCV').append(articleHTML);
 			}
 			OcultarUpdateProgress();
 		});

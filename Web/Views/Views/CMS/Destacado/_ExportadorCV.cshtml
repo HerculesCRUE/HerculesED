@@ -67,11 +67,31 @@
 							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
 						</div>
 					</div>
+				</div>				
+				<div class="page-section">
+					<div class="page-section-title">
+						<span class="material-icons">settings_input_component</span>
+						<h2>@Html.Translate("DESCARGAR_CVN")</h2>
+					</div>					
+					<div class="form-group mb-3">
+						<label class="control-label d-block">@Html.Translate("TITULO")</label>
+						<input id="exportCvName" placeholder="@Html.Translate("INTRODUCE_UN_TITULO_PARA_EL_FICHERO")" type="text" class="form-control not-outline">
+					</div>
+					<div class="form-group mb-3">
+						<a class="btn btn-primary uppercase btGenerarExportarCV" >@Html.Translate("GENERAR_NUEVA_EXPORTACION")</a>	
+						<a class="btn btn-primary uppercase btGenerarExportarCVParcial" >@Html.Translate("GENERAR_NUEVA_EXPORTACION_PARCIAL")</a>
+					</div>
+				</div>				
+				<div class="page-section">
+					<div class="page-section-title">
+						<span class="material-icons">settings_input_component</span>
+						<h2>@Html.Translate("CVN_GENERADOS")</h2>
+					</div>
+					<div class="resource-list listView resource-list-buscador">
+						<div class="resource-list-wrap listadoCV">
+						</div>
+					</div>
 				</div>
-				<ul class="listadoCV">
-				</ul>
-				<input type="text" id="exportCvName"/>
-				<a class="btn btn-primary uppercase btGenerarExportarCV" >@Html.Translate("GENERAR_NUEVA_EXPORTACION")</a>
 			</div>
 		</div>
 		<div class="col col-12 col-contenido exportacion" style="display:none">
