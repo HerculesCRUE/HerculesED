@@ -138,7 +138,6 @@ namespace EditorCV.Models
                 };
                 mResourceApi.ModifyPropertiesLoadedResources(triplesModificar);
                 mResourceApi.Log.Error("Error: " + e.Message + ". Traza:" + e.StackTrace);
-                throw new Exception(e.Message);
             }
         }
 
