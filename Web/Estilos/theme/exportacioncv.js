@@ -73,23 +73,29 @@ var exportacionCV = {
 		$('.resource-list-wrap.listadoCV article').remove();
 
         var that = this;
+		var ref = '';
 		that.idUsuario = $('#inpt_usuarioID').val();
 		$('.col-contenido.listadoExportacion').show();
 		$('.col-contenido.exportacion').hide();
 		MostrarUpdateProgress();
 		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
             //recorrer items y por cada uno
-			for(var i=0;i<data.length;i++){			
+			for(var i=0;i<data.length;i++){
+				
+				if(data[i].fichero == ''){
+					ref = data[i].titulo;
+				}else{
+					ref = '<a href="' + data[i].fichero + '">' + data[i].titulo + '</a>';
+				}
 				var articleHTML = `<article class="resource plegado">
 										<div class="middle-wrap">
 											<div class="title-wrap">
 												<h2 class="resource-title">
-													<a href="${data[i].fichero}">${data[i].titulo}</a>
+													${ref}
 												</h2>
 											</div>
 											<div class="content-wrap">
-												<div class="description-wrap counted">
-												
+												<div class="description-wrap counted">												
 														<div class="list-wrap no-oculto">
 															<div class="label">Estado</div>
 															<ul>
