@@ -73,21 +73,31 @@ var exportacionCV = {
 		$('.resource-list-wrap.listadoCV article').remove();
 
         var that = this;
-		var ref = '';
 		that.idUsuario = $('#inpt_usuarioID').val();
 		$('.col-contenido.listadoExportacion').show();
 		$('.col-contenido.exportacion').hide();
 		MostrarUpdateProgress();
 		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
             //recorrer items y por cada uno
-			for(var i=0;i<data.length;i++){
+			for(var i=0;i<data.length;i++){				
+				var ref = '';
+				var estado = '';
 				
+				//Añado icono de Warning en caso de producirse error
 				if(data[i].fichero == ''){
-					ref = data[i].titulo;
+					ref = '<span class="material-icons warning">warning</span>' + data[i].titulo;
 				}else{
 					ref = '<a href="' + data[i].fichero + '">' + data[i].titulo + '</a>';
 				}
-				var articleHTML = `<article class="resource plegado">
+				//Cambio los colores del ::before dependiendo del estado del archivo
+				if(data[i].estado=='procesado'){
+					estado = 'success';
+				}
+				else if(data[i].estado=='pendiente'){
+					estado = 'pending';
+				}
+				
+				var articleHTML = `<article class="resource plegado ${estado}">
 										<div class="middle-wrap">
 											<div class="title-wrap">
 												<h2 class="resource-title">
