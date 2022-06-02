@@ -10,6 +10,7 @@ var metricas = {
     init: function () {
         this.createEmptyPage('123');
         this.getPage('123');
+  
         return;
     },
     config: function () {
@@ -129,9 +130,9 @@ var metricas = {
                         callbacks: {
                             afterLabel: function (context) {
                                 let label = "Porcentaje: ";
-                                let sum = context.dataset.data.reduce((a,b)=> a+b,0);
-                                let porcentaje = context.dataset.data[context.dataIndex]*100/sum;
-                                label += porcentaje.toFixed(2)+'%';
+                                let sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
+                                label += porcentaje.toFixed(2) + '%';
                                 return label;
                             }
                         }
@@ -229,10 +230,10 @@ var metricas = {
                             $(chartContainer).append(bottomAxis);
                         }
                         // Cuando se acutaliza el canvas.
-                        data.options.animation.onProgress = ()=>that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
+                        data.options.animation.onProgress = () => that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
                         // Cuando se reescala el navegador se redibuja la leyenda.
                         window.addEventListener('resize', (e) => {
-                           that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
+                            that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
                             myChart.update();
                         });
 
@@ -375,46 +376,27 @@ var metricas = {
             tmp = [];
             var grafica = lista.shift();
             id = grafica.idGrupo;
+            console.log(id);
             if (id == null) { // si la id es nula la mete en un grupo nuevo
                 tmp.push(grafica);
             } else {
                 tmp.push(grafica);
-
-
-               /* lista.forEach(function (grafica, index, array) {
-                    console.log(grafica);
-                    console.log(id);
-                    console.log(lista);
-                    if (grafica.idGrupo == id) {
-
-                        tmp.push(grafica);
-                        lista.splice(index, 1);
-                        index--;
-                    }
-
-                });*/
-                
-                for (let i = 0; i<lista.length; i++) {
-                    console.log(i);
+                for (let i = 0; i < lista.length; i++) {
                     if (lista[i].idGrupo == id) {
                         tmp.push(lista[i]);
                         lista.splice(i, 1);
                         i--;
                     }
-                    
                 }
             }
             gruposDeIDs.push(tmp);
-            console.log(tmp);
         }
-
-
-
+        
         gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
             item.forEach(function (grafica, index, array) {
-                tmp += `<div style="display:${index == 0 ? "block" : "none"}" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div style="display:${index == 0 ? "block" : "none"}; margin-top:20px;" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
@@ -423,7 +405,9 @@ var metricas = {
                         <div class="title-wrap">
                             <h2></h2>
                         </div>
-                        <div class="acciones-mapa">
+                        <div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px`: ""}">
+                            ${item.length != 1 ? `
+                            <select class="chartMenu js-select2" href="javascript: void(0);" style="height:24px"></select>`: ""}
                             <div class="wrap">
                                 <div class="zoom">
                                     <a href="javascript: void(0);" style="height:24px"  data-target="#modal-ampliar-mapa" data-toggle="modal">
@@ -435,11 +419,7 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
-                                ${item.length != 1 ? `
-                                    <select class="chartMenu" href="javascript: void(0);" style="height:24px">
-                                       
-                                    </select>
-                                `: ""}
+
                             </div>
                         </div>                      
                         ${graficasGrupo}
@@ -580,7 +560,7 @@ var metricas = {
         }
 
         // Preparamos el eje inferior.
-        
+
         if (bottomAxis) {
             var bottomAxisCtx = bottomAxis[0].getContext('2d');
             bottomAxisCtx.scale(scale, scale); // Escala del zoom.
@@ -593,7 +573,7 @@ var metricas = {
 
     engancharComportamientos: function () {
         var that = this;
-
+        iniciarSelects2.init();
         $(".faceta-date-range .ui-slider").slider({
             range: true,
             min: minYear,
@@ -905,6 +885,8 @@ var metricas = {
                 a.download = Date.now() + '.jpg';
                 a.click();
             });
+        //boton para cambiar entre graficas (en desuso)
+        /*
         $('div.toggleChart')
             .unbind()
             .click(function (e) {
@@ -917,10 +899,9 @@ var metricas = {
                 hidden.removeClass('hide');
                 shown.addClass('hide');
                 hidden.addClass('show');
-
-
-
             });
+        */
+        //menu para cambiar entre graficas
         $("select.chartMenu")
             .unbind()
             .change(function (e) {
