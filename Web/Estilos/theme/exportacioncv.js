@@ -77,7 +77,7 @@ var exportacionCV = {
 		$('.col-contenido.listadoExportacion').show();
 		$('.col-contenido.exportacion').hide();
 		MostrarUpdateProgress();
-		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario , null, function(data) {
+		$.get(urlExportacionCV + 'GetListadoCV?userID=' + that.idUsuario +"&baseUrl="+$('#inpt_baseURL').val()+"&timezoneOffset="+new Date().getTimezoneOffset(), null, function(data) {
             //recorrer items y por cada uno
 			for(var i=0;i<data.length;i++){				
 				var ref = '';
