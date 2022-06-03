@@ -62,15 +62,22 @@
 
 <div id="containerCV">
 	<div class="row">
+		<div class="col col-12 col-breadcrumb">
+			<ul>
+				<li>
+					<a href="@Comunidad.Url">Home</a>
+				</li>
+				<li>@Html.Translate("EXPORTAR_CV")</li>
+			</ul>
+		</div>
 		<div class="col col-12 col-contenido listadoExportacion">
 			<div class="wrapCol">
-				<div class="cabecera-cv-listado">
-					<div class="upper-wrap">
-						<div class="h1-container">
-							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
-						</div>
+				<div class="header-contenido">
+					<div class="h1-container">
+						<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
 					</div>
 				</div>
+				<p>@Html.Translate("AYUDAMOS_GESTIONAR_RESULTADOS_INVESTIGACIÓN")</p>
 				<div class="page-section">
 					<div class="page-section-title">
 						<span class="material-icons">backup</span>

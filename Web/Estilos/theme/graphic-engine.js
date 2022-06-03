@@ -1,31 +1,37 @@
 $(document).ready(function () {
     metricas.init();
 });
-
 // Año máximo y mínimo para las facetas de años
-var minYear = 10000;
-var maxYear = 0;
+var minYear;
+var maxYear;
+// Lista de páginas
+var listaPaginas;
 
 var metricas = {
     init: function () {
-        this.createEmptyPage('123');
-        this.getPage('123');
+        this.getPages();
         return;
     },
     config: function () {
         return;
     },
-    getPage: function (pIdPagina) {
+    getPages: function () {
         var that = this;
         //var url = "https://localhost:44352/GetPaginaGrafica";
-        var url = url_servicio_graphicengine + "GetPaginaGrafica";
+        var url = url_servicio_graphicengine + "GetPaginasGraficas";
         var arg = {};
-        arg.pIdPagina = "123";
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function (data) {
-            that.fillPage(data);
+        $.get(url, arg, function (listaData) {
+            for (let i = 0; i < listaData.length; i++) {
+                $(".listadoMenuPaginas").append(`
+                    <li id="${listaData[i].id}" num="${i}">${listaData[i].nombre}</li>
+                `);
+            }
+            that.createEmptyPage(listaData[0].id);
+            that.fillPage(listaData[0]);
+            listaPaginas = listaData;
         });
     },
     getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas) {
@@ -96,14 +102,12 @@ var metricas = {
                 });
 
             } else {
-
                 var combo = $(ctx).parents("article").find("select");
                 if (combo) {
                     combo.append(`
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.options.plugins.title.text}</options>
                     `)
                 }
-
                 // Plugin para color de fondo, le pongo el color blanco.
                 var plugin = {
                     id: 'custom_canvas_background_color',
@@ -116,128 +120,7 @@ var metricas = {
                     }
                 };
                 data.plugins = [plugin];
-
-                var myChart = new Chart(ctx, data);
-
-                var numBars = data.data.labels.length; // Número de barras.
-                var barSize = 100; // Tamaño arbitrario de las barras.
-                var canvasSize = (numBars * barSize); // Tamaño del canvas.
-
-                // En caso de que los datos de la gráfica se representen con porcentajes
-                if (pIdGrafica.includes("prc")) {
-                    data.options.plugins.tooltip = {
-                        callbacks: {
-                            afterLabel: function (context) {
-                                let label = "Porcentaje: ";
-                                let sum = context.dataset.data.reduce((a,b)=> a+b,0);
-                                let porcentaje = context.dataset.data[context.dataIndex]*100/sum;
-                                label += porcentaje.toFixed(2)+'%';
-                                return label;
-                            }
-                        }
-                    }
-                    myChart.update();
-                }
-
-
-                // Solo si es una gráfica horizontal.
-                if (data.options.indexAxis == "y") {
-                    // Obtenemos los elementos de la gráfica.
-                    var canvas = myChart.canvas;
-                    var chartAreaWrapper = canvas.parentNode;
-                    var scrollContainer = chartAreaWrapper.parentNode;
-                    var chartContainer = scrollContainer.parentNode;
-
-                    // En caso de que los labels de la gráfica deban de estar abreviados...
-                    if (pIdGrafica.includes("abr")) {
-                        // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
-                        data.options.scales.y.ticks.callback = function (value) {
-                            const labels = data.data.labels; // Obtención de los labels.
-                            if (value >= 0 && value < labels.length) {
-                                if (labels[value].length >= 7) {
-                                    return labels[value].substring(0, 7) + "..."; // Se muestran solo los 7 primeros caractéres.
-                                }
-                                return labels[value];
-                            }
-                            return value;
-                        }
-                        myChart.update();
-                    }
-
-                    // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
-                    if (canvasSize < 550) {
-                        chartAreaWrapper.style.height = canvasSize + 'px';
-                        scrollContainer.style.overflowY = 'hidden';
-                    } else {
-                        // De lo contrario se prepara todo para el scroll.
-                        // Importante que no mantega el ratio para poder reescalarlo.
-                        data.options.maintainAspectRatio = false;
-                        data.options.responsive = true;
-
-                        var hasTopAxis = false;
-                        var hasBottomAxis = false;
-
-                        // Se comprueba si tiene eje inferior y superior.
-                        Object.entries(data.options.scales).forEach((scale) => {
-                            if (scale[1].axis == "x") {
-                                if (scale[1].position == "top" && !hasTopAxis) {
-                                    hasTopAxis = true;
-                                } else if (scale[1].position == "bottom" && !hasBottomAxis) {
-                                    hasBottomAxis = true;
-                                }
-                            }
-                        });
-
-                        // Si existe un eje superior se crea los elementos necesarios para la leyenda y el eje.
-
-                        // Contenedor de la leyenda.
-
-                        var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
-                        <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
-                        </div>`);
-
-                        $(chartContainer).append(legend);
-
-
-                        // Contenedor de los elementos de la leyenda.
-                        var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"></div>`);
-                        $(legend).append(dataSetLabels);
-
-                        // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
-                        var datasets = data.data.datasets;
-                        datasets.forEach((dataset, index) => {
-                            var labelContainer = $(`<div id="label-${index}" class="labelContainer" style="margin: 5px; height: 15px; display: flex; align-items: center;">
-                            <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"></div>
-                            <p class="dataSetLabel" style="font-family: Calibri; margin: 5px;">${dataset.label}</p>
-                            </div>`);
-
-
-                            //labelContainer.appendChild(colorDiv);
-                            $(dataSetLabels).append(labelContainer);
-
-
-                        });
-                        // Eje superior. 
-                        if (hasTopAxis) {
-                            var topAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
-                            $(legend).append(topAxis);
-                        }
-
-                        // Si existe un eje inferior, se agrega con estilos.
-                        if (hasBottomAxis) {
-                            var bottomAxis = $(`<canvas id="bottomAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
-                            $(chartContainer).append(bottomAxis);
-                        }
-                        // Cuando se acutaliza el canvas.
-                        data.options.animation.onProgress = ()=>that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
-                        // Cuando se reescala el navegador se redibuja la leyenda.
-                        window.addEventListener('resize', (e) => {
-                           that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
-                            myChart.update();
-                        });
-
-                    }
-                }
+                that.drawChart(ctx, data, pIdGrafica);
             }
             that.engancharComportamientos();
         });
@@ -251,6 +134,10 @@ var metricas = {
         arg.pIdFaceta = pIdFaceta;
         arg.pFiltroFacetas = pFiltroFacetas;
         arg.pLang = lang;
+        // Año máximo y mínimo para las facetas de años
+        minYear = 10000;
+        maxYear = 0;
+
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
 
@@ -286,6 +173,7 @@ var metricas = {
                 <span class="facet-arrow"></span><ul class="listadoFacetas"></ul>
                 `);
             }
+
             data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
@@ -332,11 +220,21 @@ var metricas = {
             that.engancharComportamientos();
         });
     },
+    clearPage: function () {
+        $('#panFacetas').empty()
+        $('.resource-list-wrap').empty();
+        $('.borrarFiltros').click();
+    },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
         $('.containerPage').addClass('pageMetrics');
         $('#panFacetas').attr('idfaceta', 'page_' + pIdPagina);
         $('#panFacetas').addClass('containerFacetas');
+
+
+        $('main').append(`
+        <div class="modal-backdrop fade" style="pointer-events: none;"></div>
+        `);
 
         /*$('#containerMetrics').append(`
             <div id="page_${pIdPagina}" class="pageMetrics">
@@ -375,46 +273,27 @@ var metricas = {
             tmp = [];
             var grafica = lista.shift();
             id = grafica.idGrupo;
+  
             if (id == null) { // si la id es nula la mete en un grupo nuevo
                 tmp.push(grafica);
             } else {
                 tmp.push(grafica);
-
-
-               /* lista.forEach(function (grafica, index, array) {
-                    console.log(grafica);
-                    console.log(id);
-                    console.log(lista);
-                    if (grafica.idGrupo == id) {
-
-                        tmp.push(grafica);
-                        lista.splice(index, 1);
-                        index--;
-                    }
-
-                });*/
-                
-                for (let i = 0; i<lista.length; i++) {
-                    console.log(i);
+                for (let i = 0; i < lista.length; i++) {
                     if (lista[i].idGrupo == id) {
                         tmp.push(lista[i]);
                         lista.splice(i, 1);
                         i--;
                     }
-                    
                 }
             }
             gruposDeIDs.push(tmp);
-            console.log(tmp);
         }
-
-
 
         gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
             item.forEach(function (grafica, index, array) {
-                tmp += `<div style="display:${index == 0 ? "block" : "none"}" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div style="display:${index == 0 ? "block" : "none"}; margin-top:20px;" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
@@ -423,10 +302,12 @@ var metricas = {
                         <div class="title-wrap">
                             <h2></h2>
                         </div>
-                        <div class="acciones-mapa">
+                        <div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px` : ""}">
+                            ${item.length != 1 ? `
+                            <select class="chartMenu js-select2" href="javascript: void(0);" style="height:24px"></select>`: ""}
                             <div class="wrap">
                                 <div class="zoom">
-                                    <a href="javascript: void(0);" style="height:24px"  data-target="#modal-ampliar-mapa" data-toggle="modal">
+                                    <a href="javascript: void(0);" style="height:24px"  data-toggle="modal">
                                         <span class="material-icons">zoom_in</span>
                                     </a>
                                 </div>
@@ -435,11 +316,7 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
-                                ${item.length != 1 ? `
-                                    <select class="chartMenu" href="javascript: void(0);" style="height:24px">
-                                       
-                                    </select>
-                                `: ""}
+
                             </div>
                         </div>                      
                         ${graficasGrupo}
@@ -495,23 +372,6 @@ var metricas = {
                     </div>
                 </div>
                 `);
-
-                /*
-                <div class="chartWrapper" style="position:relative;">
-                    <div style="overflow-y: scroll;height:546px;">
-                        <div style="height: 1900px;" class="chartAreaWrapper">
-                            <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}"></canvas>
-                        </div>
-                    </div>
-                    <div id="chartLegend" style="text-align:center;position:absolute;top:0px;background-color:white">
-                        <h4 id="legendTitle" style="margin:10px;font-family:Calibri,sans-serif;font-size:90%;font-weight:bold;"></h4>
-                        <div id="dataSetLabels" style="display:flex;flex-flow:row wrap;justify-content:center"></div>
-
-                        <canvas id="topAxis" class="myChartAxis" style="background:white;position:absolute;bottom:0px;left:0px"></canvas>
-                    </div>
-                    <canvas id="bottomAxis" class="myChartAxis" style="background:white;position:absolute;bottom:0px"></canvas>
-                </div>
-            `);*/
             } else {
                 $(this).append(`
                     <canvas id = "grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width = "600" height = "250" ></canvas>
@@ -551,13 +411,124 @@ var metricas = {
             </li>
             `);
         }
+    }, drawChart: function (ctx, data, pIdGrafica = null, barSize = 100) {
+
+        var myChart = new Chart(ctx, data);
+        var numBars = data.data.labels.length; // Número de barras.
+        
+        var canvasSize = (numBars * barSize); // Tamaño del canvas.
+
+        // En caso de que los datos de la gráfica se representen con porcentajes
+        if (pIdGrafica!=null && pIdGrafica.includes("prc")) {
+            data.options.plugins.tooltip = {
+                callbacks: {
+                    afterLabel: function (context) {
+                        let label = "Porcentaje: ";
+                        let sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                        let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
+                        label += porcentaje.toFixed(2) + '%';
+                        return label;
+                    }
+                }
+            }
+        }
+
+        // Solo si es una gráfica horizontal.
+        if (data.options.indexAxis == "y") {
+            // En caso de que los labels de la gráfica deban de estar abreviados...
+            
+            if (pIdGrafica!=null && pIdGrafica.includes("abr")) {
+                // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
+                data.options.scales.y.ticks.callback = function (value) {
+                    const labels = data.data.labels; // Obtención de los labels.
+                    if (value >= 0 && value < labels.length) {
+                        if (labels[value].length >= 7) {
+                            return labels[value].substring(0, 7) + "..."; // Se muestran solo los 7 primeros caractéres.
+                        }
+                        return labels[value];
+                    }
+                    return value;
+                }
+            }
+
+            // Obtenemos los elementos de la gráfica.
+            var canvas = myChart.canvas;
+            var chartAreaWrapper = canvas.parentNode;
+            var scrollContainer = chartAreaWrapper.parentNode;
+            var chartContainer = scrollContainer.parentNode;
+
+            // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
+            if (canvasSize < 550) { //TODO cambiar 550 por el tamaño del contenedor.
+                chartAreaWrapper.style.height = canvasSize + 'px';
+                scrollContainer.style.overflowY = 'hidden';
+            } else {
+                // De lo contrario se prepara todo para el scroll.
+                // Importante que no mantega el ratio para poder reescalarlo.
+                data.options.maintainAspectRatio = false;
+                data.options.responsive = true;
+
+                var hasTopAxis = false;
+                var hasBottomAxis = false;
+
+                // Se comprueba si tiene eje inferior y superior.
+                Object.entries(data.options.scales).forEach((scale) => {
+                    if (scale[1].axis == "x") {
+                        if (scale[1].position == "top" && !hasTopAxis) {
+                            hasTopAxis = true;
+                        } else if (scale[1].position == "bottom" && !hasBottomAxis) {
+                            hasBottomAxis = true;
+                        }
+                    }
+                });
+
+                // leyenda con titulo y contenedor para datasets.
+                var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
+                <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
+                </div>`);
+
+                $(chartContainer).append(legend);
+
+                var dataSetLabels =$(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"></div>`)
+                $(legend).append(dataSetLabels);
+
+
+                // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
+                var datasets = data.data.datasets;
+                datasets.forEach((dataset, index) => {
+                    var labelContainer = $(`<div id="label-${index}" class="labelContainer" style="margin: 5px; height: 15px; display: flex; align-items: center;">
+                    <div style="height: 15px; width: 45px; background-color: ${dataset.backgroundColor[0]}; border: 1px solid lightgrey; box-sizing: border-box;"></div>
+                    <p class="dataSetLabel" style="font-family: Calibri; margin: 5px;">${dataset.label}</p>
+                    </div>`);
+                    //labelContainer.appendChild(colorDiv);
+                    $(dataSetLabels).append(labelContainer);
+
+
+                });
+                // Eje superior. 
+                if (hasTopAxis) {
+                    var topAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
+                    $(legend).append(topAxis);
+                }
+
+                // Si existe un eje inferior, se agrega con estilos.
+                if (hasBottomAxis) {
+                    var bottomAxis = $(`<canvas id="bottomAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
+                    $(chartContainer).append(bottomAxis);
+                }
+                // Cuando se acutaliza el canvas.
+                data.options.animation.onProgress = () => this.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
+                // Cuando se reescala el navegador se redibuja la leyenda.
+                window.addEventListener('resize', (e) => {
+                    this.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
+                    myChart.update();
+                });
+
+            }
+        }
+
     },
     reDrawChart: function (myChart, topAxis, bottomAxis, canvasSize, legend) {
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
-        /*
-        var canvas = myChart.canvas;
-        var chartAreaWrapper = canvas.parentNode;
-        */
         var scale = window.devicePixelRatio;
         myChart.canvas.parentNode.style.height = canvasSize + 'px';
         var copyWidth = myChart.width;
@@ -570,7 +541,6 @@ var metricas = {
         $(legend).css("height", copyHeight + "px");
         $(legend).css("width", copyWidth + "px");
 
-
         if (topAxis) {
             var topAxisCtx = topAxis[0].getContext('2d');
             topAxisCtx.scale(scale, scale); // Escala del zoom.
@@ -580,7 +550,6 @@ var metricas = {
         }
 
         // Preparamos el eje inferior.
-        
         if (bottomAxis) {
             var bottomAxisCtx = bottomAxis[0].getContext('2d');
             bottomAxisCtx.scale(scale, scale); // Escala del zoom.
@@ -593,7 +562,7 @@ var metricas = {
 
     engancharComportamientos: function () {
         var that = this;
-
+        iniciarSelects2.init();
         $(".faceta-date-range .ui-slider").slider({
             range: true,
             min: minYear,
@@ -771,12 +740,7 @@ var metricas = {
         $('#allyears')
             .unbind()
             .click(function (e) {
-                var min, max;
-                // Cojo el valor del input y si no tiene le pongo el placeholder
-                min = $("#gmd_ci_datef1").attr("placeholder");
-                max = $("#gmd_ci_datef2").attr("placeholder");
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
-                var filtroActual = `${filtro}=${min}-${max}`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
                 filtros = '';
@@ -790,7 +754,6 @@ var metricas = {
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
                 }
-                filtros += filtroActual;
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
@@ -905,6 +868,8 @@ var metricas = {
                 a.download = Date.now() + '.jpg';
                 a.click();
             });
+        //boton para cambiar entre graficas (en desuso)
+        /*
         $('div.toggleChart')
             .unbind()
             .click(function (e) {
@@ -917,10 +882,9 @@ var metricas = {
                 hidden.removeClass('hide');
                 shown.addClass('hide');
                 hidden.addClass('show');
-
-
-
             });
+        */
+        //menu para cambiar entre graficas
         $("select.chartMenu")
             .unbind()
             .change(function (e) {
@@ -937,5 +901,102 @@ var metricas = {
                 }
             });
 
+        $("div.zoom")
+            .unbind()
+            .click(function (e) {
+                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                var chart = Chart.getChart(canvas);
+                var parent = $('#modal-ampliar-mapa').find('.graph-container');
+                var isHorizontal;
+
+                $('#modal-ampliar-mapa').css('display', 'block');
+                $('#modal-ampliar-mapa').css('pointer-events', 'none');
+
+                $('.modal-backdrop').addClass('show');
+                $('.modal-backdrop').css('pointer-events', 'auto');
+
+                $('#modal-ampliar-mapa').addClass('show');
+
+                $('#modal-ampliar-mapa').find('p.modal-title').text("grafica_" + (canvas.parents('div.grafica').attr("idgrafica")));
+
+
+
+
+                if ($(canvas).parents('div.grafica').attr("idgrafica").includes("nodes")) {
+                    parent.append(`
+                            <p id="grafica_${$(canvas).parents('div.grafica').attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                            <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
+                                <ul class="no-list-style align-items-center" style="display: flex; flex-direction: column;align-items:center">
+                                    <li class="control zoomin-control" id="zoomIn">
+                                        <span class="material-icons">add</span>
+                                    </li>
+                                    <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
+                                        <span class="material-icons" >remove</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id = "grafica_${$(canvas).parents('div.grafica').attr("idgrafica")}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                        `);
+
+
+
+                } else {
+                    if ($(canvas).parents('div.grafica').attr("idgrafica").includes("isHorizontal")) {
+                        isHorizontal = true;
+                        parent.append(`
+                            <div class="chartWrapper" style="position:relative; margin-top:15px">
+                                <div style="overflow-y: scroll;height:400px;">
+                                    <div style="height: 00px;" class="chartAreaWrapper">
+                                        <canvas width = "600" height = "250" id = "grafica_${$(canvas).parents('div.grafica').attr("idgrafica")}"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    } else {
+                        parent.append(`
+                            <canvas id =" grafica_${$(canvas).parents('div.grafica').attr("idgrafica")}" width = "600" height = "250"></canvas>
+                        `);
+                    }
+                    var canvasCopy = parent.find('canvas');
+                    if (isHorizontal) {
+
+                        var barSize = 50;
+                        var numBars = chart.config.data.labels.length;
+                        var chartHeight = barSize * numBars > 400 ? barSize * numBars : 400;
+                        canvasCopy.parent().css('height', chartHeight + 'px');
+                    }
+                    that.drawChart(canvasCopy, {
+                        type: chart.config.type,
+                        data: chart.config.data,
+                        options: chart.config.options
+                    },null,50);
+                    that.engancharComportamientos();
+
+                }
+
+            });
+        $('.modal-backdrop').unbind()
+            .click(cerrarModal);
+        $('span.cerrar')
+            .unbind()
+            .click(cerrarModal);
+
+        function cerrarModal() {
+            $('#modal-ampliar-mapa').find('div.graph-container').css('height', '400px');
+            $('#modal-ampliar-mapa').find('div.graph-container').empty();
+            $('#modal-ampliar-mapa').removeClass('show');
+            $('.modal-backdrop').removeClass('show');
+            $('.modal-backdrop').css('pointer-events', 'none');
+            $('#modal-ampliar-mapa').css('display', 'none');
+        }
+
+        $(".listadoMenuPaginas li")
+            .unbind()
+            .click(function (e) {
+                var numero = $(this).attr("num");
+                metricas.clearPage();
+                metricas.createEmptyPage(listaPaginas[numero].id);
+                metricas.fillPage(listaPaginas[numero]);
+            });
     }
 }

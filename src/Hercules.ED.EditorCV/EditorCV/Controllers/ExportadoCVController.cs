@@ -103,7 +103,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpGet("GetListadoCV")]
-        public IActionResult GetListadoCV([Required] string userID)
+        public IActionResult GetListadoCV([Required] string userID, [Required] string baseUrl, [Required] int timezoneOffset)
         {
             try
             {
@@ -112,9 +112,7 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
-                AccionesExportacion accionesExportacion = new AccionesExportacion();
-                List<FilePDF> pListId = accionesExportacion.GetListPDFFile(pCVId);
-
+                List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId,baseUrl, timezoneOffset);
                 return Ok(pListId);
             }
             catch (Exception ex)
