@@ -252,3 +252,7 @@ a.faceta.applied{
 .edicionOfertaTecnologica .resource-list.resource-list-buscador .resource .wrap .description-wrap {
     padding-left: 0;
 }
+
+.resource.seleccionado .user-miniatura .imagen-usuario-wrap span.material-icons {
+    color: var(--c-primario);
+}
