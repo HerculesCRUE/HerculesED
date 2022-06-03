@@ -20,13 +20,9 @@ namespace EditorCV.Models
         private string passwordESBprc { get; set; }
 
         // URLs
-        private string urlThematicEnrichment { get; set; }
-        private string urlSpecificEnrichment { get; set; }
-        private string urlToken { get; set; }
-        private string urlProduccionCientifica { get; set; }
-        private string urlEnvioProyecto { get; set; }
-        private string urlExportador { get; set; }
-        private string urlImportador { get; set; }
+        private string urlEnrichment { get; set; }
+        private string urlSGI { get; set; }
+        private string urlImportadorExportador { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -186,25 +182,34 @@ namespace EditorCV.Models
         /// Obtiene la URL del API del enriquecimiento de tópicos temáticos que ha sido configurada.
         /// </summary>
         /// <returns>URI del API de enriquecimiento.</returns>
-        public string GetUrlThematicEnrichment()
+        public string GetUrlEnrichment()
         {
-            if (string.IsNullOrEmpty(urlThematicEnrichment))
+            if (string.IsNullOrEmpty(urlEnrichment))
             {
                 string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("url_enriquecimiento_thematic"))
+                if (environmentVariables.Contains("url_enriquecimiento"))
                 {
-                    connectionString = environmentVariables["url_enriquecimiento_thematic"] as string;
+                    connectionString = environmentVariables["url_enriquecimiento"] as string;
                 }
                 else
                 {
-                    connectionString = configuracion["url_enriquecimiento_thematic"];
+                    connectionString = configuracion["url_enriquecimiento"];
                 }
 
-                urlThematicEnrichment = connectionString;
+                urlEnrichment = connectionString;
             }
 
-            return urlThematicEnrichment;
+            return urlEnrichment;
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API del enriquecimiento de tópicos temáticos que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de enriquecimiento.</returns>
+        public string GetUrlThematicEnrichment()
+        {
+            return GetUrlEnrichment() + "/thematic";
         }
 
         /// <summary>
@@ -213,23 +218,32 @@ namespace EditorCV.Models
         /// <returns>URI del API de enriquecimiento.</returns>
         public string GetUrlSpecificEnrichment()
         {
-            if (string.IsNullOrEmpty(urlSpecificEnrichment))
+            return GetUrlEnrichment() + "/specific";
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de obtención de tokens.
+        /// </summary>
+        /// <returns>URI del API de tokens.</returns>
+        public string GetUrlSGI()
+        {
+            if (string.IsNullOrEmpty(urlSGI))
             {
                 string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("url_enriquecimiento_specific"))
+                if (environmentVariables.Contains("url_sgi"))
                 {
-                    connectionString = environmentVariables["url_enriquecimiento_specific"] as string;
+                    connectionString = environmentVariables["url_sgi"] as string;
                 }
                 else
                 {
-                    connectionString = configuracion["url_enriquecimiento_specific"];
+                    connectionString = configuracion["url_sgi"];
                 }
 
-                urlSpecificEnrichment = connectionString;
+                urlSGI = connectionString;
             }
 
-            return urlSpecificEnrichment;
+            return urlSGI;
         }
 
         /// <summary>
@@ -238,23 +252,7 @@ namespace EditorCV.Models
         /// <returns>URI del API de tokens.</returns>
         public string GetUrlToken()
         {
-            if (string.IsNullOrEmpty(urlToken))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("url_token"))
-                {
-                    connectionString = environmentVariables["url_token"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["url_token"];
-                }
-
-                urlToken = connectionString;
-            }
-
-            return urlToken;
+            return GetUrlSGI() + "/auth/realms/sgi/protocol/openid-connect/token";
         }
 
         /// <summary>
@@ -263,23 +261,7 @@ namespace EditorCV.Models
         /// <returns>URI del API de envío a producción científica.</returns>
         public string GetUrlProduccionCientifica()
         {
-            if (string.IsNullOrEmpty(urlProduccionCientifica))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("url_produccion_cientifica"))
-                {
-                    connectionString = environmentVariables["url_produccion_cientifica"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["url_produccion_cientifica"];
-                }
-
-                urlProduccionCientifica = connectionString;
-            }
-
-            return urlProduccionCientifica;
+            return GetUrlSGI() + "/api/sgiprc/producciones-cientificas";
         }
 
         /// <summary>
@@ -288,65 +270,50 @@ namespace EditorCV.Models
         /// <returns>URI del API de envío a producción científica.</returns>
         public string GetUrlEnvioProyecto()
         {
-            if (string.IsNullOrEmpty(urlEnvioProyecto))
+            return GetUrlSGI() + "/api/sgicsp/notificacionesproyectosexternoscvn";
+        }
+
+        /// <summary>
+        /// Obtiene la url del servicio importador/exportador
+        /// </summary>
+        /// <returns></returns>
+        public string GetUrlimportadorExportador()
+        {
+            if (string.IsNullOrEmpty(urlImportadorExportador))
             {
                 string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("url_validar_proyectos"))
+                if (environmentVariables.Contains("url_importador_exportador"))
                 {
-                    connectionString = environmentVariables["url_validar_proyectos"] as string;
+                    connectionString = environmentVariables["url_importador_exportador"] as string;
                 }
                 else
                 {
-                    connectionString = configuracion["url_validar_proyectos"];
+                    connectionString = configuracion["url_importador_exportador"];
                 }
 
-                urlEnvioProyecto = connectionString;
+                urlImportadorExportador = connectionString;
             }
 
-            return urlEnvioProyecto;
+            return urlImportadorExportador;
         }
 
+        /// <summary>
+        /// Obtiene la URL del controlador del exportador
+        /// </summary>
+        /// <returns></returns>
         public string GetUrlExportador()
         {
-            if (string.IsNullOrEmpty(urlExportador))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("url_exportador"))
-                {
-                    connectionString = environmentVariables["url_exportador"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["url_exportador"];
-                }
-
-                urlExportador = connectionString;
-            }
-
-            return urlExportador;
+            return GetUrlimportadorExportador() + "/ExportadorCV";
         }
 
+        /// <summary>
+        /// Obtiene la URL del controlador del importador
+        /// </summary>
+        /// <returns></returns>
         public string GetUrlImportador()
         {
-            if (string.IsNullOrEmpty(urlImportador))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("url_importador"))
-                {
-                    connectionString = environmentVariables["url_importador"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["url_importador"];
-                }
-
-                urlImportador = connectionString;
-            }
-
-            return urlImportador;
+            return GetUrlimportadorExportador() + "/ImportadorCV";
         }
     }
 }
