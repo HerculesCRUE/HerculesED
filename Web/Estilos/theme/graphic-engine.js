@@ -1,31 +1,37 @@
 $(document).ready(function () {
     metricas.init();
 });
-
 // Año máximo y mínimo para las facetas de años
-var minYear = 10000;
-var maxYear = 0;
+var minYear;
+var maxYear;
+// Lista de páginas
+var listaPaginas;
 
 var metricas = {
     init: function () {
-        this.createEmptyPage('123');
-        this.getPage('123');
+        this.getPages();
         return;
     },
     config: function () {
         return;
     },
-    getPage: function (pIdPagina) {
+    getPages: function () {
         var that = this;
         //var url = "https://localhost:44352/GetPaginaGrafica";
-        var url = url_servicio_graphicengine + "GetPaginaGrafica";
+        var url = url_servicio_graphicengine + "GetPaginasGraficas";
         var arg = {};
-        arg.pIdPagina = "123";
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function (data) {
-            that.fillPage(data);
+        $.get(url, arg, function (listaData) {
+            for (let i = 0; i < listaData.length; i++) {
+                $(".listadoMenuPaginas").append(`
+                    <li id="${listaData[i].id}" num="${i}">${listaData[i].nombre}</li>
+                `);
+            }
+            that.createEmptyPage(listaData[0].id);
+            that.fillPage(listaData[0]);
+            listaPaginas = listaData;
         });
     },
     getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas) {
@@ -129,9 +135,9 @@ var metricas = {
                         callbacks: {
                             afterLabel: function (context) {
                                 let label = "Porcentaje: ";
-                                let sum = context.dataset.data.reduce((a,b)=> a+b,0);
-                                let porcentaje = context.dataset.data[context.dataIndex]*100/sum;
-                                label += porcentaje.toFixed(2)+'%';
+                                let sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
+                                label += porcentaje.toFixed(2) + '%';
                                 return label;
                             }
                         }
@@ -229,10 +235,10 @@ var metricas = {
                             $(chartContainer).append(bottomAxis);
                         }
                         // Cuando se acutaliza el canvas.
-                        data.options.animation.onProgress = ()=>that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
+                        data.options.animation.onProgress = () => that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
                         // Cuando se reescala el navegador se redibuja la leyenda.
                         window.addEventListener('resize', (e) => {
-                           that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
+                            that.reDrawChart(myChart, topAxis, bottomAxis, canvasSize, legend);
                             myChart.update();
                         });
 
@@ -251,6 +257,10 @@ var metricas = {
         arg.pIdFaceta = pIdFaceta;
         arg.pFiltroFacetas = pFiltroFacetas;
         arg.pLang = lang;
+        // Año máximo y mínimo para las facetas de años
+        minYear = 10000;
+        maxYear = 0;
+
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
 
@@ -286,6 +296,7 @@ var metricas = {
                 <span class="facet-arrow"></span><ul class="listadoFacetas"></ul>
                 `);
             }
+
             data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
@@ -331,6 +342,11 @@ var metricas = {
 
             that.engancharComportamientos();
         });
+    },
+    clearPage: function () {
+        $('#panFacetas').empty()
+        $('.resource-list-wrap').empty();
+        $('.borrarFiltros').click();
     },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -381,27 +397,27 @@ var metricas = {
                 tmp.push(grafica);
 
 
-               /* lista.forEach(function (grafica, index, array) {
-                    console.log(grafica);
-                    console.log(id);
-                    console.log(lista);
-                    if (grafica.idGrupo == id) {
+                /* lista.forEach(function (grafica, index, array) {
+                     console.log(grafica);
+                     console.log(id);
+                     console.log(lista);
+                     if (grafica.idGrupo == id) {
+ 
+                         tmp.push(grafica);
+                         lista.splice(index, 1);
+                         index--;
+                     }
+ 
+                 });*/
 
-                        tmp.push(grafica);
-                        lista.splice(index, 1);
-                        index--;
-                    }
-
-                });*/
-                
-                for (let i = 0; i<lista.length; i++) {
+                for (let i = 0; i < lista.length; i++) {
                     console.log(i);
                     if (lista[i].idGrupo == id) {
                         tmp.push(lista[i]);
                         lista.splice(i, 1);
                         i--;
                     }
-                    
+
                 }
             }
             gruposDeIDs.push(tmp);
@@ -580,7 +596,7 @@ var metricas = {
         }
 
         // Preparamos el eje inferior.
-        
+
         if (bottomAxis) {
             var bottomAxisCtx = bottomAxis[0].getContext('2d');
             bottomAxisCtx.scale(scale, scale); // Escala del zoom.
@@ -771,12 +787,7 @@ var metricas = {
         $('#allyears')
             .unbind()
             .click(function (e) {
-                var min, max;
-                // Cojo el valor del input y si no tiene le pongo el placeholder
-                min = $("#gmd_ci_datef1").attr("placeholder");
-                max = $("#gmd_ci_datef2").attr("placeholder");
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
-                var filtroActual = `${filtro}=${min}-${max}`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
                 filtros = '';
@@ -790,7 +801,6 @@ var metricas = {
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
                 }
-                filtros += filtroActual;
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
@@ -937,5 +947,13 @@ var metricas = {
                 }
             });
 
+        $(".listadoMenuPaginas li")
+            .unbind()
+            .click(function (e) {
+                var numero = $(this).attr("num");
+                metricas.clearPage();
+                metricas.createEmptyPage(listaPaginas[numero].id);
+                metricas.fillPage(listaPaginas[numero]);
+            });
     }
 }
