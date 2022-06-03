@@ -16,7 +16,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificExperience";
-        public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
+        public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("050");
         }
@@ -61,7 +61,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV, true);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV, true);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, propertyCV, rdfTypeCV, true);
         }
 
         /// <summary>
@@ -795,7 +795,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadora, valorTipo),
-                    new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadoraOtros, 
+                    new Property(Variables.ExperienciaCientificaTecnologica.contratosTipoEntidadFinanciadoraOtros,
                         UtilitySecciones.StringGNOSSID(entityPartAux, entidadFinanciadora.GetStringCvnCodeGroup("050.020.020.150")))
                 ));
 

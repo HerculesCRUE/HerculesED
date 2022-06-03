@@ -1929,6 +1929,7 @@
         },
         "listItemsPresentation": {
           "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "cvnsection": "050.030.010.000",
           "listItem": {
             "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -3640,6 +3641,7 @@
         },
         "listItemsPresentation": {
           "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "cvnsection": "050.020.030.000",
           "listItem": {
             "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -4182,6 +4184,7 @@
         },
         "listItemsPresentation": {
           "property": "http://vivoweb.org/ontology/core#relatedBy",
+          "cvnsection": "050.030.020.000",
           "listItem": {
             "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",

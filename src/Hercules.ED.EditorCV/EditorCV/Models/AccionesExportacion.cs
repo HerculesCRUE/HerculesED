@@ -21,6 +21,7 @@ namespace EditorCV.Models
     public class AccionesExportacion
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
         /// <summary>
         /// Añade el archivo enviado como array de bytes.
@@ -30,7 +31,7 @@ namespace EditorCV.Models
         /// <param name="pCVID"></param>
         /// <param name="lang"></param>
         /// <param name="listaId"></param>
-        public static void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId)
+        public void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
@@ -71,7 +72,7 @@ namespace EditorCV.Models
         /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
-        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
+        void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
             string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado, List<string> listaId)
         {
             try
@@ -146,7 +147,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador del CV</param>
         /// <returns></returns>
-        public static List<FilePDF> GetListPDFFile(string pCVId)
+        public static List<FilePDF> GetListPDFFile(string pCVId, string baseUrl, int timezoneOffset)
         {
             List<FilePDF> listadoArchivos = new List<FilePDF>();
             string select = "SELECT ?titulo ?fecha ?estado ?fichero";
@@ -170,20 +171,22 @@ namespace EditorCV.Models
                 file.titulo = fila["titulo"].value;
                 file.fichero = "";
                 file.fecha = fila["fecha"].value;
-                string dd = file.fecha.Substring(6, 2);
-                string mm = file.fecha.Substring(4, 2);
-                string yyyy = file.fecha.Substring(0, 4);
-                string HH = file.fecha.Substring(8, 2);
-                string MM = file.fecha.Substring(10, 2);
-                string SS = file.fecha.Substring(12, 2);
-                file.fecha = $"{dd}/{mm}/{yyyy} {HH}:{MM}:{SS}";
+                int dd = int.Parse( file.fecha.Substring(6, 2));
+                int MM = int.Parse(file.fecha.Substring(4, 2));
+                int yyyy = int.Parse(file.fecha.Substring(0, 4));
+                int HH = int.Parse(file.fecha.Substring(8, 2));
+                int mm = int.Parse(file.fecha.Substring(10, 2));
+                int SS = int.Parse(file.fecha.Substring(12, 2));
+                DateTime fecha = new DateTime(yyyy, MM, dd, HH, mm, SS,DateTimeKind.Utc);
+                fecha=fecha.AddMinutes(-timezoneOffset);
+
+                file.fecha = fecha.ToString("dd/MM/yyyy HH:mm:ss");
                 file.estado = fila["estado"].value;
                 if (fila.ContainsKey("fichero"))
                 {
-                    //TODO
-                    string uri = "http://edma.gnoss.com/download-file?doc=" + mResourceApi.GetShortGuid(pCVId) + "&ext=.pdf&archivoAdjuntoSem="
+                    string uri = baseUrl+"/download-file?doc=" + mResourceApi.GetShortGuid(pCVId) + "&ext=.pdf&archivoAdjuntoSem="
                         + fila["fichero"].value.Split(".").First()
-                        + "&ontologiaAdjuntoSem=88129721-ecf9-4ea3-afc6-db253f1cb480&ID=15ff250b-510d-4a08-b4a8-ac7526fbc53b&proy=b836078b-78a0-4939-b809-3f2ccf4e5c01&dscr=true";
+                        + "&proy=" + mCommunityApi.GetCommunityId().ToString().ToLower()+"&dscr=true";
                     file.fichero = uri;
                 }
 
@@ -198,7 +201,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador del CV</param>
         /// <returns></returns>
-        public static ConcurrentDictionary<string, string> GetAllTabs(string pCVId)
+        public ConcurrentDictionary<string, string> GetAllTabs(string pCVId)
         {
             ConcurrentDictionary<string, string> dicIds = new ConcurrentDictionary<string, string>();
             string select = "SELECT *";
@@ -238,7 +241,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="tab"></param>
         /// <returns></returns>
-        private static bool IsValidTab(string tab)
+        private bool IsValidTab(string tab)
         {
             List<string> validTabs = new List<string>()
             {
@@ -259,7 +262,7 @@ namespace EditorCV.Models
         /// <param name="uri"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        private static string FirstLetterUpper(string uri, string property)
+        private string FirstLetterUpper(string uri, string property)
         {
             if (property.Length == 0 || property.Length == 1)
             {

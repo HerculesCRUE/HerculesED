@@ -17,7 +17,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private List<CvnItemBean> listadoSituacionProfesional = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
-        public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
+        public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
             listadoSituacionProfesional = mCvn.GetListadoBloque("010");
@@ -141,7 +141,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
-                        
+
             string personaCV = Utility.PersonaCV(mCvID);
             List<string> listado = new List<string>() { personaCV };
 
@@ -192,11 +192,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     if (bloqueados.ContainsKey(idBBDD))
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, bloqueados[idBBDD]));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
                     }
                     else
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv));
                     }
                 }
                 return listaAux;
@@ -295,11 +295,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     if (bloqueados.ContainsKey(idBBDD))
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, bloqueados[idBBDD]));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
                     }
                     else
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv));
                     }
                 }
                 return listaAux;
@@ -400,11 +400,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     if (bloqueados.ContainsKey(idBBDD))
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, bloqueados[idBBDD]));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
                     }
                     else
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv));
                     }
                 }
                 return listaAux;

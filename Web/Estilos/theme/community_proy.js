@@ -175,7 +175,7 @@ var setFilterButtons = function(element) {
 	// Set the url for the filter
 	let filterString = filterFinalPart1 + min5year + '0000-' + maxYear + '0000&' + filterFinalPart2;
 
-	// LAST YEAR
+	// LAST 5 YEARS
 	// Set name attr
 	$(element).parent().find(".last5Years").attr("name", facekey + '=' + min5year + '0000-' + maxYear + '0000');
 	// Set href attr
@@ -191,11 +191,11 @@ var setFilterButtons = function(element) {
 	$(element).parent().find(".lastYear").attr("href", filterStringAY);
 
 	// Set the url for the filter
-	let filterStringActY = filterFinalPart1 + '19000000-' + '23000000&' + filterFinalPart2;
+	let filterStringActY = filterFinalPart1 + '&' + filterFinalPart2;
 
 	// ALL YEARS
 	// Set name attr
-	$(element).parent().find(".allYears").attr("name", facekey + '=' + '19000000-' + '23000000');
+	$(element).parent().find(".allYears").attr("name", facekey+ '=');
 	// Set href attr
 	$(element).parent().find(".allYears").attr("href", filterStringActY);
 }

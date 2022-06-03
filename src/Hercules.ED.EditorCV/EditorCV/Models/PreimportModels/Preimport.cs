@@ -1,8 +1,7 @@
-﻿using Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Hercules.ED.ImportadorWebCV.Models
+namespace EditorCV.Models.PreimportModels
 {
     public class Preimport
     {
@@ -71,13 +70,13 @@ namespace Hercules.ED.ImportadorWebCV.Models
         /// <summary>
         /// Bloques pertenecientes al subapartado
         /// </summary>
-        public List<Entity.Property> propiedades { get; set; }
+        public List<EntityPreimport.Property> propiedades { get; set; }
         /// <summary>
         /// Bloques pertenecientes al subapartado
         /// </summary>
-        public List<Entity.Property> propiedadesCV { get; set; }
+        public List<EntityPreimport.Property> propiedadesCV { get; set; }
 
-        public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, List<Entity.Property> propiedadesCV, bool isBlocked = false)
+        public SubseccionItem(int id, string idBBDD, List<EntityPreimport.Property> propiedades, List<EntityPreimport.Property> propiedadesCV, bool isBlocked = false)
         {
             this.id = id;
             this.idBBDD = idBBDD;
@@ -86,13 +85,13 @@ namespace Hercules.ED.ImportadorWebCV.Models
             this.propiedadesCV = propiedadesCV;
         }
         
-        public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, bool isBlocked = false)
+        public SubseccionItem(int id, string idBBDD, List<EntityPreimport.Property> propiedades, bool isBlocked = false)
         {
             this.id = id;
             this.idBBDD = idBBDD;
             this.isBlocked = isBlocked;
             this.propiedades = propiedades;
-            this.propiedadesCV = new List<Entity.Property>();
+            this.propiedadesCV = new List<EntityPreimport.Property>();
         }
 
         public SubseccionItem(int id, string idBBDD)
@@ -100,8 +99,8 @@ namespace Hercules.ED.ImportadorWebCV.Models
             this.id = id;
             this.idBBDD = idBBDD;
             this.isBlocked = true;
-            this.propiedades = new List<Entity.Property>();
-            this.propiedadesCV = new List<Entity.Property>();
+            this.propiedades = new List<EntityPreimport.Property>();
+            this.propiedadesCV = new List<EntityPreimport.Property>();
         }
 
         public SubseccionItem()

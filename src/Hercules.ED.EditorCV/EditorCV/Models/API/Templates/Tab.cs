@@ -169,6 +169,10 @@ namespace EditorCV.Models.API.Templates
         /// Datos de configuración de edición para los items del listado de la lista
         /// </summary>
         public ItemEdit listItemEdit;
+        /// <summary>
+        /// Propiedad con el ID de la sección de CVN
+        /// </summary>
+        public string cvnsection;
     }
 
     /// <summary>
