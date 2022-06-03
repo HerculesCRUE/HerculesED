@@ -313,6 +313,10 @@ function CompletadaCargaRecursosComunidad()
 	if ((typeof CompletadaCargaRecursosCluster != 'undefined')) {
 		CompletadaCargaRecursosCluster();
 	}
+	
+	if ((typeof CompletadaCargaRecursosInvestigadoresOfertas != 'undefined')) {
+		CompletadaCargaRecursosInvestigadoresOfertas();
+	}
 }
 
 comportamientoFacetasPopUp.numPaginas=2,
