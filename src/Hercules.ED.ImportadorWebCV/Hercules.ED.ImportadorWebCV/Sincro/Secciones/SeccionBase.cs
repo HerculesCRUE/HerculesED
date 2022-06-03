@@ -385,16 +385,28 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         protected List<SubseccionItem> CheckPreimportar(bool preimportar, List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
-            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
+            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] bool propertiesCV)
         {
             if (preimportar)
             {
-                List<SubseccionItem> listaAux = new List<SubseccionItem>();
-                for (int i = 0; i < equivalencias.Count; i++)
+                if (propertiesCV != null && propertiesCV)
                 {
-                    listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties));
+                    List<SubseccionItem> listaAux = new List<SubseccionItem>();
+                    for (int i = 0; i < equivalencias.Count; i++)
+                    {
+                        listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv));
+                    }
+                    return listaAux;
                 }
-                return listaAux;
+                else
+                {
+                    List<SubseccionItem> listaAux = new List<SubseccionItem>();
+                    for (int i = 0; i < equivalencias.Count; i++)
+                    {
+                        listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties));
+                    }
+                    return listaAux;
+                }
             }
             else
             {

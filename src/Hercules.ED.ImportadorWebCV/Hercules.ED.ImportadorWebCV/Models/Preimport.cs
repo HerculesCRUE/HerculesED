@@ -72,13 +72,27 @@ namespace Hercules.ED.ImportadorWebCV.Models
         /// Bloques pertenecientes al subapartado
         /// </summary>
         public List<Entity.Property> propiedades { get; set; }
+        /// <summary>
+        /// Bloques pertenecientes al subapartado
+        /// </summary>
+        public List<Entity.Property> propiedadesCV { get; set; }
 
+        public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, List<Entity.Property> propiedadesCV, bool isBlocked = false)
+        {
+            this.id = id;
+            this.idBBDD = idBBDD;
+            this.isBlocked = isBlocked;
+            this.propiedades = propiedades;
+            this.propiedadesCV = propiedadesCV;
+        }
+        
         public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, bool isBlocked = false)
         {
             this.id = id;
             this.idBBDD = idBBDD;
             this.isBlocked = isBlocked;
             this.propiedades = propiedades;
+            this.propiedadesCV = new List<Entity.Property>();
         }
 
         public SubseccionItem(int id, string idBBDD)
@@ -87,6 +101,7 @@ namespace Hercules.ED.ImportadorWebCV.Models
             this.idBBDD = idBBDD;
             this.isBlocked = true;
             this.propiedades = new List<Entity.Property>();
+            this.propiedadesCV = new List<Entity.Property>();
         }
 
         public SubseccionItem()
