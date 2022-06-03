@@ -29,7 +29,7 @@ namespace EditorCV.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Añade un archivo descargable al CV
         /// </summary>
         /// <param name="userID"></param>
         /// <param name="lang"></param>
@@ -53,7 +53,8 @@ namespace EditorCV.Controllers
                 }
 
                 //Añado el archivo
-                AccionesExportacion.AddFile(_Configuracion, pCVId, nombreCV, lang, listadoId);
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                accionesExportacion.AddFile(_Configuracion, pCVId, nombreCV, lang, listadoId);
                 return Ok(new Models.API.Response.JsonResult() { ok=true });
             }
             catch(Exception ex)
@@ -79,7 +80,8 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
-                ConcurrentDictionary<string, string> pListId = AccionesExportacion.GetAllTabs(pCVId);
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                ConcurrentDictionary<string, string> pListId = accionesExportacion.GetAllTabs(pCVId);
 
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 ConcurrentDictionary<int, AuxTab> listTabs = new ConcurrentDictionary<int, AuxTab>();
@@ -110,7 +112,8 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
-                List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId);
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                List<FilePDF> pListId = accionesExportacion.GetListPDFFile(pCVId);
 
                 return Ok(pListId);
             }
