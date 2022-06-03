@@ -424,7 +424,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            if (ejeFechas || !pGrafica.config.rango)
+            if (ejeFechas || pGrafica.config.rango)
             {
                 foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
@@ -779,7 +779,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            if (ejeFechas || !pGrafica.config.rango)
+            if (ejeFechas || pGrafica.config.rango)
             {
                 foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
@@ -1358,6 +1358,18 @@ namespace Hercules.ED.GraphicEngine.Models
                 faceta.numeroItemsFaceta = pFacetaConf.numeroItemsFaceta;
             }
 
+            faceta.ordenAlfaNum = false;
+            if (pFacetaConf.ordenAlfaNum != false)
+            {
+                faceta.ordenAlfaNum = true;
+            }
+
+            faceta.tesauro = false;
+            if (pFacetaConf.tesauro != false)
+            {
+                faceta.tesauro = true;
+            }
+
             faceta.id = pFacetaConf.filtro;
             faceta.nombre = GetTextLang(pLang, pFacetaConf.nombre);
             faceta.items = new List<ItemFaceta>();
@@ -1365,7 +1377,14 @@ namespace Hercules.ED.GraphicEngine.Models
             // Filtro de página.
             List<string> filtros = new List<string>();
             filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
-            filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "nombreFaceta"));
+            if (!faceta.tesauro)
+            {
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "nombreFaceta"));
+            }
+            else
+            {
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "categoria"));
+            }
             if (!string.IsNullOrEmpty(pFiltroFacetas))
             {
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }, pListaDates: pListaDates));
@@ -1378,46 +1397,106 @@ namespace Hercules.ED.GraphicEngine.Models
             select = new StringBuilder();
             where = new StringBuilder();
 
-            select.Append(mPrefijos);
-            select.Append($@"SELECT DISTINCT ?nombreFaceta LANG(?nombreFaceta) AS ?lang COUNT(?s) AS ?numero ");
-            where.Append("WHERE { ");
-            foreach (string item in filtros)
+            if (!faceta.tesauro)
             {
-                where.Append(item);
-            }
-            where.Append($@"FILTER(LANG(?nombreFaceta) = '{pLang}' OR LANG(?nombreFaceta) = '' OR !isLiteral(?nombreFaceta)) ");
-            where.Append($@"}} ORDER BY DESC (?numero) ");
-
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                select.Append(mPrefijos);
+                select.Append($@"SELECT DISTINCT ?nombreFaceta LANG(?nombreFaceta) AS ?lang COUNT(?s) AS ?numero ");
+                where.Append("WHERE { ");
+                foreach (string item in filtros)
                 {
-                    ItemFaceta itemFaceta = new ItemFaceta();
-                    itemFaceta.nombre = fila["nombreFaceta"].value;
-                    itemFaceta.numero = Int32.Parse(fila["numero"].value);
+                    where.Append(item);
+                }
+                where.Append($@"FILTER(LANG(?nombreFaceta) = '{pLang}' OR LANG(?nombreFaceta) = '' OR !isLiteral(?nombreFaceta)) ");
+                if (faceta.ordenAlfaNum)
+                {
+                    where.Append($@"}} ORDER BY ASC (?nombreFaceta) ");
+                }
+                else
+                {
+                    where.Append($@"}} ORDER BY DESC (?numero) ");
+                }
 
-                    // Comprobación si tiene idioma asignado.
-                    string lang = "";
-                    if (!string.IsNullOrEmpty(fila["lang"].value))
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-                        lang = $@"@{fila["lang"].value}";
-                    }
+                        ItemFaceta itemFaceta = new ItemFaceta();
+                        itemFaceta.nombre = fila["nombreFaceta"].value;
+                        itemFaceta.numero = Int32.Parse(fila["numero"].value);
 
-                    // Comprobación si es literal o numerico.
-                    string filtro = itemFaceta.nombre;
-                    if (fila["nombreFaceta"].type == "literal")
-                    {
-                        filtro = $@"'{filtro}'";
-                    }
+                        // Comprobación si tiene idioma asignado.
+                        string lang = "";
+                        if (!string.IsNullOrEmpty(fila["lang"].value))
+                        {
+                            lang = $@"@{fila["lang"].value}";
+                        }
 
-                    itemFaceta.filtro = $@"{pFacetaConf.filtro}={filtro}{lang}";
-                    faceta.items.Add(itemFaceta);
+                        // Comprobación si es literal o numerico.
+                        string filtro = itemFaceta.nombre;
+                        if (fila["nombreFaceta"].type == "literal")
+                        {
+                            filtro = $@"'{filtro}'";
+                        }
+
+                        itemFaceta.filtro = $@"{pFacetaConf.filtro}={filtro}{lang}";
+                        faceta.items.Add(itemFaceta);
+                    }
                 }
             }
+            else
+            {
+                select.Append(mPrefijos);
+                select.Append($@"SELECT ?categoria ?nombre COUNT(DISTINCT (?s)) AS ?numero ");
+                where.Append("WHERE { ");
+                foreach (string item in filtros)
+                {
+                    where.Append(item);
+                }
+                where.Append("?categoria skos:prefLabel ?nombre. ");
+                where.Append($@"}} ORDER BY ASC (?categoria) ");
 
-            // Ordenación.
-            //faceta.items = faceta.items.OrderBy(o => o.nombre).ToList();
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        // TODO: Hacer método recursivo. Ahora solamente funciona con un tesáuro de 4 niveles.
+                        ItemFaceta itemFaceta = new ItemFaceta();
+                        itemFaceta.idTesauro = fila["categoria"].value.ToString().Substring(fila["categoria"].value.ToString().LastIndexOf("_") + 1);
+                        itemFaceta.nombre = fila["nombre"].value.ToString();
+                        itemFaceta.numero = Int32.Parse(fila["numero"].value);
+                        itemFaceta.filtro = $@"roh:hasKnowledgeArea@@@roh:categoryNode={fila["categoria"].value.ToString()}";
+                        itemFaceta.childsTesauro = new List<ItemFaceta>();
+
+                        string[] arrayNiveles = itemFaceta.idTesauro.Split(".");
+
+                        ItemFaceta itemFacetaAux = faceta.items.FirstOrDefault(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0"));
+                        ItemFaceta itemFacetaAux2 = null;
+                        if (itemFacetaAux != null)
+                        {
+                            itemFacetaAux2 = faceta.items.FirstOrDefault(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.FirstOrDefault(y => y.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0"));
+                        }
+
+                        if (itemFacetaAux2 != null && faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.First(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")).childsTesauro.Any(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.{arrayNiveles[2]}.0")))
+                        {
+                            faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.First(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")).childsTesauro.First(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.{arrayNiveles[2]}.0")).childsTesauro.Add(itemFaceta);
+                        }
+                        else if (itemFacetaAux != null && faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.Any(y => y.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")))
+                        {
+                            faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.First(y => y.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")).childsTesauro.Add(itemFaceta);
+                        }
+                        else if (faceta.items.Any(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")))
+                        {
+                            faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.Add(itemFaceta);
+                        }
+                        else
+                        {
+                            faceta.items.Add(itemFaceta);
+                        }
+                    }
+                }
+            }
 
             return faceta;
         }

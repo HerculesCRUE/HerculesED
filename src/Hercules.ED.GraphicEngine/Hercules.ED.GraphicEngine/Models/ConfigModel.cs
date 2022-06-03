@@ -16,6 +16,8 @@ namespace Hercules.ED.GraphicEngine.Models
         public Dictionary<string, string> nombre { get; set; }
         public bool rangoAnio { get; set; }
         public string filtro { get; set; }
+        public bool ordenAlfaNum { get; set; }
+        public bool tesauro { get; set; }
         public int numeroItemsFaceta { get; set; }
     }
 
