@@ -82,8 +82,10 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 string prefijoNodos = "nodes";
                 string prefijoBarraHorizonal = "isHorizontal";
+                string prefijoCircular = "circular";
                 string prefijoAbreviar = "abr";
                 string prefijoPorcentaje = "prc";
+
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
@@ -98,6 +100,9 @@ namespace Hercules.ED.GraphicEngine.Models
                         itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
                         configPagina.id = prefijoAbreviar + "-" + configPagina.id;
                     }
+                }else if(itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular)) {
+                    itemGrafica.identificador = prefijoCircular + "-" + itemGrafica.identificador;
+                    configPagina.id = prefijoCircular + "-" + configPagina.id;
                 }
                 if (itemGrafica.config.porcentual && !itemGrafica.identificador.Contains(prefijoPorcentaje))
                 {
