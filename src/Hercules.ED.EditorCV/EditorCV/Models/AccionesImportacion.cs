@@ -13,7 +13,7 @@ namespace EditorCV.Models
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
-        public HttpResponseMessage ImportarCV(ConfigService _Configuracion, string pCVID, IFormFile File)
+        public HttpResponseMessage PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File)
         {
             try
             {
