@@ -40,10 +40,10 @@ namespace EditorCV.Controllers
                     throw new Exception("Usuario no encontrado " + userID);
                 }
                 AccionesImportacion accionesImportacion = new AccionesImportacion();
-                accionesImportacion.ImportarCV(pCVId, File);
+                accionesImportacion.ImportarCV(_Configuracion, pCVId, File);
 
                 return Ok();
-            } 
+            }
             catch (Exception ex)
             {
                 return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
