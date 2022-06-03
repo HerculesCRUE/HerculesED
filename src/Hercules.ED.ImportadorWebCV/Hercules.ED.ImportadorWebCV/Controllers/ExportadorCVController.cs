@@ -66,7 +66,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
             Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
-            //Aumento el tiempo de espera a 1 hora como maximo
+            //Aumento el tiempo de espera a 2 hora como maximo
             client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
             client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
 
@@ -120,7 +120,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
             Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
-            //Aumento el tiempo de espera a 1 hora como máximo
+            //Aumento el tiempo de espera a 2 hora como máximo
             client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
             client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
 
