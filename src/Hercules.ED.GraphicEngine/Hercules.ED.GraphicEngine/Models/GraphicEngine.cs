@@ -39,6 +39,25 @@ namespace Hercules.ED.GraphicEngine.Models
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
             return CrearPagina(configModel, pLang);
         }
+        /// <summary>
+        /// Obtiene los datos de las páginas.
+        /// </summary>
+        /// <param name="pIdPagina">Identificador de la página.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
+        public static List<Pagina> GetPages(string pLang)
+        {
+            List<Pagina> listaPaginas = new List<Pagina>();
+
+            // Lectura de los JSON de configuración.
+            List<ConfigModel> listaConfigModels = TabTemplates;
+            foreach(ConfigModel configModel in listaConfigModels)
+            {
+                listaPaginas.Add(CrearPagina(configModel, pLang));
+            }
+
+            return listaPaginas;
+        }
 
         /// <summary>
         /// Crea el objeto página.
@@ -80,7 +99,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         configPagina.id = prefijoAbreviar + "-" + configPagina.id;
                     }
                 }
-                if (itemGrafica.config.porcentual)
+                if (itemGrafica.config.porcentual && !itemGrafica.identificador.Contains(prefijoPorcentaje))
                 {
                     itemGrafica.identificador = prefijoPorcentaje + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoPorcentaje + "-" + configPagina.id;
