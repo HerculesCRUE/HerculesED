@@ -363,14 +363,51 @@ namespace Hercules.ED.GraphicEngine.Models
             HashSet<string> valuesEje = new HashSet<string>();
             HashSet<string> tipos = new HashSet<string>();
 
+            List<Tuple<string, float>> rangoValor = new List<Tuple<string, float>>();
+
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 if (item.Value != null && item.Value.Any())
                 {
-                    foreach (Tuple<string, string, float> item2 in item.Value)
+                    if (pGrafica.config.rango)
                     {
-                        valuesEje.Add(item2.Item1);
-                        tipos.Add(item2.Item2);
+                        int indice;
+                        float[] sumaDatos = new float[4];
+                        string[] rangos = { "1-3", "4-10", "11-30", "30+" };
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            indice = int.Parse(item2.Item1);
+                            switch (indice)
+                            {
+                                case < 4:
+                                    sumaDatos[0] += item2.Item3;
+                                    break;
+                                case < 11:
+                                    sumaDatos[1] += item2.Item3;
+                                    break;
+                                case < 31:
+                                    sumaDatos[2] += item2.Item3;
+                                    break;
+                                default:
+                                    sumaDatos[3] += item2.Item3;
+                                    break;
+                            }
+                        }
+                        for (int i = 0; i < sumaDatos.Length; i++)
+                        {
+                            if (sumaDatos[i] > 0)
+                            {
+                                rangoValor.Add(new Tuple<string, float>(rangos[i], sumaDatos[i]));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            valuesEje.Add(item2.Item1);
+                            tipos.Add(item2.Item2);
+                        }
                     }
                 }
             }
@@ -387,7 +424,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            if (ejeFechas)
+            if (ejeFechas || !pGrafica.config.rango)
             {
                 foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
@@ -425,15 +462,34 @@ namespace Hercules.ED.GraphicEngine.Models
             #endregion
 
             // Obtención del objeto de la gráfica.
-            List<string> listaLabels = valuesEje.ToList();
+            List<string> listaLabels = new List<string>();
+            if (pGrafica.config.rango)
+            {
+                foreach (Tuple<string, float> itemAux in rangoValor)
+                {
+                    listaLabels.Add(itemAux.Item1);
+                }
+            } else
+            {
+                listaLabels = valuesEje.ToList();
+            }
 
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 DatasetBarras dataset = new DatasetBarras();
                 List<float> listaData = new List<float>();
-                foreach (Tuple<string, string, float> itemAux in item.Value)
+                if (pGrafica.config.rango)
                 {
-                    listaData.Add(itemAux.Item3);
+                    foreach (Tuple<string,float> itemAux in rangoValor)
+                    {
+                        listaData.Add(itemAux.Item2);
+                    }
+                } else
+                {
+                    foreach (Tuple<string, string, float> itemAux in item.Value)
+                    {
+                        listaData.Add(itemAux.Item3);
+                    }
                 }
                 dataset.data = listaData;
 
@@ -662,14 +718,51 @@ namespace Hercules.ED.GraphicEngine.Models
             HashSet<string> valuesEje = new HashSet<string>();
             HashSet<string> tipos = new HashSet<string>();
 
+            List<Tuple<string, float>> rangoValor = new List<Tuple<string, float>>();
+
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 if (item.Value != null && item.Value.Any())
                 {
-                    foreach (Tuple<string, string, float> item2 in item.Value)
+                    if (pGrafica.config.rango)
                     {
-                        valuesEje.Add(item2.Item1);
-                        tipos.Add(item2.Item2);
+                        int indice;
+                        float[] sumaDatos = new float[4];
+                        string[] rangos = { "1-3", "4-10", "11-30", "30+" };
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            indice = int.Parse(item2.Item1);
+                            switch (indice)
+                            {
+                                case < 4:
+                                    sumaDatos[0] += item2.Item3;
+                                    break;
+                                case < 11:
+                                    sumaDatos[1] += item2.Item3;
+                                    break;
+                                case < 31:
+                                    sumaDatos[2] += item2.Item3;
+                                    break;
+                                default:
+                                    sumaDatos[3] += item2.Item3;
+                                    break;
+                            }
+                        }
+                        for (int i = 0; i < sumaDatos.Length; i++)
+                        {
+                            if (sumaDatos[i] > 0)
+                            {
+                                rangoValor.Add(new Tuple<string, float>(rangos[i], sumaDatos[i]));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            valuesEje.Add(item2.Item1);
+                            tipos.Add(item2.Item2);
+                        }
                     }
                 }
             }
@@ -686,7 +779,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            if (ejeFechas)
+            if (ejeFechas || !pGrafica.config.rango)
             {
                 foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
@@ -724,15 +817,36 @@ namespace Hercules.ED.GraphicEngine.Models
             #endregion
 
             // Obtención del objeto de la gráfica.
-            List<string> listaLabels = valuesEje.ToList();
+            List<string> listaLabels = new List<string>();
+            if (pGrafica.config.rango)
+            {
+                foreach (Tuple<string, float> itemAux in rangoValor)
+                {
+                    listaLabels.Add(itemAux.Item1);
+                }
+            }
+            else
+            {
+                listaLabels = valuesEje.ToList();
+            }
 
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 DatasetBarrasY dataset = new DatasetBarrasY();
                 List<float> listaData = new List<float>();
-                foreach (Tuple<string, string, float> itemAux in item.Value)
+                if (pGrafica.config.rango)
                 {
-                    listaData.Add(itemAux.Item3);
+                    foreach (Tuple<string, float> itemAux in rangoValor)
+                    {
+                        listaData.Add(itemAux.Item2);
+                    }
+                }
+                else
+                {
+                    foreach (Tuple<string, string, float> itemAux in item.Value)
+                    {
+                        listaData.Add(itemAux.Item3);
+                    }
                 }
                 dataset.data = listaData;
 
