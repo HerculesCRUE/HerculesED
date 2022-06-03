@@ -1287,8 +1287,8 @@ class CargarGraficaProjectoClusterObj {
 	};
 	
 	CargarGraficaSeleccionados = (cluster, idContenedor, mostrarCargando = false) => {
-		var url = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
-		var self = this;
+		let urlDGCC = url_servicio_externo + "Cluster/DatosGraficaColaboradoresCluster";
+		let self = this;
 		$('#' + idContenedor).empty();
 		if (mostrarCargando) {
 			MostrarUpdateProgress();
@@ -1296,7 +1296,7 @@ class CargarGraficaProjectoClusterObj {
 
 		let optionsRelations = ["relation_project", "relation_document"];
 		cluster.seleccionados=true;
-		$.post(url, cluster, function (data) {
+		$.post(urlDGCC, cluster, function (data) {
 			// Establecer los valores en la variable externa
 			self.dataSE = data;
 			self.idContenedorSE = idContenedor;

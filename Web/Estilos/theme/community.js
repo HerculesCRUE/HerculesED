@@ -1127,6 +1127,30 @@ var importarCVN = {
     }
 };
 
+var checkboxResources = {
+    init: function () {
+        this.config();
+        this.comportamiento();
+    },
+    config: function () {
+        this.checkboxResource = $('.custom-checkbox-resource');
+    },
+    comportamiento: function () {
+        this.checkboxResource.off('click').on('click', function() {
+            var icon = $(this).find('.material-icons');
+            if ($(this).hasClass('add')) {
+                icon.html('done');
+                $(this).removeClass('add').addClass('done');
+                $(this).parents('.resource').addClass('seleccionado');
+            } else if ($(this).hasClass('done')) {
+                icon.html('add');
+                $(this).removeClass('done').addClass('add');
+                $(this).parents('.resource').removeClass('seleccionado');
+            }
+        });
+    }
+};
+
 /**
  * Este es un ejemplo de lanzamiento de gráficos de prueba
  */
@@ -1608,6 +1632,8 @@ $(function () {
     accionesPlegarDesplegarModal.init();
 
     operativaModalSeleccionarTemas.init();
+
+    checkboxResources.init();
 
     $('.js-select2.disabled').prop('disabled', true);
 

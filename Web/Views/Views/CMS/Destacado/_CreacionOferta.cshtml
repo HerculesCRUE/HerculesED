@@ -57,30 +57,30 @@
 			            <ul class="step-progress">
 			                <li class="step-progress__circle active" id="step1">
 			                    <a href="javascript: void(0);">
-			                        <span class="step-progress__text current">@Html.Translate("DATOS_INICIALES")</span>
+			                        <span class="step-progress__text current">1. @Html.Translate("DATOS_INICIALES")</span>
 			                    </a>
 			                </li>
 			                <li class="step-progress__bar"></li>
 			                <li class="step-progress__circle" id="step2">
 			                    <a href="javascript: void(0);">
-			                        <span class="step-progress__text">@Html.Translate("INVESTIGADORES")</span>
+			                        <span class="step-progress__text">2. @Html.Translate("INVESTIGADORES")</span>
 			                    </a>
 			                </li>
 			                <li class="step-progress__bar"></li>
 			                <li class="step-progress__circle" id="step3">
 			                    <a href="javascript: void(0);">
-			                        <span class="step-progress__text">@Html.Translate("ESTADO")</span>
+			                        <span class="step-progress__text">3. @Html.Translate("ESTADO")</span>
 			                    </a>
 			                </li>
 			                <li class="step-progress__bar"></li>
 			                <li class="step-progress__circle" id="step4">
 			                    <a href="javascript: void(0);">
-			                        <span class="step-progress__text">@Html.Translate("DATOS_DESCRIPTIVOS")</span>
+			                        <span class="step-progress__text">4. @Html.Translate("DATOS_DESCRIPTIVOS")</span>
 			                    </a>
 			                </li><li class="step-progress__bar"></li>
 			                <li class="step-progress__circle" id="step5">
 			                    <a href="javascript: void(0);">
-			                        <span class="step-progress__text">@Html.Translate("EXPERIENCIA_DESTACABLE")</span>
+			                        <span class="step-progress__text">5. @Html.Translate("EXPERIENCIA_DESTACABLE")</span>
 			                    </a>
 			                </li>
 			            </ul>
@@ -95,20 +95,15 @@
 				        <div id="wrapper-crear-oferta-step1" class="fade show section-steps">
 				            <form class="formulario-edicion background-blanco" type="post" id="oferta-step1-form">
 				                <fieldset>
-				                    <legend>@Html.Translate("DEFINIR_OFERTA")</legend>
+				                    <legend>@Html.Translate("DATOS_INICIALES")</legend>
 				                    <div class="form-group mb-5 edit-titulo">
-				                        <label class="control-label d-block">@Html.Translate("NOMBRE_TITULO_OFERTA") *</label>
-				                        <input placeholder="@Html.Translate("INTRODUCE_NOMBRE_TITULO")" type="text" name="nombreoferta" id="nombreofertainput" class="form-control not-outline">
+				                        <label class="control-label d-block">@Html.Translate("TITULO") *</label>
+				                        <input placeholder="@Html.Translate("INTRODUCE_TITULO_OFERTA")" type="text" name="nombreoferta" id="nombreofertainput" class="form-control not-outline">
 				                    </div>
-				                    <div class="form-group mb-5 edit-descripcion">
-				                        <label class="control-label d-block">@Html.Translate("DESCRIPCION")</label>
-				                        <textarea id="txtDescripcion" placeholder="Introduce una descripción" name="txtdescripcion" class="cke form-control recursos" cols="20" rows="2"></textarea>
-				                    </div>
-
 
 
 				                    <!-- Areas temáticas -->
-				                    <div class="panel-body mb-5 edit-etiquetas pl-0">
+				                    <div class="panel-body mb-5 edit-etiquetas pl-0 d-none">
 				                        <div class="form-group">
 				                            <label class="control-label d-block">@Html.Translate("AREAS_TEMATICAS") *</label>
 				                            <div class="autocompletar autocompletar-tags form-group" id="oferta-modal-sec1-tax-wrapper">
@@ -122,8 +117,28 @@
 				                    </div>
 				                    <!-- Fin Areas temáticas -->
 
+
+				                    <!-- Descriptores específicos -->
+                                    <div class="form-group mb-5 edit-etiquetas tags-items">
+										<label class="control-label d-block">@Html.Translate("DESCRIPTORES_ESPECIFICOS") (*)</label>
+										<div class="autocompletar autocompletar-tags form-group" id="oferta-modal-seleccionar-tags-stp1">
+											<div class="tag-list mb-4 d-inline"></div> 
+										</div>
+										<a class="btn btn-outline-primary" href="javascript: void(0)">
+
+											<div class="btn-wrap" onclick="stepsOffer.loadModalTopics(this)" data-rel="oferta-modal-seleccionar-tags-stp1">
+												<span class="btn-text">@Html.Translate("DESCRIPTOR_ESPECIFICO")</span>
+												<span class="material-icons">add</span>
+                                            </div>
+
+
+										</a>
+									</div>
+                                    <!-- Fin Descriptores específicos -->
+
+
 				                    <!-- Investigadores del grupo -->
-				                    <div class="form-group mb-5">
+				                    <div class="form-group mb-5" id="stp1-ofertas-investigadores-grupo">
                                         <label class="control-label d-block">@Html.Translate("ANADIR_PERSONAL_INVESTIGADOR")</label>
                                         <div class="acciones-listado acciones-listado-investigadores">
 										    <div class="wrap">
@@ -133,33 +148,6 @@
 										</div>
 										<div class="resource-list listView resource-list-investigadores list-con-checks">
 										    <div class="resource-list-wrap">
-										        <article class="resource">
-										            <div class="custom-control custom-checkbox">
-										                <input type="checkbox" class="custom-control-input" id="check_1">
-										                <label class="custom-control-label" for="check_1"></label>
-										            </div>
-										            <div class="wrap">
-										                <div class="usuario-wrap">
-										                    <div class="user-miniatura">
-										                        <div class="imagen-usuario-wrap">
-										                            <a href="./fichaPerfil.php">
-										                                <div class="imagen">
-										                                    <span style="background-image: url(theme/resources/imagenes-pre/foto-usuario-2.jpg)"></span>
-										                                </div>
-										                            </a>
-										                        </div>
-										                        <div class="nombre-usuario-wrap">
-										                            <a href="./fichaPerfil.php">
-										                                <p class="nombre">Nombre Apellido Investigador</p>
-										                                <p class="nombre-completo">Categoria profesional, Departamento interno / externo</p>
-										                            </a>
-										                        </div>
-										                    </div>
-										                </div>
-										                <div class="publicaciones-wrap">40</div>
-										            </div>
-										        </article>
-									        
 									    	</div>
 										</div>
 									</div>
@@ -172,6 +160,115 @@
 
 				        <!-- START STEP 2 -->
 				        <div id="wrapper-crear-oferta-step2" class="fade section-steps">
+				            <ul class="nav nav-tabs" id="myTab" role="tablist">
+				                <li class="nav-item">
+				                    <a class="nav-link active" id="sugeridos-oferta-tab" data-toggle="tab" href="#sugeridos-oferta" role="tab" aria-controls="sugeridos-oferta" aria-selected="true">@Html.Translate("SELECCIONABLES")</a>
+				                </li>
+				                <li class="nav-item">
+				                    <a class="nav-link" id="seleccionados-oferta-tab" data-toggle="tab" href="#seleccionados-oferta" role="tab" aria-controls="seleccionados-oferta" aria-selected="false">@Html.Translate("SELECCIONADOS") <span id="stp2-num-selected"></span></a>
+				                </li>
+				            </ul>
+				            <div class="tab-content">
+				                <div class="tab-pane fade active show" id="sugeridos-oferta" role="tabpanel" aria-labelledby="sugeridos-oferta-tab">
+				                    <div class="row">
+				                        @* <div class="col col-12 pt-4">
+			                            	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+												<strong>@Html.Translate("ATENCION").</strong> @Html.Translate("DEBES_SELECCIONAR_LOS_PERFILES_CLICANDOLOS_CADA_PERSONA")
+												<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+				                        </div> *@
+				                        <div class="col col-12">
+				                            <div class="wrapCol mt-4">
+				                                <div class="row" id="ofertaListUsers" data-volumen="@Html.Translate("ORDER_VOLUMEN")" data-ajuste="@Html.Translate("ORDER_AJUSTE")" data-mixto="@Html.Translate("ORDER_MIXTO")">
+				                                    
+				                                </div>
+				                            </div>
+				                        </div>
+				                    </div>
+				                </div>
+				                <div class="tab-pane fade" id="seleccionados-oferta" role="tabpanel" aria-labelledby="seleccionados-oferta-tab">
+				                    
+				                    <div class="row">
+
+				                        <div class="col col-12 col-section-title font-weight-bold">
+				                            <div class="wrapCol">
+				                                <p>@Html.Translate("LISTADO_INVETIGADORES_SELECCIONADOS")</p>
+				                            </div>
+				                        </div>
+				                        @* <div class="col col-12 col-contenido" id="perfiles-stp2-result-oferta">
+				                            <p class="section-title">@Html.Translate("PERFILES") </p>
+				                            
+				                        </div> *@
+				                        <div class="col col-12 col-xl-9 col-contenido" id="researchers-stp2-result-oferta">
+										    <div class="acciones-listado acciones-listado-investigadores">
+											    <div class="wrap">
+											        <div class="usuario-wrap"></div>
+											        <div class="publicaciones-wrap">@Html.Translate("PUBLICACIONES")</div>
+											        <div class="acciones-wrap">@Html.Translate("ACCIONES")</div>
+											    </div>
+											</div>
+											<div class="resource-list listView resource-list-investigadores">
+											    <div class="resource-list-wrap">
+											        <article class="resource">
+											            <div class="wrap">
+											                <div class="usuario-wrap">
+											                    <div class="user-miniatura">
+											                        <div class="imagen-usuario-wrap">
+											                            <a href="./fichaPerfil.php">
+											                                <div class="imagen">
+											                                    <span style="background-image: url(theme/resources/imagenes-pre/foto-usuario-2.jpg)"></span>
+											                                </div>
+											                            </a>
+											                        </div>
+											                        <div class="nombre-usuario-wrap">
+											                            <a href="./fichaPerfil.php">
+											                                <p class="nombre">Nombre Apellido Investigador</p>
+											                            </a>
+											                        </div>
+											                    </div>
+											                    <div class="list-wrap">
+											                        <ul>
+											                            <li>
+											                                <a href="javascript: void(0);" class="font-weight-bold">Profesor Titular de Universidad</a>
+											                            </li>
+											                            <li>
+											                                <a href="javascript: void(0);">Universidad de Murcia</a>
+											                            </li>
+											                            <li>
+											                                <a href="javascript: void(0);">Informática y sistemas</a>
+											                            </li>
+											                        </ul>
+											                    </div>
+											                </div>
+											                <div class="publicaciones-wrap">
+											                    40
+											                </div>
+											                <div class="acciones-wrap">
+											                    <ul class="no-list-style">
+											                        <li>
+											                            <a href="javascript: void(0);" class="texto-gris-claro">
+											                                Eliminar
+											                                <span class="material-icons-outlined">delete</span>
+											                            </a>
+											                        </li>
+											                    </ul>
+											                </div>
+											            </div>
+											        </article>
+											    </div>
+											</div>
+										</div>
+				                    </div>
+
+				                </div>
+				            </div>
+				        </div>
+				        <!-- END STEP 2 -->
+
+				        <!-- START STEP 3 -->
+				        <div id="wrapper-crear-oferta-step3" class="fade section-steps">
 				            <form class="formulario-edicion background-blanco">
 				                <fieldset>
 				                    <legend>@Html.Translate("DEFINIR_PERFILES_AREAS_INVESTIGACION")</legend>
@@ -199,151 +296,8 @@
 				                </div>
 				            </form>
 				        </div>
-				        <!-- END STEP 2 -->
-
-				        <!-- START STEP 3 -->
-				        <div id="wrapper-crear-oferta-step3" class="fade section-steps">
-				            <ul class="nav nav-tabs" id="myTab" role="tablist">
-				                <li class="nav-item">
-				                    <a class="nav-link active" id="sugeridos-oferta-tab" data-toggle="tab" href="#sugeridos-oferta" role="tab" aria-controls="sugeridos-oferta" aria-selected="true">@Html.Translate("SUGERIDOS")</a>
-				                </li>
-				                <li class="nav-item">
-				                    <a class="nav-link" id="seleccionados-oferta-tab" data-toggle="tab" href="#seleccionados-oferta" role="tab" aria-controls="seleccionados-oferta" aria-selected="false">@Html.Translate("SELECCIONADOS")</a>
-				                </li>
-				            </ul>
-				            <div class="tab-content">
-				                <div class="tab-pane fade active show" id="sugeridos-oferta" role="tabpanel" aria-labelledby="sugeridos-oferta-tab">
-				                    <div class="row">
-				                        <div class="col col-12 col-section-title font-weight-bold">
-				                            <div class="wrapCol">
-				                                <p>@Html.Translate("COLABORADORES")</p>
-				                                <div class="acciones-grafo">
-				                                	<div class="relaciones dropdown ">
-														<a href="javascript: newGrafProjClust.actualizarGraficaColaboradores()" class="btn btn-outline-grey" role="button">
-															@Html.Translate("RESETEAR_GRAFICA")
-														</a>
-													</div>
-				                                    <div class="relaciones dropdown dropdown-select">
-				                                        <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelaciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				                                            @Html.Translate("RELACIONES"):
-				                                            <span class="texto">@Html.Translate("TODAS")</span>
-				                                        </a>
-				                                        <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelaciones">
-				                                            <ul class="no-list-style">
-				                                                <li>
-				                                                    <a href="javascript: actualizarTypesOfertaOcultar('relation_todas');" rel="nofollow" class="item-dropdown activeView">
-				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-				                                                        <span class="texto">@Html.Translate("TODAS")</span>
-				                                                    </a>
-				                                                </li>
-				                                                <li>
-				                                                    <a href="javascript: actualizarTypesOfertaOcultar('relation_project');" rel="nofollow" class="item-dropdown">
-				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-				                                                        <span class="texto">@Html.Translate("PROYECTOS")</span>
-				                                                    </a>
-				                                                </li>
-				                                                <li>
-				                                                    <a href="javascript: actualizarTypesOfertaOcultar('relation_document');" rel="nofollow" class="item-dropdown">
-				                                                        <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-				                                                        <span class="texto">@Html.Translate("DOCUMENTOS")</span>
-				                                                    </a>
-				                                                </li>
-				                                            </ul>
-				                                        </div>
-				                                    </div>				                                    
-				                                </div>
-				                            </div>
-				                        </div>
-				                        <div class="col col-12 col-grafo-title font-weight-bold">
-				                            <div class="grafico-wrap">
-				                                <div class="wrapCol" id="colaboratorsgraphOferta" style="width: 100%; height: 400px;"></div>
-				                            </div>
-				                        </div>
-				                        <div class="col col-12 pt-4">
-			                            	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-												<strong>@Html.Translate("ATENCION").</strong> @Html.Translate("DEBES_SELECCIONAR_LOS_PERFILES_CLICANDOLOS_CADA_PERSONA")
-												<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-													<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-				                        </div>
-				                        <div class="col col-12">
-				                            <div class="wrapCol mt-4">
-				                                <div class="row" id="ofertaListUsers" data-volumen="@Html.Translate("ORDER_VOLUMEN")" data-ajuste="@Html.Translate("ORDER_AJUSTE")" data-mixto="@Html.Translate("ORDER_MIXTO")">
-				                                    
-				                                </div>
-				                            </div>
-				                        </div>
-				                    </div>
-				                </div>
-				                <div class="tab-pane fade" id="seleccionados-oferta" role="tabpanel" aria-labelledby="seleccionados-oferta-tab">
-				                    
-				                    <div class="row">
-				                        <div class="col col-12 col-section-title font-weight-bold">
-				                            <div class="wrapCol">
-				                                <p>@Html.Translate("GRAFO_RELACIONES_INVESTIGADORES_SELECCIONADOS")</p>
-												<div class="acciones-grafo">
-													<div class="relaciones dropdown dropdown-select">
-														<a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownRelaciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-															@Html.Translate("RELACIONES"):
-															<span class="texto">@Html.Translate("TODAS")</span>
-														</a>
-														<div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownRelaciones">
-															<ul class="no-list-style">
-																<li>
-																	<a href="javascript: actualizarTypesOfertaOcultarSE('relation_todas');" rel="nofollow" class="item-dropdown activeView">
-																		<span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-																		<span class="texto">@Html.Translate("TODAS")</span>
-																	</a>
-																</li>
-																<li>
-																	<a href="javascript: actualizarTypesOfertaOcultarSE('relation_project');" rel="nofollow" class="item-dropdown">
-																		<span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-																		<span class="texto">@Html.Translate("PROYECTOS")</span>
-																	</a>
-																</li>
-																<li>
-																	<a href="javascript: actualizarTypesOfertaOcultarSE('relation_document');" rel="nofollow" class="item-dropdown">
-																		<span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-																		<span class="texto">@Html.Translate("DOCUMENTOS")</span>
-																	</a>
-																</li>
-															</ul>
-														</div>
-													</div>				                                    
-												</div>
-				                            </div>
-				                        </div>
-				                        <div class="col col-12 col-grafo-title font-weight-bold">
-											<div class="grafico-wrap">
-												<div class="wrapCol" id="selectedgraphOferta" style="width: 100%; height: 400px;"></div>
-											</div>
-										</div>  
-				                        <div class="col col-12 col-section-title font-weight-bold">
-				                            <div class="wrapCol">
-				                                <p>@Html.Translate("LISTADO_INVETIGADORES_SELECCIONADOS")</p>
-				                            </div>
-				                        </div>
-				                        <div class="col col-12 col-contenido" id="perfiles-stp3-result-oferta">
-				                            <p class="section-title">@Html.Translate("PERFILES") </p>
-				                            
-				                        </div>
-				                    </div>
-
-				                </div>
-				            </div>
-				            <div class="botonera">
-				                <a href="javascript:stepsOffer.goStep(2)" class="btn btn-outline-primary uppercase">
-				                    <span class="material-icons">keyboard_arrow_left</span>
-				                    @Html.Translate("ANTERIOR")
-				                </a>
-				                <a href="javascript:stepsOffer.goStep(4)" class="btn btn-primary uppercase">
-				                    @Html.Translate("GUARDAR_TERMINAR")
-				                    <span class="material-icons">keyboard_arrow_right</span>
-				                </a>
-				            </div>
-				        </div>
 				        <!-- END STEP 3 -->
+
 				        <!-- START STEP 4 -->
 				        <div id="wrapper-crear-oferta-step4" class="fade section-steps">
 				            <div class="botonera">

@@ -49,5 +49,14 @@ namespace Hercules.ED.GraphicEngine.Controllers
         {
             return Models.GraphicEngine.GetPage(pIdPagina, pLang);
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public List<Pagina> GetPaginasGraficas(string pLang)
+        {
+            return Models.GraphicEngine.GetPages(pLang);
+        }
     }
 }

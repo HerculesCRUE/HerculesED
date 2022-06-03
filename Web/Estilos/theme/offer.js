@@ -1,6 +1,6 @@
-const uriSaveOffer = "Offer/SaveOffer"
-const uriLoadOffer = "Offer/LoadOffer"
-const uriLoadUsersGroup = "Offer/LoadUsersGroup"
+const uriSaveOffer = "Ofertas/SaveOffer"
+const uriLoadOffer = "Ofertas/LoadOffer"
+const uriLoadUsersGroup = "Ofertas/LoadUsersGroup"
 
 var urlSOff ="";
 var urlSTAGSOffer = "";
@@ -23,40 +23,39 @@ class StepsOffer {
 	 */
 	constructor() {
 		var _self = this
-		this.step = 1
 		this.body = $('body')
 		this.dataTaxonomies = null
 
 		// Secciones principales
-		this.modalCrearOferta = this.body.find('#wrapper-crear-oferta')
-		this.stepProgressWrap = this.modalCrearOferta.find(".step-progress-wrap")
+		this.crearOferta = this.body.find('#wrapper-crear-oferta')
+		this.stepProgressWrap = this.crearOferta.find(".step-progress-wrap")
 		this.stepsCircle = this.stepProgressWrap.find(".step-progress__circle")
 		this.stepsBar = this.stepProgressWrap.find(".step-progress__bar")
 		this.stepsText = this.stepProgressWrap.find(".step-progress__text")
-		this.modalCrearOfertaStep1 = this.modalCrearOferta.find("#wrapper-crear-oferta-step1")
-		this.modalCrearOfertaStep2 = this.modalCrearOferta.find("#wrapper-crear-oferta-step2")
-		this.modalCrearOfertaStep3 = this.modalCrearOferta.find("#wrapper-crear-oferta-step3")
-		this.modalCrearOfertaStep4 = this.modalCrearOferta.find("#wrapper-crear-oferta-step4")
-		this.modalCrearOfertaStep5 = this.modalCrearOferta.find("#wrapper-crear-oferta-step5")
-		this.ofertaAccordionPerfil = this.modalCrearOferta.find("#accordion_oferta")
-		this.errorDiv = this.modalCrearOferta.find("#error-modal-oferta")
-		this.errorDivStep2 = this.modalCrearOferta.find("#error-modal-oferta-step2")
-		this.errorDivStep2Equals = this.modalCrearOferta.find("#error-modal-oferta-step2-equals")
-		this.errorDivServer = this.modalCrearOferta.find("#error-modal-server-oferta")
-		this.perfilesStep3 = this.modalCrearOfertaStep3.find("#perfiles-stp3-result-oferta")
+		this.crearOfertaStep1 = this.crearOferta.find("#wrapper-crear-oferta-step1")
+		this.crearOfertaStep2 = this.crearOferta.find("#wrapper-crear-oferta-step2")
+		this.crearOfertaStep3 = this.crearOferta.find("#wrapper-crear-oferta-step3")
+		this.crearOfertaStep4 = this.crearOferta.find("#wrapper-crear-oferta-step4")
+		this.crearOfertaStep5 = this.crearOferta.find("#wrapper-crear-oferta-step5")
+		this.ofertaAccordionPerfil = this.crearOferta.find("#accordion_oferta")
+		this.errorDiv = this.crearOferta.find("#error-modal-oferta")
+		this.errorDivStep2 = this.crearOferta.find("#error-modal-oferta-step2")
+		this.errorDivStep2Equals = this.crearOferta.find("#error-modal-oferta-step2-equals")
+		this.errorDivServer = this.crearOferta.find("#error-modal-server-oferta")
+		this.researchersStep2 = this.crearOfertaStep2.find("#researchers-stp2-result-oferta")
 
-		this.stepContentWrap = this.modalCrearOferta.find(".steps-content-wrap")
+		this.stepContentWrap = this.crearOferta.find(".steps-content-wrap")
 		this.stepsContent = this.stepContentWrap.find(".section-steps")
 
 		// Buttons
-		this.botoneraSteps = this.modalCrearOferta.find('#botonera-steps')
+		this.botoneraSteps = this.crearOferta.find('#botonera-steps')
 		this.btnBefore = this.botoneraSteps.find('.beforeStep')
 		this.nextStep = this.botoneraSteps.find('.nextStep')
 		this.endStep = this.botoneraSteps.find('.endStep')
 
 		// Step 1
-		this.listInvestigadoresSTP1 = this.modalCrearOfertaStep1.find(".resource-list-investigadores > div")
-
+		this.listInvestigadoresSTP1 = this.crearOfertaStep1.find(".resource-list-investigadores > div")
+		this.researchers = undefined
 
 		// Añadir perfil
 		this.modalPerfil = this.body.find("#modal-anadir-perfil-oferta")
@@ -74,42 +73,43 @@ class StepsOffer {
 		this.btnSaveAT = this.modalAreasTematicas.find('.btnsave')
 		this.cambiosAreasTematicas = 0
 
+		// Steps info
+		this.step = 1
+		this.numSteps = this.stepsCircle.length
+
 		// Información para el guardado 
 		this.userId = document.getElementById('inpt_usuarioID').value
 		this.ofertaId = undefined
 		this.data = undefined
 		this.editDataSave = undefined
-		this.communityShortName = $(this.modalCrearOferta).data('cshortname')
-		this.communityUrl = $(this.modalCrearOferta).data('comurl')
-		this.communityResourceUrl = this.communityUrl + '/' + $(this.modalCrearOferta).data('urlrecurso')
-		this.communityKey = $(this.modalCrearOferta).data('comkey')
+		this.communityShortName = $(this.crearOferta).data('cshortname')
+		this.communityUrl = $(this.crearOferta).data('comurl')
+		this.communityResourceUrl = this.communityUrl + '/' + $(this.crearOferta).data('urlrecurso')
+		this.communityKey = $(this.crearOferta).data('comkey')
 
 		// Tags
 		this.topicsM = undefined
 
 		// Textos obtenido de los 'data-'
-		this.eliminarText = this.modalCrearOferta.data("eliminartext")
-		this.editarOfertaText = this.modalCrearOferta.data("editaroferta")
-		this.AnadirOtroPerfilText = this.modalCrearOferta.data("addotherprofile")
-		this.AnadirNuevoPerfilText = this.modalCrearOferta.data("addnewprofile")
-		this.areasTematicasText = this.modalCrearOferta.data("areastematicastext")
-		this.descriptoresEspecificosText = this.modalCrearOferta.data("descriptoresespecificostext")
+		this.eliminarText = this.crearOferta.data("eliminartext")
+		this.editarOfertaText = this.crearOferta.data("editaroferta")
+		this.AnadirOtroPerfilText = this.crearOferta.data("addotherprofile")
+		this.AnadirNuevoPerfilText = this.crearOferta.data("addnewprofile")
+		this.areasTematicasText = this.crearOferta.data("areastematicastext")
+		this.descriptoresEspecificosText = this.crearOferta.data("descriptoresespecificostext")
 	}
 
 	/**
-	 * Método que inicia el funcionamiento funcionalidades necesarias para el creador de ofertas
+	 * Método que inicia el funcionamiento funcionalidades necesarias para el creador 
+	 * de ofertas
 	 */
 	init() {
 
 		var _self = this
 
-		// Fill taxonomies data
-		this.getDataTaxonomies().then((data) => {
-			_self.fillDataTaxonomies(data)
-			_self.dataTaxonomies = data['researcharea']
-
-			// Carga los usuarios del grupo al que perteneces 
-			_self.LoadUsersGroup()
+			
+		// Carga los usuarios del grupo al que perteneces 
+		_self.LoadUsersGroup().then((res) => {
 
 			// Check if we need load the oferta (after the taxonomies are loaded)
 			var currentUrl = new URL(window.location)
@@ -120,12 +120,21 @@ class StepsOffer {
 			}
 		})
 
+		// Fill taxonomies data
+		// _self.LoadUsersGroup().then((res) => {
+		// 	_self.fillDataTaxonomies(data)
+		// 	_self.dataTaxonomies = data['researcharea']
+
+			
+		// })
+
 
 		this.topicsM = new ModalSearchTagsOffer()
 	}
 
 	/**
-	 * Método que carga el ofertas indicado e inicializa los datos con los parámetros indicados
+	 * Método que carga el ofertas indicado e inicializa los datos con los parámetros 
+	 * indicados
 	 */
 	loadOffer() {
 		var _self = this
@@ -134,7 +143,7 @@ class StepsOffer {
 			this.editDataSave = res
 			var nameInput = document.getElementById('nombreofertainput')
 			var descInput = document.getElementById('txtDescripcion')
-			var selectTerms = this.modalCrearOferta.find('#oferta-modal-sec1-tax-wrapper')
+			var selectTerms = this.crearOferta.find('#oferta-modal-sec1-tax-wrapper')
 
 			$('h1').text(this.editarOfertaText)
 
@@ -180,6 +189,9 @@ class StepsOffer {
 		});
 	}
 
+	/**
+	 * Método que realiza una llamada ajax para cargar la oferta tecnológica
+	 */
 	callLoadOffer() {
 		MostrarUpdateProgress();
 		urlLoadOffer.searchParams.set('pIdOfertaId', this.ofertaId);
@@ -192,53 +204,73 @@ class StepsOffer {
 		})
 	}
 
-
+	/**
+	 * Método que carga el personal investigador del grupo al que pertenece el usuario
+	 * que está creando la oferta tecnológica actualmente
+	 */
 	LoadUsersGroup() {
 		var _self = this
 		MostrarUpdateProgress();
-		this.callLoadUsersGroup().then((res) => {
-			console.log("users", res)
-			let imgUser = this.modalCrearOferta.data('imguser')
-			let resHtml = ""
-			for (const [idperson, datospersona] of Object.entries(res)) {
-				resHtml += `
-					<article class="resource">
-			            <div class="custom-control custom-checkbox">
-			                <input type="checkbox" class="custom-control-input" id="check_1">
-			                <label class="custom-control-label" for="check_1"></label>
-			            </div>
-			            <div class="wrap">
-			                <div class="usuario-wrap">
-			                    <div class="user-miniatura">
-			                        <div class="imagen-usuario-wrap">
-			                            <a href="./fichaPerfil.php">
-			                                <div class="imagen">
-			                                    <span style=""background-image: url(${imgUser})"></span>
-			                                </div>
-			                            </a>
-			                        </div>
-			                        <div class="nombre-usuario-wrap">
-			                            <a href="#" target="_blank">
-			                                <p class="nombre">${datospersona.name}</p>
-			                                <p class="nombre-completo">${datospersona.tituloOrg	}, ${datospersona.hasPosition} ${datospersona.departamento}</p>
-			                            </a>
-			                        </div>
-			                    </div>
-			                </div>
-			                <div class="publicaciones-wrap d-none"></div>
-			            </div>
-			        </article>
-				`
-			}
-			_self.listInvestigadoresSTP1.html(resHtml)
+		return new Promise((resolve, reject) => {
+			_self.callLoadUsersGroup().then((res) => {
 
-			OcultarUpdateProgress();
-		});
+				if (res && Object.keys(res).length > 0) {
+
+					this.researchers = res;
+
+					let imgUser = this.crearOferta.data('imguser')
+					let resHtml = ""
+					let i = 0
+					for (const [idperson, datospersona] of Object.entries(res)) {
+						resHtml += `
+							<article class="resource" data-id="${idperson}">
+					            <div class="custom-control custom-checkbox-resource add">
+									<span class="material-icons">add</span>
+								</div>
+					            <div class="wrap">
+					                <div class="usuario-wrap">
+					                    <div class="user-miniatura">
+					                        <div class="imagen-usuario-wrap">
+					                            <a href="#">
+					                                <div class="imagen">
+					                                    <span style="background-image: url(${imgUser})"></span>
+					                                </div>
+					                            </a>
+					                        </div>
+					                        <div class="nombre-usuario-wrap">
+					                            <a href="#" target="_blank">
+					                                <p class="nombre">${datospersona.name}</p>
+					                                <p class="nombre-completo">${datospersona.organization ? datospersona.organization + ',': ''} ${datospersona.hasPosition ? datospersona.hasPosition : ''} ${datospersona.departamento ? datospersona.departamento: ''}</p>
+					                            </a>
+					                        </div>
+					                    </div>
+					                </div>
+					                <div class="publicaciones-wrap d-none"></div>
+					            </div>
+					        </article>
+						`
+					}
+					_self.listInvestigadoresSTP1.html(resHtml)
+					checkboxResources.init();
+				} else {
+					_self.listInvestigadoresSTP1.parent().parent().remove()
+					_self.listInvestigadoresSTP1 = _self.crearOfertaStep1.find(".resource-list-investigadores > div")
+				}
+
+				OcultarUpdateProgress();
+				resolve(true);
+			});
+		})
 	}
 
+	/**
+	 * Método que es llamado por "LoadUsersGroup" para la petición ajax de carga del 
+	 * personal investigador del grupo al que pertenece el usuario que está creando 
+	 * la oferta tecnológica actualmente
+	 */
 	callLoadUsersGroup() {
 		MostrarUpdateProgress();
-		urlLoadUsersGroup.searchParams.set('pIdCurrentUser', this.userId);
+		urlLoadUsersGroup.searchParams.set('pIdUserId', this.userId);
 		return new Promise((resolve, reject) => {
 			
 			$.get(urlLoadUsersGroup.toString(), function (res) {
@@ -248,10 +280,16 @@ class StepsOffer {
 		})
 	}
 
+	/**
+	 * Método que inicia el proceso de ir al siguiente paso en el stepBar
+	 */
 	goNext() {
 		this.goStep(this.step + 1)
 	}
 
+	/**
+	 * Método que inicia el proceso de ir al paso anterior en el stepBar
+	 */
 	goBack() {
 		if (this.step > 1) {
 			this.goStep(this.step - 1)
@@ -273,16 +311,16 @@ class StepsOffer {
 
 			let continueStep = true
 			switch (this.step) {
-				case 2:
+				case 1:
 				continueStep = this.checkContinue1()
-				break;
-				case 3:
-				continueStep = this.checkContinue2()
 				if (continueStep) {
-					_self.startStep3()
+					_self.startStep2()
 				}
 				break;
-				case 4:
+				case 2:
+				continueStep = this.checkContinue2()
+				break;
+				case 3:
 				try {
 					continueStep = await this.saveInit()
 					if (continueStep) {
@@ -320,9 +358,9 @@ class StepsOffer {
 		let panel = this.ofertaAccordionPerfil.find('.panel .panel-heading')
 
 		if (panel.length > 0) {
-			this.modalCrearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirOtroPerfilText + ' *')
+			this.crearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirOtroPerfilText + ' *')
 		} else {
-			this.modalCrearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirNuevoPerfilText + ' *')
+			this.crearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirNuevoPerfilText + ' *')
 		}
 	}
 
@@ -395,20 +433,28 @@ class StepsOffer {
 
 		// Get first screen data
 		let name = document.getElementById('nombreofertainput').value
-		let description = document.getElementById('txtDescripcion').value
-		let terms = []
-		let inputsTermsItms = this.modalCrearOfertaStep1.find('#oferta-modal-sec1-tax-wrapper').find('input')
-		inputsTermsItms.each((i, e) => {terms.push(e.value)})
+		// let description = document.getElementById('txtDescripcion').value
+		let tags = []
+		let inputsTagsItms = this.crearOfertaStep1.find('#oferta-modal-seleccionar-tags-stp1').find('input')
+		inputsTagsItms.each((i, e) => {tags.push(e.value)})
+
+		let researchers = {}
+		// Obtener los investigadores seleccionados
+		if (_self.listInvestigadoresSTP1 && _self.listInvestigadoresSTP1.length > 0) {
+			let reserchersDom = _self.listInvestigadoresSTP1.find(".resource.seleccionado")
+			reserchersDom.each((i, e) => {if (e) {researchers[$(e).data("id")] = _self.researchers[$(e).data("id")]}})
+		}
+
 
 		this.data = {
 			...this.data,
 			entityID: _self.ofertaId,
 			name,
-			description,
-			terms
+			tags,
+			researchers
 		}
 
-		return (name.length > 0 && terms.length > 0)
+		return (name.length > 0 && tags.length > 0)
 	}
 
 	/**
@@ -420,7 +466,7 @@ class StepsOffer {
 		var _self = this
 
 		// Get the second screen
-		let profiles = this.modalCrearOfertaStep2.find('.panel-collapse')
+		let profiles = this.crearOfertaStep2.find('.panel-collapse')
 		let profilesObjets = []
 
 		profiles.each((i, e) => {
@@ -697,7 +743,7 @@ class StepsOffer {
 					function (rdata) {
 						_self.ofertaId = rdata;
 						_self.data.entityID=rdata;
-						_self.startStep3();
+						_self.startStep2();
 						resolve(true);
 					}
 				)
@@ -1069,7 +1115,7 @@ class StepsOffer {
 
 				this.errorDivStep2Equals.hide()
 				// Get the image user url
-				let imgUser = this.modalCrearOferta.data('imguser')
+				let imgUser = this.crearOferta.data('imguser')
 
 				// Set The item id
 				let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
@@ -1185,118 +1231,92 @@ class StepsOffer {
 		$(this.stepsCircle[this.step - 1]).addClass("active")
 		$(this.stepsContent[this.step - 1]).addClass("show")
 		$(this.stepsText[this.step - 1]).addClass("current")
+
+		// Set the buttons 
+		this.btnBefore.hide()
+		this.nextStep.hide()
+		this.endStep.hide()
+		if (tstep > 1) {
+			this.btnBefore.show()
+		}
+		if (tstep < this.numSteps) {
+			this.nextStep.show()
+		} else {
+			this.endStep.show()
+		}
 	}
 
-	startStep3() { 
+	startStep2() { 
 		comportamientoPopupOferta.init(this.data);
-		this.PrintPerfilesstp3 ();
+		this.PrintPerfilesstp2 ();
 		$('#sugeridos-oferta-tab').click();
 	}
 
 	/**
 	 * Pintar los perfiles "finales"
 	 */
-	PrintPerfilesstp3 () {
+	PrintPerfilesstp2 () {
 
-		let imgUser = this.modalCrearOferta.data('imguser')
+		let imgUser = this.crearOferta.data('imguser')
 
-		let profiles = this.data.profiles.map((e, i) => {
-			let idAccordion = (e.name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() + "-" + i);
-			let htmlUsers=[];
+		let profiles = Object.keys(this.data.researchers).map((e, i) => {
+			let htmlUser = ""
 
-			// Clases para mostrar o no el listado de usuarios
-			let collapseClss1 = ""
-			let collapseClss2 = "show"
-			if (i > 0) {
-				let collapseClss1 = "collapsed"
-				let collapseClss2 = ""
+			let user = this.data.researchers[e]
+			if (user.info == undefined) {
+				user.info = user.organization + ', ' + user.hasPosition + ' ' + user.departamento
 			}
 
-			if(e.users!=null)
+			if(user != null)
 			{
 
-				htmlUsers=e.users.map((user, nuser) => {
-					return `<article class="resource">
-                        <div class="wrap">
-                            <div class="usuario-wrap">
-                                <div class="user-miniatura">
-                                    <div class="imagen-usuario-wrap">
-                                        <a href="#">
-                                            <div class="imagen">
-                                                <span style="background-image: url(${imgUser})"></span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="nombre-usuario-wrap">
-                                        <a href="#">
-                                            <p class="nombre">${user.name}</p>
-                                            <p class="nombre-completo">`+ user.info +`</p>
-                                        </a>
-                                    </div>
+				htmlUser = `<article class="resource">
+                    <div class="wrap">
+                        <div class="usuario-wrap">
+                            <div class="user-miniatura">
+                                <div class="imagen-usuario-wrap">
+                                    <a href="#">
+                                        <div class="imagen">
+                                            <span style="background-image: url(${imgUser})"></span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="nombre-usuario-wrap">
+                                    <a href="#">
+                                        <p class="nombre">${user.name}</p>
+                                        <p class="nombre-completo">`+ user.info +`</p>
+                                    </a>
                                 </div>
                             </div>
-                            <div class="publicaciones-wrap">
-                                ${user.numPublicacionesTotal}
-                            </div>
-                            <div class="principal-wrap">
-                                ${user.ipNumber}
-                            </div>
-                            <div class="acciones-wrap">
-                                <ul class="no-list-style">
-                                    <li>
-                                        <a href="javascript:stepsOffer.removeSelectedUserFromProfile('`+e.shortEntityID+`', '`+user.shortUserID+`')" class="texto-gris-claro">
-                                            Eliminar
-                                            <span class="material-icons-outlined">delete</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
                         </div>
-                    </article>`;
-				});
+                        <div class="publicaciones-wrap">
+                            ${user.numPublicacionesTotal}
+                        </div>
+                        <div class="acciones-wrap">
+                            <ul class="no-list-style">
+                                <li>
+                                    <a href="javascript:stepsOffer.removeSelectedUserSelected('`+ user.shortId +`')" class="texto-gris-claro">
+                                        Eliminar
+                                        <span class="material-icons-outlined">delete</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>`
 			}
-			let htmlProfile = `<div class="panel-group pmd-accordion" id="accordion`+ idAccordion +`" role="tablist" aria-multiselectable="true">
-	            <div class="panel">
-	                <div class="panel-heading" role="tab" id="experto-`+ idAccordion +`-tab">
-	                    <p class="panel-title">
-	                        <a class="perfil `+ collapseClss1 +`" data-toggle="collapse" data-parent="#accordion`+ idAccordion +`" href="#experto-`+ idAccordion +`" aria-expanded="false" aria-controls="experto-`+ idAccordion +`" data-expandable="false">
-	                            <span class="material-icons">keyboard_arrow_down</span>
-	                            <img src="`+ imgUser +`" alt="image">
-	                            <span class="texto">`+ e.name +`</span>
-	                        </a>
-	                    </p>
-	                </div>
-	                <div id="experto-`+ idAccordion +`" class="panel-collapse collapse `+ collapseClss2 +`" role="tabpanel" aria-labelledby="experto-`+ idAccordion +`-tab" style="">
-	                    <div class="panel-body">
 
-	                        <div class="acciones-listado">
-	                            <div class="wrap">
-	                                <div class="usuario-wrap"></div>
-	                                <div class="publicaciones-wrap">
-	                                    Publicaciones
-	                                </div>
-	                                <div class="principal-wrap">
-	                                    Principal
-	                                </div>
-	                                <div class="acciones-wrap"></div>
-	                            </div>
-	                        </div>
-	                        <div class="resource-list listView resource-list-personas">
-	                            <div class="resource-list-wrap">
-	                                ${htmlUsers.join('')}
-	                            </div>
-	                        </div>
-
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	        `;
-
-			return $(htmlProfile);
+			return htmlUser;
 		})
-		this.perfilesStep3.find('.panel-group.pmd-accordion').remove();
-		this.perfilesStep3.append(profiles);
+		let htmlUsersCont = `
+			<div class="resource-list listView resource-list-investigadores">
+			    <div class="resource-list-wrap">
+			    	${profiles.join('')}
+			    </div>
+			</div>`
+
+		this.researchersStep2.find('.resource-list-investigadores').remove();
+		this.researchersStep2.append($(htmlUsersCont));
 	}
 
 	removeSelectedUserFromProfile(idProfile, idUser) {
@@ -1308,97 +1328,10 @@ class StepsOffer {
 		currentProfile.users=currentProfile.users.filter(function (userInt) {
 			return userInt.shortUserID!=idUser;
 		});
-		this.PrintPerfilesstp3();
+		this.PrintPerfilesstp2();
 	}
 }
 
-
-// Clase para las trabajar en las gráficas de los colaboradores en el oferta
-class CargarGraficaProjectoOfertaObj {
-	dataCB = {};
-	dataSE = {};
-	idContenedorCB = "";
-	idContenedorSE = "";
-	typesOcultar = [];
-	typesOcultarSE = [];
-	showRelation = true;	
-	showRelationSE = true;
-
-	actualizarGraficaColaboradores = () => {
-		AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
-	};
-	
-	actualizarGraficaSeleccionados = () => {
-		AjustarGraficaArania(this.dataSE, this.idContenedorSE, this.typesOcultarSE, this.showRelationSE);
-	};
-
-	CargarGraficaColaboradores = (oferta, idContenedor, mostrarCargando = false) => {
-		var url = servicioExternoBaseUrl + "Oferta/DatosGraficaColaboradoresOferta";
-		var self = this;
-		$('#' + idContenedor).empty();
-		if (mostrarCargando) {
-			MostrarUpdateProgress();
-		}
-
-		let optionsRelations = ["relation_project", "relation_document"];
-		oferta.seleccionados=false;
-		$.post(url, oferta, function (data) {
-			// Establecer los valores en la variable externa
-			self.dataCB = data;
-			self.idContenedorCB = idContenedor;
-
-			self.actualizarGraficaColaboradores();
-			if (mostrarCargando) {
-				OcultarUpdateProgress();
-			}
-		});
-	};
-	
-	CargarGraficaSeleccionados = (oferta, idContenedor, mostrarCargando = false) => {
-		var url = servicioExternoBaseUrl + "Oferta/DatosGraficaColaboradoresOferta";
-		var self = this;
-		$('#' + idContenedor).empty();
-		if (mostrarCargando) {
-			MostrarUpdateProgress();
-		}
-
-		let optionsRelations = ["relation_project", "relation_document"];
-		oferta.seleccionados=true;
-		$.post(url, oferta, function (data) {
-			// Establecer los valores en la variable externa
-			self.dataSE = data;
-			self.idContenedorSE = idContenedor;
-
-			self.actualizarGraficaSeleccionados();
-			if (mostrarCargando) {
-				OcultarUpdateProgress();
-			}
-		});
-	};
-};
-
-// Creamos un nuevo objeto
-var newGrafProjClust = new CargarGraficaProjectoOfertaObj();
-
-
-// Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
-function actualizarTypesOfertaOcultar(type) {
-	if (type == "relation_todas") {
-		newGrafProjClust.typesOcultar = [];
-	} else {
-		newGrafProjClust.typesOcultar = [type];
-	}
-	newGrafProjClust.actualizarGraficaColaboradores();
-}
-
-function actualizarTypesOfertaOcultarSE(type) {
-	if (type == "relation_todas") {
-		newGrafProjClust.typesOcultarSE = [];
-	} else {
-		newGrafProjClust.typesOcultarSE = [type];
-	}
-	newGrafProjClust.actualizarGraficaSeleccionados();
-}
 
 
 // función para actualizar la gráfica de colaboradores
@@ -1410,18 +1343,30 @@ function ActualizarGraficaOfertaolaboradoresOferta(typesOcultar = [], showRelati
 var comportamientoPopupOferta = {
 	tabActive: null,
 
+	config: function () {
+		var that = this;
+
+		this.printitem = $('#ofertaListUsers')
+		this.text_volumen = this.printitem.data('volumen')
+		this.text_ajuste = this.printitem.data('ajuste')
+		this.text_mixto = this.printitem.data('mixto')
+
+		return;
+	},
+
 	init: function (ofertaObj) {
 		let that = this
 		this.config();
-		let paramsCl = this.workCO(ofertaObj)
-		let paramsProfiles = this.workCOProfiles(ofertaObj)
-		let profiles = this.setProfiles(ofertaObj)
+		// let paramsCl = this.workCO(ofertaObj)
+		// let paramsProfiles = this.workCOProfiles(ofertaObj)
+		// let profiles = this.setProfiles(ofertaObj)
 
 		buscadorPersonalizado.profile=null;
 		buscadorPersonalizado.search='searchOfertaMixto';
 		
 		// Iniciar el listado de usuarios
-		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", null, null, "viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 		// Agregamos los ordenes
 		$('.searcherResults .h1-container').after(
@@ -1442,35 +1387,25 @@ var comportamientoPopupOferta = {
 			</div>
 		</div>`);
 		
-		$('.acciones-listado-buscador a.item-dropdown').unbind().click(function (e) {
-			$('.acciones-listado-buscador .dropdown-toggle .texto').text($(this).text())
-			e.preventDefault();
-			buscadorPersonalizado.search=$(this).attr('filter');
-			if(buscadorPersonalizado.profile==null)
-			{
-				buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsCl;
-			}else
-			{
-				buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsProfiles[buscadorPersonalizado.profile];
-			}
-			FiltrarPorFacetas(ObtenerHash2());
-		});
+		// $('.acciones-listado-buscador a.item-dropdown').unbind().click(function (e) {
+		// 	$('.acciones-listado-buscador .dropdown-toggle .texto').text($(this).text())
+		// 	e.preventDefault();
+		// 	buscadorPersonalizado.search=$(this).attr('filter');
+		// 	if(buscadorPersonalizado.profile==null)
+		// 	{
+		// 		buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsCl;
+		// 	}else
+		// 	{
+		// 		buscadorPersonalizado.filtro=$(this).attr('filter')+'='+paramsProfiles[buscadorPersonalizado.profile];
+		// 	}
+		// 	FiltrarPorFacetas(ObtenerHash2());
+		// });
 
 		//Enganchamos comportamiento grafica seleccionados
 		$('#seleccionados-oferta-tab').unbind().click(function (e) {			
 			e.preventDefault();
-			newGrafProjClust.CargarGraficaSeleccionados(stepsOffer.data, 'selectedgraphOferta', true);
+			// newGrafProjClust.CargarGraficaSeleccionados(stepsOffer.data, 'selectedgraphOferta', true);
 		});
-
-		return;
-	},
-	config: function () {
-		var that = this;
-
-		this.printitem = $('#ofertaListUsers')
-		this.text_volumen = this.printitem.data('volumen')
-		this.text_ajuste = this.printitem.data('ajuste')
-		this.text_mixto = this.printitem.data('mixto')
 
 		return;
 	},
@@ -1666,7 +1601,7 @@ class ModalSearchTagsOffer {
 	}
 
 	/**
-	 * Método que genera un evento para el botón "guardar" y devuelve el número de TAGS añadidas
+	 * Método que genera un evento para el botón "guardar" y devuelve el listado de los TAGS añadidas
 	 * @return promise (array) con la lista de resultados 
 	 */
 	closeBtnClick() {

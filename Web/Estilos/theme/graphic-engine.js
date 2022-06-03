@@ -1,32 +1,37 @@
 $(document).ready(function () {
     metricas.init();
 });
-
 // Año máximo y mínimo para las facetas de años
-var minYear = 10000;
-var maxYear = 0;
+var minYear;
+var maxYear;
+// Lista de páginas
+var listaPaginas;
 
 var metricas = {
     init: function () {
-        this.createEmptyPage('123');
-        this.getPage('123');
-
+        this.getPages();
         return;
     },
     config: function () {
         return;
     },
-    getPage: function (pIdPagina) {
+    getPages: function () {
         var that = this;
         //var url = "https://localhost:44352/GetPaginaGrafica";
-        var url = url_servicio_graphicengine + "GetPaginaGrafica";
+        var url = url_servicio_graphicengine + "GetPaginasGraficas";
         var arg = {};
-        arg.pIdPagina = "123";
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function (data) {
-            that.fillPage(data);
+        $.get(url, arg, function (listaData) {
+            for (let i = 0; i < listaData.length; i++) {
+                $(".listadoMenuPaginas").append(`
+                    <li id="${listaData[i].id}" num="${i}">${listaData[i].nombre}</li>
+                `);
+            }
+            that.createEmptyPage(listaData[0].id);
+            that.fillPage(listaData[0]);
+            listaPaginas = listaData;
         });
     },
     getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas) {
@@ -129,6 +134,10 @@ var metricas = {
         arg.pIdFaceta = pIdFaceta;
         arg.pFiltroFacetas = pFiltroFacetas;
         arg.pLang = lang;
+        // Año máximo y mínimo para las facetas de años
+        minYear = 10000;
+        maxYear = 0;
+
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
 
@@ -164,6 +173,7 @@ var metricas = {
                 <span class="facet-arrow"></span><ul class="listadoFacetas"></ul>
                 `);
             }
+
             data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
@@ -209,6 +219,11 @@ var metricas = {
 
             that.engancharComportamientos();
         });
+    },
+    clearPage: function () {
+        $('#panFacetas').empty()
+        $('.resource-list-wrap').empty();
+        $('.borrarFiltros').click();
     },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -725,12 +740,7 @@ var metricas = {
         $('#allyears')
             .unbind()
             .click(function (e) {
-                var min, max;
-                // Cojo el valor del input y si no tiene le pongo el placeholder
-                min = $("#gmd_ci_datef1").attr("placeholder");
-                max = $("#gmd_ci_datef2").attr("placeholder");
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
-                var filtroActual = `${filtro}=${min}-${max}`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
                 filtros = '';
@@ -744,7 +754,6 @@ var metricas = {
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
                 }
-                filtros += filtroActual;
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
@@ -981,5 +990,13 @@ var metricas = {
             $('#modal-ampliar-mapa').css('display', 'none');
         }
 
+        $(".listadoMenuPaginas li")
+            .unbind()
+            .click(function (e) {
+                var numero = $(this).attr("num");
+                metricas.clearPage();
+                metricas.createEmptyPage(listaPaginas[numero].id);
+                metricas.fillPage(listaPaginas[numero]);
+            });
     }
 }
