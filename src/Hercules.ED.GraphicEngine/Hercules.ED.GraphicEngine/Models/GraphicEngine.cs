@@ -231,6 +231,7 @@ namespace Hercules.ED.GraphicEngine.Models
             ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
             Dictionary<Dimension, DatasetBarras> dimensionesDataset = new Dictionary<Dimension, DatasetBarras>();
 
+            bool ejeFechas = false;
             Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, itemGrafica =>
             {
                 // Determina si en el filtro contiene '=' para tratarlo de manera especial.
@@ -240,11 +241,20 @@ namespace Hercules.ED.GraphicEngine.Models
                     filtroEspecial = true;
                 }
 
-                // Orden.
-                string orden = "ASC";
+                // Orden.               
+                string orden = "DESC";
                 if (pGrafica.config.orderDesc == true)
                 {
-                    orden = "DESC";
+                    orden = "ASC";
+                }
+                foreach (string item in pListaDates)
+                {
+                    if (item.Contains(pGrafica.config.ejeX))
+                    {
+                        orden = "ASC";
+                        ejeFechas = true;
+                        break;
+                    }
                 }
 
                 // Filtro de página.
@@ -295,7 +305,14 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
                     }
-                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    if (ejeFechas)
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    }
+                    else
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?numero) ");
+                    }
                 }
                 else
                 {
@@ -314,7 +331,14 @@ namespace Hercules.ED.GraphicEngine.Models
                         where.Append(item);
                     }
                     where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
-                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    if (ejeFechas)
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    }
+                    else
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?numero) ");
+                    }
                 }
 
                 resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
@@ -363,37 +387,40 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            if (ejeFechas)
             {
-                if (item.Value != null && item.Value.Any())
+                foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
-                    foreach (string valor in valuesEje)
+                    if (item.Value != null && item.Value.Any())
                     {
-                        Tuple<string, string, float> tuplaAux = item.Value.FirstOrDefault(x => x.Item1.Equals(valor));
-                        if (tuplaAux == null)
+                        foreach (string valor in valuesEje)
                         {
-                            item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
+                            Tuple<string, string, float> tuplaAux = item.Value.FirstOrDefault(x => x.Item1.Equals(valor));
+                            if (tuplaAux == null)
+                            {
+                                item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
+                            }
                         }
+                    }
+
+                    if (isInt)
+                    {
+                        resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
+                    }
+                    else
+                    {
+                        resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
                     }
                 }
 
                 if (isInt)
                 {
-                    resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
+                    valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
                 }
                 else
                 {
-                    resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                    valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
                 }
-            }
-
-            if (isInt)
-            {
-                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
-            }
-            else
-            {
-                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
             }
             #endregion
 
@@ -503,6 +530,7 @@ namespace Hercules.ED.GraphicEngine.Models
             ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>> resultadosDimension = new ConcurrentDictionary<Dimension, List<Tuple<string, string, float>>>();
             Dictionary<Dimension, DatasetBarrasY> dimensionesDataset = new Dictionary<Dimension, DatasetBarrasY>();
 
+            bool ejeFechas = false;
             Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, itemGrafica =>
             {
                 // Determina si en el filtro contiene '=' para tratarlo de manera especial.
@@ -512,11 +540,20 @@ namespace Hercules.ED.GraphicEngine.Models
                     filtroEspecial = true;
                 }
 
-                // Orden.
-                string orden = "ASC";
+                // Orden.                
+                string orden = "DESC";
                 if (pGrafica.config.orderDesc == true)
                 {
-                    orden = "DESC";
+                    orden = "ASC";
+                }
+                foreach (string item in pListaDates)
+                {
+                    if (item.Contains(pGrafica.config.ejeX))
+                    {
+                        orden = "ASC";
+                        ejeFechas = true;
+                        break;
+                    }
                 }
 
                 // Filtro de página.
@@ -567,7 +604,14 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
                     }
-                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    if (ejeFechas)
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    }
+                    else
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?numero) ");
+                    }
                 }
                 else
                 {
@@ -586,7 +630,14 @@ namespace Hercules.ED.GraphicEngine.Models
                         where.Append(item);
                     }
                     where.Append($@"FILTER(LANG(?ejeX) = 'es' OR LANG(?ejeX) = '' OR !isLiteral(?ejeX))");
-                    where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    if (ejeFechas)
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?ejeX) ");
+                    }
+                    else
+                    {
+                        where.Append($@"}} ORDER BY {orden}(?numero) ");
+                    }
                 }
 
                 resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
@@ -635,37 +686,40 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
+            if (ejeFechas)
             {
-                if (item.Value != null && item.Value.Any())
+                foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
-                    foreach (string valor in valuesEje)
+                    if (item.Value != null && item.Value.Any())
                     {
-                        Tuple<string, string, float> tuplaAux = item.Value.FirstOrDefault(x => x.Item1.Equals(valor));
-                        if (tuplaAux == null)
+                        foreach (string valor in valuesEje)
                         {
-                            item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
+                            Tuple<string, string, float> tuplaAux = item.Value.FirstOrDefault(x => x.Item1.Equals(valor));
+                            if (tuplaAux == null)
+                            {
+                                item.Value.Add(new Tuple<string, string, float>(valor, "", 0));
+                            }
                         }
+                    }
+
+                    if (isInt)
+                    {
+                        resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
+                    }
+                    else
+                    {
+                        resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
                     }
                 }
 
                 if (isInt)
                 {
-                    resultadosDimension[item.Key] = item.Value.OrderBy(x => int.Parse(x.Item1)).ToList();
+                    valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
                 }
                 else
                 {
-                    resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                    valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
                 }
-            }
-
-            if (isInt)
-            {
-                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => int.Parse(item)));
-            }
-            else
-            {
-                valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
             }
             #endregion
 
