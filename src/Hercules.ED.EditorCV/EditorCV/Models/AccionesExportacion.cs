@@ -30,7 +30,7 @@ namespace EditorCV.Models
         /// <param name="pCVID"></param>
         /// <param name="lang"></param>
         /// <param name="listaId"></param>
-        public static void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId)
+        public void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
@@ -71,7 +71,7 @@ namespace EditorCV.Models
         /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
-        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
+        void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
             string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado, List<string> listaId)
         {
             try
@@ -146,7 +146,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador del CV</param>
         /// <returns></returns>
-        public static List<FilePDF> GetListPDFFile(string pCVId)
+        public List<FilePDF> GetListPDFFile(string pCVId)
         {
             List<FilePDF> listadoArchivos = new List<FilePDF>();
             string select = "SELECT ?titulo ?fecha ?estado ?fichero";
@@ -198,7 +198,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador del CV</param>
         /// <returns></returns>
-        public static ConcurrentDictionary<string, string> GetAllTabs(string pCVId)
+        public ConcurrentDictionary<string, string> GetAllTabs(string pCVId)
         {
             ConcurrentDictionary<string, string> dicIds = new ConcurrentDictionary<string, string>();
             string select = "SELECT *";
@@ -238,7 +238,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="tab"></param>
         /// <returns></returns>
-        private static bool IsValidTab(string tab)
+        private bool IsValidTab(string tab)
         {
             List<string> validTabs = new List<string>()
             {
@@ -259,7 +259,7 @@ namespace EditorCV.Models
         /// <param name="uri"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        private static string FirstLetterUpper(string uri, string property)
+        private string FirstLetterUpper(string uri, string property)
         {
             if (property.Length == 0 || property.Length == 1)
             {
