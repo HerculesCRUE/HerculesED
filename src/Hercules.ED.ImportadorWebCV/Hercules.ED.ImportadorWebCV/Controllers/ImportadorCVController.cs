@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
@@ -33,6 +34,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         [HttpPost("Importar")]
         public ActionResult Importar([FromHeader][Required] string pCVID, [Required] IFormFile File, [FromHeader][Optional] List<string> Secciones)
         {
+            try { 
             SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
 
             sincro.SincroDatosIdentificacion(Secciones);
@@ -44,6 +46,11 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
             sincro.SincroTextoLibre(Secciones);
 
             return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -56,18 +63,25 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         [HttpPost("Preimportar")]
         public ActionResult Preimportar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Optional] List<string> Secciones)
         {
-            SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
-            Preimport preimportar = new Preimport();
+            try
+            {
+                SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
+                Preimport preimportar = new Preimport();
 
-            preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
-            preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true));
-            preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true));
-            preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true));
-            preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true));
-            preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
-            preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
+                preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
+                preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true));
+                preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true));
+                preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true));
+                preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true));
+                preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
+                preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
 
-            return Ok(preimportar);
+                return Ok(preimportar);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }            
         } 
     }
 }

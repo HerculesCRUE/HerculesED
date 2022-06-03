@@ -29,8 +29,8 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
-        [HttpPost("ImportarCV")]
-        public IActionResult ImportarCV([Required][FromForm] string userID, [Required] IFormFile File)
+        [HttpPost("PreimportarCV")]
+        public IActionResult PreimportarCV([Required][FromForm] string userID, [Required] IFormFile File)
         {
             try
             {
@@ -40,10 +40,10 @@ namespace EditorCV.Controllers
                     throw new Exception("Usuario no encontrado " + userID);
                 }
                 AccionesImportacion accionesImportacion = new AccionesImportacion();
-                accionesImportacion.ImportarCV(pCVId, File);
+                HttpResponseMessage responseMessage = accionesImportacion.ImportarCV(_Configuracion, pCVId, File);
 
-                return Ok();
-            } 
+                return Ok(responseMessage.Content.ReadAsStringAsync());
+            }
             catch (Exception ex)
             {
                 return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
