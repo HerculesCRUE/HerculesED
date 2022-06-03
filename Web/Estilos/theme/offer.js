@@ -56,6 +56,7 @@ class StepsOffer {
 		// Step 1
 		this.listInvestigadoresSTP1 = this.crearOfertaStep1.find(".resource-list-investigadores > div")
 		this.researchers = undefined
+		this.numSeleccionadosInvestigadores = 0
 
 		// Añadir perfil
 		this.modalPerfil = this.body.find("#modal-anadir-perfil-oferta")
@@ -157,29 +158,29 @@ class StepsOffer {
 				profile.shortEntityID = profile.entityID.split('_')[2]
 
 				// Crea el perfil
-				this.addPerfilSearch(profile).then(nameId => {
+				// this.addPerfilSearch(profile).then(nameId => {
 
-					// Carga las áreas temáticas
-					let selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
+				// 	// Carga las áreas temáticas
+				// 	let selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
 
-					let timer = setTimeout(function () {
-						if (selectTerms.length !== 0)
-						{
-							_self.saveAreasTematicasEvent(selectTerms, profile.terms)
-							clearTimeout(timer)
-						}
-					}, 100);
+				// 	let timer = setTimeout(function () {
+				// 		if (selectTerms.length !== 0)
+				// 		{
+				// 			_self.saveAreasTematicasEvent(selectTerms, profile.terms)
+				// 			clearTimeout(timer)
+				// 		}
+				// 	}, 100);
 
-					// carga los tags
-					let selectTags = $('#modal-seleccionar-tags-' + nameId)
-					let timerTerms = setTimeout(function () {
-						if (selectTerms.length !== 0)
-						{
-							_self.saveTAGS(selectTags, profile.tags)
-							clearTimeout(timerTerms)
-						}
-					}, 100);
-				})
+				// 	// carga los tags
+				// 	let selectTags = $('#modal-seleccionar-tags-' + nameId)
+				// 	let timerTerms = setTimeout(function () {
+				// 		if (selectTerms.length !== 0)
+				// 		{
+				// 			_self.saveTAGS(selectTags, profile.tags)
+				// 			clearTimeout(timerTerms)
+				// 		}
+				// 	}, 100);
+				// })
 
 				// Editamos los IDs de los usuarios
 				profile.users.forEach(user => {
@@ -302,7 +303,18 @@ class StepsOffer {
 	 */
 	async goStep(pos) {
 		var _self = this
-		if (pos > 0) {
+
+		// Vuelve atrás
+		if (pos > 0 && this.step > pos) {
+
+			this.errorDiv.hide()
+			this.errorDivStep2.hide()
+			this.errorDivStep2Equals.hide()
+			this.errorDivServer.hide()
+			this.setStep(pos)
+
+		// Siguiente paso
+		} else if(pos > 0) {
 
 			this.errorDiv.hide()
 			this.errorDivStep2.hide()
@@ -444,6 +456,8 @@ class StepsOffer {
 			let reserchersDom = _self.listInvestigadoresSTP1.find(".resource.seleccionado")
 			reserchersDom.each((i, e) => {if (e) {researchers[$(e).data("id")] = _self.researchers[$(e).data("id")]}})
 		}
+
+		this.numSeleccionadosInvestigadores = Object.keys(researchers).length
 
 
 		this.data = {
@@ -1083,118 +1097,6 @@ class StepsOffer {
 	}
 
 	/**
-	 * Método que añade un perfil nuevo en el segundo paso
-	 * @param name, Nombre opcional para crear un perfil guardado en el oferta que se está cargando
-	 * @return string, devuelve un string con el id del profile generado
-	 */
-	addPerfilSearch(profileObj = null) {
-
-		return new Promise((resolve, reject) => {
-
-			let name = "";
-			let profileId = "";
-
-			if (profileObj == null) {
-				// Get the name
-				name = this.inputPerfil.val()
-				profileId = guidGenerator()
-			} else {
-				name = profileObj.name
-				profileId = profileObj.shortEntityID
-			}
-
-			this.modalPerfil.modal('hide')
-			this.inputPerfil.val("") // Set the name empty
-
-			// Comprueba si el perfil existe y no es la carga inicial cuando se carga un perfil
-			if (this.perfilExist(name) && profileObj == null) {
-				// Muestra un error
-				this.errorDivStep2Equals.show()
-
-			} else {
-
-				this.errorDivStep2Equals.hide()
-				// Get the image user url
-				let imgUser = this.crearOferta.data('imguser')
-
-				// Set The item id
-				let nameId = name.replace(/[^a-z0-9_]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
-				let rand = Math.random() * (100000 - 10000) + 10000
-				nameId = nameId + rand.toFixed()
-
-				// Get the panel item
-				let panel = this.ofertaAccordionPerfil.find('.panel')
-
-				// 
-				let item = `<div class="panel-heading" role="tab" id="`+ nameId +`-tab">
-						<p class="panel-title">
-							<a class="perfil" data-toggle="collapse" data-parent="#accordion_oferta" href="#`+ nameId +`" aria-expanded="true" aria-controls="`+ nameId +`" data-expandable="false">
-								<span class="material-icons">keyboard_arrow_down</span>
-								<img src="`+ imgUser +`" alt="person">
-								<span class="texto">`+ name +`</span>
-							</a>
-						</p>
-						<div class="conteditborrbtn">
-							<a href="javascript:void(0)" onclick="stepsOffer.editarPerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey edit">
-								<span class="material-icons-outlined px-0">edit</span>
-							</a>
-							<a href="javascript:void(0)" onclick="stepsOffer.deletePerfil('`+ nameId +`-tab', '`+ nameId +`', '`+ profileId +`')" class="btn btn-outline-grey eliminar">
-								` + this.eliminarText + `
-								<span class="material-icons-outlined">delete</span>
-							</a>
-						</div>
-					</div>
-					<div data-profileid="`+profileId+`" id="`+ nameId +`" data-name="`+ name +`" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="`+ nameId +`-tab">
-						<div class="panel-body">
-
-							<!-- Areas temáticas -->
-							<div class="form-group mb-5 edit-etiquetas terms-items">
-								<label class="control-label d-block">`+ this.areasTematicasText +`</label>
-								<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-`+ nameId +`">
-									<div class="tag-list mb-4 d-inline"></div> 
-								</div>
-								<a class="btn btn-outline-primary" href="javascript: void(0)">
-									<span class="material-icons" onclick="stepsOffer.setAreasTematicas(this)" data-rel="modal-seleccionar-area-tematica-`+ nameId +`">add</span>
-								</a>
-							</div>
-							<!-- -->
-
-							<!-- Tópicos -->
-							<div class="form-group mb-5 edit-etiquetas tags-items">
-								<label class="control-label d-block">` + this.descriptoresEspecificosText + `</label>
-								<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-tags-`+ nameId +`">
-									<div class="tag-list mb-4 d-inline"></div> 
-								</div>
-								<a class="btn btn-outline-primary" href="javascript: void(0)">
-									<span class="material-icons" data-rel="modal-seleccionar-tags-`+ nameId +`" onclick="stepsOffer.loadModalTopics(this)">add</span>
-								</a>
-							</div>
-							<!-- -->
-
-						</div>
-					</div>`
-
-				panel.append(item)
-
-				if (profileObj == null) {
-					// Añade un perfil
-					if (this.data.profiles) {
-						this.data.profiles.push({ name, entityID: profileId })
-					} else {
-						this.data.profiles = [{ name, entityID: profileId }]
-					}
-				}
-
-				this.checkNumberProfiles()
-				resolve(nameId)
-			}
-
-		})
-
-	}
-
-
-	/**
 	 * Establece el "estado" del "step-progress"
 	 * @param tstep, posición a establecer
 	 */
@@ -1248,21 +1150,24 @@ class StepsOffer {
 
 	startStep2() { 
 		comportamientoPopupOferta.init(this.data);
-		this.PrintPerfilesstp2 ();
+		this.PrintSelectedUsersStp2 ();
 		$('#sugeridos-oferta-tab').click();
 	}
 
 	/**
 	 * Pintar los perfiles "finales"
 	 */
-	PrintPerfilesstp2 () {
+	PrintSelectedUsersStp2 () {
 
 		let imgUser = this.crearOferta.data('imguser')
 
 		let profiles = Object.keys(this.data.researchers).map((e, i) => {
 			let htmlUser = ""
 
+			// Obtenemos el usuario actual
 			let user = this.data.researchers[e]
+
+			// Creamos el literal para la información del usuario si esta no existe.
 			if (user.info == undefined) {
 				user.info = user.organization + ', ' + user.hasPosition + ' ' + user.departamento
 			}
@@ -1270,7 +1175,8 @@ class StepsOffer {
 			if(user != null)
 			{
 
-				htmlUser = `<article class="resource">
+				htmlUser = `
+				<article class="resource">
                     <div class="wrap">
                         <div class="usuario-wrap">
                             <div class="user-miniatura">
@@ -1295,7 +1201,7 @@ class StepsOffer {
                         <div class="acciones-wrap">
                             <ul class="no-list-style">
                                 <li>
-                                    <a href="javascript:stepsOffer.removeSelectedUserSelected('`+ user.shortId +`')" class="texto-gris-claro">
+                                    <a href="javascript:stepsOffer.removeSelectedUserSelected('`+ e +`')" class="texto-gris-claro">
                                         Eliminar
                                         <span class="material-icons-outlined">delete</span>
                                     </a>
@@ -1308,6 +1214,7 @@ class StepsOffer {
 
 			return htmlUser;
 		})
+		// Añadimos el html de los investigadores
 		let htmlUsersCont = `
 			<div class="resource-list listView resource-list-investigadores">
 			    <div class="resource-list-wrap">
@@ -1315,8 +1222,21 @@ class StepsOffer {
 			    </div>
 			</div>`
 
-		this.researchersStep2.find('.resource-list-investigadores').remove();
-		this.researchersStep2.append($(htmlUsersCont));
+		this.crearOfertaStep2.find('.resource-list-investigadores').remove();
+		this.researchersStep2.append(htmlUsersCont);
+
+		// pintamos el número de investigadores
+		this.printNumResearchers()
+	}
+
+	/**
+	 * Método que pinta el número de investigadores seleccionados
+	 */
+	printNumResearchers() {
+
+		// Establecemos el número de investigadores
+		this.crearOfertaStep2.find('.numResultados').text(this.numSeleccionadosInvestigadores);
+		this.crearOfertaStep2.find('#stp2-num-selected').text('(' + this.numSeleccionadosInvestigadores + ')');
 	}
 
 	removeSelectedUserFromProfile(idProfile, idUser) {
@@ -1328,7 +1248,7 @@ class StepsOffer {
 		currentProfile.users=currentProfile.users.filter(function (userInt) {
 			return userInt.shortUserID!=idUser;
 		});
-		this.PrintPerfilesstp2();
+		this.PrintSelectedUsersStp2();
 	}
 }
 
@@ -1338,6 +1258,184 @@ class StepsOffer {
 function ActualizarGraficaOfertaolaboradoresOferta(typesOcultar = [], showRelation = true) {
 	AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
 }
+
+
+
+function CompletadaCargaRecursosInvestigadoresOfertas()
+{	
+	if(typeof stepsOffer != 'undefined' && stepsOffer != null && stepsOffer.data != null)
+	{		
+		$('#ofertaListUsers article.resource h2.resource-title').attr('tagert','_blank');
+		stepsOffer.data.pPersons=$('#ofertaListUsers article.resource').toArray().map(e => {return $(e).attr('id')});
+		
+		$('#ofertaListUsers article.resource').each((i, e) => {
+
+			if (stepsOffer.data.profiles.find(pr => pr.shortId == e.id).length > 0) {
+				$(e).prepend(`<div class="custom-control custom-checkbox-resource done">
+	                <span class="material-icons">done</span>
+	            </div>`)
+				$(e).addClass('seleccionado')
+			}
+
+			$(e).prepend(`<div class="custom-control custom-checkbox-resource add">
+		        <span class="material-icons">add</span>
+		    </div>`)
+		})
+		
+		
+		// $('article.resource .user-perfil').remove();
+		// let htmlPerfiles='';
+		// if(score.numPublicaciones>0)
+		// {
+		// 	let idProfileEdit = idProfile;
+		// 	if(idProfileEdit.length!=36)
+		// 	{
+		// 		idProfileEdit=idProfileEdit.split('_')[2]
+		// 	}
+		// 	let nombrePerfil = stepsOffer.data.profiles.filter(function (item) {return item.shortEntityID ==idProfileEdit || item.entityID ==idProfileEdit;})[0].name;
+			
+		// 	let publicationsPercent = score.numPublicaciones/score.numPublicacionesTotal*100
+
+
+
+		// 	htmlPerfiles+=`	<div class="perfil-wrap">
+		// 			        <div class="custom-wrap">
+		// 			            <div class="custom-control custom-checkbox">
+		// 			                <input type="checkbox" class="custom-control-input" id="${idperson}-${idProfileEdit}">
+		// 			                <label class="custom-control-label" for="${idperson}-${idProfileEdit}">
+		// 			                    ${nombrePerfil}
+		// 			                </label>
+		// 			            </div>
+		// 			            <div class="check-actions-wrap">
+		// 			                <a href="javascript: void(0);" class="dropdown-toggle check-actions-toggle" data-toggle="dropdown" aria-expanded="true">
+		// 			                    <span class="material-icons">
+		// 			                        arrow_drop_down
+		// 			                    </span>
+		// 			                </a>
+		// 			                <div class="dropdown-menu basic-dropdown check-actions" id="checkActions" x-placement="bottom-start">
+		// 			                    <div class="barras-progreso-wrapper">
+		// 			                        <div class="progreso-wrapper">
+		// 			                            <div class="progress">
+		// 			                                <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+		// 			                            </div>
+		// 			                            <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
+		// 			                        </div>
+		// 			                        <div class="progreso-wrapper">
+		// 			                            <div class="progress">
+		// 			                                <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+		// 			                            </div>
+		// 			                            <span class="progress-text"><span class="font-weight-bold">${score.numPublicaciones} /</span> ${score.numPublicacionesTotal}</span>
+		// 			                        </div>
+		// 			                    </div>
+		// 			                    <div class="wrap">
+		// 			                        <div class="header-wrap">
+		// 			                            <p>Areas temáticas</p>
+		// 			                            <p>Publicaciones</p>
+		// 			                        </div>
+		// 			                        <div class="areas-tematicas-wrap">
+		// 			                            <ul class="no-list-style">
+		// 			                                ${termsHtml}
+		// 			                            </ul>
+		// 			                        </div>
+		// 			                    </div>
+		// 			                    <div class="wrap">
+		// 			                        <div class="header-wrap">
+		// 			                            <p>Descriptores</p>
+		// 			                        </div>
+		// 			                        <div class="descriptores-wrap">
+		// 			                            <ul class="no-list-style">
+		// 			                                ${tagsHtml}
+		// 			                            </ul>
+		// 			                        </div>
+		// 			                    </div>
+		// 			                </div>
+		// 			            </div>
+		// 			        </div>
+		// 			        <div class="barras-progreso-wrap">
+		// 			            <div class="progreso-wrapper">
+		// 			                <div class="progress">
+		// 			                    <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+		// 			                </div>
+		// 			                <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
+		// 			            </div>
+		// 			            <div class="progreso-wrapper">
+		// 			                <div class="progress">
+		// 			                    <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+		// 			                </div>
+		// 			                <span class="progress-text"><span class="font-weight-bold">${score.numPublicaciones} /</span> ${score.numPublicacionesTotal}</span>
+		// 			            </div>
+		// 			        </div>
+		// 			    </div>`;
+
+
+		// }
+		// let htmlPerfilesPersona=`	<div class="user-perfil pl-0">
+		// 								${htmlPerfiles}
+		// 							</div>`;				
+		// $('#'+idperson+' .content-wrap.flex-column').append(htmlPerfilesPersona);
+		// try {
+		// 	$('#'+idperson).data('numPublicacionesTotal', Object.values(datospersona)[0].numPublicacionesTotal);
+		// 	$('#'+idperson).data('ipNumber', Object.values(datospersona)[0].ipNumber);
+		// } catch (e) { }
+
+		// let repintar = false
+		// //Marcamos como checkeados los correspondientes
+		// stepsOffer.data.profiles.forEach(function(perfil, index) {
+		// 	let idProfile= perfil.shortEntityID;
+		// 	if(perfil.users!=null)
+		// 	{
+		// 		perfil.users.forEach(function(user, index) {
+		// 			var elementUser = $('#'+user.shortUserID)
+		// 			$('#'+user.shortUserID+'-'+idProfile).prop('checked', true);
+		// 		});					
+		// 	}
+		// });
+		// if (repintar) {
+		// 	stepsOffer.PrintPerfilesstp3();
+		// }
+		
+		// //Enganchamos el chek de los chekbox	
+		// $('.perfil-wrap .custom-control-input').change(function() {
+		// 	let id=$(this).attr('id');
+		// 	let idUser=id.substring(0,36);
+		// 	let idProfile=id.substring(37);					
+		// 	let perfil=stepsOffer.data.profiles.filter(function (perfilInt) {
+		// 		return perfilInt.shortEntityID==idProfile || perfilInt.entityID==idProfile ;
+		// 	})[0];
+		// 	if(this.checked) {
+		// 		let elementUser = $(this).closest('.resource.investigador')
+		// 		let user = {}
+		// 		let arrInfo = []
+		// 		user.shortUserID = idUser
+		// 		user.name = elementUser.find('h2.resource-title').text().trim()
+
+		// 		// Obtener la descripción
+		// 		elementUser.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+		// 			arrInfo.push($(elem).text().trim())
+		// 		})
+		// 		user.info = arrInfo.join(', ')
+
+		// 		user.numPublicacionesTotal = elementUser.data('numPublicacionesTotal')
+		// 		user.ipNumber = elementUser.data('ipNumber')
+		// 		if(perfil.users==null)					
+		// 		{
+		// 			perfil.users=[];
+		// 		}
+		// 		perfil.users.push(user);
+		// 	}else
+		// 	{
+		// 		perfil.users=perfil.users.filter(function (userInt) {
+		// 			return userInt.shortUserID!=idUser;
+		// 		});
+		// 	}
+		// 	stepsOffer.PrintPerfilesstp3();
+		// 	newGrafProjClust.CargarGraficaColaboradores(stepsOffer.data, 'colaboratorsgraphCluster', true);
+		// });	
+	}
+}
+
+
+
 
 // Comportamiento página proyecto
 var comportamientoPopupOferta = {
@@ -1369,23 +1467,23 @@ var comportamientoPopupOferta = {
 		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", null, null, "viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 		// Agregamos los ordenes
-		$('.searcherResults .h1-container').after(
-		`<div class="acciones-listado acciones-listado-buscador">
-			<div class="wrap">
+		// $('.searcherResults .h1-container').after(
+		// `<div class="acciones-listado acciones-listado-buscador">
+		// 	<div class="wrap">
 				
-				<div class="ordenar dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						<span class="material-icons">swap_vert</span>
-						<span class="texto">${that.text_mixto}</span>
-					</a>
-					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-						<a href="javascript: void(0)" filter="searchOfertaMixto" class="item-dropdown">${that.text_mixto}</a>
-						<a href="javascript: void(0)" filter="searchOfertaVolumen" class="item-dropdown">${that.text_volumen}</a>
-						<a href="javascript: void(0)" filter="searchOfertaAjuste" class="item-dropdown">${that.text_ajuste}</a>
-					</div>
-				</div>
-			</div>
-		</div>`);
+		// 		<div class="ordenar dropdown">
+		// 			<a class="dropdown-toggle" data-toggle="dropdown">
+		// 				<span class="material-icons">swap_vert</span>
+		// 				<span class="texto">${that.text_mixto}</span>
+		// 			</a>
+		// 			<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+		// 				<a href="javascript: void(0)" filter="searchOfertaMixto" class="item-dropdown">${that.text_mixto}</a>
+		// 				<a href="javascript: void(0)" filter="searchOfertaVolumen" class="item-dropdown">${that.text_volumen}</a>
+		// 				<a href="javascript: void(0)" filter="searchOfertaAjuste" class="item-dropdown">${that.text_ajuste}</a>
+		// 			</div>
+		// 		</div>
+		// 	</div>
+		// </div>`);
 		
 		// $('.acciones-listado-buscador a.item-dropdown').unbind().click(function (e) {
 		// 	$('.acciones-listado-buscador .dropdown-toggle .texto').text($(this).text())
