@@ -224,7 +224,7 @@ namespace Utils
             {
                 return "";
             }
-            return string.Join("|", cadena.Split("|").Select(x => x.Split("@@@")[0]));
+            return string.Join("|", cadena.Split("|").Select(x => x.Split("@@@").FirstOrDefault()));
         }
 
         /// <summary>
