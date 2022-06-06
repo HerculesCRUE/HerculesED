@@ -11307,6 +11307,9 @@
           "cvnsection": "060.030.050.000",
           "listItem": {
             "propertyTitle": {
+              "auxTitle": {
+                "es": "Nº de tramos reconocidos:"
+              },
               "property": "http://vivoweb.org/ontology/core#relatedBy",
               "graph": "accreditation",
               "child": {
