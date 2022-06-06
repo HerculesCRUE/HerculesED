@@ -244,9 +244,7 @@ function printCientificProduction(id, data){
 												<div class="title-wrap">
 												</div>
 												<div class="title-wrap">
-													<h2 class="resource-title">
-														<a href="#" data-id="${id}" internal-id="${data.item.entityID}">Indicadores generales de calidad de la producción científica</a>
-													</h2>
+													<h2 class="resource-title">${data.title}</h2>
 												</div>
 												<div class="content-wrap">
 													<div class="description-wrap">
@@ -442,9 +440,7 @@ edicionCV.printPersonalData=function(id, data) {
 															<div class="title-wrap">
 															</div>
 															<div class="title-wrap">
-																<h2 class="resource-title">
-																	<a href="#" data-id="${id}" internal-id="${data.entityID}">${nombre}</a>
-																</h2>
+																<h2 class="resource-title">${nombre}</h2>
 																${this.printHtmlListItemEditable(data)}	
 																${this.printHtmlListItemIdiomas(data)}
 															</div>
@@ -575,9 +571,7 @@ edicionCV.printHtmlListItem= function(id, data) {
 									<div class="title-wrap">
 									</div>
 									<div class="title-wrap">
-										<h2 class="resource-title">
-											<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
-										</h2>
+										<h2 class="resource-title">${data.title}</h2>
 										${this.printHtmlListItemEditable(data)}	
 										${this.printHtmlListItemIdiomas(data)}
 										<span class="material-icons arrow">keyboard_arrow_down</span>

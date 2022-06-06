@@ -51,7 +51,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Lectura de los JSON de configuración.
             List<ConfigModel> listaConfigModels = TabTemplates;
-            foreach(ConfigModel configModel in listaConfigModels)
+            foreach (ConfigModel configModel in listaConfigModels)
             {
                 listaPaginas.Add(CrearPagina(configModel, pLang));
             }
@@ -82,8 +82,10 @@ namespace Hercules.ED.GraphicEngine.Models
 
                 string prefijoNodos = "nodes";
                 string prefijoBarraHorizonal = "isHorizontal";
+                string prefijoCircular = "circular";
                 string prefijoAbreviar = "abr";
                 string prefijoPorcentaje = "prc";
+
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
@@ -98,6 +100,11 @@ namespace Hercules.ED.GraphicEngine.Models
                         itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
                         configPagina.id = prefijoAbreviar + "-" + configPagina.id;
                     }
+                }
+                else if (itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular))
+                {
+                    itemGrafica.identificador = prefijoCircular + "-" + itemGrafica.identificador;
+                    configPagina.id = prefijoCircular + "-" + configPagina.id;
                 }
                 if (itemGrafica.config.porcentual && !itemGrafica.identificador.Contains(prefijoPorcentaje))
                 {
@@ -363,14 +370,51 @@ namespace Hercules.ED.GraphicEngine.Models
             HashSet<string> valuesEje = new HashSet<string>();
             HashSet<string> tipos = new HashSet<string>();
 
+            List<Tuple<string, float>> rangoValor = new List<Tuple<string, float>>();
+
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 if (item.Value != null && item.Value.Any())
                 {
-                    foreach (Tuple<string, string, float> item2 in item.Value)
+                    if (pGrafica.config.rango)
                     {
-                        valuesEje.Add(item2.Item1);
-                        tipos.Add(item2.Item2);
+                        int indice;
+                        float[] sumaDatos = new float[4];
+                        string[] rangos = { "1-3", "4-10", "11-30", "30+" };
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            indice = int.Parse(item2.Item1);
+                            switch (indice)
+                            {
+                                case < 4:
+                                    sumaDatos[0] += item2.Item3;
+                                    break;
+                                case < 11:
+                                    sumaDatos[1] += item2.Item3;
+                                    break;
+                                case < 31:
+                                    sumaDatos[2] += item2.Item3;
+                                    break;
+                                default:
+                                    sumaDatos[3] += item2.Item3;
+                                    break;
+                            }
+                        }
+                        for (int i = 0; i < sumaDatos.Length; i++)
+                        {
+                            if (sumaDatos[i] > 0)
+                            {
+                                rangoValor.Add(new Tuple<string, float>(rangos[i], sumaDatos[i]));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            valuesEje.Add(item2.Item1);
+                            tipos.Add(item2.Item2);
+                        }
                     }
                 }
             }
@@ -387,7 +431,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            if (ejeFechas)
+            if (ejeFechas || pGrafica.config.rango)
             {
                 foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
@@ -425,15 +469,36 @@ namespace Hercules.ED.GraphicEngine.Models
             #endregion
 
             // Obtención del objeto de la gráfica.
-            List<string> listaLabels = valuesEje.ToList();
+            List<string> listaLabels = new List<string>();
+            if (pGrafica.config.rango)
+            {
+                foreach (Tuple<string, float> itemAux in rangoValor)
+                {
+                    listaLabels.Add(itemAux.Item1);
+                }
+            }
+            else
+            {
+                listaLabels = valuesEje.ToList();
+            }
 
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 DatasetBarras dataset = new DatasetBarras();
                 List<float> listaData = new List<float>();
-                foreach (Tuple<string, string, float> itemAux in item.Value)
+                if (pGrafica.config.rango)
                 {
-                    listaData.Add(itemAux.Item3);
+                    foreach (Tuple<string, float> itemAux in rangoValor)
+                    {
+                        listaData.Add(itemAux.Item2);
+                    }
+                }
+                else
+                {
+                    foreach (Tuple<string, string, float> itemAux in item.Value)
+                    {
+                        listaData.Add(itemAux.Item3);
+                    }
                 }
                 dataset.data = listaData;
 
@@ -662,14 +727,51 @@ namespace Hercules.ED.GraphicEngine.Models
             HashSet<string> valuesEje = new HashSet<string>();
             HashSet<string> tipos = new HashSet<string>();
 
+            List<Tuple<string, float>> rangoValor = new List<Tuple<string, float>>();
+
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 if (item.Value != null && item.Value.Any())
                 {
-                    foreach (Tuple<string, string, float> item2 in item.Value)
+                    if (pGrafica.config.rango)
                     {
-                        valuesEje.Add(item2.Item1);
-                        tipos.Add(item2.Item2);
+                        int indice;
+                        float[] sumaDatos = new float[4];
+                        string[] rangos = { "1-3", "4-10", "11-30", "30+" };
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            indice = int.Parse(item2.Item1);
+                            switch (indice)
+                            {
+                                case < 4:
+                                    sumaDatos[0] += item2.Item3;
+                                    break;
+                                case < 11:
+                                    sumaDatos[1] += item2.Item3;
+                                    break;
+                                case < 31:
+                                    sumaDatos[2] += item2.Item3;
+                                    break;
+                                default:
+                                    sumaDatos[3] += item2.Item3;
+                                    break;
+                            }
+                        }
+                        for (int i = 0; i < sumaDatos.Length; i++)
+                        {
+                            if (sumaDatos[i] > 0)
+                            {
+                                rangoValor.Add(new Tuple<string, float>(rangos[i], sumaDatos[i]));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, float> item2 in item.Value)
+                        {
+                            valuesEje.Add(item2.Item1);
+                            tipos.Add(item2.Item2);
+                        }
                     }
                 }
             }
@@ -686,7 +788,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            if (ejeFechas)
+            if (ejeFechas || pGrafica.config.rango)
             {
                 foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
                 {
@@ -724,15 +826,36 @@ namespace Hercules.ED.GraphicEngine.Models
             #endregion
 
             // Obtención del objeto de la gráfica.
-            List<string> listaLabels = valuesEje.ToList();
+            List<string> listaLabels = new List<string>();
+            if (pGrafica.config.rango)
+            {
+                foreach (Tuple<string, float> itemAux in rangoValor)
+                {
+                    listaLabels.Add(itemAux.Item1);
+                }
+            }
+            else
+            {
+                listaLabels = valuesEje.ToList();
+            }
 
             foreach (KeyValuePair<Dimension, List<Tuple<string, string, float>>> item in resultadosDimension)
             {
                 DatasetBarrasY dataset = new DatasetBarrasY();
                 List<float> listaData = new List<float>();
-                foreach (Tuple<string, string, float> itemAux in item.Value)
+                if (pGrafica.config.rango)
                 {
-                    listaData.Add(itemAux.Item3);
+                    foreach (Tuple<string, float> itemAux in rangoValor)
+                    {
+                        listaData.Add(itemAux.Item2);
+                    }
+                }
+                else
+                {
+                    foreach (Tuple<string, string, float> itemAux in item.Value)
+                    {
+                        listaData.Add(itemAux.Item3);
+                    }
                 }
                 dataset.data = listaData;
 
@@ -1204,7 +1327,7 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Decode de los filtros.
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
-                       
+
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
 
@@ -1244,6 +1367,18 @@ namespace Hercules.ED.GraphicEngine.Models
                 faceta.numeroItemsFaceta = pFacetaConf.numeroItemsFaceta;
             }
 
+            faceta.ordenAlfaNum = false;
+            if (pFacetaConf.ordenAlfaNum != false)
+            {
+                faceta.ordenAlfaNum = true;
+            }
+
+            faceta.tesauro = false;
+            if (pFacetaConf.tesauro != false)
+            {
+                faceta.tesauro = true;
+            }
+
             faceta.id = pFacetaConf.filtro;
             faceta.nombre = GetTextLang(pLang, pFacetaConf.nombre);
             faceta.items = new List<ItemFaceta>();
@@ -1251,7 +1386,14 @@ namespace Hercules.ED.GraphicEngine.Models
             // Filtro de página.
             List<string> filtros = new List<string>();
             filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
-            filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "nombreFaceta"));
+            if (!faceta.tesauro)
+            {
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "nombreFaceta"));
+            }
+            else
+            {
+                filtros.AddRange(ObtenerFiltros(new List<string>() { pFacetaConf.filtro }, "categoria"));
+            }
             if (!string.IsNullOrEmpty(pFiltroFacetas))
             {
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroFacetas }, pListaDates: pListaDates));
@@ -1264,46 +1406,106 @@ namespace Hercules.ED.GraphicEngine.Models
             select = new StringBuilder();
             where = new StringBuilder();
 
-            select.Append(mPrefijos);
-            select.Append($@"SELECT DISTINCT ?nombreFaceta LANG(?nombreFaceta) AS ?lang COUNT(?s) AS ?numero ");
-            where.Append("WHERE { ");
-            foreach (string item in filtros)
+            if (!faceta.tesauro)
             {
-                where.Append(item);
-            }
-            where.Append($@"FILTER(LANG(?nombreFaceta) = '{pLang}' OR LANG(?nombreFaceta) = '' OR !isLiteral(?nombreFaceta)) ");
-            where.Append($@"}} ORDER BY DESC (?numero) ");
-
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                select.Append(mPrefijos);
+                select.Append($@"SELECT DISTINCT ?nombreFaceta LANG(?nombreFaceta) AS ?lang COUNT(?s) AS ?numero ");
+                where.Append("WHERE { ");
+                foreach (string item in filtros)
                 {
-                    ItemFaceta itemFaceta = new ItemFaceta();
-                    itemFaceta.nombre = fila["nombreFaceta"].value;
-                    itemFaceta.numero = Int32.Parse(fila["numero"].value);
+                    where.Append(item);
+                }
+                where.Append($@"FILTER(LANG(?nombreFaceta) = '{pLang}' OR LANG(?nombreFaceta) = '' OR !isLiteral(?nombreFaceta)) ");
+                if (faceta.ordenAlfaNum)
+                {
+                    where.Append($@"}} ORDER BY ASC (?nombreFaceta) ");
+                }
+                else
+                {
+                    where.Append($@"}} ORDER BY DESC (?numero) ");
+                }
 
-                    // Comprobación si tiene idioma asignado.
-                    string lang = "";
-                    if (!string.IsNullOrEmpty(fila["lang"].value))
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
-                        lang = $@"@{fila["lang"].value}";
-                    }
+                        ItemFaceta itemFaceta = new ItemFaceta();
+                        itemFaceta.nombre = fila["nombreFaceta"].value;
+                        itemFaceta.numero = Int32.Parse(fila["numero"].value);
 
-                    // Comprobación si es literal o numerico.
-                    string filtro = itemFaceta.nombre;
-                    if (fila["nombreFaceta"].type == "literal")
-                    {
-                        filtro = $@"'{filtro}'";
-                    }
+                        // Comprobación si tiene idioma asignado.
+                        string lang = "";
+                        if (!string.IsNullOrEmpty(fila["lang"].value))
+                        {
+                            lang = $@"@{fila["lang"].value}";
+                        }
 
-                    itemFaceta.filtro = $@"{pFacetaConf.filtro}={filtro}{lang}";
-                    faceta.items.Add(itemFaceta);
+                        // Comprobación si es literal o numerico.
+                        string filtro = itemFaceta.nombre;
+                        if (fila["nombreFaceta"].type == "literal")
+                        {
+                            filtro = $@"'{filtro}'";
+                        }
+
+                        itemFaceta.filtro = $@"{pFacetaConf.filtro}={filtro}{lang}";
+                        faceta.items.Add(itemFaceta);
+                    }
                 }
             }
+            else
+            {
+                select.Append(mPrefijos);
+                select.Append($@"SELECT ?categoria ?nombre COUNT(DISTINCT (?s)) AS ?numero ");
+                where.Append("WHERE { ");
+                foreach (string item in filtros)
+                {
+                    where.Append(item);
+                }
+                where.Append("?categoria skos:prefLabel ?nombre. ");
+                where.Append($@"}} ORDER BY ASC (?categoria) ");
 
-            // Ordenación.
-            //faceta.items = faceta.items.OrderBy(o => o.nombre).ToList();
+                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        // TODO: Hacer método recursivo. Ahora solamente funciona con un tesáuro de 4 niveles.
+                        ItemFaceta itemFaceta = new ItemFaceta();
+                        itemFaceta.idTesauro = fila["categoria"].value.ToString().Substring(fila["categoria"].value.ToString().LastIndexOf("_") + 1);
+                        itemFaceta.nombre = fila["nombre"].value.ToString();
+                        itemFaceta.numero = Int32.Parse(fila["numero"].value);
+                        itemFaceta.filtro = $@"roh:hasKnowledgeArea@@@roh:categoryNode={fila["categoria"].value.ToString()}";
+                        itemFaceta.childsTesauro = new List<ItemFaceta>();
+
+                        string[] arrayNiveles = itemFaceta.idTesauro.Split(".");
+
+                        ItemFaceta itemFacetaAux = faceta.items.FirstOrDefault(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0"));
+                        ItemFaceta itemFacetaAux2 = null;
+                        if (itemFacetaAux != null)
+                        {
+                            itemFacetaAux2 = faceta.items.FirstOrDefault(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.FirstOrDefault(y => y.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0"));
+                        }
+
+                        if (itemFacetaAux2 != null && faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.First(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")).childsTesauro.Any(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.{arrayNiveles[2]}.0")))
+                        {
+                            faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.First(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")).childsTesauro.First(z => z.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.{arrayNiveles[2]}.0")).childsTesauro.Add(itemFaceta);
+                        }
+                        else if (itemFacetaAux != null && faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.Any(y => y.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")))
+                        {
+                            faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.First(y => y.idTesauro.EndsWith($@"{arrayNiveles[0]}.{arrayNiveles[1]}.0.0")).childsTesauro.Add(itemFaceta);
+                        }
+                        else if (faceta.items.Any(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")))
+                        {
+                            faceta.items.First(x => x.idTesauro.EndsWith($@"{arrayNiveles[0]}.0.0.0")).childsTesauro.Add(itemFaceta);
+                        }
+                        else
+                        {
+                            faceta.items.Add(itemFaceta);
+                        }
+                    }
+                }
+            }
 
             return faceta;
         }
@@ -1369,7 +1571,7 @@ namespace Hercules.ED.GraphicEngine.Models
             foreach (string item in listaAux)
             {
                 bool isDate = false;
-                if(pListaDates != null && pListaDates.Any() && pListaDates.Contains(item.Split("=")[0]))
+                if (pListaDates != null && pListaDates.Any() && pListaDates.Contains(item.Split("=")[0]))
                 {
                     isDate = true;
                 }
@@ -1450,7 +1652,16 @@ namespace Hercules.ED.GraphicEngine.Models
                         filtro.Append($@"{pVarAnterior} ");
                         filtro.Append($@"{parteFiltro.Split("=")[0]} ");
                         filtro.Append($@"{varActualAux}. ");
-                        filtro.Append($@"FILTER({varActualAux} = {varActual}) ");
+                        
+                        // Si es un tesauro.
+                        if (varActual.StartsWith($@"http://"))
+                        {
+                            filtro.Append($@"FILTER({varActualAux} = <{varActual}>) ");
+                        }
+                        else
+                        {
+                            filtro.Append($@"FILTER({varActualAux} = {varActual}) ");
+                        }                        
                     }
 
                 }
