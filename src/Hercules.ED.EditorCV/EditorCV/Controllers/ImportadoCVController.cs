@@ -29,8 +29,8 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
-        [HttpPost("ImportarCV")]
-        public IActionResult ImportarCV([Required][FromForm] string userID, [Required] IFormFile File)
+        [HttpPost("PreimportarCV")]
+        public IActionResult PreimportarCV([Required][FromForm] string userID, [Required] IFormFile File)
         {
             try
             {

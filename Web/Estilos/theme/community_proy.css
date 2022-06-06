@@ -237,3 +237,22 @@ a.faceta.applied{
     flex-direction: column;
     flex-wrap: nowrap;
 }
+
+
+/* Estilos para los usuarios de oferta tecnológica */
+
+.edicionOfertaTecnologica .resource-list.listView:not(.list-con-checks) .resource .wrap {
+    margin-left: 35px;
+}
+
+.edicionOfertaTecnologica .resource-list.resource-list-buscador .resource .wrap .title-wrap {
+    padding-left: 0;
+}
+
+.edicionOfertaTecnologica .resource-list.resource-list-buscador .resource .wrap .description-wrap {
+    padding-left: 0;
+}
+
+.resource.seleccionado .user-miniatura .imagen-usuario-wrap span.material-icons {
+    color: var(--c-primario);
+}
