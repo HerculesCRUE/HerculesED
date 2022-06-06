@@ -21,11 +21,17 @@
         "yAxisPrint": [
           {
             "yAxisID": "y1",
-            "posicion": "left"
+            "posicion": "left",
+            "nombreEje": {
+              "es": "Nº de publicaciones"
+            }
           },
           {
             "yAxisID": "y2",
-            "posicion": "right"
+            "posicion": "right",
+            "nombreEje": {
+              "es": "Nº de citas"
+            }
           }
         ],
         "dimensiones": [

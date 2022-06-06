@@ -220,7 +220,21 @@ namespace Hercules.ED.GraphicEngine.Models
             // Ejes Y
             foreach (EjeYConf item in pGrafica.config.yAxisPrint)
             {
-                options.scales.Add(item.yAxisID, new Eje() { position = item.posicion });
+                Eje eje = new Eje();
+                eje.position = item.posicion;
+                eje.title = new Title();
+                eje.title.display = true;
+
+                if (item.nombreEje != null)
+                {                    
+                    eje.title.text = GetTextLang(pLang, item.nombreEje);
+                }
+                else
+                {
+                    eje.title.text = string.Empty;
+                }
+
+                options.scales.Add(item.yAxisID, eje);
             }
 
             // Animación
@@ -577,7 +591,21 @@ namespace Hercules.ED.GraphicEngine.Models
             // Ejes X
             foreach (EjeXConf item in pGrafica.config.xAxisPrint)
             {
-                options.scales.Add(item.xAxisID, new Eje() { position = item.posicion });
+                Eje eje = new Eje();
+                eje.position = item.posicion;
+                eje.title = new Title();
+                eje.title.display = true;
+
+                if (item.nombreEje != null)
+                {
+                    eje.title.text = GetTextLang(pLang, item.nombreEje);
+                }
+                else
+                {
+                    eje.title.text = string.Empty;
+                }
+
+                options.scales.Add(item.xAxisID, eje);
             }
 
             // Animación

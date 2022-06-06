@@ -2,12 +2,14 @@ $(document).ready(function() {
     metricas.init();
 });
 
-// Año máximo y mínimo para las facetas de años
+// Año máximo y mínimo para las facetas de años.
 var minYear;
 var maxYear;
+
+// ID de la página actual.
 var idPaginaActual = "";
 
-// Lista de páginas
+// Lista de páginas.
 var listaPaginas;
 
 var metricas = {
@@ -20,8 +22,7 @@ var metricas = {
     },
     getPages: function() {
         var that = this;
-        //var url = "https://localhost:44352/GetPaginaGrafica";
-        var url = url_servicio_graphicengine + "GetPaginasGraficas";
+        var url = url_servicio_graphicengine + "GetPaginasGraficas"; //"https://localhost:44352/GetPaginaGrafica"
         var arg = {};
         arg.pLang = lang;
 
@@ -39,8 +40,7 @@ var metricas = {
     },
     getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas) {
         var that = this;
-        //var url = "https://localhost:44352/GetGrafica";
-        var url = url_servicio_graphicengine + "GetGrafica";
+        var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
         arg.pIdPagina = pIdPagina;
         arg.pIdGrafica = pIdGrafica;
@@ -127,8 +127,7 @@ var metricas = {
     },
     getFaceta: function(pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
-        //var url = "https://localhost:44352/GetFaceta";
-        var url = url_servicio_graphicengine + "GetFaceta";
+        var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
         var arg = {};
 
         arg.pIdPagina = pIdPagina;
@@ -151,21 +150,21 @@ var metricas = {
                 <div class="faceta-date-range">
                 <div id="gmd_ci_daterange" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
                     <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
-                    <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
-                    <span tabindex="1" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
+                        <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
+                        <span tabindex="1" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
                     </div>
                 <div class="d-flex" id="inputs_rango"></div>
                     <a name="gmd_ci:date" class="searchButton">Aplicar</a>
                     <ul class="no-list-style">
-                    <li>
-                        <a href="javascript: void(0);" id="fiveyears">Últimos cinco años</a>
-                    </li>
-                    <li>
-                        <a href="javascript: void(0);" id="lastyear">Último año</a>
-                    </li>
-                    <li>
-                        <a href="javascript: void(0);" id="allyears">Todos</a>
-                    </li>
+                        <li>
+                            <a href="javascript: void(0);" id="fiveyears">Últimos cinco años</a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" id="lastyear">Último año</a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" id="allyears">Todos</a>
+                        </li>
                     </ul>
                 </div>
                 `);
@@ -201,6 +200,7 @@ var metricas = {
                         }
                     }
                 }
+
                 if (data.isDate) {
                     minYear = Math.min(minYear, item.nombre);
                     maxYear = Math.max(maxYear, item.nombre);
@@ -246,7 +246,6 @@ var metricas = {
         $('#panFacetas').attr('idfaceta', 'page_' + pIdPagina);
         $('#panFacetas').addClass('containerFacetas');
 
-
         $('main').append(`
         <div class="modal-backdrop fade" style="pointer-events: none;"></div>
         `);
@@ -265,10 +264,8 @@ var metricas = {
         var that = this;
 
         // Crear estructura para el apartado de gráficas.
-
         var rowNumber = 0;
         var espacio = 12;
-
 
         /*if (espacio - item.anchura < 0 || index == 0) {
             rowNumber++;
@@ -281,6 +278,7 @@ var metricas = {
                         <div class='grafica col-xl-${item.anchura}' idgrafica='${item.id}'></div>
                 `);
         espacio = espacio - item.anchura;*/
+
         var tmp = [];
         var id = "";
         var gruposDeIDs = [];
@@ -290,7 +288,7 @@ var metricas = {
             var grafica = lista.shift();
             id = grafica.idGrupo;
 
-            if (id == null) { // si la id es nula la mete en un grupo nuevo
+            if (id == null) { // Si el ID es nulo, la mete en un grupo nuevo.
                 tmp.push(grafica);
             } else {
                 tmp.push(grafica);
@@ -341,7 +339,6 @@ var metricas = {
 
             `);
         });
-
 
         // Crear estructura para el apartado de facetas.
         pPageData.listaIdsFacetas.forEach(function(item, index, array) {
@@ -455,6 +452,7 @@ var metricas = {
         }
     },
     corregirFiltros: function() {
+    // Permite pintar el filtro del tesauro con el nombre del nivel correspondiente.
         $("#panListadoFiltros").each(function() {
             $("#panListadoFiltros").find('li').each(function() {
                 if ($(this).hasClass("oculto")) {
@@ -716,6 +714,7 @@ var metricas = {
 
                 that.pintarPagina(idPaginaActual);
             });
+
         $('a.remove.faceta')
             .unbind()
             .click(function(e) {
@@ -744,40 +743,12 @@ var metricas = {
                 that.pintarPagina(idPaginaActual);
             });
 
-        $('a.remove.faceta')
-            .unbind()
-            .click(function(e) {
-                var filtroActual = $(this).parent().attr('filtro');
-                var filtros = decodeURIComponent(ObtenerHash2());
-                var filtrosArray = filtros.split('&');
-                filtros = '';
-                var contieneFiltro = false;
-                for (var i = 0; i < filtrosArray.length; i++) {
-                    if (filtrosArray[i] != '') {
-                        if (filtrosArray[i] == filtroActual) {
-                            contieneFiltro = true;
-                        } else {
-                            filtros += filtrosArray[i] + '&';
-                        }
-
-                    }
-                }
-                if (!contieneFiltro) {
-                    filtros += filtroActual;
-                }
-
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
-                e.preventDefault();
-
-                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
-            });
-
         $('.borrarFiltros')
             .unbind()
             .click(function(e) {
                 history.pushState('', 'New URL: ', '?');
                 e.preventDefault();
-                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+                that.pintarPagina(idPaginaActual);
             });
 
 
@@ -785,7 +756,7 @@ var metricas = {
             .unbind()
             .click(function(e) {
                 var min, max;
-                // Cojo el valor del input y si no tiene le pongo el placeholder
+                // Cojo el valor del input y si no tiene le pongo el placeholder.
                 min = $("#gmd_ci_datef2").attr("placeholder") - 5;
                 max = $("#gmd_ci_datef2").attr("placeholder");
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
@@ -798,7 +769,7 @@ var metricas = {
                         filtros += filtrosArray[i] + '&';
                     }
                 }
-                // Borrar filtros año anteriores
+                // Borrar filtros año anteriores.
                 var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
@@ -808,14 +779,14 @@ var metricas = {
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
 
-                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+                that.pintarPagina(idPaginaActual);
             });
 
         $('#lastyear')
             .unbind()
             .click(function(e) {
                 var min, max;
-                // Cojo el valor del input y si no tiene le pongo el placeholder
+                // Cojo el valor del input y si no tiene le pongo el placeholder.
                 min = $("#gmd_ci_datef2").attr("placeholder");
                 max = $("#gmd_ci_datef2").attr("placeholder");
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
@@ -828,7 +799,7 @@ var metricas = {
                         filtros += filtrosArray[i] + '&';
                     }
                 }
-                // Borrar filtros año anteriores
+                // Borrar filtros año anteriores.
                 var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
@@ -838,7 +809,7 @@ var metricas = {
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
 
-                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+                that.pintarPagina(idPaginaActual);
             });
 
         $('#allyears')
@@ -853,7 +824,7 @@ var metricas = {
                         filtros += filtrosArray[i] + '&';
                     }
                 }
-                // Borrar filtros año anteriores
+                // Borrar filtros año anteriores.
                 var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
@@ -862,7 +833,7 @@ var metricas = {
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
 
-                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+                that.pintarPagina(idPaginaActual);
             });
 
         $('.faceta-date-range a.searchButton')
@@ -892,7 +863,7 @@ var metricas = {
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
 
-                that.pintarPagina($(this).closest('.pageMetrics').attr('id').substring(5));
+                that.pintarPagina(idPaginaActual);
             });
 
         $('#zoomIn')
@@ -971,7 +942,8 @@ var metricas = {
                 a.download = Date.now() + '.jpg';
                 a.click();
             });
-        //boton para cambiar entre graficas (en desuso)
+
+        // Botón para cambiar entre graficas (en desuso, pero reutilizable).
         /*
         $('div.toggleChart')
             .unbind()
@@ -987,7 +959,8 @@ var metricas = {
                 hidden.addClass('show');
             });
         */
-        //menu para cambiar entre graficas
+
+        // Menú para cambiar entre graficas.
         $("select.chartMenu")
             .unbind()
             .change(function(e) {
@@ -1074,8 +1047,10 @@ var metricas = {
                 }
 
             });
+
         $('.modal-backdrop').unbind()
             .click(cerrarModal);
+
         $('span.cerrar')
             .unbind()
             .click(cerrarModal);
@@ -1101,6 +1076,7 @@ var metricas = {
         plegarSubFacetas.init();
         comportamientoFacetasPopUp.init();
 
+        // Agrega el enganche sin sobreescribir la función.
         $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function(event) {
             that.engancharComportamientos();
         }));
