@@ -67,11 +67,6 @@ namespace EditorCV.Models
                 i++;
             }
 
-            //recorrerse ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
-            //metodo GetTabImport(Preimport)
-            //metodo GetSectionImport - llamo X veces desde ^
-            //metodo GetItemImport - llamo X veces desde ^
-
             return dicTabs;
         }
 
@@ -105,6 +100,8 @@ namespace EditorCV.Models
             string lang = "es";
             API.Response.TabSection tabSection = new API.Response.TabSection();
             tabSection.items = new Dictionary<string, TabSectionItem>();
+            tabSection.identifier = section.proptitle;
+
             foreach (ItemEditSection itemEditSection in section.sections)
             {
                 TabSectionItem tabSectionItem = new TabSectionItem();
@@ -144,6 +141,7 @@ namespace EditorCV.Models
             API.Response.TabSection tabSection = new API.Response.TabSection();
             //Título sección
             tabSection.title = UtilityCV.GetTextLang(lang, section.presentation.title);
+            tabSection.identifier = section.property;
 
 
             //Órdenes sección
@@ -186,8 +184,6 @@ namespace EditorCV.Models
                 List<SubseccionItem> listaSubsecciones = preimport.secciones
                     .Where(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection))
                     .SelectMany(x => x.subsecciones).ToList();
-
-                List<EntityPreimport.Property> listaPropiedades = listaSubsecciones.SelectMany(x => x.propiedades).ToList();
 
                 for (int i = 0; i < listaSubsecciones.Count; i++)
                 {
