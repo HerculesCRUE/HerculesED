@@ -208,8 +208,6 @@ namespace EditorCV.Models
             string propCompleteTitle = UtilityCV.GetPropComplete(configTitulo);
             sectionItem.title = subseccionItem.propiedades.FirstOrDefault(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?.values.FirstOrDefault();
             sectionItem.properties = new List<TabSectionItemProperty>();
-            //propcomplete http://vivoweb.org/ontology/core#relatedBy@@@http://w3id.org/roh/professionalCategory
-            //Prop subseccionItem "http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode"
 
             //TODO title or
             //sectionItem.title = property.values.First();
@@ -226,29 +224,12 @@ namespace EditorCV.Models
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
                         tsip.name = UtilityCV.GetTextLang(lang, property.name);
                         tsip.values = new List<string>();
-                        tsip.values.Add(valor);
+                        tsip.values.Add(valor.Split("@@@").Last());
                         tsip.showMini= property.showMini;
                         tsip.showMiniBold= property.showMiniBold;
 
                         sectionItem.properties.Add(tsip);
                     }
-
-                    //tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(property.prop));
-                    //tsip.values = property.values;
-                    //sectionItem.properties.Add(tsip);
-                }
-            }
-
-
-            if (subseccionItem.propiedades != null && subseccionItem.propiedades.Count > 0)
-            {
-                foreach (EntityPreimport.Property property in subseccionItem.propiedades)
-                {
-                    TabSectionItemProperty tsip = new TabSectionItemProperty();
-
-                    tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(property.prop));
-                    tsip.values = property.values;
-                    sectionItem.properties.Add(tsip);
                 }
             }
 
