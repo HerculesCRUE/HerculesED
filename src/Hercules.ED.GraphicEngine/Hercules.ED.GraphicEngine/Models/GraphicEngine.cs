@@ -51,7 +51,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Lectura de los JSON de configuración.
             List<ConfigModel> listaConfigModels = TabTemplates;
-            foreach(ConfigModel configModel in listaConfigModels)
+            foreach (ConfigModel configModel in listaConfigModels)
             {
                 listaPaginas.Add(CrearPagina(configModel, pLang));
             }
@@ -100,7 +100,9 @@ namespace Hercules.ED.GraphicEngine.Models
                         itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
                         configPagina.id = prefijoAbreviar + "-" + configPagina.id;
                     }
-                }else if(itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular)) {
+                }
+                else if (itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular))
+                {
                     itemGrafica.identificador = prefijoCircular + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoCircular + "-" + configPagina.id;
                 }
@@ -474,7 +476,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     listaLabels.Add(itemAux.Item1);
                 }
-            } else
+            }
+            else
             {
                 listaLabels = valuesEje.ToList();
             }
@@ -485,11 +488,12 @@ namespace Hercules.ED.GraphicEngine.Models
                 List<float> listaData = new List<float>();
                 if (pGrafica.config.rango)
                 {
-                    foreach (Tuple<string,float> itemAux in rangoValor)
+                    foreach (Tuple<string, float> itemAux in rangoValor)
                     {
                         listaData.Add(itemAux.Item2);
                     }
-                } else
+                }
+                else
                 {
                     foreach (Tuple<string, string, float> itemAux in item.Value)
                     {
@@ -1323,7 +1327,7 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Decode de los filtros.
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
-                       
+
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
 
@@ -1567,7 +1571,7 @@ namespace Hercules.ED.GraphicEngine.Models
             foreach (string item in listaAux)
             {
                 bool isDate = false;
-                if(pListaDates != null && pListaDates.Any() && pListaDates.Contains(item.Split("=")[0]))
+                if (pListaDates != null && pListaDates.Any() && pListaDates.Contains(item.Split("=")[0]))
                 {
                     isDate = true;
                 }
@@ -1648,7 +1652,16 @@ namespace Hercules.ED.GraphicEngine.Models
                         filtro.Append($@"{pVarAnterior} ");
                         filtro.Append($@"{parteFiltro.Split("=")[0]} ");
                         filtro.Append($@"{varActualAux}. ");
-                        filtro.Append($@"FILTER({varActualAux} = {varActual}) ");
+                        
+                        // Si es un tesauro.
+                        if (varActual.StartsWith($@"http://"))
+                        {
+                            filtro.Append($@"FILTER({varActualAux} = <{varActual}>) ");
+                        }
+                        else
+                        {
+                            filtro.Append($@"FILTER({varActualAux} = {varActual}) ");
+                        }                        
                     }
 
                 }
