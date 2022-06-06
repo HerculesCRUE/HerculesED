@@ -14,6 +14,7 @@ using EditorCV.Models.API.Response;
 using System.Net.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using EditorCV.Models.PreimportModels;
 
 namespace EditorCV.Controllers
 {
@@ -39,10 +40,14 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
-                AccionesImportacion accionesImportacion = new AccionesImportacion();
-                HttpResponseMessage responseMessage = accionesImportacion.ImportarCV(_Configuracion, pCVId, File);
 
-                return Ok(responseMessage.Content.ReadAsStringAsync());
+                AccionesImportacion accionesImportacion = new AccionesImportacion();
+                Preimport preimport = accionesImportacion.PreimportarCV(_Configuracion, pCVId, File);
+
+                ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
+                ConcurrentDictionary<int, Models.API.Response.Tab> respuesta =  accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
+
+                return Ok(respuesta);
             }
             catch (Exception ex)
             {
