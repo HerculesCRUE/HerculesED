@@ -36,13 +36,12 @@ var exportacionCV = {
 					that.cargarCV();
 				}				
 			}
-		});
-		
+		});		
 		
 		//Generar exportación
 		$('.btExportarCV').off('click').on('click', function(e) {
             e.preventDefault();
-						
+
 			var listaId = "";
 			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
@@ -68,7 +67,7 @@ var exportacionCV = {
 			});
         });
 	},
-	//Carga los CV exporatdos
+	//Carga los CV exportados
     cargarListadoCV: function() {
 		$('.resource-list-wrap.listadoCV article').remove();
 
