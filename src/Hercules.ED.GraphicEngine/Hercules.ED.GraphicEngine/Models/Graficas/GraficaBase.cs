@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Hercules.ED.GraphicEngine.Models.Graficas
 {
-    public class GraficaBase
+    public abstract class GraficaBase
     {
-        
+        public abstract byte[] GenerateCSV();
     }
 
     public class Options
@@ -35,5 +35,6 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
     public class Eje
     {
         public string position { get; set; }
+        public Title title { get; set; }
     }
 }

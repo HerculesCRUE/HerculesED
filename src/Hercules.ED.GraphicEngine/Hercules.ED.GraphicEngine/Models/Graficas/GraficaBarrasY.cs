@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Hercules.ED.GraphicEngine.Models.Graficas
@@ -11,6 +12,17 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public string type { get; set; }
         public Options options { get; set; }
         public DataBarrasY data { get; set; }
+
+        public override byte[] GenerateCSV()
+        {
+            StringBuilder csv = new StringBuilder("");
+            csv.AppendLine(";\"" + String.Join(";", data.labels).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
+            foreach (DatasetBarrasY datasetBarras in data.datasets)
+            {
+                csv.AppendLine("\"" + datasetBarras.label + "\";\"" + String.Join(";", datasetBarras.data).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
+            }
+            return Encoding.Latin1.GetBytes(csv.ToString());
+        }
     }
     public class DataBarrasY
     {

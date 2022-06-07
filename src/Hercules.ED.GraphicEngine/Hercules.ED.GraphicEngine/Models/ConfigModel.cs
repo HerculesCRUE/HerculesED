@@ -50,16 +50,18 @@ namespace Hercules.ED.GraphicEngine.Models
     {
         public string yAxisID { get; set; }
         public string posicion { get; set; }
+        public Dictionary<string, string> nombreEje { get; set; }
     }
     public class EjeXConf
     {
         public string xAxisID { get; set; }
         public string posicion { get; set; }
+        public Dictionary<string, string> nombreEje { get; set; }
     }
 
     public class Dimension
     {
-        public Dictionary<string, string> nombre { get; set; }
+        public Dictionary<string, string> nombre { get; set; }        
         public string filtro { get; set; }
         public int limite { get; set; }
         public string color { get; set; }

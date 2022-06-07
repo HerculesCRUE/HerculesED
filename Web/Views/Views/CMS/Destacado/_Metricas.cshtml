@@ -9,10 +9,12 @@
 @model CMSComponentHot
 @{ CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
-    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
+	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
     Html.GetListaJS().Add(urlJS);
 }
 
+<input type="hidden" id="ULTIMO_ANIO" value="@Html.Translate("ULTIMO_ANIO")"/>
+<input type="hidden" id="ULTIMOS_CINCO_ANIOS" value="@Html.Translate("ULTIMOS_CINCO_ANIOS")"/>
 
 <ul class="listadoMenuPaginas"></ul>
 <div class="row containerPage">
@@ -24,8 +26,8 @@
                     <span class="material-icons">close</span>
                 </a>
             </div>
-            <div id="panFacetas" class="facetas-wrap custom-css-scroll">
-            </div>
+            <div id="panFacetas" class="facetas-wrap custom-css-scroll">    
+            </div>                        
         </div>
     </div>
     <div class="col col-12 col-xl-9 col-contenido derecha">
@@ -45,14 +47,28 @@
                             </div>
                         </div>
                     </fieldset>
-                </form>
+                </form>                            
             </div>
             <div class="etiquetas" id="panFiltros">
                 <ul class="facetedSearch tags" id="panListadoFiltros"></ul>
-            </div>
+            </div>                            
             <div class="resource-list graphView ">
-                <div class="resource-list-wrap">
+                <div class="resource-list-wrap">                    
                 </div>
+            </div>                        
+        </div>
+    </div>
+</div>
+
+<div id="modal-ampliar-mapa" class="modal modal-top fade modal-ampliar-mapa" style="pointer-events:none" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"></p>
+                <span class="material-icons cerrar" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="graph-container" style="width:100%;"></div>
             </div>
         </div>
     </div>

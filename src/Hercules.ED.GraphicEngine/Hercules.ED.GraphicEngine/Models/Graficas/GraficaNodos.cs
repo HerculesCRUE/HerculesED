@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Hercules.ED.GraphicEngine.Models.Graficas
@@ -15,6 +18,69 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public bool zoomingEnabled { get; set; }
         public float minZoom { get; set; }
         public float maxZoom { get; set; }
+
+        public override byte[] GenerateCSV()
+        {
+            StringBuilder csv = new StringBuilder("");
+            // Nombre/Id de los nodos
+            List<string> nombres = new List<string>();
+            List<string> ids = new List<string>();
+            // Recorro los elementos para obtener los nombres e ids
+            foreach (DataItemRelacion item in elements)
+            {
+                if (item.data.group == "nodes")
+                {
+                    nombres.Add(item.data.name.Split('(').First().TrimEnd());
+                    ids.Add(item.data.id);
+                }
+            }
+            double?[,] valorRelaciones = new double?[nombres.Count, nombres.Count];
+            int cont = 0;
+            // Recorro los elementos para obtener los valores
+            foreach (DataItemRelacion item in elements)
+            {
+                if (item.data.group == "nodes")
+                {
+                    valorRelaciones[cont, cont] = item.data.score;
+                    cont++;
+                }
+                else
+                {
+                    int source = ids.IndexOf(item.data.source);
+                    int target = ids.IndexOf(item.data.target);
+                    double valor = Double.Parse(item.data.id.Split('~').Last());
+                    valorRelaciones[source, target] = valor;
+                    valorRelaciones[target, source] = valor;
+                }
+            }
+            // Paso los valores de la gráfica a una lista
+            List<List<string>> valores = new List<List<string>>();
+            for (int i = 0; i < nombres.Count; i++)
+            {
+                List<string> aux = new List<string>();
+                for (int j = 0; j < nombres.Count; j++)
+                {
+                    if (valorRelaciones[i, j] == null)
+                    {
+                        aux.Add("0");
+                    }
+                    else
+                    {
+                        aux.Add(valorRelaciones[i, j].ToString());
+                    }
+                }
+                valores.Add(aux);
+            }
+            // Añado al string los nombres de los nodos
+            csv.AppendLine(";\"" + String.Join(";", nombres).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
+
+            // Añado al string los valores de los nodos y sus relaciones
+            for (int i = 0; i < nombres.Count; i++)
+            {
+                csv.AppendLine("\"" + nombres[i] + "\";\"" + String.Join(";", valores[i]).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
+            }
+            return Encoding.Latin1.GetBytes(csv.ToString());
+        }
     }
 
     public class Layout
@@ -124,6 +190,6 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
     public class Datos
     {
         public string idRelacionado { get; set; }
-        public int numVeces { get; set; }        
+        public int numVeces { get; set; }
     }
 }

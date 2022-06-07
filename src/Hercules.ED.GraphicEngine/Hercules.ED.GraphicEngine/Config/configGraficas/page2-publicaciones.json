@@ -1,9 +1,9 @@
 {
   "nombre": {
-    "es": "Página de EJEMPLO"
+    "es": "Página de Publicaciones"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
-  "identificador": "123",
+  "identificador": "789",
   "graficas": [
     {
       "identificador": "1",
