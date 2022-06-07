@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Hercules.ED.GraphicEngine.Models.Graficas
@@ -15,6 +16,11 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public bool zoomingEnabled { get; set; }
         public float minZoom { get; set; }
         public float maxZoom { get; set; }
+
+        public override byte[] GenerateCSV()
+        {
+            return Encoding.ASCII.GetBytes("Hola mundo");
+        }
     }
 
     public class Layout

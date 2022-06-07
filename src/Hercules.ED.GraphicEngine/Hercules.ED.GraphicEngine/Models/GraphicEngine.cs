@@ -130,6 +130,28 @@ namespace Hercules.ED.GraphicEngine.Models
         }
         #endregion
 
+        #region --- CSV
+        /// <summary>
+        /// Obtiene los datos del CSV.
+        /// </summary>
+        /// <param name="pIdPagina">Identificador de la página.</param>
+        /// <param name="pLang">Idioma.</param>
+        /// <returns></returns>
+        public static void GetCSV(string pIdPagina, string pIdGrafica, string pFiltroFacetas, string pLang)
+        {
+            // Lectura del JSON de configuración.
+            ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
+
+            // Obtiene los filtros relacionados con las fechas.
+            List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
+
+            if (configModel != null)
+            {
+                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
+            }
+        }
+        #endregion
+
         #region --- Gráficas
         /// <summary>
         /// Lee la configuración y obtiene los datos necesarios para el servicio de gráficas.
