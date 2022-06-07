@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     metricas.init();
 });
 
@@ -13,21 +13,21 @@ var idPaginaActual = "";
 var listaPaginas;
 
 var metricas = {
-    init: function() {
+    init: function () {
         this.getPages();
         return;
     },
-    config: function() {
+    config: function () {
         return;
     },
-    getPages: function() {
+    getPages: function () {
         var that = this;
         var url = url_servicio_graphicengine + "GetPaginasGraficas"; //"https://localhost:44352/GetPaginaGrafica"
         var arg = {};
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function(listaData) {
+        $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
                     <li id="${listaData[i].id}" num="${i}">${listaData[i].nombre}</li>
@@ -38,7 +38,7 @@ var metricas = {
             listaPaginas = listaData;
         });
     },
-    getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -48,13 +48,13 @@ var metricas = {
         arg.pLang = lang;
 
         // Petición para obtener los datos de las gráficas.
-        $.get(url, arg, function(data) {
+        $.get(url, arg, function (data) {
             var ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
 
             // Controla si el objeto es de ChartJS o Cytoscape.
             if ("container" in data) {
                 data.container = ctx;
-                data.ready = function() { window.cy = this };
+                data.ready = function () { window.cy = this };
                 var cy = window.cy = cytoscape(data);
 
                 var combo = $(ctx).parents("article").find("select");
@@ -80,7 +80,7 @@ var metricas = {
                     edges[i]._private.data.name = "";
                 };
 
-                cy.on('click', 'node', function(e) {
+                cy.on('click', 'node', function (e) {
                     e = e.target;
                     var indice = cy.nodes().indexOf(e);
                     if (e._private.data.name === "") {
@@ -90,7 +90,7 @@ var metricas = {
                     }
                 })
 
-                cy.on('click', 'edge', function(e) {
+                cy.on('click', 'edge', function (e) {
                     e = e.target;
                     var indice = cy.edges().indexOf(e);
                     if (e._private.data.name === "") {
@@ -125,7 +125,7 @@ var metricas = {
             that.engancharComportamientos();
         });
     },
-    getFaceta: function(pIdPagina, pIdFaceta, pFiltroFacetas) {
+    getFaceta: function (pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
         var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
         var arg = {};
@@ -140,7 +140,7 @@ var metricas = {
         maxYear = 0;
 
         // Petición para obtener los datos de las gráficas.
-        $.get(url, arg, function(data) {
+        $.get(url, arg, function (data) {
 
             var numItemsPintados = 0;
             if (data.isDate) {
@@ -183,7 +183,7 @@ var metricas = {
                 `);
             }
 
-            data.items.forEach(function(item, index, array) {
+            data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
                     return;
@@ -235,12 +235,12 @@ var metricas = {
             that.engancharComportamientos();
         });
     },
-    clearPage: function() {
+    clearPage: function () {
         $('#panFacetas').empty()
         $('.resource-list-wrap').empty();
         $('.borrarFiltros').click();
     },
-    createEmptyPage: function(pIdPagina) {
+    createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
         $('.containerPage').addClass('pageMetrics');
         $('#panFacetas').attr('idfaceta', 'page_' + pIdPagina);
@@ -259,7 +259,7 @@ var metricas = {
             </div>
         `);*/
     },
-    fillPage: function(pPageData) {
+    fillPage: function (pPageData) {
         idPaginaActual = pPageData.id;
         var that = this;
 
@@ -303,10 +303,10 @@ var metricas = {
             gruposDeIDs.push(tmp);
         }
 
-        gruposDeIDs.forEach(function(item, index, array) {
+        gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
-            item.forEach(function(grafica, index, array) {
+            item.forEach(function (grafica, index, array) {
                 tmp += `<div style="display:${index == 0 ? "block" : "none"}; margin-top:20px;" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
@@ -341,7 +341,7 @@ var metricas = {
         });
 
         // Crear estructura para el apartado de facetas.
-        pPageData.listaIdsFacetas.forEach(function(item, index, array) {
+        pPageData.listaIdsFacetas.forEach(function (item, index, array) {
             $('#page_' + pPageData.id + ' .containerFacetas').append(`
                     <div class='facetedSearch'>
                         <div class='box' idfaceta='${item}'></div>
@@ -351,7 +351,7 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    pintarPagina: function(pIdPagina) {
+    pintarPagina: function (pIdPagina) {
         var that = this;
 
         // Borra la clase modal-open del body cuando se abre el pop-up del tesáuro. 
@@ -363,7 +363,7 @@ var metricas = {
         $('#page_' + pIdPagina + ' .box').empty();
 
         // Recorremos el div de las gráficas.
-        $('#page_' + pIdPagina + ' .grafica').each(function() {
+        $('#page_' + pIdPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
@@ -398,7 +398,7 @@ var metricas = {
         });
 
         // Recorremos el div de las facetas.
-        $('#page_' + pIdPagina + ' .box').each(function() {
+        $('#page_' + pIdPagina + ' .box').each(function () {
             that.getFaceta(pIdPagina, $(this).attr("idfaceta"), ObtenerHash2());
         });
 
@@ -438,6 +438,11 @@ var metricas = {
                 `);
             } else {
                 nombre = filtro.split('=')[1].replaceAll("'", "");
+                if (nombre === "lastyear") {
+                    nombre = GetText("ULTIMO_ANIO");
+                } else if (nombre === "fiveyears") {
+                    nombre = GetText("ULTIMOS_CINCO_ANIOS");
+                }
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
                 <li class="Categoria" filtro="${filtro}">
@@ -450,11 +455,31 @@ var metricas = {
                 `);
             }
         }
+        function GetText(id, param1, param2, param3, param4) {
+            if ($('#' + id).length) {
+                var txt = $('#' + id).val();
+                if (param1 != null) {
+                    txt = txt.replace("PARAM1", param1);
+                }
+                if (param2 != null) {
+                    txt = txt.replace("PARAM2", param1);
+                }
+                if (param3 != null) {
+                    txt = txt.replace("PARAM3", param1);
+                }
+                if (param4 != null) {
+                    txt = txt.replace("PARAM4", param1);
+                }
+                return txt;
+            } else {
+                return id;
+            }
+        }
     },
-    corregirFiltros: function() {
-    // Permite pintar el filtro del tesauro con el nombre del nivel correspondiente.
-        $("#panListadoFiltros").each(function() {
-            $("#panListadoFiltros").find('li').each(function() {
+    corregirFiltros: function () {
+        // Permite pintar el filtro del tesauro con el nombre del nivel correspondiente.
+        $("#panListadoFiltros").each(function () {
+            $("#panListadoFiltros").find('li').each(function () {
                 if ($(this).hasClass("oculto")) {
                     var valor = $(this).find('span').text();
                     var nombre = $(`a[filtro="${valor}"]`).attr("title");
@@ -466,7 +491,7 @@ var metricas = {
             });
         });
     },
-    drawChart: function(ctx, data, pIdGrafica = null, barSize = 100) {
+    drawChart: function (ctx, data, pIdGrafica = null, barSize = 100) {
         var myChart = new Chart(ctx, data);
         var numBars = data.data.labels.length; // Número de barras.
         var canvasSize = (numBars * barSize); // Tamaño del canvas.
@@ -475,7 +500,7 @@ var metricas = {
         if (pIdGrafica != null && pIdGrafica.includes("prc")) {
             data.options.plugins.tooltip = {
                 callbacks: {
-                    afterLabel: function(context) {
+                    afterLabel: function (context) {
                         let label = "Porcentaje: ";
                         let sum = context.dataset.data.reduce((a, b) => a + b, 0);
                         let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
@@ -492,7 +517,7 @@ var metricas = {
 
             if (pIdGrafica != null && pIdGrafica.includes("abr")) {
                 // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
-                data.options.scales.y.ticks.callback = function(value) {
+                data.options.scales.y.ticks.callback = function (value) {
                     const labels = data.data.labels; // Obtención de los labels.
                     if (value >= 0 && value < labels.length) {
                         if (labels[value].length >= 7) {
@@ -583,7 +608,7 @@ var metricas = {
         }
 
     },
-    reDrawChart: function(myChart, topAxis, bottomAxis, canvasSize, legend) {
+    reDrawChart: function (myChart, topAxis, bottomAxis, canvasSize, legend) {
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
         myChart.canvas.parentNode.style.height = canvasSize + 'px';
@@ -617,13 +642,13 @@ var metricas = {
             bottomAxisCtx.drawImage(myChart.canvas, 0, myChart.chartArea.bottom * scale, copyWidth * scale, axisHeight * scale, 0, 0, copyWidth, axisHeight);
         }
     },
-    pintarTesauro: function(pData) {
+    pintarTesauro: function (pData) {
         var etiqueta = "";
         var hijos = "";
 
         if (pData.length > 0) {
 
-            pData.forEach(function(item, index, array) {
+            pData.forEach(function (item, index, array) {
                 hijos += metricas.pintarTesauro(item);
             });
 
@@ -635,7 +660,7 @@ var metricas = {
             if (pData.childsTesauro.length > 0) {
 
                 etiqueta += `<ul>`;
-                pData.childsTesauro.forEach(function(item, index, array) {
+                pData.childsTesauro.forEach(function (item, index, array) {
                     hijos += metricas.pintarTesauro(item);
                 });
                 etiqueta += `${hijos}</ul>`;
@@ -661,7 +686,7 @@ var metricas = {
         }
 
     },
-    engancharComportamientos: function() {
+    engancharComportamientos: function () {
         var that = this;
 
         iniciarSelects2.init();
@@ -670,13 +695,13 @@ var metricas = {
             min: minYear,
             max: maxYear,
             values: [minYear, maxYear],
-            slide: function(event, ui) {
+            slide: function (event, ui) {
                 $("#gmd_ci_datef1").val(ui.values[0]);
                 $("#gmd_ci_datef2").val(ui.values[1]);
             }
         });
 
-        $(".faceta-date-range").find("input.filtroFacetaFecha").on("input", function(event, ui) {
+        $(".faceta-date-range").find("input.filtroFacetaFecha").on("input", function (event, ui) {
             var valores = $(".faceta-date-range .ui-slider").slider("option", "values");
 
             if ($(this).attr("id") === "gmd_ci_datef1") {
@@ -689,7 +714,7 @@ var metricas = {
 
         $('.containerFacetas a.filtroMetrica,.listadoTesauro a.filtroMetrica')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtroActual = $(this).attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -717,7 +742,7 @@ var metricas = {
 
         $('a.remove.faceta')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtroActual = $(this).parent().attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -745,7 +770,7 @@ var metricas = {
 
         $('.borrarFiltros')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 history.pushState('', 'New URL: ', '?');
                 e.preventDefault();
                 that.pintarPagina(idPaginaActual);
@@ -754,13 +779,9 @@ var metricas = {
 
         $('#fiveyears')
             .unbind()
-            .click(function(e) {
-                var min, max;
-                // Cojo el valor del input y si no tiene le pongo el placeholder.
-                min = $("#gmd_ci_datef2").attr("placeholder") - 5;
-                max = $("#gmd_ci_datef2").attr("placeholder");
+            .click(function (e) {
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
-                var filtroActual = `${filtro}=${min}-${max}`;
+                var filtroActual = `${filtro}=fiveyears`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
                 filtros = '';
@@ -773,6 +794,8 @@ var metricas = {
                 var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
+                    filtros = filtros.replace(filtro + "=lastyear", "");
+                    filtros = filtros.replace(filtro + "=fiveyears", "");
                 }
                 filtros += filtroActual;
 
@@ -784,13 +807,9 @@ var metricas = {
 
         $('#lastyear')
             .unbind()
-            .click(function(e) {
-                var min, max;
-                // Cojo el valor del input y si no tiene le pongo el placeholder.
-                min = $("#gmd_ci_datef2").attr("placeholder");
-                max = $("#gmd_ci_datef2").attr("placeholder");
+            .click(function (e) {
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
-                var filtroActual = `${filtro}=${min}-${max}`;
+                var filtroActual = `${filtro}=lastyear`;
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
                 filtros = '';
@@ -803,6 +822,8 @@ var metricas = {
                 var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
+                    filtros = filtros.replace(filtro + "=lastyear", "");
+                    filtros = filtros.replace(filtro + "=fiveyears", "");
                 }
                 filtros += filtroActual;
 
@@ -814,7 +835,7 @@ var metricas = {
 
         $('#allyears')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -828,6 +849,8 @@ var metricas = {
                 var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
+                    filtros = filtros.replace(filtro + "=lastyear", "");
+                    filtros = filtros.replace(filtro + "=fiveyears", "");
                 }
 
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
@@ -838,7 +861,7 @@ var metricas = {
 
         $('.faceta-date-range a.searchButton')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var min, max;
                 // Cojo el valor del input y si no tiene le pongo el placeholder
                 $("#gmd_ci_datef1").val() === '' ? min = $("#gmd_ci_datef1").attr("placeholder") : min = $("#gmd_ci_datef1").val();
@@ -857,6 +880,8 @@ var metricas = {
                 var reg = new RegExp(filtro + "=[0-9]*-[0-9]*");
                 if (filtros.includes(filtro)) {
                     filtros = filtros.replace(reg, "");
+                    filtros = filtros.replace(filtro + "=lastyear", "");
+                    filtros = filtros.replace(filtro + "=fiveyears", "");
                 }
                 filtros += filtroActual;
 
@@ -868,20 +893,20 @@ var metricas = {
 
         $('#zoomIn')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 cy.zoom(cy.zoom() + 0.2);
             });
 
         $('#zoomOut')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 cy.zoom(cy.zoom() - 0.2);
             });
 
         // Labels de la leyenda.
         $('div.labelContainer')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 // Se obtiene el chart desde el canvas.
                 var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
                 var chart = Chart.getChart(canvas);
@@ -910,7 +935,7 @@ var metricas = {
         // Botón de descarga.
         $('div.descargar')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
 
@@ -963,7 +988,7 @@ var metricas = {
         // Menú para cambiar entre graficas.
         $("select.chartMenu")
             .unbind()
-            .change(function(e) {
+            .change(function (e) {
                 var parent = $(this).parents('div.wrap');
                 var shown = parent.find('div.show');
                 shown.css('display', 'none');
@@ -979,7 +1004,7 @@ var metricas = {
 
         $("div.zoom")
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
                 var chart = Chart.getChart(canvas);
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
@@ -1066,7 +1091,7 @@ var metricas = {
 
         $(".listadoMenuPaginas li")
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var numero = $(this).attr("num");
                 metricas.clearPage();
                 metricas.createEmptyPage(listaPaginas[numero].id);
@@ -1077,7 +1102,7 @@ var metricas = {
         comportamientoFacetasPopUp.init();
 
         // Agrega el enganche sin sobreescribir la función.
-        $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function(event) {
+        $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
             that.engancharComportamientos();
         }));
     }
