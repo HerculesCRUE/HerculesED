@@ -435,6 +435,13 @@
       },
       "filtro": "vivo:hasPublicationVenue@@@roh:title",
       "numeroItemsFaceta": 10
+    },
+    {
+      "nombre": {
+        "es": "Áreas Temáticas"
+      },
+      "filtro": "roh:hasKnowledgeArea@@@roh:categoryNode",
+      "tesauro": true
     }
   ]
 }
