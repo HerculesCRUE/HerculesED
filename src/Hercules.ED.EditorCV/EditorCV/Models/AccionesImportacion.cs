@@ -3,6 +3,7 @@ using EditorCV.Models.API.Templates;
 using EditorCV.Models.PreimportModels;
 using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
+using Gnoss.ApiWrapper.ApiModel;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -12,12 +13,14 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace EditorCV.Models
 {
     public class AccionesImportacion
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
 
         public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File)
         {
@@ -171,23 +174,48 @@ namespace EditorCV.Models
                     }
                     tabSection.orders.Add(presentationOrderTabSection);
                 }
-            }
 
-            //Items
-            tabSection.items = new Dictionary<string, TabSectionItem>();
-            if (section != null && section.presentation != null && section.presentation.listItemsPresentation != null &&
-                section.presentation.listItemsPresentation.listItem != null && section.presentation.listItemsPresentation.listItem.properties != null &&
-                section.presentation.listItemsPresentation.listItem.properties.Count != 0 &&
-                preimport.secciones.Exists(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection)))
+                //Items
+                tabSection.items = new Dictionary<string, TabSectionItem>();
+                if (section != null && section.presentation != null && section.presentation.listItemsPresentation != null &&
+                    section.presentation.listItemsPresentation.listItem != null && section.presentation.listItemsPresentation.listItem.properties != null &&
+                    section.presentation.listItemsPresentation.listItem.properties.Count != 0 &&
+                    preimport.secciones.Exists(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection)))
+                {
+                    List<SubseccionItem> listaSubsecciones = preimport.secciones
+                        .Where(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection))
+                        .SelectMany(x => x.subsecciones).ToList();
+
+                    for (int i = 0; i < listaSubsecciones.Count; i++)
+                    {
+                        tabSection.items.Add(Guid.NewGuid().ToString(), GetItemImport(section.presentation.listItemsPresentation.listItem, listaSubsecciones[i]));
+                    }
+                }
+            }
+            if (section.presentation != null && section.presentation.itemPresentation != null && section.presentation.itemPresentation.itemEdit != null)
             {
 
-                List<SubseccionItem> listaSubsecciones = preimport.secciones
-                    .Where(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection))
-                    .SelectMany(x => x.subsecciones).ToList();
+                tabSection = new API.Response.TabSection();
+                tabSection.items = new Dictionary<string, TabSectionItem>();
+                tabSection.title = section.presentation.title.First().Value;
 
-                for (int i = 0; i < listaSubsecciones.Count; i++)
+                foreach (ItemEditSectionRowProperty itemEditSection in section.presentation.itemPresentation.itemEdit.sections.First().rows.First().properties)
                 {
-                    tabSection.items.Add(Guid.NewGuid().ToString(), GetItemImport(section.presentation.listItemsPresentation.listItem, listaSubsecciones[i]));
+                    TabSectionItem tabSectionItem = new TabSectionItem();
+
+                    tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
+                    tabSectionItem.properties = new List<TabSectionItemProperty>();
+
+                    TabSectionItemProperty tsip = new TabSectionItemProperty();
+                    tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(itemEditSection.property));
+                    tsip.values = itemEditSection.title.Select(x => x.Value).ToList();
+
+                    tabSectionItem.properties.Add(tsip);
+
+                    if (tabSectionItem != null && tabSectionItem.properties != null && tabSectionItem.properties.Count > 0)
+                    {
+                        tabSection.items.Add(Guid.NewGuid().ToString(), tabSectionItem);
+                    }
                 }
             }
 
@@ -197,6 +225,25 @@ namespace EditorCV.Models
         private TabSectionItem GetItemImport(TabSectionListItem tabSectionListItem, SubseccionItem subseccionItem)
         {
             string lang = "es";
+
+            string si = "";
+            string no = "";
+            switch (lang)
+            {
+                case "es":
+                    si = "Sí";
+                    no = "No";
+                    break;
+                case "en":
+                    si = "Yes";
+                    no = "No";
+                    break;
+                default:
+                    si = "Sí";
+                    no = "No";
+                    break;
+            }
+
             TabSectionItem sectionItem = new TabSectionItem();
             //Título
             PropertyDataTemplate configTitulo = tabSectionListItem.propertyTitle;
@@ -212,17 +259,123 @@ namespace EditorCV.Models
             {
                 foreach (TabSectionListItemProperty property in tabSectionListItem.properties)
                 {
-                    string propComplete = UtilityCV.GetPropComplete(property.child);
-                    string valor = subseccionItem.propiedades.FirstOrDefault(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?.values.FirstOrDefault();
+                    string propComplete = "";
+                    List<string> valor = new List<string>();
+                    string graph = "";
+                    PropertyDataTemplate childOR = new PropertyDataTemplate();
 
-                    if (!string.IsNullOrEmpty(valor))
+                    if (property.childOR != null && property.childOR.Count != 0)
                     {
+                        foreach (PropertyDataTemplate propertyDataTemplate in property.childOR)
+                        {
+                            propComplete = UtilityCV.GetPropComplete(propertyDataTemplate.child);
+                            valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
+                                .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                            if (valor == null || valor.Count == 0)
+                            {
+                                valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
+                                    .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                            }
+
+                            int lengthProp = propComplete.Split("@@@").Length;
+                            PropertyDataTemplate aux = propertyDataTemplate.child;
+                            for (int i = 0; i < lengthProp - 1; i++)
+                            {
+                                graph = aux.graph;
+                                aux = aux.child;
+                            }
+                            if (valor != null && valor.Count != 0 && valor.All(x => !string.IsNullOrEmpty(x)))
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        propComplete = UtilityCV.GetPropComplete(property.child);
+                        valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
+                            .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                        if (valor == null && valor.Count==0)
+                        {
+                            valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
+                                .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                        }
+
+                        int lengthProp = propComplete.Split("@@@").Length;
+                        PropertyDataTemplate aux = property.child;
+                        for (int i = 0; i < lengthProp - 2; i++)
+                        {
+                            aux = aux.child;
+                            graph = aux.graph;
+                        }
+
+                    }
+
+
+                    if (valor != null && valor.Count != 0 && valor.All(x => !string.IsNullOrEmpty(x)))
+                    {
+                        string value = valor.First().Split("@@@").Last();
+                        if (value.StartsWith("http://gnoss.com/items/") && value.Split("_").Count() > 1 && !string.IsNullOrEmpty(graph))
+                        {
+                            string prop = GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").Last();
+
+                            if (!dicPropiedades.ContainsKey(value))
+                            {
+                                string select = "select distinct ?w";
+                                string where = $@"where{{
+    <{value}> <{prop}> ?w .
+    FILTER( lang(?w) = '{lang}' OR lang(?w) = '')
+}}";
+
+                                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, graph);
+                                if (!dicPropiedades.ContainsKey(value) && sparqlObject.results.bindings.Count != 0)
+                                {
+                                    dicPropiedades.Add(value, new Dictionary<string, List<string>>());
+                                    if (!dicPropiedades[value].ContainsKey(lang))
+                                    {
+                                        dicPropiedades[value].Add(lang, new List<string>());
+                                    }
+                                    else
+                                    {
+                                        dicPropiedades[value][lang].Add("");
+                                    }
+                                }
+                                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                                {
+                                    dicPropiedades[value][lang].Add(fila["w"].value);
+                                }
+                            }
+
+                        }
+
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
                         tsip.name = UtilityCV.GetTextLang(lang, property.name);
                         tsip.values = new List<string>();
-                        tsip.values.Add(valor.Split("@@@").Last());
-                        tsip.showMini= property.showMini;
-                        tsip.showMiniBold= property.showMiniBold;
+
+                        if (GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").Count() != 1 &&
+                            dicPropiedades.ContainsKey(value) && dicPropiedades[value].ContainsKey(lang))
+                        {
+                            tsip.values.Add(dicPropiedades[value][lang].First());
+                        }
+                        else
+                        {
+
+                            if (value.Equals("true"))
+                            {
+                                tsip.values.Add(si);
+                            }
+                            else if (value.Equals("false"))
+                            {
+                                tsip.values.Add(no);
+                            }
+                            else
+                            {
+                                tsip.values.Add(valor.First().Split("@@@").Last());
+                            }
+                        }
+                        tsip.showMini = property.showMini;
+                        tsip.showMiniBold = property.showMiniBold;
+                        tsip.type = property.type.ToString();
 
                         sectionItem.properties.Add(tsip);
                     }
