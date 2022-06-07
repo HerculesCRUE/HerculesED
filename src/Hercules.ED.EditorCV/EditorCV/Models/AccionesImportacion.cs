@@ -192,6 +192,7 @@ namespace EditorCV.Models
                     }
                 }
             }
+            
             if (section.presentation != null && section.presentation.itemPresentation != null && section.presentation.itemPresentation.itemEdit != null)
             {
 
@@ -370,7 +371,7 @@ namespace EditorCV.Models
                             }
                             else
                             {
-                                tsip.values.Add(valor.First().Split("@@@").Last());
+                                tsip.values.AddRange(valor.Select(x=>x.Split("@@@").Last()).ToList());
                             }
                         }
                         tsip.showMini = property.showMini;
