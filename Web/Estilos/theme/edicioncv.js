@@ -6091,63 +6091,7 @@ tooltipsCV.traducciones= function () {
 	});
 };
 
-class textField {
-    constructor(editor) {
-      let button = editor.querySelector('.editor-btn');
-      let visuellView = editor.getElementsByClassName('visuell-view')[0];
-      button.removeEventListener('click', this.boldButton);
-      button.addEventListener('click', this.boldButton);
-      visuellView.removeEventListener('paste', this.pasteEvent);
-      visuellView.addEventListener('paste', this.pasteEvent);
-      editor.removeEventListener('focusout', this.focusout)
-      editor.addEventListener('focusout', this.focusout);
-      //Evita que el tab salte a otro elemento
-      visuellView.removeEventListener('keydown', this.keyEvent);
-      visuellView.addEventListener('keydown', this.keyEvent);
-      button.removeEventListener('mousedown', this.mouseEvent);
-      button.addEventListener('mousedown', this.mouseEvent);
-    }
-    mouseEvent(e){
-        e.preventDefault();
-    }
-    boldButton(e) {
-      document.execCommand("bold", false);
-      let button = e.currentTarget;
-      if (button.classList.contains('active')) {
-        button.classList.remove('active');
-      } else {
-        button.classList.add('active');
-      }
-    }
-    focusout(e) {
-      let button = e.target.parentNode.querySelector('.editor-btn');
-      let texto = e.target.innerHTML;
-      if (texto.substr(texto.length - 4) == '<br>') {
-      e.target.lastElementChild.remove();
-    }
-      button.classList.remove('active');
-    }
-    pasteEvent(e) {
-      e.preventDefault();
-      let text = (e.originalEvent || e).clipboardData.getData('text/plain');
-      text = text.replaceAll("\n", "<br>");
-      document.execCommand('insertHTML', false, text);
-    }
-    keyEvent(e){
-        if (e.keyCode == 9) {
-            e.preventDefault();
-            document.execCommand('insertText', false, '    ');
-          } //if enter, disable bold 
-        else if (e.keyCode == 13) {
-            let button = e.currentTarget.parentNode.querySelector('.editor-btn');
-            button.classList.remove('active');
-        }
-    }
-
-
-  }
-
-  function selectionChange(e) {
+function selectionChange(e) {
     let anchor = window.getSelection().anchorNode;
     //En elementos desabilitados no existe el anchorNode;
     if (!anchor) return; 
@@ -6158,4 +6102,4 @@ class textField {
     if (elem.tagName == "B") {
       button.classList.add('active');
     }
-  }
+}
