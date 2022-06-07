@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -19,7 +20,21 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
 
         public override byte[] GenerateCSV()
         {
-            return Encoding.ASCII.GetBytes("Hola mundo");
+            StringBuilder csv = new StringBuilder("");
+            List<string> nombres = new List<string>();
+            List<double?> valores = new List<double?>();
+            foreach (DataItemRelacion item in elements)
+            {
+                if (item.data.group == "nodes")
+                {
+                    nombres.Add(item.data.name.Substring(0,item.data.name.Length-1 - item.data.name.LastIndexOf('(')));
+                    valores.Add(item.data.score);
+                }
+            }
+
+            csv.AppendLine("\"" + String.Join("\";\"", elements[0].data.score).Replace("\"", "\"\"") + "\"");
+            csv.AppendLine("\"" + String.Join("\";\"", elements[0].data.score).Replace("\"", "\"\"") + "\"");
+            return Encoding.ASCII.GetBytes(csv.ToString());
         }
     }
 
