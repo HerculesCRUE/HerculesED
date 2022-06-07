@@ -6,23 +6,72 @@
   "identificador": "123",
   "graficas": [
     {
-      "identificador": "111",
+      "identificador": "1",
       "nombre": {
-        "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Horizontal"
+        "es": "Número de publicaciones y citas por año"
       },
       "tipo": "Barras",
       /*Representa que % del contenedor ocupara la grafica 12 corresponde 1/2 los valores aceptados son 11,12,13,14,16,23,34,38,58*/
       "anchura": 11,
       "config": {
-        "orientacionVertical": false,
+        "orientacionVertical": true,
         "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": true,
+        "yAxisPrint": [
+          {
+            "yAxisID": "y1",
+            "posicion": "left",
+            "nombreEje": {
+              "es": "Nº de publicaciones"
+            }
+          },
+          {
+            "yAxisID": "y2",
+            "posicion": "right",
+            "nombreEje": {
+              "es": "Nº de citas"
+            }
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Total de citas por año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "SUM",
+            "tipoDimension": "line",
+            "color": "#000000",
+            "yAxisID": "y2",
+            "orden": 1
+          },
+          {
+            "nombre": {
+              "es": "Total de publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "yAxisID": "y1",
+            "orden": 2
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "2",
+      "nombre": {
+        "es": "Número de publicaciones por tipo de actividad científica"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "dc:type@@@dc:title",
         "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
-          {
-            "xAxisID": "x2",
-            "posicion": "top"
-          },
           {
             "xAxisID": "x1",
             "posicion": "bottom"
@@ -31,185 +80,32 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Citas Media por Año"
+              "es": "Publicaciones por tipo"
             },
-            "filtro": "roh:citationCount",
-            "calculo": "AVG",
-            "tipoDimension": "line",
-            "color": "#000000",
-            "xAxisID": "x2",
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
             "orden": 1
-          },
-          {
-            "nombre": {
-              "es": "Publicaciones por año"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 2
-          },
-          {
-            "nombre": {
-              "es": "Publicaciones de tipo Artículo Científico"
-            },
-            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
-            "tipoDimension": "bar",
-            "color": "#7CBFE3",
-            "stack": "stack1",
-            "xAxisID": "x1",
-            "orden": 3
-          },
-          {
-            "nombre": {
-              "es": "Publicaciones de tipo Capítulo de Libro"
-            },
-            "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
-            "tipoDimension": "bar",
-            "color": "#6CAFD3",
-            "stack": "stack1",
-            "xAxisID": "x1",
-            "orden": 4
           }
         ]
       }
     },
     {
-      "identificador": "222",
-      "nombre": {
-        "es": "Nombre de la Gráfica de EJEMPLO - Gráfica de Barras Vertical"
-      },
-      "tipo": "Barras",
-      "anchura": 11,
-      "idGrupo": "123",
-      "config": {
-        "orientacionVertical": true,
-        "ejeX": "roh:year",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "yAxisPrint": [
-          {
-            "yAxisID": "y1",
-            "posicion": "left"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Publicaciones por año"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "yAxisID": "y1",
-            "orden": 2
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "333",
-      "nombre": {
-        "es": "Nombre de la Gráfica Circular de EJEMPLO - Gráfica Circular"
-      },
-      "tipo": "Circular",
-      "anchura": 12,
-      "idGrupo": "123",
-      "config": {
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Publicaciones de tipo Artículo Científico"
-            },
-            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
-            "color": "#7CBFE3"
-          },
-          {
-            "nombre": {
-              "es": "Publicaciones de tipo Capítulo de Libro"
-            },
-            "filtro": "dc:type@@@dc:title='Capítulo de libro'@es",
-            "color": "#6CAFD3"
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "444",
-      "nombre": {
-        "es": "Nombre de la Gráfica Circular de EJEMPLO 2 - Gráfica Circular"
-      },
-      "tipo": "Circular",
-      "anchura": 12,
-      "config": {
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Publicaciones de revista Lecture Notes"
-            },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title='Lecture Notes in Computer Science'",
-            "color": "#DAF7A6"
-          },
-          {
-            "nombre": {
-              "es": "Publicaciones de revista Sensors"
-            },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title='Sensors'",
-            "color": "#FFC300"
-          },
-          {
-            "nombre": {
-              "es": "Publicaciones de revista IEEE Access"
-            },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title='IEEE Access'",
-            "color": "#C70039"
-          },
-          {
-            "nombre": {
-              "es": "Publicaciones de revista Future Generation"
-            },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title='Future Generation Computer Systems-The International Journal of eScience'",
-            "color": "#581845"
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "555",
-      "nombre": {
-        "es": "Nombre de la Gráfica Circular de EJEMPLO 3 - Gráfica Circular"
-      },
-      "tipo": "Circular",
-      "anchura": 12,
-      "config": {
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Publicaciones de revista Lecture Notes"
-            },
-            "filtro": "vivo:hasPublicationVenue@@@roh:title",
-            "limite": 15,
-            "color": "#DAF7A6",
-            "colorMaximo": "#0C9DC4"
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "666",
+      "identificador": "3",
       "nombre": {
         "es": "Nombre de la Gráfica Nodos"
       },
       "tipo": "Nodos",
-      "anchura": 11,
+      "anchura": 12,
+      "idGrupo": "1111",
       "config": {
         "dimensiones": [
           {
             "nombre": {
-              "es": "Categorías de los Artículos Científicos"
+              "es": "Áreas temáticas de las publicaciones"
             },
-            "filtro": "dc:type@@@dc:title='Artículo científico'@es",
+            "filtro": "dc:type@@@dc:title",
             "numMaxNodos": 10,
             "colorNodo": "#7CBFE3",
             "colorLinea": "#BF4858"
@@ -218,16 +114,47 @@
       }
     },
     {
-      "identificador": "1ga",
+      "identificador": "88",
       "nombre": {
-        "es": "Publicaciones por grupos"
+        "es": "Número de publicaciones por tipo de actividad científica"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:hasKnowledgeArea@@@roh:categoryNode@@@skos:prefLabel",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones por tipo"
+            },
+            "filtro": "dc:type@@@dc:title",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "5",
+      "nombre": {
+        "es": "Número de publicaciones por grupo"
       },
       "tipo": "Barras",
       "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
-        "abreviar": true,
         "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
@@ -239,7 +166,7 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de publicaciones"
+              "es": "Publicaciones por tipo"
             },
             "filtro": "",
             "tipoDimension": "bar",
@@ -251,48 +178,15 @@
       }
     },
     {
-      "identificador": "2ga",
+      "identificador": "9",
       "nombre": {
-        "es": "Publicaciones por proyecto"
+        "es": "Publicaciones por convocatoria de proyecto"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 12,
       "config": {
         "orientacionVertical": false,
-        "ejeX": "roh:project@@@roh:title",
-        "abreviar": true,
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de publicaciones"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "3ga",
-      "nombre": {
-        "es": "Publicaciones por entidad financiadora"
-      },
-      "tipo": "Barras",
-      "anchura": 11,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:project@@@roh:grantedBy@@@roh:organizationTitle",
+        "ejeX": "roh:project@@@roh:conductedBy@@@roh:title",
         "orderDesc": false,
         "abreviar": true,
         "rellenarEjeX": false,
@@ -317,16 +211,17 @@
       }
     },
     {
-      "identificador": "4ga",
+      "identificador": "11",
       "nombre": {
         "es": "Publicaciones por tipo de proyecto"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 12,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:projectType@@@dc:title",
         "orderDesc": false,
+        "abreviar": true,
         "rellenarEjeX": false,
         "xAxisPrint": [
           {
@@ -349,9 +244,9 @@
       }
     },
     {
-      "identificador": "5ga",
+      "identificador": "12",
       "nombre": {
-        "es": "Publicaciones por ámbito"
+        "es": "Publicaciones por ámbito de proyecto"
       },
       "tipo": "Barras",
       "anchura": 11,
@@ -379,47 +274,15 @@
           }
         ]
       }
-    },
-    {
-      "identificador": "6ga",
-      "nombre": {
-        "es": "Publicaciones por categorías de los investigadores"
-      },
-      "tipo": "Barras",
-      "anchura": 11,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de publicaciones"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
     }
-
   ],
   "facetas": [
     {
       "nombre": {
         "es": "Tipo de publicación"
       },
-      "filtro": "dc:type@@@dc:title"
+      "filtro": "dc:type@@@dc:title",
+      "ordenAlfaNum": true
     },
     {
       "nombre": {
@@ -434,7 +297,15 @@
         "es": "Revistas"
       },
       "filtro": "vivo:hasPublicationVenue@@@roh:title",
-      "numeroItemsFaceta": 10
+      "numeroItemsFaceta": 10,
+      "ordenAlfaNum": true
+    },
+    {
+      "nombre": {
+        "es": "Áreas Temáticas"
+      },
+      "filtro": "roh:hasKnowledgeArea@@@roh:categoryNode",
+      "tesauro": true
     }
   ]
 }
