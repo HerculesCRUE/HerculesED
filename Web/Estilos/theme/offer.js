@@ -1104,10 +1104,12 @@ class StepsOffer {
 	 */
 	startStep4() { 
 		let _self = this
-		this.crearOfertaStep4.find('textarea').forEach((i, el) => {
-			// $(el).off('click').on('click', (event) => {
-
-			// })
+		this.crearOfertaStep4.find('.edmaTextEditor').each((i, el) => {
+			$(el).off('click').on('click', (event) => {
+				if (!el.classList.contains("inicilized")) {
+					new TextField(el);
+				}
+			})
 		})
 
 	}
