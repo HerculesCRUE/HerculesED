@@ -17,7 +17,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
             StringBuilder csv = new StringBuilder("");
             csv.AppendLine("\"" + String.Join(";", data.labels).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
             csv.AppendLine("\"" + String.Join(";", data.datasets.FirstOrDefault().data).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
-            return Encoding.ASCII.GetBytes(csv.ToString());
+            return Encoding.Latin1.GetBytes(csv.ToString());
         }
     }
     public class DataCircular
