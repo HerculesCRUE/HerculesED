@@ -1,10 +1,18 @@
 const uriSaveOffer = "Ofertas/SaveOffer"
 const uriLoadOffer = "Ofertas/LoadOffer"
 const uriLoadUsersGroup = "Ofertas/LoadUsersGroup"
+// STEP 3
+const uriLoadLineResearchs = "Ofertas/LoadLineResearchs"
+const uriLoadFramingSectors = "Ofertas/LoadFramingSectors"
+const uriLoadMatureStates = "Ofertas/LoadMatureStates"
 
 var urlSOff ="";
 var urlSTAGSOffer = "";
 var urlLoadUsersGroup ="";
+
+var urlLoadLineResearchs ="";
+var urlLoadFramingSectors = "";
+var urlLoadMatureStates ="";
 
 $(document).ready(function () {
 	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
@@ -12,6 +20,10 @@ $(document).ready(function () {
 	urlSTAGSOffer = new URL(servicioExternoBaseUrl +  uriSearchTags);
 	urlLoadOffer = new URL(servicioExternoBaseUrl +  uriLoadOffer);
 	urlLoadUsersGroup = new URL(servicioExternoBaseUrl +  uriLoadUsersGroup);
+
+	urlLoadLineResearchs = new URL(servicioExternoBaseUrl +  uriLoadLineResearchs);
+	urlLoadFramingSectors = new URL(servicioExternoBaseUrl +  uriLoadFramingSectors);
+	urlLoadMatureStates = new URL(servicioExternoBaseUrl +  uriLoadMatureStates);
 });
 
 
@@ -58,6 +70,12 @@ class StepsOffer {
 		this.researchers = undefined
 		this.numSeleccionadosInvestigadores = 0
 
+
+		// STEP 3
+		this.ddlMadurez = this.crearOfertaStep3.find("#ddlMadurez2")
+		this.ddlEncuadre = this.crearOfertaStep3.find("#ddlEncuadre2")
+		
+
 		// Añadir perfil
 		this.modalPerfil = this.body.find("#modal-anadir-perfil-oferta")
 		this.inputPerfil = this.modalPerfil.find("#input-anadir-perfil")
@@ -81,12 +99,15 @@ class StepsOffer {
 		// Información para el guardado 
 		this.userId = document.getElementById('inpt_usuarioID').value
 		this.ofertaId = undefined
-		this.data = undefined
+		this.data = {
+			researchers: {}
+		}
 		this.editDataSave = undefined
 		this.communityShortName = $(this.crearOferta).data('cshortname')
 		this.communityUrl = $(this.crearOferta).data('comurl')
 		this.communityResourceUrl = this.communityUrl + '/' + $(this.crearOferta).data('urlrecurso')
 		this.communityKey = $(this.crearOferta).data('comkey')
+		this.currentLang = document.getElementById('inpt_Idioma').value
 
 		// Tags
 		this.topicsM = undefined
@@ -224,7 +245,7 @@ class StepsOffer {
 					let i = 0
 					for (const [idperson, datospersona] of Object.entries(res)) {
 						resHtml += `
-							<article class="resource" data-id="${idperson}">
+							<article class="resource" id="stp1-res-${idperson}" data-id="${idperson}">
 					            <div class="custom-control custom-checkbox-resource add">
 									<span class="material-icons">add</span>
 								</div>
@@ -252,6 +273,7 @@ class StepsOffer {
 						`
 					}
 					_self.listInvestigadoresSTP1.html(resHtml)
+					_self.listenChecks(Object.keys(res).map(e => "stp1-res-" + e))
 					checkboxResources.init()
 				} else {
 					_self.listInvestigadoresSTP1.parent().parent().remove()
@@ -261,6 +283,53 @@ class StepsOffer {
 				OcultarUpdateProgress()
 				resolve(true)
 			})
+		})
+	}
+
+	/**
+	 * Comprueba los cambios para el los investigadores del primer nivel
+	 * @param ids, array con los ids para 
+	 * @param callback, Función para ejecutar después.
+	 */
+	listenChecks(ids, callback = () => {}) {
+
+		let _self = this
+
+		ids.forEach(idUser => {
+			// Crea un evento para los investigadores del primer nivel, para detectar cambios en el dom
+			$('#' + idUser).on("DOMSubtreeModified", function(e) {
+
+				// Obtiene el ID del investigador
+				let dataId = $(this).data("id")
+
+				// Detecta si se ha seleccionado (texto igual a "done") o no
+				let selector = $(this).find(".custom-checkbox-resource")
+				if ($(selector).text().trim() == "done")
+				{
+					
+					// Añade el investigador a la lista de investigadores seleccionados
+					if(_self.data.researchers == null)					
+					{
+						_self.data.researchers = {}
+					}
+					_self.data.researchers[dataId] = _self.researchers[dataId]
+
+				}else
+				{
+					if(_self.data.researchers == null)					
+					{
+						// Crea el objeto de investigadores si se encuentra vacío
+						_self.data.researchers = {}
+					} else {
+						// Borrar investigador del objeto
+						delete _self.data.researchers[dataId]
+					}
+				}
+
+				_self.numSeleccionadosInvestigadores = Object.keys(_self.data.researchers).length
+				callback()
+			})	
+
 		})
 	}
 
@@ -331,8 +400,17 @@ class StepsOffer {
 				break;
 				case 2:
 				continueStep = this.checkContinue2()
+				if (continueStep) {
+					_self.startStep3()
+				}
 				break;
 				case 3:
+				continueStep = this.checkContinue3()
+				if (continueStep) {
+					_self.startStep4()
+				}
+				break;
+				case 4:
 				try {
 					continueStep = await this.saveInit()
 					if (continueStep) {
@@ -365,75 +443,6 @@ class StepsOffer {
 		}
 	}
 
-	checkNumberProfiles() {
-
-		let panel = this.ofertaAccordionPerfil.find('.panel .panel-heading')
-
-		if (panel.length > 0) {
-			this.crearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirOtroPerfilText + ' *')
-		} else {
-			this.crearOferta.find("#wrapper-crear-oferta-step2-add-profile").text(this.AnadirNuevoPerfilText + ' *')
-		}
-	}
-
-	/**
-	 * Método que borra un perfil
-	 * @param head1: Id de la cabecera del collapse
-	 * @param head2: Id del contenido del collapse
-	 * @param profileId: Id del profile a borrar
-	 */
-	deletePerfil(head1, head2, profileId) {
-		$('#' + head1).remove()
-		$('#' + head2).remove()
-
-		// Borrar de los datos
-		if (this.data && this.data.profiles) {
-			this.data.profiles = this.data.profiles.filter(e => e.entityID != profileId)
-		}
-		this.checkNumberProfiles()
-		// $(item).parent().parent().remove()
-	}
-
-	/**
-	 * Método que edita un perfil
-	 * @param head1: Id de la cabecera del collapse
-	 * @param head2: Id del contenido del collapse
-	 * @param profileId: Id del profile a borrar
-	 */
-	editarPerfil(head1, head2, profileId) {
-		let _self = this;
-		// Texto acstual
-		var texto = $('#' + head1).find('.texto').text()
-		// Abrimos el popup
-		_self.modalPerfilEditar.modal('show')
-		// Establecemos el texto por defecto
-		_self.inputPerfilEditar.val(texto)
-		// Evento de guardar el modal
-		_self.modalPerfilEditar.find('.btneditar').off('click').on('click', function() {
-			let name = _self.inputPerfilEditar.val()
-			
-			// Comprueba si el nombre existe
-			if (_self.perfilExist(name)) {
-				// Muestra un error
-				_self.errorDivStep2Equals.show()
-
-			} else {
-				_self.errorDivStep2Equals.hide()
-				$('#' + head1).find('.texto').text(name)
-				$('#' + head2).data('name', name)
-
-				// Esitamos los datos
-				if (_self.data && _self.data.profiles) {
-					let profile = _self.data.profiles.find(e => e.entityID == profileId)
-					profile.name = name
-				}
-			}
-
-			_self.modalPerfilEditar.modal('hide')
-		})
-
-		// this.checkNumberProfiles()
-	}
 
 	/**
 	 * Método que comprueba que los campos obligatorios de la sección 1 han sido rellenados
@@ -450,14 +459,14 @@ class StepsOffer {
 		let inputsTagsItms = this.crearOfertaStep1.find('#oferta-modal-seleccionar-tags-stp1').find('input')
 		inputsTagsItms.each((i, e) => {tags.push(e.value)})
 
-		let researchers = {}
-		// Obtener los investigadores seleccionados
-		if (_self.listInvestigadoresSTP1 && _self.listInvestigadoresSTP1.length > 0) {
-			let reserchersDom = _self.listInvestigadoresSTP1.find(".resource.seleccionado")
-			reserchersDom.each((i, e) => {if (e) {researchers[$(e).data("id")] = _self.researchers[$(e).data("id")]}})
-		}
+		// let researchers = {}
+		// // Obtener los investigadores seleccionados
+		// if (_self.listInvestigadoresSTP1 && _self.listInvestigadoresSTP1.length > 0) {
+		// 	let reserchersDom = _self.listInvestigadoresSTP1.find(".resource.seleccionado")
+		// 	reserchersDom.each((i, e) => {if (e) {researchers[$(e).data("id")] = _self.researchers[$(e).data("id")]}})
+		// }
 
-		this.numSeleccionadosInvestigadores = Object.keys(researchers).length
+		this.numSeleccionadosInvestigadores = Object.keys(_self.data.researchers).length
 
 
 		this.data = {
@@ -465,7 +474,7 @@ class StepsOffer {
 			entityID: _self.ofertaId,
 			name,
 			tags,
-			researchers
+			// researchers
 		}
 
 		return (name.length > 0 && tags.length > 0)
@@ -488,56 +497,32 @@ class StepsOffer {
 	checkContinue3() {
 		var _self = this
 
+
 		// Get the second screen
-		let profiles = this.crearOfertaStep2.find('.panel-collapse')
-		let profilesObjets = []
+		let lineasInvestigacion = this.crearOfertaStep3.find('.edit-etiquetas')
+		let inputsTermsProf = lineasInvestigacion.find('input')
+		let profTerms = []
+		inputsTermsProf.each((i, el) => {profTerms["id_" + el.value] = _self.divTesListaCaths[el.value]})
 
-		profiles.each((i, e) => {
-			let termsSec = $(e).find('.terms-items')
-			let inputsTermsProf = termsSec.find('input')
-			let profTerms = []
-			inputsTermsProf.each((i, el) => {profTerms.push(el.value)})
-
-
-			let topicsSec = $(e).find('.tags-items')
-			let inputsTopicsProf = topicsSec.find('input')
-			let profTags = []
-			inputsTopicsProf.each((i, e) => {profTags.push(e.value)})
-
-			// Buscar si es un objeto actualizado
-			if (this.data.profiles && this.data.profiles.find(prf => prf.shortEntityID == $(e).data('profileid')))
-			{
-				let profile = this.data.profiles.find(prf => prf.shortEntityID === $(e).data('profileid'))
-				profile.terms = profTerms
-				profile.tags = profTags
-				profilesObjets.push(profile)
-			} else {
-				profilesObjets.push({
-					"name": $(e).data('name'),
-					"terms": profTerms,
-					"tags": profTags,
-					"shortEntityID":$(e).data('profileid'),
-					"entityID":$(e).data('profileid')
-				})
-			}
-		})
 
 		// Set the post data
 		this.data = {
 			...this.data,
-			profiles: profilesObjets
+			lineResearchs: profTerms,
+			matureState: _self.ddlMadurez.val(),
+			framingSector: _self.ddlEncuadre.val(),
 		}
 		
-		let existenPerfiles=this.data.profiles.length > 0
-		let nombresCorrectos=this.data.profiles.every(function (item) {
-			return  item.name !=undefined
-		})
+		// Comprueba si las líneas de investigación se han rellenado
+		let existenTerms = Object.keys(profTerms).length > 0
 
-		// Comprueba si las etiquetas o las categorías están rellenos
-		let categoriasCorrectas=this.data.profiles.every(function (item) {
-			return  item.terms!=undefined && item.terms.length>0 || item.tags!=undefined && item.tags.length>0
-		})
-		return existenPerfiles && nombresCorrectos && categoriasCorrectas
+		// Comprueba si las estado de madurez se ha seleccionado
+		let ematRellenado = _self.ddlMadurez.val() != ""
+
+		// Comprueba si el sector de encuadre se ha seleccionado
+		let sencuaRellenado = _self.ddlEncuadre.val() != ""
+
+		return existenTerms && ematRellenado && sencuaRellenado
 	}
 
 	/**
@@ -562,7 +547,7 @@ class StepsOffer {
 	 */
 	fillDataTaxonomies(data) {
 		// Set tree
-		let resultHtml = this.fillTaxonomiesTree(data['researcharea'])
+		let resultHtml = this.fillTaxonomiesTreeWithoutParent(data)
 		this.divTesArbol.find('.categoria-wrap').remove()
 		this.divTesArbol.append(resultHtml)
 
@@ -595,69 +580,12 @@ class StepsOffer {
 		this.divTesArbol.off('click').on("click", "input.at-input", function() {
 			let dataVal = this.checked
 			let dataId = $(this).attr('id')
-			let dataParentId = $(this).data('parentid')
-			dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
 
 			// Añadimos un cambio para las areas tematicas
 			_self.cambiosAreasTematicas ++
 			_self.btnSaveAT.removeClass('disabled')
-
-			if (dataParentId.length > 0) {
-				if (!dataVal) {
-					let brothers = $(this).parent().parent().parent().parent().find('input.at-input:checked')
-					if (brothers.length == 0) {
-						_self.selectParent(dataParentId, false)
-					} else {
-						_self.selectParent(dataParentId)
-					}
-				} else {
-					_self.selectParent(dataParentId)
-				}
-			}
-
 			
 		})
-
-		// Click into the list
-		/* this.divTesLista.off('click').on("click","input.at-input", function() {
-			let dataVal = this.checked
-			let dataId = $(this).attr('id').substring("list__".length)
-
-			if (dataVal) {
-				document.getElementById(dataId).checked = true
-			} else  {
-				document.getElementById(dataId).checked = false
-			}
-		}) */
-	}
-
-	/**
-	 * Select the parent in the list and add a class to active the item
-	 * @param pId, the parent id
-	 * @param addclass, check if should dishabled the item
-	 */
-	selectParent(pId, addclass = true) {
-
-		let itemP = document.getElementById(pId)
-		let $itemP = $(itemP)
-		// Check if add or remove class select
-		if (addclass) {
-			$itemP.addClass('selected')
-		} else {
-			// Search for childs and remove selected class if not has childs enhabled
-			let childs = $itemP.parent().parent().parent().find('input.at-input:checked')
-			if (childs.length == 0) {
-				$itemP.removeClass('selected')
-			} else {
-				// Stop the recursive function if it's childs checked
-				return null
-			}
-		}
-		// Call to the parent to change the 'selected' class
-		let dataParentId = $itemP.data('parentid')
-		dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
-
-		if (dataParentId.length > 0) {this.selectParent(dataParentId, addclass)}
 	}
 
 	/**
@@ -666,36 +594,20 @@ class StepsOffer {
 	 * @param idParent, id del nodo padre, para generar los hijos
 	 * @return string con el texto generado
 	 */
-	fillTaxonomiesTree(data, idParent = "") {
+	fillTaxonomiesTreeWithoutParent(data) {
 
 		var _self = this
 
 		let resultHtml = ""
-		data.filter(e => e.parentId == idParent).forEach(e => {
-			let id = e.id.split('/').pop()
+		data.forEach((e, id) => {
 			
-			let children = _self.fillTaxonomiesTree(data, e.id)
-
-			let disabled = (children != "" && children != undefined) ? 'disabled="disabled"' : ""
-			
-			resultHtml += '<div class="categoria-wrap">\
-					<div class="categoria ' + id + '">\
-						<div class="custom-control custom-checkbox themed little primary">\
-							<input type="checkbox" class="custom-control-input at-input" id="' + id + '" data-id="' + e.id + '" data-name="' + e.name + '" data-parentid="' + e.parentId + '" ' + disabled +'>\
-							<label class="custom-control-label" for="' + id + '">' + e.name + '</label>\
-						</div>\
-					</div>'
-
-
-			if (children != "" && children != undefined) {
-				resultHtml += '<!--  pintar esto solo cuando tenga hijos -->\
-					<div class="boton-desplegar">\
-						<span class="material-icons">keyboard_arrow_down</span>\
-					</div> \
-					<!--  -->'
-
-				resultHtml += '<div class="panHijos">' + children + '</div>'
-			}
+			resultHtml += `<div class="categoria-wrap">
+					<div class="categoria investigacion ${id}">
+						<div class="custom-control custom-checkbox themed little primary">
+							<input type="checkbox" class="custom-control-input at-input" id="${id}" data-id="${id}" data-name="${e}">
+							<label class="custom-control-label" for="${id}">${e}</label>
+						</div>
+					</div>`
 
 			resultHtml += '</div>'
 		})
@@ -713,13 +625,12 @@ class StepsOffer {
 		var _self = this
 
 		let resultHtml = ""
-		data.forEach(e => {
-			let id = e.id.split('/').pop()
-			resultHtml += '<div class="categoria-wrap" data-text="' + e.name + '">\
+		data.forEach((e, id) => {
+			resultHtml += '<div class="categoria-wrap" data-text="' + e + '">\
 					<div class="categoria list__' + id + '">\
 						<div class="custom-control custom-checkbox themed little primary">\
-							<input type="checkbox" class="custom-control-input at-input" id="list__' + id + '" data-id="' + e.id + '" data-parentid="' + e.parentId + '" data-name="' + e.name + '">\
-							<label class="custom-control-label" for="list__' + id + '">' + e.name + '</label>\
+							<input type="checkbox" class="custom-control-input at-input" id="list__' + id + '" data-id="' + id + '" data-name="' + e + '">\
+							<label class="custom-control-label" for="list__' + id + '">' + e + '</label>\
 						</div>\
 					</div>\
 				</div>'
@@ -728,28 +639,6 @@ class StepsOffer {
 		return resultHtml
 	}
 
-	/**
-	 * Filtra los items de la lista de categorías
-	 * @param input con el texto a filtrar
-	 */
-	MVCFiltrarListaSelCat(item) {
-
-		// Get the text
-		let searchTxt = $(item).val()
-
-		// Set the RegExp
-		let matcher = new RegExp(searchTxt, "i")
-
-		// Search the text into the items
-		let notFounds = this.divTesListaCaths.each((i, e) => {
-			if ($(e).data("text") != null && $(e).data("text") != undefined && $(e).data("text").search(matcher) != -1) {
-				$(e).removeClass('d-none')
-			} else if($(e).data("text") != null && $(e).data("text") != undefined) {
-				$(e).addClass('d-none')
-			}
-		})
-
-	}
 
 	/**
 	 * Método que guarda los 2 pasos iniciales
@@ -816,6 +705,18 @@ class StepsOffer {
 		})
 	}
 
+	/** 
+	 * Método que realiza la llamada GET
+	 * @param url, objeto URL que contiene la url de la petición POST
+	 */
+	getCall(url) {
+		return new Promise((resolve) => {
+			$.get(url.toString(), (rdata) => {
+				resolve(rdata)
+			})
+		})
+	}
+
 	/**
 	 * Carga todas las áreas temáticas seleccionadas para ese perfil / sección 
 	 * @param item, sección donde se encuentra la información para cargar las areas temáticas
@@ -843,13 +744,6 @@ class StepsOffer {
 					
 					if (item) {
 						item.checked = true
-						// Comprueba si tiene padre para establecerlo con habilitado.
-						let parentId = item.getAttribute('data-parentid')
-						if (parentId.length > 0) {
-							parentId = (parentId.length > 0) ? parentId.split('/').pop() : parentId
-
-							_self.selectParent(parentId)
-						}
 					} else {
 						console.log ("item no existe: #", e)
 					}
@@ -1101,9 +995,6 @@ class StepsOffer {
 		})
 	}
 
-	perfilExist(name) {
-		return this.data && this.data.profiles && this.data.profiles.find(e => e.name == name)
-	}
 
 	/**
 	 * Establece el "estado" del "step-progress"
@@ -1157,10 +1048,121 @@ class StepsOffer {
 		}
 	}
 
+	/**
+	 * Inicia el paso 2
+	 */
 	startStep2() { 
 		comportamientoPopupOferta.init(this.data)
 		this.PrintSelectedUsersStp2 ()
 		$('#sugeridos-oferta-tab').click()
+	}
+
+	/**
+	 * Inicia el paso 3
+	 */
+	startStep3() { 
+		let _self = this
+
+		MostrarUpdateProgress();
+		Promise.all([this.loadLineResearchs(), this.loadMatureStates(), this.loadFramingSectors()]).then(values => {
+
+			let lineResearchs = values[0]
+			let maturesStates = values[1]
+			let framingsectors = values[2]
+
+			// Carga las taxonomías
+			_self.fillDataTaxonomies(lineResearchs)
+			_self.divTesListaCaths = lineResearchs
+
+
+			// Pintar Estado de madurez
+			let htmlMaturesStates = ""
+			for (const[i, el] of Object.entries(maturesStates)) {
+				htmlMaturesStates += `<option value="${i}">${el}</option>`
+			}
+			this.ddlMadurez.append(htmlMaturesStates)
+			this.ddlMadurez.select2();
+
+
+			// Pintar categoría de encuadre
+			let htmlFramingsectors = ""
+			for (const[i, el] of Object.entries(framingsectors)) {
+				htmlFramingsectors += `<option value="${i}">${el}</option>`
+			}
+			this.ddlEncuadre.append(htmlFramingsectors)
+			this.ddlEncuadre.select2();
+
+			OcultarUpdateProgress();
+		})
+
+		// this.PrintSelectedUsersStp2 ()
+		// $('#sugeridos-oferta-tab').click()
+	}
+
+	/**
+	 * Inicia el paso 4
+	 */
+	startStep4() { 
+		let _self = this
+		this.crearOfertaStep4.find('.edmaTextEditor').each((i, el) => {
+			$(el).off('click').on('click', (event) => {
+				if (!el.classList.contains("inicilized")) {
+					new TextField(el);
+				}
+			})
+		})
+
+	}
+
+	/** 
+	 * Devuelve una nueva promesa con el listado de investigadores
+	 */ 
+	loadLineResearchs() {
+		let _self = this
+		return new Promise((resolve, reject) => {
+
+			$.post(urlLoadLineResearchs, {pIdUsersId: Object.keys(_self.data.researchers)})
+				.done(
+					function (rdata) {
+						resolve(rdata)
+					}
+				)
+				.fail(
+					function (xhr, status, error) {
+						resolve(false)
+					}
+				)
+		})
+	}
+
+	/** 
+	 * Devuelve los estados de madurez de las ofertas
+	 */
+	loadMatureStates() {
+		let _self = this
+		return new Promise((resolve, reject) => {
+			// Añado el idioma para obtener los resultados
+			urlLoadFramingSectors.searchParams.set('lang', _self.currentLang)
+
+			_self.getCall(urlLoadFramingSectors).then(rdata => {
+				resolve(rdata)
+			})
+		})
+	}
+
+	/** 
+	 * Devuelve los sectores de encaje de las ofertas
+	 */
+	loadFramingSectors() {
+		let _self = this
+		return new Promise((resolve, reject) => {
+			// Añado el idioma para obtener los resultados
+			urlLoadMatureStates.searchParams.set('lang', _self.currentLang)
+			
+			_self.getCall(urlLoadMatureStates).then(rdata => {
+				resolve(rdata)
+			})
+		})
 	}
 
 	/**
@@ -1248,6 +1250,9 @@ class StepsOffer {
 		this.crearOfertaStep2.find('#stp2-num-selected').text('(' + this.numSeleccionadosInvestigadores + ')')
 	}
 
+	/**
+	 * Borra los investigadores del perfil
+	 */
 	removeSelectedUserFromProfile(idProfile, idUser) {
 
 		let currentProfile = stepsOffer.data.profiles.filter(function (perfilInt) {
@@ -1260,6 +1265,20 @@ class StepsOffer {
 		this.PrintSelectedUsersStp2()
 	}
 }
+
+
+// class areasTematicasModal {
+// 	constructor() {
+
+// 		var _self = this
+// 		this.body = $('body')
+// 		this.modalAreasTematicas = this.body.find('#modal-seleccionar-area-tematica')
+
+// 		this.modalAreasTematicas.on('shown.bs.modal', function () {
+// 			_self.init()
+// 		});
+// 	}
+// }
 
 
 

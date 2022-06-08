@@ -123,8 +123,14 @@ var metricas = {
                     }
                 };
                 data.plugins = [plugin];
-                that.drawChart(ctx, data, pIdGrafica);
+                
+                if (pIdGrafica.indexOf("circular") == -1) {
+                    that.drawChart(ctx, data, pIdGrafica);
+                }else{
+                    var myChart = new Chart(ctx, data);
+                }
             }
+            
             that.engancharComportamientos();
         });
     },
@@ -313,7 +319,8 @@ var metricas = {
             var graficasGrupo;
             var tmp = '';
             item.forEach(function (grafica, index, array) {
-                tmp += `<div style="display:${index == 0 ? "block" : "none"}; margin-top:20px; display:flex; flex-direction:column;justify-content:center;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
+                console.log(index);
+                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;justify-content:center;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
 
@@ -337,7 +344,6 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
-
                             </div>
                         </div>                      
                         ${graficasGrupo}
@@ -398,6 +404,7 @@ var metricas = {
                 </div>
                 `);
             } else {
+                $(this).css("height","auto");
                 $(this).append(`
                     <canvas id = "grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width = "600" height = "250" ></canvas>
                         `);
@@ -504,6 +511,7 @@ var metricas = {
             return;
         }
         var myChart = new Chart(ctx, data);
+
 
         var numBars = data.data.labels.length; // Número de barras.
         var canvasSize = (numBars * barSize); // Tamaño del canvas.
@@ -1168,7 +1176,7 @@ var metricas = {
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 
-                //parent.css("height", '500px'); // TODO CALCULAR
+                parent.css("height", "calc(100vh-100px)"); 
                 
                 $('#modal-ampliar-mapa').css('display', 'block');
                 $('#modal-ampliar-mapa').css('pointer-events', 'none');

@@ -16,12 +16,12 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
         public override byte[] GenerateCSV()
         {
             StringBuilder csv = new StringBuilder("");
-            csv.AppendLine("\"" + String.Join(";", data.labels).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
+            csv.AppendLine(";\"" + String.Join(";", data.labels).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
             foreach (DatasetBarrasY datasetBarras in data.datasets)
             {
-                csv.AppendLine("\"" + String.Join(";", datasetBarras.data).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
+                csv.AppendLine("\"" + datasetBarras.label + "\";\"" + String.Join(";", datasetBarras.data).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
             }
-            return Encoding.ASCII.GetBytes(csv.ToString());
+            return Encoding.Latin1.GetBytes(csv.ToString());
         }
     }
     public class DataBarrasY
