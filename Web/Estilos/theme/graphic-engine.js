@@ -1162,21 +1162,21 @@ var metricas = {
             .click(function (e) {
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
 
-                var parent = $('#modal-ampliar-mapa').find('.graph-container');
+                var parent = $('#modal-agregar-datos').find('.graph-container');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 
                 parent.css("height", "calc(100vh-100px)"); 
                 
-                $('#modal-ampliar-mapa').css('display', 'block');
-                $('#modal-ampliar-mapa').css('pointer-events', 'none');
+                $('#modal-agregar-datos').css('display', 'block');
+                $('#modal-agregar-datos').css('pointer-events', 'none');
 
                 $('.modal-backdrop').addClass('show');
                 $('.modal-backdrop').css('pointer-events', 'auto');
                 
-                $('#modal-ampliar-mapa').addClass('show');
+                $('#modal-agregar-datos').addClass('show');
                 //titulo del pop-up
-                $('#modal-ampliar-mapa').find('p.modal-title').text("Editar gráfica");
+                $('#modal-agregar-datos').find('p.modal-title').text("Editar gráfica");
 
             });
         //boton para cambiar entre graficas (en desuso)
@@ -1292,6 +1292,11 @@ var metricas = {
             $('.modal-backdrop').removeClass('show');
             $('.modal-backdrop').css('pointer-events', 'none');
             $('#modal-ampliar-mapa').css('display', 'none');
+
+            $('#modal-agregar-datos').removeClass('show');
+            $('.modal-backdrop').removeClass('show');
+            $('.modal-backdrop').css('pointer-events', 'none');
+            $('#modal-agregar-datos').css('display', 'none');
 
             //Hay que repintar las graficas de nodos para que se enganche correctamente el zoom
 
