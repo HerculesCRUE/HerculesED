@@ -1073,13 +1073,8 @@ var metricas = {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
 
-                /*
-                if (!canvas) {
-                    canvas = $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
-                }
-                */
-
-                var chart = Chart.getChart(canvas);
+                
+                var chart = Chart.getChart(canvas) ;
 
                 // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
                 if (chart == null) {
