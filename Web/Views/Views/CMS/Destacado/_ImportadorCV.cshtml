@@ -13,7 +13,7 @@
 	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
 	string urlImportacionJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/importacioncv.js";
     Html.GetListaJS().Add(urlJS);
-    Html.GetListaJS().Add(urlImportacionJS);	
+    Html.GetListaJS().Add(urlImportacionJS);
 }
 
 <input type="hidden" id="CV_FIRMANOSELECCIONADOPERSONA" value="@Html.Translate("CV_FIRMANOSELECCIONADOPERSONA")"/>
@@ -87,3 +87,6 @@
 		</div>
 	</div>
 </div>
+<script>
+importarCVN.init();
+</script>
