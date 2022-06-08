@@ -148,8 +148,6 @@ function printCientificProduction(id, data){
 											<div class="wrap">
 												<div class="middle-wrap">
 													<div class="title-wrap">
-													</div>
-													<div class="title-wrap">
 														<h2 class="resource-title">${data.items[seccion].title}</h2>
 													</div>
 													<div class="content-wrap">
@@ -204,7 +202,7 @@ function printFreeText(id, data){
 												<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-														<label class="custom-control-label" for="checkAllResources_${id2}">
+														<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo
 														</label>
 													</div>
 												</div>
@@ -224,8 +222,6 @@ function printFreeText(id, data){
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
-										<div class="title-wrap">
-										</div>
 										<div class="title-wrap">
 											<h2 class="resource-title">
 												<a href="#" data-id="${id}" internal-id="">${secciones[seccion].properties[0].values[0]}</a>
@@ -312,6 +308,13 @@ edicionCV.printPersonalData=function(id, data) {
 		var nombre = '';
 		for (const seccion in data.sections[0].items)
 		{
+			for(var i =0; i<data.sections[0].items[seccion].properties.length; i++){
+				if(data.sections[0].items[seccion].properties[i].values[0] != null){
+					nombre += data.sections[0].items[seccion].properties[i].values[0];
+					nombre += " ";
+				}
+			}
+			
 			var html = `<div class="panel-group pmd-accordion collapse show" section="${data.sections[0].items[seccion].title}" id="${id}" role="tablist" aria-multiselectable="true">
 							<div class="panel">
 								<div class="panel-heading" role="tab" id="publicaciones-tab">
@@ -336,9 +339,7 @@ edicionCV.printPersonalData=function(id, data) {
 														<div class="wrap">
 															<div class="middle-wrap">
 																<div class="title-wrap">
-																</div>
-																<div class="title-wrap">
-																	<h2 class="resource-title">Datos de identificación</h2>
+																	<h2 class="resource-title">${nombre}</h2>
 																	${this.printHtmlListItemEditable(data)}	
 																	${this.printHtmlListItemIdiomas(data)}
 																</div>
@@ -400,7 +401,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">
+											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo
 											</label>
 										</div>
 									</div>
@@ -469,8 +470,6 @@ edicionCV.printHtmlListItem= function(id, data) {
 							<div class="wrap">
 								<div class="middle-wrap">
 									${this.printHtmlListItemOrders(data)}
-									<div class="title-wrap">
-									</div>
 									<div class="title-wrap">
 										<h2 class="resource-title">${data.title}</h2>
 										${this.printHtmlListItemEditable(data)}	

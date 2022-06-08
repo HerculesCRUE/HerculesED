@@ -189,11 +189,19 @@ var exportacionCV = {
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
+		if(!$(this)[0].checked)
+		{
+			$(this).closest('.custom-control').find('.custom-control-label').text('Seleccionar todos');
+		}
+		else
+		{
+			$(this).closest('.custom-control').find('.custom-control-label').text('Deseleccionar todos');
+		}
 		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
 	
 	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
-		if(!$(this).prop('checked')){
+		if(!$(this).prop('checked')){			
 			$(this).closest('.panel-body').find('.checkAllCVWrapper input[type="checkbox"]').prop('checked', false);
 		}
 	});
@@ -240,8 +248,6 @@ function printCientificProduction(id, data){
 										</div>
 										<div class="wrap">
 											<div class="middle-wrap">
-												<div class="title-wrap">
-												</div>
 												<div class="title-wrap">
 													<h2 class="resource-title">${data.title}</h2>
 												</div>
@@ -296,7 +302,7 @@ function printFreeText(id, data){
 												<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-														<label class="custom-control-label" for="checkAllResources_${id2}">
+														<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todos
 														</label>
 													</div>
 												</div>
@@ -317,8 +323,6 @@ function printFreeText(id, data){
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
-										<div class="title-wrap">
-										</div>
 										<div class="title-wrap">
 											<h2 class="resource-title">
 												<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
@@ -437,8 +441,6 @@ edicionCV.printPersonalData=function(id, data) {
 													<div class="wrap">
 														<div class="middle-wrap">
 															<div class="title-wrap">
-															</div>
-															<div class="title-wrap">
 																<h2 class="resource-title">${nombre}</h2>
 																${this.printHtmlListItemEditable(data)}	
 																${this.printHtmlListItemIdiomas(data)}
@@ -500,7 +502,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">
+											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todos
 											</label>
 										</div>
 									</div>
@@ -567,8 +569,6 @@ edicionCV.printHtmlListItem= function(id, data) {
 							<div class="wrap">
 								<div class="middle-wrap">
 									${this.printHtmlListItemOrders(data)}
-									<div class="title-wrap">
-									</div>
 									<div class="title-wrap">
 										<h2 class="resource-title">${data.title}</h2>
 										${this.printHtmlListItemEditable(data)}	

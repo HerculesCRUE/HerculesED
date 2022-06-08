@@ -56,6 +56,7 @@ var metricas = {
             var graficaContenedor = $(ctx).parent();
             if ("container" in data) {
                 data.container = ctx;
+
                 data.ready = function () { window.cy = this };
                 var cy = window.cy = cytoscape(data);
                 //var combo = $(ctx).parents("article").find("select");
@@ -65,7 +66,7 @@ var metricas = {
                     `)
                 }
 
-                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).append(data.title);
+                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(data.title);
 
                 var arrayNodes = [];
                 var nodos = cy.nodes();
@@ -101,6 +102,17 @@ var metricas = {
                     }
                 });
 
+                $('li#zoomIn')
+                    .unbind()
+                    .click(function (e) {
+                        cy.zoom(cy.zoom() + 0.2);
+                    });
+
+                $('li#zoomOut')
+                    .unbind()
+                    .click(function (e) {
+                        cy.zoom(cy.zoom() - 0.2);
+                    });
 
             } else {
                 if (combo) {
@@ -123,14 +135,14 @@ var metricas = {
                     }
                 };
                 data.plugins = [plugin];
-                
-                if (pIdGrafica.indexOf("circular") == -1) {
+
+                if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
                     that.drawChart(ctx, data, pIdGrafica);
-                }else{
+                } else {
                     var myChart = new Chart(ctx, data);
                 }
             }
-            
+
             that.engancharComportamientos();
         });
     },
@@ -344,6 +356,16 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
+                                <div class="csv">
+                                    <a href="javascript: void(0);" style="height:24px" >
+                                        <span class="material-icons">insert_drive_file</span>
+                                    </a>
+                                </div>
+                                <div class="edit">
+                                    <a href="javascript: void(0);" style="height:24px" >
+                                        <span class="material-icons">assessment</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>                      
                         ${graficasGrupo}
@@ -404,7 +426,7 @@ var metricas = {
                 </div>
                 `);
             } else {
-                $(this).css("height","auto");
+                $(this).css("height", "auto");
                 $(this).append(`
                     <canvas id = "grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width = "600" height = "250" ></canvas>
                         `);
@@ -647,8 +669,12 @@ var metricas = {
 
 
             // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
-            if (canvasSize < 550) { //TODO cambiar 550 por el tamaño del contenedor.
-                chartAreaWrapper.style.width = myChart.width + "px";
+
+            var article = $(scrollContainer).width();
+            console.log(article);
+
+            if (canvasSize < article) { //TODO cambiar 550 por el tamaño del contenedor.
+                //chartAreaWrapper.style.width = myChart.width-10 + "px";
                 scrollContainer.style.overflowX = 'hidden';
             }
             else {
@@ -739,10 +765,10 @@ var metricas = {
 
             copyWidth = myChart.boxes[2]?.width;
             // Altura del titulo, leyenda y eje superior menos el margen.
-            copyHeight = myChart.height-20;
-            targetY =20;
+            copyHeight = myChart.height - 20;
+            targetY = 20;
             // Le asignamos tamaño a la leyenda.
-            axisHeight = myChart.height -10;
+            axisHeight = myChart.height - 10;
         } else {
             myChart.canvas.parentNode.style.height = canvasSize + 'px';
             copyWidth = myChart.width;
@@ -750,32 +776,32 @@ var metricas = {
             copyHeight = myChart.boxes[0].height + myChart.boxes[1].height + myChart.boxes[2]?.height - 5;
             // Le asignamos tamaño a la leyenda.
             axisHeight = myChart.boxes[2]?.height;
-            
+
         }
 
         // Preparamos el eje superior.
-        $(legend).css("width", vertical?"100%": copyWidth + "px");
+        $(legend).css("width", vertical ? "100%" : copyWidth + "px");
         $(legend).css("height", myChart.chartArea.top + "px");
         var targetX = 0;
         var targetY = 0;
-        var targetWidth = copyWidth * scale ;
+        var targetWidth = copyWidth * scale;
         var targetHeight = axisHeight * scale;
         var x = 0;
         var y = 0;
         var width = copyWidth;
-        var height = vertical? copyHeight: axisHeight+4;
+        var height = vertical ? copyHeight : axisHeight + 4;
         var ctx;
 
 
         if (mainAxis) {
             ctx = mainAxis[0].getContext('2d');
-            if (vertical){
+            if (vertical) {
                 ctx.canvas.height = copyHeight;
-                targetHeight -=10*scale;
-            }else{
+                targetHeight -= 10 * scale;
+            } else {
                 ctx.canvas.height = axisHeight;
             }
-            targetY = (copyHeight - axisHeight+10) * scale;
+            targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
             ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
@@ -787,13 +813,13 @@ var metricas = {
             if (vertical) {
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
-                targetHeight -=10*scale;
+                targetHeight -= 10 * scale;
             } else {
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
 
             }
-            
+
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
             ctx.canvas.height = axisHeight;
@@ -845,12 +871,12 @@ var metricas = {
         }
 
     },
-    engancharComportamientos: function () {
+    engancharComportamientos: function (cyto = null) {
         var that = this;
         var menus = $("select.chartMenu");
         menus.each((index, menu) => { //por cada menu en la pagina
             var selectedID = $(menu).parents("article div.wrap").find("div.grafica:visible").attr("idgrafica"); //Obtiene la id de la grafica visible
-            $(menu).val(idPaginaActual+"_"+selectedID); // y la selecciona en el menu
+            $(menu).val(idPaginaActual + "_" + selectedID); // y la selecciona en el menu
         });
         iniciarSelects2.init(); // Se inicializa la libreria selects2.
 
@@ -1055,17 +1081,6 @@ var metricas = {
                 that.pintarPagina(idPaginaActual);
             });
 
-        $('#zoomIn')
-            .unbind()
-            .click(function (e) {
-                cy.zoom(cy.zoom() + 0.2);
-            });
-
-        $('#zoomOut')
-            .unbind()
-            .click(function (e) {
-                cy.zoom(cy.zoom() - 0.2);
-            });
 
         // Labels de la leyenda.
         $('div.labelContainer')
@@ -1132,6 +1147,38 @@ var metricas = {
                 a.download = Date.now() + '.jpg';
                 a.click();
             });
+        $('div.csv')
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "GetCSVGrafica";
+                url+="?pIdPagina="+$(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                url+="&pIdGrafica="+$(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                url+="&pFiltroFacetas="+decodeURIComponent(ObtenerHash2());
+                url+="&pLang="+lang;
+                document.location.href=url;
+            });
+        $('div.edit')
+            .unbind()
+            .click(function (e) {
+                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+
+                var parent = $('#modal-ampliar-mapa').find('.graph-container');
+                var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
+                var ctx;
+                
+                parent.css("height", "calc(100vh-100px)"); 
+                
+                $('#modal-ampliar-mapa').css('display', 'block');
+                $('#modal-ampliar-mapa').css('pointer-events', 'none');
+
+                $('.modal-backdrop').addClass('show');
+                $('.modal-backdrop').css('pointer-events', 'auto');
+                
+                $('#modal-ampliar-mapa').addClass('show');
+                //titulo del pop-up
+                $('#modal-ampliar-mapa').find('p.modal-title').text("Editar gráfica");
+
+            });
         //boton para cambiar entre graficas (en desuso)
         /*
         $('div.toggleChart')
@@ -1167,6 +1214,8 @@ var metricas = {
                 }
             });
 
+
+
         $("div.zoom")
             .unbind()
             .click(function (e) {
@@ -1175,15 +1224,18 @@ var metricas = {
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
-                
-                parent.css("height", "calc(100vh-100px)"); 
-                
+                var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
+
+                modalContent.css({height : 'calc(100vh - 100px)'});
+                modalContent.parent().css({maxWidth : '1310px'});
+                console.log(modalContent);
+
                 $('#modal-ampliar-mapa').css('display', 'block');
                 $('#modal-ampliar-mapa').css('pointer-events', 'none');
 
                 $('.modal-backdrop').addClass('show');
                 $('.modal-backdrop').css('pointer-events', 'auto');
-                
+
                 $('#modal-ampliar-mapa').addClass('show');
                 //titulo del pop-up
                 $('#modal-ampliar-mapa').find('p.modal-title').text("grafica_" + (canvas.parents('div.grafica').attr("idgrafica")));
@@ -1212,7 +1264,7 @@ var metricas = {
                     if (!(canvas.parents('div.grafica').attr("idgrafica").includes("circular"))) {
                         parent.append(`
                             <div class="chartWrapper" style="position:relative; margin-top:15px">
-                                <div class="chartScroll" style="overflow-${($(canvas).parents('div.grafica').attr("idgrafica").includes("isHorizontal")) ? "y" : "x"}: scroll;height:400px;">
+                                <div class="chartScroll" style="overflow-${($(canvas).parents('div.grafica').attr("idgrafica").includes("isHorizontal")) ? "y" : "x"}: scroll;height:${$(modalContent).height()-130}px;">
                                     <div style="height: 00px;" class="chartAreaWrapper">
                                     </div>
                                 </div>
@@ -1234,11 +1286,21 @@ var metricas = {
 
         function cerrarModal() {
 
+            var controls = $('#modal-ampliar-mapa').find('div.graph-container').find('li').length;
             $('#modal-ampliar-mapa').find('div.graph-container').empty();
             $('#modal-ampliar-mapa').removeClass('show');
             $('.modal-backdrop').removeClass('show');
             $('.modal-backdrop').css('pointer-events', 'none');
             $('#modal-ampliar-mapa').css('display', 'none');
+
+            //Hay que repintar las graficas de nodos para que se enganche correctamente el zoom
+
+            if (controls == 2) { //solo las graficas de nodos tienen controles
+                var nodes = $('div.__________cytoscape_container').empty();
+                var idGrafica = nodes.attr("id").split("_").at(-1);
+                that.getGrafica(idPaginaActual, idGrafica, ObtenerHash2(), nodes);
+            }
+
         }
 
         $(".listadoMenuPaginas li")
