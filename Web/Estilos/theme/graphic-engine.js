@@ -348,20 +348,33 @@ var metricas = {
                                         <span class="material-icons">zoom_in</span>
                                     </a>
                                 </div>
-                                <div class="descargar">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">download</span>
+                                <div class="dropdown show">
+                                    <a href="javascript: void(0);" style="height:24px" id="dropdownMasOpciones" data-toggle="dropdown">
+                                        <span class="material-icons">more_vert</span>
                                     </a>
-                                </div>
-                                <div class="csv">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">insert_drive_file</span>
-                                    </a>
-                                </div>
-                                <div class="edit">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">assessment</span>
-                                    </a>
+                                    <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                            <p class="dropdown-title">Acciones</p>
+                                            <ul class="no-list-style">
+                                                <li>
+                                                    <a class="item-dropdown guardar">
+                                                        <span class="material-icons">assessment</span>
+                                                        <span class="texto">Guardar en espacio personal</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="item-dropdown csv">
+                                                        <span class="material-icons">insert_drive_file</span>
+                                                        <span class="texto">Descargar como .csv</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="item-dropdown descargar">
+                                                        <span class="material-icons">download</span>
+                                                        <span class="texto">Descargar como imagen .jpg</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>                      
@@ -391,6 +404,14 @@ var metricas = {
         // TODO: Mirar porque no lo hace automáticamente.
         $("body").removeClass("modal-open");
 
+        if ($('#selectorPage').children().length == 0) {
+            $("#createPageRadio").prop("checked", true);
+            $("#selectPageRadio").parent().hide();
+            $('#selectPage').hide();
+        } else {
+            $("#selectPageRadio").prop("checked", true);
+            $('#createPage').hide();
+        }
         // Vacias contenedores.
         $('#page_' + pIdPagina + ' .grafica').empty();
         $('#page_' + pIdPagina + ' .box').empty();
@@ -706,7 +727,7 @@ var metricas = {
         //si la leyenda falsa es mayor a la del canvas se añade la diferencia en margen para compensar
         //esto sucede cuando en el canvas la leyenda ocupa una fila pero en el div 2 o mas;
         if ($(legend).height() > myChart.chartArea.top) {
-           
+
 
             if (!horizontal) {
                 //importante por que el margen añadido hace que aparezca un scroll horizontal
@@ -830,7 +851,7 @@ var metricas = {
         menus.each((index, menu) => { //por cada menu en la pagina
             var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica"); //Obtiene la id de la grafica visible
             console.log(idPaginaActual + "_" + selectedID);
-            $(menu).val("grafica_"+idPaginaActual + "_" + selectedID); // y la selecciona en el menu
+            $(menu).val("grafica_" + idPaginaActual + "_" + selectedID); // y la selecciona en el menu
         });
 
         iniciarSelects2.init(); // Se inicializa la libreria selects2.
@@ -1067,14 +1088,14 @@ var metricas = {
             });
 
         // Botón de descarga.
-        $('div.descargar')
+        $('a.descargar')
             .unbind()
             .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
 
-                
-                var chart = Chart.getChart(canvas) ;
+
+                var chart = Chart.getChart(canvas);
 
                 // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
                 if (chart == null) {
@@ -1097,7 +1118,7 @@ var metricas = {
                 a.download = Date.now() + '.jpg';
                 a.click();
             });
-        $('div.csv')
+        $('a.csv')
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
@@ -1107,28 +1128,47 @@ var metricas = {
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
-        $('div.edit')
+        $('a.guardar')
             .unbind()
             .click(function (e) {
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
 
-                var parent = $('#modal-ampliar-mapa').find('.graph-container');
+                var parent = $('#modal-agregar-datos').find('.graph-container');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
 
                 parent.css("height", "calc(100vh-100px)");
 
-                $('#modal-ampliar-mapa').css('display', 'block');
-                $('#modal-ampliar-mapa').css('pointer-events', 'none');
+                $('#modal-agregar-datos').css('display', 'block');
+                $('#modal-agregar-datos').css('pointer-events', 'none');
 
                 $('.modal-backdrop').addClass('show');
                 $('.modal-backdrop').css('pointer-events', 'auto');
 
-                $('#modal-ampliar-mapa').addClass('show');
+                $('#modal-agregar-datos').addClass('show');
                 //titulo del pop-up
-                $('#modal-ampliar-mapa').find('p.modal-title').text("Editar gráfica");
+                $('#modal-agregar-datos').find('p.modal-title').text("Guardar gráfica en espacio personal");
 
             });
+
+        $('#createPageRadio')
+            .unbind()
+            .change(function () {
+                if (this.checked) {
+                    $('#selectPage').hide();
+                    $('#createPage').show();
+                }
+            });
+
+        $('#selectPageRadio')
+            .unbind()
+            .change(function () {
+                if (this.checked) {
+                    $('#selectPage').show();
+                    $('#createPage').hide();
+                }
+            });
+
         //boton para cambiar entre graficas (en desuso)
         /*
         $('div.toggleChart')
@@ -1160,34 +1200,31 @@ var metricas = {
                     selected.css('width', '100%');
                     selected.removeClass('hide');
                     selected.addClass('show');
-
                 }
             });
 
-
-
+        //boton del pop-up con la grafica escalada
         $("div.zoom")
             .unbind()
             .click(function (e) {
+                 // obtiene la grafica seleccionada (en caso de menu) o la grafica del contenedor en casos normales
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
-
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
-                var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
+                var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica"); 
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
-
+                //tamaño del contenedor (dejando 50px de margen arriba y abajo)
                 modalContent.css({ height: 'calc(100vh - 100px)' });
-                modalContent.parent().css({ maxWidth: '1310px' });
+                modalContent.parent().css({ maxWidth: '1310px' }); //el tamaño maximo del contendor de los articles
 
-
+                //se revela el popup
                 $('#modal-ampliar-mapa').css('display', 'block');
                 $('#modal-ampliar-mapa').css('pointer-events', 'none');
-
                 $('.modal-backdrop').addClass('show');
                 $('.modal-backdrop').css('pointer-events', 'auto');
-
                 $('#modal-ampliar-mapa').addClass('show');
 
+                //se popula con los contenedores adecuados
                 if ($(canvas).parents('div.grafica').attr("idgrafica").includes("nodes")) {
                     ctx = $(`<div id="grafica_${idPaginaActual}_${pIdGrafica}" style="width: 100%; height:${$(modalContent).height() - 130}px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>`)
                     parent.append(`
@@ -1204,8 +1241,6 @@ var metricas = {
                             </div>
                         `);
                     parent.append(ctx);
-
-
                 } else {
                     ctx = $(`<canvas id="grafica_${idPaginaActual}_${pIdGrafica}" width = "600" height = "250"></canvas>`);
 
@@ -1223,10 +1258,12 @@ var metricas = {
                         parent.append(ctx);
                     }
                 }
-                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx);
+                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx); //obtenemos los datos y pintamos la grafica
 
             });
-        $('.modal-backdrop').unbind()
+
+        $('.modal-backdrop')
+            .unbind()
             .click(cerrarModal);
         $('span.cerrar')
             .unbind()
@@ -1241,9 +1278,14 @@ var metricas = {
             $('.modal-backdrop').css('pointer-events', 'none');
             $('#modal-ampliar-mapa').css('display', 'none');
 
+            $('#modal-agregar-datos').removeClass('show');
+            $('.modal-backdrop').removeClass('show');
+            $('.modal-backdrop').css('pointer-events', 'none');
+            $('#modal-agregar-datos').css('display', 'none');
+
             //Hay que repintar las graficas de nodos para que se enganche correctamente el zoom
 
-            if (controls == 2) { //solo las graficas de nodos tienen controles
+            if (controls == 2) { //solo las graficas de nodos tienen controles (+,-) 
                 var nodes = $('div.__________cytoscape_container').empty();
                 var idGrafica = nodes.attr("id").split("_").at(-1);
                 that.getGrafica(idPaginaActual, idGrafica, ObtenerHash2(), nodes);
