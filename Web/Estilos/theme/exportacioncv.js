@@ -189,11 +189,19 @@ var exportacionCV = {
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
+		if(!$(this)[0].checked)
+		{
+			$(this).closest('.custom-control').find('.custom-control-label').text('Seleccionar todos');
+		}
+		else
+		{
+			$(this).closest('.custom-control').find('.custom-control-label').text('Deseleccionar todos');
+		}
 		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
 	
 	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
-		if(!$(this).prop('checked')){
+		if(!$(this).prop('checked')){			
 			$(this).closest('.panel-body').find('.checkAllCVWrapper input[type="checkbox"]').prop('checked', false);
 		}
 	});
@@ -296,7 +304,7 @@ function printFreeText(id, data){
 												<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-														<label class="custom-control-label" for="checkAllResources_${id2}">
+														<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todos
 														</label>
 													</div>
 												</div>
@@ -500,7 +508,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">
+											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todos
 											</label>
 										</div>
 									</div>

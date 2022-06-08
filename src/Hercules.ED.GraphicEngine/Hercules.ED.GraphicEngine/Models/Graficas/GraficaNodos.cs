@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -29,11 +30,10 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
             {
                 if (item.data.group == "nodes")
                 {
-                    nombres.Add(item.data.name.Split('(')[0].TrimEnd());
+                    nombres.Add(item.data.name.Split('(').First().TrimEnd());
                     ids.Add(item.data.id);
                 }
             }
-
             double?[,] valorRelaciones = new double?[nombres.Count, nombres.Count];
             int cont = 0;
             // Recorro los elementos para obtener los valores
@@ -48,7 +48,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
                 {
                     int source = ids.IndexOf(item.data.source);
                     int target = ids.IndexOf(item.data.target);
-                    double valor = Double.Parse(item.data.id.Substring(item.data.id.Length - 1));
+                    double valor = Double.Parse(item.data.id.Split('~').Last());
                     valorRelaciones[source, target] = valor;
                     valorRelaciones[target, source] = valor;
                 }
@@ -62,7 +62,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
                 {
                     if (valorRelaciones[i, j] == null)
                     {
-                        aux.Add("");
+                        aux.Add("0");
                     }
                     else
                     {
@@ -79,7 +79,7 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
             {
                 csv.AppendLine("\"" + nombres[i] + "\";\"" + String.Join(";", valores[i]).Replace("\"", "\"\"").Replace(";", "\";\"") + "\"");
             }
-            return Encoding.ASCII.GetBytes(csv.ToString());
+            return Encoding.Latin1.GetBytes(csv.ToString());
         }
     }
 

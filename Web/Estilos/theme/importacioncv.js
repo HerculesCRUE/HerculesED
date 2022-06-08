@@ -34,14 +34,12 @@ var importarCVN = {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
 		
-		MostrarUpdateProgress(0);
-		
 		var that=this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
 		formData.append('File', $('#file_cvn')[0].files[0]);
 				 
-		$.ajax({
+		$.ajax({			
 			url: urlImportacionCV + '/PreimportarCV',
 			type: 'POST',
 			data: formData,	
@@ -50,7 +48,6 @@ var importarCVN = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function ( data ) {
-				
 				//recorrer items y por cada uno			
 				for(var i=0;i<7;i++){
 					var id = 'x' + RandomGuid();
@@ -96,6 +93,17 @@ var importarCVN = {
     }
 };
 
+function checkAllCVWrapper(){
+	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
+		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
+	});
+	
+	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
+		if(!$(this).prop('checked')){
+			$(this).closest('.panel-body').find('.checkAllCVWrapper input[type="checkbox"]').prop('checked', false);
+		}
+	});
+};
 
 function printCientificProduction(id, data){
 	//Pintado sección listado
@@ -134,8 +142,8 @@ function printCientificProduction(id, data){
 									<div class="resource-list-wrap">
 										<article class="resource success" >
 											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.items[seccion].properties[0].values[0]}">
-												<label class="custom-control-label" for="check_resource_${id}"></label>
+												<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].properties[0].values[0]}"  value="${data.items[seccion].properties[0].values[0]}">
+												<label class="custom-control-label" for="check_resource_${data.items[seccion].properties[0].values[0]}"></label>
 											</div>
 											<div class="wrap">
 												<div class="middle-wrap">
@@ -196,7 +204,7 @@ function printFreeText(id, data){
 												<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-														<label class="custom-control-label" for="checkAllResources_${id2}">
+														<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo
 														</label>
 													</div>
 												</div>
@@ -211,8 +219,8 @@ function printFreeText(id, data){
 				var id = 'x' + RandomGuid();
 				var html2 = `<article class="resource success" >
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${secciones[seccion].properties[0].property}">
-									<label class="custom-control-label" for="check_resource_${id}"></label>
+									<input type="checkbox" class="custom-control-input" id="check_resource_${secciones[seccion].properties[0].property}"  value="${secciones[seccion].properties[0].property}">
+									<label class="custom-control-label" for="check_resource_${secciones[seccion].properties[0].property}"></label>
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
@@ -392,7 +400,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">
+											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo
 											</label>
 										</div>
 									</div>
@@ -455,8 +463,8 @@ edicionCV.printHtmlListItem= function(id, data) {
 	if(data.title!= null){
 	htmlListItem = `<article class="resource success ${openAccess}" >
 							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="check_resource_${data.identifier}"  value="${id}">
-								<label class="custom-control-label" for="check_resource_${data.identifier}"></label>
+								<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}">
+								<label class="custom-control-label" for="check_resource_${id}"></label>
 							</div>
 							<div class="wrap">
 								<div class="middle-wrap">

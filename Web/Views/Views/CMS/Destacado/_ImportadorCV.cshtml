@@ -56,35 +56,34 @@
 <input type="hidden" id="CV_OCULTAR_EDICION" value="@Html.Translate("CV_OCULTAR_EDICION")"/>
 
 <div id="containerCV">
-	
-</div>
-<div class="row">
-	<div class="col col-12 col-xl-8 col-contenido izquierda paso1">
-		<div class="wrapCol">
-			<div class="header-contenido">
-				<div class="h1-container">
-					<h1>@Html.Translate("IMPORTA_TU_CVN")</h1>
-				</div>
-			</div>
-			<p>@Html.Translate("IMPORTA_TU_CVN_CON_UN_CLICK")</p>
-			<input type="file" name="" id="file_cvn" accept="application/pdf" data-title-text="@Html.Translate("SUBE_PDF_CV")" data-size-text="@Html.Translate("MAXIMO_PESO_CV")" data-format-text="@Html.Translate("FORMATOS_ADMITIDOS_CV")" data-format-error="@Html.Translate("FORMATO_ERROR_CV")" data-size-error="@Html.Translate("TAMANIO_ERROR_CV")">
-			<div class="botonera">
-				<a href="javascript: void(0);" class="btn btn-primary uppercase btProcesarCV">@Html.Translate("PROCESAR")</a>
-			</div>
-		</div>
-	</div>
-	<div class="col col-12 col-contenido paso2" style="display:none">
-		<div class="wrapCol">
-			<div class="cabecera-cv">
-				<div class="upper-wrap">
+	<div class="row">
+		<div class="col col-12 col-xl-8 col-contenido izquierda paso1">
+			<div class="wrapCol">
+				<div class="header-contenido">
 					<div class="h1-container">
 						<h1>@Html.Translate("IMPORTA_TU_CVN")</h1>
 					</div>
 				</div>
+				<p>@Html.Translate("IMPORTA_TU_CVN_CON_UN_CLICK")</p>
+				<input type="file" name="" id="file_cvn" accept="application/pdf" data-title-text="@Html.Translate("SUBE_PDF_CV")" data-size-text="@Html.Translate("MAXIMO_PESO_CV")" data-format-text="@Html.Translate("FORMATOS_ADMITIDOS_CV")" data-format-error="@Html.Translate("FORMATO_ERROR_CV")" data-size-error="@Html.Translate("TAMANIO_ERROR_CV")">
+				<div class="botonera">
+					<a href="javascript: void(0);" class="btn btn-primary uppercase btProcesarCV">@Html.Translate("PROCESAR")</a>
+				</div>
 			</div>
-			<div class="contenido-cv">
+		</div>
+		<div class="col col-12 col-contenido paso2" style="display:none">
+			<div class="wrapCol">
+				<div class="cabecera-cv">
+					<div class="upper-wrap">
+						<div class="h1-container">
+							<h1>@Html.Translate("IMPORTA_TU_CVN")</h1>
+						</div>
+					</div>
+				</div>
+				<div class="contenido-cv">
+				</div>
+				<a class="btn btn-primary uppercase btImportarCV" >@Html.Translate("IMPORTAR")</a>
 			</div>
-			<a class="btn btn-primary uppercase btImportarCV" >@Html.Translate("IMPORTAR")</a>
 		</div>
 	</div>
 </div>
