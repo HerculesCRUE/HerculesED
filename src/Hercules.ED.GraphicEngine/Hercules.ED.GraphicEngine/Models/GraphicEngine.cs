@@ -1650,12 +1650,16 @@ namespace Hercules.ED.GraphicEngine.Models
             where = new StringBuilder();
 
             select.Append(mPrefijos);
-            select.Append($@"SELECT ?idPagina ?idGrafica ?filtro ");
+            select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
             where.Append("WHERE { ");
-            where.Append($@"<{idRecurso}> TODO:propAux ?datosGraficas. ");
-            where.Append("?datosGraficas TODO:propIdPagina ?idPagina. ");
-            where.Append("?datosGraficas TODO:propIdGrafica ?idGrafica. ");
-            where.Append("?datosGraficas TODO:propFiltro ?filtro. ");
+            where.Append($@"<{idRecurso}> roh:metricPage ?datosPagina. ");
+            where.Append("?datosPagina roh:metricGraphic ?datosGraficas. ");
+            where.Append("?datosGraficas roh:title ?titulo. ");
+            where.Append("?datosGraficas roh:order ?orden. ");
+            where.Append("?datosGraficas roh:pageId ?idPagina. ");
+            where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
+            where.Append("?datosGraficas roh:filters ?filtro. ");
+            where.Append("?datosGraficas roh:width ?anchura. ");
             where.Append("} ");           
 
             resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
@@ -1664,9 +1668,12 @@ namespace Hercules.ED.GraphicEngine.Models
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
                     DataGraphicUser data = new DataGraphicUser();
+                    data.titulo = fila["titulo"].value;
+                    data.orden = Int32.Parse(fila["orden"].value);
                     data.idPagina = fila["idPagina"].value;
                     data.idGrafica = fila["idGrafica"].value;
                     data.filtro = fila["filtro"].value;
+                    data.anchura = fila["anchura"].value;
                     listaGraficas.Add(data);
                 }
             }
