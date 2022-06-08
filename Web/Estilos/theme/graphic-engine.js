@@ -105,13 +105,20 @@ var metricas = {
                 $('li#zoomIn')
                     .unbind()
                     .click(function (e) {
-                        cy.zoom(cy.zoom() + 0.2);
+                        cy.zoom({
+                            level: cy.zoom() * 1.2,
+                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+
+                        });
                     });
 
                 $('li#zoomOut')
                     .unbind()
                     .click(function (e) {
-                        cy.zoom(cy.zoom() - 0.2);
+                        cy.zoom({
+                            level: cy.zoom() / 1.2,
+                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+                        });
                     });
 
             } else {
@@ -728,7 +735,6 @@ var metricas = {
         //esto sucede cuando en el canvas la leyenda ocupa una fila pero en el div 2 o mas;
         if ($(legend).height() > myChart.chartArea.top) {
 
-
             if (!horizontal) {
                 //importante por que el margen añadido hace que aparezca un scroll horizontal
                 myChart.canvas.parentNode.parentNode.style.overflowY = "hidden";
@@ -736,12 +742,16 @@ var metricas = {
 
             //añadimos el margen
             myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
+            //Aun que no lo parezca este tamaño es importante (1px tambien funcionaria)
+            //Obliga al canvas a reescalarse y ajustarse al div, sin el los labels se esconden debajo de la scrollbar
+            myChart.canvas.parentNode.style.paddingBottom = 0.02 + "px";
             if (mainAxis) {
                 mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
             }
             if (secondaryAxis) {
                 secondaryAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
             }
+
 
         }
         // Posicion del comienzo del recorte
@@ -1207,10 +1217,10 @@ var metricas = {
         $("div.zoom")
             .unbind()
             .click(function (e) {
-                 // obtiene la grafica seleccionada (en caso de menu) o la grafica del contenedor en casos normales
+                // obtiene la grafica seleccionada (en caso de menu) o la grafica del contenedor en casos normales
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
-                var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica"); 
+                var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
                 //tamaño del contenedor (dejando 50px de margen arriba y abajo)
