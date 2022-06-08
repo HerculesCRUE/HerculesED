@@ -403,15 +403,6 @@ var metricas = {
         // Borra la clase modal-open del body cuando se abre el pop-up del tesáuro. 
         // TODO: Mirar porque no lo hace automáticamente.
         $("body").removeClass("modal-open");
-
-        if ($('#selectorPage').children().length == 0) {
-            $("#createPageRadio").prop("checked", true);
-            $("#selectPageRadio").parent().hide();
-            $('#selectPage').hide();
-        } else {
-            $("#selectPageRadio").prop("checked", true);
-            $('#createPage').hide();
-        }
         // Vacias contenedores.
         $('#page_' + pIdPagina + ' .grafica').empty();
         $('#page_' + pIdPagina + ' .box').empty();
@@ -698,7 +689,7 @@ var metricas = {
                     return value;
                 }
             }
-    
+
             // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
             if (canvasSize < $(scrollContainer).width()) { //TODO cambiar 550 por el tamaño del contenedor.
                 //chartAreaWrapper.style.width = myChart.width-10 + "px";
@@ -1208,21 +1199,44 @@ var metricas = {
                 var parent = $('#modal-agregar-datos').find('.graph-container');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
-                
-                parent.css("height", "calc(100vh-100px)"); 
-                
+
+                parent.css("height", "calc(100vh-100px)");
+
                 $('#modal-agregar-datos').css('display', 'block');
                 $('#modal-agregar-datos').css('pointer-events', 'none');
 
                 $('.modal-backdrop').addClass('show');
                 $('.modal-backdrop').css('pointer-events', 'auto');
-                
+
                 $('#modal-agregar-datos').addClass('show');
                 //titulo del pop-up
                 $('#modal-agregar-datos').find('p.modal-title').text("Guardar gráfica en espacio personal");
 
+                // Leer paginas de usuario
+                var idUsuario = $('.inpt_usuarioID').attr('value');
+                var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"
+                var arg = {};
+                arg.pUserId = idUsuario;
+
+                // Petición para obtener los datos de la página.
+                $.get(url, arg, function (listaData) {
+                    listaData.forEach(data => {
+                        // TODO
+                        $('#selectorPage').append(`
+                            <option></option>    
+                        `)
+                    });
+                });
+                if ($('#selectorPage').children().length == 0) {
+                    $("#createPageRadio").prop("checked", true);
+                    $("#selectPageRadio").parent().hide();
+                    $('#selectPage').hide();
+                } else {
+                    $("#selectPageRadio").prop("checked", true);
+                    $('#createPage').hide();
+                }
             });
-        
+
         $('#createPageRadio')
             .unbind()
             .change(function () {
@@ -1240,7 +1254,7 @@ var metricas = {
                     $('#createPage').hide();
                 }
             });
-            
+
         //boton para cambiar entre graficas (en desuso)
         /*
         $('div.toggleChart')

@@ -1642,7 +1642,6 @@ namespace Hercules.ED.GraphicEngine.Models
             List<DataGraphicUser> listaGraficas = new List<DataGraphicUser>();
 
             // Filtro de página.
-            List<string> filtros = new List<string>();
             SparqlObject resultadoQuery = null;
             StringBuilder select = new StringBuilder(), where = new StringBuilder();
 
@@ -1680,6 +1679,51 @@ namespace Hercules.ED.GraphicEngine.Models
             }
 
             return listaGraficas;
+        }
+        public static List<DataPageUser> GetPagesUser(string pUserId)
+        {
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            // Lista de datos de las páginas.
+            List<DataPageUser> listaPaginas = new List<DataPageUser>();
+
+            // Filtro de página.
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            select = new StringBuilder();
+            where = new StringBuilder();
+
+            // TODO consulta no está hecha
+            select.Append(mPrefijos);
+            select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
+            where.Append("WHERE { ");
+            where.Append($@"<{idRecurso}> roh:metricPage ?datosPagina. ");
+            where.Append("?datosPagina roh:metricGraphic ?datosGraficas. ");
+            where.Append("?datosGraficas roh:title ?titulo. ");
+            where.Append("?datosGraficas roh:order ?orden. ");
+            where.Append("?datosGraficas roh:pageId ?idPagina. ");
+            where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
+            where.Append("?datosGraficas roh:filters ?filtro. ");
+            where.Append("?datosGraficas roh:width ?anchura. ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    DataPageUser data = new DataPageUser();
+                    data.titulo = fila["titulo"].value;
+                    data.orden = Int32.Parse(fila["orden"].value);
+                    data.idRecurso = idRecurso;
+                    listaPaginas.Add(data);
+                }
+            }
+
+            return listaPaginas;
         }
 
         /// <summary>
