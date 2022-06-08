@@ -358,6 +358,11 @@ var metricas = {
                                         <span class="material-icons">insert_drive_file</span>
                                     </a>
                                 </div>
+                                <div class="edit">
+                                    <a href="javascript: void(0);" style="height:24px" >
+                                        <span class="material-icons">assessment</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>                      
                         ${graficasGrupo}
@@ -1173,6 +1178,28 @@ var metricas = {
                 url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
                 url += "&pLang=" + lang;
                 document.location.href = url;
+            });
+        $('div.edit')
+            .unbind()
+            .click(function (e) {
+                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+
+                var parent = $('#modal-ampliar-mapa').find('.graph-container');
+                var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
+                var ctx;
+                
+                parent.css("height", "calc(100vh-100px)"); 
+                
+                $('#modal-ampliar-mapa').css('display', 'block');
+                $('#modal-ampliar-mapa').css('pointer-events', 'none');
+
+                $('.modal-backdrop').addClass('show');
+                $('.modal-backdrop').css('pointer-events', 'auto');
+                
+                $('#modal-ampliar-mapa').addClass('show');
+                //titulo del pop-up
+                $('#modal-ampliar-mapa').find('p.modal-title').text("Editar gráfica");
+
             });
         //boton para cambiar entre graficas (en desuso)
         /*

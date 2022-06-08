@@ -98,6 +98,12 @@ namespace EditorCV.Models
             return tabResponse;
         }
 
+        /// <summary>
+        /// Devuelvo un TabSection de la seccion de datos personales
+        /// </summary>
+        /// <param name="section"></param>
+        /// <param name="preimport"></param>
+        /// <returns></returns>
         private API.Response.TabSection GetPersonalDataSection(ItemEdit section, Preimport preimport)
         {
             string lang = "es";
@@ -123,7 +129,9 @@ namespace EditorCV.Models
                             {
                                 TabSectionItemProperty tsip = new TabSectionItemProperty();
                                 tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(prop.property));
-                                tsip.values = prop.title.Select(x => x.Value).ToList();
+                                tsip.values = preimport.secciones.Where(x=>x.id.Equals("000.000.000.000"))
+                                    .SelectMany(x=>x.subsecciones.SelectMany(x=>x.propiedades.Where(x=>x.prop.Equals(prop.property)).ToList()))
+                                    .SelectMany(x=>x.values).ToList();
 
                                 tabSectionItem.properties.Add(tsip);
                             }
@@ -386,8 +394,13 @@ namespace EditorCV.Models
             return sectionItem;
         }
 
-        //inout http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode
-        //output http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/categoryNode
+        /// <summary>
+        /// Concatena mediante "@@@" las cadenas que forman parte de <paramref name="pPropImport"/> tras separar por "|"
+        /// y elegir la primerda de separar posteriormente por "@@@".
+        /// "Ejemplo1@@@Ejemplo2|Ejemplo3" -> "Ejemplo1@@@Ejemplo3"
+        /// </summary>
+        /// <param name="pPropImport"></param>
+        /// <returns></returns>
         private string GetPropCompleteImport(string pPropImport)
         {
             if (string.IsNullOrEmpty(pPropImport))
@@ -397,6 +410,11 @@ namespace EditorCV.Models
             return string.Join("@@@", pPropImport.Split("|").Select(x => x.Split("@@@").FirstOrDefault()));
         }
 
+        /// <summary>
+        /// Elimina de la cadena "http://vivoweb.org/ontology/core#relatedBy@@@"
+        /// </summary>
+        /// <param name="pPropCompelte"></param>
+        /// <returns></returns>
         private string GetPropCompleteWithoutRelatedBy(string pPropCompelte)
         {
             return pPropCompelte.Replace("http://vivoweb.org/ontology/core#relatedBy@@@", "");

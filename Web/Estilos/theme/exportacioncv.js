@@ -249,8 +249,6 @@ function printCientificProduction(id, data){
 										<div class="wrap">
 											<div class="middle-wrap">
 												<div class="title-wrap">
-												</div>
-												<div class="title-wrap">
 													<h2 class="resource-title">${data.title}</h2>
 												</div>
 												<div class="content-wrap">
@@ -325,8 +323,6 @@ function printFreeText(id, data){
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
-										<div class="title-wrap">
-										</div>
 										<div class="title-wrap">
 											<h2 class="resource-title">
 												<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
@@ -444,8 +440,6 @@ edicionCV.printPersonalData=function(id, data) {
 													</div>
 													<div class="wrap">
 														<div class="middle-wrap">
-															<div class="title-wrap">
-															</div>
 															<div class="title-wrap">
 																<h2 class="resource-title">${nombre}</h2>
 																${this.printHtmlListItemEditable(data)}	
@@ -575,8 +569,6 @@ edicionCV.printHtmlListItem= function(id, data) {
 							<div class="wrap">
 								<div class="middle-wrap">
 									${this.printHtmlListItemOrders(data)}
-									<div class="title-wrap">
-									</div>
 									<div class="title-wrap">
 										<h2 class="resource-title">${data.title}</h2>
 										${this.printHtmlListItemEditable(data)}	
