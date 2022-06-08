@@ -8,8 +8,7 @@ var importarCVN = {
 		this.config(),
 		this.idUsuario = $('#inpt_usuarioID').val();
 
-        return;
-        
+        return;        
     },
 	config: function (){
 		var that=this;
@@ -33,13 +32,13 @@ var importarCVN = {
     cargarCV: function() {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
-		
+		MostrarUpdateProgress(0);
 		var that=this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
 		formData.append('File', $('#file_cvn')[0].files[0]);
 				 
-		$.ajax({			
+		$.ajax({
 			url: urlImportacionCV + '/PreimportarCV',
 			type: 'POST',
 			data: formData,	
@@ -48,7 +47,6 @@ var importarCVN = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function ( data ) {
-				//recorrer items y por cada uno			
 				for(var i=0;i<7;i++){
 					var id = 'x' + RandomGuid();
 					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
@@ -71,25 +69,21 @@ var importarCVN = {
 										</div>`
 					if(i==0){
 						$('.contenido-cv').append( $(contenedorTab));
-						var html = edicionCV.printPersonalData(id, data[i]);					
+						var html = edicionCV.printPersonalData(id, data[i]);
 						$('div[id="' + id + '"] .col-12.col-contenido').append(html);
 						$('#'+id+' input[type="checkbox"]').prop('checked',true);
 					}else if(i == 6){
 						$('.contenido-cv').append( $(contenedorTab));		
 						var html = printFreeText(id, data[i]);
-						$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
+						$('div[id="' + id + '"] .col-12.col-contenido').append(html);
 					}else{
-						$('.contenido-cv').append( $(contenedorTab));		
+						$('.contenido-cv').append( $(contenedorTab));
 						edicionCV.printTab(id, data[i]);
-					}				
-				}			
-				
+					}
+				}
 				OcultarUpdateProgress();
-				
-				
 			}
-		});	
-        
+		});
     }
 };
 
@@ -340,8 +334,6 @@ edicionCV.printPersonalData=function(id, data) {
 															<div class="middle-wrap">
 																<div class="title-wrap">
 																	<h2 class="resource-title">${nombre}</h2>
-																	${this.printHtmlListItemEditable(data)}	
-																	${this.printHtmlListItemIdiomas(data)}
 																</div>
 																<div class="content-wrap">
 																	<div class="description-wrap">
@@ -472,7 +464,7 @@ edicionCV.printHtmlListItem= function(id, data) {
 									${this.printHtmlListItemOrders(data)}
 									<div class="title-wrap">
 										<h2 class="resource-title">${data.title}</h2>
-										${this.printHtmlListItemEditable(data)}	
+										${this.printHtmlListItemEditable(data)}
 										${this.printHtmlListItemIdiomas(data)}
 										<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>
@@ -487,5 +479,3 @@ edicionCV.printHtmlListItem= function(id, data) {
 	}
 	return htmlListItem;
 };
-
-
