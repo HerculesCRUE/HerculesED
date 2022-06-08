@@ -32,7 +32,7 @@ var importarCVN = {
     cargarCV: function() {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
-		MostrarUpdateProgress(0);
+		MostrarUpdateProgress();
 		var that=this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
@@ -48,6 +48,7 @@ var importarCVN = {
             contentType: false,
 			success: function ( data ) {
 				for(var i=0;i<7;i++){
+					MostrarUpdateProgress(0);
 					var id = 'x' + RandomGuid();
 					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
 											<div class="panel">
@@ -66,7 +67,7 @@ var importarCVN = {
 													</div>
 												</div>
 											</div>
-										</div>`
+										</div>`;
 					if(i==0){
 						$('.contenido-cv').append( $(contenedorTab));
 						var html = edicionCV.printPersonalData(id, data[i]);
@@ -80,15 +81,27 @@ var importarCVN = {
 						$('.contenido-cv').append( $(contenedorTab));
 						edicionCV.printTab(id, data[i]);
 					}
-				}
+				};
 				OcultarUpdateProgress();
+				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
+				checkAllCVWrapper();				
 			}
 		});
+		
+		return;
     }
 };
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
+		if(!$(this)[0].checked)
+		{
+			$(this).closest('.custom-control').find('.custom-control-label').text('Seleccionar todos');
+		}
+		else
+		{
+			$(this).closest('.custom-control').find('.custom-control-label').text('Deseleccionar todos');
+		}
 		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
 	
@@ -136,16 +149,20 @@ function printCientificProduction(id, data){
 									<div class="resource-list-wrap">
 										<article class="resource success" >
 											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].properties[0].values[0]}"  value="${data.items[seccion].properties[0].values[0]}">
-												<label class="custom-control-label" for="check_resource_${data.items[seccion].properties[0].values[0]}"></label>
+												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${data.items[seccion].properties[0].values[0]}">
+												<label class="custom-control-label" for="check_resource_${id2}"></label>
 											</div>
 											<div class="wrap">
 												<div class="middle-wrap">
 													<div class="title-wrap">
-														<h2 class="resource-title">${data.items[seccion].title}</h2>
+														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>
+														<span class="material-icons arrow">keyboard_arrow_down</span>
 													</div>
 													<div class="content-wrap">
 														<div class="description-wrap">
+															<div class="group">
+																<p>${data.items[seccion].title}</p>
+															</div>
 														</div>
 													</div>
 												</div>
@@ -203,26 +220,35 @@ function printFreeText(id, data){
 											</div>
 										</div>
 										<div class="resource-list listView">
-											<div class="resource-list-wrap">`
+											<div class="resource-list-wrap">`;
+
 		var secciones = data.sections[0].items;
 		for (const seccion in secciones){
 			//Si no hay datos no pinto esa sección
 			if(secciones[seccion].properties[0].values.length>0 && secciones[seccion].properties[0].values[0].length>0){
 				var id = 'x' + RandomGuid();
-				var html2 = `<article class="resource success" >
+				var valorSeccion = '';
+				if(secciones[seccion].properties[0].values[0]!= null ){
+					valorSeccion = secciones[seccion].properties[0].values[0];
+				}
+				var html2 = `<article class="resource success">
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${secciones[seccion].properties[0].property}"  value="${secciones[seccion].properties[0].property}">
-									<label class="custom-control-label" for="check_resource_${secciones[seccion].properties[0].property}"></label>
+									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${id}">
+									<label class="custom-control-label" for="check_resource_${id}"></label>
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
 										<div class="title-wrap">
 											<h2 class="resource-title">
-												<a href="#" data-id="${id}" internal-id="">${secciones[seccion].properties[0].values[0]}</a>
+												<a href="#" data-id="${id}" internal-id="">${secciones[seccion].title}</a>
 											</h2>
-										</div>
+											<!--span class="material-icons arrow">keyboard_arrow_down</span-->
+										</div>	
 										<div class="content-wrap">
 											<div class="description-wrap">
+												<div class="group">
+													<p>${valorSeccion}</p>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -333,10 +359,11 @@ edicionCV.printPersonalData=function(id, data) {
 														<div class="wrap">
 															<div class="middle-wrap">
 																<div class="title-wrap">
-																	<h2 class="resource-title">${nombre}</h2>
+																	<h2 class="resource-title">Datos de identificación</h2>
 																</div>
 																<div class="content-wrap">
 																	<div class="description-wrap">
+																		<p>${nombre}</p>
 																	</div>
 																</div>
 															</div>
@@ -454,28 +481,26 @@ edicionCV.printHtmlListItem= function(id, data) {
 	}
 	var htmlListItem = ``;
 	if(data.title!= null){
-	htmlListItem = `<article class="resource success ${openAccess}" >
-							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}">
-								<label class="custom-control-label" for="check_resource_${id}"></label>
-							</div>
-							<div class="wrap">
-								<div class="middle-wrap">
-									${this.printHtmlListItemOrders(data)}
-									<div class="title-wrap">
-										<h2 class="resource-title">${data.title}</h2>
-										${this.printHtmlListItemEditable(data)}
-										${this.printHtmlListItemIdiomas(data)}
-										<span class="material-icons arrow">keyboard_arrow_down</span>
-									</div>
-									<div class="content-wrap">
-										<div class="description-wrap">
-											${this.printHtmlListItemPropiedades(data)}
+		htmlListItem = `<article class="resource success ${openAccess}" >
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}">
+									<label class="custom-control-label" for="check_resource_${id}"></label>
+								</div>
+								<div class="wrap">
+									<div class="middle-wrap">
+										${this.printHtmlListItemOrders(data)}
+										<div class="title-wrap">
+											<h2 class="resource-title">${data.title}</h2>
+											<span class="material-icons arrow">keyboard_arrow_down</span>
+										</div>
+										<div class="content-wrap">
+											<div class="description-wrap">
+												${this.printHtmlListItemPropiedades(data)}
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</article>`;
+							</article>`;
 	}
 	return htmlListItem;
 };
