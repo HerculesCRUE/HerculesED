@@ -325,27 +325,24 @@ var metricas = {
             }
             gruposDeIDs.push(tmp);
         }
-        console.log(gruposDeIDs);
+
 
         gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
             item.forEach(function (grafica, index, array) {
-                console.log(index);
-                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;justify-content:center;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
+
+                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
 
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item[0].anchura}"> 
-                    <div class="wrap">
-                        <div class="title-wrap">
-                            <h2></h2>
-                        </div>
+                    <div class="wrap" >
                         <div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px` : ""}">
                             ${item.length != 1 ? `
                             <select class="chartMenu js-select2" href="javascript: void(0);" style="height:24px"></select>`: ""}
-                            <div class="wrap">
+                            <div class="wrap" style="z-index:1">
                                 <div class="zoom">
                                     <a href="javascript: void(0);" style="height:24px"  data-toggle="modal">
                                         <span class="material-icons">zoom_in</span>
@@ -584,6 +581,7 @@ var metricas = {
                 scrollContainer.style.height = "auto";
                 scrollContainer.parentNode.style.height = "auto";
                 scrollContainer.style.overflowY = 'hidden';
+                scrollContainer.parentNode.parentNode.style.justifyContent = 'center';
             } else {
                 // De lo contrario se prepara todo para el scroll.
                 // Importante que no mantega el ratio para poder reescalarlo.
@@ -648,9 +646,10 @@ var metricas = {
 
             }
         } else {
-            var hasRightAxis = false;
-            var hasLeftAxis = false;
 
+
+            data.options.maintainAspectRatio = false;
+            data.options.responsive = true;
             /*if (pIdGrafica != null && pIdGrafica.includes("abr")) {
                 // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
                 data.options.scales.y.ticks.callback = function (value) {
@@ -665,21 +664,32 @@ var metricas = {
                 }
             }*/
 
-
-
-
+            if (pIdGrafica != null && pIdGrafica.includes("abr")) {
+                // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
+                data.options.scales.x.ticks.callback = function (value) {
+                    const labels = data.data.labels; // Obtención de los labels.
+                    if (value >= 0 && value < labels.length) {
+                        if (labels[value].length >= 7) {
+                            return labels[value].substring(0, 7) + "..."; // Se muestran solo los 7 primeros caractéres.
+                        }
+                        return labels[value];
+                    }
+                    return value;
+                }
+            }
+    
             // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
-
-            var article = $(scrollContainer).width();
-            console.log(article);
-
-            if (canvasSize < article) { //TODO cambiar 550 por el tamaño del contenedor.
+            if (canvasSize < $(scrollContainer).width()) { //TODO cambiar 550 por el tamaño del contenedor.
                 //chartAreaWrapper.style.width = myChart.width-10 + "px";
                 scrollContainer.style.overflowX = 'hidden';
+                chartAreaWrapper.style.height = "546px";
+
             }
             else {
-                data.options.maintainAspectRatio = false;
-                data.options.responsive = true;
+
+                var hasRightAxis = false;
+                var hasLeftAxis = false;
+
                 // De lo contrario se prepara todo para el scroll.
                 // Importante que no mantega el ratio para poder reescalarlo.
 
@@ -781,7 +791,19 @@ var metricas = {
 
         // Preparamos el eje superior.
         $(legend).css("width", vertical ? "100%" : copyWidth + "px");
-        $(legend).css("height", myChart.chartArea.top + "px");
+        $(legend).css("height", vertical ? "auto" : myChart.chartArea.top + "px");
+
+        if ($(legend).height() > myChart.chartArea.top) {
+            myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
+            myChart.canvas.parentNode.parentNode.style.height = "auto";
+            if (mainAxis) {
+                mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
+            }
+            if (secondaryAxis) {
+                secondaryAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
+            }
+
+        }
         var targetX = 0;
         var targetY = 0;
         var targetWidth = copyWidth * scale;
@@ -1151,32 +1173,32 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
-                url+="?pIdPagina="+$(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                url+="&pIdGrafica="+$(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                url+="&pFiltroFacetas="+decodeURIComponent(ObtenerHash2());
-                url+="&pLang="+lang;
-                document.location.href=url;
+                url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                url += "&pLang=" + lang;
+                document.location.href = url;
             });
         $('div.edit')
             .unbind()
             .click(function (e) {
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
 
-                var parent = $('#modal-ampliar-mapa').find('.graph-container');
+                var parent = $('#modal-agregar-datos').find('.graph-container');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 
                 parent.css("height", "calc(100vh-100px)"); 
                 
-                $('#modal-ampliar-mapa').css('display', 'block');
-                $('#modal-ampliar-mapa').css('pointer-events', 'none');
+                $('#modal-agregar-datos').css('display', 'block');
+                $('#modal-agregar-datos').css('pointer-events', 'none');
 
                 $('.modal-backdrop').addClass('show');
                 $('.modal-backdrop').css('pointer-events', 'auto');
                 
-                $('#modal-ampliar-mapa').addClass('show');
+                $('#modal-agregar-datos').addClass('show');
                 //titulo del pop-up
-                $('#modal-ampliar-mapa').find('p.modal-title').text("Editar gráfica");
+                $('#modal-agregar-datos').find('p.modal-title').text("Editar gráfica");
 
             });
         //boton para cambiar entre graficas (en desuso)
@@ -1206,7 +1228,7 @@ var metricas = {
                 shown.addClass('hide');
                 var selected = parent.find('canvas#' + $(this).val()).parents('div.hide');
                 if (selected.length) {
-                    selected.css('display', 'block');
+                    selected.css('display', 'flex');
                     selected.css('width', '100%');
                     selected.removeClass('hide');
                     selected.addClass('show');
@@ -1226,9 +1248,9 @@ var metricas = {
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
 
-                modalContent.css({height : 'calc(100vh - 100px)'});
-                modalContent.parent().css({maxWidth : '1310px'});
-                console.log(modalContent);
+                modalContent.css({ height: 'calc(100vh - 100px)' });
+                modalContent.parent().css({ maxWidth: '1310px' });
+
 
                 $('#modal-ampliar-mapa').css('display', 'block');
                 $('#modal-ampliar-mapa').css('pointer-events', 'none');
@@ -1264,7 +1286,7 @@ var metricas = {
                     if (!(canvas.parents('div.grafica').attr("idgrafica").includes("circular"))) {
                         parent.append(`
                             <div class="chartWrapper" style="position:relative; margin-top:15px">
-                                <div class="chartScroll" style="overflow-${($(canvas).parents('div.grafica').attr("idgrafica").includes("isHorizontal")) ? "y" : "x"}: scroll;height:${$(modalContent).height()-130}px;">
+                                <div class="chartScroll" style="overflow-${($(canvas).parents('div.grafica').attr("idgrafica").includes("isHorizontal")) ? "y" : "x"}: scroll;height:${$(modalContent).height() - 130}px;">
                                     <div style="height: 00px;" class="chartAreaWrapper">
                                     </div>
                                 </div>
@@ -1292,6 +1314,11 @@ var metricas = {
             $('.modal-backdrop').removeClass('show');
             $('.modal-backdrop').css('pointer-events', 'none');
             $('#modal-ampliar-mapa').css('display', 'none');
+
+            $('#modal-agregar-datos').removeClass('show');
+            $('.modal-backdrop').removeClass('show');
+            $('.modal-backdrop').css('pointer-events', 'none');
+            $('#modal-agregar-datos').css('display', 'none');
 
             //Hay que repintar las graficas de nodos para que se enganche correctamente el zoom
 
