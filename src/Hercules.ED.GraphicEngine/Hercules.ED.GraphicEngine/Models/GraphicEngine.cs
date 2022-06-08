@@ -170,7 +170,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Obtiene los filtros relacionados con las fechas.
             List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
-                       
+
             if (configModel != null)
             {
                 Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
@@ -1116,7 +1116,7 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.userZoomingEnabled = false;
             grafica.zoomingEnabled = true;
             grafica.minZoom = 0.5f;
-            grafica.maxZoom = 2.0f;
+            grafica.maxZoom = 4.0f;
 
             // Layout Base
             grafica.layout = new Layout();
@@ -1661,7 +1661,7 @@ namespace Hercules.ED.GraphicEngine.Models
             where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
             where.Append("?datosGraficas roh:filters ?filtro. ");
             where.Append("?datosGraficas roh:width ?anchura. ");
-            where.Append("} ");           
+            where.Append("} ");
 
             resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -1689,7 +1689,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pIdPagina">ID de la página de la gráfica.</param>
         /// <param name="pIdGrafica">ID de la gráfica.</param>
         /// <param name="pFiltro">Filtro de la gráfica.</param>
-        public static void GuardarGrafica(string pUserId, string pIdPagina, string pIdGrafica, string pFiltro)
+        public static void CrearPaginaUsuario(string pUserId, string pTitulo)
         {
             mResourceApi.ChangeOntoly("person");
 
@@ -1699,35 +1699,29 @@ namespace Hercules.ED.GraphicEngine.Models
             Guid shortId = mResourceApi.GetShortGuid(idRecurso);
             Guid entidadGuid = Guid.NewGuid();
             List<TriplesToInclude> triplesInclude = new List<TriplesToInclude>();
-            string predicadoBase = "http://w3id.org/roh/TODO:PredicadoAuxiliar|";
-            string valorEntidadAuxiliar = $@"{mResourceApi.GraphsUrl}items/TODO:NombreAuxiliar_{shortId}_{entidadGuid}";
+            string predicadoBase = "http://w3id.org/roh/MetricPage|";
+            string valorEntidadAuxiliar = $@"{mResourceApi.GraphsUrl}items/MetricPage_{shortId}_{entidadGuid}";
             string valorBase = $@"{valorEntidadAuxiliar}|";
 
-            // ID Página
+            // Título de la página
             triplesInclude.Add(new TriplesToInclude
             {
                 Description = false,
                 Title = false,
-                Predicate = predicadoBase + "http://w3id.org/roh/TODO:PredicadoIdPagina",
-                NewValue = valorBase + pIdPagina
+                Predicate = predicadoBase + "http://w3id.org/roh/title",
+                NewValue = valorBase + pTitulo
             });
 
-            // ID Gráfica
-            triplesInclude.Add(new TriplesToInclude
-            {
-                Description = false,
-                Title = false,
-                Predicate = predicadoBase + "http://w3id.org/roh/TODO:PredicadoIdGrafica",
-                NewValue = valorBase + pIdGrafica
-            });
+            // Orden de la página
+            // TODO: Llamar al método que devuelve las páginas del usuario.
+            int orden = 0;
 
-            // Filtro
             triplesInclude.Add(new TriplesToInclude
             {
                 Description = false,
                 Title = false,
-                Predicate = predicadoBase + "http://w3id.org/roh/TODO:PredicadoFiltro",
-                NewValue = valorBase + pFiltro
+                Predicate = predicadoBase + "http://w3id.org/roh/order",
+                NewValue = valorBase + orden
             });
 
             bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);
@@ -1752,8 +1746,8 @@ namespace Hercules.ED.GraphicEngine.Models
             RemoveTriples triple = new RemoveTriples();
             triple.Title = false;
             triple.Description = false;
-            triple.Predicate = $@"http://w3id.org/roh/TODO:propiedad";
-            triple.Value = pRecursoId;            
+            triple.Predicate = $@"http://w3id.org/roh/metricGraphic";
+            triple.Value = pRecursoId;
             listaTriplesBorrado.Add(triple);
 
             dicBorrado.Add(guid, listaTriplesBorrado);
