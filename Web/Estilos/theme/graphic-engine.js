@@ -344,6 +344,11 @@ var metricas = {
                                         <span class="material-icons">download</span>
                                     </a>
                                 </div>
+                                <div class="csv">
+                                    <a href="javascript: void(0);" style="height:24px" >
+                                        <span class="material-icons">insert_drive_file</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>                      
                         ${graficasGrupo}
@@ -1131,6 +1136,16 @@ var metricas = {
                 a.href = image;
                 a.download = Date.now() + '.jpg';
                 a.click();
+            });
+        $('div.csv')
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "GetCSVGrafica";
+                url+="?pIdPagina="+$(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                url+="&pIdGrafica="+$(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                url+="&pFiltroFacetas="+decodeURIComponent(ObtenerHash2());
+                url+="&pLang="+lang;
+                document.location.href=url;
             });
         //boton para cambiar entre graficas (en desuso)
         /*
