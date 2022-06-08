@@ -348,20 +348,33 @@ var metricas = {
                                         <span class="material-icons">zoom_in</span>
                                     </a>
                                 </div>
-                                <div class="descargar">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">download</span>
+                                <div class="dropdown show">
+                                    <a href="javascript: void(0);" style="height:24px" id="dropdownMasOpciones" data-toggle="dropdown">
+                                        <span class="material-icons">more_vert</span>
                                     </a>
-                                </div>
-                                <div class="csv">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">insert_drive_file</span>
-                                    </a>
-                                </div>
-                                <div class="edit">
-                                    <a href="javascript: void(0);" style="height:24px" >
-                                        <span class="material-icons">assessment</span>
-                                    </a>
+                                    <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                            <p class="dropdown-title">Acciones</p>
+                                            <ul class="no-list-style">
+                                                <li>
+                                                    <a class="item-dropdown guardar">
+                                                        <span class="material-icons">assessment</span>
+                                                        <span class="texto">Guardar en espacio personal</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="item-dropdown csv">
+                                                        <span class="material-icons">insert_drive_file</span>
+                                                        <span class="texto">Descargar como .csv</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="item-dropdown descargar">
+                                                        <span class="material-icons">download</span>
+                                                        <span class="texto">Descargar como imagen .jpg</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>                      
@@ -391,6 +404,14 @@ var metricas = {
         // TODO: Mirar porque no lo hace automáticamente.
         $("body").removeClass("modal-open");
 
+        if ($('#selectorPage').children().length == 0) {
+            $("#createPageRadio").prop("checked", true);
+            $("#selectPageRadio").parent().hide();
+            $('#selectPage').hide();
+        } else {
+            $("#selectPageRadio").prop("checked", true);
+            $('#createPage').hide();
+        }
         // Vacias contenedores.
         $('#page_' + pIdPagina + ' .grafica').empty();
         $('#page_' + pIdPagina + ' .box').empty();
@@ -1134,7 +1155,7 @@ var metricas = {
             });
 
         // Botón de descarga.
-        $('div.descargar')
+        $('a.descargar')
             .unbind()
             .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
@@ -1169,7 +1190,7 @@ var metricas = {
                 a.download = Date.now() + '.jpg';
                 a.click();
             });
-        $('div.csv')
+        $('a.csv')
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
@@ -1179,7 +1200,7 @@ var metricas = {
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
-        $('div.edit')
+        $('a.guardar')
             .unbind()
             .click(function (e) {
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
@@ -1198,9 +1219,28 @@ var metricas = {
                 
                 $('#modal-agregar-datos').addClass('show');
                 //titulo del pop-up
-                $('#modal-agregar-datos').find('p.modal-title').text("Editar gráfica");
+                $('#modal-agregar-datos').find('p.modal-title').text("Guardar gráfica en espacio personal");
 
             });
+        
+        $('#createPageRadio')
+            .unbind()
+            .change(function () {
+                if (this.checked) {
+                    $('#selectPage').hide();
+                    $('#createPage').show();
+                }
+            });
+
+        $('#selectPageRadio')
+            .unbind()
+            .change(function () {
+                if (this.checked) {
+                    $('#selectPage').show();
+                    $('#createPage').hide();
+                }
+            });
+            
         //boton para cambiar entre graficas (en desuso)
         /*
         $('div.toggleChart')
@@ -1235,8 +1275,6 @@ var metricas = {
 
                 }
             });
-
-
 
         $("div.zoom")
             .unbind()
@@ -1300,7 +1338,9 @@ var metricas = {
                 that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx);
 
             });
-        $('.modal-backdrop').unbind()
+
+        $('.modal-backdrop')
+            .unbind()
             .click(cerrarModal);
         $('span.cerrar')
             .unbind()
