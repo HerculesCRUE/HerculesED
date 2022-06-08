@@ -1831,7 +1831,7 @@ namespace Hercules.ED.GraphicEngine.Models
             Guid shortId = mResourceApi.GetShortGuid(idRecurso);
             Guid entidadGuid = Guid.NewGuid();
             List<TriplesToInclude> triplesInclude = new List<TriplesToInclude>();
-            string predicadoBase = "http://w3id.org/roh/MetricPage|";
+            string predicadoBase = "http://w3id.org/roh/metricPage|";
             string valorEntidadAuxiliar = $@"{mResourceApi.GraphsUrl}items/MetricPage_{shortId}_{entidadGuid}";
             string valorBase = $@"{valorEntidadAuxiliar}|";
 
