@@ -1683,6 +1683,94 @@ namespace Hercules.ED.GraphicEngine.Models
         }
 
         /// <summary>
+        /// Guarda a la persona la gráfica que quiere quedarse en su administración.
+        /// </summary>
+        /// <param name="pTitulo">Título de la gráfica a guardar.</param>
+        /// <param name="pAnchura">Anchura de la gráfica a guardar.</param>
+        /// <param name="pIdRecursoPagina">ID del recurso de la página.</param>
+        /// <param name="pIdPaginaGrafica">ID de la página de la gráfica.<</param>
+        /// <param name="pIdGrafica">ID de la gráfica.</param>
+        /// <param name="pFiltros">Filtros a aplicar en la gráfica.</param>
+        /// <param name="pUserId">ID del usuario conectado.</param>
+        public static void GuardarGrafica(string pTitulo, string pAnchura, string pIdRecursoPagina, string pIdPaginaGrafica, string pIdGrafica, string pFiltros, string pUserId)
+        {     
+            mResourceApi.ChangeOntoly("person");
+
+            Guid shortId = mResourceApi.GetShortGuid(pIdRecursoPagina);
+            Guid entidadGuid = Guid.NewGuid();
+            List<TriplesToInclude> triplesInclude = new List<TriplesToInclude>();
+            string predicadoBase = "http://w3id.org/roh/MetricGraphic|";
+            string valorEntidadAuxiliar = $@"{mResourceApi.GraphsUrl}items/MetricGraphic_{shortId}_{entidadGuid}";
+            string valorBase = $@"{valorEntidadAuxiliar}|";
+
+            // Título de la página
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/title",
+                NewValue = valorBase + pTitulo
+            });
+
+            // Orden de la página
+            int orden = 0;
+            List<DataGraphicUser> listaGraficas = GetGraficasUser(pUserId);
+            foreach (DataGraphicUser item in listaGraficas)
+            {
+                if (item.orden > orden)
+                {
+                    orden = item.orden;
+                }
+            }
+
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/order",
+                NewValue = valorBase + orden
+            });
+
+            // ID de la página de la gráfica
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/pageId",
+                NewValue = valorBase + pIdPaginaGrafica
+            });
+
+            // ID de la gráfica
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/graphicId",
+                NewValue = valorBase + pIdGrafica
+            });
+
+            // Filtros
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/filters",
+                NewValue = valorBase + pFiltros
+            });
+
+            // Anchura
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/width",
+                NewValue = valorBase + pAnchura
+            });
+
+            bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);
+        }
+
+        /// <summary>
         /// Permite guardar los datos de una gráfica asignados a un usuario.
         /// </summary>
         /// <param name="pUserId">ID del usuario.</param>
