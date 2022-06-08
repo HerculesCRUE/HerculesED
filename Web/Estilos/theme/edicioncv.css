@@ -257,3 +257,7 @@ input.form-group-date {
 .exportar-cv .page-section a {
     display: inline-flex;
 }
+
+.exportar-cv div.contenido-cv>.panel-group>.panel>.panel-heading>p.panel-title .pmd-accordion-arrow {
+    right: 16px;
+}
