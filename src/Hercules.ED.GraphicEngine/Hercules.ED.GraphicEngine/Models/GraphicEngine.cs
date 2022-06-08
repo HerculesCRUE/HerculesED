@@ -1600,7 +1600,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static string GetIdPersonByGnossUser(string pUserId)
         {
             // ID de la persona.
-            string idRecurso = string.Empty;
+            string idRecurso = string.Empty;            
 
             // Filtro de página.
             SparqlObject resultadoQuery = null;
@@ -1613,7 +1613,7 @@ namespace Hercules.ED.GraphicEngine.Models
             select.Append(mPrefijos);
             select.Append($@"SELECT ?s ");
             where.Append("WHERE { ");
-            where.Append($@"?s roh:gnossUser '{pUserId}'. ");
+            where.Append($@"?s roh:gnossUser <http://gnoss/{pUserId.ToUpper()}>. ");
             where.Append("} ");
 
             resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
