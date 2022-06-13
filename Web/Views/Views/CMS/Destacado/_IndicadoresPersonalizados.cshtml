@@ -1,0 +1,50 @@
+@using Es.Riam.Gnoss.Web.MVC.Models;
+@model CMSComponentHot
+@if(Model != null)
+{
+    <div class="destacado horizontal">
+	    <div class="box content">
+            @if (!string.IsNullOrEmpty(Model.Title))
+            {
+                <div class="group title">
+                    <h3>
+                        @if (!string.IsNullOrEmpty(Model.Link))
+                        {
+                            <a href="@Model.Link">@Model.Title</a>
+                        }
+                        else
+                        {
+                            @Model.Title
+                        }
+                    </h3>  
+                    @if (!string.IsNullOrEmpty(Model.Subtitle))
+                    {
+                        <div class="resumen">
+                            @Html.Raw(Model.Subtitle)
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <div class="group image">                
+                    @if (!string.IsNullOrEmpty(Model.Link))
+                    {
+                        <a href="@Model.Link"><img alt="@Model.Title" title="@Model.Title" src="@Model.Image" /></a>
+                    }
+                    else
+                    {
+                        <img alt="@Model.Title" title="@Model.Title" src="@Model.Image" />
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.HTML))
+            {                
+                <div class="group contenido">@Html.Raw(Model.HTML)</div>
+            }
+	    </div>	
+    </div>       
+}
+      

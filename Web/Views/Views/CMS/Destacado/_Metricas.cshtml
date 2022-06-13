@@ -73,3 +73,67 @@
         </div>
     </div>
 </div>
+
+<div id="modal-agregar-datos" class="modal modal-top fade modal-agregar-datos" style="pointer-events:none" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title">@Html.Translate("GUARDAR_GRAFICA_ESPACIO_PERSONAL")</p>
+                <span class="material-icons cerrar" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="custom-form-row">
+                    <div class="form-group full-group disabled ">
+					    <label class="control-label d-block">@Html.Translate("TITULO_GRAFICA")</label>
+                        <input id="labelTituloGrafica" placeholder="@Html.Translate("INTRODUCE_TITULO_GRAFICA")" onfocus="" type="text" class="form-control not-outline">
+			        </div>
+                </div>
+                <div class="custom-form-row">
+                    <div class="form-group ">
+				        <label class="control-label d-block">@Html.Translate("ANCHURA")</label>
+				        <select id="idSelectorTamanyo" class="js-select2 select2-hidden-accessible" dependency="" data-select-search="true" tabindex="-1" aria-hidden="true">
+                            <option value="11">100%</option>
+                            <option value="34">75%</option>
+                            <option value="23">66%</option>
+                            <option value="12">50%</option>
+                            <option value="13">33%</option>
+                            <option value="14">25%</option>
+                        </select>
+			        </div>
+                </div>
+                <div class="custom-form-row">
+                    <div class="custom-control themed little custom-radio">
+						<input type="radio" id="selectPageRadio" name="createOrSelect" class="custom-control-input">
+						<label class="custom-control-label" for="selectPageRadio">
+                            <label class="control-label d-block" for="selectPageRadio">@Html.Translate("SELECCIONAR_PAGINA")</label>
+                        </label>
+			        </div>
+                </div>
+                <div class="custom-form-row">
+                    <div class="custom-control themed little custom-radio">
+						<input type="radio" id="createPageRadio" name="createOrSelect" class="custom-control-input">
+						<label class="custom-control-label" for="createPageRadio">
+                            <label class="control-label d-block" for="createPageRadio">@Html.Translate("CREAR_NUEVA_PAGINA")</label>
+                        </label>
+                    </div>
+                </div>
+                <div class="custom-form-row" id="selectPage">
+                    <div class="form-group full-group disabled">
+				        <label class="control-label d-block">@Html.Translate("SELECCIONAR_PAGINA")</label>
+					    <select id="idSelectorPagina" class="js-select2 select2-hidden-accessible" dependency="" data-select-search="true" tabindex="-1" aria-hidden="true">
+                        </select>
+                    </div>
+                </div>
+                <div class="custom-form-row" id="createPage">
+                    <div class="form-group full-group disabled">
+					    <label class="control-label d-block">@Html.Translate("TITULO_NUEVA_PAGINA")</label>
+                        <input id="labelTituloPagina" placeholder="@Html.Translate("INTRODUCE_EL_TITULO")" onfocus="" type="text" class="form-control not-outline">
+			        </div>
+                </div>
+                <div class="form-actions">
+                    <a class="btn btn-primary" id="btnGuardarGrafica">@Html.Translate("GUARDAR")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
