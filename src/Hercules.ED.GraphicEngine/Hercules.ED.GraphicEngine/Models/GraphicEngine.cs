@@ -1600,7 +1600,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static string GetIdPersonByGnossUser(string pUserId)
         {
             // ID de la persona.
-            string idRecurso = string.Empty;            
+            string idRecurso = string.Empty;
 
             // Filtro de página.
             SparqlObject resultadoQuery = null;
@@ -1680,6 +1680,12 @@ namespace Hercules.ED.GraphicEngine.Models
 
             return listaGraficas;
         }
+
+        /// <summary>
+        /// Obtiene el listado de páginas asociadas a un usuario.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <returns></returns>
         public static List<DataPageUser> GetPagesUser(string pUserId)
         {
             // ID del recurso del usuario.
@@ -1696,18 +1702,12 @@ namespace Hercules.ED.GraphicEngine.Models
             select = new StringBuilder();
             where = new StringBuilder();
 
-            // TODO consulta no está hecha
             select.Append(mPrefijos);
-            select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
+            select.Append($@"SELECT ?datosPagina ?titulo ?orden ");
             where.Append("WHERE { ");
             where.Append($@"<{idRecurso}> roh:metricPage ?datosPagina. ");
-            where.Append("?datosPagina roh:metricGraphic ?datosGraficas. ");
-            where.Append("?datosGraficas roh:title ?titulo. ");
-            where.Append("?datosGraficas roh:order ?orden. ");
-            where.Append("?datosGraficas roh:pageId ?idPagina. ");
-            where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
-            where.Append("?datosGraficas roh:filters ?filtro. ");
-            where.Append("?datosGraficas roh:width ?anchura. ");
+            where.Append("?datosPagina roh:title ?titulo. ");
+            where.Append("?datosPagina roh:order ?orden. ");
             where.Append("} ");
 
             resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
@@ -1716,9 +1716,9 @@ namespace Hercules.ED.GraphicEngine.Models
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
                     DataPageUser data = new DataPageUser();
+                    data.idRecurso = fila["datosPagina"].value;
                     data.titulo = fila["titulo"].value;
                     data.orden = Int32.Parse(fila["orden"].value);
-                    data.idRecurso = idRecurso;
                     listaPaginas.Add(data);
                 }
             }
@@ -1736,15 +1736,25 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pIdGrafica">ID de la gráfica.</param>
         /// <param name="pFiltros">Filtros a aplicar en la gráfica.</param>
         /// <param name="pUserId">ID del usuario conectado.</param>
-        public static void GuardarGrafica(string pTitulo, string pAnchura, string pIdRecursoPagina, string pIdPaginaGrafica, string pIdGrafica, string pFiltros, string pUserId)
-        {     
+        public static void GuardarGrafica(string pTitulo, string pAnchura, string pIdPaginaGrafica, string pIdGrafica, string pFiltros, string pUserId, string pIdRecursoPagina = null, string pTituloPagina = null)
+        {
+            string idRecursoPagina = pIdRecursoPagina;
+            if (string.IsNullOrEmpty(idRecursoPagina) && !string.IsNullOrEmpty(pTituloPagina))
+            {
+                idRecursoPagina = CrearPaginaUsuario(pUserId, pTituloPagina);
+            }
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
             mResourceApi.ChangeOntoly("person");
 
-            Guid shortId = mResourceApi.GetShortGuid(pIdRecursoPagina);
+            Guid shortId = mResourceApi.GetShortGuid(idRecurso);
             Guid entidadGuid = Guid.NewGuid();
             List<TriplesToInclude> triplesInclude = new List<TriplesToInclude>();
-            string predicadoBase = "http://w3id.org/roh/MetricGraphic|";
-            string valorEntidadAuxiliar = $@"{mResourceApi.GraphsUrl}items/MetricGraphic_{shortId}_{entidadGuid}";
+            string predicadoBase = "http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|";
+            string idRecursoGrafica = $@"{mResourceApi.GraphsUrl}items/MetricGraphic_{shortId}_{entidadGuid}";
+            string valorEntidadAuxiliar = $@"{idRecursoPagina}|{idRecursoGrafica}";
             string valorBase = $@"{valorEntidadAuxiliar}|";
 
             // Título de la página
@@ -1758,14 +1768,15 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Orden de la página
             int orden = 0;
-            List<DataGraphicUser> listaGraficas = GetGraficasUser(pUserId);
-            foreach (DataGraphicUser item in listaGraficas)
+            List<DataPageUser> listaGraficas = GetPagesUser(pUserId);
+            foreach (DataPageUser item in listaGraficas)
             {
                 if (item.orden > orden)
                 {
                     orden = item.orden;
                 }
             }
+            orden++;
 
             triplesInclude.Add(new TriplesToInclude
             {
@@ -1811,7 +1822,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 NewValue = valorBase + pAnchura
             });
 
-            bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);
+            bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);            
         }
 
         /// <summary>
@@ -1821,7 +1832,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pIdPagina">ID de la página de la gráfica.</param>
         /// <param name="pIdGrafica">ID de la gráfica.</param>
         /// <param name="pFiltro">Filtro de la gráfica.</param>
-        public static void CrearPaginaUsuario(string pUserId, string pTitulo)
+        public static string CrearPaginaUsuario(string pUserId, string pTitulo)
         {
             mResourceApi.ChangeOntoly("person");
 
@@ -1845,8 +1856,16 @@ namespace Hercules.ED.GraphicEngine.Models
             });
 
             // Orden de la página
-            // TODO: Llamar al método que devuelve las páginas del usuario.
             int orden = 0;
+            List<DataPageUser> listaPaginas = GetPagesUser(pUserId);
+            foreach (DataPageUser item in listaPaginas)
+            {
+                if (item.orden > orden)
+                {
+                    orden = item.orden;
+                }
+            }
+            orden++;
 
             triplesInclude.Add(new TriplesToInclude
             {
@@ -1857,6 +1876,14 @@ namespace Hercules.ED.GraphicEngine.Models
             });
 
             bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);
+            if (insertado)
+            {
+                return valorEntidadAuxiliar;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

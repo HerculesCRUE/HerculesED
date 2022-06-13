@@ -94,5 +94,14 @@ namespace Hercules.ED.GraphicEngine.Controllers
         {
             return Models.GraphicEngine.GetPagesUser(pUserId);
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void GuardarGrafica(string pTitulo, string pAnchura, string pIdPaginaGrafica, string pIdGrafica, string pFiltros, string pUserId, string pIdRecursoPagina = null, string pTituloPagina = null)
+        {
+            Models.GraphicEngine.GuardarGrafica(pTitulo, pAnchura, pIdPaginaGrafica, pIdGrafica, pFiltros, pUserId, pIdRecursoPagina, pTituloPagina);
+        }
     }
 }
