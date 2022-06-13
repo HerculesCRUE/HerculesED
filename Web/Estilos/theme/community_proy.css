@@ -253,10 +253,25 @@ a.faceta.applied{
     padding-left: 0;
 }
 
+.edicionoferta .user-miniatura .imagen-usuario-wrap .imagen .material-icons {
+    color: #000;
+    font-size: 45px;
+}
+
 .resource.seleccionado .user-miniatura .imagen-usuario-wrap span.material-icons {
     color: var(--c-primario);
 }
 
 body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navegacion-recurso-fixed {
     display: none;
+}
+
+.edicionoferta .user-miniatura .imagen-usuario-wrap .imagen.con-material-icons {
+    overflow: hidden;
+    height: 40px;
+    width: 45px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
