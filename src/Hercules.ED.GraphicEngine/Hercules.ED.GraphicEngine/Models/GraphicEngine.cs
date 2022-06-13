@@ -1631,13 +1631,10 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <summary>
         /// Obtiene los datos de las gráficas guardadas del usuario.
         /// </summary>
-        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pIdPage">ID de la página.</param>
         /// <returns>Lista de datos de las gráficas.</returns>
-        public static List<DataGraphicUser> GetGraficasUser(string pUserId)
+        public static List<DataGraphicUser> GetGraficasUserByPageId(string pIdPage)
         {
-            // ID del recurso del usuario.
-            string idRecurso = GetIdPersonByGnossUser(pUserId);
-
             // Lista de datos de las gráficas.
             List<DataGraphicUser> listaGraficas = new List<DataGraphicUser>();
 
@@ -1652,8 +1649,7 @@ namespace Hercules.ED.GraphicEngine.Models
             select.Append(mPrefijos);
             select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
             where.Append("WHERE { ");
-            where.Append($@"<{idRecurso}> roh:metricPage ?datosPagina. ");
-            where.Append("?datosPagina roh:metricGraphic ?datosGraficas. ");
+            where.Append($@"<{pIdPage}> roh:metricGraphic ?datosGraficas. ");
             where.Append("?datosGraficas roh:title ?titulo. ");
             where.Append("?datosGraficas roh:order ?orden. ");
             where.Append("?datosGraficas roh:pageId ?idPagina. ");
@@ -1678,7 +1674,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            return listaGraficas;
+            return listaGraficas.OrderBy(x => x.orden).ToList();
         }
 
         /// <summary>
@@ -1723,7 +1719,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            return listaPaginas;
+            return listaPaginas.OrderBy(x => x.orden).ToList();
         }
 
         /// <summary>

@@ -1,50 +1,38 @@
-@using Es.Riam.Gnoss.Web.MVC.Models;
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
 @model CMSComponentHot
-@if(Model != null)
-{
-    <div class="destacado horizontal">
-	    <div class="box content">
-            @if (!string.IsNullOrEmpty(Model.Title))
-            {
-                <div class="group title">
-                    <h3>
-                        @if (!string.IsNullOrEmpty(Model.Link))
-                        {
-                            <a href="@Model.Link">@Model.Title</a>
-                        }
-                        else
-                        {
-                            @Model.Title
-                        }
-                    </h3>  
-                    @if (!string.IsNullOrEmpty(Model.Subtitle))
-                    {
-                        <div class="resumen">
-                            @Html.Raw(Model.Subtitle)
-                        </div>
-                    }
-                </div>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Image))
-            {
-                <div class="group image">                
-                    @if (!string.IsNullOrEmpty(Model.Link))
-                    {
-                        <a href="@Model.Link"><img alt="@Model.Title" title="@Model.Title" src="@Model.Image" /></a>
-                    }
-                    else
-                    {
-                        <img alt="@Model.Title" title="@Model.Title" src="@Model.Image" />
-                    }
-                </div>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.HTML))
-            {                
-                <div class="group contenido">@Html.Raw(Model.HTML)</div>
-            }
-	    </div>	
-    </div>       
+@{ CommunityModel Comunidad = Html.GetComunidad();
+    UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
+    Html.GetListaJS().Add(urlJS);
 }
-      
+
+<ul class="listadoMenuPaginas"></ul>
+
+<div class="row containerPage indicadoresPersonalizados">
+    <div class="col col-12 col-xl-9 col-contenido derecha">                        
+        <div class="resource-list graphView ">
+            <div class="resource-list-wrap"></div>
+        </div>                        
+    </div>
+</div>
+
+<div id="modal-ampliar-mapa" class="modal modal-top fade modal-ampliar-mapa" style="pointer-events:none" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"></p>
+                <span class="material-icons cerrar" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="graph-container" style="width:100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
