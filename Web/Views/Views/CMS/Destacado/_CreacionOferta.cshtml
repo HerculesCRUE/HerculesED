@@ -270,6 +270,78 @@
 
 						<!-- START STEP 4 -->
 						<div id="wrapper-crear-oferta-step4" class="fade section-steps">
+
+
+							@{
+								string toolbar = $@"<div class=""toolbar d-none"">
+												<div class=""line"">
+
+													<div class=""box"">
+														<span class=""editor-btn icon smaller"" data-action=""bold"" data-tag-name=""b"" title=""Bold"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/bold.png""/>
+														</span>
+														<span class=""editor-btn icon smaller"" data-action=""italic"" data-tag-name=""i"" title=""Italic"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/italic.png""/>
+														</span>
+														<span class=""editor-btn icon smaller"" data-action=""underline"" data-tag-name=""u"" title=""Underline"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/underline.png""/>
+														</span>
+														<span class=""editor-btn icon smaller"" data-action=""strikeThrough"" data-tag-name=""strike"" title=""Strike through"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/30/000000/strikethrough.png""/>
+														</span>
+													</div>
+
+													<div class=""box"">
+														<span class=""editor-btn icon has-submenu"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/align-left.png""/>
+															<div class=""submenu"">
+																<span class=""editor-btn icon"" data-action=""justifyLeft"" data-style=""textAlign:left"" title=""Justify left"">
+																	<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/align-left.png""/>
+																</span>
+																<span class=""editor-btn icon"" data-action=""justifyCenter"" data-style=""textAlign:center"" title=""Justify center"">
+																	<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/align-center.png""/>
+																</span>
+																<span class=""editor-btn icon"" data-action=""justifyRight"" data-style=""textAlign:right"" title=""Justify right"">
+																	<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/align-right.png""/>
+																</span>
+																<span class=""editor-btn icon"" data-action=""formatBlock"" data-style=""textAlign:justify"" title=""Justify block"">
+																	<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/align-justify.png""/>
+																</span>
+															</div>
+														</span>
+														<span class=""editor-btn icon"" data-action=""insertOrderedList"" data-tag-name=""ol"" title=""Insert ordered list"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/numbered-list.png""/>
+														</span>
+														<span class=""editor-btn icon"" data-action=""insertUnorderedList"" data-tag-name=""ul"" title=""Insert unordered list"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/bulleted-list.png""/>
+														</span>
+														<span class=""editor-btn icon"" data-action=""outdent"" title=""Outdent"" data-required-tag=""li"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/outdent.png""/>
+														</span>
+														<span class=""editor-btn icon"" data-action=""indent"" title=""Indent"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/indent.png""/>
+														</span>
+
+													</div>
+													<div class=""box"">
+														<span class=""editor-btn icon"" data-action=""insertHorizontalRule"" title=""Insert horizontal rule"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/horizontal-line.png""/>
+														</span>
+													</div>
+
+													<div class=""box"">
+														<span class=""editor-btn icon smaller"" data-action=""undo"" title=""Undo"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/undo--v1.png""/>
+														</span>
+														<span class=""editor-btn icon"" data-action=""removeFormat"" title=""Remove format"">
+															<img src=""https://img.icons8.com/fluency-systems-filled/48/000000/remove-format.png""/>
+														</span>
+													</div>
+
+												</div>
+											</div>";
+							}
+
 							<form class="formulario-edicion background-blanco">
 
 								<fieldset>
@@ -277,109 +349,85 @@
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("DESCRIPCION") (*)</label>
 										<div class="edmaTextEditor">
-											<div class="toolbar d-none">
-												<div class="line">
-
-													<div class="box">
-														<span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
-														</span>
-														<span class="editor-btn icon smaller" data-action="italic" data-tag-name="i" title="Italic">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/italic.png"/>
-														</span>
-														<span class="editor-btn icon smaller" data-action="underline" data-tag-name="u" title="Underline">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/underline.png"/>
-														</span>
-														<span class="editor-btn icon smaller" data-action="strikeThrough" data-tag-name="strike" title="Strike through">
-															<img src="https://img.icons8.com/fluency-systems-filled/30/000000/strikethrough.png"/>
-														</span>
-													</div>
-
-													<div class="box">
-														<span class="editor-btn icon has-submenu">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/align-left.png"/>
-															<div class="submenu">
-																<span class="editor-btn icon" data-action="justifyLeft" data-style="textAlign:left" title="Justify left">
-																	<img src="https://img.icons8.com/fluency-systems-filled/48/000000/align-left.png"/>
-																</span>
-																<span class="editor-btn icon" data-action="justifyCenter" data-style="textAlign:center" title="Justify center">
-																	<img src="https://img.icons8.com/fluency-systems-filled/48/000000/align-center.png"/>
-																</span>
-																<span class="editor-btn icon" data-action="justifyRight" data-style="textAlign:right" title="Justify right">
-																	<img src="https://img.icons8.com/fluency-systems-filled/48/000000/align-right.png"/>
-																</span>
-																<span class="editor-btn icon" data-action="formatBlock" data-style="textAlign:justify" title="Justify block">
-																	<img src="https://img.icons8.com/fluency-systems-filled/48/000000/align-justify.png"/>
-																</span>
-															</div>
-														</span>
-														<span class="editor-btn icon" data-action="insertOrderedList" data-tag-name="ol" title="Insert ordered list">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/numbered-list.png"/>
-														</span>
-														<span class="editor-btn icon" data-action="insertUnorderedList" data-tag-name="ul" title="Insert unordered list">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/bulleted-list.png"/>
-														</span>
-														<span class="editor-btn icon" data-action="outdent" title="Outdent" data-required-tag="li">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/outdent.png"/>
-														</span>
-														<span class="editor-btn icon" data-action="indent" title="Indent">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/indent.png"/>
-														</span>
-
-													</div>
-													<div class="box">
-														<span class="editor-btn icon" data-action="insertHorizontalRule" title="Insert horizontal rule">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/horizontal-line.png"/>
-														</span>
-													</div>
-
-													<div class="box">
-														<span class="editor-btn icon smaller" data-action="undo" title="Undo">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/undo--v1.png"/>
-														</span>
-														<span class="editor-btn icon" data-action="removeFormat" title="Remove format">
-															<img src="https://img.icons8.com/fluency-systems-filled/48/000000/remove-format.png"/>
-														</span>
-													</div>
-
-												</div>
-											</div>
-											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" ></div>
+											@Html.Raw(toolbar)
+											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="descripcion" ></div>
 											<div class="content-area">
-												<textarea placeholder="Introduce una descripción" class="html-view form-control not-outline cke" id="descripcion" rows="2" cols="20"></textarea>
+												<textarea placeholder="@Html.Translate("INTRODUCE_DESCRIPCION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 											</div>
 										</div>
 									</div>
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("APLICACIONES") (*)</label>
-										<textarea placeholder="Introduce los problemas que resuelve" class="form-control not-outline cke" id="" rows="2" cols="20"></textarea>
+										<div class="edmaTextEditor">
+											@Html.Raw(toolbar)
+											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="aplicaciones" ></div>
+											<div class="content-area">
+												<textarea placeholder="@Html.Translate("INTRODUCE_PROBLEMAS_RESUELVE")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+											</div>
+										</div>
 									</div>
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("DESTINATARIOS") (*)</label>
-										<textarea placeholder="Introduce los destinatarios" class="form-control not-outline cke" id="" rows="2" cols="20"></textarea>
+										<div class="edmaTextEditor">
+											@Html.Raw(toolbar)
+											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="destinatarios" ></div>
+											<div class="content-area">
+												<textarea placeholder="@Html.Translate("INTRODUCE_DESTINATARIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+											</div>
+										</div>
 									</div>
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("OSTROS_DATOS_DESCRIPTIVOS")</label>
 										<div class="background-gris p-4 mb-5">
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("ORIGEN")</label>
-												<textarea placeholder="Introduce el origen" class="form-control not-outline cke" id="" rows="2" cols="20"></textarea>
+												<div class="edmaTextEditor">
+													@Html.Raw(toolbar)
+													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="origen" ></div>
+													<div class="content-area">
+														<textarea placeholder="@Html.Translate("INTRODUCE_ORIGEN")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+													</div>
+												</div>
 											</div>
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("INNOVACION")</label>
-												<textarea placeholder="Introduce la innovación" class="form-control not-outline cke" id="" rows="2" cols="20"></textarea>
+												<div class="edmaTextEditor">
+													@Html.Raw(toolbar)
+													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="innovacion" ></div>
+													<div class="content-area">
+														<textarea placeholder="@Html.Translate("INTRODUCE_INNOVACION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+													</div>
+												</div>
 											</div>
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("TIPO_SOCIO_BUSCADO")</label>
-												<textarea placeholder="Introduce uno o varios tipos de socios" class="form-control not-outline cke" id="" rows="2" cols="20"></textarea>
+												<div class="edmaTextEditor">
+													@Html.Raw(toolbar)
+													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="socios" ></div>
+													<div class="content-area">
+														<textarea placeholder="@Html.Translate("INTRODUCE_UNO_VARIOS_TIPOS_SOCIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+													</div>
+												</div>
 											</div>
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("TIPO_COLABORADOR_BUSCADO")</label>
-												<textarea placeholder="Introduce uno o varios tipos de colaboración" class="form-control not-outline cke" id="" rows="2" cols="20"></textarea>
+												<div class="edmaTextEditor">
+													@Html.Raw(toolbar)
+													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="colaboracion" ></div>
+													<div class="content-area">
+														<textarea placeholder="@Html.Translate("INTRODUCE_UNO_VARIOS_TIPOS_COLABORACION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+													</div>
+												</div>
 											</div>
 											<div class="form-group">
 												<label class="control-label d-block">@Html.Translate("OBSERVACIONES")</label>
-												<textarea placeholder="Introduce las observaciones" class="form-control not-outline cke" id="" rows="2" cols="20"></textarea>
+												<div class="edmaTextEditor">
+													@Html.Raw(toolbar)
+													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="observaciones" ></div>
+													<div class="content-area">
+														<textarea placeholder="@Html.Translate("INTRODUCE_OBSERVACIONES")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -390,16 +438,163 @@
 
 						<!-- START STEP 5 -->
 						<div id="wrapper-crear-oferta-step5" class="fade section-steps">
-							<div class="botonera">
-								<a href="javascript:stepsOffer.goStep(3)" class="btn btn-outline-primary uppercase">
-									<span class="material-icons">keyboard_arrow_left</span>
-									@Html.Translate("ANTERIOR")
-								</a>
-								<a href="javascript:stepsOffer.goStep(5)" class="btn btn-primary uppercase">
-									@Html.Translate("GUARDAR_TERMINAR")
-									<span class="material-icons">keyboard_arrow_right</span>
-								</a>
-							</div>
+							<fieldset>
+								<ul class="nav nav-tabs" id="myTab" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link uppercase active" id="proyectos-tab" data-toggle="tab" href="#proyectos" role="tab" aria-controls="proyectos" aria-selected="true">@Html.Translate("PROYECTOS")</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link uppercase" id="publicaciones-tab" data-toggle="tab" href="#publicaciones" role="tab" aria-controls="publicaciones" aria-selected="false">@Html.Translate("PUBLICACIONES")</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link uppercase" id="prop-industrial-intelectual-tab" data-toggle="tab" href="#prop-industrial-intelectual" role="tab" aria-controls="prop-industrial-intelectual" aria-selected="false">@Html.Translate("PROPIEDAD_INDUSTRUAL_INTELECTUAL")</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane fade active show" id="proyectos" role="tabpanel" aria-labelledby="proyectos-tab">
+										<ul class="nav nav-tabs" id="myTab" role="tablist">
+											<li class="nav-item">
+												<a class="nav-link active" id="proyectos-seleccionables-tab" data-toggle="tab" href="#proyectos-seleccionables" role="tab" aria-controls="proyectos-seleccionables" aria-selected="true">@Html.Translate("SELECCIONABLES")</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" id="proyectos-seleccionados-tab" data-toggle="tab" href="#proyectos-seleccionados" role="tab" aria-controls="proyectos-seleccionados" aria-selected="false">@Html.Translate("SELECCIONADOS") <span id="stp5-proj-num-selected"></span></a>
+											</li>
+										</ul>
+										<div class="tab-content">
+											
+											<div class="tab-pane fade active show" id="proyectos-seleccionables" role="tabpanel" aria-labelledby="proyectos-seleccionables-tab">
+												<div class="row">
+													<div class="col col-12">
+														<div class="wrapCol mt-4">
+															<div class="row" id="ofertaListProyectos" data-volumen="@Html.Translate("ORDER_VOLUMEN")" data-ajuste="@Html.Translate("ORDER_AJUSTE")" data-mixto="@Html.Translate("ORDER_MIXTO")">
+
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="tab-pane fade" id="proyectos-seleccionados" role="tabpanel" aria-labelledby="proyectos-seleccionados-tab">
+
+												<div class="row">
+
+													<div class="col col-12 header-listado">
+														<div class="h1-container">
+															<h1>@Html.Translate("PROYECTOS_SELECCIONADOS") <span class="numResultados">0</span></h1>
+														</div>
+													</div>
+													<div class="col col-12 col-xl-9 col-contenido" id="proyectos-stp5-result-oferta">
+														<div class="resource-list listView resource-list-proyectos">
+															<div class="resource-list-wrap">
+															</div>
+														</div>
+													</div>
+												</div>
+
+											</div>
+
+										</div>
+									</div>
+									<div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
+										<ul class="nav nav-tabs" id="myTab" role="tablist">
+											<li class="nav-item">
+												<a class="nav-link active" id="publicaciones-seleccionables-tab" data-toggle="tab" href="#publicaciones-seleccionables" role="tab" aria-controls="publicaciones-seleccionables" aria-selected="false">@Html.Translate("SELECCIONABLES")</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" id="publicaciones-seleccionados-tab" data-toggle="tab" href="#publicaciones-seleccionados" role="tab" aria-controls="publicaciones-seleccionados" aria-selected="true">@Html.Translate("SELECCIONADOS") (0)</a>
+											</li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane fade active show" id="publicaciones-seleccionables" role="tabpanel" aria-labelledby="publicaciones-seleccionables-tab">
+												<div class="row">
+													<div class="col col-12">
+														<div class="wrapCol mt-4">
+															<div class="row" id="ofertaListPublicaciones">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="tab-pane fade" id="publicaciones-seleccionados" role="tabpanel" aria-labelledby="publicaciones-seleccionados-tab">
+												<div class="row">
+													<div class="col col-12 header-listado">
+														<div class="h1-container">
+															<h1>@Html.Translate("PUBLICACIONES_SELECCIONADAS") <span class="numResultados">0</span></h1>
+														</div>
+													</div>
+													<div class="col col-12 col-xl-9 col-contenido">
+														<div class="resource-list listView resource-list-proyectos">
+															<div class="resource-list-wrap">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane fade" id="prop-industrial-intelectual" role="tabpanel" aria-labelledby="prop-industrial-intelectual-tab">
+										<ul class="nav nav-tabs" id="myTab" role="tablist">
+											<li class="nav-item">
+												<a class="nav-link active" id="prop-industrial-intelectual-seleccionables-tab" data-toggle="tab" href="#prop-industrial-intelectual-seleccionables" role="tab" aria-controls="prop-industrial-intelectual-seleccionables" aria-selected="false">@Html.Translate("SELECCIONABLES")</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" id="prop-industrial-intelectual-seleccionados-tab" data-toggle="tab" href="#prop-industrial-intelectual-seleccionados" role="tab" aria-controls="prop-industrial-intelectual-seleccionados" aria-selected="true">@Html.Translate("SELECCIONADOS") (0)</a>
+											</li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane fade active show" id="prop-industrial-intelectual-seleccionables" role="tabpanel" aria-labelledby="prop-industrial-intelectual-seleccionables-tab">
+												@* <div class="row">
+													<div class="col col-12 header-listado">
+														<div class="h1-container">
+															<h1>@Html.Translate("PROPIEDAD_INDUSTRIAL_INTELECTUAL_SELECCIONABLES") <span class="numResultados">0</span></h1>
+														</div>
+													</div>
+													<div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
+														<div class="wrapCol">
+															<div class="header-facetas">
+																<p>Filtros</p>
+																<a href="javascript: void(0);" class="cerrar">
+																	<span class="material-icons">close</span>
+																</a>
+															</div>
+														</div>
+													</div>
+													<div class="col col-12 col-xl-9 col-contenido derecha">
+														<div class="wrapCol">
+
+														</div>
+													</div>
+												</div> *@
+												<div class="row">
+													<div class="col col-12">
+														<div class="wrapCol mt-4">
+															<div class="row" id="ofertaListPII">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="tab-pane fade" id="prop-industrial-intelectual-seleccionados" role="tabpanel" aria-labelledby="prop-industrial-intelectual-seleccionados-tab">
+												<div class="row">
+													<div class="col col-12 header-listado">
+														<div class="h1-container">
+															<h1>@Html.Translate("PROPIEDAD_INDUSTRIAL_INTELECTUAL_SELECCIONADOS") <span class="numResultados">0</span></h1>
+														</div>
+													</div>
+													<div class="col col-12 col-xl-9 col-contenido">
+														<div class="resource-list listView resource-list-proyectos">
+															<div class="resource-list-wrap">
+
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+                                </div>
+                            </fieldset>
 						</div>
 						<!-- END STEP 5 -->
 					</div>
