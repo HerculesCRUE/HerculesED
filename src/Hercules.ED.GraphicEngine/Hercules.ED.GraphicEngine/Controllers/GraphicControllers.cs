@@ -36,6 +36,24 @@ namespace Hercules.ED.GraphicEngine.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public List<DataGraphicUser> GetGraficasUser(string pUserId)
+        {
+            return Models.GraphicEngine.GetGraficasUser(pUserId);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void CrearPagina(string pUserId, string pTitulo)
+        {
+            Models.GraphicEngine.CrearPaginaUsuario(pUserId, pTitulo);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult GetCSVGrafica(string pIdPagina, string pIdGrafica, string pFiltroFacetas, string pLang)
         {
             return File(Models.GraphicEngine.GetGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, pLang).GenerateCSV(), "application/CSV","graphic.csv");
@@ -66,6 +84,15 @@ namespace Hercules.ED.GraphicEngine.Controllers
         public List<Pagina> GetPaginasGraficas(string pLang)
         {
             return Models.GraphicEngine.GetPages(pLang);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public List<DataPageUser> GetPaginasUsuario(string pUserId)
+        {
+            return Models.GraphicEngine.GetPagesUser(pUserId);
         }
     }
 }

@@ -2,7 +2,7 @@
   "rdftype": "http://w3id.org/roh/TeachingExperience",
   "property": "http://w3id.org/roh/teachingExperience",
   "title": {
-    "es": "Formación recibida"
+    "es": "Actividad docente"
   },
   "sections": [
     {

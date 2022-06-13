@@ -228,11 +228,11 @@ input.form-group-date {
 	align-items: center;
 }
 
-.exportar-cv .contenido-cv {
+.importar-exportar-cv .contenido-cv {
     border: 1px solid var(--c-gris-borde);
     border-bottom: 0;
 }
-.exportar-cv .contenido-cv>.panel-group {
+.importar-exportar-cv .contenido-cv>.panel-group {
     margin: 22px 0;
     padding: 0 24px;
     border-bottom: 1px solid var(--c-gris-borde);
@@ -244,16 +244,20 @@ input.form-group-date {
     
 }
 
-.exportar-cv .panel-group>div .panel {
+.importar-exportar-cv .panel-group>div .panel {
     margin: 22px 24px;
     border-bottom: 1px solid var(--c-gris-borde)!important;
     box-shadow: none;
 }
 
-.exportar-cv .form-group .select2-container {
+.importar-exportar-cv .form-group .select2-container {
     width: 200px !important;
 }
 
-.exportar-cv .page-section a {
+.importar-exportar-cv .page-section a {
     display: inline-flex;
+}
+
+.importar-exportar-cv div.contenido-cv>.panel-group>.panel>.panel-heading>p.panel-title .pmd-accordion-arrow {
+    right: 16px;
 }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Web;
 using System.Drawing;
+using Gnoss.ApiWrapper.Model;
 
 namespace Hercules.ED.GraphicEngine.Models
 {
@@ -85,6 +86,11 @@ namespace Hercules.ED.GraphicEngine.Models
                 string prefijoCircular = "circular";
                 string prefijoAbreviar = "abr";
                 string prefijoPorcentaje = "prc";
+                if (itemGrafica.config.abreviar && !itemGrafica.identificador.Contains(prefijoAbreviar))
+                {
+                    itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
+                    configPagina.id = prefijoAbreviar + "-" + configPagina.id;
+                }
 
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
@@ -95,11 +101,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
-                    if (itemGrafica.config.abreviar && !itemGrafica.identificador.Contains(prefijoAbreviar))
-                    {
-                        itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
-                        configPagina.id = prefijoAbreviar + "-" + configPagina.id;
-                    }
+
                 }
                 else if (itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular))
                 {
@@ -174,6 +176,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
                 return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
+
             return null;
         }
 
@@ -248,7 +251,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 eje.title.display = true;
 
                 if (item.nombreEje != null)
-                {                    
+                {
                     eje.title.text = GetTextLang(pLang, item.nombreEje);
                 }
                 else
@@ -1113,7 +1116,7 @@ namespace Hercules.ED.GraphicEngine.Models
             grafica.userZoomingEnabled = false;
             grafica.zoomingEnabled = true;
             grafica.minZoom = 0.5f;
-            grafica.maxZoom = 2.0f;
+            grafica.maxZoom = 4.0f;
 
             // Layout Base
             grafica.layout = new Layout();
@@ -1532,7 +1535,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         int nivel = 0;
                         for (int i = 0; i < itemFaceta.idTesauro.Length; i++)
                         {
-                            if (itemFaceta.idTesauro[i] == '0' && (i == 0 || itemFaceta.idTesauro[i-1] == '.'))
+                            if (itemFaceta.idTesauro[i] == '0' && (i == 0 || itemFaceta.idTesauro[i - 1] == '.'))
                             {
                                 nivel++;
                             }
@@ -1563,6 +1566,326 @@ namespace Hercules.ED.GraphicEngine.Models
         #endregion
 
         #region --- Utils
+        /// <summary>
+        /// Permite agregar un triple a un recurso.
+        /// </summary>
+        /// <param name="pResourceApi">API.</param>
+        /// <param name="pRecursoID">Id del recurso al que se quiere agregar el triple.</param>
+        /// <param name="pTriples">Triple a agregar.</param>
+        /// <returns></returns>
+        public static bool IncluirTriplesRecurso(ResourceApi pResourceApi, Guid pRecursoID, List<TriplesToInclude> pTriples)
+        {
+            List<TriplesToInclude> triplesIncluir = new List<TriplesToInclude>();
+
+            foreach (TriplesToInclude triple in pTriples)
+            {
+                if (triple.NewValue == string.Empty)
+                {
+                    triple.NewValue = null;
+                }
+                triplesIncluir.Add(triple);
+            }
+
+            Dictionary<Guid, List<TriplesToInclude>> dicTriplesInsertar = new Dictionary<Guid, List<TriplesToInclude>>();
+            dicTriplesInsertar.Add(pRecursoID, triplesIncluir);
+            Dictionary<Guid, bool> dicInsertado = pResourceApi.InsertPropertiesLoadedResources(dicTriplesInsertar);
+            return (dicInsertado != null && dicInsertado.ContainsKey(pRecursoID) && dicInsertado[pRecursoID]);
+        }
+
+        /// <summary>
+        /// Permite obtener el ID del recurso de la persona mediante el ID del usuario.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <returns></returns>
+        public static string GetIdPersonByGnossUser(string pUserId)
+        {
+            // ID de la persona.
+            string idRecurso = string.Empty;            
+
+            // Filtro de página.
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            select = new StringBuilder();
+            where = new StringBuilder();
+
+            select.Append(mPrefijos);
+            select.Append($@"SELECT ?s ");
+            where.Append("WHERE { ");
+            where.Append($@"?s roh:gnossUser <http://gnoss/{pUserId.ToUpper()}>. ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    idRecurso = fila["s"].value;
+                }
+            }
+
+            return idRecurso;
+        }
+
+        /// <summary>
+        /// Obtiene los datos de las gráficas guardadas del usuario.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <returns>Lista de datos de las gráficas.</returns>
+        public static List<DataGraphicUser> GetGraficasUser(string pUserId)
+        {
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            // Lista de datos de las gráficas.
+            List<DataGraphicUser> listaGraficas = new List<DataGraphicUser>();
+
+            // Filtro de página.
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            select = new StringBuilder();
+            where = new StringBuilder();
+
+            select.Append(mPrefijos);
+            select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
+            where.Append("WHERE { ");
+            where.Append($@"<{idRecurso}> roh:metricPage ?datosPagina. ");
+            where.Append("?datosPagina roh:metricGraphic ?datosGraficas. ");
+            where.Append("?datosGraficas roh:title ?titulo. ");
+            where.Append("?datosGraficas roh:order ?orden. ");
+            where.Append("?datosGraficas roh:pageId ?idPagina. ");
+            where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
+            where.Append("?datosGraficas roh:filters ?filtro. ");
+            where.Append("?datosGraficas roh:width ?anchura. ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    DataGraphicUser data = new DataGraphicUser();
+                    data.titulo = fila["titulo"].value;
+                    data.orden = Int32.Parse(fila["orden"].value);
+                    data.idPagina = fila["idPagina"].value;
+                    data.idGrafica = fila["idGrafica"].value;
+                    data.filtro = fila["filtro"].value;
+                    data.anchura = fila["anchura"].value;
+                    listaGraficas.Add(data);
+                }
+            }
+
+            return listaGraficas;
+        }
+        public static List<DataPageUser> GetPagesUser(string pUserId)
+        {
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            // Lista de datos de las páginas.
+            List<DataPageUser> listaPaginas = new List<DataPageUser>();
+
+            // Filtro de página.
+            SparqlObject resultadoQuery = null;
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            select = new StringBuilder();
+            where = new StringBuilder();
+
+            // TODO consulta no está hecha
+            select.Append(mPrefijos);
+            select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
+            where.Append("WHERE { ");
+            where.Append($@"<{idRecurso}> roh:metricPage ?datosPagina. ");
+            where.Append("?datosPagina roh:metricGraphic ?datosGraficas. ");
+            where.Append("?datosGraficas roh:title ?titulo. ");
+            where.Append("?datosGraficas roh:order ?orden. ");
+            where.Append("?datosGraficas roh:pageId ?idPagina. ");
+            where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
+            where.Append("?datosGraficas roh:filters ?filtro. ");
+            where.Append("?datosGraficas roh:width ?anchura. ");
+            where.Append("} ");
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    DataPageUser data = new DataPageUser();
+                    data.titulo = fila["titulo"].value;
+                    data.orden = Int32.Parse(fila["orden"].value);
+                    data.idRecurso = idRecurso;
+                    listaPaginas.Add(data);
+                }
+            }
+
+            return listaPaginas;
+        }
+
+        /// <summary>
+        /// Guarda a la persona la gráfica que quiere quedarse en su administración.
+        /// </summary>
+        /// <param name="pTitulo">Título de la gráfica a guardar.</param>
+        /// <param name="pAnchura">Anchura de la gráfica a guardar.</param>
+        /// <param name="pIdRecursoPagina">ID del recurso de la página.</param>
+        /// <param name="pIdPaginaGrafica">ID de la página de la gráfica.<</param>
+        /// <param name="pIdGrafica">ID de la gráfica.</param>
+        /// <param name="pFiltros">Filtros a aplicar en la gráfica.</param>
+        /// <param name="pUserId">ID del usuario conectado.</param>
+        public static void GuardarGrafica(string pTitulo, string pAnchura, string pIdRecursoPagina, string pIdPaginaGrafica, string pIdGrafica, string pFiltros, string pUserId)
+        {     
+            mResourceApi.ChangeOntoly("person");
+
+            Guid shortId = mResourceApi.GetShortGuid(pIdRecursoPagina);
+            Guid entidadGuid = Guid.NewGuid();
+            List<TriplesToInclude> triplesInclude = new List<TriplesToInclude>();
+            string predicadoBase = "http://w3id.org/roh/MetricGraphic|";
+            string valorEntidadAuxiliar = $@"{mResourceApi.GraphsUrl}items/MetricGraphic_{shortId}_{entidadGuid}";
+            string valorBase = $@"{valorEntidadAuxiliar}|";
+
+            // Título de la página
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/title",
+                NewValue = valorBase + pTitulo
+            });
+
+            // Orden de la página
+            int orden = 0;
+            List<DataGraphicUser> listaGraficas = GetGraficasUser(pUserId);
+            foreach (DataGraphicUser item in listaGraficas)
+            {
+                if (item.orden > orden)
+                {
+                    orden = item.orden;
+                }
+            }
+
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/order",
+                NewValue = valorBase + orden
+            });
+
+            // ID de la página de la gráfica
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/pageId",
+                NewValue = valorBase + pIdPaginaGrafica
+            });
+
+            // ID de la gráfica
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/graphicId",
+                NewValue = valorBase + pIdGrafica
+            });
+
+            // Filtros
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/filters",
+                NewValue = valorBase + pFiltros
+            });
+
+            // Anchura
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/width",
+                NewValue = valorBase + pAnchura
+            });
+
+            bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);
+        }
+
+        /// <summary>
+        /// Permite guardar los datos de una gráfica asignados a un usuario.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pIdPagina">ID de la página de la gráfica.</param>
+        /// <param name="pIdGrafica">ID de la gráfica.</param>
+        /// <param name="pFiltro">Filtro de la gráfica.</param>
+        public static void CrearPaginaUsuario(string pUserId, string pTitulo)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid shortId = mResourceApi.GetShortGuid(idRecurso);
+            Guid entidadGuid = Guid.NewGuid();
+            List<TriplesToInclude> triplesInclude = new List<TriplesToInclude>();
+            string predicadoBase = "http://w3id.org/roh/metricPage|";
+            string valorEntidadAuxiliar = $@"{mResourceApi.GraphsUrl}items/MetricPage_{shortId}_{entidadGuid}";
+            string valorBase = $@"{valorEntidadAuxiliar}|";
+
+            // Título de la página
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/title",
+                NewValue = valorBase + pTitulo
+            });
+
+            // Orden de la página
+            // TODO: Llamar al método que devuelve las páginas del usuario.
+            int orden = 0;
+
+            triplesInclude.Add(new TriplesToInclude
+            {
+                Description = false,
+                Title = false,
+                Predicate = predicadoBase + "http://w3id.org/roh/order",
+                NewValue = valorBase + orden
+            });
+
+            bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);
+        }
+
+        /// <summary>
+        /// Borra la relación de la gráfica.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
+        public static void BorrarGrafica(string pUserId, string pRecursoId)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new Dictionary<Guid, List<RemoveTriples>>();
+            List<RemoveTriples> listaTriplesBorrado = new List<RemoveTriples>();
+
+            RemoveTriples triple = new RemoveTriples();
+            triple.Title = false;
+            triple.Description = false;
+            triple.Predicate = $@"http://w3id.org/roh/metricGraphic";
+            triple.Value = pRecursoId;
+            listaTriplesBorrado.Add(triple);
+
+            dicBorrado.Add(guid, listaTriplesBorrado);
+            mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+        }
+
         /// <summary>
         /// Obtiene la lista de configuraciones.
         /// </summary>
@@ -1693,11 +2016,13 @@ namespace Hercules.ED.GraphicEngine.Models
                         {
                             fechaInicio = varActual.Split("-")[0];
                             fechaFin = varActual.Split("-")[1];
-                        } else if (varActual.Equals("lastyear"))
+                        }
+                        else if (varActual.Equals("lastyear"))
                         {
                             fechaInicio = DateTime.Now.Year.ToString();
                             fechaFin = DateTime.Now.Year.ToString();
-                        } else if (varActual.Equals("fiveyears"))
+                        }
+                        else if (varActual.Equals("fiveyears"))
                         {
                             fechaInicio = (DateTime.Now.Year - 5).ToString();
                             fechaFin = DateTime.Now.Year.ToString();
@@ -1714,7 +2039,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         filtro.Append($@"{pVarAnterior} ");
                         filtro.Append($@"{parteFiltro.Split("=")[0]} ");
                         filtro.Append($@"{varActualAux}. ");
-                        
+
                         // Si es un tesauro.
                         if (varActual.StartsWith($@"http://"))
                         {
@@ -1723,7 +2048,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         else
                         {
                             filtro.Append($@"FILTER({varActualAux} = {varActual}) ");
-                        }                        
+                        }
                     }
 
                 }

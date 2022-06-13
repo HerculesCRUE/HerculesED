@@ -78,7 +78,7 @@ namespace EditorCV.Models
         {
             API.Response.Tab tabResponse = new API.Response.Tab();
             tabResponse.sections = new List<API.Response.TabSection>();
-
+            
             if (tab.personalData)
             {
                 tabResponse.title = tab.title.FirstOrDefault().Value;
@@ -98,6 +98,12 @@ namespace EditorCV.Models
             return tabResponse;
         }
 
+        /// <summary>
+        /// Devuelvo un TabSection de la seccion de datos personales
+        /// </summary>
+        /// <param name="section"></param>
+        /// <param name="preimport"></param>
+        /// <returns></returns>
         private API.Response.TabSection GetPersonalDataSection(ItemEdit section, Preimport preimport)
         {
             string lang = "es";
@@ -123,8 +129,11 @@ namespace EditorCV.Models
                             {
                                 TabSectionItemProperty tsip = new TabSectionItemProperty();
                                 tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(prop.property));
-                                tsip.values = prop.title.Select(x => x.Value).ToList();
+                                tsip.values = preimport.secciones.Where(x => x.id.Equals("000.000.000.000"))
+                                    .SelectMany(x => x.subsecciones.SelectMany(x => x.propiedades.Where(x => x.prop.Equals(prop.property)).ToList()))
+                                    .SelectMany(x => x.values).ToList();
 
+                                tabSectionItem.iseditable = !prop.blocked;
                                 tabSectionItem.properties.Add(tsip);
                             }
                         }
@@ -144,7 +153,7 @@ namespace EditorCV.Models
             API.Response.TabSection tabSection = new API.Response.TabSection();
             //Título sección
             tabSection.title = UtilityCV.GetTextLang(lang, section.presentation.title);
-            tabSection.identifier = section.property;
+            tabSection.identifier = section.property;            
 
 
             //Órdenes sección
@@ -192,30 +201,37 @@ namespace EditorCV.Models
                     }
                 }
             }
-            
+
             if (section.presentation != null && section.presentation.itemPresentation != null && section.presentation.itemPresentation.itemEdit != null)
             {
-
                 tabSection = new API.Response.TabSection();
                 tabSection.items = new Dictionary<string, TabSectionItem>();
                 tabSection.title = section.presentation.title.First().Value;
 
-                foreach (ItemEditSectionRowProperty itemEditSection in section.presentation.itemPresentation.itemEdit.sections.First().rows.First().properties)
+                foreach (ItemEditSectionRow itemEditSectionRow in section.presentation.itemPresentation.itemEdit.sections.First().rows)
                 {
-                    TabSectionItem tabSectionItem = new TabSectionItem();
-
-                    tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
-                    tabSectionItem.properties = new List<TabSectionItemProperty>();
-
-                    TabSectionItemProperty tsip = new TabSectionItemProperty();
-                    tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(itemEditSection.property));
-                    tsip.values = itemEditSection.title.Select(x => x.Value).ToList();
-
-                    tabSectionItem.properties.Add(tsip);
-
-                    if (tabSectionItem != null && tabSectionItem.properties != null && tabSectionItem.properties.Count > 0)
+                    foreach (ItemEditSectionRowProperty itemEditSection in itemEditSectionRow.properties)
                     {
-                        tabSection.items.Add(Guid.NewGuid().ToString(), tabSectionItem);
+                        TabSectionItem tabSectionItem = new TabSectionItem();
+
+                        tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
+                        tabSectionItem.properties = new List<TabSectionItemProperty>();
+                        tabSectionItem.iseditable = !itemEditSection.blocked;
+
+                        TabSectionItemProperty tsip = new TabSectionItemProperty();
+                        tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(itemEditSection.property));
+                        tsip.values = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))
+                                        .SelectMany(x => x.subsecciones.SelectMany(x => x.propiedades.Where(x => x.prop.Equals(itemEditSection.property)).ToList()))
+                                        .SelectMany(x => x.values).ToList();
+
+                        itemEditSection.title.Select(x => x.Value).ToList();
+
+                        tabSectionItem.properties.Add(tsip);
+
+                        if (tabSectionItem != null && tabSectionItem.properties != null && tabSectionItem.properties.Count > 0)
+                        {
+                            tabSection.items.Add(Guid.NewGuid().ToString(), tabSectionItem);
+                        }
                     }
                 }
             }
@@ -252,6 +268,7 @@ namespace EditorCV.Models
             string propCompleteTitle = UtilityCV.GetPropComplete(configTitulo);
             sectionItem.title = subseccionItem.propiedades.FirstOrDefault(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?.values.FirstOrDefault();
             sectionItem.properties = new List<TabSectionItemProperty>();
+            sectionItem.iseditable = !subseccionItem.isBlocked;
 
             //TODO title or
             //sectionItem.title = property.values.First();
@@ -296,7 +313,7 @@ namespace EditorCV.Models
                         propComplete = UtilityCV.GetPropComplete(property.child);
                         valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
                             .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
-                        if (valor == null && valor.Count==0)
+                        if (valor == null && valor.Count == 0)
                         {
                             valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
                                 .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
@@ -371,7 +388,7 @@ namespace EditorCV.Models
                             }
                             else
                             {
-                                tsip.values.AddRange(valor.Select(x=>x.Split("@@@").Last()).ToList());
+                                tsip.values.AddRange(valor.Select(x => x.Split("@@@").Last()).ToList());
                             }
                         }
                         tsip.showMini = property.showMini;
@@ -386,8 +403,13 @@ namespace EditorCV.Models
             return sectionItem;
         }
 
-        //inout http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode
-        //output http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/categoryNode
+        /// <summary>
+        /// Concatena mediante "@@@" las cadenas que forman parte de <paramref name="pPropImport"/> tras separar por "|"
+        /// y elegir la primerda de separar posteriormente por "@@@".
+        /// "Ejemplo1@@@Ejemplo2|Ejemplo3" -> "Ejemplo1@@@Ejemplo3"
+        /// </summary>
+        /// <param name="pPropImport"></param>
+        /// <returns></returns>
         private string GetPropCompleteImport(string pPropImport)
         {
             if (string.IsNullOrEmpty(pPropImport))
@@ -397,6 +419,11 @@ namespace EditorCV.Models
             return string.Join("@@@", pPropImport.Split("|").Select(x => x.Split("@@@").FirstOrDefault()));
         }
 
+        /// <summary>
+        /// Elimina de la cadena "http://vivoweb.org/ontology/core#relatedBy@@@"
+        /// </summary>
+        /// <param name="pPropCompelte"></param>
+        /// <returns></returns>
         private string GetPropCompleteWithoutRelatedBy(string pPropCompelte)
         {
             return pPropCompelte.Replace("http://vivoweb.org/ontology/core#relatedBy@@@", "");
