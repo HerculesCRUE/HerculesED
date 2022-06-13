@@ -3,38 +3,43 @@
  */
 class TextField {
 
+  /**
+   * Constructor de la clase TextField
+   * @param editor, elemento sobre el que se añade la funcionalidad
+   */
   constructor(editor) {
     let _self = this;
     this.editor = editor
     // const button = editor.querySelector('.editor-btn');
     const toolbar = editor.getElementsByClassName('toolbar')[0];
-    const contentArea = editor.getElementsByClassName('content-area')[0];
     const visuellView = editor.getElementsByClassName('visuell-view')[0];
-    const textarea = editor.getElementsByTagName('textarea')[0];
 
-    // Oculta el textarea para sustutir la edición por el div
-    textarea.classList.add('d-none')
+    // Comprueba si existe un textArea
+    if (editor.getElementsByTagName('textarea').length > 0) {
 
-    // Oculta el textarea para sustutir la edición por el div
-    toolbar.classList.remove('d-none')
-    // Oculta el textarea para sustutir la edición por el div
-    visuellView.classList.remove('d-none')
+      const textarea = editor.getElementsByTagName('textarea')[0];
+      // Oculta el textarea para sustutir la edición por el div
+      textarea.classList.add('d-none')
+      // Oculta el textarea para sustutir la edición por el div
+      toolbar.classList.remove('d-none')
+      // Oculta el textarea para sustutir la edición por el div
+      visuellView.classList.remove('d-none')
+    }
+
+
+    if (editor.getElementsByTagName('content-area').length > 0) {
+      const contentArea = editor.getElementsByClassName('content-area')[0];
+      // add paragraph tag on new line
+      contentArea.addEventListener('keypress', this.keyEvent);
+    }
 
     // Add class inicilized to the element
     editor.classList.add("inicilized")
 
     this.buttons = toolbar.querySelectorAll('.editor-btn:not(.has-submenu)');
-    // button.removeEventListener('click', this.boldButton);
-    // button.addEventListener('click', this.boldButton);
-
-    // editor.removeEventListener('focusout', this.focusout)
-    // editor.addEventListener('focusout', this.focusout);
     //Evita que el tab salte a otro elemento
     visuellView.removeEventListener('keydown', this.keyEvent);
     visuellView.addEventListener('keydown', this.keyEvent);
-
-    // button.removeEventListener('mousedown', this.mouseEvent);
-    // button.addEventListener('mousedown', this.mouseEvent);
 
 
     // add active tag event
@@ -44,14 +49,15 @@ class TextField {
     visuellView.removeEventListener('paste', this.pasteEvent);
     visuellView.addEventListener('paste', this.pasteEvent);
 
-    // add paragraph tag on new line
-    contentArea.addEventListener('keypress', this.keyEvent);
 
     // add toolbar button actions
     for(let i = 0; i < this.buttons.length; i++) {
       let button = this.buttons[i];
       
-      button.addEventListener('click', function(e) {
+      // button.removeEventListener('click', this.eventListenerFn(button), false);
+      // button.addEventListener('click', this.eventListenerFn(button), true);
+
+      $(button).off('click').on('click', function(e) {
         let action = this.dataset.action;
         _self.execDefaultAction(action);
         
@@ -60,10 +66,20 @@ class TextField {
 
   }
 
-  mouseEvent(e) {
-    e.preventDefault();
+  /**
+   * Método para añadir los eventos de los botones del editor
+   * (Actualmente no se usa)
+   * @param button, botón sobre el que se ejecuta la acción
+   */
+  eventListenerFn(button) {
+    let action = button.dataset.action;
+    this.execDefaultAction(action);
   }
 
+  /**
+   * Método selectionChange
+   * @param e, evento
+   */
   selectionChange(e) {
   
     for(let i = 0; i < this.buttons.length; i++) {
@@ -80,6 +96,10 @@ class TextField {
     this.parentTagActive(window.getSelection().anchorNode.parentNode);
   }
 
+  /**
+   * Método parentTagActive
+   * @param e, evento
+   */
   parentTagActive(elem) {
     if(!elem ||!elem.classList || elem.classList.contains('visuell-view')) return false;
     
@@ -113,7 +133,8 @@ class TextField {
   // }
 
   /**
-   * This function executes all 'normal' actions
+   * Este método ejecuta las acciones 'normales' de los botones
+   * @param action, acción a ejecutar por el navegador
    */
   execDefaultAction(action) {
     document.execCommand(action, false);
@@ -129,6 +150,10 @@ class TextField {
   //   button.classList.remove('active');
   // }
 
+  /**
+   * Método para el copiado de texto
+   * @param e, evento
+   */
   pasteEvent(e) {
     e.preventDefault();
     let text = (e.originalEvent || e).clipboardData.getData('text/plain');
@@ -136,6 +161,10 @@ class TextField {
     document.execCommand('insertHTML', false, text);
   }
 
+  /**
+   * Método keyEvent que deshabilita ciertas teclas
+   * @param e, evento
+   */
   keyEvent(e) {
     if (e.keyCode == 9) {
       e.preventDefault();

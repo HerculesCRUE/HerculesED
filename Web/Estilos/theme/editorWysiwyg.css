@@ -10,6 +10,10 @@
 
 .edicionoferta .edmaTextEditor {
 	border-top: none;
+	min-height: initial;
+}
+.edicionoferta .edmaTextEditor.inicilized {
+	min-height: 18rem;
 }
 
 
@@ -98,7 +102,7 @@
 /* Submenu section */
 
 .edmaTextEditor .toolbar .line .box .editor-btn.has-submenu {
-  width: 20px;
+  width: 40px;
   padding: 0 10px;
 }
 .edmaTextEditor .toolbar .line .box .editor-btn.has-submenu::after {
