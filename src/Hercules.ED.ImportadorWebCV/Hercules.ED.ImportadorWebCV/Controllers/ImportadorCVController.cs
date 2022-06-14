@@ -92,7 +92,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                     using (XmlWriter writer = XmlWriter.Create(sww))
                     {
                         serializer.Serialize(writer, preimportar);
-                        xml = sww.ToString(); 
+                        xml = sww.ToString();
                     }
                 }
                 preimportar.cvn_xml = xml;
@@ -112,50 +112,8 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
             {
                 SincroDatos sincroDatos = new SincroDatos(_Configuracion, pCVID, fileData);
 
-                List<Subseccion> listadoSubsecciones = new List<Subseccion>();
-                foreach (Subseccion subseccion in sincroDatos.preimport.secciones)
-                {
-                    Subseccion subsec = new Subseccion(subseccion.id);
-                    foreach (SubseccionItem subseccionItem in subseccion.subsecciones)
-                    {
-                        if (listaId.Contains(subseccionItem.guid))
-                        {
-                            subsec.subsecciones.Add(subseccionItem);
-                        }
-                    }
-                    listadoSubsecciones.Add(subsec);
-                }
-                sincroDatos.preimport = new Preimport(listadoSubsecciones);
-                List<TriplesToInclude> triplesToInclude = new List<TriplesToInclude>();
-                foreach (Subseccion sub in sincroDatos.preimport.secciones)
-                {
-                    foreach (SubseccionItem subseccionItem in sub.subsecciones)
-                    {
-                        if (!listaId.Contains(subseccionItem.guid))
-                        {
-                            continue;
-                        }
-
-
-                        
-
-                        foreach (Entity.Property property in subseccionItem.propiedades)
-                        {
-                            foreach (string value in property.values)
-                            {
-                                triplesToInclude.Add(new TriplesToInclude(property.prop, value));
-                            }
-                        }
-
-                        if (false)
-                        {
-                            Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { mResourceApi.GetShortGuid(pCVID), triplesToInclude } };
-                            bool b = mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[mResourceApi.GetShortGuid(subseccionItem.idBBDD)];
-                        }
-                    }
-                }
-
-                List<TriplesToModify> triplesToModify = new List<TriplesToModify>();
+                AccionesImportacion accionesImportacion = new AccionesImportacion();
+                accionesImportacion.ImportacionTriples(sincroDatos, pCVID, listaId,  listaOpciones);
 
                 return Ok();
             }
