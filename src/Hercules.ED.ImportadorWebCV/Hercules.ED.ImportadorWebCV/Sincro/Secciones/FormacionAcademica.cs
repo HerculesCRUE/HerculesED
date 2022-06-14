@@ -57,6 +57,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = EstudiosCiclos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -64,7 +65,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
@@ -105,6 +106,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = Doctorados.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -112,7 +114,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
@@ -154,6 +156,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = OtraFormacionPosgrado.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -161,7 +164,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
@@ -203,6 +206,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = FormacionEspecializada.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -210,7 +214,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
@@ -252,6 +256,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = CursosMejoraDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -259,7 +264,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
@@ -299,6 +304,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = ConocimientoIdiomas.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -306,7 +312,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
