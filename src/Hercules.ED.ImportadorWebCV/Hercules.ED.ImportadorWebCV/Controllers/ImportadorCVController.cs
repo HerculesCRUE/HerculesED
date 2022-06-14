@@ -14,6 +14,8 @@ using System.IO;
 using System.Xml;
 using Gnoss.ApiWrapper.Model;
 using Models;
+using ImportadorWebCV.Exporta.Secciones;
+using Gnoss.ApiWrapper;
 
 namespace Hercules.ED.ImportadorWebCV.Controllers
 {
