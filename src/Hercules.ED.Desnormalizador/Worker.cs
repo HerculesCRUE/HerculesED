@@ -86,6 +86,14 @@ namespace DesnormalizadorHercules
                 Temporal.EliminarCVs();
             }
 
+            //TODO eliminar entidades cv
+            bool eliminarEntidadesCV = false;
+            if (eliminarEntidadesCV)
+            {
+                Temporal.EliminarEntidadesCV();
+            }
+
+
             //TODO eliminar
             bool DesnormalizarTodo = false;
             if (DesnormalizarTodo)
