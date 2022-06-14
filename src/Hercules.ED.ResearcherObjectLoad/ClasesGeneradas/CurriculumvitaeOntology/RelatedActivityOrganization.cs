@@ -29,32 +29,32 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 			SemanticPropertyModel propVivo_relatedBy = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#relatedBy");
 			if(propVivo_relatedBy != null && propVivo_relatedBy.PropertyValues.Count > 0)
 			{
 				this.Vivo_relatedBy = new Activity(propVivo_relatedBy.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_isPublic= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isPublic"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/RelatedActivityOrganization"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/RelatedActivityOrganization"; } }
 		public OntologyEntity Entity { get; set; }
 
+		[RDFProperty("http://w3id.org/roh/isPublic")]
+		public  bool Roh_isPublic { get; set;}
+
 		[RDFProperty("http://vivoweb.org/ontology/core#relatedBy")]
 		[Required]
 		public  Activity Vivo_relatedBy  { get; set;} 
 		public string IdVivo_relatedBy  { get; set;} 
 
-		[RDFProperty("http://w3id.org/roh/isPublic")]
-		public  bool Roh_isPublic { get; set;}
-
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("vivo:relatedBy", this.IdVivo_relatedBy));
 			propList.Add(new BoolOntologyProperty("roh:isPublic", this.Roh_isPublic));
+			propList.Add(new StringOntologyProperty("vivo:relatedBy", this.IdVivo_relatedBy));
 		}
 
 		internal override void GetEntities()

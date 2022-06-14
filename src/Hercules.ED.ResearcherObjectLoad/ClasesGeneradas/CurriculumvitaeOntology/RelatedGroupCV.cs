@@ -15,7 +15,7 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using ColaboratoinTypeGroup = ColaborationtypegroupOntology.ColaborationTypeGroup;
+using ColaborationTypeGroup = ColaborationtypegroupOntology.ColaborationTypeGroup;
 
 namespace CurriculumvitaeOntology
 {
@@ -32,7 +32,7 @@ namespace CurriculumvitaeOntology
 			SemanticPropertyModel propRoh_collaborationType = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collaborationType");
 			if(propRoh_collaborationType != null && propRoh_collaborationType.PropertyValues.Count > 0)
 			{
-				this.Roh_collaborationType = new ColaboratoinTypeGroup(propRoh_collaborationType.PropertyValues[0].RelatedEntity,idiomaUsuario);
+				this.Roh_collaborationType = new ColaborationTypeGroup(propRoh_collaborationType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 		}
 
@@ -41,7 +41,7 @@ namespace CurriculumvitaeOntology
 		public OntologyEntity Entity { get; set; }
 
 		[RDFProperty("http://w3id.org/roh/collaborationType")]
-		public  ColaboratoinTypeGroup Roh_collaborationType  { get; set;} 
+		public  ColaborationTypeGroup Roh_collaborationType  { get; set;} 
 		public string IdRoh_collaborationType  { get; set;} 
 
 

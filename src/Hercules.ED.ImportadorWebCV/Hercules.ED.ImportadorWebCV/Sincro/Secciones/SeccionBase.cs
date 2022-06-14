@@ -385,16 +385,21 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         protected List<SubseccionItem> CheckPreimportar(bool preimportar, List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
-            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] bool propertiesCV)
+            List<string> propiedadesItem, string RdfTypeTab, List<bool> listadoBloqueados,[Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] bool propertiesCV)
         {
             if (preimportar)
             {
+                if (listadoBloqueados.Count != equivalencias.Count)
+                {
+                    throw new Exception("El listado de items bloqueados y el listado de equivalencias no concuerdan");
+                }
+
                 if (propertiesCV != null && propertiesCV)
                 {
                     List<SubseccionItem> listaAux = new List<SubseccionItem>();
                     for (int i = 0; i < equivalencias.Count; i++)
                     {
-                        listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv));
+                        listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, listadoBloqueados.ElementAt(i)));
                     }
                     return listaAux;
                 }
@@ -403,7 +408,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     List<SubseccionItem> listaAux = new List<SubseccionItem>();
                     for (int i = 0; i < equivalencias.Count; i++)
                     {
-                        listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties));
+                        listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties, listadoBloqueados.ElementAt(i)));
                     }
                     return listaAux;
                 }

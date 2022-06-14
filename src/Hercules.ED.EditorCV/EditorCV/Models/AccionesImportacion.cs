@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -58,6 +59,36 @@ namespace EditorCV.Models
                 mResourceApi.Log.Error(ex.Message);
                 return new Preimport();
             }
+        }
+
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, Preimport preimport, List<string> listaId)
+        {
+            //Petición al exportador
+            var multipartFormData = new MultipartFormDataContent();
+            multipartFormData.Add(new StringContent(pCVID), "pCVID");
+            multipartFormData.Add(new ObjectContent( typeof( Preimport),preimport, new JsonMediaTypeFormatter()));
+            if (listaId != null && listaId.Count>0)
+            {
+                foreach (string id in listaId)
+                {
+                    multipartFormData.Add(new StringContent(id),"listaId");
+                }
+            }
+
+            string urlPreImportador = "";
+            urlPreImportador = _Configuracion.GetUrlImportador() + "/Postimportar";
+
+            //Petición al exportador para conseguir el archivo PDF
+            HttpClient client = new HttpClient();
+            client.Timeout = new TimeSpan(1, 15, 0);
+
+            HttpResponseMessage response = client.PostAsync($"{urlPreImportador}", multipartFormData).Result;
+            response.EnsureSuccessStatusCode();
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception(response.StatusCode.ToString() + " " + response.Content);
+            }
+
         }
 
         public ConcurrentDictionary<int, API.Response.Tab> GetListTabs(ConcurrentBag<API.Templates.Tab> tabTemplatesAux, Preimport preimport)
@@ -117,6 +148,11 @@ namespace EditorCV.Models
 
                 tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
                 tabSectionItem.properties = new List<TabSectionItemProperty>();
+                tabSectionItem.identifier = preimport.secciones.Where(x => x.id.Equals("000.000.000.000"))
+                    .Select(x => x.subsecciones.Select(x => x.guid).FirstOrDefault()).FirstOrDefault();
+                
+                tabSectionItem.iseditable = !preimport.secciones.Where(x => x.id.Equals("000.000.000.000"))
+                    .Select(x => x.subsecciones.Select(x => x.isBlocked).FirstOrDefault()).FirstOrDefault();
 
                 if (itemEditSection.rows != null && itemEditSection.rows.Count > 0)
                 {
@@ -132,8 +168,7 @@ namespace EditorCV.Models
                                 tsip.values = preimport.secciones.Where(x => x.id.Equals("000.000.000.000"))
                                     .SelectMany(x => x.subsecciones.SelectMany(x => x.propiedades.Where(x => x.prop.Equals(prop.property)).ToList()))
                                     .SelectMany(x => x.values).ToList();
-
-                                tabSectionItem.iseditable = !prop.blocked;
+                                                                
                                 tabSectionItem.properties.Add(tsip);
                             }
                         }
@@ -189,15 +224,52 @@ namespace EditorCV.Models
                 if (section != null && section.presentation != null && section.presentation.listItemsPresentation != null &&
                     section.presentation.listItemsPresentation.listItem != null && section.presentation.listItemsPresentation.listItem.properties != null &&
                     section.presentation.listItemsPresentation.listItem.properties.Count != 0 &&
-                    preimport.secciones.Exists(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection)))
+                    preimport.secciones.Exists(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection)) ||
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x=>x.id.Equals("050.020.010.000")) ||
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x=>x.id.Equals("050.020.020.000")) ||
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x=>x.id.Equals("050.010.000.000"))
+                )
                 {
-                    List<SubseccionItem> listaSubsecciones = preimport.secciones
-                        .Where(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection))
-                        .SelectMany(x => x.subsecciones).ToList();
+
+                    List<SubseccionItem> listaSubsecciones = new List<SubseccionItem>();
+                    if (string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && !string.IsNullOrEmpty(section.presentation.listItemsPresentation.rdftype_cv))
+                    {
+                        if (section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
+                        {
+                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.020.010.000")).SelectMany(x => x.subsecciones).ToList();
+                        }
+                        else if (section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
+                        {
+                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.020.020.000")).SelectMany(x => x.subsecciones).ToList();
+                        }
+                        else if (section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedGroupCV"))
+                        {
+                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.010.000.000")).SelectMany(x => x.subsecciones).ToList();
+                        }
+                        else if (section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
+                        {
+                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.010.000")).SelectMany(x => x.subsecciones).ToList();
+                        }
+                        else if (section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV"))
+                        {
+                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.020.000")).SelectMany(x => x.subsecciones).ToList();
+                        }
+                        else if (section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV"))
+                        {
+                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.030.000")).SelectMany(x => x.subsecciones).ToList();
+                        }
+                    }
+                    else
+                    {
+                        listaSubsecciones = preimport.secciones
+                            .Where(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection))
+                            .SelectMany(x => x.subsecciones).ToList();
+                    }
+                    
 
                     for (int i = 0; i < listaSubsecciones.Count; i++)
                     {
-                        tabSection.items.Add(Guid.NewGuid().ToString(), GetItemImport(section.presentation.listItemsPresentation.listItem, listaSubsecciones[i]));
+                        tabSection.items.Add(listaSubsecciones[i].guid, GetItemImport(section.presentation.listItemsPresentation.listItem, listaSubsecciones[i]));
                     }
                 }
             }
@@ -216,7 +288,7 @@ namespace EditorCV.Models
 
                         tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
                         tabSectionItem.properties = new List<TabSectionItemProperty>();
-                        tabSectionItem.iseditable = !itemEditSection.blocked;
+                        tabSectionItem.iseditable = !itemEditSection.blocked;                            
 
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
                         tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(itemEditSection.property));
@@ -269,6 +341,8 @@ namespace EditorCV.Models
             sectionItem.title = subseccionItem.propiedades.FirstOrDefault(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?.values.FirstOrDefault();
             sectionItem.properties = new List<TabSectionItemProperty>();
             sectionItem.iseditable = !subseccionItem.isBlocked;
+            sectionItem.idBBDD = subseccionItem.idBBDD;
+            sectionItem.identifier = subseccionItem.guid;
 
             //TODO title or
             //sectionItem.title = property.values.First();

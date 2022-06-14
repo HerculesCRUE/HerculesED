@@ -108,7 +108,7 @@ var exportacionCV = {
 												</h2>
 											</div>
 											<div class="content-wrap">
-												<div class="description-wrap counted">												
+												<div class="description-wrap counted">
 														<div class="list-wrap no-oculto">
 															<div class="label">Estado</div>
 															<ul>
@@ -236,9 +236,9 @@ function printCientificProduction(id, data){
 						</a>
 					</p>
 				</div>
-				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
-						<div class="panel-body">								
+						<div class="panel-body">
 							<div class="resource-list listView">
 								<div class="resource-list-wrap">
 									<article class="resource success" >
@@ -428,11 +428,11 @@ edicionCV.printPersonalData=function(id, data) {
 									</a>
 								</p>
 							</div>
-							<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+							<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 								<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
-									<div class="panel-body">								
+									<div class="panel-body">
 										<div class="resource-list listView">
-											<div class="resource-list-wrap">									
+											<div class="resource-list-wrap">
 												<article class="resource success" >
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.entityID}">
@@ -548,7 +548,7 @@ edicionCV.printTabSection= function(data) {
 								</div>
 							</div>
 						</div>
-					</div>					
+					</div>
 				</div>
 			</div>
 		</div>`;
