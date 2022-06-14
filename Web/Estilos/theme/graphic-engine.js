@@ -1,10 +1,8 @@
-$(document).ready(function() {
-    if(!$('div').hasClass('indicadoresPersonalizados'))
-    {
+$(document).ready(function () {
+    if (!$('div').hasClass('indicadoresPersonalizados')) {
         metricas.init();
     }
-    else
-    {
+    else {
         metricas.initPersonalized();
     }
 });
@@ -25,17 +23,18 @@ var metricas = {
         this.getPages();
         return;
     },
-    initPersonalized: function() {
+    initPersonalized: function () {
         this.getPagesPersonalized();
         return;
     },
-    config: function() {
+    config: function () {
         return;
     },
-    getPages: function() {
-        var that = this;        
+    getPages: function () {
+        var that = this;
         var url = url_servicio_graphicengine + "GetPaginasGraficas"; //"https://localhost:44352/GetPaginaGrafica";        
         var arg = {};
+        var nodes = globalThis.nodes = {};
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
@@ -50,14 +49,14 @@ var metricas = {
             listaPaginas = listaData;
         });
     },
-    getPagesPersonalized: function() {
-        var that = this;        
+    getPagesPersonalized: function () {
+        var that = this;
         var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"  
         var arg = {};
         arg.pUserId = $('.inpt_usuarioID').attr('value');
 
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function(listaData) {
+        $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
                     <li id="${listaData[i].idRecurso}" num="${i}">${listaData[i].titulo}</li>
@@ -72,13 +71,13 @@ var metricas = {
             arg.pPageId = listaData[0].idRecurso;
 
             //$.get(url, arg, function(data) {
-                //that.fillPagePersonalized(listaData[0].idRecurso, data);
+            //that.fillPagePersonalized(listaData[0].idRecurso, data);
             //});
-            
+
             listaPaginas = listaData;
         });
     },
-    getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null,barSize = 100) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -96,15 +95,20 @@ var metricas = {
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
             if ("container" in data) {
-                var nodes = window.nodes = {} //TODO mover declaracion.
+                //nodes = globalThis.nodes = {} //TODO mover declaracion.
+                var controls = $(ctx).parent().find(".graph-controls");
+                var download = $(ctx).parents("div.wrap").find('a.descargar');
                 data.container = ctx;
 
-                data.ready = function() { window.cy = this };
-                var cy = window.cy = cytoscape(data);
-                if (ctx) {
-                    nodes["pop_"+pIdGrafica] = cy;
+
+                data.ready = function () { window.cy = this };
+                var cy = cytoscape(data);
+                if (graficaContenedor.hasClass("graph-container")) {
+                    nodes["pop_" + pIdGrafica] = cy;
+                    console.log("pop_" + pIdGrafica);
                 } else {
                     nodes[pIdGrafica] = cy;
+                    console.log(pIdGrafica);
                 }
                 //var combo = $(ctx).parents("article").find("select");
                 if (combo) {
@@ -149,6 +153,32 @@ var metricas = {
                     }
                 });
 
+                $(download).unbind().click(function (e) {
+                    var image = cy.jpg();
+                    var a = document.createElement('a');
+                    a.href = image;
+                    a.download = Date.now() + '.jpg';
+                    a.click();
+                });
+                $(download).removeClass("descargar");
+
+                $(controls.find("#zoomOut"))
+                    .unbind()
+                    .click(function (e) {
+                        cy.zoom({
+                            level: cy.zoom() / 1.2,
+                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+                        });
+                    });
+                $(controls.find("#zoomIn"))
+                    .unbind()
+                    .click(function (e) {
+                        cy.zoom({
+                            level: cy.zoom() * 1.2,
+                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+                        });
+                    });
+
             } else {
                 if (combo) {
                     var option = $(combo).find("option[value='grafica_" + pIdPagina + "_" + pIdGrafica + "']");
@@ -177,7 +207,6 @@ var metricas = {
                     var myChart = new Chart(ctx, data);
                 }
             }
-
             that.engancharComportamientos();
         });
     },
@@ -292,6 +321,11 @@ var metricas = {
         });
     },
     clearPage: function () {
+        $('canvas').each(function () {
+            Chart.getChart(this)?.destroy();
+        });
+        $(window).unbind('resize');
+
         $('#panFacetas').empty()
         $('.resource-list-wrap').empty();
         $('.borrarFiltros').click();
@@ -316,7 +350,7 @@ var metricas = {
             </div>
         `);*/
     },
-    createEmptyPagePersonalized: function(pIdPagina) {
+    createEmptyPagePersonalized: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
         $('.containerPage').addClass('pageMetrics');
         $('main').find('.modal-backdrop').remove();
@@ -324,7 +358,7 @@ var metricas = {
         <div class="modal-backdrop fade" style="pointer-events: none;"></div>
         `);
     },
-    fillPage: function(pPageData) {
+    fillPage: function (pPageData) {
         idPaginaActual = pPageData.id;
         var that = this;
 
@@ -440,7 +474,7 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    fillPagePersonalized: function(idPaginaUsuario, pPageData) {
+    fillPagePersonalized: function (idPaginaUsuario, pPageData) {
         idPaginaActual = idPaginaUsuario;
         var that = this;
 
@@ -455,14 +489,14 @@ var metricas = {
         while (lista.length > 0) {
             tmp = [];
             var grafica = lista.shift();
-            tmp.push(grafica);            
+            tmp.push(grafica);
             gruposDeIDs.push(tmp);
         }
 
-        gruposDeIDs.forEach(function(item, index, array) {
+        gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
-            item.forEach(function(grafica, index, array) {
+            item.forEach(function (grafica, index, array) {
 
                 tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
@@ -510,10 +544,10 @@ var metricas = {
 
             `);
         });
-        
+
         that.pintarPaginaPersonalized(idPagina, idGrafica, filtro)
     },
-    pintarPagina: function(pIdPagina) {
+    pintarPagina: function (pIdPagina) {
         var that = this;
 
         // Borra la clase modal-open del body cuando se abre el pop-up del tesáuro. 
@@ -647,7 +681,7 @@ var metricas = {
             }
         }
     },
-    pintarPaginaPersonalized: function(pIdPagina, pIdGrafica, pFitro) {
+    pintarPaginaPersonalized: function (pIdPagina, pIdGrafica, pFitro) {
         var that = this;
 
         // Borra la clase modal-open del body cuando se abre el pop-up del tesáuro. 
@@ -659,7 +693,7 @@ var metricas = {
         $('#page_' + pIdPagina + ' .box').empty();
 
         // Recorremos el div de las gráficas.
-        $('#page_' + pIdPagina + ' .grafica').each(function() {
+        $('#page_' + pIdPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pIdPagina}_${pIdGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
@@ -694,10 +728,10 @@ var metricas = {
             that.getGrafica(pIdPagina, pIdGrafica, pFitro);
         });
     },
-    corregirFiltros: function() {
+    corregirFiltros: function () {
         // Permite pintar el filtro del tesauro con el nombre del nivel correspondiente.
-        $("#panListadoFiltros").each(function() {
-            $("#panListadoFiltros").find('li').each(function() {
+        $("#panListadoFiltros").each(function () {
+            $("#panListadoFiltros").find('li').each(function () {
                 if ($(this).hasClass("oculto")) {
                     var valor = $(this).find('span').text();
                     var nombre = $(`a[filtro="${valor}"]`).attr("title");
@@ -840,8 +874,8 @@ var metricas = {
             // Cuando se acutaliza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
-                window.addEventListener('resize', (e) => {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
-                    this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
+                $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
+                    metricas.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                     myChart.update();
                 });
             }
@@ -1264,25 +1298,13 @@ var metricas = {
             .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
-
-
                 var chart = Chart.getChart(canvas);
-
                 // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
                 if (chart == null) {
                     canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
                     chart = Chart.getChart(canvas);
                 }
-
-                // Obtención del chart usando el elemento canvas de graficas sin scroll y de Cytoscape.js
-                var image;
-                if (chart == null) {
-                    image = cy.jpg();
-                }
-                else {
-                    image = chart.toBase64Image('image/jpeg', 1);
-                }
-
+                var image = chart.toBase64Image('image/jpeg', 1);
                 // Creación del elemento para empezar la descarga.
                 var a = document.createElement('a');
                 a.href = image;
@@ -1301,7 +1323,7 @@ var metricas = {
             });
         $('a.guardar')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 // Lipia los campos.
                 $("#labelTituloGrafica").val("");
                 $("#idSelectorPagina").empty();
@@ -1318,7 +1340,7 @@ var metricas = {
                 arg.pUserId = idUsuario;
 
                 // Petición para obtener los datos de la página.
-                $.get(url, arg, function(listaData) {
+                $.get(url, arg, function (listaData) {
                     listaData.forEach(data => {
                         $('#idSelectorPagina').append(`
                             <option idPagina="${data.idRecurso}">${data.titulo}</option>    
@@ -1355,7 +1377,7 @@ var metricas = {
 
         $('#btnGuardarGrafica')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var url = url_servicio_graphicengine + "GuardarGrafica"; //"https://localhost:44352/GuardarGrafica"
                 var arg = {};
                 arg.pTitulo = $('#labelTituloGrafica').val();
@@ -1382,7 +1404,7 @@ var metricas = {
                 }
 
                 // Petición para obtener los datos de la página.
-                $.get(url, arg, function(data) {
+                $.get(url, arg, function (data) {
                     cerrarModal();
                 });
             });
@@ -1442,7 +1464,7 @@ var metricas = {
         //boton del pop-up con la grafica escalada
         $("div.zoom")
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
 
                 // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
@@ -1502,31 +1524,7 @@ var metricas = {
             });
 
 
-        $('li#zoomIn')
-            .unbind()
-            .click(function (e) {
-                var canvas = $(this).parents('div.grafica').find('div.__________cytoscape_container').attr('id') ;
-                var id = canvas.split('_')[1];
-                if (!canvas) {
-                    canvas = $(this).parents('div.graph-container').find('div.__________cytoscape_container').attr('id');
-                    id = 'pop_'+canvas.split('_')[1];
-                }
 
-                nodes.id.zoom({
-                    level: cy.zoom() * 1.2,
-                    renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
-
-                });
-            });
-
-        $('li#zoomOut')
-            .unbind()
-            .click(function (e) {
-                cy.zoom({
-                    level: cy.zoom() / 1.2,
-                    renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
-                });
-            });
 
 
 
@@ -1555,9 +1553,9 @@ var metricas = {
             //Hay que repintar las graficas de nodos para que se enganche correctamente el zoom
 
             if (controls == 2) { //solo las graficas de nodos tienen controles (+,-) 
-                var nodes = $('div.__________cytoscape_container').empty();
-                var idGrafica = nodes.attr("id").split("_").at(-1);
-                that.getGrafica(idPaginaActual, idGrafica, ObtenerHash2(), nodes);
+                //var nodes = $('div.__________cytoscape_container').empty();
+                //var idGrafica = nodes.attr("id").split("_").at(-1);
+                //that.getGrafica(idPaginaActual, idGrafica, ObtenerHash2(), nodes);
             }
 
         }
