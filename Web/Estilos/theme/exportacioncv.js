@@ -548,7 +548,7 @@ edicionCV.printTabSection= function(data) {
 								</div>
 							</div>
 						</div>
-					</div>					
+					</div>
 				</div>
 			</div>
 		</div>`;

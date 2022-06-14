@@ -7,6 +7,7 @@ var importarCVN = {
     init: function (){		
 		this.config(),
 		this.idUsuario = $('#inpt_usuarioID').val();
+		this.fileData = '';
 
         return;        
     },
@@ -27,12 +28,24 @@ var importarCVN = {
             e.preventDefault();
 			that.cargarCV();
 		});
+		
+		$('.btImportarCV').off('click').on('click', function(e) {
+			e.preventDefault();
+			var listaId = "";
+			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
+				listaId += (this.checked ? $(this).val()+"@@@" : "")
+			});
+			
+			listaId = listaId.slice(0,-3);			
+			
+			that.importarCV(listaId);
+		});
     },
 	//Carga los datos del CV para la exportacion
     cargarCV: function() {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
-		MostrarUpdateProgress();
+		MostrarUpdateProgress(0);
 		var that=this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
@@ -46,7 +59,8 @@ var importarCVN = {
 			processData: false,
             enctype: 'multipart/form-data',
             contentType: false,
-			success: function ( data ) {
+			success: function ( response ) {
+				//that.fileData = response;
 				for(var i=0;i<7;i++){
 					MostrarUpdateProgress(0);
 					var id = 'x' + RandomGuid();
@@ -55,7 +69,7 @@ var importarCVN = {
 												<div class="panel-heading" role="tab" id="datos-tab">
 													<p class="panel-title">
 														<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
-															<span class="texto">${data[i].title}</span>
+															<span class="texto">${response[i].title}</span>
 															<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 														</a>
 													</p>
@@ -70,26 +84,50 @@ var importarCVN = {
 										</div>`;
 					if(i==0){
 						$('.contenido-cv').append( $(contenedorTab));
-						var html = edicionCV.printPersonalData(id, data[i]);
+						var html = edicionCV.printPersonalData(id, response[i]);
 						$('div[id="' + id + '"] .col-12.col-contenido').append(html);
 						$('#'+id+' input[type="checkbox"]').prop('checked',true);
 					}else if(i == 6){
 						$('.contenido-cv').append( $(contenedorTab));		
-						var html = printFreeText(id, data[i]);
+						var html = printFreeText(id, response[i]);
 						$('div[id="' + id + '"] .col-12.col-contenido').append(html);
 					}else{
 						$('.contenido-cv').append( $(contenedorTab));
-						edicionCV.printTab(id, data[i]);
+						edicionCV.printTab(id, response[i]);
 					}
 				};
-				OcultarUpdateProgress();
+				//that.fileData = response[99].title;
+				
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
-				checkAllCVWrapper();				
+				checkAllCVWrapper();
+				OcultarUpdateProgress();				
+			}
+		});		
+		return;
+    },	
+	importarCV: function(listaId) {
+		MostrarUpdateProgress();
+		var that = this;
+		var formData = new FormData();
+		formData.append('userID', that.idUsuario);
+		formData.append('fileData', that.fileData);
+		formData.append('listaId', listaId);
+		
+		$.ajax({
+			url: urlImportacionCV + '/PostimportarCV',
+			type: 'POST',
+			data: formData,
+			cache: false,
+			processData: false,
+            enctype: 'multipart/form-data',
+            contentType: false,
+			success: function ( response ) {
+				
+				OcultarUpdateProgress();			
 			}
 		});
 		
-		return;
-    }
+	}
 };
 
 function checkAllCVWrapper(){
@@ -220,7 +258,7 @@ function printFreeText(id, data){
 											</div>
 										</div>
 										<div class="resource-list listView">
-											<div class="resource-list-wrap">`;
+									<div class="resource-list-wrap">`;
 
 		var secciones = data.sections[0].items;
 		for (const seccion in secciones){
@@ -277,7 +315,7 @@ edicionCV.printTab= function(entityID, data) {
 			$('div[id="' + entityID + '"] .col-12.col-contenido').append(printCientificProduction(entityID, data.sections[i]));
 		}
 		else
-		{			
+		{
 			$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
 			if (data.sections[i].items != null) {
 				this.repintarListadoTab(data.sections[i].identifier,true);
@@ -353,8 +391,8 @@ edicionCV.printPersonalData=function(id, data) {
 												<div class="resource-list-wrap">
 													<article class="resource success" >
 														<div class="custom-control custom-checkbox">
-															<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${id}">
-															<label class="custom-control-label" for="check_resource_${id}"></label>
+															<input type="checkbox" class="custom-control-input" id="check_resource_${data.sections[0].items[seccion].identifier}"  value="${data.sections[0].items[seccion].identifier}">
+															<label class="custom-control-label" for="check_resource_${data.sections[0].items[seccion].identifier}"></label>
 														</div>
 														<div class="wrap">
 															<div class="middle-wrap">
@@ -420,8 +458,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo
-											</label>
+											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
 										</div>
 									</div>
 								</div>
@@ -491,10 +528,19 @@ edicionCV.printHtmlListItem= function(id, data) {
 										${this.printHtmlListItemOrders(data)}
 										<div class="title-wrap">
 											<h2 class="resource-title">${data.title}</h2>
+											
+											<select name="itemConflict" class="js-select2">
+												<option value="ig" selected="">Ignorar</option>
+												<option value="fu">Fusionar</option>
+												<option value="so">Sobreescribir</option>
+												<option value="du">Duplicar</option>
+											</select>
+											
 											<span class="material-icons arrow">keyboard_arrow_down</span>
 										</div>
 										<div class="content-wrap">
 											<div class="description-wrap">
+												${this.printHtmlListItemEditable(data)}	
 												${this.printHtmlListItemPropiedades(data)}
 											</div>
 										</div>
