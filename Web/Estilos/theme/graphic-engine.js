@@ -37,7 +37,7 @@ var metricas = {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
                     <li class="nav-item" id="${listaData[i].id}" num="${i}">
-                        <a class="nav-link ${i==0?"active":""} uppercase">${listaData[i].nombre}</a>
+                        <a class="nav-link ${i == 0 ? "active" : ""} uppercase">${listaData[i].nombre}</a>
                     </li>
                 `);
             }
@@ -484,8 +484,10 @@ var metricas = {
             gruposDeIDs.forEach(function (item, index, array) {
                 var graficasGrupo;
                 var tmp = '';
+                console.log(item);
 
                 item.forEach(function (grafica, index, array) {
+
                     tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.idGrafica}'></div>`;
                 });
                 graficasGrupo = tmp;
@@ -814,9 +816,6 @@ var metricas = {
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
 
-
-
-
             if (horizontal) {
                 ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
             } else {// -- vertical
@@ -828,6 +827,8 @@ var metricas = {
             }
 
 
+
+            var myChart = new Chart(ctx, data);
             // Se comprueba si tiene eje principal/secundario.
             Object.entries(data.options.scales).forEach((scale) => { // por cada escala que tenga data
                 if ((scale[1].axis == "x" && horizontal) || (scale[1].axis == "y" && !horizontal)) { //se comprueba si tiene eje principal (top en caso de horizontal, left en caso de vertical)
@@ -839,7 +840,6 @@ var metricas = {
 
                 }
             });
-
             // Leyenda con titulo y contenedor para datasets.
             var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
                 <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
@@ -847,7 +847,6 @@ var metricas = {
             $(chartContainer).append(legend);
             var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"></div>`)
             $(legend).append(dataSetLabels);
-
 
             // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
             var datasets = data.data.datasets;
@@ -861,6 +860,7 @@ var metricas = {
 
             });
 
+
             //Se añade el eje principal al contenedor.
             if (hasMainAxis) {
                 if (horizontal) {
@@ -871,7 +871,6 @@ var metricas = {
                     $(chartContainer).append(mainAxis);
                 }
             }
-
             //Se añade el eje secundario al contenedor.
             if (hasSecondaryAxis) {
                 if (horizontal) {
@@ -882,7 +881,7 @@ var metricas = {
                 $(chartContainer).append(secondaryAxis);
             }
 
-            var myChart = new Chart(ctx, data);
+
             // Cuando se acutaliza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
@@ -891,8 +890,12 @@ var metricas = {
                     myChart.update();
                 });
             }
-
-
+            
+            if (data.isDate) {
+                $(ctx).parents('div.chartScroll')[0].scrollLeft = canvasSize;
+                //$(ctx).parents('div.chartScroll').animate({ scrollLeft: canvasSize }, 3000); tiempo en ms
+            }
+            //
         }
 
 
@@ -1067,7 +1070,7 @@ var metricas = {
         var menus = $("select.chartMenu");
         menus.each((index, menu) => { //por cada menu en la pagina
             var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica"); //Obtiene la id de la grafica visible
-            console.log(idPaginaActual + "_" + selectedID);
+
             $(menu).val("grafica_" + idPaginaActual + "_" + selectedID); // y la selecciona en el menu
         });
 
@@ -1534,11 +1537,6 @@ var metricas = {
                 that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx[0], 50); //obtenemos los datos y pintamos la grafica
 
             });
-
-
-
-
-
 
 
         $('.modal-backdrop')
