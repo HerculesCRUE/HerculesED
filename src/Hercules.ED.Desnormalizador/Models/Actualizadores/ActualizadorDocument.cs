@@ -512,7 +512,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             //unificada-->http://vivoweb.org/ontology/core#freeTextKeyword
             //usuario-->http://w3id.org/roh/userKeywords
             //external-->http://w3id.org/roh/externalKeywords
-            //enriched-->http://w3id.org/roh/enrichedKeywords
+            //enriched-->http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/title
 
 
             HashSet<string> filters = new HashSet<string>();
@@ -537,8 +537,14 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 {{
                                     select  distinct ?document ?tag where{{
                                         ?document a <http://purl.org/ontology/bibo/Document>.
-                                        ?document ?props ?tag.
-                                        FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>,<http://w3id.org/roh/enrichedKeywords>))
+                                        {{
+                                            ?document ?props ?tag.
+                                            FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>))
+                                        }}UNION
+                                        {{
+                                            ?document <http://w3id.org/roh/enrichedKeywords> ?aux.
+                                            ?aux <http://w3id.org/roh/title> ?tag.
+                                        }}
                                     }}
                                 }}
                                 MINUS{{
@@ -577,8 +583,14 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 MINUS{{
                                     select  distinct ?document ?tag where{{
                                         ?document a <http://purl.org/ontology/bibo/Document>.
-                                        ?document ?props ?tag.
-                                        FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>,<http://w3id.org/roh/enrichedKeywords>))
+                                        {{
+                                            ?document ?props ?tag.
+                                            FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>))
+                                        }}UNION
+                                        {{
+                                            ?document <http://w3id.org/roh/enrichedKeywords> ?aux.
+                                            ?aux <http://w3id.org/roh/title> ?tag.
+                                        }}
                                     }}
                                 }}
                             }} limit {limit}";
@@ -649,6 +661,172 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             yearCargado = fila["yearCargado"].value;
                         }
                         ActualizadorTriple(document, "http://w3id.org/roh/year", yearCargado, yearCargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Insertamos en la propiedad http://w3id.org/roh/genderIP de los http://purl.org/ontology/bibo/Document 
+        /// el gender del primer autor (si esta validado) y '-' si el primer autor no está validado o está validado pero no tiene gender
+        /// No tiene dependencias
+        /// <param name="pDocuments">ID de documentos</param>
+        public void ActualizarGenderAutorPrincipal(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            //Eliminamos los duplicados
+            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/genderIP");
+
+            foreach (string filter in filters)
+            {
+                //Actualizamos los datos
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?document ?genderIPCargado ?genderIPACargar from <http://gnoss.com/person.owl>";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                OPTIONAL
+                                {{
+                                  ?document <http://w3id.org/roh/genderIP> ?genderIPCargado.
+                                }}
+                                OPTIONAL{{
+                                  select ?document IF (BOUND (?genderIPACargar), ?genderIPACargar, '-' ) as ?genderIPACargar
+                                  Where{{
+                                    ?document a <http://purl.org/ontology/bibo/Document>.
+                                    OPTIONAL{{
+                                        ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                        ?person <http://xmlns.com/foaf/0.1/gender> ?genderIPACargar.
+                                        ?person <http://w3id.org/roh/isActive>  'true'.
+                                        {{
+		                                    select ?document  min(?orden) as ?orden sample(?author) as ?author where
+		                                    {{
+			                                    select ?document  ?orden ?author where
+			                                    {{
+				                                    ?document a <http://purl.org/ontology/bibo/Document>.
+				                                    ?document <http://purl.org/ontology/bibo/authorList> ?author.
+				                                    ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
+				                                    BIND(xsd:int(?ordenAux) as ?orden)
+			                                    }}order by asc(?orden) 
+		                                    }}group by (?document)
+	                                    }}                                    
+                                    }}
+
+                                  }}
+                                }}
+                                FILTER(?genderIPCargado!= ?genderIPACargar OR !BOUND(?genderIPCargado) )
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string document = fila["document"].value;
+                        string genderIPACargar = fila["genderIPACargar"].value;
+                        string genderIPCargado = "";
+                        if (fila.ContainsKey("genderIPCargado"))
+                        {
+                            genderIPCargado = fila["genderIPCargado"].value;
+                        }
+                        ActualizadorTriple(document, "http://w3id.org/roh/genderIP", genderIPCargado, genderIPACargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Insertamos en la propiedad http://w3id.org/roh/positionIP de los http://purl.org/ontology/bibo/Document 
+        /// el position del primer autor (si esta validado) y '-' si el primer autor no está validado o está validado pero no tiene position
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">ID de documentos</param>
+        public void ActualizarPositionAutorPrincipal(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            //Eliminamos los duplicados
+            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/positionIP");
+
+            foreach (string filter in filters)
+            {
+                //Actualizamos los datos
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?document ?positionIPCargado ?positionIPACargar from <http://gnoss.com/person.owl>";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                OPTIONAL
+                                {{
+                                  ?document <http://w3id.org/roh/positionIP> ?positionIPCargado.
+                                }}
+                                OPTIONAL{{
+                                  select ?document IF (BOUND (?positionIPACargar), ?positionIPACargar, '-' ) as ?positionIPACargar
+                                  Where{{
+                                    ?document a <http://purl.org/ontology/bibo/Document>.
+                                    OPTIONAL{{
+                                        ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                        ?person <http://w3id.org/roh/hasPosition> ?positionIPACargar.
+                                        ?person <http://w3id.org/roh/isActive>  'true'.
+                                        {{
+		                                    select ?document  min(?orden) as ?orden sample(?author) as ?author where
+		                                    {{
+			                                    select ?document  ?orden ?author where
+			                                    {{
+				                                    ?document a <http://purl.org/ontology/bibo/Document>.
+				                                    ?document <http://purl.org/ontology/bibo/authorList> ?author.
+				                                    ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
+				                                    BIND(xsd:int(?ordenAux) as ?orden)
+			                                    }}order by asc(?orden) 
+		                                    }}group by (?document)
+	                                    }}                                    
+                                    }}
+
+                                  }}
+                                }}
+                                FILTER(?positionIPCargado!= ?positionIPACargar OR !BOUND(?positionIPCargado) )
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string document = fila["document"].value;
+                        string positionIPACargar = fila["positionIPACargar"].value;
+                        string positionIPCargado = "";
+                        if (fila.ContainsKey("positionIPCargado"))
+                        {
+                            positionIPCargado = fila["positionIPCargado"].value;
+                        }
+                        ActualizadorTriple(document, "http://w3id.org/roh/positionIP", positionIPCargado, positionIPACargar);
                     });
 
                     if (resultado.results.bindings.Count != limit)
