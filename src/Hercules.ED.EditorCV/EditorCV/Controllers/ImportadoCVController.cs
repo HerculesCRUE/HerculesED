@@ -94,6 +94,8 @@ namespace EditorCV.Controllers
                         dicOpciones.Add(idOpcion, valueOpcion);
                     }
                 }
+
+                //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
                 foreach(KeyValuePair<string, string> valuePair in dicOpciones)
                 {
                     if (valuePair.Value.Equals("ig") && listadoId.Contains(valuePair.Key))
