@@ -238,6 +238,18 @@ namespace DocumentOntology
 					}
 				}
 			}
+			this.Roh_enrichedKeywords = new List<EnrichedKeyWord>();
+			SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
+			if(propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						EnrichedKeyWord roh_enrichedKeywords = new EnrichedKeyWord(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_enrichedKeywords.Add(roh_enrichedKeywords);
+					}
+				}
+			}
 			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
 			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
 			{
@@ -321,10 +333,11 @@ namespace DocumentOntology
 			this.Bibo_publisher = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/publisher"));
 			this.Roh_legalDeposit = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/legalDeposit"));
 			this.Roh_hasFile = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasFile"));
+			this.Roh_positionIP = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/positionIP"));
 			this.Roh_publicationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationTitle"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Bibo_presentedAt = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/presentedAt"));
-			this.Roh_reviewsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/reviewsNumber"));
+			this.Roh_reviewsNumber = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/reviewsNumber"));
 			SemanticPropertyModel propRoh_externalKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKeywords");
 			this.Roh_externalKeywords = new List<string>();
 			if (propRoh_externalKeywords != null && propRoh_externalKeywords.PropertyValues.Count > 0)
@@ -352,20 +365,12 @@ namespace DocumentOntology
 				}
 			}
 			this.Bibo_volume = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/volume"));
-			SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
-			this.Roh_enrichedKeywords = new List<string>();
-			if (propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
-				{
-					this.Roh_enrichedKeywords.Add(propValue.Value);
-				}
-			}
 			this.Roh_quartile = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/quartile"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
 			this.Bibo_pageStart = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageStart"));
 			this.Roh_congressProceedingsPublication= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/congressProceedingsPublication"));
 			this.Roh_presentedAtOrganizerLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/presentedAtOrganizerLocality"));
+			this.Roh_genderIP = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/genderIP"));
 			this.Roh_getKeyWords= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/getKeyWords"));
 			this.Bibo_pageEnd = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageEnd"));
 			this.Roh_collection = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collection"));
@@ -580,6 +585,18 @@ namespace DocumentOntology
 					}
 				}
 			}
+			this.Roh_enrichedKeywords = new List<EnrichedKeyWord>();
+			SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
+			if(propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						EnrichedKeyWord roh_enrichedKeywords = new EnrichedKeyWord(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_enrichedKeywords.Add(roh_enrichedKeywords);
+					}
+				}
+			}
 			SemanticPropertyModel propVcard_hasRegion = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasRegion");
 			if(propVcard_hasRegion != null && propVcard_hasRegion.PropertyValues.Count > 0)
 			{
@@ -663,10 +680,11 @@ namespace DocumentOntology
 			this.Bibo_publisher = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/publisher"));
 			this.Roh_legalDeposit = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/legalDeposit"));
 			this.Roh_hasFile = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasFile"));
+			this.Roh_positionIP = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/positionIP"));
 			this.Roh_publicationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationTitle"));
 			this.Vcard_locality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#locality"));
 			this.Bibo_presentedAt = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/presentedAt"));
-			this.Roh_reviewsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/reviewsNumber"));
+			this.Roh_reviewsNumber = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/reviewsNumber"));
 			SemanticPropertyModel propRoh_externalKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/externalKeywords");
 			this.Roh_externalKeywords = new List<string>();
 			if (propRoh_externalKeywords != null && propRoh_externalKeywords.PropertyValues.Count > 0)
@@ -694,20 +712,12 @@ namespace DocumentOntology
 				}
 			}
 			this.Bibo_volume = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/volume"));
-			SemanticPropertyModel propRoh_enrichedKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKeywords");
-			this.Roh_enrichedKeywords = new List<string>();
-			if (propRoh_enrichedKeywords != null && propRoh_enrichedKeywords.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_enrichedKeywords.PropertyValues)
-				{
-					this.Roh_enrichedKeywords.Add(propValue.Value);
-				}
-			}
 			this.Roh_quartile = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/quartile"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
 			this.Bibo_pageStart = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageStart"));
 			this.Roh_congressProceedingsPublication= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/congressProceedingsPublication"));
 			this.Roh_presentedAtOrganizerLocality = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/presentedAtOrganizerLocality"));
+			this.Roh_genderIP = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/genderIP"));
 			this.Roh_getKeyWords= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/getKeyWords"));
 			this.Bibo_pageEnd = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/pageEnd"));
 			this.Roh_collection = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/collection"));
@@ -817,6 +827,9 @@ namespace DocumentOntology
 		public  List<Document> Roh_i_doc_references { get; set;}
 		public List<string> IdsRoh_i_doc_references { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/enrichedKeywords")]
+		public  List<EnrichedKeyWord> Roh_enrichedKeywords { get; set;}
+
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
@@ -911,6 +924,9 @@ namespace DocumentOntology
 		[RDFProperty("http://w3id.org/roh/hasFile")]
 		public  string Roh_hasFile { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/positionIP")]
+		public  string Roh_positionIP { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/publicationTitle")]
 		public  string Roh_publicationTitle { get; set;}
 
@@ -921,7 +937,7 @@ namespace DocumentOntology
 		public  string Bibo_presentedAt { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/reviewsNumber")]
-		public  int? Roh_reviewsNumber { get; set;}
+		public  float? Roh_reviewsNumber { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/externalKeywords")]
 		public  List<string> Roh_externalKeywords { get; set;}
@@ -956,9 +972,6 @@ namespace DocumentOntology
 		[RDFProperty("http://purl.org/ontology/bibo/volume")]
 		public  string Bibo_volume { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/enrichedKeywords")]
-		public  List<string> Roh_enrichedKeywords { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/quartile")]
 		public  int? Roh_quartile { get; set;}
 
@@ -973,6 +986,9 @@ namespace DocumentOntology
 
 		[RDFProperty("http://w3id.org/roh/presentedAtOrganizerLocality")]
 		public  string Roh_presentedAtOrganizerLocality { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/genderIP")]
+		public  string Roh_genderIP { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/getKeyWords")]
 		public  bool Roh_getKeyWords { get; set;}
@@ -1051,6 +1067,7 @@ namespace DocumentOntology
 			propList.Add(new StringOntologyProperty("bibo:publisher", this.Bibo_publisher));
 			propList.Add(new StringOntologyProperty("roh:legalDeposit", this.Roh_legalDeposit));
 			propList.Add(new StringOntologyProperty("roh:hasFile", this.Roh_hasFile));
+			propList.Add(new StringOntologyProperty("roh:positionIP", this.Roh_positionIP));
 			propList.Add(new StringOntologyProperty("roh:publicationTitle", this.Roh_publicationTitle));
 			propList.Add(new StringOntologyProperty("vcard:locality", this.Vcard_locality));
 			propList.Add(new StringOntologyProperty("bibo:presentedAt", this.Bibo_presentedAt));
@@ -1066,12 +1083,12 @@ namespace DocumentOntology
 			propList.Add(new StringOntologyProperty("bibo:doi", this.Bibo_doi));
 			propList.Add(new ListStringOntologyProperty("roh:suggestedKeywords", this.Roh_suggestedKeywords));
 			propList.Add(new StringOntologyProperty("bibo:volume", this.Bibo_volume));
-			propList.Add(new ListStringOntologyProperty("roh:enrichedKeywords", this.Roh_enrichedKeywords));
 			propList.Add(new StringOntologyProperty("roh:quartile", this.Roh_quartile.ToString()));
 			propList.Add(new StringOntologyProperty("bibo:issn", this.Bibo_issn));
 			propList.Add(new StringOntologyProperty("bibo:pageStart", this.Bibo_pageStart));
 			propList.Add(new BoolOntologyProperty("roh:congressProceedingsPublication", this.Roh_congressProceedingsPublication));
 			propList.Add(new StringOntologyProperty("roh:presentedAtOrganizerLocality", this.Roh_presentedAtOrganizerLocality));
+			propList.Add(new StringOntologyProperty("roh:genderIP", this.Roh_genderIP));
 			propList.Add(new BoolOntologyProperty("roh:getKeyWords", this.Roh_getKeyWords));
 			propList.Add(new StringOntologyProperty("bibo:pageEnd", this.Bibo_pageEnd));
 			propList.Add(new StringOntologyProperty("roh:collection", this.Roh_collection));
@@ -1154,6 +1171,15 @@ namespace DocumentOntology
 					OntologyEntity entityImpactIndex = new OntologyEntity("http://w3id.org/roh/ImpactIndex", "http://w3id.org/roh/ImpactIndex", "roh:impactIndex", prop.propList, prop.entList);
 				entList.Add(entityImpactIndex);
 				prop.Entity= entityImpactIndex;
+				}
+			}
+			if(Roh_enrichedKeywords!=null){
+				foreach(EnrichedKeyWord prop in Roh_enrichedKeywords){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityEnrichedKeyWord = new OntologyEntity("http://w3id.org/roh/EnrichedKeyWord", "http://w3id.org/roh/EnrichedKeyWord", "roh:enrichedKeywords", prop.propList, prop.entList);
+				entList.Add(entityEnrichedKeyWord);
+				prop.Entity= entityEnrichedKeyWord;
 				}
 			}
 			if(Roh_hasMetric!=null){
@@ -1447,6 +1473,24 @@ namespace DocumentOntology
 				}
 			}
 			}
+			if(this.Roh_enrichedKeywords != null)
+			{
+			foreach(var item0 in this.Roh_enrichedKeywords)
+			{
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/EnrichedKeyWord_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/EnrichedKeyWord>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/EnrichedKeyWord_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/EnrichedKeyWord\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/EnrichedKeyWord_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}", "http://w3id.org/roh/enrichedKeywords", $"<{resourceAPI.GraphsUrl}items/EnrichedKeyWord_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.Roh_score != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/EnrichedKeyWord_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/score", $"{item0.Roh_score.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
+				if(item0.Roh_title != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/EnrichedKeyWord_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_title)}\"", list, " . ");
+				}
+			}
+			}
 			if(this.Roh_hasMetric != null)
 			{
 			foreach(var item0 in this.Roh_hasMetric)
@@ -1649,6 +1693,10 @@ namespace DocumentOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/hasFile", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_hasFile)}\"", list, " . ");
 				}
+				if(this.Roh_positionIP != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/positionIP", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_positionIP)}\"", list, " . ");
+				}
 				if(this.Roh_publicationTitle != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/publicationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_publicationTitle)}\"", list, " . ");
@@ -1663,7 +1711,7 @@ namespace DocumentOntology
 				}
 				if(this.Roh_reviewsNumber != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/reviewsNumber", $"{this.Roh_reviewsNumber.Value.ToString()}", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/reviewsNumber", $"{this.Roh_reviewsNumber.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
 				}
 				if(this.Roh_externalKeywords != null)
 				{
@@ -1715,13 +1763,6 @@ namespace DocumentOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/volume", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_volume)}\"", list, " . ");
 				}
-				if(this.Roh_enrichedKeywords != null)
-				{
-					foreach(var item2 in this.Roh_enrichedKeywords)
-					{
-						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}", "http://w3id.org/roh/enrichedKeywords", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
-					}
-				}
 				if(this.Roh_quartile != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/quartile", $"{this.Roh_quartile.Value.ToString()}", list, " . ");
@@ -1741,6 +1782,10 @@ namespace DocumentOntology
 				if(this.Roh_presentedAtOrganizerLocality != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/presentedAtOrganizerLocality", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_presentedAtOrganizerLocality)}\"", list, " . ");
+				}
+				if(this.Roh_genderIP != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/genderIP", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_genderIP)}\"", list, " . ");
 				}
 				if(this.Roh_getKeyWords != null)
 				{
@@ -2071,6 +2116,21 @@ namespace DocumentOntology
 				if(item0.Roh_quartile != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactindex_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/quartile", $"{item0.Roh_quartile.Value.ToString()}", list, " . ");
+				}
+			}
+			}
+			if(this.Roh_enrichedKeywords != null)
+			{
+			foreach(var item0 in this.Roh_enrichedKeywords)
+			{
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/enrichedKeywords", $"<{resourceAPI.GraphsUrl}items/enrichedkeyword_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.Roh_score != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/enrichedkeyword_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/score", $"{item0.Roh_score.ToString(new CultureInfo("en-US"))}", list, " . ");
+				}
+				if(item0.Roh_title != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/enrichedkeyword_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_title).ToLower()}\"", list, " . ");
 				}
 			}
 			}
@@ -2463,6 +2523,10 @@ namespace DocumentOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/hasFile", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_hasFile).ToLower()}\"", list, " . ");
 				}
+				if(this.Roh_positionIP != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/positionIP", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_positionIP).ToLower()}\"", list, " . ");
+				}
 				if(this.Roh_publicationTitle != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/publicationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_publicationTitle).ToLower()}\"", list, " . ");
@@ -2477,7 +2541,7 @@ namespace DocumentOntology
 				}
 				if(this.Roh_reviewsNumber != null)
 				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/reviewsNumber", $"{this.Roh_reviewsNumber.Value.ToString()}", list, " . ");
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/reviewsNumber", $"{this.Roh_reviewsNumber.Value.ToString(new CultureInfo("en-US"))}", list, " . ");
 				}
 				if(this.Roh_externalKeywords != null)
 				{
@@ -2529,13 +2593,6 @@ namespace DocumentOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/volume", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_volume).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_enrichedKeywords != null)
-				{
-					foreach(var item2 in this.Roh_enrichedKeywords)
-					{
-						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/enrichedKeywords", $"\"{GenerarTextoSinSaltoDeLinea(item2).ToLower()}\"", list, " . ");
-					}
-				}
 				if(this.Roh_quartile != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/quartile", $"{this.Roh_quartile.Value.ToString()}", list, " . ");
@@ -2555,6 +2612,10 @@ namespace DocumentOntology
 				if(this.Roh_presentedAtOrganizerLocality != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/presentedAtOrganizerLocality", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_presentedAtOrganizerLocality).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_genderIP != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/genderIP", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_genderIP).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_getKeyWords != null)
 				{
@@ -2608,7 +2669,26 @@ namespace DocumentOntology
 			return list;
 		}
 
-		
+		public override KeyValuePair<Guid, string> ToAcidData(ResourceApi resourceAPI)
+		{
+
+			//Insert en la tabla Documento
+			string tags = "";
+			foreach(string tag in tagList)
+			{
+				tags += $"{tag}, ";
+			}
+			if (!string.IsNullOrEmpty(tags))
+			{
+				tags = tags.Substring(0, tags.LastIndexOf(','));
+			}
+			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
+			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
+
+			return valor;
+		}
 
 		public override string GetURI(ResourceApi resourceAPI)
 		{

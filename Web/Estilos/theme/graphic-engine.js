@@ -9,6 +9,8 @@ var maxYear;
 var idPaginaActual = "";
 // ID de la gráfica seleccionada.
 var idGraficaActual = "";
+// ID de la gráfica a borrar.
+var idGraficaBorrar = "";
 
 // Lista de páginas.
 var listaPaginas;
@@ -50,6 +52,7 @@ var metricas = {
         var that = this;
         var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"  
         var arg = {};
+        var nodes = globalThis.nodes = {};
         arg.pUserId = $('.inpt_usuarioID').attr('value');
 
         // Petición para obtener los datos de la página.
@@ -461,10 +464,8 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    fillPagePersonalized: function (pPaginaUsuario) {
-        // TODO pop up id pagina
+    fillPagePersonalized: function(pPaginaUsuario) {
         idPaginaActual = pPaginaUsuario.idRecurso;
-        // final todo
         var that = this;
         var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
         var arg = {};
@@ -484,11 +485,12 @@ var metricas = {
             gruposDeIDs.forEach(function (item, index, array) {
                 var graficasGrupo;
                 var tmp = '';
-                console.log(item);
-
-                item.forEach(function (grafica, index, array) {
-
-                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.idGrafica}'></div>`;
+                
+                item.forEach(function(grafica, index, array) {
+                    if (!grafica.filtro) {
+                        grafica.filtro = "";
+                    }
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}' idrecurso='${grafica.idRecurso}'></div>`;
                 });
                 graficasGrupo = tmp;
 
@@ -521,6 +523,12 @@ var metricas = {
                                                         <a class="item-dropdown descargar">
                                                             <span class="material-icons">download</span>
                                                             <span class="texto">Descargar como imagen .jpg</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="item-dropdown eliminargrafica" data-toggle="modal" data-target="#modal-eliminar">
+                                                            <span class="material-icons">delete</span>
+                                                            <span class="texto">Eliminar gráfica</span>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -1330,11 +1338,44 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
-                url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                } else {
+                    url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    if (filtro != "") {
+                        url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    }
+                }
                 url += "&pLang=" + lang;
                 document.location.href = url;
+            });
+        $('a.eliminargrafica')
+            .unbind()
+            .click(function (e) {
+                idGraficaBorrar = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+            });
+        $('a.eliminar')
+            .unbind()
+            .click(function (e) {
+                // Leer paginas de usuario
+                var idUsuario = $('.inpt_usuarioID').attr('value');
+                var idPagina = idPaginaActual;
+                var idGrafica = idGraficaBorrar;
+                var url = url_servicio_graphicengine + "BorrarGrafica"; //"https://localhost:44352/BorrarGrafica"
+                var arg = {};
+                arg.pUserId = idUsuario;
+                arg.pPageID = idPagina;
+                arg.pGraphicID = idGrafica;
+
+                // Petición para eliminar la gráfica.
+                $.get(url, arg, function (listaData) {
+                    location.reload();
+                });
             });
         $('a.guardar')
             .unbind()
@@ -1398,11 +1439,7 @@ var metricas = {
                 arg.pTitulo = $('#labelTituloGrafica').val();
                 arg.pAnchura = $('#idSelectorTamanyo option:selected').val();
                 arg.pIdPaginaGrafica = idPaginaActual;
-                if (idGraficaActual.includes("-")) {
-                    arg.pIdGrafica = idGraficaActual.split("-")[1];
-                } else {
-                    arg.pIdGrafica = idGraficaActual;
-                }
+                arg.pIdGrafica = idGraficaActual;
                 arg.pFiltros = ObtenerHash2();
                 arg.pUserId = $('.inpt_usuarioID').attr('value');
 
@@ -1487,8 +1524,6 @@ var metricas = {
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
-                //tamaño del contenedor (dejando 50px de margen arriba y abajo)
-
                 // Tamaño del contenedor (dejando 50px de margen arriba y abajo).
                 modalContent.css({ height: 'calc(100vh - 100px)' });
                 modalContent.parent().css({ maxWidth: '1310px' }); // El tamaño maximo del contendor de los articles.
@@ -1534,10 +1569,18 @@ var metricas = {
                         parent.append(ctx);
                     }
                 }
-                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx[0], 50); //obtenemos los datos y pintamos la grafica
+                var filtro;
+                var idPagina;
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    filtro = ObtenerHash2();
+                    idPagina = idPaginaActual;
+                } else {
+                    filtro = (canvas).parents('div.grafica').attr("filtro");
+                    idPagina = (canvas).parents('div.grafica').attr("idpagina");
+                }
+                that.getGrafica(idPagina, pIdGrafica, filtro, ctx, 50); //obtenemos los datos y pintamos la grafica
 
             });
-
 
         $('.modal-backdrop')
             .unbind()

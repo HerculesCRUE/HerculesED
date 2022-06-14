@@ -1,6 +1,9 @@
 //TODO
 var urlImportacionCV = "https://localhost:5002/ImportadoCV";
 //var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
+var selectorConflictoNoBloqueado = '';
+var selectorConflictoBloqueado = '';
+
 
 var importarCVN = {
 	idUsuario:  null,
@@ -8,6 +11,18 @@ var importarCVN = {
 		this.config(),
 		this.idUsuario = $('#inpt_usuarioID').val();
 		this.fileData = '';
+
+		selectorConflictoNoBloqueado = `<select name="itemConflict" >
+												<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
+												<option value="fu">${GetText('CV_FUSIONAR')}</option>
+												<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
+												<option value="du">${GetText('CV_DUPLICAR')}</option>
+											</select>`;
+		selectorConflictoBloqueado = `<select name="itemConflict" >
+											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
+											<option value="fu">${GetText('CV_FUSIONAR')}</option>
+											<option value="du">${GetText('CV_DUPLICAR')}</option>
+										</select>`;
 
         return;        
     },
@@ -32,13 +47,18 @@ var importarCVN = {
 		$('.btImportarCV').off('click').on('click', function(e) {
 			e.preventDefault();
 			var listaId = "";
+			var listaOpcionSeleccionados = "";
 			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
 			});
+			$('.resource-list .custom-control-input:checkbox:checked').closest('.resource.success').find(':selected').each(function(){
+				listaOpcionSeleccionados += (this.selected ? $(this).val()+"@@@" : "")
+			});
 			
 			listaId = listaId.slice(0,-3);			
+			listaOpcionSeleccionados = listaOpcionSeleccionados.slice(0,-3);			
 			
-			that.importarCV(listaId);
+			that.importarCV(listaId, listaOpcionSeleccionados);
 		});
     },
 	//Carga los datos del CV para la exportacion
@@ -96,7 +116,7 @@ var importarCVN = {
 						edicionCV.printTab(id, response[i]);
 					}
 				};
-				//that.fileData = response[99].title;
+				that.fileData = response[99].title;
 				
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
@@ -105,13 +125,14 @@ var importarCVN = {
 		});		
 		return;
     },	
-	importarCV: function(listaId) {
+	importarCV: function(listaId, listaOpcionSeleccionados) {
 		MostrarUpdateProgress();
 		var that = this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
 		formData.append('fileData', that.fileData);
 		formData.append('listaId', listaId);
+		formData.append('listaOpcionSeleccionados', listaOpcionSeleccionados);
 		
 		$.ajax({
 			url: urlImportacionCV + '/PostimportarCV',
@@ -510,18 +531,6 @@ edicionCV.printTabSection= function(data) {
 		return htmlSection;
 	}
 };
-
-var selectorConflictoNoBloqueado = `<select name="itemConflict" class="js-select2">
-										<option value="ig" selected="">Ignorar</option>
-										<option value="fu">Fusionar</option>
-										<option value="so">Sobreescribir</option>
-										<option value="du">Duplicar</option>
-									</select>`;
-var selectorConflictoBloqueado = `<select name="itemConflict" class="js-select2">
-									<option value="ig" selected="">Ignorar</option>
-									<option value="fu">Fusionar</option>
-									<option value="du">Duplicar</option>
-								</select>`;
 								
 edicionCV.printHtmlListItem= function(id, data) {
 	let openAccess="";
