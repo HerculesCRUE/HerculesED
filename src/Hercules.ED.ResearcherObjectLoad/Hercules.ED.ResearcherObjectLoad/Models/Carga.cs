@@ -700,7 +700,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
                         idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
-                        idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);                        
+                        idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
                         idsResearchObjectsActualizar.UnionWith(listaROsModificar.Keys);
 
                         //Modificación
@@ -719,7 +719,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 if (numIntentos > MAX_INTENTOS)
                                 {
                                     break;
-                                }                                
+                                }
                                 if (listaDocumentosModificar.Last().Key == recursoModificar.Key)
                                 {
                                     mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
@@ -1401,14 +1401,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             document.Roh_externalKeywords = listaSinRepetirEtiquetas.ToList();
 
             // Etiquetas Enriquecidas (EnrichedFreeTextKeywords)
-            HashSet<string> etiquetasEnriquecidas = new HashSet<string>();
+            List<EnrichedKeyWord> etiquetasEnriquecidas = new List<EnrichedKeyWord>();
             if (pPublicacion.freetextKeyword_enriquecidas != null && pPublicacion.freetextKeyword_enriquecidas.Count > 0)
             {
                 foreach (FreetextKeywordEnriquecida tag in pPublicacion.freetextKeyword_enriquecidas)
                 {
                     if (!listaSinRepetirEtiquetas.Contains(tag.word.ToLower()))
                     {
-                        etiquetasEnriquecidas.Add(tag.word);
+                        etiquetasEnriquecidas.Add(new EnrichedKeyWord() { Roh_title = tag.word, Roh_score = float.Parse(tag.porcentaje.Replace(",", ".")) });
                         listaSinRepetirEtiquetas.Add(tag.word.ToLower());
                     }
                 }
@@ -1419,7 +1419,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     if (!listaSinRepetirEtiquetas.Contains(tag.word.ToLower()))
                     {
-                        etiquetasEnriquecidas.Add(tag.word);
+                        etiquetasEnriquecidas.Add(new EnrichedKeyWord() { Roh_title = tag.word, Roh_score = float.Parse(tag.porcentaje.Replace(",", ".")) });
                         listaSinRepetirEtiquetas.Add(tag.word.ToLower());
                     }
                 }
