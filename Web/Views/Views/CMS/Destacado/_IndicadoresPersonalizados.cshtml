@@ -1,0 +1,38 @@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@model CMSComponentHot
+@{ CommunityModel Comunidad = Html.GetComunidad();
+    UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
+    Html.GetListaJS().Add(urlJS);
+}
+
+<ul class="listadoMenuPaginas"></ul>
+
+<div class="row containerPage indicadoresPersonalizados">
+    <div class="col col-12 col-xl-9 col-contenido derecha">                        
+        <div class="resource-list graphView ">
+            <div class="resource-list-wrap"></div>
+        </div>                        
+    </div>
+</div>
+
+<div id="modal-ampliar-mapa" class="modal modal-top fade modal-ampliar-mapa" style="pointer-events:none" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"></p>
+                <span class="material-icons cerrar" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="graph-container" style="width:100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>

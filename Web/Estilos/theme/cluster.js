@@ -1240,6 +1240,12 @@ class StepsCluster {
 		currentProfile.users=currentProfile.users.filter(function (userInt) {
 			return userInt.shortUserID!=idUser;
 		});
+
+		// Desmarcamos el investigador de la lista de búsqueda
+		if (!!document.getElementById(idUser + '-' +idProfile)) {
+			document.getElementById(idUser + '-' +idProfile).checked = false
+		}
+
 		this.PrintPerfilesstp3();
 	}
 }

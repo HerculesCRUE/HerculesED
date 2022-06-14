@@ -317,6 +317,14 @@ function CompletadaCargaRecursosComunidad()
 	if ((typeof CompletadaCargaRecursosInvestigadoresOfertas != 'undefined')) {
 		CompletadaCargaRecursosInvestigadoresOfertas();
 	}
+	
+	if ((typeof CompletadaCargaRecursosProyectosOfertas != 'undefined')) {
+		CompletadaCargaRecursosProyectosOfertas();
+	}
+
+	if ((typeof CompletadaCargaRecursosPublicacionesOfertas != 'undefined')) {
+		CompletadaCargaRecursosPublicacionesOfertas();
+	}
 }
 
 comportamientoFacetasPopUp.numPaginas=2,

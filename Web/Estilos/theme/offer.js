@@ -76,6 +76,12 @@ class StepsOffer {
 		this.ddlEncuadre = this.crearOfertaStep3.find("#ddlEncuadre2")
 		
 
+		// STEP 5
+		this.numSeleccionadosProjects = 0
+		this.numSeleccionadosDocuments = 0
+		this.numSeleccionadosPII = 0
+		
+
 		// Añadir perfil
 		this.modalPerfil = this.body.find("#modal-anadir-perfil-oferta")
 		this.inputPerfil = this.modalPerfil.find("#input-anadir-perfil")
@@ -254,8 +260,9 @@ class StepsOffer {
 					                    <div class="user-miniatura">
 					                        <div class="imagen-usuario-wrap">
 					                            <a href="#">
-					                                <div class="imagen">
-					                                    <span style="background-image: url(${imgUser})"></span>
+					                                <div class="imagen con-material-icons">
+					                                    <!-- <span style="background-image: url(${imgUser})"></span> -->
+    													<span class="material-icons">person</span>
 					                                </div>
 					                            </a>
 					                        </div>
@@ -411,6 +418,12 @@ class StepsOffer {
 				}
 				break;
 				case 4:
+				continueStep = this.checkContinue4()
+				if (continueStep) {
+					_self.startStep5()
+				}
+				break;
+				case 5:
 				try {
 					continueStep = await this.saveInit()
 					if (continueStep) {
@@ -490,8 +503,8 @@ class StepsOffer {
 	}
 
 	/**
-	 * Método que comprueba que al menos hay un perfil con areas temáticas para la sección 2
-	 * También guarda el estado de la sección 2
+	 * Método que comprueba que todos los campos de la sección 3 se han rellenado
+	 * También guarda el estado de la sección 3
 	 * @return bool: Devuelve true or false dependiendo de si ha pasado la validación
 	 */
 	checkContinue3() {
@@ -513,8 +526,8 @@ class StepsOffer {
 			framingSector: _self.ddlEncuadre.val(),
 		}
 		
-		// Comprueba si las líneas de investigación se han rellenado
-		let existenTerms = Object.keys(profTerms).length > 0
+		// Comprueba si las líneas de investigación se han rellenado o no hay ninguna disponible
+		let existenTerms = Object.keys(profTerms).length > 0 || _self.divTesListaCaths.length == 0
 
 		// Comprueba si las estado de madurez se ha seleccionado
 		let ematRellenado = _self.ddlMadurez.val() != ""
@@ -523,6 +536,55 @@ class StepsOffer {
 		let sencuaRellenado = _self.ddlEncuadre.val() != ""
 
 		return existenTerms && ematRellenado && sencuaRellenado
+	}
+
+	/**
+	 * Método que comprueba que todos los campos obligatorios de la sección 4 se han rellenado
+	 * También guarda el estado de la sección 4
+	 * @return bool: Devuelve true or false dependiendo de si ha pasado la validación
+	 */
+	checkContinue4() {
+		let _self = this
+
+		// Ids de los campos de la sección 4
+		const listIdsTextsRequired = [
+			"descripcion",
+			"aplicaciones",
+			"destinatarios",
+		]
+		const listIdsTextsOptional = [
+			"origen",
+			"innovacion",
+			"socios",
+			"colaboracion",
+			"observaciones",
+		]
+
+		// Objeto para guardar los htmls con sus correspondientes ids
+		let objectFieldsHtml = {}
+
+		let validado = true
+
+		// Obtengo el HTML de los elementos obligatorios y lo guardo, adiccionalmente compruebo si no está vacío,
+		// Si lo está devuelvo false
+		listIdsTextsRequired.forEach(e => {
+			objectFieldsHtml[e] = document.getElementById(e).innerHTML
+			// Valida si el item contiene algo
+			validado = objectFieldsHtml[e] != "" && validado
+		})
+
+		// Obtengo el HTML y lo guardo
+		listIdsTextsOptional.forEach(e => {
+			objectFieldsHtml[e] = document.getElementById(e).innerHTML
+		})
+
+		// Relleno el campo data
+		this.data = {
+			...this.data,
+			objectFieldsHtml
+		}
+
+		return validado
 	}
 
 	/**
@@ -1114,6 +1176,22 @@ class StepsOffer {
 
 	}
 
+	/**
+	 * Inicia el paso 5
+	 */
+	startStep5() {
+
+		MostrarUpdateProgress();
+
+		comportamientoProyectosOferta.init(this.data)
+		// comportamientoPublicacionesOferta.init(this.data)
+
+		// OcultarUpdateProgress();
+
+		// this.PrintSelectedUsersStp2 ()
+		// $('#sugeridos-oferta-tab').click()
+	}
+
 	/** 
 	 * Devuelve una nueva promesa con el listado de investigadores
 	 */ 
@@ -1142,9 +1220,9 @@ class StepsOffer {
 		let _self = this
 		return new Promise((resolve, reject) => {
 			// Añado el idioma para obtener los resultados
-			urlLoadFramingSectors.searchParams.set('lang', _self.currentLang)
-
-			_self.getCall(urlLoadFramingSectors).then(rdata => {
+			urlLoadMatureStates.searchParams.set('lang', _self.currentLang)
+			
+			_self.getCall(urlLoadMatureStates).then(rdata => {
 				resolve(rdata)
 			})
 		})
@@ -1157,9 +1235,9 @@ class StepsOffer {
 		let _self = this
 		return new Promise((resolve, reject) => {
 			// Añado el idioma para obtener los resultados
-			urlLoadMatureStates.searchParams.set('lang', _self.currentLang)
-			
-			_self.getCall(urlLoadMatureStates).then(rdata => {
+			urlLoadFramingSectors.searchParams.set('lang', _self.currentLang)
+
+			_self.getCall(urlLoadFramingSectors).then(rdata => {
 				resolve(rdata)
 			})
 		})
@@ -1267,25 +1345,6 @@ class StepsOffer {
 }
 
 
-// class areasTematicasModal {
-// 	constructor() {
-
-// 		var _self = this
-// 		this.body = $('body')
-// 		this.modalAreasTematicas = this.body.find('#modal-seleccionar-area-tematica')
-
-// 		this.modalAreasTematicas.on('shown.bs.modal', function () {
-// 			_self.init()
-// 		});
-// 	}
-// }
-
-
-
-// función para actualizar la gráfica de colaboradores
-function ActualizarGraficaOfertaolaboradoresOferta(typesOcultar = [], showRelation = true) {
-	AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation)
-}
 
 
 
@@ -1525,6 +1584,254 @@ function CompletadaCargaRecursosInvestigadoresOfertas()
 
 
 
+
+function CompletadaCargaRecursosProyectosOfertas()
+{	
+	let currentsIds = []
+	if(typeof stepsOffer != 'undefined' && stepsOffer != null && stepsOffer.data != null)
+	{		
+		$('#ofertaListProyectos article.resource h2.resource-title').attr('tagert','_blank')
+		stepsOffer.data.pPersons = $('#ofertaListProyectos article.resource').toArray().map(e => {return $(e).attr('id')})
+		
+		$('#ofertaListProyectos article.resource').each((i, e) => {
+
+			currentsIds.push(e.id)
+
+			if ($(e).find(".custom-checkbox-resource .material-icons").length == 0) {
+
+				if (Object.values(stepsOffer.data.researchers).filter(pr => pr.shortId == e.id).length > 0) {
+					$(e).prepend(`<div class="custom-control custom-checkbox-resource done">
+		                <span class="material-icons">done</span>
+		            </div>`)
+					$(e).addClass('seleccionado')
+				}
+				else {
+					$(e).prepend(`<div class="custom-control custom-checkbox-resource add">
+				        <span class="material-icons">add</span>
+				    </div>`)
+				}
+			}
+		})
+
+		checkboxResources.init()
+
+		currentsIds.forEach(idProject => {
+
+			$('#' + idProject).on("DOMSubtreeModified", function(e) {
+
+				let selector = $(this).find(".custom-checkbox-resource")
+
+				if ($(selector).text().trim() == "done")
+				{
+					let element = $(this)
+					let item = {}
+					let arrInfo = []
+					item.shortId = idProject.split('_')[1]
+					item.name = element.find('h2.resource-title').text().trim()
+
+					// Obtener la descripción
+					element.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+						arrInfo.push($(elem).text().trim())
+					})
+					item.info = arrInfo.join(', ')
+
+					// let numPubDOM = $(this).find('.info-resource .texto')
+					// numPubDOM.each((i, e) => {
+					// 	let textPubDom = $(numPubDOM).text()
+					// 	if (textPubDom.includes('publicaciones')) {
+					// 		let numPub = textPubDom.split('publicaciones')[0].trim()
+					// 		item.numPublicacionesTotal = numPub
+					// 	}
+					// })
+
+					// item.ipNumber = element.data('ipNumber')
+					if(stepsOffer.data.projects == null)					
+					{
+						stepsOffer.data.projects = {};
+					}
+					stepsOffer.data.projects[idProject] = item
+
+				}else
+				{
+					// Borrar investigador del objeto
+					delete stepsOffer.data.projects[idProject]
+				}
+
+				stepsOffer.numSeleccionadosProjects = Object.keys(stepsOffer.data.projects).length
+				stepsOffer.PrintSelectedProjectsStp2();
+			});	
+
+		})
+	}
+}
+
+
+
+function CompletadaCargaRecursosPublicacionesOfertas()
+{	
+	let currentsIds = []
+	if(typeof stepsOffer != 'undefined' && stepsOffer != null && stepsOffer.data != null)
+	{		
+		$('#ofertaListPublicaciones article.resource h2.resource-title').attr('tagert','_blank')
+		stepsOffer.data.pPersons = $('#ofertaListPublicaciones article.resource').toArray().map(e => {return $(e).attr('id')})
+		
+		$('#ofertaListPublicaciones article.resource').each((i, e) => {
+
+			currentsIds.push(e.id)
+
+			if ($(e).find(".custom-checkbox-resource .material-icons").length == 0) {
+
+				if (Object.values(stepsOffer.data.researchers).filter(pr => pr.shortId == e.id).length > 0) {
+					$(e).prepend(`<div class="custom-control custom-checkbox-resource done">
+		                <span class="material-icons">done</span>
+		            </div>`)
+					$(e).addClass('seleccionado')
+				}
+				else {
+					$(e).prepend(`<div class="custom-control custom-checkbox-resource add">
+				        <span class="material-icons">add</span>
+				    </div>`)
+				}
+			}
+		})
+
+		checkboxResources.init()
+
+		currentsIds.forEach(idDocument => {
+
+			$('#' + idDocument).on("DOMSubtreeModified", function(e) {
+
+				let selector = $(this).find(".custom-checkbox-resource")
+
+				if ($(selector).text().trim() == "done")
+				{
+					let element = $(this)
+					let item = {}
+					let arrInfo = []
+					item.shortId = idDocument.split('_')[1]
+					item.name = element.find('h2.resource-title').text().trim()
+
+					// Obtener la descripción
+					element.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+						arrInfo.push($(elem).text().trim())
+					})
+					item.info = arrInfo.join(', ')
+
+					// let numPubDOM = $(this).find('.info-resource .texto')
+					// numPubDOM.each((i, e) => {
+					// 	let textPubDom = $(numPubDOM).text()
+					// 	if (textPubDom.includes('publicaciones')) {
+					// 		let numPub = textPubDom.split('publicaciones')[0].trim()
+					// 		item.numPublicacionesTotal = numPub
+					// 	}
+					// })
+
+					// item.ipNumber = element.data('ipNumber')
+					if(stepsOffer.data.documents == null)					
+					{
+						stepsOffer.data.documents = {};
+					}
+					stepsOffer.data.documents[idDocument] = item
+
+				}else
+				{
+					// Borrar investigador del objeto
+					delete stepsOffer.data.documents[idDocument]
+				}
+
+				stepsOffer.numSeleccionadosDocuments = Object.keys(stepsOffer.data.documents).length
+				stepsOffer.PrintSelectedProjectsStp2();
+			});	
+
+		})
+	}
+}
+
+
+function CompletadaCargaRecursosPIIOfertas()
+{	
+	let currentsIds = []
+	if(typeof stepsOffer != 'undefined' && stepsOffer != null && stepsOffer.data != null)
+	{		
+		$('#ofertaListPII article.resource h2.resource-title').attr('tagert','_blank')
+		stepsOffer.data.pPersons = $('#ofertaListPII article.resource').toArray().map(e => {return $(e).attr('id')})
+		
+		$('#ofertaListPII article.resource').each((i, e) => {
+
+			currentsIds.push(e.id)
+
+			if ($(e).find(".custom-checkbox-resource .material-icons").length == 0) {
+
+				if (Object.values(stepsOffer.data.researchers).filter(pr => pr.shortId == e.id).length > 0) {
+					$(e).prepend(`<div class="custom-control custom-checkbox-resource done">
+		                <span class="material-icons">done</span>
+		            </div>`)
+					$(e).addClass('seleccionado')
+				}
+				else {
+					$(e).prepend(`<div class="custom-control custom-checkbox-resource add">
+				        <span class="material-icons">add</span>
+				    </div>`)
+				}
+			}
+		})
+
+		checkboxResources.init()
+
+		currentsIds.forEach(idProject => {
+
+			$('#' + idProject).on("DOMSubtreeModified", function(e) {
+
+				let selector = $(this).find(".custom-checkbox-resource")
+
+				if ($(selector).text().trim() == "done")
+				{
+					let element = $(this)
+					let item = {}
+					let arrInfo = []
+					item.shortId = idProject
+					item.name = element.find('h2.resource-title').text().trim()
+
+					// Obtener la descripción
+					element.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+						arrInfo.push($(elem).text().trim())
+					})
+					item.info = arrInfo.join(', ')
+
+					let numPubDOM = $(this).find('.info-resource .texto')
+					numPubDOM.each((i, e) => {
+						let textPubDom = $(numPubDOM).text()
+						if (textPubDom.includes('publicaciones')) {
+							let numPub = textPubDom.split('publicaciones')[0].trim()
+							item.numPublicacionesTotal = numPub
+						}
+					})
+
+					// item.ipNumber = element.data('ipNumber')
+					if(stepsOffer.data.projects == null)					
+					{
+						stepsOffer.data.projects = {};
+					}
+					stepsOffer.data.projects[idProject] = item
+
+				}else
+				{
+					// Borrar investigador del objeto
+					delete stepsOffer.data.projects[idProject]
+				}
+
+				stepsOffer.numSeleccionadosProjects = Object.keys(stepsOffer.data.projects).length
+				stepsOffer.PrintSelectedProjectsStp2();
+			});	
+
+		})
+	}
+}
+
+
+
+
+
 // Comportamiento página proyecto
 var comportamientoPopupOferta = {
 	tabActive: null,
@@ -1543,7 +1850,7 @@ var comportamientoPopupOferta = {
 	init: function (ofertaObj) {
 		let that = this
 		this.config();
-		// let paramsCl = this.workCO(ofertaObj)
+		let paramsCl = this.workCO(ofertaObj)
 		// let paramsResearchers = this.workCOProfiles(ofertaObj)
 		// let researchers = this.setProfiles(ofertaObj)
 
@@ -1552,7 +1859,7 @@ var comportamientoPopupOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", null, null, "viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searcherPersonsOffers=" + paramsCl, null, "rdf:type=person|roh:isActive=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 		// Agregamos los ordenes
 		// $('.searcherResults .h1-container').after(
@@ -1602,12 +1909,8 @@ var comportamientoPopupOferta = {
 	workCO: function (ofertaObj) {
 
 		let results = null
-		if (ofertaObj && ofertaObj.profiles) {
-			results = ofertaObj.profiles.map(e => {
-				let terms = (e.terms.length) ? e.terms.map(itm => '<' + itm + '>').join(',') : "<>"
-				let tags = (e.tags.length) ? e.tags.map(itm => "'" + itm + "'").join(',') : "''"
-				return terms + '@@@' + tags
-			}).join('@@@@')
+		if (ofertaObj && ofertaObj.tags) {
+			results = ofertaObj.tags.map(itm => "'" + itm + "'").join(',')
 		}
 
 		return results
@@ -1645,6 +1948,128 @@ var comportamientoPopupOferta = {
 
 		return results
 	}
+};
+
+
+// Comportamiento página proyecto
+var comportamientoProyectosOferta = {
+	tabActive: null,
+
+	config: function () {
+		var that = this;
+		return;
+	},
+
+	init: function (ofertaObj) {
+		let that = this
+		this.config();
+		let paramsCl = this.workCO(ofertaObj)
+
+		buscadorPersonalizado.profile=null;
+		
+		// Iniciar el listado de usuarios
+		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListProyectos", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init($('#PROYECTOS').val(), "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		
+
+		//Enganchamos comportamiento grafica seleccionados
+		$('#seleccionados-oferta-tab').unbind().click(function (e) {			
+			e.preventDefault();
+		});
+
+		return;
+	},
+
+	/*
+	* Convierte el objeto de la oferta a los parámetros de consulta 
+	*/
+	workCO: function (ofertaObj) {
+
+		let results = null
+		if (ofertaObj && ofertaObj.researchers) {
+			results = Object.keys(ofertaObj.researchers).map(itm => "<http://gnoss/" + itm.toUpperCase() + ">").join(',')
+		}
+
+		return results
+	},
+};
+
+
+// Comportamiento página proyecto
+var comportamientoPublicacionesOferta = {
+	tabActive: null,
+
+	config: function () {
+		var that = this;
+		return;
+	},
+
+	init: function (ofertaObj) {
+		let that = this
+		this.config();
+		let paramsCl = this.workCO(ofertaObj)
+
+		buscadorPersonalizado.profile=null;
+		
+		// Iniciar el listado de usuarios
+		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init($('#PUBLICACIONES').val(), "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		
+
+		return;
+	},
+
+	/*
+	* Convierte el objeto de la oferta a los parámetros de consulta 
+	*/
+	workCO: function (ofertaObj) {
+
+		let results = null
+		if (ofertaObj && ofertaObj.researchers) {
+			results = Object.keys(ofertaObj.researchers).map(itm => "<http://gnoss/" + itm.toUpperCase() + ">").join(',')
+		}
+
+		return results
+	},
+};
+
+
+// Comportamiento página proyecto
+var comportamientoPIIOferta = {
+	tabActive: null,
+
+	config: function () {
+		var that = this;
+		return;
+	},
+
+	init: function (ofertaObj) {
+		let that = this
+		this.config();
+		let paramsCl = this.workCO(ofertaObj)
+
+		buscadorPersonalizado.profile=null;
+		
+		// Iniciar el listado de usuarios
+		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init($('#PUBLICACIONES').val(), "#ofertaListPII", "searcherPIIPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		
+
+		return;
+	},
+
+	/*
+	* Convierte el objeto de la oferta a los parámetros de consulta 
+	*/
+	workCO: function (ofertaObj) {
+
+		let results = null
+		if (ofertaObj && ofertaObj.researchers) {
+			results = Object.keys(ofertaObj.researchers).map(itm => "<http://gnoss/" + itm.toUpperCase() + ">").join(',')
+		}
+
+		return results
+	},
 };
 
 /**

@@ -36,9 +36,9 @@ namespace Hercules.ED.GraphicEngine.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<DataGraphicUser> GetGraficasUser(string pUserId)
+        public List<DataGraphicUser> GetGraficasUser(string pPageId)
         {
-            return Models.GraphicEngine.GetGraficasUser(pUserId);
+            return Models.GraphicEngine.GetGraficasUserByPageId(pPageId);
         }
 
         [HttpGet]
@@ -93,6 +93,15 @@ namespace Hercules.ED.GraphicEngine.Controllers
         public List<DataPageUser> GetPaginasUsuario(string pUserId)
         {
             return Models.GraphicEngine.GetPagesUser(pUserId);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void GuardarGrafica(string pTitulo, string pAnchura, string pIdPaginaGrafica, string pIdGrafica, string pFiltros, string pUserId, string pIdRecursoPagina = null, string pTituloPagina = null)
+        {
+            Models.GraphicEngine.GuardarGrafica(pTitulo, pAnchura, pIdPaginaGrafica, pIdGrafica, pFiltros, pUserId, pIdRecursoPagina, pTituloPagina);
         }
     }
 }
