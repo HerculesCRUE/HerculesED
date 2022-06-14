@@ -56,6 +56,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = SituacionProfesionalActual.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -63,7 +64,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
@@ -105,6 +106,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = CargosActividades.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
@@ -112,7 +114,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
             foreach (var item in equivalencias.Values)
             {
-                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
             }
 
             return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
