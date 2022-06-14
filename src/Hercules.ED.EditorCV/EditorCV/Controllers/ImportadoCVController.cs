@@ -64,11 +64,12 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("PostimportarCV")]
-        public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string listaId)
+        public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string listaId, [FromForm] string listaOpciones)
         {
             try
             {
                 List<string> listadoId = new List<string>();
+                List<string> listadoOpciones = new List<string>();
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
@@ -78,6 +79,10 @@ namespace EditorCV.Controllers
                 if (!string.IsNullOrEmpty(listaId))
                 {
                     listadoId = listaId.Split("@@@").ToList();
+                }
+                if (!string.IsNullOrEmpty(listaOpciones))
+                {
+                    listadoOpciones = listaOpciones.Split("@@@").ToList();
                 }
 
                 XmlSerializer ser = new XmlSerializer(typeof(Preimport));
@@ -89,7 +94,7 @@ namespace EditorCV.Controllers
                 }
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion();                
-                accionesImportacion.PostimportarCV(_Configuracion, pCVId, preimport, listadoId);
+                accionesImportacion.PostimportarCV(_Configuracion, pCVId, preimport, listadoId, listadoOpciones);
 
                 return Ok();
             }
