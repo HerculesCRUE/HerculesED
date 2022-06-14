@@ -1709,7 +1709,7 @@ class StepsOffer {
 
 		try {
 			delete this.data.documents[idItem]
-		} catch () {console.error("Error al borrar el item")}
+		} catch (error) {console.error("Error al borrar el item")}
 
 		// Desmarcamos el investigador de la lista de búsqueda
 		if (!!document.getElementById("resource_" + idItem)) {
@@ -1740,7 +1740,7 @@ class StepsOffer {
 
 		try {
 			delete this.data.pii[idItem]
-		} catch () {console.error("Error al borrar el item")}
+		} catch (error) {console.error("Error al borrar el item")}
 
 		// Desmarcamos el investigador de la lista de búsqueda
 		if (!!document.getElementById("resource_" + idItem)) {
