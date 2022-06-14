@@ -1815,7 +1815,7 @@ var edicionCV = {
                         background = 'background-oscuro';
                         deleteButton = '';
                         break;
-                    case 'http://w3id.org/roh/enrichedKeywords':
+                    case 'http://w3id.org/roh/title':
                         background = 'background-amarillo';
                         break;
                     case 'http://w3id.org/roh/userKeywords':
@@ -2565,7 +2565,7 @@ var edicionCV = {
         $.post(urlEdicionCV + 'EnrichmentTopics', data, function(data) {
             // Borrar TAGS y ETIQUETAS enriquecidas precargadas.
             $('div[propertyrdf="http://w3id.org/roh/enrichedKnowledgeArea"].added').remove();
-            $('input[propertyrdf="http://w3id.org/roh/enrichedKeywords"]').closest(".added").remove();
+            $('div[propertyrdf="http://w3id.org/roh/enrichedKeywords"].added').remove();
 
             that.repintarListadoEntity();
 
@@ -2608,8 +2608,14 @@ var edicionCV = {
             // TAGS
             data.tags.topics.forEach(function(element) {
                 if (!listaEtiquetasCargadas.includes(element.word.trim())) {
-                    $('div.aux input[propertyrdf="http://w3id.org/roh/enrichedKeywords"]').val(element.word.trim());
-                    $('div.aux input[propertyrdf="http://w3id.org/roh/enrichedKeywords"]').parent().find('.add').click()
+					var auxKeyword=$('div.entityaux.aux[propertyrdf="http://w3id.org/roh/enrichedKeywords"]');
+					var clon=auxKeyword.clone();
+					$(clon).removeClass('aux');
+					$(clon).addClass('added');                    
+					$(clon).attr('about',RandomGuid());        
+					$(clon).find('input[propertyrdf="http://w3id.org/roh/title"]').val(element.word.trim());
+                    $(clon).find('input[propertyrdf="http://w3id.org/roh/score"]').val(element.porcentaje);
+					auxKeyword.parent().append(clon);
                     listaEtiquetasCargadas.push(element.word);
                 }
             });
@@ -3554,7 +3560,7 @@ var edicionCV = {
         //Añadimos los listeners al editor WYSIWYG
         const editores = document.getElementsByClassName('edmaTextEditor');
         for (let i = 0; i < editores.length; i++) {
-            new textField(editores[i]);
+            new TextField(editores[i]);
         }
         document.removeEventListener('selectionchange', selectionChange);
         document.addEventListener('selectionchange', selectionChange);
@@ -3627,7 +3633,13 @@ var edicionCV = {
         $("#modal-eliminar").modal("hide");
     },
     eliminarEntidadTopic: function(modalID, propRDF, value) {
-        $('#' + modalID + ' input[propertyrdf="' + propRDF + '"][data-value="' + value + '"]').parent().remove();
+		if($('#' + modalID + ' input[propertyrdf="' + propRDF + '"][data-value="' + value + '"]').closest('div[propertyrdf="http://w3id.org/roh/enrichedKeywords"]').length)
+		{
+			$('#' + modalID + ' input[propertyrdf="' + propRDF + '"][data-value="' + value + '"]').closest('div[propertyrdf="http://w3id.org/roh/enrichedKeywords"]').remove();
+		}else
+		{		
+			$('#' + modalID + ' input[propertyrdf="' + propRDF + '"][data-value="' + value + '"]').parent().remove();
+		}
 
         this.repintarTopic();
         this.engancharComportamientosCV();
