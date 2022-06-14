@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
     metricas.init();
 });
 // Año máximo y mínimo para las facetas de años
@@ -7,13 +7,19 @@ var maxYear;
 // Lista de páginas
 // ID de la página actual.
 var idPaginaActual = "";
+// ID de la gráfica seleccionada.
+var idGraficaActual = "";
 
 // Lista de páginas.
 var listaPaginas;
 
 var metricas = {
-    init: function () {
-        this.getPages();
+    init: function() {
+        if(!$('div').hasClass('indicadoresPersonalizados')) {
+            this.getPages();
+        } else {
+            this.getPagesPersonalized();
+        }
         return;
     },
     config: function () {
@@ -21,8 +27,9 @@ var metricas = {
     },
     getPages: function () {
         var that = this;
-        var url = url_servicio_graphicengine + "GetPaginasGraficas"; //"https://localhost:44352/GetPaginaGrafica"
+        var url = url_servicio_graphicengine + "GetPaginasGraficas"; //"https://localhost:44352/GetPaginaGrafica";        
         var arg = {};
+        var nodes = globalThis.nodes = {};
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
@@ -37,7 +44,25 @@ var metricas = {
             listaPaginas = listaData;
         });
     },
-    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null) {
+    getPagesPersonalized: function () {
+        var that = this;
+        var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"  
+        var arg = {};
+        arg.pUserId = $('.inpt_usuarioID').attr('value');
+
+        // Petición para obtener los datos de la página.
+        $.get(url, arg, function (listaData) {
+            for (let i = 0; i < listaData.length; i++) {
+                $(".listadoMenuPaginas").append(`
+                    <li id="${listaData[i].idRecurso}" num="${i}">${listaData[i].titulo}</li>
+                `);
+            }
+            that.createEmptyPagePersonalized(listaData[0].idRecurso.split('/')[listaData[0].idRecurso.split('/').length - 1]);
+            that.fillPagePersonalized(listaData[0]);
+            listaPaginas = listaData;
+        });
+    },
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -55,10 +80,21 @@ var metricas = {
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
             if ("container" in data) {
+                //nodes = globalThis.nodes = {} //TODO mover declaracion.
+                var controls = $(ctx).parent().find(".graph-controls");
+                var download = $(ctx).parents("div.wrap").find('a.descargar');
                 data.container = ctx;
 
+
                 data.ready = function () { window.cy = this };
-                var cy = window.cy = cytoscape(data);
+                var cy = cytoscape(data);
+                if (graficaContenedor.hasClass("graph-container")) {
+                    nodes["pop_" + pIdGrafica] = cy;
+                    console.log("pop_" + pIdGrafica);
+                } else {
+                    nodes[pIdGrafica] = cy;
+                    console.log(pIdGrafica);
+                }
                 //var combo = $(ctx).parents("article").find("select");
                 if (combo) {
                     combo.append(`
@@ -102,21 +138,28 @@ var metricas = {
                     }
                 });
 
-                $('li#zoomIn')
-                    .unbind()
-                    .click(function (e) {
-                        cy.zoom({
-                            level: cy.zoom() * 1.2,
-                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+                $(download).unbind().click(function (e) {
+                    var image = cy.jpg();
+                    var a = document.createElement('a');
+                    a.href = image;
+                    a.download = Date.now() + '.jpg';
+                    a.click();
+                });
+                $(download).removeClass("descargar");
 
-                        });
-                    });
-
-                $('li#zoomOut')
+                $(controls.find("#zoomOut"))
                     .unbind()
                     .click(function (e) {
                         cy.zoom({
                             level: cy.zoom() / 1.2,
+                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+                        });
+                    });
+                $(controls.find("#zoomIn"))
+                    .unbind()
+                    .click(function (e) {
+                        cy.zoom({
+                            level: cy.zoom() * 1.2,
                             renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
                         });
                     });
@@ -144,12 +187,11 @@ var metricas = {
                 data.plugins = [plugin];
 
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
-                    that.drawChart(ctx, data, pIdGrafica);
+                    that.drawChart(ctx, data, pIdGrafica, barSize);
                 } else {
                     var myChart = new Chart(ctx, data);
                 }
             }
-
             that.engancharComportamientos();
         });
     },
@@ -264,6 +306,11 @@ var metricas = {
         });
     },
     clearPage: function () {
+        $('canvas').each(function () {
+            Chart.getChart(this)?.destroy();
+        });
+        $(window).unbind('resize');
+
         $('#panFacetas').empty()
         $('.resource-list-wrap').empty();
         $('.borrarFiltros').click();
@@ -287,6 +334,14 @@ var metricas = {
                 </div>
             </div>
         `);*/
+    },
+    createEmptyPagePersonalized: function (pIdPagina) {
+        $('.containerPage').attr('id', 'page_' + pIdPagina);
+        $('.containerPage').addClass('pageMetrics');
+        $('main').find('.modal-backdrop').remove();
+        $('main').append(`
+        <div class="modal-backdrop fade" style="pointer-events: none;"></div>
+        `);
     },
     fillPage: function (pPageData) {
         idPaginaActual = pPageData.id;
@@ -404,12 +459,96 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
+    fillPagePersonalized: function(pPaginaUsuario) {
+        // TODO pop up id pagina
+        idPaginaActual = pPaginaUsuario.idRecurso;
+        // final todo
+        var that = this;
+        var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
+        var arg = {};
+        arg.pPageId = pPaginaUsuario.idRecurso;
+        // Petición para obtener los datos de la página.
+        $.get(url, arg, function(listaData) {
+            var tmp = [];
+            var id = "";
+            var gruposDeIDs = [];
+            var lista = listaData.slice();
+            while (lista.length > 0) {
+                tmp = [];
+                var grafica = lista.shift();
+                tmp.push(grafica);
+                gruposDeIDs.push(tmp);
+            }
+            gruposDeIDs.forEach(function(item, index, array) {
+                var graficasGrupo;
+                var tmp = '';
+                
+                item.forEach(function(grafica, index, array) {
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro='${grafica.filtro == null ? "" : grafica.filtro}' idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
+                });
+                graficasGrupo = tmp;
+    
+                $('#page_' + pPaginaUsuario.idRecurso.split('/')[pPaginaUsuario.idRecurso.split('/').length - 1] + '.containerPage').find('.resource-list-wrap').append(`
+                    <article class="resource span${item[0].anchura}"> 
+                        <div class="wrap" >
+                            <div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px` : ""}">
+                                ${item.length != 1 ? `
+                                <select class="chartMenu js-select2" href="javascript: void(0);" style="height:24px"></select>`: ""}
+                                <div class="wrap" style="z-index:1">
+                                    <div class="zoom">
+                                        <a href="javascript: void(0);" style="height:24px"  data-toggle="modal">
+                                            <span class="material-icons">zoom_in</span>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown show">
+                                        <a href="javascript: void(0);" style="height:24px" id="dropdownMasOpciones" data-toggle="dropdown">
+                                            <span class="material-icons">more_vert</span>
+                                        </a>
+                                        <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                                <p class="dropdown-title">Acciones</p>
+                                                <ul class="no-list-style">
+                                                    <li>
+                                                        <a class="item-dropdown csv">
+                                                            <span class="material-icons">insert_drive_file</span>
+                                                            <span class="texto">Descargar como .csv</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="item-dropdown descargar">
+                                                            <span class="material-icons">download</span>
+                                                            <span class="texto">Descargar como imagen .jpg</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                      
+                            ${graficasGrupo}
+                            </div>
+                    </article>
+    
+                `);
+            });
+            
+            that.pintarPaginaPersonalized(pPaginaUsuario.idRecurso, listaData)
+        });
+    },
     pintarPagina: function (pIdPagina) {
         var that = this;
 
         // Borra la clase modal-open del body cuando se abre el pop-up del tesáuro. 
         // TODO: Mirar porque no lo hace automáticamente.
         $("body").removeClass("modal-open");
+
+        if ($('#selectorPage').children().length == 0) {
+            $("#createPageRadio").prop("checked", true);
+            $("#selectPageRadio").parent().hide();
+            $('#selectPage').hide();
+        } else {
+            $("#selectPageRadio").prop("checked", true);
+            $('#createPage').hide();
+        }
         // Vacias contenedores.
         $('#page_' + pIdPagina + ' .grafica').empty();
         $('#page_' + pIdPagina + ' .box').empty();
@@ -529,6 +668,56 @@ var metricas = {
             }
         }
     },
+    pintarPaginaPersonalized: function(pIdRecurso, pPageData) {
+        var that = this;
+        var idPagina = pIdRecurso.split('/')[pIdRecurso.split('/').length - 1];
+
+        // Borra la clase modal-open del body cuando se abre el pop-up del tesáuro. 
+        // TODO: Mirar porque no lo hace automáticamente.
+        $("body").removeClass("modal-open");
+
+        // Vacias contenedores.
+        $('#page_' + idPagina + ' .grafica').empty();
+        $('#page_' + idPagina + ' .box').empty();
+
+        // Recorremos el div de las gráficas.
+        var index = 0;
+        $('#page_' + idPagina + ' .grafica').each(function() {
+            if ($(this).attr("idgrafica").includes("nodes")) {
+                $(this).append(`
+                        <p id="titulo_grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
+                            <ul class="no-list-style align-items-center" style="display: flex; flex-direction: column;align-items:center">
+                                <li class="control zoomin-control" id="zoomIn">
+                                    <span class="material-icons">add</span>
+                                </li>
+                                <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
+                                    <span class="material-icons" >remove</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                    `);
+            } else if (!$(this).attr("idgrafica").includes("circular")) {
+                $(this).append(`
+                <div class="chartWrapper" style="position:relative; margin-top:15px ;width:100%">
+                    <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
+                        <div style="height: 00px;" class="chartAreaWrapper">
+                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}"></canvas>
+                        </div>
+                    </div>
+                </div>
+                `);
+            } else {
+                $(this).css("height", "auto");
+                $(this).append(`
+                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" width = "600" height = "250" ></canvas>
+                        `);
+            }
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro);
+            index++;
+        });
+    },
     corregirFiltros: function () {
         // Permite pintar el filtro del tesauro con el nombre del nivel correspondiente.
         $("#panListadoFiltros").each(function () {
@@ -629,7 +818,8 @@ var metricas = {
 
                 }
             });
-            // leyenda con titulo y contenedor para datasets.
+
+            // Leyenda con titulo y contenedor para datasets.
             var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
                 <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
                 </div>`);
@@ -649,7 +839,8 @@ var metricas = {
 
 
             });
-            //se añade el eje principal al contenedor.
+
+            //Se añade el eje principal al contenedor.
             if (hasMainAxis) {
                 if (horizontal) {
                     var mainAxis = $(`<canvas id="topAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
@@ -673,8 +864,8 @@ var metricas = {
             // Cuando se acutaliza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
-                window.addEventListener('resize', (e) => {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
-                    this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
+                $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
+                    metricas.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                     myChart.update();
                 });
             }
@@ -696,7 +887,8 @@ var metricas = {
         //anchura y altura del recorte de la grafica
         var copyWidth;
         var copyHeight;
-        //anchura y altura del pegado a los ejes
+
+        // Anchura y altura del pegado a los ejes.
         var axisHeight;
         var axisWidth;
 
@@ -745,12 +937,14 @@ var metricas = {
 
 
         }
-        // Posicion del comienzo del recorte
+
+        // Posición del comienzo del recorte.
         var targetX = 0;
         var targetY = 0;
         var targetWidth = copyWidth * scale;
         var targetHeight = axisHeight * scale;
-        //posicionamiento del pegado
+
+        // Posicionamiento del pegado.
         var x = 0;
         var y = 0;
         var width = copyWidth;
@@ -1094,25 +1288,13 @@ var metricas = {
             .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
-
-
                 var chart = Chart.getChart(canvas);
-
                 // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
                 if (chart == null) {
                     canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
                     chart = Chart.getChart(canvas);
                 }
-
-                // Obtención del chart usando el elemento canvas de graficas sin scroll y de Cytoscape.js
-                var image;
-                if (chart == null) {
-                    image = cy.jpg();
-                }
-                else {
-                    image = chart.toBase64Image('image/jpeg', 1);
-                }
-
+                var image = chart.toBase64Image('image/jpeg', 1);
                 // Creación del elemento para empezar la descarga.
                 var a = document.createElement('a');
                 a.href = image;
@@ -1123,32 +1305,33 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
-                url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                } else {
+                    url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    if (filtro != "") {
+                        url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    }
+                }
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
         $('a.guardar')
             .unbind()
             .click(function (e) {
-                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                // Lipia los campos.
+                $("#labelTituloGrafica").val("");
+                $("#idSelectorPagina").empty();
+                $("#labelTituloPagina").val("");
+                $("#idSelectorTamanyo").val("11").change();
 
-                var parent = $('#modal-agregar-datos').find('.graph-container');
-                var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
-                var ctx;
-
-                parent.css("height", "calc(100vh-100px)");
-
-                $('#modal-agregar-datos').css('display', 'block');
-                $('#modal-agregar-datos').css('pointer-events', 'none');
-
-                $('.modal-backdrop').addClass('show');
-                $('.modal-backdrop').css('pointer-events', 'auto');
-
-                $('#modal-agregar-datos').addClass('show');
-                //titulo del pop-up
-                $('#modal-agregar-datos').find('p.modal-title').text("Guardar gráfica en espacio personal");
+                // Obtiene el ID de la gráfica seleccionada.
+                idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idgrafica");
 
                 // Leer paginas de usuario
                 var idUsuario = $('.inpt_usuarioID').attr('value');
@@ -1159,20 +1342,71 @@ var metricas = {
                 // Petición para obtener los datos de la página.
                 $.get(url, arg, function (listaData) {
                     listaData.forEach(data => {
-                        // TODO
-                        $('#selectorPage').append(`
-                            <option></option>    
+                        $('#idSelectorPagina').append(`
+                            <option idPagina="${data.idRecurso}">${data.titulo}</option>    
                         `)
                     });
+
+                    var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                    var parent = $('#modal-agregar-datos').find('.graph-container');
+                    var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
+                    var ctx;
+
+                    parent.css("height", "calc(100vh-100px)");
+
+                    $('#modal-agregar-datos').css('display', 'block');
+                    $('#modal-agregar-datos').css('pointer-events', 'none');
+                    $('.modal-backdrop').addClass('show');
+                    $('.modal-backdrop').css('pointer-events', 'auto');
+                    $('#modal-agregar-datos').addClass('show');
+
+                    if ($('#idSelectorPagina').children().length == 0) {
+                        $("#createPageRadio").prop("checked", true);
+                        $("#selectPageRadio").parent().hide();
+                        $('#selectPage').hide();
+                        $('#createPage').show();
+                    } else {
+                        $("#selectPageRadio").prop("checked", true);
+                        $("#selectPageRadio").parent().show();
+                        $('#selectPage').show();
+                        $('#createPage').hide();
+                    }
+
                 });
-                if ($('#selectorPage').children().length == 0) {
-                    $("#createPageRadio").prop("checked", true);
-                    $("#selectPageRadio").parent().hide();
-                    $('#selectPage').hide();
+            });
+
+        $('#btnGuardarGrafica')
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "GuardarGrafica"; //"https://localhost:44352/GuardarGrafica"
+                var arg = {};
+                arg.pTitulo = $('#labelTituloGrafica').val();
+                arg.pAnchura = $('#idSelectorTamanyo option:selected').val();
+                arg.pIdPaginaGrafica = idPaginaActual;
+                if (idGraficaActual.includes("-")) {
+                    arg.pIdGrafica = idGraficaActual.split("-")[1];
                 } else {
-                    $("#selectPageRadio").prop("checked", true);
-                    $('#createPage').hide();
+                    arg.pIdGrafica = idGraficaActual;
                 }
+                arg.pFiltros = ObtenerHash2();
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+
+                if ($("#selectPage").is(":visible")) {
+                    arg.pIdRecursoPagina = $('#idSelectorPagina option:selected').attr("idPagina");
+                } else {
+                    arg.pIdRecursoPagina = "";
+                }
+
+                if ($("#createPage").is(":visible")) {
+                    arg.pTituloPagina = $('#labelTituloPagina').val();
+                } else {
+                    arg.pTituloPagina = "";
+                }
+
+                // Petición para obtener los datos de la página.
+                $.get(url, arg, function (data) {
+                    cerrarModal();
+                });
             });
 
         $('#createPageRadio')
@@ -1231,17 +1465,18 @@ var metricas = {
         $("div.zoom")
             .unbind()
             .click(function (e) {
-                // obtiene la grafica seleccionada (en caso de menu) o la grafica del contenedor en casos normales
+
+                // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
-                //tamaño del contenedor (dejando 50px de margen arriba y abajo)
+                // Tamaño del contenedor (dejando 50px de margen arriba y abajo).
                 modalContent.css({ height: 'calc(100vh - 100px)' });
-                modalContent.parent().css({ maxWidth: '1310px' }); //el tamaño maximo del contendor de los articles
+                modalContent.parent().css({ maxWidth: '1310px' }); // El tamaño maximo del contendor de los articles.
 
-                //se revela el popup
+                // Se revela el popup.
                 $('#modal-ampliar-mapa').css('display', 'block');
                 $('#modal-ampliar-mapa').css('pointer-events', 'none');
                 $('.modal-backdrop').addClass('show');
@@ -1282,7 +1517,16 @@ var metricas = {
                         parent.append(ctx);
                     }
                 }
-                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx); //obtenemos los datos y pintamos la grafica
+                var filtro;
+                var idPagina;
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    filtro = ObtenerHash2();
+                    idPagina = idPaginaActual;
+                } else {
+                    filtro = (canvas).parents('div.grafica').attr("filtro");
+                    idPagina = (canvas).parents('div.grafica').attr("idpagina");
+                }
+                that.getGrafica(idPagina, pIdGrafica, filtro, ctx, 50); //obtenemos los datos y pintamos la grafica
 
             });
 
@@ -1310,9 +1554,9 @@ var metricas = {
             //Hay que repintar las graficas de nodos para que se enganche correctamente el zoom
 
             if (controls == 2) { //solo las graficas de nodos tienen controles (+,-) 
-                var nodes = $('div.__________cytoscape_container').empty();
-                var idGrafica = nodes.attr("id").split("_").at(-1);
-                that.getGrafica(idPaginaActual, idGrafica, ObtenerHash2(), nodes);
+                //var nodes = $('div.__________cytoscape_container').empty();
+                //var idGrafica = nodes.attr("id").split("_").at(-1);
+                //that.getGrafica(idPaginaActual, idGrafica, ObtenerHash2(), nodes);
             }
 
         }

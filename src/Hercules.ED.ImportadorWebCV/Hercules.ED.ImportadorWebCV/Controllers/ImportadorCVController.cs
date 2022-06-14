@@ -5,9 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using System.Xml.Serialization;
+using System.IO;
+using System.Xml;
+using Gnoss.ApiWrapper.Model;
+using Models;
 
 namespace Hercules.ED.ImportadorWebCV.Controllers
 {
@@ -34,18 +40,19 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         [HttpPost("Importar")]
         public ActionResult Importar([FromHeader][Required] string pCVID, [Required] IFormFile File, [FromHeader][Optional] List<string> Secciones)
         {
-            try { 
-            SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
+            try
+            {
+                SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
 
-            sincro.SincroDatosIdentificacion(Secciones);
-            sincro.SincroDatosSituacionProfesional(Secciones);
-            sincro.SincroFormacionAcademica(Secciones);
-            sincro.SincroActividadDocente(Secciones);
-            sincro.SincroExperienciaCientificaTecnologica(Secciones);
-            sincro.SincroActividadCientificaTecnologica(Secciones);
-            sincro.SincroTextoLibre(Secciones);
+                sincro.SincroDatosIdentificacion(Secciones);
+                sincro.SincroDatosSituacionProfesional(Secciones);
+                sincro.SincroFormacionAcademica(Secciones);
+                sincro.SincroActividadDocente(Secciones);
+                sincro.SincroExperienciaCientificaTecnologica(Secciones);
+                sincro.SincroActividadCientificaTecnologica(Secciones);
+                sincro.SincroTextoLibre(Secciones);
 
-            return Ok();
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -76,12 +83,69 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                 preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
 
+                string xml = "";
+                XmlSerializer serializer = new XmlSerializer(typeof(Preimport));
+                using (var sww = new StringWriter())
+                {
+                    using (XmlWriter writer = XmlWriter.Create(sww))
+                    {
+                        serializer.Serialize(writer, preimportar);
+                        xml = sww.ToString(); 
+                    }
+                }
+                preimportar.cvn_xml = xml;
+
                 return Ok(preimportar);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }            
-        } 
+            }
+        }
+
+        [HttpPost("Postimportar")]
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm]string fileData, [FromForm] List<string> listaId)
+        {
+            try
+            {
+                SincroDatos sincroDatos = new SincroDatos(_Configuracion, pCVID, fileData);
+
+                List<Subseccion> listadoSubsecciones = new List<Subseccion>();
+                foreach(Subseccion subseccion in sincroDatos.preimport.secciones)
+                {
+                    Subseccion subsec = new Subseccion(subseccion.id);
+                    foreach(SubseccionItem subseccionItem in subseccion.subsecciones)
+                    {
+                        if (listaId.Contains(subseccionItem.guid))
+                        {
+                            subsec.subsecciones.Add(subseccionItem);
+                        }
+                    }
+                    listadoSubsecciones.Add(subsec);
+                }
+                sincroDatos.preimport = new Preimport(listadoSubsecciones);
+                List<TriplesToInclude> triplesToInclude = new List<TriplesToInclude>();
+                foreach(Subseccion sub in sincroDatos.preimport.secciones)
+                {
+                    foreach (SubseccionItem subseccionItem in sub.subsecciones)
+                    {
+                        foreach(Entity.Property property in subseccionItem.propiedades)
+                        {
+                            foreach(string value in property.values)
+                            {
+                                triplesToInclude.Add(new TriplesToInclude(property.prop, value));
+                            }
+                        }
+                    }
+                }
+
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

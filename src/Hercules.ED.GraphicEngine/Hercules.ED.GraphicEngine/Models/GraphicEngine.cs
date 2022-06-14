@@ -1631,13 +1631,10 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <summary>
         /// Obtiene los datos de las gráficas guardadas del usuario.
         /// </summary>
-        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pIdPage">ID de la página.</param>
         /// <returns>Lista de datos de las gráficas.</returns>
-        public static List<DataGraphicUser> GetGraficasUser(string pUserId)
+        public static List<DataGraphicUser> GetGraficasUserByPageId(string pIdPage)
         {
-            // ID del recurso del usuario.
-            string idRecurso = GetIdPersonByGnossUser(pUserId);
-
             // Lista de datos de las gráficas.
             List<DataGraphicUser> listaGraficas = new List<DataGraphicUser>();
 
@@ -1652,13 +1649,12 @@ namespace Hercules.ED.GraphicEngine.Models
             select.Append(mPrefijos);
             select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
             where.Append("WHERE { ");
-            where.Append($@"<{idRecurso}> roh:metricPage ?datosPagina. ");
-            where.Append("?datosPagina roh:metricGraphic ?datosGraficas. ");
+            where.Append($@"<{pIdPage}> roh:metricGraphic ?datosGraficas. ");
             where.Append("?datosGraficas roh:title ?titulo. ");
             where.Append("?datosGraficas roh:order ?orden. ");
             where.Append("?datosGraficas roh:pageId ?idPagina. ");
             where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
-            where.Append("?datosGraficas roh:filters ?filtro. ");
+            where.Append("OPTIONAL{?datosGraficas roh:filters ?filtro. } ");
             where.Append("?datosGraficas roh:width ?anchura. ");
             where.Append("} ");
 
@@ -1672,13 +1668,16 @@ namespace Hercules.ED.GraphicEngine.Models
                     data.orden = Int32.Parse(fila["orden"].value);
                     data.idPagina = fila["idPagina"].value;
                     data.idGrafica = fila["idGrafica"].value;
-                    data.filtro = fila["filtro"].value;
+                    if (fila.ContainsKey("filtro") && !string.IsNullOrEmpty(fila["filtro"].value))
+                    {
+                        data.filtro = fila["filtro"].value;
+                    }
                     data.anchura = fila["anchura"].value;
                     listaGraficas.Add(data);
                 }
             }
 
-            return listaGraficas;
+            return listaGraficas.OrderBy(x => x.orden).ToList();
         }
 
         /// <summary>
@@ -1723,7 +1722,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
             }
 
-            return listaPaginas;
+            return listaPaginas.OrderBy(x => x.orden).ToList();
         }
 
         /// <summary>
@@ -1805,13 +1804,16 @@ namespace Hercules.ED.GraphicEngine.Models
             });
 
             // Filtros
-            triplesInclude.Add(new TriplesToInclude
+            if (!string.IsNullOrEmpty(pFiltros))
             {
-                Description = false,
-                Title = false,
-                Predicate = predicadoBase + "http://w3id.org/roh/filters",
-                NewValue = valorBase + pFiltros
-            });
+                triplesInclude.Add(new TriplesToInclude
+                {
+                    Description = false,
+                    Title = false,
+                    Predicate = predicadoBase + "http://w3id.org/roh/filters",
+                    NewValue = valorBase + pFiltros
+                });
+            }
 
             // Anchura
             triplesInclude.Add(new TriplesToInclude

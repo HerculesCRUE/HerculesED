@@ -60,6 +60,8 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarTagsDocumentos();
             actualizadorDocument.ActualizarAnios();
             actualizadorDocument.ActualizarIndicesImpacto();
+            actualizadorDocument.ActualizarGenderAutorPrincipal();
+            actualizadorDocument.ActualizarPositionAutorPrincipal();
 
             //ROs sin dependencias
             actualizadorRO.ActualizarAreasRO();
@@ -127,6 +129,7 @@ namespace DesnormalizadorHercules.Models
         public static void DesnormalizarDatosPersonas(List<string> pPersons = null)
         {
             ActualizadorPerson actualizadorPersonas = new(resourceApi);
+            ActualizadorDocument actualizadorDocumentos = new(resourceApi);
 
             //Ejecuciones ordenadas en función de sus dependencias
 
@@ -146,6 +149,22 @@ namespace DesnormalizadorHercules.Models
             actualizadorPersonas.ActualizarNumeroProyectosValidados(pPersons: pPersons);
             actualizadorPersonas.ActualizarNumeroProyectosPublicos(pPersons: pPersons);
             actualizadorPersonas.ActualizarNumeroAreasTematicas(pPersons: pPersons);
+
+
+            //Documentos sin dependencias  
+            List<string> documents = resourceApi.VirtuosoQuery("select ?document",
+                $@" where
+                    {{ 
+                        ?document <http://purl.org/ontology/bibo/authorList> ?autores. 
+                        ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  
+                        FILTER(?person in (<{string.Join(">,<", pPersons)}>))
+                    }}", "document").results.bindings.Select(x => x["document"].value).Distinct().ToList();
+            List<List<string>> listDocuments = ActualizadorBase.SplitList(documents, 500).ToList();
+            foreach (List<string> listDocumentIn in listDocuments)
+            {
+                actualizadorDocumentos.ActualizarPositionAutorPrincipal(pDocuments: listDocumentIn);
+                actualizadorDocumentos.ActualizarGenderAutorPrincipal(pDocuments: listDocumentIn);
+            }
         }
 
         /// <summary>
@@ -246,6 +265,8 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarTagsDocumentos(pDocuments: pDocuments);
             actualizadorDocument.ActualizarAnios(pDocuments: pDocuments);
             actualizadorDocument.ActualizarIndicesImpacto(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarPositionAutorPrincipal(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarGenderAutorPrincipal(pDocuments: pDocuments);
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas(pDocuments: pDocuments);

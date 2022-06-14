@@ -86,7 +86,6 @@ namespace EditorCV.Models
                 if (listaId == null)
                 {
                     urlExportador = _Configuracion.GetUrlExportador() + "/Exportar";
-
                 }
                 else
                 {

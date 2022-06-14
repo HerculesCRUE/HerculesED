@@ -36,9 +36,9 @@ namespace Hercules.ED.GraphicEngine.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<DataGraphicUser> GetGraficasUser(string pUserId)
+        public List<DataGraphicUser> GetGraficasUser(string pPageId)
         {
-            return Models.GraphicEngine.GetGraficasUser(pUserId);
+            return Models.GraphicEngine.GetGraficasUserByPageId(pPageId);
         }
 
         [HttpGet]
