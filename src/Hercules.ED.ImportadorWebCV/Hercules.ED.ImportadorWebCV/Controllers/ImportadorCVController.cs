@@ -104,17 +104,17 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         }
 
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm]string fileData, [FromForm] List<string> listaId, [FromForm] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] string fileData, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
                 SincroDatos sincroDatos = new SincroDatos(_Configuracion, pCVID, fileData);
 
                 List<Subseccion> listadoSubsecciones = new List<Subseccion>();
-                foreach(Subseccion subseccion in sincroDatos.preimport.secciones)
+                foreach (Subseccion subseccion in sincroDatos.preimport.secciones)
                 {
                     Subseccion subsec = new Subseccion(subseccion.id);
-                    foreach(SubseccionItem subseccionItem in subseccion.subsecciones)
+                    foreach (SubseccionItem subseccionItem in subseccion.subsecciones)
                     {
                         if (listaId.Contains(subseccionItem.guid))
                         {
@@ -125,20 +125,35 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                 }
                 sincroDatos.preimport = new Preimport(listadoSubsecciones);
                 List<TriplesToInclude> triplesToInclude = new List<TriplesToInclude>();
-                foreach(Subseccion sub in sincroDatos.preimport.secciones)
+                foreach (Subseccion sub in sincroDatos.preimport.secciones)
                 {
                     foreach (SubseccionItem subseccionItem in sub.subsecciones)
                     {
-                        foreach(Entity.Property property in subseccionItem.propiedades)
+                        if (!listaId.Contains(subseccionItem.guid))
                         {
-                            foreach(string value in property.values)
+                            continue;
+                        }
+
+
+                        
+
+                        foreach (Entity.Property property in subseccionItem.propiedades)
+                        {
+                            foreach (string value in property.values)
                             {
                                 triplesToInclude.Add(new TriplesToInclude(property.prop, value));
                             }
                         }
+
+                        if (false)
+                        {
+                            Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { mResourceApi.GetShortGuid(pCVID), triplesToInclude } };
+                            bool b = mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[mResourceApi.GetShortGuid(subseccionItem.idBBDD)];
+                        }
                     }
                 }
 
+                List<TriplesToModify> triplesToModify = new List<TriplesToModify>();
 
                 return Ok();
             }
