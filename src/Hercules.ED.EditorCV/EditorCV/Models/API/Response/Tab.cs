@@ -89,6 +89,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string identifier { get; set; }
         /// <summary>
+        /// Identificador de la entidad en BBDD
+        /// </summary>
+        public string idBBDD { get; set; }
+        /// <summary>
         /// Indica si es público o no 
         /// </summary>
         public bool ispublic { get; set; }
