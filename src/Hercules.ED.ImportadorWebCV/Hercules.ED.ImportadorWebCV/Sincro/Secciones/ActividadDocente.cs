@@ -64,8 +64,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes.
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -107,8 +113,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes.
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -150,8 +162,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -193,8 +211,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes.
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -236,8 +260,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes.
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -279,8 +309,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes.
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -322,8 +358,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes.
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -365,8 +407,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -408,8 +456,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
         /// <summary>
@@ -451,8 +505,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             //3º Comparamos las equivalentes
             Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
+            List<bool> listadoBloqueados = new List<bool>();
+            foreach (var item in equivalencias.Values)
+            {
+                listadoBloqueados.Add(entidadesBBDD.Values.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault() == true);
+            }
+
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
         }
 
 
