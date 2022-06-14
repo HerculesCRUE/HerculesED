@@ -9,6 +9,8 @@ var maxYear;
 var idPaginaActual = "";
 // ID de la gráfica seleccionada.
 var idGraficaActual = "";
+// ID de la gráfica a borrar.
+var idGraficaBorrar = "";
 
 // Lista de páginas.
 var listaPaginas;
@@ -461,9 +463,7 @@ var metricas = {
         that.pintarPagina(pPageData.id)
     },
     fillPagePersonalized: function(pPaginaUsuario) {
-        // TODO pop up id pagina
         idPaginaActual = pPaginaUsuario.idRecurso;
-        // final todo
         var that = this;
         var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
         var arg = {};
@@ -488,7 +488,7 @@ var metricas = {
                     if (!grafica.filtro) {
                         grafica.filtro = "";
                     }
-                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}' idrecurso='${grafica.idRecurso}'></div>`;
                 });
                 graficasGrupo = tmp;
     
@@ -521,6 +521,12 @@ var metricas = {
                                                         <a class="item-dropdown descargar">
                                                             <span class="material-icons">download</span>
                                                             <span class="texto">Descargar como imagen .jpg</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="item-dropdown eliminargrafica" data-toggle="modal" data-target="#modal-eliminar">
+                                                            <span class="material-icons">delete</span>
+                                                            <span class="texto">Eliminar gráfica</span>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -1324,6 +1330,29 @@ var metricas = {
                 }
                 url += "&pLang=" + lang;
                 document.location.href = url;
+            });
+        $('a.eliminargrafica')
+            .unbind()
+            .click(function (e) {
+                idGraficaBorrar = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+            });
+        $('a.eliminar')
+            .unbind()
+            .click(function (e) {
+                // Leer paginas de usuario
+                var idUsuario = $('.inpt_usuarioID').attr('value');
+                var idPagina = idPaginaActual;
+                var idGrafica = idGraficaBorrar;
+                var url = url_servicio_graphicengine + "BorrarGrafica"; //"https://localhost:44352/BorrarGrafica"
+                var arg = {};
+                arg.pUserId = idUsuario;
+                arg.pPageID = idPagina;
+                arg.pGraphicID = idGrafica;
+
+                // Petición para eliminar la gráfica.
+                $.get(url, arg, function (listaData) {
+                    location.reload();
+                });
             });
         $('a.guardar')
             .unbind()

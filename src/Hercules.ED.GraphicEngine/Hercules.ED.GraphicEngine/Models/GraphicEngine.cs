@@ -1647,7 +1647,7 @@ namespace Hercules.ED.GraphicEngine.Models
             where = new StringBuilder();
 
             select.Append(mPrefijos);
-            select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
+            select.Append($@"SELECT distinct ?datosGraficas ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
             where.Append("WHERE { ");
             where.Append($@"<{pIdPage}> roh:metricGraphic ?datosGraficas. ");
             where.Append("?datosGraficas roh:title ?titulo. ");
@@ -1664,6 +1664,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
                     DataGraphicUser data = new DataGraphicUser();
+                    data.idRecurso = fila["datosGraficas"].value;
                     data.titulo = fila["titulo"].value;
                     data.orden = Int32.Parse(fila["orden"].value);
                     data.idPagina = fila["idPagina"].value;
@@ -1893,7 +1894,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// </summary>
         /// <param name="pUserId">ID del usuario.</param>
         /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
-        public static void BorrarGrafica(string pUserId, string pRecursoId)
+        public static void BorrarGrafica(string pUserId,string pPageID, string pGraphicID)
         {
             mResourceApi.ChangeOntoly("person");
 
@@ -1907,12 +1908,12 @@ namespace Hercules.ED.GraphicEngine.Models
             RemoveTriples triple = new RemoveTriples();
             triple.Title = false;
             triple.Description = false;
-            triple.Predicate = $@"http://w3id.org/roh/metricGraphic";
-            triple.Value = pRecursoId;
+            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic";
+            triple.Value = pPageID + "|"+ pGraphicID;
             listaTriplesBorrado.Add(triple);
 
             dicBorrado.Add(guid, listaTriplesBorrado);
-            mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+            Dictionary<Guid, bool> eliminado = mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
         }
 
         /// <summary>
