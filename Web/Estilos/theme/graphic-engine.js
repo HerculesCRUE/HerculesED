@@ -484,7 +484,7 @@ var metricas = {
                 var tmp = '';
                 
                 item.forEach(function(grafica, index, array) {
-                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro='${grafica.filtro}' idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro='${grafica.filtro == null ? "" : grafica.filtro}' idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
                 });
                 graficasGrupo = tmp;
     

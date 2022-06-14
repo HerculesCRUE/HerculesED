@@ -1668,7 +1668,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     data.orden = Int32.Parse(fila["orden"].value);
                     data.idPagina = fila["idPagina"].value;
                     data.idGrafica = fila["idGrafica"].value;
-                    if (!String.IsNullOrEmpty(data.filtro))
+                    if (fila.ContainsKey("filtro") && !string.IsNullOrEmpty(fila["filtro"].value))
                     {
                         data.filtro = fila["filtro"].value;
                     }
