@@ -1,12 +1,5 @@
 $(document).ready(function() {
-    if(!$('div').hasClass('indicadoresPersonalizados'))
-    {
-        metricas.init();
-    }
-    else
-    {
-        metricas.initPersonalized();
-    }
+    metricas.init();
 });
 
 // Año máximo y mínimo para las facetas de años
@@ -23,11 +16,11 @@ var listaPaginas;
 
 var metricas = {
     init: function() {
-        this.getPages();
-        return;
-    },
-    initPersonalized: function() {
-        this.getPagesPersonalized();
+        if(!$('div').hasClass('indicadoresPersonalizados')) {
+            this.getPages();
+        } else {
+            this.getPagesPersonalized();
+        }
         return;
     },
     config: function() {
@@ -64,18 +57,8 @@ var metricas = {
                     <li id="${listaData[i].idRecurso}" num="${i}">${listaData[i].titulo}</li>
                 `);
             }
-            that.createEmptyPagePersonalized(listaData[0].id);
-            // TODO: Rehacer método para coger los datos necesarios.
-            // Pasarle lista de graficas por aquí. 
-
-            url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
-            arg = {};
-            arg.pPageId = listaData[0].idRecurso;
-
-            //$.get(url, arg, function(data) {
-                //that.fillPagePersonalized(listaData[0].idRecurso, data);
-            //});
-            
+            that.createEmptyPagePersonalized(listaData[0].idRecurso.split('/')[listaData[0].idRecurso.split('/').length - 1]);
+            that.fillPagePersonalized(listaData[0]);
             listaPaginas = listaData;
         });
     },
@@ -445,78 +428,80 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    fillPagePersonalized: function(idPaginaUsuario, pPageData) {
-        idPaginaActual = idPaginaUsuario;
+    fillPagePersonalized: function(pPaginaUsuario) {
+        // TODO pop up id pagina
+        idPaginaActual = pPaginaUsuario.idRecurso;
+        // final todo
         var that = this;
-
-        // Crear estructura para el apartado de gráficas.
-        var rowNumber = 0;
-        var espacio = 12;
-
-        var tmp = [];
-        var id = "";
-        var gruposDeIDs = [];
-        var lista = pPageData.slice();
-        while (lista.length > 0) {
-            tmp = [];
-            var grafica = lista.shift();
-            tmp.push(grafica);            
-            gruposDeIDs.push(tmp);
-        }
-
-        gruposDeIDs.forEach(function(item, index, array) {
-            var graficasGrupo;
-            var tmp = '';
-            item.forEach(function(grafica, index, array) {
-
-                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
-            });
-            graficasGrupo = tmp;
-
-            $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
-                <article class="resource span${item[0].anchura}"> 
-                    <div class="wrap" >
-                        <div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px` : ""}">
-                            ${item.length != 1 ? `
-                            <select class="chartMenu js-select2" href="javascript: void(0);" style="height:24px"></select>`: ""}
-                            <div class="wrap" style="z-index:1">
-                                <div class="zoom">
-                                    <a href="javascript: void(0);" style="height:24px"  data-toggle="modal">
-                                        <span class="material-icons">zoom_in</span>
-                                    </a>
-                                </div>
-                                <div class="dropdown show">
-                                    <a href="javascript: void(0);" style="height:24px" id="dropdownMasOpciones" data-toggle="dropdown">
-                                        <span class="material-icons">more_vert</span>
-                                    </a>
-                                    <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
-                                            <p class="dropdown-title">Acciones</p>
-                                            <ul class="no-list-style">
-                                                <li>
-                                                    <a class="item-dropdown csv">
-                                                        <span class="material-icons">insert_drive_file</span>
-                                                        <span class="texto">Descargar como .csv</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="item-dropdown descargar">
-                                                        <span class="material-icons">download</span>
-                                                        <span class="texto">Descargar como imagen .jpg</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
+        var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
+        var arg = {};
+        arg.pPageId = pPaginaUsuario.idRecurso;
+        // Petición para obtener los datos de la página.
+        $.get(url, arg, function(listaData) {
+            var tmp = [];
+            var id = "";
+            var gruposDeIDs = [];
+            var lista = listaData.slice();
+            while (lista.length > 0) {
+                tmp = [];
+                var grafica = lista.shift();
+                tmp.push(grafica);
+                gruposDeIDs.push(tmp);
+            }
+            gruposDeIDs.forEach(function(item, index, array) {
+                var graficasGrupo;
+                var tmp = '';
+                
+                item.forEach(function(grafica, index, array) {
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.idGrafica}'></div>`;
+                });
+                graficasGrupo = tmp;
+    
+                $('#page_' + pPaginaUsuario.idRecurso.split('/')[pPaginaUsuario.idRecurso.split('/').length - 1] + '.containerPage').find('.resource-list-wrap').append(`
+                    <article class="resource span${item[0].anchura}"> 
+                        <div class="wrap" >
+                            <div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px` : ""}">
+                                ${item.length != 1 ? `
+                                <select class="chartMenu js-select2" href="javascript: void(0);" style="height:24px"></select>`: ""}
+                                <div class="wrap" style="z-index:1">
+                                    <div class="zoom">
+                                        <a href="javascript: void(0);" style="height:24px"  data-toggle="modal">
+                                            <span class="material-icons">zoom_in</span>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown show">
+                                        <a href="javascript: void(0);" style="height:24px" id="dropdownMasOpciones" data-toggle="dropdown">
+                                            <span class="material-icons">more_vert</span>
+                                        </a>
+                                        <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                                <p class="dropdown-title">Acciones</p>
+                                                <ul class="no-list-style">
+                                                    <li>
+                                                        <a class="item-dropdown csv">
+                                                            <span class="material-icons">insert_drive_file</span>
+                                                            <span class="texto">Descargar como .csv</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="item-dropdown descargar">
+                                                            <span class="material-icons">download</span>
+                                                            <span class="texto">Descargar como imagen .jpg</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>                      
+                            ${graficasGrupo}
                             </div>
-                        </div>                      
-                        ${graficasGrupo}
-                        </div>
-                </article>
-
-            `);
+                    </article>
+    
+                `);
+            });
+            
+            that.pintarPaginaPersonalized(pPaginaUsuario.idRecurso, listaData)
         });
-        
-        that.pintarPaginaPersonalized(idPagina, idGrafica, filtro)
     },
     pintarPagina: function(pIdPagina) {
         var that = this;
@@ -645,22 +630,24 @@ var metricas = {
             }
         }
     },
-    pintarPaginaPersonalized: function(pIdPagina, pIdGrafica, pFitro) {
+    pintarPaginaPersonalized: function(pIdRecurso, pPageData) {
         var that = this;
+        var idPagina = pIdRecurso.split('/')[pIdRecurso.split('/').length - 1];
 
         // Borra la clase modal-open del body cuando se abre el pop-up del tesáuro. 
         // TODO: Mirar porque no lo hace automáticamente.
         $("body").removeClass("modal-open");
 
         // Vacias contenedores.
-        $('#page_' + pIdPagina + ' .grafica').empty();
-        $('#page_' + pIdPagina + ' .box').empty();
+        $('#page_' + idPagina + ' .grafica').empty();
+        $('#page_' + idPagina + ' .box').empty();
 
         // Recorremos el div de las gráficas.
-        $('#page_' + pIdPagina + ' .grafica').each(function() {
+        var index = 0;
+        $('#page_' + idPagina + ' .grafica').each(function() {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
-                        <p id="titulo_grafica_${pIdPagina}_${pIdGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <p id="titulo_grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
                         <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
                             <ul class="no-list-style align-items-center" style="display: flex; flex-direction: column;align-items:center">
                                 <li class="control zoomin-control" id="zoomIn">
@@ -671,14 +658,14 @@ var metricas = {
                                 </li>
                             </ul>
                         </div>
-                        <div id="grafica_${pIdPagina}_${pIdGrafica}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" style="position:relative; margin-top:15px ;width:100%">
-                    <div class="chartScroll" style="overflow-${pIdGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
+                    <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
                         <div style="height: 00px;" class="chartAreaWrapper">
-                            <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${pIdGrafica}"></canvas>
+                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}"></canvas>
                         </div>
                     </div>
                 </div>
@@ -686,10 +673,11 @@ var metricas = {
             } else {
                 $(this).css("height", "auto");
                 $(this).append(`
-                    <canvas id = "grafica_${pIdPagina}_${pIdGrafica}" width = "600" height = "250" ></canvas>
+                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" width = "600" height = "250" ></canvas>
                         `);
             }
-            that.getGrafica(pIdPagina, pIdGrafica, pFitro);
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro);
+            index++;
         });
     },
     corregirFiltros: function() {
