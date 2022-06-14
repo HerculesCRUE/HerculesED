@@ -514,7 +514,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             //external-->http://w3id.org/roh/externalKeywords
             //enriched-->http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/title
 
-
             HashSet<string> filters = new HashSet<string>();
             if (pDocuments != null && pDocuments.Count > 0)
             {
@@ -535,15 +534,18 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 {filter}
                                 {{
-                                    select  distinct ?document ?tag where{{
-                                        ?document a <http://purl.org/ontology/bibo/Document>.
-                                        {{
+                                    {{
+                                        select  distinct ?document ?tag where{{
+                                            ?document a <http://purl.org/ontology/bibo/Document>.
+                                            ?document <http://w3id.org/roh/enrichedKeywords> ?aux.
+                                            ?aux <http://w3id.org/roh/title> ?tag.                                       
+                                        }}
+                                    }}
+                                    UNION
+                                    {{
+                                        select  distinct ?document ?tag where{{
                                             ?document ?props ?tag.
                                             FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>))
-                                        }}UNION
-                                        {{
-                                            ?document <http://w3id.org/roh/enrichedKeywords> ?aux.
-                                            ?aux <http://w3id.org/roh/title> ?tag.
                                         }}
                                     }}
                                 }}
@@ -581,21 +583,63 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}                               
                                 }}
                                 MINUS{{
-                                    select  distinct ?document ?tag where{{
-                                        ?document a <http://purl.org/ontology/bibo/Document>.
-                                        {{
+                                    {{
+                                        select  distinct ?document ?tag where{{
+                                            ?document a <http://purl.org/ontology/bibo/Document>.
+                                            ?document <http://w3id.org/roh/enrichedKeywords> ?aux.
+                                            ?aux <http://w3id.org/roh/title> ?tag.                                       
+                                        }}
+                                    }}
+                                    UNION
+                                    {{
+                                        select  distinct ?document ?tag where{{
                                             ?document ?props ?tag.
                                             FILTER(?props in (<http://w3id.org/roh/userKeywords>,<http://w3id.org/roh/externalKeywords>))
-                                        }}UNION
-                                        {{
-                                            ?document <http://w3id.org/roh/enrichedKeywords> ?aux.
-                                            ?aux <http://w3id.org/roh/title> ?tag.
                                         }}
                                     }}
                                 }}
                             }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
                     EliminacionMultiple(resultado.results.bindings, "http://vivoweb.org/ontology/core#freeTextKeyword", "document", "tagAux");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //Eliminar duplicados
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?document count(?tag) ?tag ";
+                    String where = @$"where
+                                {{
+                                    ?document a <http://purl.org/ontology/bibo/Document>.
+                                    {filter}
+                                    ?document <http://vivoweb.org/ontology/core#freeTextKeyword> ?freeTextKeyword. 
+                                    ?freeTextKeyword <http://w3id.org/roh/title> ?tag. 
+                                }}group by (?document) (?tag) HAVING (COUNT(?tag) > 1) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string document = fila["document"].value;
+                        string tag = fila["tag"].value;
+                        String select2 = @"select ?document ?data ";
+                        String where2 = @$"where
+                            {{                            
+                                ?document <http://vivoweb.org/ontology/core#freeTextKeyword> ?data. 
+                                ?data <http://w3id.org/roh/title> '{tag.Replace("'","\\'")}'. 
+                                FILTER(?document=<{document}>)
+                            }}";
+                        SparqlObject resultado2 = mResourceApi.VirtuosoQuery(select2, where2, "document");
+
+                        foreach (Dictionary<string, SparqlObject.Data> fila2 in resultado2.results.bindings.GetRange(1, resultado2.results.bindings.Count - 1))
+                        {
+                            string value = fila2["data"].value;
+                            ActualizadorTriple(document, "http://vivoweb.org/ontology/core#freeTextKeyword", value, "");
+                        }
+                    });
                     if (resultado.results.bindings.Count != limit)
                     {
                         break;

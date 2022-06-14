@@ -47,7 +47,7 @@ var exportacionCV = {
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
 			});
 			
-			listaId = listaId.slice(0,-3);			
+			listaId = listaId.slice(0,-3);
 			
 			if(listaId.length == 0){
 				window.alert("Debes seleccionar alguna opción");
