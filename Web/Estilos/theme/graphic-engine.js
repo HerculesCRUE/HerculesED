@@ -8,11 +8,10 @@ $(document).ready(function() {
         metricas.initPersonalized();
     }
 });
-
 // Año máximo y mínimo para las facetas de años
 var minYear;
 var maxYear;
-
+// Lista de páginas
 // ID de la página actual.
 var idPaginaActual = "";
 // ID de la gráfica seleccionada.
@@ -22,7 +21,7 @@ var idGraficaActual = "";
 var listaPaginas;
 
 var metricas = {
-    init: function() {
+    init: function () {
         this.getPages();
         return;
     },
@@ -40,7 +39,7 @@ var metricas = {
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function(listaData) {
+        $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
                     <li id="${listaData[i].id}" num="${i}">${listaData[i].nombre}</li>
@@ -79,7 +78,7 @@ var metricas = {
             listaPaginas = listaData;
         });
     },
-    getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null) {
+    getGrafica: function(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null,barSize = 100) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -89,19 +88,25 @@ var metricas = {
         arg.pLang = lang;
 
         // Petición para obtener los datos de las gráficas.
-        $.get(url, arg, function(data) {
+        $.get(url, arg, function (data) {
             if (!ctx) {
                 ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
             }
-
             // Controla si el objeto es de ChartJS o Cytoscape.
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
             if ("container" in data) {
+                var nodes = window.nodes = {} //TODO mover declaracion.
                 data.container = ctx;
 
                 data.ready = function() { window.cy = this };
                 var cy = window.cy = cytoscape(data);
+                if (ctx) {
+                    nodes["pop_"+pIdGrafica] = cy;
+                } else {
+                    nodes[pIdGrafica] = cy;
+                }
+                //var combo = $(ctx).parents("article").find("select");
                 if (combo) {
                     combo.append(`
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.title}</options>
@@ -124,7 +129,7 @@ var metricas = {
                     edges[i]._private.data.name = "";
                 };
 
-                cy.on('click', 'node', function(e) {
+                cy.on('click', 'node', function (e) {
                     e = e.target;
                     var indice = cy.nodes().indexOf(e);
                     if (e._private.data.name === "") {
@@ -134,7 +139,7 @@ var metricas = {
                     }
                 })
 
-                cy.on('click', 'edge', function(e) {
+                cy.on('click', 'edge', function (e) {
                     e = e.target;
                     var indice = cy.edges().indexOf(e);
                     if (e._private.data.name === "") {
@@ -143,25 +148,6 @@ var metricas = {
                         e._private.data.name = "";
                     }
                 });
-
-                $('li#zoomIn')
-                    .unbind()
-                    .click(function(e) {
-                        cy.zoom({
-                            level: cy.zoom() * 1.2,
-                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
-
-                        });
-                    });
-
-                $('li#zoomOut')
-                    .unbind()
-                    .click(function(e) {
-                        cy.zoom({
-                            level: cy.zoom() / 1.2,
-                            renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
-                        });
-                    });
 
             } else {
                 if (combo) {
@@ -172,7 +158,6 @@ var metricas = {
                     `)
                     }
                 }
-
                 // Plugin para color de fondo, le pongo el color blanco.
                 var plugin = {
                     id: 'custom_canvas_background_color',
@@ -187,7 +172,7 @@ var metricas = {
                 data.plugins = [plugin];
 
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
-                    that.drawChart(ctx, data, pIdGrafica);
+                    that.drawChart(ctx, data, pIdGrafica, barSize);
                 } else {
                     var myChart = new Chart(ctx, data);
                 }
@@ -196,7 +181,7 @@ var metricas = {
             that.engancharComportamientos();
         });
     },
-    getFaceta: function(pIdPagina, pIdFaceta, pFiltroFacetas) {
+    getFaceta: function (pIdPagina, pIdFaceta, pFiltroFacetas) {
         var that = this;
         var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
         var arg = {};
@@ -211,7 +196,7 @@ var metricas = {
         maxYear = 0;
 
         // Petición para obtener los datos de las gráficas.
-        $.get(url, arg, function(data) {
+        $.get(url, arg, function (data) {
 
             var numItemsPintados = 0;
             if (data.isDate) {
@@ -254,7 +239,7 @@ var metricas = {
                 `);
             }
 
-            data.items.forEach(function(item, index, array) {
+            data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
                     return;
@@ -285,7 +270,7 @@ var metricas = {
                         </li>
                     `);
                     if (filtros.includes(item.filtro)) {
-                        // Negrita.
+                        // Negrita
                         $('li').find(`[filtro='${item.filtro}']`).addClass("applied");
                     }
                 } else {
@@ -306,12 +291,12 @@ var metricas = {
             that.engancharComportamientos();
         });
     },
-    clearPage: function() {
+    clearPage: function () {
         $('#panFacetas').empty()
         $('.resource-list-wrap').empty();
         $('.borrarFiltros').click();
     },
-    createEmptyPage: function(pIdPagina) {
+    createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
         $('.containerPage').addClass('pageMetrics');
         $('#panFacetas').attr('idfaceta', 'page_' + pIdPagina);
@@ -321,6 +306,15 @@ var metricas = {
         $('main').append(`
         <div class="modal-backdrop fade" style="pointer-events: none;"></div>
         `);
+
+        /*$('#containerMetrics').append(`
+            <div id="page_${pIdPagina}" class="pageMetrics">
+                <div class="containerGraficas">
+                </div>
+                <div class="containerFacetas">
+                </div>
+            </div>
+        `);*/
     },
     createEmptyPagePersonalized: function(pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -335,6 +329,7 @@ var metricas = {
         var that = this;
 
         // Crear estructura para el apartado de gráficas.
+
         var rowNumber = 0;
         var espacio = 12;
 
@@ -375,10 +370,10 @@ var metricas = {
         }
 
 
-        gruposDeIDs.forEach(function(item, index, array) {
+        gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
-            item.forEach(function(grafica, index, array) {
+            item.forEach(function (grafica, index, array) {
 
                 tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
             });
@@ -435,7 +430,7 @@ var metricas = {
 
 
         // Crear estructura para el apartado de facetas.
-        pPageData.listaIdsFacetas.forEach(function(item, index, array) {
+        pPageData.listaIdsFacetas.forEach(function (item, index, array) {
             $('#page_' + pPageData.id + ' .containerFacetas').append(`
                     <div class='facetedSearch'>
                         <div class='box' idfaceta='${item}'></div>
@@ -525,12 +520,20 @@ var metricas = {
         // TODO: Mirar porque no lo hace automáticamente.
         $("body").removeClass("modal-open");
 
+        if ($('#selectorPage').children().length == 0) {
+            $("#createPageRadio").prop("checked", true);
+            $("#selectPageRadio").parent().hide();
+            $('#selectPage').hide();
+        } else {
+            $("#selectPageRadio").prop("checked", true);
+            $('#createPage').hide();
+        }
         // Vacias contenedores.
         $('#page_' + pIdPagina + ' .grafica').empty();
         $('#page_' + pIdPagina + ' .box').empty();
 
         // Recorremos el div de las gráficas.
-        $('#page_' + pIdPagina + ' .grafica').each(function() {
+        $('#page_' + pIdPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
@@ -566,11 +569,11 @@ var metricas = {
         });
 
         // Recorremos el div de las facetas.
-        $('#page_' + pIdPagina + ' .box').each(function() {
+        $('#page_' + pIdPagina + ' .box').each(function () {
             that.getFaceta(pIdPagina, $(this).attr("idfaceta"), ObtenerHash2());
         });
 
-        // Etiquetas.
+        // Etiquetas
         $("#panListadoFiltros").children().remove();
         var filtros = decodeURIComponent(ObtenerHash2());
         var filtrosArray = filtros.split('&');
@@ -623,7 +626,6 @@ var metricas = {
                 `);
             }
         }
-
         function GetText(id, param1, param2, param3, param4) {
             if ($('#' + id).length) {
                 var txt = $('#' + id).val();
@@ -707,12 +709,13 @@ var metricas = {
             });
         });
     },
-    drawChart: function(ctx, data, pIdGrafica = null, barSize = 100) {
+    drawChart: function (ctx, data, pIdGrafica = null, barSize = 100) {
         if (Chart.getChart(ctx) != null) {
             return;
         }
-
         var myChart = new Chart(ctx, data);
+
+
         var numBars = data.data.labels.length; // Número de barras.
         var canvasSize = (numBars * barSize); // Tamaño del canvas.
         var canvas = myChart.canvas;
@@ -727,7 +730,7 @@ var metricas = {
         if (pIdGrafica != null && pIdGrafica.includes("prc")) {
             data.options.plugins.tooltip = {
                 callbacks: {
-                    afterLabel: function(context) {
+                    afterLabel: function (context) {
                         let label = "Porcentaje: ";
                         let sum = context.dataset.data.reduce((a, b) => a + b, 0);
                         let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
@@ -751,7 +754,6 @@ var metricas = {
                 data.options.scales.x.ticks.callback = ticksAbr;
             }
         }
-
         function ticksAbr(value) {
             const labels = data.data.labels; // Obtención de los labels.
             if (value >= 0 && value < labels.length) {
@@ -764,29 +766,29 @@ var metricas = {
         }
 
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
-        // Si la gráfica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll .
-        if ((canvasSize < 550 && horizontal) || (canvasSize < $(scrollContainer).width() && !horizontal)) { //TODO: Cambiar 550 por el tamaño del contenedor.
+        //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
+        if ((canvasSize < 550 && horizontal) || (canvasSize < $(scrollContainer).width() && !horizontal)) { //TODO cambiar 550 por el tamaño del contenedor.
             if (horizontal) { // estilos horizonales
                 chartAreaWrapper.style.height = myChart.height + "px";
                 scrollContainer.style.height = "auto";
                 scrollContainer.parentNode.style.height = "auto";
                 scrollContainer.style.overflowY = 'hidden';
                 scrollContainer.parentNode.parentNode.style.justifyContent = 'center';
-            } else { // Estilos verticales.
+            } else { //estilos verticales
                 scrollContainer.style.overflowX = 'hidden';
                 chartAreaWrapper.style.height = "546px";
             }
-        } else { // A partir de aqui se prepara el scroll.
+        } else { // a partir de aqui se prepara el scroll
 
-            var hasMainAxis = false; // Eje superior en caso horizontal, izquierdo en vertical.
-            var hasSecondaryAxis = false; // Eje inferior o derecho.
+            var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
+            var hasSecondaryAxis = false; // eje inferior o derecho
 
             // Se comprueba si tiene eje principal/secundario.
-            Object.entries(data.options.scales).forEach((scale) => { // Por cada escala que tenga data.
-                if ((scale[1].axis == "x" && horizontal) || (scale[1].axis == "y" && !horizontal)) { // Se comprueba si tiene eje principal (top en caso de horizontal, left en caso de vertical).
+            Object.entries(data.options.scales).forEach((scale) => { // por cada escala que tenga data
+                if ((scale[1].axis == "x" && horizontal) || (scale[1].axis == "y" && !horizontal)) { //se comprueba si tiene eje principal (top en caso de horizontal, left en caso de vertical)
                     if ((scale[1].position == "top" || scale[1].position == "left") && !hasMainAxis) {
                         hasMainAxis = true;
-                    } else if ((scale[1].position == "bottom" || scale[1].position == "right") && !hasSecondaryAxis) { // Se comprueba si tiene eje secundario (bottom en caso de horizontal, right en caso de vertical).
+                    } else if ((scale[1].position == "bottom" || scale[1].position == "right") && !hasSecondaryAxis) {//se comprueba si tiene eje secundario (bottom en caso de horizontal, right en caso de vertical)
                         hasSecondaryAxis = true;
                     }
 
@@ -800,6 +802,7 @@ var metricas = {
             $(chartContainer).append(legend);
             var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"></div>`)
             $(legend).append(dataSetLabels);
+
 
             // Por cada dataset que exista se creara un div con su nombre y color y se añade a dataSetLabels.
             var datasets = data.data.datasets;
@@ -824,7 +827,7 @@ var metricas = {
                 }
             }
 
-            // Se añade el eje secundario al contenedor.
+            //Se añade el eje secundario al contenedor.
             if (hasSecondaryAxis) {
                 if (horizontal) {
                     var secondaryAxis = $(`<canvas id="bottomAxis" class="myChartAxis" style="background: white; position: absolute; bottom: 0px; left: 0px;"></canvas>`);
@@ -837,21 +840,27 @@ var metricas = {
             // Cuando se acutaliza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
-                window.addEventListener('resize', (e) => { // evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
+                window.addEventListener('resize', (e) => {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
                     this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                     myChart.update();
                 });
             }
+
+
         }
+
+
+
+
     },
-    reDrawChart: function(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
+    reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         /*data.options.maintainAspectRatio = false;
         data.options.responsive = true;*/
 
         var scale = window.devicePixelRatio;
 
-        // Anchura y altura del recorte de la grafica.
+        //anchura y altura del recorte de la grafica
         var copyWidth;
         var copyHeight;
 
@@ -864,16 +873,16 @@ var metricas = {
             copyWidth = myChart.width;
             // Altura del titulo, leyenda y eje superior menos el margen.
             copyHeight = myChart.boxes[0].height + myChart.boxes[1].height + myChart.boxes[2]?.height - 5;
-            // Altura del eje.
+            // Altura del eje
             axisHeight = myChart.boxes[2]?.height;
-        } else { // -- vertical
+        } else {// -- vertical
             //myChart.canvas.parentNode.style.width = canvasSize + 'px';
-            myChart.canvas.parentNode.style.height = 100 + '%'; // Se escala la altura.
-            myChart.canvas.parentNode.style.width = canvasSize + 'px'; // Se escala la anchura respecto al canvas para que ocupe el scroll.
+            myChart.canvas.parentNode.style.height = 100 + '%'; //se escala la altura
+            myChart.canvas.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
 
-            copyWidth = myChart.boxes[2]?.width; // Anchura del eje.
+            copyWidth = myChart.boxes[2]?.width; //anchura del eje
             copyHeight = myChart.height - 20;
-            targetY = 20; // Posición del eje.
+            targetY = 20; //posicion del eje
             // Le asignamos tamaño a la leyenda.
             axisHeight = myChart.height - 10;
         }
@@ -881,19 +890,19 @@ var metricas = {
         $(legend).css("width", horizontal ? copyWidth + "px" : "100%");
         $(legend).css("height", horizontal ? myChart.chartArea.top + "px" : "auto");
 
-        // Si la leyenda falsa es mayor a la del canvas se añade la diferencia en margen para compensar
-        // esto sucede cuando en el canvas la leyenda ocupa una fila pero en el div 2 o más.
+        //si la leyenda falsa es mayor a la del canvas se añade la diferencia en margen para compensar
+        //esto sucede cuando en el canvas la leyenda ocupa una fila pero en el div 2 o mas;
         if ($(legend).height() > myChart.chartArea.top) {
 
             if (!horizontal) {
-                // Importante por que el margen añadido hace que aparezca un scroll horizontal.
+                //importante por que el margen añadido hace que aparezca un scroll horizontal
                 myChart.canvas.parentNode.parentNode.style.overflowY = "hidden";
             }
 
-            // Añadimos el margen
+            //añadimos el margen
             myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
-            // Aún que no lo parezca este tamaño es importante (1px también funcionaría).
-            // Obliga al canvas a reescalarse y ajustarse al div, sin el los labels se esconden debajo de la scrollbar.
+            //Aun que no lo parezca este tamaño es importante (1px tambien funcionaria)
+            //Obliga al canvas a reescalarse y ajustarse al div, sin el los labels se esconden debajo de la scrollbar
             myChart.canvas.parentNode.style.paddingBottom = 0.02 + "px";
             if (mainAxis) {
                 mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
@@ -918,14 +927,15 @@ var metricas = {
         var height = horizontal ? axisHeight + 4 : copyHeight;
         var ctx;
 
+
         if (mainAxis) {
             ctx = mainAxis[0].getContext('2d');
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
             } else {
                 ctx.canvas.height = copyHeight;
-                targetHeight -= 10 * scale; // Margenes.
-                //targetWidth += 1; // Para que coja el sepadador entre eje y grafica.
+                targetHeight -= 10 * scale; //margenes
+                //targetWidth += 1; //para que coja el sepadador entre eje y grafica
 
             }
             targetY = (copyHeight - axisHeight + 10) * scale;
@@ -946,7 +956,7 @@ var metricas = {
                 targetWidth += 5;
                 //width += 5;
 
-                // Estos valores sirven para que no se corte el 0 inferior y no se pase de tamaño tampoco.
+                //estos valores sirven para que no se corte el 0 inferior y no se pase de tamaño tampoco
                 targetHeight -= 5 * scale;
                 axisHeight -= 7 * scale;
                 height -= 5 * scale;
@@ -961,13 +971,13 @@ var metricas = {
         }
 
     },
-    pintarTesauro: function(pData) {
+    pintarTesauro: function (pData) {
         var etiqueta = "";
         var hijos = "";
 
         if (pData.length > 0) {
 
-            pData.forEach(function(item, index, array) {
+            pData.forEach(function (item, index, array) {
                 hijos += metricas.pintarTesauro(item);
             });
 
@@ -979,7 +989,7 @@ var metricas = {
             if (pData.childsTesauro.length > 0) {
 
                 etiqueta += `<ul>`;
-                pData.childsTesauro.forEach(function(item, index, array) {
+                pData.childsTesauro.forEach(function (item, index, array) {
                     hijos += metricas.pintarTesauro(item);
                 });
                 etiqueta += `${hijos}</ul>`;
@@ -1005,9 +1015,9 @@ var metricas = {
         }
 
     },
-    engancharComportamientos: function(cyto = null) {
+    engancharComportamientos: function (cyto = null) {
         var that = this;
-        // Este código se asegura que el item seleccionado en los menús es el que esta mostrandose. 
+        //este codigo se asegura que el item seleccionado en los menus es el que esta mostrandose. 
         var menus = $("select.chartMenu");
         menus.each((index, menu) => { //por cada menu en la pagina
             var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica"); //Obtiene la id de la grafica visible
@@ -1022,13 +1032,13 @@ var metricas = {
             min: minYear,
             max: maxYear,
             values: [minYear, maxYear],
-            slide: function(event, ui) {
+            slide: function (event, ui) {
                 $("#gmd_ci_datef1").val(ui.values[0]);
                 $("#gmd_ci_datef2").val(ui.values[1]);
             }
         });
 
-        $(".faceta-date-range").find("input.filtroFacetaFecha").on("input", function(event, ui) {
+        $(".faceta-date-range").find("input.filtroFacetaFecha").on("input", function (event, ui) {
             var valores = $(".faceta-date-range .ui-slider").slider("option", "values");
 
             if ($(this).attr("id") === "gmd_ci_datef1") {
@@ -1041,7 +1051,7 @@ var metricas = {
 
         $('.containerFacetas a.filtroMetrica,.listadoTesauro a.filtroMetrica')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtroActual = $(this).attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -1069,7 +1079,7 @@ var metricas = {
 
         $('a.remove.faceta')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtroActual = $(this).parent().attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -1097,7 +1107,7 @@ var metricas = {
 
         $('.borrarFiltros')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 history.pushState('', 'New URL: ', '?');
                 e.preventDefault();
                 that.pintarPagina(idPaginaActual);
@@ -1106,7 +1116,7 @@ var metricas = {
 
         $('#fiveyears')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
                 var filtroActual = `${filtro}=fiveyears`;
                 var filtros = decodeURIComponent(ObtenerHash2());
@@ -1134,7 +1144,7 @@ var metricas = {
 
         $('#lastyear')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
                 var filtroActual = `${filtro}=lastyear`;
                 var filtros = decodeURIComponent(ObtenerHash2());
@@ -1162,7 +1172,7 @@ var metricas = {
 
         $('#allyears')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var filtro = $(this).parent().parent().parent().parent().attr('idfaceta');
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
@@ -1188,7 +1198,7 @@ var metricas = {
 
         $('.faceta-date-range a.searchButton')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var min, max;
                 // Cojo el valor del input y si no tiene le pongo el placeholder
                 $("#gmd_ci_datef1").val() === '' ? min = $("#gmd_ci_datef1").attr("placeholder") : min = $("#gmd_ci_datef1").val();
@@ -1222,7 +1232,7 @@ var metricas = {
         // Labels de la leyenda.
         $('div.labelContainer')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 // Se obtiene el chart desde el canvas.
                 var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
                 var chart = Chart.getChart(canvas);
@@ -1251,7 +1261,7 @@ var metricas = {
         // Botón de descarga.
         $('a.descargar')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 // Obtención del chart usando el elemento canvas de graficas con scroll.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
 
@@ -1268,7 +1278,8 @@ var metricas = {
                 var image;
                 if (chart == null) {
                     image = cy.jpg();
-                } else {
+                }
+                else {
                     image = chart.toBase64Image('image/jpeg', 1);
                 }
 
@@ -1280,7 +1291,7 @@ var metricas = {
             });
         $('a.csv')
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
                 url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                 url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
@@ -1378,7 +1389,7 @@ var metricas = {
 
         $('#createPageRadio')
             .unbind()
-            .change(function() {
+            .change(function () {
                 if (this.checked) {
                     $('#selectPage').hide();
                     $('#createPage').show();
@@ -1387,7 +1398,7 @@ var metricas = {
 
         $('#selectPageRadio')
             .unbind()
-            .change(function() {
+            .change(function () {
                 if (this.checked) {
                     $('#selectPage').show();
                     $('#createPage').hide();
@@ -1410,10 +1421,10 @@ var metricas = {
                 hidden.addClass('show');
             });
         */
-        // Menú para cambiar entre gráficas.
+        //menu para cambiar entre graficas
         $("select.chartMenu")
             .unbind()
-            .change(function(e) {
+            .change(function (e) {
                 var parent = $(this).parents('div.wrap');
                 var shown = parent.find('div.show');
                 shown.css('display', 'none');
@@ -1428,7 +1439,7 @@ var metricas = {
                 }
             });
 
-        // Botón del pop-up con la gráfica escalada.
+        //boton del pop-up con la grafica escalada
         $("div.zoom")
             .unbind()
             .click(function(e) {
@@ -1439,6 +1450,7 @@ var metricas = {
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
+                //tamaño del contenedor (dejando 50px de margen arriba y abajo)
 
                 // Tamaño del contenedor (dejando 50px de margen arriba y abajo).
                 modalContent.css({ height: 'calc(100vh - 100px)' });
@@ -1451,7 +1463,7 @@ var metricas = {
                 $('.modal-backdrop').css('pointer-events', 'auto');
                 $('#modal-ampliar-mapa').addClass('show');
 
-                // Se popula con los contenedores adecuados.
+                //se popula con los contenedores adecuados
                 if ($(canvas).parents('div.grafica').attr("idgrafica").includes("nodes")) {
                     ctx = $(`<div id="grafica_${idPaginaActual}_${pIdGrafica}" style="width: 100%; height:${$(modalContent).height() - 130}px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>`)
                     parent.append(`
@@ -1485,9 +1497,39 @@ var metricas = {
                         parent.append(ctx);
                     }
                 }
-                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx); //obtenemos los datos y pintamos la grafica
+                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx, 50); //obtenemos los datos y pintamos la grafica
 
             });
+
+
+        $('li#zoomIn')
+            .unbind()
+            .click(function (e) {
+                var canvas = $(this).parents('div.grafica').find('div.__________cytoscape_container').attr('id') ;
+                var id = canvas.split('_')[1];
+                if (!canvas) {
+                    canvas = $(this).parents('div.graph-container').find('div.__________cytoscape_container').attr('id');
+                    id = 'pop_'+canvas.split('_')[1];
+                }
+
+                nodes.id.zoom({
+                    level: cy.zoom() * 1.2,
+                    renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+
+                });
+            });
+
+        $('li#zoomOut')
+            .unbind()
+            .click(function (e) {
+                cy.zoom({
+                    level: cy.zoom() / 1.2,
+                    renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
+                });
+            });
+
+
+
 
         $('.modal-backdrop')
             .unbind()
@@ -1510,7 +1552,7 @@ var metricas = {
             $('.modal-backdrop').css('pointer-events', 'none');
             $('#modal-agregar-datos').css('display', 'none');
 
-            // Hay que repintar las gráficas de nodos para que se enganche correctamente el zoom.
+            //Hay que repintar las graficas de nodos para que se enganche correctamente el zoom
 
             if (controls == 2) { //solo las graficas de nodos tienen controles (+,-) 
                 var nodes = $('div.__________cytoscape_container').empty();
@@ -1522,7 +1564,7 @@ var metricas = {
 
         $(".listadoMenuPaginas li")
             .unbind()
-            .click(function(e) {
+            .click(function (e) {
                 var numero = $(this).attr("num");
                 metricas.clearPage();
                 metricas.createEmptyPage(listaPaginas[numero].id);
@@ -1533,7 +1575,7 @@ var metricas = {
         comportamientoFacetasPopUp.init();
 
         // Agrega el enganche sin sobreescribir la función.
-        $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function(event) {
+        $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
             that.engancharComportamientos();
         }));
     }
