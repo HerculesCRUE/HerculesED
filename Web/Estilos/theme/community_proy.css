@@ -288,7 +288,7 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
 
 /* ETIQUETAS */
 /*.panFiltros { padding-bottom: 15px; width: 100%; }*/
-.panFiltros { padding-bottom: 10px; width: 100%; margin-bottom: -3px; }
+/*.panFiltros { padding-bottom: 10px; width: 100%; margin-bottom: -3px; }
 .panFiltros ul { margin: 0; padding: 0; display: inline-flex; flex-wrap: wrap; }
 .panFiltros ul li { margin-right: 3px; margin-bottom: 3px; background: #6d6d6d; list-style: none; height: 38px; line-height: 38px; padding-left: 23px; font-weight: 500; color: var(--c-blanco); font-size: 1rem; position: relative; padding-right: 54px; border: 0; }
 .panFiltros ul li.borrarFiltros-wrap { margin-right: 5px; margin-bottom: 2px; background: transparent; padding-left: 0px; padding-right: 0px; border: 0; }
@@ -297,11 +297,11 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
 .panFiltros ul li a:hover { text-decoration: none; }
 .panFiltros .borrarFiltros { display: inline-flex; align-items: center; color: var(--c-blanco); font-size: 0; height: 38px; line-height: 38px; padding: 0; text-decoration: none; white-space: nowrap; vertical-align: middle; background-color: var(--c-negro); opacity: 0.1; position: relative; margin-left: 10px; }
 .panFiltros .borrarFiltros:after { content: ''; width: 21px; height: 21px; background-color: var(--c-negro); transform: rotate(45deg) skew(15deg, 15deg); position: absolute; top: 8px; left: -10px; }
-.panFiltros .borrarFiltros:before { content: '\E5CD'; font-family: 'Material Icons'; font-size: 1.5rem; }
+.panFiltros .borrarFiltros:before { content: '\E5CD'; font-family: 'Material Icons'; font-size: 1.5rem; }*/
 /*  */
 
 /* ETIQUETAS PARA MENSAJERIA */
-.divFiltros { padding: 0; padding-top: 20px; width: 100%; }
+/*.divFiltros { padding: 0; padding-top: 20px; width: 100%; }
 .divFiltros ul { margin: 0; padding: 0; display: inline-flex; flex-wrap: wrap; }
 .divFiltros ul li { margin-right: 5px; margin-bottom: 2px; background: #6d6d6d; list-style: none; height: 38px; line-height: 38px; padding-left: 23px; font-weight: 500; color: var(--c-blanco); font-size: 1rem; position: relative; padding-right: 54px; border: 0; }
 .divFiltros ul li.borrarFiltros-wrap { margin-right: 5px; margin-bottom: 2px; background: transparent; padding-left: 0px; padding-right: 0px; border: 0; }
@@ -310,13 +310,13 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
 .divFiltros ul li a:hover { text-decoration: none; }
 .divFiltros .borrarFiltros { display: inline-flex; align-items: center; color: var(--c-blanco); font-size: 0; height: 38px; line-height: 38px; padding: 0; text-decoration: none; white-space: nowrap; vertical-align: middle; background-color: var(--c-negro); opacity: 0.1; position: relative; margin-left: 10px; }
 .divFiltros .borrarFiltros:after { content: ''; width: 21px; height: 21px; background-color: var(--c-negro); transform: rotate(45deg) skew(15deg, 15deg); position: absolute; top: 8px; left: -10px; }
-.divFiltros .borrarFiltros:before { content: '\E5CD'; font-family: 'Material Icons'; font-size: 1.5rem; }
+.divFiltros .borrarFiltros:before { content: '\E5CD'; font-family: 'Material Icons'; font-size: 1.5rem; }*/
 /**/
 
 
 
 /* PAGINADOR LISTADO */
-.panNavegador { margin-top: 115px; padding-right: 52px; }
+/*.panNavegador { margin-top: 115px; padding-right: 52px; }
 .panNavegador .pagination { align-items: center; justify-content: flex-end; }
 .panNavegador .pagination li { border: 1px solid rgba(86, 106, 116, 0.24); margin-right: 1px; padding: 2px 11px; }
 .panNavegador .pagination li a { font-size: 0.875rem; font-weight: 300; color: var(--c-negro); white-space: nowrap; }
@@ -324,5 +324,5 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
 
 @media (max-width: 767px) {
     .panNavegador { padding: 0 8px; }
-}
+}*/
 /**/
