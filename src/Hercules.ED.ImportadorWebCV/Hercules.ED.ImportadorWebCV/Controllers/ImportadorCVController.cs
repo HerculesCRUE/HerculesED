@@ -14,6 +14,8 @@ using System.IO;
 using System.Xml;
 using Gnoss.ApiWrapper.Model;
 using Models;
+using ImportadorWebCV.Exporta.Secciones;
+using Gnoss.ApiWrapper;
 
 namespace Hercules.ED.ImportadorWebCV.Controllers
 {
@@ -90,7 +92,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                     using (XmlWriter writer = XmlWriter.Create(sww))
                     {
                         serializer.Serialize(writer, preimportar);
-                        xml = sww.ToString(); 
+                        xml = sww.ToString();
                     }
                 }
                 preimportar.cvn_xml = xml;
@@ -104,41 +106,14 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         }
 
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm]string fileData, [FromForm] List<string> listaId, [FromForm] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] string fileData, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
                 SincroDatos sincroDatos = new SincroDatos(_Configuracion, pCVID, fileData);
 
-                List<Subseccion> listadoSubsecciones = new List<Subseccion>();
-                foreach(Subseccion subseccion in sincroDatos.preimport.secciones)
-                {
-                    Subseccion subsec = new Subseccion(subseccion.id);
-                    foreach(SubseccionItem subseccionItem in subseccion.subsecciones)
-                    {
-                        if (listaId.Contains(subseccionItem.guid))
-                        {
-                            subsec.subsecciones.Add(subseccionItem);
-                        }
-                    }
-                    listadoSubsecciones.Add(subsec);
-                }
-                sincroDatos.preimport = new Preimport(listadoSubsecciones);
-                List<TriplesToInclude> triplesToInclude = new List<TriplesToInclude>();
-                foreach(Subseccion sub in sincroDatos.preimport.secciones)
-                {
-                    foreach (SubseccionItem subseccionItem in sub.subsecciones)
-                    {
-                        foreach(Entity.Property property in subseccionItem.propiedades)
-                        {
-                            foreach(string value in property.values)
-                            {
-                                triplesToInclude.Add(new TriplesToInclude(property.prop, value));
-                            }
-                        }
-                    }
-                }
-
+                AccionesImportacion accionesImportacion = new AccionesImportacion();
+                accionesImportacion.ImportacionTriples(sincroDatos, pCVID, listaId, listaOpciones);
 
                 return Ok();
             }

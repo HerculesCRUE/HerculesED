@@ -61,7 +61,7 @@ namespace EditorCV.Models
             }
         }
 
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, Preimport preimport, List<string> listaId, List<string> listadoOpciones)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, Preimport preimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
@@ -74,12 +74,21 @@ namespace EditorCV.Models
                     multipartFormData.Add(new StringContent(id), "listaId");
                 }
             }
-            if (listadoOpciones != null && listadoOpciones.Count > 0)
+            else
             {
-                foreach (string opcion in listadoOpciones)
+                multipartFormData.Add(new StringContent(""), "listaId");
+            }
+
+            if (dicOpciones != null && dicOpciones.Count > 0)
+            {
+                foreach (KeyValuePair<string, string> opcion in dicOpciones)
                 {
-                    multipartFormData.Add(new StringContent(opcion), "listaOpciones");
+                    multipartFormData.Add(new StringContent(opcion.Key + "|||" + opcion.Value), "listaOpciones");
                 }
+            }
+            else
+            {
+                multipartFormData.Add(new StringContent(""), "listaOpciones");
             }
 
             string urlPreImportador = "";

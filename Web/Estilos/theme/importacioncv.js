@@ -52,7 +52,7 @@ var importarCVN = {
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
 			});
 			$('.resource-list .custom-control-input:checkbox:checked').closest('.resource.success').find(':selected').each(function(){
-				listaOpcionSeleccionados += (this.selected ? $(this).val()+"@@@" : "")
+				listaOpcionSeleccionados += (this.selected ? $(this).closest(".resource.success").find(":checked").val() + "|||" + $(this).val()+"@@@" : "")
 			});
 			
 			listaId = listaId.slice(0,-3);			
