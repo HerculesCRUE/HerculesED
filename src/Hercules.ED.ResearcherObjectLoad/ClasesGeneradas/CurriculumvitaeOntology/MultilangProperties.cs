@@ -28,36 +28,36 @@ namespace CurriculumvitaeOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			this.Roh_property = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/property"));
 			this.Roh_lang = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lang"));
-			this.Roh_entity = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entity"));
 			this.Roh_value = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/value"));
+			this.Roh_property = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/property"));
+			this.Roh_entity = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/entity"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/MultilangProperties"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/MultilangProperties"; } }
 		public OntologyEntity Entity { get; set; }
 
-		[RDFProperty("http://w3id.org/roh/property")]
-		public  string Roh_property { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/lang")]
 		public  string Roh_lang { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/entity")]
-		public  string Roh_entity { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/value")]
 		public  string Roh_value { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/property")]
+		public  string Roh_property { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/entity")]
+		public  string Roh_entity { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("roh:property", this.Roh_property));
 			propList.Add(new StringOntologyProperty("roh:lang", this.Roh_lang));
-			propList.Add(new StringOntologyProperty("roh:entity", this.Roh_entity));
 			propList.Add(new StringOntologyProperty("roh:value", this.Roh_value));
+			propList.Add(new StringOntologyProperty("roh:property", this.Roh_property));
+			propList.Add(new StringOntologyProperty("roh:entity", this.Roh_entity));
 		}
 
 		internal override void GetEntities()

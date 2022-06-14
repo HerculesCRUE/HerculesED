@@ -64,18 +64,6 @@ namespace CurriculumvitaeOntology
 					}
 				}
 			}
-			this.Roh_specialisedTraining = new List<RelatedSpecialisedTrainings>();
-			SemanticPropertyModel propRoh_specialisedTraining = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/specialisedTraining");
-			if(propRoh_specialisedTraining != null && propRoh_specialisedTraining.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_specialisedTraining.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						RelatedSpecialisedTrainings roh_specialisedTraining = new RelatedSpecialisedTrainings(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_specialisedTraining.Add(roh_specialisedTraining);
-					}
-				}
-			}
 			this.Roh_doctorates = new List<RelatedDoctorates>();
 			SemanticPropertyModel propRoh_doctorates = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/doctorates");
 			if(propRoh_doctorates != null && propRoh_doctorates.PropertyValues.Count > 0)
@@ -85,6 +73,18 @@ namespace CurriculumvitaeOntology
 					if(propValue.RelatedEntity!=null){
 						RelatedDoctorates roh_doctorates = new RelatedDoctorates(propValue.RelatedEntity,idiomaUsuario);
 						this.Roh_doctorates.Add(roh_doctorates);
+					}
+				}
+			}
+			this.Roh_specialisedTraining = new List<RelatedSpecialisedTrainings>();
+			SemanticPropertyModel propRoh_specialisedTraining = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/specialisedTraining");
+			if(propRoh_specialisedTraining != null && propRoh_specialisedTraining.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_specialisedTraining.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						RelatedSpecialisedTrainings roh_specialisedTraining = new RelatedSpecialisedTrainings(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_specialisedTraining.Add(roh_specialisedTraining);
 					}
 				}
 			}
@@ -116,11 +116,11 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/postgraduates")]
 		public  List<RelatedPostGraduates> Roh_postgraduates { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/specialisedTraining")]
-		public  List<RelatedSpecialisedTrainings> Roh_specialisedTraining { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/doctorates")]
 		public  List<RelatedDoctorates> Roh_doctorates { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/specialisedTraining")]
+		public  List<RelatedSpecialisedTrainings> Roh_specialisedTraining { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/coursesAndSeminars")]
 		public  List<RelatedCoursesAndSeminars> Roh_coursesAndSeminars { get; set;}
@@ -165,15 +165,6 @@ namespace CurriculumvitaeOntology
 				prop.Entity= entityRelatedPostGraduates;
 				}
 			}
-			if(Roh_specialisedTraining!=null){
-				foreach(RelatedSpecialisedTrainings prop in Roh_specialisedTraining){
-					prop.GetProperties();
-					prop.GetEntities();
-					OntologyEntity entityRelatedSpecialisedTrainings = new OntologyEntity("http://w3id.org/roh/RelatedSpecialisedTrainings", "http://w3id.org/roh/RelatedSpecialisedTrainings", "roh:specialisedTraining", prop.propList, prop.entList);
-				entList.Add(entityRelatedSpecialisedTrainings);
-				prop.Entity= entityRelatedSpecialisedTrainings;
-				}
-			}
 			if(Roh_doctorates!=null){
 				foreach(RelatedDoctorates prop in Roh_doctorates){
 					prop.GetProperties();
@@ -181,6 +172,15 @@ namespace CurriculumvitaeOntology
 					OntologyEntity entityRelatedDoctorates = new OntologyEntity("http://w3id.org/roh/RelatedDoctorates", "http://w3id.org/roh/RelatedDoctorates", "roh:doctorates", prop.propList, prop.entList);
 				entList.Add(entityRelatedDoctorates);
 				prop.Entity= entityRelatedDoctorates;
+				}
+			}
+			if(Roh_specialisedTraining!=null){
+				foreach(RelatedSpecialisedTrainings prop in Roh_specialisedTraining){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityRelatedSpecialisedTrainings = new OntologyEntity("http://w3id.org/roh/RelatedSpecialisedTrainings", "http://w3id.org/roh/RelatedSpecialisedTrainings", "roh:specialisedTraining", prop.propList, prop.entList);
+				entList.Add(entityRelatedSpecialisedTrainings);
+				prop.Entity= entityRelatedSpecialisedTrainings;
 				}
 			}
 			if(Roh_coursesAndSeminars!=null){
