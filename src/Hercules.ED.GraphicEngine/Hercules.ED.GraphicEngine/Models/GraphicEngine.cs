@@ -173,7 +173,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             if (configModel != null)
             {
-                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
+                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica.Split('-').LastOrDefault());
                 return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
 
