@@ -270,9 +270,7 @@ input.form-group-date {
 }
 
 .importar-exportar-cv select {
-    /* border: 0 !important; */
     border: 1px solid var(--c-gris-borde);
-    /* border-radius: 0; */
     height: 45px;
     padding: 10px 20px;
 }
