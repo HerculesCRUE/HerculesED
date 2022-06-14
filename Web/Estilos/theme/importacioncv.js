@@ -47,13 +47,18 @@ var importarCVN = {
 		$('.btImportarCV').off('click').on('click', function(e) {
 			e.preventDefault();
 			var listaId = "";
+			var listaOpcionSeleccionados = "";
 			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
 			});
+			$('.resource-list .custom-control-input:checkbox:checked').closest('.resource.success').find(':selected').each(function(){
+				listaOpcionSeleccionados += (this.selected ? $(this).val()+"@@@" : "")
+			});
 			
 			listaId = listaId.slice(0,-3);			
+			listaOpcionSeleccionados = listaOpcionSeleccionados.slice(0,-3);			
 			
-			that.importarCV(listaId);
+			that.importarCV(listaId, listaOpcionSeleccionados);
 		});
     },
 	//Carga los datos del CV para la exportacion
@@ -111,7 +116,7 @@ var importarCVN = {
 						edicionCV.printTab(id, response[i]);
 					}
 				};
-				//that.fileData = response[99].title;
+				that.fileData = response[99].title;
 				
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
@@ -120,13 +125,14 @@ var importarCVN = {
 		});		
 		return;
     },	
-	importarCV: function(listaId) {
+	importarCV: function(listaId, listaOpcionSeleccionados) {
 		MostrarUpdateProgress();
 		var that = this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
 		formData.append('fileData', that.fileData);
 		formData.append('listaId', listaId);
+		formData.append('listaOpcionSeleccionados', listaOpcionSeleccionados);
 		
 		$.ajax({
 			url: urlImportacionCV + '/PostimportarCV',
