@@ -484,7 +484,7 @@ var metricas = {
                 var tmp = '';
                 
                 item.forEach(function(grafica, index, array) {
-                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.idGrafica}'></div>`;
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro='${grafica.filtro}' idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
                 });
                 graficasGrupo = tmp;
     
@@ -1305,9 +1305,16 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
-                url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                } else {
+                    url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                }
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
