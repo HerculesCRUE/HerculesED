@@ -602,8 +602,38 @@
                         "property": "http://w3id.org/roh/enrichedKeywords",
                         "editable": true,
                         "multiple": true,
-                        "type": "text",
-                        "width": 0
+                        "type": "auxEntity",
+                        "width": 0,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/EnrichedKeyWord",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/title"
+                          },
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Tag"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://w3id.org/roh/title",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Score"
+                                  },
+                                  "type": "number",
+                                  "required": true,
+                                  "property": "http://w3id.org/roh/score",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
                     ]
                   },
@@ -1579,10 +1609,40 @@
                           "es": "Introduce el descriptor específico"
                         },
                         "property": "http://w3id.org/roh/enrichedKeywords",
-                        "multiple": true,
                         "editable": true,
-                        "type": "text",
-                        "width": 0
+                        "multiple": true,
+                        "type": "auxEntity",
+                        "width": 0,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/EnrichedKeyWord",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/title"
+                          },
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Tag"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://w3id.org/roh/title",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Score"
+                                  },
+                                  "type": "number",
+                                  "required": true,
+                                  "property": "http://w3id.org/roh/score",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
                     ]
                   },
@@ -2669,8 +2729,38 @@
                         "property": "http://w3id.org/roh/enrichedKeywords",
                         "editable": true,
                         "multiple": true,
-                        "type": "text",
-                        "width": 0
+                        "type": "auxEntity",
+                        "width": 0,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/EnrichedKeyWord",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/title"
+                          },
+                          "rows": [
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Tag"
+                                  },
+                                  "type": "text",
+                                  "required": true,
+                                  "property": "http://w3id.org/roh/title",
+                                  "width": 1
+                                },
+                                {
+                                  "title": {
+                                    "es": "Score"
+                                  },
+                                  "type": "number",
+                                  "required": true,
+                                  "property": "http://w3id.org/roh/score",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
                     ]
                   },
