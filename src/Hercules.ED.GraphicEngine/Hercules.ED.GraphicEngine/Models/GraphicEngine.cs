@@ -1654,7 +1654,7 @@ namespace Hercules.ED.GraphicEngine.Models
             where.Append("?datosGraficas roh:order ?orden. ");
             where.Append("?datosGraficas roh:pageId ?idPagina. ");
             where.Append("?datosGraficas roh:graphicId ?idGrafica. ");
-            where.Append("?datosGraficas roh:filters ?filtro. ");
+            where.Append("OPTIONAL{?datosGraficas roh:filters ?filtro. } ");
             where.Append("?datosGraficas roh:width ?anchura. ");
             where.Append("} ");
 
@@ -1668,7 +1668,10 @@ namespace Hercules.ED.GraphicEngine.Models
                     data.orden = Int32.Parse(fila["orden"].value);
                     data.idPagina = fila["idPagina"].value;
                     data.idGrafica = fila["idGrafica"].value;
-                    data.filtro = fila["filtro"].value;
+                    if (!String.IsNullOrEmpty(data.filtro))
+                    {
+                        data.filtro = fila["filtro"].value;
+                    }
                     data.anchura = fila["anchura"].value;
                     listaGraficas.Add(data);
                 }
@@ -1801,13 +1804,16 @@ namespace Hercules.ED.GraphicEngine.Models
             });
 
             // Filtros
-            triplesInclude.Add(new TriplesToInclude
+            if (!string.IsNullOrEmpty(pFiltros))
             {
-                Description = false,
-                Title = false,
-                Predicate = predicadoBase + "http://w3id.org/roh/filters",
-                NewValue = valorBase + pFiltros
-            });
+                triplesInclude.Add(new TriplesToInclude
+                {
+                    Description = false,
+                    Title = false,
+                    Predicate = predicadoBase + "http://w3id.org/roh/filters",
+                    NewValue = valorBase + pFiltros
+                });
+            }
 
             // Anchura
             triplesInclude.Add(new TriplesToInclude

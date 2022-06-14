@@ -286,17 +286,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         if (!string.IsNullOrEmpty(jsonData))
                         {
                             Log.Information("[WoS] Obteniendo topics enriquecidos...");
-                            List<string> listaTopics = getDescriptores(jsonData, "thematic");
+                            Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
                             Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
-                            List<string> listaEtiquetas = getDescriptores(jsonData, "specific");
+                            Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                             if (listaTopics != null && listaTopics.Any())
                             {
                                 pub_completa.topics_enriquecidos = new List<Knowledge_enriquecidos>();
-                                foreach (string item in listaTopics)
+                                foreach (KeyValuePair<string, string> item in listaTopics)
                                 {
                                     Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                    topic.word = item;
+                                    topic.word = item.Key;
+                                    topic.porcentaje = item.Value;
                                     pub_completa.topics_enriquecidos.Add(topic);
                                 }
                             }
@@ -308,10 +309,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (listaEtiquetas != null && listaEtiquetas.Any())
                             {
                                 pub_completa.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
-                                foreach (string item in listaEtiquetas)
+                                foreach (KeyValuePair<string, string> item in listaEtiquetas)
                                 {
                                     Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                    topic.word = item;
+                                    topic.word = item.Key;
+                                    topic.porcentaje = item.Value;
                                     pub_completa.freetextKeyword_enriquecidas.Add(topic);
                                 }
                             }
@@ -421,17 +423,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (!string.IsNullOrEmpty(jsonData))
                             {
                                 Log.Information("[WoS] Obteniendo topics enriquecidos...");
-                                List<string> listaTopics = getDescriptores(jsonData, "thematic");
+                                Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
                                 Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
-                                List<string> listaEtiquetas = getDescriptores(jsonData, "specific");
+                                Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                                 if (listaTopics != null && listaTopics.Any())
                                 {
                                     pub_completa.topics_enriquecidos = new List<Knowledge_enriquecidos>();
-                                    foreach (string item in listaTopics)
+                                    foreach (KeyValuePair<string, string> item in listaTopics)
                                     {
                                         Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item;
+                                        topic.word = item.Key;
+                                        topic.porcentaje = item.Value;
                                         pub_completa.topics_enriquecidos.Add(topic);
                                     }
                                 }
@@ -443,10 +446,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 if (listaEtiquetas != null && listaEtiquetas.Any())
                                 {
                                     pub_completa.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
-                                    foreach (string item in listaEtiquetas)
+                                    foreach (KeyValuePair<string, string> item in listaEtiquetas)
                                     {
                                         Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item;
+                                        topic.word = item.Key;
+                                        topic.porcentaje = item.Value;
                                         pub_completa.freetextKeyword_enriquecidas.Add(topic);
                                     }
                                 }
@@ -574,17 +578,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (!string.IsNullOrEmpty(jsonData))
                             {
                                 Log.Information("[WoS] Obteniendo topics enriquecidos...");
-                                List<string> listaTopics = getDescriptores(jsonData, "thematic");
+                                Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
                                 Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
-                                List<string> listaEtiquetas = getDescriptores(jsonData, "specific");
+                                Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                                 if (listaTopics != null && listaTopics.Any())
                                 {
                                     pub_completa.topics_enriquecidos = new List<Knowledge_enriquecidos>();
-                                    foreach (string item in listaTopics)
+                                    foreach (KeyValuePair<string, string> item in listaTopics)
                                     {
                                         Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item;
+                                        topic.word = item.Key;
+                                        topic.porcentaje = item.Value;
                                         pub_completa.topics_enriquecidos.Add(topic);
                                     }
                                 }
@@ -596,10 +601,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 if (listaEtiquetas != null && listaEtiquetas.Any())
                                 {
                                     pub_completa.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
-                                    foreach (string item in listaEtiquetas)
+                                    foreach (KeyValuePair<string, string> item in listaEtiquetas)
                                     {
                                         Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item;
+                                        topic.word = item.Key;
+                                        topic.porcentaje = item.Value;
                                         pub_completa.freetextKeyword_enriquecidas.Add(topic);
                                     }
                                 }
@@ -641,7 +647,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}___FECHA___USUARIO.json", info);
+            //File.WriteAllText($@"Files/{name}___FECHA___NOMBRE.json", info);
             return resultado;
         }
         //public List<Knowledge_enriquecidos> enriquedicmiento_pal(Publication pub)
@@ -3038,7 +3044,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
         }
 
-        public static List<string> getDescriptores(string pDataEnriquecimiento, string pTipo)
+        public static Dictionary<string, string> getDescriptores(string pDataEnriquecimiento, string pTipo)
         {
             // Petición.
             HttpResponseMessage response = null;
@@ -3087,12 +3093,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 if (data != null)
                 {
-                    HashSet<string> listaTopics = new HashSet<string>();
+                    Dictionary<string, string> dicTopics = new Dictionary<string, string>();
                     foreach (Knowledge_enriquecidos item in data.topics)
                     {
-                        listaTopics.Add(item.word);
+                        if (!dicTopics.ContainsKey(item.word))
+                        {
+                            dicTopics.Add(item.word, item.porcentaje);
+                        }
                     }
-                    return listaTopics.ToList();
+                    return dicTopics;
                 }
             }
 
