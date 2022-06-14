@@ -1313,7 +1313,10 @@ var metricas = {
                 } else {
                     url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    if (filtro != "") {
+                        url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    }
                 }
                 url += "&pLang=" + lang;
                 document.location.href = url;
@@ -1469,8 +1472,6 @@ var metricas = {
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
-                //tamaño del contenedor (dejando 50px de margen arriba y abajo)
-
                 // Tamaño del contenedor (dejando 50px de margen arriba y abajo).
                 modalContent.css({ height: 'calc(100vh - 100px)' });
                 modalContent.parent().css({ maxWidth: '1310px' }); // El tamaño maximo del contendor de los articles.
@@ -1516,15 +1517,18 @@ var metricas = {
                         parent.append(ctx);
                     }
                 }
-                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx, 50); //obtenemos los datos y pintamos la grafica
+                var filtro;
+                var idPagina;
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    filtro = ObtenerHash2();
+                    idPagina = idPaginaActual;
+                } else {
+                    filtro = (canvas).parents('div.grafica').attr("filtro");
+                    idPagina = (canvas).parents('div.grafica').attr("idpagina");
+                }
+                that.getGrafica(idPagina, pIdGrafica, filtro, ctx, 50); //obtenemos los datos y pintamos la grafica
 
             });
-
-
-
-
-
-
 
         $('.modal-backdrop')
             .unbind()
