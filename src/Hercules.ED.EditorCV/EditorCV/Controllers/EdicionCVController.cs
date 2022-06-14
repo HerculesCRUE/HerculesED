@@ -77,12 +77,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <returns></returns>
         [HttpGet("GetTab")]
-        public IActionResult GetTab(string pCVId,string pId, string pRdfType, string pLang)
+        public IActionResult GetTab(string pCVId,string pId, string pRdfType, string pLang,int? pSection)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetTab( pCVId, pId, pRdfType, pLang));
+                return Ok(accionesEdicion.GetTab( pCVId, pId, pRdfType, pLang, pSection));
             }
             catch (Exception ex)
             {

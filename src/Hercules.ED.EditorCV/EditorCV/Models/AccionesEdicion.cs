@@ -31,7 +31,7 @@ namespace EditorCV.Models
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
-        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro; 
+        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
         private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> dicAutocompletar = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
         private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();
@@ -50,8 +50,8 @@ namespace EditorCV.Models
         public string GetCVUrl(string userID, string lang)
         {
             string cv = UtilityCV.GetCVFromUser(userID);
-            List<ResponseGetUrl> urlList = mResourceApi.GetUrl(new List<Guid>() { mResourceApi.GetShortGuid(cv) },lang);
-            if(urlList.Count>0)
+            List<ResponseGetUrl> urlList = mResourceApi.GetUrl(new List<Guid>() { mResourceApi.GetShortGuid(cv) }, lang);
+            if (urlList.Count > 0)
             {
                 return urlList.First(x => x.resource_id == mResourceApi.GetShortGuid(cv)).url;
             }
@@ -250,8 +250,9 @@ namespace EditorCV.Models
         /// <param name="pId">Identificador de la entidad de la sección</param>
         /// <param name="pRdfType">Rdf:type de la entidad de la sección</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang)
+        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang, int? pSection = null)
         {
 
             //Obtenemos el template
@@ -260,13 +261,13 @@ namespace EditorCV.Models
             if (!template.personalData)
             {
                 //Obtenemos los datos necesarios para el pintado
-                Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang);
+                Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang, pSection);
                 //Obtenemos el modelo para devolver
-                respuesta = GetTabModel(pCVId, pId, data, template, pLang);
+                respuesta = GetTabModel(pCVId, pId, data, template, pLang, pSection);
             }
             else
             {
-                respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);                
+                respuesta = GetEditModel(pCVId, pId, template.personalDataSections, pLang);
             }
             respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
             return respuesta;
@@ -655,7 +656,7 @@ namespace EditorCV.Models
                             {
                                 StringBuilder sbUnion = new StringBuilder();
                                 sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                sbUnion.AppendLine($@"              {FilterWordComplete(word,"name")} BIND({score} as ?num)");
+                                sbUnion.AppendLine($@"              {FilterWordComplete(word, "name")} BIND({score} as ?num)");
                                 //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
                                 unions.Add(sbUnion.ToString());
                             }
@@ -721,7 +722,7 @@ namespace EditorCV.Models
             return listaPersonas;
         }
 
-        public string FilterWordComplete(string pWord,string pVar)
+        public string FilterWordComplete(string pWord, string pVar)
         {
             Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();
             listaReemplazos["a"] = "aáàä";
@@ -733,9 +734,9 @@ namespace EditorCV.Models
             listaReemplazos["c"] = "cç";
             foreach (string caracter in listaReemplazos.Keys)
             {
-                pWord = pWord.Replace(caracter,$"[{listaReemplazos[caracter]}]");
+                pWord = pWord.Replace(caracter, $"[{listaReemplazos[caracter]}]");
             }
-            string filter= @$"FILTER ( regex(?{pVar},""(^| ){pWord}($| )"", ""i""))";
+            string filter = @$"FILTER ( regex(?{pVar},""(^| ){pWord}($| )"", ""i""))";
 
             return filter;
         }
@@ -751,14 +752,18 @@ namespace EditorCV.Models
         /// <param name="pId">Identificador de la entidad de la sección</param>
         /// <param name="pTemplate">Plantilla a utilizar</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, int? pSection)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
-                propertyDatas.Add(templateSection.GenerarPropertyData(graph));
+                if (!pSection.HasValue || pTemplate.sections.IndexOf(templateSection) == pSection.Value)
+                {
+                    propertyDatas.Add(templateSection.GenerarPropertyData(graph));
+                }
             }
             return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
         }
@@ -860,7 +865,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang)
+        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, int? pSection)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -871,6 +876,7 @@ namespace EditorCV.Models
             };
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
+
                 if (templateSection.presentation != null)
                 {
                     API.Response.TabSection tabSection = new API.Response.TabSection()
@@ -954,7 +960,6 @@ namespace EditorCV.Models
                         default:
                             throw new Exception("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
                     }
-
                 }
             }
             return tab;
@@ -990,7 +995,7 @@ namespace EditorCV.Models
                 propertyInTitle = UtilityCV.GetPropComplete(pListItemConfig.listItem.propertyTitle);
             }
             item.title = GetPropValues(pId, propertyInTitle, pData).FirstOrDefault();
-            if(pListItemConfig.listItem?.propertyTitle?.auxTitle!=null)
+            if (pListItemConfig.listItem?.propertyTitle?.auxTitle != null)
             {
                 item.title = UtilityCV.GetTextLang(pLang, pListItemConfig.listItem?.propertyTitle?.auxTitle) + " " + item.title;
             }
@@ -1694,7 +1699,8 @@ namespace EditorCV.Models
                             entityEditSectionRowProperty.comboDependency = new ComboDependency { parent = pItemEditSectionRowProperty.combo.dependency.propertyValue, parentDependency = parentDependency };
                         }
                     }
-                }else if(pItemEditSectionRowProperty.type==DataTypeEdit.projectauthorization)
+                }
+                else if (pItemEditSectionRowProperty.type == DataTypeEdit.projectauthorization)
                 {
                     entityEditSectionRowProperty.type = "selectCombo";
                     entityEditSectionRowProperty.comboValues = pComboAutorizacionesProyectos;
