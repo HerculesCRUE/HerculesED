@@ -6,6 +6,13 @@ namespace Hercules.ED.GraphicEngine.Models.Graficas
     public abstract class GraficaBase
     {
         public abstract byte[] GenerateCSV();
+        public string groupId { get; set; }
+        public bool isAbr { get; set; }
+        public bool isPercentage { get; set; }
+        public bool isDate { get; set; }
+        public bool isHorizontal { get; set; }
+        public bool isVertical { get; set; }
+        public bool isNodes { get; set; }
     }
 
     public class Options

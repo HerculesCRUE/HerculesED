@@ -51,9 +51,9 @@ namespace EditorCV.Controllers
                 ConcurrentDictionary<int, Models.API.Response.Tab> respuesta =  accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
 
                 //Añado el archivo en la posicion 99 de la respuesta.
-                //Models.API.Response.Tab tab = new Models.API.Response.Tab();
-                //tab.title = preimport.cvn_xml.Replace("&lt;", "<").Replace("&gt;", ">");
-                //respuesta.TryAdd(99, tab);
+                Models.API.Response.Tab tab = new Models.API.Response.Tab();
+                tab.title = preimport.cvn_xml;
+                respuesta.TryAdd(99, tab);
 
                 return Ok(respuesta);
             }
@@ -64,11 +64,14 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("PostimportarCV")]
-        public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string listaId)
+        public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string listaId, [FromForm] string listaOpcionSeleccionados)
         {
             try
             {
                 List<string> listadoId = new List<string>();
+                List<string> listadoOpciones = new List<string>();
+                Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
+
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
@@ -78,6 +81,28 @@ namespace EditorCV.Controllers
                 if (!string.IsNullOrEmpty(listaId))
                 {
                     listadoId = listaId.Split("@@@").ToList();
+                }
+                if (!string.IsNullOrEmpty(listaOpcionSeleccionados))
+                {
+                    string idOpcion;
+                    string valueOpcion;
+                    listadoOpciones = listaOpcionSeleccionados.Split("@@@").ToList();
+                    foreach (string opcion in listadoOpciones)
+                    {
+                        idOpcion = opcion.Split("|||").First();
+                        valueOpcion = opcion.Split("|||").Last();
+                        dicOpciones.Add(idOpcion, valueOpcion);
+                    }
+                }
+
+                //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
+                foreach(KeyValuePair<string, string> valuePair in dicOpciones)
+                {
+                    if (valuePair.Value.Equals("ig") && listadoId.Contains(valuePair.Key))
+                    {
+                        listadoId.Remove(valuePair.Key);
+                        dicOpciones.Remove(valuePair.Key);
+                    }
                 }
 
                 XmlSerializer ser = new XmlSerializer(typeof(Preimport));
@@ -89,7 +114,7 @@ namespace EditorCV.Controllers
                 }
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion();                
-                accionesImportacion.PostimportarCV(_Configuracion, pCVId, preimport, listadoId);
+                accionesImportacion.PostimportarCV(_Configuracion, pCVId, preimport, listadoId, dicOpciones);
 
                 return Ok();
             }

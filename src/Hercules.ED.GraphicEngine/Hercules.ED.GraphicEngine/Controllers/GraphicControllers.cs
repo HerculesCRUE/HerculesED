@@ -103,5 +103,14 @@ namespace Hercules.ED.GraphicEngine.Controllers
         {
             Models.GraphicEngine.GuardarGrafica(pTitulo, pAnchura, pIdPaginaGrafica, pIdGrafica, pFiltros, pUserId, pIdRecursoPagina, pTituloPagina);
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void BorrarGrafica(string pUserId, string pPageID, string pGraphicID)
+        {
+            Models.GraphicEngine.BorrarGrafica(pUserId, pPageID, pGraphicID);
+        }
     }
 }

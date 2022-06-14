@@ -61,18 +61,34 @@ namespace EditorCV.Models
             }
         }
 
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, Preimport preimport, List<string> listaId)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, Preimport preimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
             multipartFormData.Add(new StringContent(pCVID), "pCVID");
-            multipartFormData.Add(new ObjectContent( typeof( Preimport),preimport, new JsonMediaTypeFormatter()));
-            if (listaId != null && listaId.Count>0)
+            multipartFormData.Add(new ObjectContent(typeof(Preimport), preimport, new JsonMediaTypeFormatter()));
+            if (listaId != null && listaId.Count > 0)
             {
                 foreach (string id in listaId)
                 {
-                    multipartFormData.Add(new StringContent(id),"listaId");
+                    multipartFormData.Add(new StringContent(id), "listaId");
                 }
+            }
+            else
+            {
+                multipartFormData.Add(new StringContent(""), "listaId");
+            }
+
+            if (dicOpciones != null && dicOpciones.Count > 0)
+            {
+                foreach (KeyValuePair<string, string> opcion in dicOpciones)
+                {
+                    multipartFormData.Add(new StringContent(opcion.Key + "|||" + opcion.Value), "listaOpciones");
+                }
+            }
+            else
+            {
+                multipartFormData.Add(new StringContent(""), "listaOpciones");
             }
 
             string urlPreImportador = "";
@@ -109,7 +125,7 @@ namespace EditorCV.Models
         {
             API.Response.Tab tabResponse = new API.Response.Tab();
             tabResponse.sections = new List<API.Response.TabSection>();
-            
+
             if (tab.personalData)
             {
                 tabResponse.title = tab.title.FirstOrDefault().Value;
@@ -150,7 +166,7 @@ namespace EditorCV.Models
                 tabSectionItem.properties = new List<TabSectionItemProperty>();
                 tabSectionItem.identifier = preimport.secciones.Where(x => x.id.Equals("000.000.000.000"))
                     .Select(x => x.subsecciones.Select(x => x.guid).FirstOrDefault()).FirstOrDefault();
-                
+
                 tabSectionItem.iseditable = !preimport.secciones.Where(x => x.id.Equals("000.000.000.000"))
                     .Select(x => x.subsecciones.Select(x => x.isBlocked).FirstOrDefault()).FirstOrDefault();
 
@@ -168,7 +184,7 @@ namespace EditorCV.Models
                                 tsip.values = preimport.secciones.Where(x => x.id.Equals("000.000.000.000"))
                                     .SelectMany(x => x.subsecciones.SelectMany(x => x.propiedades.Where(x => x.prop.Equals(prop.property)).ToList()))
                                     .SelectMany(x => x.values).ToList();
-                                                                
+
                                 tabSectionItem.properties.Add(tsip);
                             }
                         }
@@ -188,7 +204,7 @@ namespace EditorCV.Models
             API.Response.TabSection tabSection = new API.Response.TabSection();
             //Título sección
             tabSection.title = UtilityCV.GetTextLang(lang, section.presentation.title);
-            tabSection.identifier = section.property;            
+            tabSection.identifier = section.property;
 
 
             //Órdenes sección
@@ -225,9 +241,9 @@ namespace EditorCV.Models
                     section.presentation.listItemsPresentation.listItem != null && section.presentation.listItemsPresentation.listItem.properties != null &&
                     section.presentation.listItemsPresentation.listItem.properties.Count != 0 &&
                     preimport.secciones.Exists(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection)) ||
-                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x=>x.id.Equals("050.020.010.000")) ||
-                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x=>x.id.Equals("050.020.020.000")) ||
-                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x=>x.id.Equals("050.010.000.000"))
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.020.010.000")) ||
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.020.020.000")) ||
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.010.000.000"))
                 )
                 {
 
@@ -265,7 +281,7 @@ namespace EditorCV.Models
                             .Where(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection))
                             .SelectMany(x => x.subsecciones).ToList();
                     }
-                    
+
 
                     for (int i = 0; i < listaSubsecciones.Count; i++)
                     {
@@ -288,7 +304,7 @@ namespace EditorCV.Models
 
                         tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
                         tabSectionItem.properties = new List<TabSectionItemProperty>();
-                        tabSectionItem.iseditable = !itemEditSection.blocked;                            
+                        tabSectionItem.iseditable = !itemEditSection.blocked;
 
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
                         tsip.type = GetPropCompleteWithoutRelatedBy(GetPropCompleteImport(itemEditSection.property));

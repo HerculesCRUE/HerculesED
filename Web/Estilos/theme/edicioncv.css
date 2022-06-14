@@ -268,3 +268,9 @@ input.form-group-date {
 .importar-exportar-cv .select2.select2-container.select2-container--default.select2-container--focus {
     width: 200px!important;
 }
+
+.importar-exportar-cv select {
+    border: 1px solid var(--c-gris-borde);
+    height: 45px;
+    padding: 10px 20px;
+}

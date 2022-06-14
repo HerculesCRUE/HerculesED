@@ -90,28 +90,33 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoAbreviar + "-" + configPagina.id;
+                    configPagina.isAbr = true;
                 }
 
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoNodos + "-" + configPagina.id;
+                    configPagina.isNodes = true;
                 }
                 else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal) && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
+                    configPagina.isHorizontal = true;
 
                 }
                 else if (itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular))
                 {
                     itemGrafica.identificador = prefijoCircular + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoCircular + "-" + configPagina.id;
+                    configPagina.isCircular = true;
                 }
                 if (itemGrafica.config.porcentual && !itemGrafica.identificador.Contains(prefijoPorcentaje))
                 {
                     itemGrafica.identificador = prefijoPorcentaje + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoPorcentaje + "-" + configPagina.id;
+                    configPagina.isPercentage = true;
                 }
 
                 // Si la anchura no contiene un valor aceptado, se le asigna 1/2 por defecto.
@@ -192,6 +197,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
+
             switch (pGrafica.tipo)
             {
                 case EnumGraficas.Barras:
@@ -228,6 +234,33 @@ namespace Hercules.ED.GraphicEngine.Models
             // Objeto a devolver.
             GraficaBarras grafica = new GraficaBarras();
             grafica.type = "bar"; // Por defecto, de tipo bar.
+
+            // Tipo.
+            grafica.isHorizontal = true;
+
+            // Abreviación.
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            // Porcentage.
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            // ID Grupo.
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
+            // Es fecha.
+            if (pListaDates != null && pListaDates.Any())
+            {
+                grafica.isDate = true;
+            }
 
             // Asignación de Data.
             DataBarras data = new DataBarras();
@@ -600,6 +633,33 @@ namespace Hercules.ED.GraphicEngine.Models
             GraficaBarrasY grafica = new GraficaBarrasY();
             grafica.type = "bar"; // Por defecto, de tipo bar.
 
+            // Tipo.
+            grafica.isVertical = true;
+
+            // Abreviación.
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            // Porcentage.
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            // ID Grupo.
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
+            // Es fecha.
+            if (pListaDates != null && pListaDates.Any())
+            {
+                grafica.isDate = true;
+            }
+
             // Asignación de Data.
             DataBarrasY data = new DataBarrasY();
             data.datasets = new ConcurrentBag<DatasetBarrasY>();
@@ -971,6 +1031,24 @@ namespace Hercules.ED.GraphicEngine.Models
             GraficaCircular grafica = new GraficaCircular();
             grafica.type = "pie"; // Por defecto, de tipo pie.
 
+            // Abreviación.
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            // Porcentage.
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            // ID Grupo.
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
             // Asignación de Data.
             DataCircular data = new DataCircular();
             data.datasets = new ConcurrentBag<DatasetCircular>();
@@ -1110,6 +1188,27 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             GraficaNodos grafica = new GraficaNodos();
+
+            // Abreviación.
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            // Porcentage.
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            // ID Grupo.
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
+            // Tipo.
+            grafica.isNodes = true;
 
             #region --- Configuración
             // Opciones interactivas
@@ -1647,7 +1746,7 @@ namespace Hercules.ED.GraphicEngine.Models
             where = new StringBuilder();
 
             select.Append(mPrefijos);
-            select.Append($@"SELECT ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
+            select.Append($@"SELECT distinct ?datosGraficas ?titulo ?orden ?idPagina ?idGrafica ?filtro ?anchura ");
             where.Append("WHERE { ");
             where.Append($@"<{pIdPage}> roh:metricGraphic ?datosGraficas. ");
             where.Append("?datosGraficas roh:title ?titulo. ");
@@ -1664,6 +1763,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
                     DataGraphicUser data = new DataGraphicUser();
+                    data.idRecurso = fila["datosGraficas"].value;
                     data.titulo = fila["titulo"].value;
                     data.orden = Int32.Parse(fila["orden"].value);
                     data.idPagina = fila["idPagina"].value;
@@ -1893,7 +1993,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// </summary>
         /// <param name="pUserId">ID del usuario.</param>
         /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
-        public static void BorrarGrafica(string pUserId, string pRecursoId)
+        public static void BorrarGrafica(string pUserId,string pPageID, string pGraphicID)
         {
             mResourceApi.ChangeOntoly("person");
 
@@ -1907,12 +2007,12 @@ namespace Hercules.ED.GraphicEngine.Models
             RemoveTriples triple = new RemoveTriples();
             triple.Title = false;
             triple.Description = false;
-            triple.Predicate = $@"http://w3id.org/roh/metricGraphic";
-            triple.Value = pRecursoId;
+            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic";
+            triple.Value = pPageID + "|"+ pGraphicID;
             listaTriplesBorrado.Add(triple);
 
             dicBorrado.Add(guid, listaTriplesBorrado);
-            mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+            Dictionary<Guid, bool> eliminado = mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
         }
 
         /// <summary>
@@ -1931,7 +2031,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         mTabTemplates.Add(tab);
                     }
                 }
-                return mTabTemplates;
+                return mTabTemplates.OrderBy(x => x.orden).ToList();
             }
         }
 
