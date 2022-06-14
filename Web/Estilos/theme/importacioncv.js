@@ -12,13 +12,13 @@ var importarCVN = {
 		this.idUsuario = $('#inpt_usuarioID').val();
 		this.fileData = '';
 
-		selectorConflictoNoBloqueado = `<select name="itemConflict" class="js-select2">
+		selectorConflictoNoBloqueado = `<select name="itemConflict" >
 												<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 												<option value="fu">${GetText('CV_FUSIONAR')}</option>
 												<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
 												<option value="du">${GetText('CV_DUPLICAR')}</option>
 											</select>`;
-		selectorConflictoBloqueado = `<select name="itemConflict" class="js-select2">
+		selectorConflictoBloqueado = `<select name="itemConflict" >
 											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 											<option value="fu">${GetText('CV_FUSIONAR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
