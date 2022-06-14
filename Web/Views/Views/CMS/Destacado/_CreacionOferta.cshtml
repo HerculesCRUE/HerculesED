@@ -204,7 +204,7 @@
 
 										<div class="col col-12 header-listado">
 											<div class="h1-container">
-												<h1>@Html.Translate("INVESTIGADORES_SELECCIONADOS") <span class="numResultados">0</span></h1>
+												<h1>@Html.Translate("INVESTIGADORES_SELECCIONADOS") <span class="numResultados" id="stp2-num-selected-txt">0</span></h1>
 											</div>
 										</div>
 										<div class="col col-12 col-xl-9 col-contenido" id="researchers-stp2-result-oferta">
@@ -457,7 +457,7 @@
 												<a class="nav-link active" id="proyectos-seleccionables-tab" data-toggle="tab" href="#proyectos-seleccionables" role="tab" aria-controls="proyectos-seleccionables" aria-selected="true">@Html.Translate("SELECCIONABLES")</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" id="proyectos-seleccionados-tab" data-toggle="tab" href="#proyectos-seleccionados" role="tab" aria-controls="proyectos-seleccionados" aria-selected="false">@Html.Translate("SELECCIONADOS") <span id="stp5-proj-num-selected"></span></a>
+												<a class="nav-link" id="proyectos-seleccionados-tab" data-toggle="tab" href="#proyectos-seleccionados" role="tab" aria-controls="proyectos-seleccionados" aria-selected="false">@Html.Translate("SELECCIONADOS") <span id="stp5-proj-num-selected">(0)</span></a>
 											</li>
 										</ul>
 										<div class="tab-content">
@@ -479,7 +479,7 @@
 
 													<div class="col col-12 header-listado">
 														<div class="h1-container">
-															<h1>@Html.Translate("PROYECTOS_SELECCIONADOS") <span class="numResultados">0</span></h1>
+															<h1>@Html.Translate("PROYECTOS_SELECCIONADOS") <span class="numResultados" id="stp5-num-selected-proj-txt">0</span></h1>
 														</div>
 													</div>
 													<div class="col col-12 col-xl-9 col-contenido" id="proyectos-stp5-result-oferta">
@@ -500,7 +500,7 @@
 												<a class="nav-link active" id="publicaciones-seleccionables-tab" data-toggle="tab" href="#publicaciones-seleccionables" role="tab" aria-controls="publicaciones-seleccionables" aria-selected="false">@Html.Translate("SELECCIONABLES")</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" id="publicaciones-seleccionados-tab" data-toggle="tab" href="#publicaciones-seleccionados" role="tab" aria-controls="publicaciones-seleccionados" aria-selected="true">@Html.Translate("SELECCIONADOS") (0)</a>
+												<a class="nav-link" id="publicaciones-seleccionados-tab" data-toggle="tab" href="#publicaciones-seleccionados" role="tab" aria-controls="publicaciones-seleccionados" aria-selected="true">@Html.Translate("SELECCIONADOS") <span id="stp5-docs-num-selected">(0)</span></a>
 											</li>
 										</ul>
 										<div class="tab-content">
@@ -518,10 +518,10 @@
 												<div class="row">
 													<div class="col col-12 header-listado">
 														<div class="h1-container">
-															<h1>@Html.Translate("PUBLICACIONES_SELECCIONADAS") <span class="numResultados">0</span></h1>
+															<h1>@Html.Translate("PUBLICACIONES_SELECCIONADAS") <span class="numResultados" id="stp5-num-selected-docs-txt">0</span></h1>
 														</div>
 													</div>
-													<div class="col col-12 col-xl-9 col-contenido">
+													<div class="col col-12 col-xl-9 col-contenido" id="publicaciones-stp5-result-oferta">
 														<div class="resource-list listView resource-list-proyectos">
 															<div class="resource-list-wrap">
 															</div>
@@ -537,7 +537,7 @@
 												<a class="nav-link active" id="prop-industrial-intelectual-seleccionables-tab" data-toggle="tab" href="#prop-industrial-intelectual-seleccionables" role="tab" aria-controls="prop-industrial-intelectual-seleccionables" aria-selected="false">@Html.Translate("SELECCIONABLES")</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" id="prop-industrial-intelectual-seleccionados-tab" data-toggle="tab" href="#prop-industrial-intelectual-seleccionados" role="tab" aria-controls="prop-industrial-intelectual-seleccionados" aria-selected="true">@Html.Translate("SELECCIONADOS") (0)</a>
+												<a class="nav-link" id="prop-industrial-intelectual-seleccionados-tab" data-toggle="tab" href="#prop-industrial-intelectual-seleccionados" role="tab" aria-controls="prop-industrial-intelectual-seleccionados" aria-selected="true">@Html.Translate("SELECCIONADOS") <span id="stp5-pii-num-selected">(0)</span></a>
 											</li>
 										</ul>
 										<div class="tab-content">
@@ -545,7 +545,7 @@
 												@* <div class="row">
 													<div class="col col-12 header-listado">
 														<div class="h1-container">
-															<h1>@Html.Translate("PROPIEDAD_INDUSTRIAL_INTELECTUAL_SELECCIONABLES") <span class="numResultados">0</span></h1>
+															<h1>@Html.Translate("PROPIEDAD_INDUSTRIAL_INTELECTUAL_SELECCIONABLES") <span class="numResultados" id="stp5-num-selected-pii-txt">0</span></h1>
 														</div>
 													</div>
 													<div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
@@ -577,10 +577,10 @@
 												<div class="row">
 													<div class="col col-12 header-listado">
 														<div class="h1-container">
-															<h1>@Html.Translate("PROPIEDAD_INDUSTRIAL_INTELECTUAL_SELECCIONADOS") <span class="numResultados">0</span></h1>
+															<h1>@Html.Translate("PROPIEDAD_INDUSTRIAL_INTELECTUAL_SELECCIONADOS") <span class="numResultados" id="stp5-num-selected-pii-txt">0</span></h1>
 														</div>
 													</div>
-													<div class="col col-12 col-xl-9 col-contenido">
+													<div class="col col-12 col-xl-9 col-contenido" id="pii-stp5-result-oferta">
 														<div class="resource-list listView resource-list-proyectos">
 															<div class="resource-list-wrap">
 

@@ -104,7 +104,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         }
 
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm]string fileData, [FromForm] List<string> listaId)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm]string fileData, [FromForm] List<string> listaId, [FromForm] List<string> listaOpciones)
         {
             try
             {
