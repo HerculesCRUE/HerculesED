@@ -3,6 +3,7 @@
     "es": "Página de Publicaciones"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
+  "orden": 3,
   "identificador": "789",
   "graficas": [
     {

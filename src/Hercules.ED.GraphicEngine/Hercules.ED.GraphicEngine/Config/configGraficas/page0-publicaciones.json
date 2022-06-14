@@ -3,6 +3,7 @@
     "es": "Página de EJEMPLO"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
+  "orden": 1,
   "identificador": "123",
   "graficas": [
     {
