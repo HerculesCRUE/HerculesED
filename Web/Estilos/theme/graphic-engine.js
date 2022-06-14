@@ -464,7 +464,7 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    fillPagePersonalized: function(pPaginaUsuario) {
+    fillPagePersonalized: function (pPaginaUsuario) {
         idPaginaActual = pPaginaUsuario.idRecurso;
         var that = this;
         var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
@@ -485,8 +485,8 @@ var metricas = {
             gruposDeIDs.forEach(function (item, index, array) {
                 var graficasGrupo;
                 var tmp = '';
-                
-                item.forEach(function(grafica, index, array) {
+
+                item.forEach(function (grafica, index, array) {
                     if (!grafica.filtro) {
                         grafica.filtro = "";
                     }
@@ -573,10 +573,10 @@ var metricas = {
                         <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
                             <ul class="no-list-style align-items-center" style="display: flex; flex-direction: column;align-items:center">
                                 <li class="control zoomin-control" id="zoomIn">
-                                    <span class="material-icons">add</span>
+                                    <span style="user-select: none" class="material-icons" >add</span>
                                 </li>
                                 <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
-                                    <span class="material-icons" >remove</span>
+                                    <span style="user-select: none" class="material-icons" >remove</span>
                                 </li>
                             </ul>
                         </div>
@@ -787,6 +787,12 @@ var metricas = {
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
         //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
         if ((canvasSize < 550 && horizontal) || (canvasSize < $(scrollContainer).width() && !horizontal)) { //TODO cambiar 550 por el tamaño del contenedor.
+            if (barSize<100){
+                $(ctx).parents(".modal-content").css("height", "auto");
+                $(ctx).parents(".modal-content").css("display", "block");
+            }
+            
+            
             if (horizontal) { // estilos horizonales
                 chartAreaWrapper.style.height = canvasSize + 100 + "px";
                 scrollContainer.style.height = "auto";
@@ -820,7 +826,10 @@ var metricas = {
 
 
         } else { // a partir de aqui se prepara el scroll
-
+            if (barSize<100){
+                $(ctx).parents(".modal-content").css("display", "block");
+            }
+            
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
 
@@ -898,10 +907,10 @@ var metricas = {
                     myChart.update();
                 });
             }
-            
+
             if (data.isDate) {
-                $(ctx).parents('div.chartScroll')[0].scrollLeft = canvasSize;
-                //$(ctx).parents('div.chartScroll').animate({ scrollLeft: canvasSize }, 3000); tiempo en ms
+                //$(ctx).parents('div.chartScroll')[0].scrollLeft = canvasSize; //la grafica se posiciona al final directamente
+                $(ctx).parents('div.chartScroll').animate({ scrollLeft: canvasSize }, 3000); // tiempo en ms
             }
             //
         }
@@ -1339,7 +1348,7 @@ var metricas = {
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
 
-                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
                     url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
@@ -1543,10 +1552,10 @@ var metricas = {
                             <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
                                 <ul class="no-list-style align-items-center" style="display: flex; flex-direction: column;align-items:center">
                                     <li class="control zoomin-control" id="zoomIn">
-                                        <span class="material-icons">add</span>
+                                        <span style="user-select:none" class="material-icons">add</span>
                                     </li>
                                     <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
-                                        <span class="material-icons" >remove</span>
+                                        <span style="user-select: none" class="material-icons" >remove</span>
                                     </li>
                                 </ul>
                             </div>
@@ -1556,6 +1565,7 @@ var metricas = {
                     ctx = $(`<canvas id="grafica_${idPaginaActual}_${pIdGrafica}" width = "600" height = "250"></canvas>`);
 
                     if (!(canvas.parents('div.grafica').attr("idgrafica").includes("circular"))) {
+                        modalContent.css({display: 'none'});
                         parent.append(`
                             <div class="chartWrapper" style="position:relative; margin-top:15px">
                                 <div class="chartScroll" style="overflow-${($(canvas).parents('div.grafica').attr("idgrafica").includes("isHorizontal")) ? "y" : "x"}: scroll;height:${$(modalContent).height() - 130}px;">
@@ -1571,14 +1581,14 @@ var metricas = {
                 }
                 var filtro;
                 var idPagina;
-                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
                     filtro = ObtenerHash2();
                     idPagina = idPaginaActual;
                 } else {
                     filtro = (canvas).parents('div.grafica').attr("filtro");
                     idPagina = (canvas).parents('div.grafica').attr("idpagina");
                 }
-                that.getGrafica(idPagina, pIdGrafica, filtro, ctx, 50); //obtenemos los datos y pintamos la grafica
+                that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50); //obtenemos los datos y pintamos la grafica
 
             });
 
