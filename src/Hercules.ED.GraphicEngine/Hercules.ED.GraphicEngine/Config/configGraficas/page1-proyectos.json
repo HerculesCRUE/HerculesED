@@ -1,6 +1,6 @@
 {
   "nombre": {
-    "es": "Página de proyectos"
+    "es": "Página de proyectos test"
   },
   "filtro": "rdf:type='project'&roh:isValidated='true'",
   "identificador": "456",
