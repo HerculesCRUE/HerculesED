@@ -1931,7 +1931,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         mTabTemplates.Add(tab);
                     }
                 }
-                return mTabTemplates;
+                return mTabTemplates.OrderBy(x => x.orden).ToList();
             }
         }
 
