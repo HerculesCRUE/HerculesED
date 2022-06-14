@@ -48,6 +48,7 @@ var metricas = {
         var that = this;
         var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"  
         var arg = {};
+        var nodes = globalThis.nodes = {};
         arg.pUserId = $('.inpt_usuarioID').attr('value');
 
         // Petición para obtener los datos de la página.
@@ -484,7 +485,10 @@ var metricas = {
                 var tmp = '';
                 
                 item.forEach(function(grafica, index, array) {
-                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro='${grafica.filtro == null ? "" : grafica.filtro}' idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
+                    if (!grafica.filtro) {
+                        grafica.filtro = "";
+                    }
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
                 });
                 graficasGrupo = tmp;
     
@@ -1383,11 +1387,7 @@ var metricas = {
                 arg.pTitulo = $('#labelTituloGrafica').val();
                 arg.pAnchura = $('#idSelectorTamanyo option:selected').val();
                 arg.pIdPaginaGrafica = idPaginaActual;
-                if (idGraficaActual.includes("-")) {
-                    arg.pIdGrafica = idGraficaActual.split("-")[1];
-                } else {
-                    arg.pIdGrafica = idGraficaActual;
-                }
+                arg.pIdGrafica = idGraficaActual;
                 arg.pFiltros = ObtenerHash2();
                 arg.pUserId = $('.inpt_usuarioID').attr('value');
 
