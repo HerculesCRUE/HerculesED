@@ -51,9 +51,9 @@ namespace EditorCV.Controllers
                 ConcurrentDictionary<int, Models.API.Response.Tab> respuesta =  accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
 
                 //Añado el archivo en la posicion 99 de la respuesta.
-                //Models.API.Response.Tab tab = new Models.API.Response.Tab();
-                //tab.title = preimport.cvn_xml.Replace("&lt;", "<").Replace("&gt;", ">");
-                //respuesta.TryAdd(99, tab);
+                Models.API.Response.Tab tab = new Models.API.Response.Tab();
+                tab.title = preimport.cvn_xml.Replace("&lt;", "<").Replace("&gt;", ">");
+                respuesta.TryAdd(99, tab);
 
                 return Ok(respuesta);
             }
