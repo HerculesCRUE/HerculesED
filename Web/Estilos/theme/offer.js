@@ -77,6 +77,9 @@ class StepsOffer {
 		
 
 		// STEP 5
+		this.ProyectosSelectedStep5 = this.crearOfertaStep5.find("#proyectos-stp5-result-oferta")
+		this.DocumentsSelectedStep5 = this.crearOfertaStep5.find("#publicaciones-stp5-result-oferta")
+		this.PIISelectedStep5 = this.crearOfertaStep5.find("#pii-stp5-result-oferta")
 		this.numSeleccionadosProjects = 0
 		this.numSeleccionadosDocuments = 0
 		this.numSeleccionadosPII = 0
@@ -106,7 +109,10 @@ class StepsOffer {
 		this.userId = document.getElementById('inpt_usuarioID').value
 		this.ofertaId = undefined
 		this.data = {
-			researchers: {}
+			researchers: {},
+			projects: {},
+			documents: {},
+			pii: {},
 		}
 		this.editDataSave = undefined
 		this.communityShortName = $(this.crearOferta).data('cshortname')
@@ -365,6 +371,17 @@ class StepsOffer {
 	}
 
 	/**
+	 * Método que inicia el proceso de ir al siguiente paso en el stepBar
+	 */
+	goEnd() {
+		if (this.step == (this.numSteps - 1) && (this.data.projects.length > 0 || this.data.documents.length > 0 || this.data.pii.length > 0)) {
+			this.goStep(this.step + 1)
+		} else {
+			this.errorDivStep2.show()
+		}
+	}
+
+	/**
 	 * Método que inicia el proceso de ir al paso anterior en el stepBar
 	 */
 	goBack() {
@@ -388,6 +405,12 @@ class StepsOffer {
 			this.errorDivStep2Equals.hide()
 			this.errorDivServer.hide()
 			this.setStep(pos)
+
+			switch (pos) {
+				case 2:
+				_self.startStep2()
+				break;
+			}
 
 		// Siguiente paso
 		} else if(pos > 0) {
@@ -708,7 +731,7 @@ class StepsOffer {
 	saveInit() {
 
 		var _self = this
-		this.data.pIdGnossUser=this.userId
+		this.data.pIdGnossUser = this.userId
 		
 		return new Promise((resolve) => {
 			
@@ -716,8 +739,8 @@ class StepsOffer {
 				.done(
 					function (rdata) {
 						_self.ofertaId = rdata
-						_self.data.entityID=rdata
-						_self.startStep2()
+						_self.data.entityID = rdata
+						// _self.startStep2()
 						resolve(true)
 					}
 				)
@@ -1183,7 +1206,25 @@ class StepsOffer {
 
 		MostrarUpdateProgress();
 
-		comportamientoProyectosOferta.init(this.data)
+
+		let proyectosTab = document.getElementById("proyectos-tab")
+		let documentosTab = document.getElementById("publicaciones-tab")
+		let piiTab = document.getElementById("prop-industrial-intelectual-tab")
+
+		proyectosTab.addEventListener("click", (event) => {
+			comportamientoProyectosOferta.init(this.data)
+		})
+
+		documentosTab.addEventListener("click", (event) => {
+			comportamientoPublicacionesOferta.init(this.data)
+		})
+
+		piiTab.addEventListener("click", (event) => {
+			comportamientoPIIOferta.init(this.data)
+		})
+
+		proyectosTab.click()
+
 		// comportamientoPublicacionesOferta.init(this.data)
 
 		// OcultarUpdateProgress();
@@ -1315,7 +1356,251 @@ class StepsOffer {
 		this.researchersStep2.append(htmlUsersCont)
 
 		// pintamos el número de investigadores
+		this.numSeleccionadosInvestigadores = profiles.length
 		this.printNumResearchers()
+	}
+
+	/**
+	 * Pintar los proyectos "finales"
+	 */
+	PrintSelectedProjStp5 () {
+
+		let imgUser = this.crearOferta.data('imguser')
+
+		let projects = Object.keys(this.data.projects).map((e, i) => {
+			let htmlUser = ""
+
+			// Obtenemos el usuario actual
+			let proj = this.data.projects[e]
+
+			// Obtenemos el usuario actual
+			let researchers = []
+			let researchersFin = ""
+			if (proj.researchers) {
+				researchers = proj.researchers.map(user => {
+					return '<li>' + user + '</li>'
+				})
+				researchersFin = '<ul>' + researchers.join('') + '</ul>'
+			}
+
+			if(proj != null)
+			{
+
+				htmlUser = `
+				<article class="resource proyecto">
+		            <div class="wrap">
+		                <div class="middle-wrap">
+		                    <div class="title-wrap">
+		                        <h2 class="resource-title">
+		                            <a href="javascript:void(0)">${proj.name}</a>
+		                        </h2>
+		                        <div class="acciones-wrap">
+		                            <ul class="no-list-style">
+		                                <li>
+		                                    <a href="javascript:stepsOffer.removeSelectedProjectSelected('`+ e +`')" class="texto-gris-claro">
+		                                        Eliminar
+		                                        <span class="material-icons-outlined">delete</span>
+		                                    </a>
+		                                </li>
+		                            </ul>
+		                        </div>
+		                    </div>
+		                    <div class="content-wrap">
+		                        <div class="description-wrap counted">
+		                            <div class="list-wrap">
+		                                <p class="nombre-completo">`+ proj.info +`</p>
+		                            </div>
+		                            <div class="list-wrap authors">
+		                            	${researchersFin}
+		                            </div>
+		                            <div class="desc">
+		                                <p>`+ proj.description +`</p>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </article>`
+			}
+
+			return htmlUser
+		})
+		// Añadimos el html de los investigadores
+		let htmlUsersCont = `
+			<div class="resource-list listView resource-list-proyectos">
+			    <div class="resource-list-wrap">
+			    	${projects.join('')}
+			    </div>
+			</div>`
+
+		this.ProyectosSelectedStep5.find('.resource-list-proyectos').remove()
+		this.ProyectosSelectedStep5.append(htmlUsersCont)
+
+		// pintamos el número de investigadores
+		this.numSeleccionadosProjects = projects.length
+		this.printNumProjects()
+	}
+
+	/**
+	 * Pintar las publicaciones "finales"
+	 */
+	PrintSelectedDocuStp5 () {
+
+		// let imgUser = this.crearOferta.data('imguser')
+
+		let documents = Object.keys(this.data.documents).map((e, i) => {
+			let htmlUser = ""
+
+			// Obtenemos el usuario actual
+			let proj = this.data.documents[e]
+
+			// Obtenemos el usuario actual
+			let researchers = []
+			let researchersFin = ""
+			if (proj.researchers) {
+				researchers = proj.researchers.map(user => {
+					return '<li>' + user + '</li>'
+				})
+				researchersFin = '<ul>' + researchers.join('') + '</ul>'
+			}
+
+			if(proj != null)
+			{
+
+				htmlUser = `
+				<article class="resource proyecto">
+		            <div class="wrap">
+		                <div class="middle-wrap">
+		                    <div class="title-wrap">
+		                        <h2 class="resource-title">
+		                            <a href="javascript:void(0)">${proj.name}</a>
+		                        </h2>
+		                        <div class="acciones-wrap">
+		                            <ul class="no-list-style">
+		                                <li>
+		                                    <a href="javascript:stepsOffer.removeSelectedDocumentsSelected('`+ e +`')" class="texto-gris-claro">
+		                                        Eliminar
+		                                        <span class="material-icons-outlined">delete</span>
+		                                    </a>
+		                                </li>
+		                            </ul>
+		                        </div>
+		                    </div>
+		                    <div class="content-wrap">
+		                        <div class="description-wrap counted">
+		                            <div class="list-wrap">
+		                                <p class="nombre-completo">`+ proj.info +`</p>
+		                            </div>
+		                            <div class="list-wrap authors">
+		                            	${researchersFin}
+		                            </div>
+		                            <div class="desc">
+		                                <p>`+ proj.description +`</p>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </article>`
+			}
+
+			return htmlUser
+		})
+		// Añadimos el html de los investigadores
+		let htmlUsersCont = `
+			<div class="resource-list listView resource-list-proyectos">
+			    <div class="resource-list-wrap">
+			    	${documents.join('')}
+			    </div>
+			</div>`
+
+		this.DocumentsSelectedStep5.find('.resource-list-proyectos').remove()
+		this.DocumentsSelectedStep5.append(htmlUsersCont)
+
+		// pintamos el número de investigadores
+		this.numSeleccionadosDocuments = documents.length
+		this.printNumDocuments()
+	}
+
+	/**
+	 * Pintar las publicaciones "finales"
+	 */
+	PrintSelectedPIIStp5 () {
+
+		// let imgUser = this.crearOferta.data('imguser')
+
+		let pii = Object.keys(this.data.pii).map((e, i) => {
+			let htmlUser = ""
+
+			// Obtenemos el usuario actual
+			let proj = this.data.pii[e]
+
+			// Obtenemos el usuario actual
+			let researchers = []
+			let researchersFin = ""
+			if (proj.researchers) {
+				researchers = proj.researchers.map(user => {
+					return '<li>' + user + '</li>'
+				})
+				researchersFin = '<ul>' + researchers.join('') + '</ul>'
+			}
+
+			if(proj != null)
+			{
+
+				htmlUser = `
+				<article class="resource proyecto">
+		            <div class="wrap">
+		                <div class="middle-wrap">
+		                    <div class="title-wrap">
+		                        <h2 class="resource-title">
+		                            <a href="javascript:void(0)">${proj.name}</a>
+		                        </h2>
+		                        <div class="acciones-wrap">
+		                            <ul class="no-list-style">
+		                                <li>
+		                                    <a href="javascript:stepsOffer.removeSelectedPIISelected('`+ e +`')" class="texto-gris-claro">
+		                                        Eliminar
+		                                        <span class="material-icons-outlined">delete</span>
+		                                    </a>
+		                                </li>
+		                            </ul>
+		                        </div>
+		                    </div>
+		                    <div class="content-wrap">
+		                        <div class="description-wrap counted">
+		                            <div class="list-wrap">
+		                                <p class="nombre-completo">`+ proj.info +`</p>
+		                            </div>
+		                            <div class="list-wrap authors">
+		                            	${researchersFin}
+		                            </div>
+		                            <div class="desc">
+		                                <p>`+ proj.description +`</p>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </article>`
+			}
+
+			return htmlUser
+		})
+		// Añadimos el html de los investigadores
+		let htmlUsersCont = `
+			<div class="resource-list listView resource-list-proyectos">
+			    <div class="resource-list-wrap">
+			    	${pii.join('')}
+			    </div>
+			</div>`
+
+		this.PIISelectedStep5.find('.resource-list-proyectos').remove()
+		this.PIISelectedStep5.append(htmlUsersCont)
+
+		// pintamos el número de investigadores
+		this.numSeleccionadosPII = pii.length
+		this.printNumPII()
 	}
 
 	/**
@@ -1324,23 +1609,158 @@ class StepsOffer {
 	printNumResearchers() {
 
 		// Establecemos el número de investigadores
-		this.crearOfertaStep2.find('.numResultados').text(this.numSeleccionadosInvestigadores)
+		this.crearOfertaStep2.find('#stp2-num-selected-txt').text(this.numSeleccionadosInvestigadores)
 		this.crearOfertaStep2.find('#stp2-num-selected').text('(' + this.numSeleccionadosInvestigadores + ')')
 	}
 
 	/**
-	 * Borra los investigadores del perfil
+	 * Método que pinta el número de proyectos seleccionados
 	 */
-	removeSelectedUserFromProfile(idProfile, idUser) {
+	printNumProjects() {
 
-		let currentProfile = stepsOffer.data.profiles.filter(function (perfilInt) {
-			return perfilInt.shortEntityID==idProfile
-		})[0]
+		// Establecemos el número de investigadores
+		this.crearOfertaStep5.find('#stp5-num-selected-proj-txt').text(this.numSeleccionadosProjects)
+		this.crearOfertaStep5.find('#stp5-proj-num-selected').text('(' + this.numSeleccionadosProjects + ')')
+	}
 
-		currentProfile.users=currentProfile.users.filter(function (userInt) {
-			return userInt.shortUserID!=idUser
-		})
+	/**
+	 * Método que pinta el número de proyectos seleccionados
+	 */
+	printNumDocuments() {
+
+		// Establecemos el número de investigadores
+		this.crearOfertaStep5.find('#stp5-num-selected-docs-txt').text(this.numSeleccionadosDocuments)
+		this.crearOfertaStep5.find('#stp5-docs-num-selected').text('(' + this.numSeleccionadosDocuments + ')')
+	}
+
+	/**
+	 * Método que pinta el número de proyectos seleccionados
+	 */
+	printNumPII() {
+
+		// Establecemos el número de investigadores
+		this.crearOfertaStep5.find('#stp5-num-selected-pii-txt').text(this.numSeleccionadosDocuments)
+		this.crearOfertaStep5.find('#stp5-pii-num-selected').text('(' + this.numSeleccionadosDocuments + ')')
+	}
+
+	/**
+	 * Borra los investigadores del listado de seleccionado
+	 * @param idUser, id del usuario a borrar
+	 */
+	removeSelectedUserSelected(idUser) {
+
+		delete this.data.researchers[idUser]
+
+
+		// Desmarcamos el investigador de la lista de búsqueda
+		if (!!document.getElementById(idUser)) {
+			let item = document.getElementById(idUser)
+			item.classList.remove('seleccionado')
+			
+			try {
+				let itemCheck = item.getElementsByClassName('custom-checkbox-resource')[0]
+				itemCheck.classList.remove('done')
+				itemCheck.classList.add('add')
+			} catch (error) {}
+			
+			try {
+				let itemCheckMaterial = item.getElementsByClassName('material-icons')[0]
+				itemCheckMaterial.textContent = "add"
+			} catch (error) {}
+		}
+
 		this.PrintSelectedUsersStp2()
+	}
+
+	/**
+	 * Borra los proyectos del listado de seleccionado
+	 * @param idItem, id del proyecto a borrar
+	 */
+	removeSelectedProjectSelected(idItem) {
+
+		delete this.data.projects[idItem]
+
+		// Desmarcamos el investigador de la lista de búsqueda
+		if (!!document.getElementById("project_" + idItem)) {
+			let item = document.getElementById("project_" + idItem)
+			item.classList.remove('seleccionado')
+			
+			try {
+				let itemCheck = item.getElementsByClassName('custom-checkbox-resource')[0]
+				itemCheck.classList.remove('done')
+				itemCheck.classList.add('add')
+			} catch (error) {}
+			
+			try {
+				let itemCheckMaterial = item.getElementsByClassName('material-icons')[0]
+				itemCheckMaterial.textContent = "add"
+			} catch (error) {}
+		}
+
+
+		this.PrintSelectedProjStp5()
+	}
+
+	/**
+	 * Borra las publicaciones del listado de seleccionado
+	 * @param idItem, id de la publicación a borrar
+	 */
+	removeSelectedDocumentsSelected(idItem) {
+
+		try {
+			delete this.data.documents[idItem]
+		} catch () {console.error("Error al borrar el item")}
+
+		// Desmarcamos el investigador de la lista de búsqueda
+		if (!!document.getElementById("resource_" + idItem)) {
+			let item = document.getElementById("resource_" + idItem)
+			item.classList.remove('seleccionado')
+			
+			try {
+				let itemCheck = item.getElementsByClassName('custom-checkbox-resource')[0]
+				itemCheck.classList.remove('done')
+				itemCheck.classList.add('add')
+			} catch (error) {}
+			
+			try {
+				let itemCheckMaterial = item.getElementsByClassName('material-icons')[0]
+				itemCheckMaterial.textContent = "add"
+			} catch (error) {}
+		}
+
+
+		this.PrintSelectedDocuStp5()
+	}
+
+	/**
+	 * Borra las propiedades industrial intelectual del listado de seleccionado
+	 * @param idItem, id de la PII a borrar
+	 */
+	removeSelectedPIISelected(idItem) {
+
+		try {
+			delete this.data.pii[idItem]
+		} catch () {console.error("Error al borrar el item")}
+
+		// Desmarcamos el investigador de la lista de búsqueda
+		if (!!document.getElementById("resource_" + idItem)) {
+			let item = document.getElementById("resource_" + idItem)
+			item.classList.remove('seleccionado')
+			
+			try {
+				let itemCheck = item.getElementsByClassName('custom-checkbox-resource')[0]
+				itemCheck.classList.remove('done')
+				itemCheck.classList.add('add')
+			} catch (error) {}
+			
+			try {
+				let itemCheckMaterial = item.getElementsByClassName('material-icons')[0]
+				itemCheckMaterial.textContent = "add"
+			} catch (error) {}
+		}
+
+
+		this.PrintSelectedPIIStp5()
 	}
 }
 
@@ -1583,23 +2003,21 @@ function CompletadaCargaRecursosInvestigadoresOfertas()
 
 
 
-
-
 function CompletadaCargaRecursosProyectosOfertas()
 {	
 	let currentsIds = []
 	if(typeof stepsOffer != 'undefined' && stepsOffer != null && stepsOffer.data != null)
 	{		
 		$('#ofertaListProyectos article.resource h2.resource-title').attr('tagert','_blank')
-		stepsOffer.data.pPersons = $('#ofertaListProyectos article.resource').toArray().map(e => {return $(e).attr('id')})
+		// stepsOffer.data.pPersons = $('#ofertaListProyectos article.resource').toArray().map(e => {return $(e).attr('id')})
 		
 		$('#ofertaListProyectos article.resource').each((i, e) => {
 
-			currentsIds.push(e.id)
+			currentsIds.push(e.id.split('_')[1])
 
 			if ($(e).find(".custom-checkbox-resource .material-icons").length == 0) {
 
-				if (Object.values(stepsOffer.data.researchers).filter(pr => pr.shortId == e.id).length > 0) {
+				if (stepsOffer.data.projects && Object.values(stepsOffer.data.projects).filter(pr => pr.shortId == currentsIds.at(-1)).length > 0) {
 					$(e).prepend(`<div class="custom-control custom-checkbox-resource done">
 		                <span class="material-icons">done</span>
 		            </div>`)
@@ -1617,7 +2035,7 @@ function CompletadaCargaRecursosProyectosOfertas()
 
 		currentsIds.forEach(idProject => {
 
-			$('#' + idProject).on("DOMSubtreeModified", function(e) {
+			$('#project_' + idProject).on("DOMSubtreeModified", function(e) {
 
 				let selector = $(this).find(".custom-checkbox-resource")
 
@@ -1626,23 +2044,36 @@ function CompletadaCargaRecursosProyectosOfertas()
 					let element = $(this)
 					let item = {}
 					let arrInfo = []
-					item.shortId = idProject.split('_')[1]
+					let arrUsers = []
+					let description = []
+					let dates = []
+					item.shortId = idProject
 					item.name = element.find('h2.resource-title').text().trim()
 
-					// Obtener la descripción
-					element.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+					// Obtener la información descriptiva
+					element.find('.middle-wrap > .content-wrap > .list-wrap:not(.authors) li').each((i, elem) => {
 						arrInfo.push($(elem).text().trim())
 					})
 					item.info = arrInfo.join(', ')
 
-					// let numPubDOM = $(this).find('.info-resource .texto')
-					// numPubDOM.each((i, e) => {
-					// 	let textPubDom = $(numPubDOM).text()
-					// 	if (textPubDom.includes('publicaciones')) {
-					// 		let numPub = textPubDom.split('publicaciones')[0].trim()
-					// 		item.numPublicacionesTotal = numPub
-					// 	}
-					// })
+					// Obtener los investigadores
+					element.find('.middle-wrap > .content-wrap > .list-wrap.authors li').each((i, elem) => {
+						arrUsers.push($(elem).text().trim())
+					})
+					item.researchers = arrUsers
+
+					// Obtener la descripción
+					element.find('.middle-wrap > .content-wrap > .description-wrap .desc').each((i, elem) => {
+						description.push($(elem).text().trim())
+					})
+					item.description = description.join(', ')
+
+					// Obtener la fecha
+					element.find('.middle-wrap > .content-wrap > .content-wrap span').each((i, elem) => {
+						dates = ($(elem).text().trim())
+					})
+					item.dates = dates
+
 
 					// item.ipNumber = element.data('ipNumber')
 					if(stepsOffer.data.projects == null)					
@@ -1651,14 +2082,27 @@ function CompletadaCargaRecursosProyectosOfertas()
 					}
 					stepsOffer.data.projects[idProject] = item
 
-				}else
+				} else
 				{
 					// Borrar investigador del objeto
-					delete stepsOffer.data.projects[idProject]
+					if (stepsOffer.data.projects) {
+						delete stepsOffer.data.projects[idProject]
+					}
 				}
 
-				stepsOffer.numSeleccionadosProjects = Object.keys(stepsOffer.data.projects).length
-				stepsOffer.PrintSelectedProjectsStp2();
+				// Pintamos de nuevo los elementos seleccionados
+				let newPNumber = 0
+				// Obtengo el número de elementos actuales
+				if (stepsOffer.data.projects) {
+					newPNumber = Object.keys(stepsOffer.data.projects).length
+				} else {
+					stepsOffer.numSeleccionadosProjects = 0
+				}
+				// Pinto únicamente nuevos elementos si el número de elementos ha cambiado.
+				if (stepsOffer.numSeleccionadosProjects != newPNumber) {
+					stepsOffer.numSeleccionadosProjects = newPNumber
+					stepsOffer.PrintSelectedProjStp5();
+				}
 			});	
 
 		})
@@ -1673,15 +2117,15 @@ function CompletadaCargaRecursosPublicacionesOfertas()
 	if(typeof stepsOffer != 'undefined' && stepsOffer != null && stepsOffer.data != null)
 	{		
 		$('#ofertaListPublicaciones article.resource h2.resource-title').attr('tagert','_blank')
-		stepsOffer.data.pPersons = $('#ofertaListPublicaciones article.resource').toArray().map(e => {return $(e).attr('id')})
+		// stepsOffer.data.pPersons = $('#ofertaListPublicaciones article.resource').toArray().map(e => {return $(e).attr('id')})
 		
 		$('#ofertaListPublicaciones article.resource').each((i, e) => {
 
-			currentsIds.push(e.id)
+			currentsIds.push(e.id.split('_')[1])
 
 			if ($(e).find(".custom-checkbox-resource .material-icons").length == 0) {
 
-				if (Object.values(stepsOffer.data.researchers).filter(pr => pr.shortId == e.id).length > 0) {
+				if (stepsOffer.data.documents && Object.values(stepsOffer.data.documents).filter(pr => pr.shortId == currentsIds.at(-1)).length > 0) {
 					$(e).prepend(`<div class="custom-control custom-checkbox-resource done">
 		                <span class="material-icons">done</span>
 		            </div>`)
@@ -1699,7 +2143,7 @@ function CompletadaCargaRecursosPublicacionesOfertas()
 
 		currentsIds.forEach(idDocument => {
 
-			$('#' + idDocument).on("DOMSubtreeModified", function(e) {
+			$('#resource_' + idDocument).on("DOMSubtreeModified", function(e) {
 
 				let selector = $(this).find(".custom-checkbox-resource")
 
@@ -1708,23 +2152,36 @@ function CompletadaCargaRecursosPublicacionesOfertas()
 					let element = $(this)
 					let item = {}
 					let arrInfo = []
-					item.shortId = idDocument.split('_')[1]
+					let arrUsers = []
+					let description = []
+					let dates = []
+					item.shortId = idDocument
 					item.name = element.find('h2.resource-title').text().trim()
 
-					// Obtener la descripción
-					element.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+					// Obtener la información descriptiva
+					element.find('.middle-wrap > .content-wrap > .list-wrap:not(.authors) li').each((i, elem) => {
 						arrInfo.push($(elem).text().trim())
 					})
 					item.info = arrInfo.join(', ')
 
-					// let numPubDOM = $(this).find('.info-resource .texto')
-					// numPubDOM.each((i, e) => {
-					// 	let textPubDom = $(numPubDOM).text()
-					// 	if (textPubDom.includes('publicaciones')) {
-					// 		let numPub = textPubDom.split('publicaciones')[0].trim()
-					// 		item.numPublicacionesTotal = numPub
-					// 	}
-					// })
+					// Obtener los investigadores
+					element.find('.middle-wrap > .content-wrap > .list-wrap.authors li').each((i, elem) => {
+						arrUsers.push($(elem).text().trim())
+					})
+					item.researchers = arrUsers
+
+					// Obtener la descripción
+					element.find('.middle-wrap > .content-wrap > .description-wrap .desc').each((i, elem) => {
+						description.push($(elem).text().trim())
+					})
+					item.description = description.join(', ')
+
+					// Obtener la fecha
+					element.find('.middle-wrap > .content-wrap > .content-wrap span').each((i, elem) => {
+						dates = ($(elem).text().trim())
+					})
+					item.dates = dates
+
 
 					// item.ipNumber = element.data('ipNumber')
 					if(stepsOffer.data.documents == null)					
@@ -1733,14 +2190,27 @@ function CompletadaCargaRecursosPublicacionesOfertas()
 					}
 					stepsOffer.data.documents[idDocument] = item
 
-				}else
+				} else
 				{
 					// Borrar investigador del objeto
-					delete stepsOffer.data.documents[idDocument]
+					if (stepsOffer.data.documents) {
+						delete stepsOffer.data.documents[idDocument]
+					}
 				}
 
-				stepsOffer.numSeleccionadosDocuments = Object.keys(stepsOffer.data.documents).length
-				stepsOffer.PrintSelectedProjectsStp2();
+				// Pintamos de nuevo los elementos seleccionados
+				let newPNumber = 0
+				// Obtengo el número de elementos actuales
+				if (stepsOffer.data.documents) {
+					newPNumber = Object.keys(stepsOffer.data.documents).length
+				} else {
+					stepsOffer.numSeleccionadosProjects = 0
+				}
+				// Pinto únicamente nuevos elementos si el número de elementos ha cambiado.
+				if (stepsOffer.numSeleccionadosDocuments != newPNumber) {
+					stepsOffer.numSeleccionadosDocuments = newPNumber
+					stepsOffer.PrintSelectedDocuStp5();
+				}
 			});	
 
 		})
