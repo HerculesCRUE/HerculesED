@@ -77,19 +77,20 @@ namespace DesnormalizadorHercules
                 }
             }*/
 
-            //string cv = "http://gnoss.com/items/CV_dace1896-297f-4906-8d58-d26efeaf4f16_d4fc594a-1ddd-4317-9e47-a2e6a3ea4c81";
-            //List<string> filesPDF = resourceApi.VirtuosoQuery("select *", $@"where
-            //                                                                        {{
-            //                                                                            ?s <http://w3id.org/roh/generatedPDFFile> ?gpdff.
-            //                                                                        }}", "curriculumvitae").results.bindings.Select(x=>x["gpdff"].value).ToList();
-            //List<RemoveTriples> triplesRemove = filesPDF.Select(x => new RemoveTriples() { Predicate = "http://w3id.org/roh/generatedPDFFile", Value = x }).ToList();
-            //if (triplesRemove.Count > 0)
-            //{
-            //    var resultadox = resourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { resourceApi.GetShortGuid(cv), triplesRemove } });
-            //}
+            string cv = "http://gnoss.com/items/CV_693c2f58-d466-4ff5-841a-34f51499efe2_997709d4-b8d6-49ae-9504-aad506f9bbd9";
+            List<string> filesPDF = resourceApi.VirtuosoQuery("select *", $@"where
+                                                                                    {{
+                                                                                        ?s <http://w3id.org/roh/generatedPDFFile> ?gpdff.
+                                                                                        FILTER(?s=<{cv}>)
+                                                                                    }}", "curriculumvitae").results.bindings.Select(x => x["gpdff"].value).ToList();
+            List<RemoveTriples> triplesRemove = filesPDF.Select(x => new RemoveTriples() { Predicate = "http://w3id.org/roh/generatedPDFFile", Value = x }).ToList();
+            if (triplesRemove.Count > 0)
+            {
+                var resultadox = resourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { resourceApi.GetShortGuid(cv), triplesRemove } });
+            }
 
-           //Antonio Skaremta 28710458
-           AltaUsuarioGnoss("Antonio", "Skarmeta", "antonio--skarmeta@pruebagnoss.com", "skarmeta22", "28710458", "AdrianSaavedra-GNOSS", "12070100");
+            //Antonio Skaremta 28710458
+            AltaUsuarioGnoss("Antonio", "Skarmeta", "antonio--skarmeta@pruebagnoss.com", "skarmeta22", "28710458", "AdrianSaavedra-GNOSS", "12070100");
 
             //Manuel Campos 34822542
             AltaUsuarioGnoss("Manuel", "Campos", "manuel--campos@pruebagnoss.com", "manuel-camp2", "34822542", "manuelCampos-github", "22222222");
@@ -148,6 +149,16 @@ namespace DesnormalizadorHercules
 
             //Test Fecyt Vacio
             AltaUsuarioGnoss("Test", "Fecyt Vacio", "test-fecyt-vacio@pruebagnoss.com", "test-fecyt-v", "22559987903", "", "");
+
+            AltaUsuarioGnoss("Joaquin", "Tribaldos", "joaquin.tribaldos@fecyt.es", "joaquin-trib", "235312462347", "", "");
+
+            AltaUsuarioGnoss("Alfonso", "Lopez", "alfonso.lopez@fecyt.es", "alfonso-lope", "712345634685", "", "");
+
+            AltaUsuarioGnoss("Antonio", "Sanchez", "Antonio.sanchez@fecyt.es", "antonio-sanc", "346244756785", "", "");
+
+            AltaUsuarioGnoss("Estefania", "Guitierrez", "estefania.gutierrez@fecyt.es", "estefania-gu", "324625873546", "", "");
+
+            AltaUsuarioGnoss("Aurelia", "Andres", "aurelia.andres@fecyt.es", "aurelia-and1", "579865434363", "", "");
         }
 
         public static User AltaUsuarioGnoss(string pNombre, string pApellidos, string pEmail, string pNombreCorto, string pID, string pUsuarioGitHub, string pUsuarioFigShare)
@@ -234,7 +245,7 @@ namespace DesnormalizadorHercules
             }
 
             //Cambio correo skarmeta
-            if(pID== "28710458")
+            if (pID == "28710458")
             {
                 Dictionary<Guid, List<TriplesToModify>> triples = new Dictionary<Guid, List<TriplesToModify>>();
                 TriplesToModify t = new TriplesToModify("alvaro.palacios@um.es", "skarmeta@um.es", "https://www.w3.org/2006/vcard/ns#email");
@@ -286,6 +297,47 @@ namespace DesnormalizadorHercules
                     }
                 }
             }
+        }
+
+        public static void EliminarEntidadesCV()
+        {
+            String select = @"SELECT ?cv ?pLvl1 ?oLvl1 ?pLvl2 ?oLvl2 ?entity";
+            String where = @$"  where{{
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv ?pLvl1 ?oLvl1.
+                                            ?oLvl1 ?pLvl2 ?oLvl2.
+                                            ?oLvl2 <http://vivoweb.org/ontology/core#relatedBy> ?entity.
+                                            FILTER(?cv =<http://gnoss.com/items/CV_693c2f58-d466-4ff5-841a-34f51499efe2_997709d4-b8d6-49ae-9504-aad506f9bbd9>)
+                                        }}";
+
+            SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+
+            List<Guid> eliminar = new List<Guid>();
+            Dictionary<Guid, List<RemoveTriples>> dicEliminar = new Dictionary<Guid, List<RemoveTriples>>();
+            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+            {
+                eliminar.Add(resourceApi.GetShortGuid( fila["entity"].value));
+                Guid idCV = resourceApi.GetShortGuid(fila["cv"].value);
+                if(!dicEliminar.ContainsKey(idCV))
+                {
+                    dicEliminar.Add(idCV,new List<RemoveTriples>());
+                }
+                RemoveTriples remove = new RemoveTriples(fila["oLvl1"].value + "|" + fila["oLvl2"].value, fila["pLvl1"].value + "|" + fila["pLvl2"].value);
+                dicEliminar[idCV].Add(remove);
+            }
+            Dictionary<Guid,bool> resp=resourceApi.DeletePropertiesLoadedResources(dicEliminar);
+
+            foreach(Guid elim in eliminar)
+            {
+                try
+                {
+                    resourceApi.PersistentDelete(elim);
+                }catch(Exception ex)
+                {
+
+                }
+            }
+
         }
 
         public static void InsertarColaDesnormalizador(RabbitServiceWriterDenormalizer rabbitService, string queue)
