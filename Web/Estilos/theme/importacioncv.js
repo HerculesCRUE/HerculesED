@@ -511,6 +511,18 @@ edicionCV.printTabSection= function(data) {
 	}
 };
 
+var selectorConflictoNoBloqueado = `<select name="itemConflict" class="js-select2">
+										<option value="ig" selected="">Ignorar</option>
+										<option value="fu">Fusionar</option>
+										<option value="so">Sobreescribir</option>
+										<option value="du">Duplicar</option>
+									</select>`;
+var selectorConflictoBloqueado = `<select name="itemConflict" class="js-select2">
+									<option value="ig" selected="">Ignorar</option>
+									<option value="fu">Fusionar</option>
+									<option value="du">Duplicar</option>
+								</select>`;
+								
 edicionCV.printHtmlListItem= function(id, data) {
 	let openAccess="";
 	if (data.isopenaccess) {
@@ -527,16 +539,15 @@ edicionCV.printHtmlListItem= function(id, data) {
 									<div class="middle-wrap">
 										${this.printHtmlListItemOrders(data)}
 										<div class="title-wrap">
-											<h2 class="resource-title">${data.title}</h2>
-											
-											<select name="itemConflict" class="js-select2">
-												<option value="ig" selected="">Ignorar</option>
-												<option value="fu">Fusionar</option>
-												<option value="so">Sobreescribir</option>
-												<option value="du">Duplicar</option>
-											</select>
-											
-											<span class="material-icons arrow">keyboard_arrow_down</span>
+											<h2 class="resource-title">${data.title}</h2>`;
+		if(data.idBBDD!=""){
+			if(data.iseditable){
+				htmlListItem += selectorConflictoNoBloqueado;
+			}else{
+				htmlListItem += selectorConflictoBloqueado;
+			}	
+		}							
+		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 										</div>
 										<div class="content-wrap">
 											<div class="description-wrap">
