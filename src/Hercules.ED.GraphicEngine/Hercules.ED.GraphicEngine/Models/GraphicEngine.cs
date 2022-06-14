@@ -1801,13 +1801,16 @@ namespace Hercules.ED.GraphicEngine.Models
             });
 
             // Filtros
-            triplesInclude.Add(new TriplesToInclude
+            if (!string.IsNullOrEmpty(pFiltros))
             {
-                Description = false,
-                Title = false,
-                Predicate = predicadoBase + "http://w3id.org/roh/filters",
-                NewValue = valorBase + pFiltros
-            });
+                triplesInclude.Add(new TriplesToInclude
+                {
+                    Description = false,
+                    Title = false,
+                    Predicate = predicadoBase + "http://w3id.org/roh/filters",
+                    NewValue = valorBase + pFiltros
+                });
+            }
 
             // Anchura
             triplesInclude.Add(new TriplesToInclude
