@@ -1,6 +1,9 @@
 //TODO
 var urlImportacionCV = "https://localhost:5002/ImportadoCV";
 //var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
+var selectorConflictoNoBloqueado = '';
+var selectorConflictoBloqueado = '';
+
 
 var importarCVN = {
 	idUsuario:  null,
@@ -8,6 +11,18 @@ var importarCVN = {
 		this.config(),
 		this.idUsuario = $('#inpt_usuarioID').val();
 		this.fileData = '';
+
+		selectorConflictoNoBloqueado = `<select name="itemConflict" class="js-select2">
+												<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
+												<option value="fu">${GetText('CV_FUSIONAR')}</option>
+												<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
+												<option value="du">${GetText('CV_DUPLICAR')}</option>
+											</select>`;
+		selectorConflictoBloqueado = `<select name="itemConflict" class="js-select2">
+											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
+											<option value="fu">${GetText('CV_FUSIONAR')}</option>
+											<option value="du">${GetText('CV_DUPLICAR')}</option>
+										</select>`;
 
         return;        
     },
@@ -510,18 +525,6 @@ edicionCV.printTabSection= function(data) {
 		return htmlSection;
 	}
 };
-
-var selectorConflictoNoBloqueado = `<select name="itemConflict" class="js-select2">
-										<option value="ig" selected="">Ignorar</option>
-										<option value="fu">Fusionar</option>
-										<option value="so">Sobreescribir</option>
-										<option value="du">Duplicar</option>
-									</select>`;
-var selectorConflictoBloqueado = `<select name="itemConflict" class="js-select2">
-									<option value="ig" selected="">Ignorar</option>
-									<option value="fu">Fusionar</option>
-									<option value="du">Duplicar</option>
-								</select>`;
 								
 edicionCV.printHtmlListItem= function(id, data) {
 	let openAccess="";
