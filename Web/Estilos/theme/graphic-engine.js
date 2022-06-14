@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     metricas.init();
 });
 // Año máximo y mínimo para las facetas de años
@@ -14,8 +14,8 @@ var idGraficaActual = "";
 var listaPaginas;
 
 var metricas = {
-    init: function() {
-        if(!$('div').hasClass('indicadoresPersonalizados')) {
+    init: function () {
+        if (!$('div').hasClass('indicadoresPersonalizados')) {
             this.getPages();
         } else {
             this.getPagesPersonalized();
@@ -36,7 +36,9 @@ var metricas = {
         $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
-                    <li id="${listaData[i].id}" num="${i}">${listaData[i].nombre}</li>
+                    <li class="nav-item" id="${listaData[i].id}" num="${i}">
+                        <a class="nav-link ${i==0?"active":""} uppercase">${listaData[i].nombre}</a>
+                    </li>
                 `);
             }
             that.createEmptyPage(listaData[0].id);
@@ -459,7 +461,7 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    fillPagePersonalized: function(pPaginaUsuario) {
+    fillPagePersonalized: function (pPaginaUsuario) {
         // TODO pop up id pagina
         idPaginaActual = pPaginaUsuario.idRecurso;
         // final todo
@@ -468,7 +470,7 @@ var metricas = {
         var arg = {};
         arg.pPageId = pPaginaUsuario.idRecurso;
         // Petición para obtener los datos de la página.
-        $.get(url, arg, function(listaData) {
+        $.get(url, arg, function (listaData) {
             var tmp = [];
             var id = "";
             var gruposDeIDs = [];
@@ -479,15 +481,15 @@ var metricas = {
                 tmp.push(grafica);
                 gruposDeIDs.push(tmp);
             }
-            gruposDeIDs.forEach(function(item, index, array) {
+            gruposDeIDs.forEach(function (item, index, array) {
                 var graficasGrupo;
                 var tmp = '';
-                
-                item.forEach(function(grafica, index, array) {
-                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro='${grafica.filtro == null ? "" : grafica.filtro}' idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}'></div>`;
+
+                item.forEach(function (grafica, index, array) {
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.idGrafica}'></div>`;
                 });
                 graficasGrupo = tmp;
-    
+
                 $('#page_' + pPaginaUsuario.idRecurso.split('/')[pPaginaUsuario.idRecurso.split('/').length - 1] + '.containerPage').find('.resource-list-wrap').append(`
                     <article class="resource span${item[0].anchura}"> 
                         <div class="wrap" >
@@ -530,7 +532,7 @@ var metricas = {
     
                 `);
             });
-            
+
             that.pintarPaginaPersonalized(pPaginaUsuario.idRecurso, listaData)
         });
     },
@@ -668,7 +670,7 @@ var metricas = {
             }
         }
     },
-    pintarPaginaPersonalized: function(pIdRecurso, pPageData) {
+    pintarPaginaPersonalized: function (pIdRecurso, pPageData) {
         var that = this;
         var idPagina = pIdRecurso.split('/')[pIdRecurso.split('/').length - 1];
 
@@ -682,7 +684,7 @@ var metricas = {
 
         // Recorremos el div de las gráficas.
         var index = 0;
-        $('#page_' + idPagina + ' .grafica').each(function() {
+        $('#page_' + idPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
@@ -737,12 +739,12 @@ var metricas = {
         if (Chart.getChart(ctx) != null) {
             return;
         }
-        var myChart = new Chart(ctx, data);
+
 
 
         var numBars = data.data.labels.length; // Número de barras.
         var canvasSize = (numBars * barSize); // Tamaño del canvas.
-        var canvas = myChart.canvas;
+        var canvas = ctx;
         var chartAreaWrapper = canvas.parentNode;
         var scrollContainer = chartAreaWrapper.parentNode;
         var chartContainer = scrollContainer.parentNode;
@@ -770,30 +772,13 @@ var metricas = {
         // En caso de que los labels de la gráfica deban de estar abreviados...
         data.options.maintainAspectRatio = false;
         data.options.responsive = true;
-        if (pIdGrafica != null && pIdGrafica.includes("abr")) {
-            // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
-            if (horizontal) {
-                data.options.scales.y.ticks.callback = ticksAbr;
-            } else {
-                data.options.scales.x.ticks.callback = ticksAbr;
-            }
-        }
-        function ticksAbr(value) {
-            const labels = data.data.labels; // Obtención de los labels.
-            if (value >= 0 && value < labels.length) {
-                if (labels[value].length >= 7) {
-                    return labels[value].substring(0, 7) + "..."; // Se muestran solo los 7 primeros caractéres.
-                }
-                return labels[value];
-            }
-            return value;
-        }
+
 
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
         //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
         if ((canvasSize < 550 && horizontal) || (canvasSize < $(scrollContainer).width() && !horizontal)) { //TODO cambiar 550 por el tamaño del contenedor.
             if (horizontal) { // estilos horizonales
-                chartAreaWrapper.style.height = myChart.height + "px";
+                chartAreaWrapper.style.height = canvasSize + 100 + "px";
                 scrollContainer.style.height = "auto";
                 scrollContainer.parentNode.style.height = "auto";
                 scrollContainer.style.overflowY = 'hidden';
@@ -802,10 +787,46 @@ var metricas = {
                 scrollContainer.style.overflowX = 'hidden';
                 chartAreaWrapper.style.height = "546px";
             }
+            var myChart = new Chart(ctx, data);
+
+            if (pIdGrafica != null && pIdGrafica.includes("abr")) {
+                // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
+                if (horizontal) {
+                    data.options.scales.y.ticks.callback = ticksAbr;
+                } else {
+                    data.options.scales.x.ticks.callback = ticksAbr;
+                }
+            }
+            function ticksAbr(value) {
+                const labels = data.data.labels; // Obtención de los labels.
+                if (value >= 0 && value < labels.length) {
+                    if (labels[value].length >= 7) {
+                        return labels[value].substring(0, 7) + "..."; // Se muestran solo los 7 primeros caractéres.
+                    }
+                    return labels[value];
+                }
+                return value;
+            }
+
+
         } else { // a partir de aqui se prepara el scroll
 
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
+
+
+
+
+            if (horizontal) {
+                ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
+            } else {// -- vertical
+                //myChart.canvas.parentNode.style.width = canvasSize + 'px';
+
+                ctx.parentNode.style.height = 100 + '%'; //se escala la altura
+                ctx.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
+
+            }
+
 
             // Se comprueba si tiene eje principal/secundario.
             Object.entries(data.options.scales).forEach((scale) => { // por cada escala que tenga data
@@ -861,11 +882,12 @@ var metricas = {
                 $(chartContainer).append(secondaryAxis);
             }
 
+            var myChart = new Chart(ctx, data);
             // Cuando se acutaliza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                 $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
-                    metricas.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
+                    //metricas.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                     myChart.update();
                 });
             }
@@ -924,15 +946,15 @@ var metricas = {
             }
 
             //añadimos el margen
-            myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
+            myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
             //Aun que no lo parezca este tamaño es importante (1px tambien funcionaria)
             //Obliga al canvas a reescalarse y ajustarse al div, sin el los labels se esconden debajo de la scrollbar
-            myChart.canvas.parentNode.style.paddingBottom = 0.02 + "px";
+            //myChart.canvas.parentNode.style.paddingBottom = 0.02 + "px";
             if (mainAxis) {
-                mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
+                mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
             }
             if (secondaryAxis) {
-                secondaryAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + "px";
+                secondaryAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
             }
 
 
@@ -1305,16 +1327,9 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
-
-                if(!$('div').hasClass('indicadoresPersonalizados')) {
-                    url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
-                } else {
-                    url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
-                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
-                }
+                url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
@@ -1516,7 +1531,7 @@ var metricas = {
                         parent.append(ctx);
                     }
                 }
-                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx, 50); //obtenemos los datos y pintamos la grafica
+                that.getGrafica(idPaginaActual, pIdGrafica, ObtenerHash2(), ctx[0], 50); //obtenemos los datos y pintamos la grafica
 
             });
 
@@ -1561,6 +1576,8 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var numero = $(this).attr("num");
+                $(this).parents('ul').find('a.active').removeClass('active');
+                $(this).find('a').addClass('active');
                 metricas.clearPage();
                 metricas.createEmptyPage(listaPaginas[numero].id);
                 metricas.fillPage(listaPaginas[numero]);
