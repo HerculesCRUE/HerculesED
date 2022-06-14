@@ -173,7 +173,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             if (configModel != null)
             {
-                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica.Split('-').LastOrDefault());
+                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
                 return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
 
@@ -192,6 +192,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
+
             switch (pGrafica.tipo)
             {
                 case EnumGraficas.Barras:
@@ -228,6 +229,29 @@ namespace Hercules.ED.GraphicEngine.Models
             // Objeto a devolver.
             GraficaBarras grafica = new GraficaBarras();
             grafica.type = "bar"; // Por defecto, de tipo bar.
+
+            grafica.isHorizontal = true;
+
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
+            // Es fecha.
+            if (pListaDates != null && pListaDates.Any())
+            {
+                grafica.isDate = true;
+            }
 
             // Asignación de Data.
             DataBarras data = new DataBarras();
@@ -600,6 +624,29 @@ namespace Hercules.ED.GraphicEngine.Models
             GraficaBarrasY grafica = new GraficaBarrasY();
             grafica.type = "bar"; // Por defecto, de tipo bar.
 
+            grafica.isVertical = true;
+
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
+            // Es fecha.
+            if (pListaDates != null && pListaDates.Any())
+            {
+                grafica.isDate = true;
+            }
+
             // Asignación de Data.
             DataBarrasY data = new DataBarrasY();
             data.datasets = new ConcurrentBag<DatasetBarrasY>();
@@ -971,6 +1018,21 @@ namespace Hercules.ED.GraphicEngine.Models
             GraficaCircular grafica = new GraficaCircular();
             grafica.type = "pie"; // Por defecto, de tipo pie.
 
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
             // Asignación de Data.
             DataCircular data = new DataCircular();
             data.datasets = new ConcurrentBag<DatasetCircular>();
@@ -1110,6 +1172,23 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaNodos CrearGraficaNodos(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             GraficaNodos grafica = new GraficaNodos();
+
+            if (pGrafica.config.abreviar)
+            {
+                grafica.isAbr = pGrafica.config.abreviar;
+            }
+
+            if (pGrafica.config.porcentual)
+            {
+                grafica.isPercentage = pGrafica.config.porcentual;
+            }
+
+            if (!string.IsNullOrEmpty(pGrafica.idGrupo))
+            {
+                grafica.groupId = pGrafica.idGrupo;
+            }
+
+            grafica.isNodes = true;
 
             #region --- Configuración
             // Opciones interactivas
