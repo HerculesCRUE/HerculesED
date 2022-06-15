@@ -75,9 +75,10 @@ namespace GuardadoCV.Controllers
         /// <param name="pId">Identificador de la entidad a recuperar</param>
         /// <param name="pRdfType">Rdf:type de la entidad a recuperar</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <param name="pSection">Sección</param>
         /// <returns></returns>
         [HttpGet("GetTab")]
-        public IActionResult GetTab(string pCVId,string pId, string pRdfType, string pLang,int? pSection)
+        public IActionResult GetTab(string pCVId,string pId, string pRdfType, string pLang,string pSection=null)
         {
             try
             {
