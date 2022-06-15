@@ -59,7 +59,9 @@ var metricas = {
         $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
-                    <li id="${listaData[i].idRecurso}" num="${i}">${listaData[i].titulo}</li>
+                    <li class="nav-item" id="${listaData[i].idRecurso}" num="${i}">
+                        <a class="nav-link ${i == 0 ? "active" : ""} uppercase">${listaData[i].titulo}</a>
+                    </li>
                 `);
             }
             that.createEmptyPagePersonalized(listaData[0].idRecurso.split('/')[listaData[0].idRecurso.split('/').length - 1]);
@@ -79,7 +81,11 @@ var metricas = {
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
             if (!ctx) {
-                ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+                } else {
+                    ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica + "_" + pFiltroFacetas);
+                }
             }
             // Controla si el objeto es de ChartJS o Cytoscape.
             var combo = $(ctx).parents("article").find("select");
@@ -311,14 +317,23 @@ var metricas = {
         });
     },
     clearPage: function () {
-        $('canvas').each(function () {
-            Chart.getChart(this)?.destroy();
-        });
-        $(window).unbind('resize');
-
-        $('#panFacetas').empty()
-        $('.resource-list-wrap').empty();
-        $('.borrarFiltros').click();
+        if (!$('div').hasClass('indicadoresPersonalizados')) {
+            $('canvas').each(function () {
+                Chart.getChart(this)?.destroy();
+            });
+            $(window).unbind('resize');
+    
+            $('#panFacetas').empty()
+            $('.resource-list-wrap').empty();
+            $('.borrarFiltros').click();
+        } else {
+            $('canvas').each(function () {
+                Chart.getChart(this)?.destroy();
+            });
+            $(window).unbind('resize');
+    
+            $('.resource-list-wrap').empty();
+        }
     },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -397,9 +412,15 @@ var metricas = {
         gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
+            var tipoGrafica = 
+                item[0].isHorizontal ? "horizontal " : "" +
+                item[0].isCircular ? "circular " : "" +
+                item[0].isNodes ? "nodes " : "" +
+                item[0].isAbr ? "abr " : "" +
+                item[0].isPercentage ? "prc " : "";
             item.forEach(function (grafica, index, array) {
 
-                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
 
@@ -464,7 +485,7 @@ var metricas = {
 
         that.pintarPagina(pPageData.id)
     },
-    fillPagePersonalized: function(pPaginaUsuario) {
+    fillPagePersonalized: function (pPaginaUsuario) {
         idPaginaActual = pPaginaUsuario.idRecurso;
         var that = this;
         var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
@@ -485,8 +506,8 @@ var metricas = {
             gruposDeIDs.forEach(function (item, index, array) {
                 var graficasGrupo;
                 var tmp = '';
-                
-                item.forEach(function(grafica, index, array) {
+
+                item.forEach(function (grafica, index, array) {
                     if (!grafica.filtro) {
                         grafica.filtro = "";
                     }
@@ -573,10 +594,10 @@ var metricas = {
                         <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
                             <ul class="no-list-style align-items-center" style="display: flex; flex-direction: column;align-items:center">
                                 <li class="control zoomin-control" id="zoomIn">
-                                    <span class="material-icons">add</span>
+                                    <span style="user-select: none" class="material-icons" >add</span>
                                 </li>
                                 <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
-                                    <span class="material-icons" >remove</span>
+                                    <span style="user-select: none" class="material-icons" >remove</span>
                                 </li>
                             </ul>
                         </div>
@@ -708,14 +729,14 @@ var metricas = {
                                 </li>
                             </ul>
                         </div>
-                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" style="position:relative; margin-top:15px ;width:100%">
                     <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
                         <div style="height: 00px;" class="chartAreaWrapper">
-                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}"></canvas>
+                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}"></canvas>
                         </div>
                     </div>
                 </div>
@@ -723,7 +744,7 @@ var metricas = {
             } else {
                 $(this).css("height", "auto");
                 $(this).append(`
-                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" width = "600" height = "250" ></canvas>
+                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}" width = "600" height = "250" ></canvas>
                         `);
             }
             that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro);
@@ -763,19 +784,7 @@ var metricas = {
             console.log(data.options.plugins.title.text);
         }
         // En caso de que los datos de la gráfica se representen con porcentajes
-        if (pIdGrafica != null && pIdGrafica.includes("prc")) {
-            data.options.plugins.tooltip = {
-                callbacks: {
-                    afterLabel: function (context) {
-                        let label = "Porcentaje: ";
-                        let sum = context.dataset.data.reduce((a, b) => a + b, 0);
-                        let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
-                        label += porcentaje.toFixed(2) + '%';
-                        return label;
-                    }
-                }
-            }
-        }
+    
 
         // Solo si es una gráfica horizontal.
 
@@ -787,6 +796,12 @@ var metricas = {
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
         //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
         if ((canvasSize < 550 && horizontal) || (canvasSize < $(scrollContainer).width() && !horizontal)) { //TODO cambiar 550 por el tamaño del contenedor.
+            if (barSize<100){
+                $(ctx).parents(".modal-content").css("height", "auto");
+                $(ctx).parents(".modal-content").css("display", "block");
+            }
+            
+            
             if (horizontal) { // estilos horizonales
                 chartAreaWrapper.style.height = canvasSize + 100 + "px";
                 scrollContainer.style.height = "auto";
@@ -799,12 +814,25 @@ var metricas = {
             }
             var myChart = new Chart(ctx, data);
 
-            if (pIdGrafica != null && pIdGrafica.includes("abr")) {
+            if (pIdGrafica != null && pIdGrafica.includes("abr")) { //TODO ARREGLAR
                 // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
                 if (horizontal) {
                     data.options.scales.y.ticks.callback = ticksAbr;
                 } else {
                     data.options.scales.x.ticks.callback = ticksAbr;
+                }
+            }
+            if (pIdGrafica != null && pIdGrafica.includes("prc")) {
+                data.options.plugins.tooltip = {
+                    callbacks: {
+                        afterLabel: function (context) {
+                            let label = "Porcentaje: ";
+                            let sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
+                            label += porcentaje.toFixed(2) + '%';
+                            return label;
+                        }
+                    }
                 }
             }
             function ticksAbr(value) {
@@ -820,7 +848,10 @@ var metricas = {
 
 
         } else { // a partir de aqui se prepara el scroll
-
+            if (barSize<100){
+                $(ctx).parents(".modal-content").css("display", "block");
+            }
+            
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
 
@@ -898,15 +929,13 @@ var metricas = {
                     myChart.update();
                 });
             }
-            
+
             if (data.isDate) {
-                $(ctx).parents('div.chartScroll')[0].scrollLeft = canvasSize;
-                //$(ctx).parents('div.chartScroll').animate({ scrollLeft: canvasSize }, 3000); tiempo en ms
+                //$(ctx).parents('div.chartScroll')[0].scrollLeft = canvasSize; //la grafica se posiciona al final directamente
+                $(ctx).parents('div.chartScroll').animate({ scrollLeft: canvasSize }, 3000); // tiempo en ms
             }
             //
         }
-
-
 
 
     },
@@ -1339,7 +1368,7 @@ var metricas = {
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
 
-                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
                     url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
@@ -1543,10 +1572,10 @@ var metricas = {
                             <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
                                 <ul class="no-list-style align-items-center" style="display: flex; flex-direction: column;align-items:center">
                                     <li class="control zoomin-control" id="zoomIn">
-                                        <span class="material-icons">add</span>
+                                        <span style="user-select:none" class="material-icons">add</span>
                                     </li>
                                     <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
-                                        <span class="material-icons" >remove</span>
+                                        <span style="user-select: none" class="material-icons" >remove</span>
                                     </li>
                                 </ul>
                             </div>
@@ -1556,6 +1585,7 @@ var metricas = {
                     ctx = $(`<canvas id="grafica_${idPaginaActual}_${pIdGrafica}" width = "600" height = "250"></canvas>`);
 
                     if (!(canvas.parents('div.grafica').attr("idgrafica").includes("circular"))) {
+                        modalContent.css({display: 'none'});
                         parent.append(`
                             <div class="chartWrapper" style="position:relative; margin-top:15px">
                                 <div class="chartScroll" style="overflow-${($(canvas).parents('div.grafica').attr("idgrafica").includes("isHorizontal")) ? "y" : "x"}: scroll;height:${$(modalContent).height() - 130}px;">
@@ -1571,14 +1601,14 @@ var metricas = {
                 }
                 var filtro;
                 var idPagina;
-                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
                     filtro = ObtenerHash2();
                     idPagina = idPaginaActual;
                 } else {
                     filtro = (canvas).parents('div.grafica').attr("filtro");
                     idPagina = (canvas).parents('div.grafica').attr("idpagina");
                 }
-                that.getGrafica(idPagina, pIdGrafica, filtro, ctx, 50); //obtenemos los datos y pintamos la grafica
+                that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50); //obtenemos los datos y pintamos la grafica
 
             });
 
@@ -1617,11 +1647,19 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var numero = $(this).attr("num");
-                $(this).parents('ul').find('a.active').removeClass('active');
-                $(this).find('a').addClass('active');
-                metricas.clearPage();
-                metricas.createEmptyPage(listaPaginas[numero].id);
-                metricas.fillPage(listaPaginas[numero]);
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    $(this).parents('ul').find('a.active').removeClass('active');
+                    $(this).find('a').addClass('active');
+                    metricas.clearPage();
+                    metricas.createEmptyPage(listaPaginas[numero].id);
+                    metricas.fillPage(listaPaginas[numero]);
+                } else {
+                    $(this).parents('ul').find('a.active').removeClass('active');
+                    $(this).find('a').addClass('active');
+                    metricas.clearPage();
+                    metricas.createEmptyPagePersonalized(listaPaginas[numero].idRecurso.split('/')[listaPaginas[numero].idRecurso.split('/').length - 1]);
+                    metricas.fillPagePersonalized(listaPaginas[numero]);
+                }
             });
 
         plegarSubFacetas.init();

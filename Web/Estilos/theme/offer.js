@@ -374,10 +374,12 @@ class StepsOffer {
 	 * Método que inicia el proceso de ir al siguiente paso en el stepBar
 	 */
 	goEnd() {
-		if (this.step == (this.numSteps - 1) && (this.data.projects.length > 0 || this.data.documents.length > 0 || this.data.pii.length > 0)) {
+		if (this.step == this.numSteps && 
+				(Object.keys(this.data.projects).length > 0 || Object.keys(this.data.documents).length > 0 || Object.keys(this.data.pii).length > 0)
+			) {
 			this.goStep(this.step + 1)
 		} else {
-			this.errorDivStep2.show()
+			this.errorDiv.show()
 		}
 	}
 
@@ -537,7 +539,7 @@ class StepsOffer {
 		// Get the second screen
 		let lineasInvestigacion = this.crearOfertaStep3.find('.edit-etiquetas')
 		let inputsTermsProf = lineasInvestigacion.find('input')
-		let profTerms = []
+		let profTerms = {}
 		inputsTermsProf.each((i, el) => {profTerms["id_" + el.value] = _self.divTesListaCaths[el.value]})
 
 
