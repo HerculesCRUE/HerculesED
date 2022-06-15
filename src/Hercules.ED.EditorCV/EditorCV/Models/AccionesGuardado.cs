@@ -173,7 +173,7 @@ namespace EditorCV.Models
             tiposDesnormalizar.Add("Group_", DenormalizerItemQueue.ItemType.group);
             tiposDesnormalizar.Add("Project_", DenormalizerItemQueue.ItemType.project);
             string claveDiccionario = tiposDesnormalizar.Keys.Where(x => entityDestino.Contains(x)).FirstOrDefault();
-            if (tiposDesnormalizar.ContainsKey(claveDiccionario))
+            if (claveDiccionario!=null && tiposDesnormalizar.ContainsKey(claveDiccionario))
             {
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[claveDiccionario], new HashSet<string> { entityDestino }));
             }

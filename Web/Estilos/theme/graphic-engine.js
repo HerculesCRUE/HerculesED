@@ -69,7 +69,7 @@ var metricas = {
             listaPaginas = listaData;
         });
     },
-    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100, pIdRecurso = null, pTitulo = null) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -81,10 +81,10 @@ var metricas = {
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
             if (!ctx) {
-                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                if(!pIdRecurso) {
                     ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
                 } else {
-                    ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica + "_" + pFiltroFacetas);
+                    ctx = document.getElementById(pIdRecurso);
                 }
             }
             // Controla si el objeto es de ChartJS o Cytoscape.
@@ -107,13 +107,16 @@ var metricas = {
                     console.log(pIdGrafica);
                 }
                 //var combo = $(ctx).parents("article").find("select");
+                var titulo = data.title;
+                if (pTitulo) {
+                    titulo = pTitulo;
+                }
                 if (combo) {
                     combo.append(`
-                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.title}</options>
+                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
                 }
-
-                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(data.title);
+                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(titulo);
 
                 var arrayNodes = [];
                 var nodos = cy.nodes();
@@ -176,11 +179,16 @@ var metricas = {
                     });
 
             } else {
+                var titulo = data.options.plugins.title.text;
+                if (pTitulo) {
+                    titulo = pTitulo;
+                    data.options.plugins.title.text = pTitulo
+                }
                 if (combo) {
                     var option = $(combo).find("option[value='grafica_" + pIdPagina + "_" + pIdGrafica + "']");
                     if (option.length === 0) {
                         combo.append(`
-                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.options.plugins.title.text}</options>
+                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
                     }
                 }
@@ -198,7 +206,7 @@ var metricas = {
                 data.plugins = [plugin];
 
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
-                    that.drawChart(ctx, data, pIdGrafica, barSize);
+                    that.drawChart(ctx, data, pIdGrafica, barSize, titulo);
                 } else {
                     var myChart = new Chart(ctx, data);
                 }
@@ -729,14 +737,14 @@ var metricas = {
                                 </li>
                             </ul>
                         </div>
-                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                        <div id="${pPageData[index].idRecurso}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" style="position:relative; margin-top:15px ;width:100%">
                     <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
                         <div style="height: 00px;" class="chartAreaWrapper">
-                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}"></canvas>
+                            <canvas width = "600" height = "250" id="${pPageData[index].idRecurso}"></canvas>
                         </div>
                     </div>
                 </div>
@@ -744,10 +752,10 @@ var metricas = {
             } else {
                 $(this).css("height", "auto");
                 $(this).append(`
-                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}" width = "600" height = "250" ></canvas>
+                    <canvas id = "${pPageData[index].idRecurso}" width = "600" height = "250" ></canvas>
                         `);
             }
-            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro);
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
             index++;
         });
     },
@@ -766,7 +774,7 @@ var metricas = {
             });
         });
     },
-    drawChart: function (ctx, data, pIdGrafica = null, barSize = 100) {
+    drawChart: function (ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) {
         if (Chart.getChart(ctx) != null) {
             return;
         }
@@ -780,8 +788,12 @@ var metricas = {
         var scrollContainer = chartAreaWrapper.parentNode;
         var chartContainer = scrollContainer.parentNode;
         var horizontal = data.options.indexAxis == "y";
+        var titulo = data.options.plugins.title.text;
+        if (pTitulo) {
+            titulo = pTitulo;
+        }
         if (!horizontal) {
-            console.log(data.options.plugins.title.text);
+            console.log(titulo);
         }
         // En caso de que los datos de la gráfica se representen con porcentajes
     
@@ -881,7 +893,7 @@ var metricas = {
             });
             // Leyenda con titulo y contenedor para datasets.
             var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
-                <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
+                <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${titulo}</h4>
                 </div>`);
             $(chartContainer).append(legend);
             var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"></div>`)
