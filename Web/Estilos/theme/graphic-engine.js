@@ -9,8 +9,9 @@ var maxYear;
 var idPaginaActual = "";
 // ID de la gráfica seleccionada.
 var idGraficaActual = "";
-// ID de la gráfica a borrar.
-var idGraficaBorrar = "";
+var tituloActual;
+var tamanioActual;
+var ordenActual;
 
 // Lista de páginas.
 var listaPaginas;
@@ -555,6 +556,12 @@ var metricas = {
                                                         <a class="item-dropdown descargar">
                                                             <span class="material-icons">download</span>
                                                             <span class="texto">Descargar como imagen .jpg</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="item-dropdown editargrafica" data-toggle="modal" data-target="#modal-editargrafica">
+                                                            <span class="material-icons">edit</span>
+                                                            <span class="texto">Editar y ordenar gráfica</span>
                                                         </a>
                                                     </li>
                                                     <li>
@@ -1401,10 +1408,56 @@ var metricas = {
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
+        $('a.editargrafica')
+            .unbind()
+            .click(function (e) {
+                // Limpia los campos.
+                $("#labelTituloGrafica").val("");
+                $("#idSelectorOrden").empty();
+                $("#idSelectorTamanyo").val("11").change();
+                console.log(this);
+                console.log($(this).closest('article'));
+                console.log($(this).closest('article').find("div[idrecurso]"));
+                idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+
+                // Leer gráficas de esta página
+                var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                var arg = {};
+                arg.pPageId = idPaginaActual;
+                // Petición para obtener los datos de la página.
+                $.get(url, arg, function (listaData) {
+                    listaData.forEach(data => {
+                        if (data.idRecurso == idGraficaActual) {
+                            tituloActual = data.titulo;
+                            tamanioActual = data.anchura;
+                            ordenActual = data.orden;
+                        }
+                        $('#idSelectorOrden').append(`
+                            <option value="${data.orden}">${data.orden}: ${data.titulo} </option>    
+                        `)
+                    });
+                });
+
+                // Rellena los campos
+                $("#labelTituloGrafica").val(tituloActual);
+                $("#idSelectorTamanyo").val(tamanioActual).change();
+                $("#idSelectorOrden").val(ordenActual).change();
+            });
+        $('a.editarpagina')
+            .unbind()
+            .click(function (e) {
+                // Limpia los campos.
+                $("#labelTituloPagina").val("");
+                $("#idSelectorOrden").empty();
+
+
+                // Rellena los campos
+                
+            });
         $('a.eliminargrafica')
             .unbind()
             .click(function (e) {
-                idGraficaBorrar = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
             });
         $('a.eliminar')
             .unbind()
@@ -1412,7 +1465,7 @@ var metricas = {
                 // Leer paginas de usuario
                 var idUsuario = $('.inpt_usuarioID').attr('value');
                 var idPagina = idPaginaActual;
-                var idGrafica = idGraficaBorrar;
+                var idGrafica = idGraficaActual;
                 var url = url_servicio_graphicengine + "BorrarGrafica"; //"https://localhost:44352/BorrarGrafica"
                 var arg = {};
                 arg.pUserId = idUsuario;
@@ -1475,6 +1528,43 @@ var metricas = {
                         $('#createPage').hide();
                     }
 
+                });
+            });
+        $('#btnGuardarEditGrafica')
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "EditarNombreGrafica"; //"https://localhost:44352/EditarNombreGrafica"
+                var arg = {};
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+                arg.pPageID = idPaginaActual;
+                arg.pGraphicID = idGraficaActual;
+                arg.pNewTitle = $('#labelTituloGrafica').attr('value');
+                arg.pOldTitle = tituloActual;
+
+                $.get(url, arg, function (data) {
+                });
+                
+                url = url_servicio_graphicengine + "EditarOrdenGrafica"; //"https://localhost:44352/EditarOrdenGrafica"
+                arg = {};
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+                arg.pPageID = idPaginaActual;
+                arg.pGraphicID = idGraficaActual;
+                arg.pNewOrder = $('#idSelectorOrden option:selected').val();
+                arg.pOldOrder = ordenActual;
+
+                $.get(url, arg, function (data) {
+                });
+
+                url = url_servicio_graphicengine + "EditarAnchuraGrafica"; //"https://localhost:44352/EditarAnchuraGrafica"
+                arg = {};
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+                arg.pPageID = idPaginaActual;
+                arg.pGraphicID = idGraficaActual;
+                arg.pNewWidth = $('#idSelectorTamanyo option:selected').val();
+                arg.pOldWidth = tamanioActual;
+
+                $.get(url, arg, function (data) {
+                    location.reload();
                 });
             });
 
