@@ -1,8 +1,9 @@
 {
   "nombre": {
-    "es": "Página de proyectos"
+    "es": "Proyectos"
   },
   "filtro": "rdf:type='project'&roh:isValidated='true'",
+  "orden": 1,
   "identificador": "456",
   "graficas": [
     {

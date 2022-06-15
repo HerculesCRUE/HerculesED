@@ -213,7 +213,6 @@ namespace ImportadorWebCV.Exporta.Secciones
             return listaEntidades;
         }
 
-
         public Dictionary<string, Entity> GetListLoadedEntity(List<Tuple<string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
             Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
@@ -422,6 +421,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                 }
             }
         }
+        
         private void GetLoadedEntityCV(string pId, string pPropAcumulado, string pObjAcumulado, ref Entity pEntity, Dictionary<string, List<Dictionary<string, Data>>> pListResult)
         {
             foreach (Dictionary<string, Data> prop in pListResult[pId])

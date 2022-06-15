@@ -4,6 +4,7 @@ namespace Hercules.ED.GraphicEngine.Models
 {
     public class ConfigModel
     {
+        public int orden { get; set; }
         public Dictionary<string, string> nombre { get; set; }
         public string filtro { get; set; }
         public string identificador { get; set; }
