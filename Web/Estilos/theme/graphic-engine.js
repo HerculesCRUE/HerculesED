@@ -9,8 +9,9 @@ var maxYear;
 var idPaginaActual = "";
 // ID de la gráfica seleccionada.
 var idGraficaActual = "";
-// ID de la gráfica a borrar.
-var idGraficaBorrar = "";
+var tituloActual;
+var tamanioActual;
+var ordenActual;
 
 // Lista de páginas.
 var listaPaginas;
@@ -451,7 +452,7 @@ var metricas = {
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item[0].anchura}"> 
                     <div class="wrap" >
-                        <div class="acciones-mapa ${item.length != 1? 'showAcciones':''}" >
+                        <div class="acciones-mapa ${item.length != 1 ? 'showAcciones' : ''}" >
                             ${item.length != 1 ? `
                             <select class="chartMenu js-select2" href="javascript: void(0);" ></select>`: ""}
                             <div class="wrap">
@@ -534,14 +535,14 @@ var metricas = {
                     if (!grafica.filtro) {
                         grafica.filtro = "";
                     }
-                    tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}' "idrecurso='${grafica.idRecurso}'></div>`;
+                    tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica="${grafica.idGrafica}" idpagina="${grafica.idPagina}" idrecurso="${grafica.idRecurso}"></div>`;
                 });
                 graficasGrupo = tmp;
 
                 $('#page_' + pPaginaUsuario.idRecurso.split('/')[pPaginaUsuario.idRecurso.split('/').length - 1] + '.containerPage').find('.resource-list-wrap').append(`
                     <article class="resource span${item[0].anchura}"> 
                         <div class="wrap" >
-                            <div class="acciones-mapa ${item.length != 1 ? "showAcciones":""}">
+                            <div class="acciones-mapa ${item.length != 1 ? "showAcciones" : ""}">
                                 ${item.length != 1 ? `
                                 <select class="chartMenu js-select2" href="javascript: void(0);" ></select>`: ""}
                                 <div class="wrap">
@@ -567,6 +568,12 @@ var metricas = {
                                                         <a class="item-dropdown descargar">
                                                             <span class="material-icons">download</span>
                                                             <span class="texto">Descargar como imagen .jpg</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="item-dropdown editargrafica" data-toggle="modal" data-target="#modal-editargrafica">
+                                                            <span class="material-icons">edit</span>
+                                                            <span class="texto">Editar y ordenar gráfica</span>
                                                         </a>
                                                     </li>
                                                     <li>
@@ -793,7 +800,7 @@ var metricas = {
         if (Chart.getChart(ctx) != null) {
             return;
         }
-     
+
 
         var numBars = data.data.labels.length; // Número de barras.
         var canvasSize = (numBars * barSize); // Tamaño del canvas.
@@ -810,7 +817,7 @@ var metricas = {
 
         if (horizontal) {
             graficaContainer.classList.add("horizontal");
-        }else{
+        } else {
             graficaContainer.classList.add("vertical");
         }
 
@@ -823,7 +830,7 @@ var metricas = {
         data.options.maintainAspectRatio = false;
         data.options.responsive = true;
 
-        if (pIdGrafica != null && pIdGrafica.includes("abr")) { 
+        if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
             if (horizontal) {
                 data.options.scales['y'] = {
@@ -869,7 +876,7 @@ var metricas = {
             }else{
                 //chartAreaWrapper.style.height  ="";
             }
-           
+
             var myChart = new Chart(ctx, data);
         } else { // a partir de aqui se prepara el scroll
             if (barSize < 100) { //para revelar el zoom
@@ -907,8 +914,8 @@ var metricas = {
             var legend = $(`<div class="chartLegend" >
                 <h4 id="legendTitle">${titulo}</h4>
                 </div>`);
-                /*
-                */
+            /*
+            */
             $(chartContainer).append(legend);
             var dataSetLabels = $(`<div class="dataSetLabels"></div>`)
             $(legend).append(dataSetLabels);
@@ -1410,10 +1417,53 @@ var metricas = {
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
+        $('a.editargrafica')
+            .unbind()
+            .click(function (e) {
+                // Limpia los campos.
+                $("#labelTituloGrafica").val("");
+                $("#idSelectorOrden").empty();
+                $("#idSelectorTamanyo").val("11").change();
+                idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                // Leer gráficas de esta página
+                var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                var arg = {};
+                arg.pPageId = idPaginaActual;
+                var orden = 1;
+                // Petición para obtener los datos de la página.
+                $.get(url, arg, function (listaData) {
+                    listaData.forEach(data => {
+                        if (data.idRecurso == idGraficaActual) {
+                            tituloActual = data.titulo;
+                            tamanioActual = data.anchura;
+                            ordenActual = data.orden;
+                        }
+                        $('#idSelectorOrden').append(`
+                            <option value="${orden}">${orden}</option>    
+                        `)
+                        orden++;
+                    });
+                    // Rellena los campos
+                    $("#labelTituloGrafica").val(tituloActual);
+                    $("#idSelectorTamanyo").val(tamanioActual).change();
+                    $("#idSelectorOrden").val(ordenActual).change();
+                });
+            });
+        $('a.editarpagina')
+            .unbind()
+            .click(function (e) {
+                // Limpia los campos.
+                $("#labelTituloPagina").val("");
+                $("#idSelectorOrden").empty();
+
+
+                // Rellena los campos
+
+            });
         $('a.eliminargrafica')
             .unbind()
             .click(function (e) {
-                idGraficaBorrar = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
             });
         $('a.eliminar')
             .unbind()
@@ -1421,7 +1471,7 @@ var metricas = {
                 // Leer paginas de usuario
                 var idUsuario = $('.inpt_usuarioID').attr('value');
                 var idPagina = idPaginaActual;
-                var idGrafica = idGraficaBorrar;
+                var idGrafica = idGraficaActual;
                 var url = url_servicio_graphicengine + "BorrarGrafica"; //"https://localhost:44352/BorrarGrafica"
                 var arg = {};
                 arg.pUserId = idUsuario;
@@ -1484,6 +1534,43 @@ var metricas = {
                         $('#createPage').hide();
                     }
 
+                });
+            });
+        $('#btnGuardarEditGrafica')
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "EditarNombreGrafica"; //"https://localhost:44352/EditarNombreGrafica"
+                var arg = {};
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+                arg.pPageID = idPaginaActual;
+                arg.pGraphicID = idGraficaActual;
+                arg.pNewTitle = $('#labelTituloGrafica').val();
+                arg.pOldTitle = tituloActual;
+
+                $.get(url, arg, function (data) {
+                });
+
+                var urlOrd = url_servicio_graphicengine + "EditarOrdenGrafica"; //"https://localhost:44352/EditarOrdenGrafica"
+                var argOrd = {};
+                argOrd.pUserId = $('.inpt_usuarioID').attr('value');
+                argOrd.pPageID = idPaginaActual;
+                argOrd.pGraphicID = idGraficaActual;
+                argOrd.pNewOrder = $('#idSelectorOrden option:selected').val();
+                argOrd.pOldOrder = ordenActual;
+
+                $.get(urlOrd, argOrd, function (data) {
+                });
+
+                var urlAnch = url_servicio_graphicengine + "EditarAnchuraGrafica"; //"https://localhost:44352/EditarAnchuraGrafica"
+                var argAnch = {};
+                argAnch.pUserId = $('.inpt_usuarioID').attr('value');
+                argAnch.pPageID = idPaginaActual;
+                argAnch.pGraphicID = idGraficaActual;
+                argAnch.pNewWidth = $('#idSelectorTamanyo option:selected').val();
+                argAnch.pOldWidth = tamanioActual;
+
+                $.get(urlAnch, argAnch, function (data) {
+                    location.reload();
                 });
             });
 
@@ -1631,7 +1718,7 @@ var metricas = {
                             </div>`);
                         chartWrapper = parent.find('.chartAreaWrapper');
                         chartWrapper.css({ height: '100%' });
-                        chartWrapper.css({ width: parent.parents(".modal-content").height()});
+                        chartWrapper.css({ width: parent.parents(".modal-content").height() });
                         chartWrapper.parent().css({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
                     }
 

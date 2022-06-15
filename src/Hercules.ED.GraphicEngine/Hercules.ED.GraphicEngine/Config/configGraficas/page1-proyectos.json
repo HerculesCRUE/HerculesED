@@ -125,234 +125,39 @@
         ]
       }
     },
-    {
-      "identificador": "4pr",
-      "nombre": {
-        "es": "Proyectos por convocatoria TODO"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "idgrupo": "conorg",
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:conductedByTitle",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de proyectos por convocatoria"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "5pr",
-      "nombre": {
-        "es": "Proyectos por organismo"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "idgrupo": "conorg",
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:conductedByTitle",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de proyectos por organismo"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "6pr",
-      "nombre": {
-        "es": "Tipo de proyecto"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:projectType@@@dc:title",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de proyectos"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "7pr",
-      "nombre": {
-        "es": "Grupo/Departamento TODO"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:projectType@@@dc:title",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de proyectos"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "8pr",
-      "nombre": {
-        "es": "Áreas temáticas (Barras) todo"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "idgrupo": "atema",
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:projectType@@@dc:title",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de proyectos"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "9pr",
-      "nombre": {
-        "es": "Áreas temáticas (Nodos) todo"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "idgrupo": "atema",
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:projectType@@@dc:title",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de proyectos"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "10pr",
-      "nombre": {
-        "es": "Ámbito de los proyectos"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "config": {
-        "orientacionVertical": true,
-        "ejeX": "vivo:geographicFocus@@@dc:title",
-        "orderDesc": false,
-        "rellenarEjeX": false,
-        "yAxisPrint": [
-          {
-            "yAxisID": "y1",
-            "posicion": "left"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de proyectos por ámbito"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "yAxisID": "y1",
-            "orden": 1
-          }
-        ]
-      }
-    },
+    //{
+    //  "identificador": "4pr",
+    //  "nombre": {
+    //    "es": "Proyectos por convocatoria TODO"
+    //  },
+    //  "tipo": "Barras",
+    //  "anchura": 12,
+    //  "idgrupo": "conorg",
+    //  "config": {
+    //    "orientacionVertical": false,
+    //    "ejeX": "roh:conductedByTitle",
+    //    "orderDesc": false,
+    //    "rellenarEjeX": false,
+    //    "xAxisPrint": [
+    //      {
+    //        "xAxisID": "x1",
+    //        "posicion": "bottom"
+    //      }
+    //    ],
+    //    "dimensiones": [
+    //      {
+    //        "nombre": {
+    //          "es": "Número de proyectos por convocatoria"
+    //        },
+    //        "filtro": "",
+    //        "tipoDimension": "bar",
+    //        "color": "#BF4858",
+    //        "xAxisID": "x1",
+    //        "orden": 1
+    //      }
+    //    ]
+    //  }
+    //},
     {
       "identificador": "11pr",
       "nombre": {
@@ -381,37 +186,231 @@
       }
     },
     {
-      "identificador": "3332",
+      "identificador": "5pr",
       "nombre": {
-        "es": "Ámbito de los proyectos"
+        "es": "Proyectos por organismo"
       },
       "tipo": "Barras",
-      "anchura": 12,
+      "anchura": 11,
       "config": {
-        "orientacionVertical": true,
-        "ejeX": "vivo:geographicFocus@@@dc:title",
+        "orientacionVertical": false,
+        "ejeX": "roh:conductedByTitle",
         "orderDesc": false,
         "rellenarEjeX": false,
-        "yAxisPrint": [
+        "xAxisPrint": [
           {
-            "yAxisID": "y1",
-            "posicion": "left"
+            "xAxisID": "x1",
+            "posicion": "bottom"
           }
         ],
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de proyectos por ámbito"
+              "es": "Número de proyectos por organismo"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#7CBFE3",
-            "yAxisID": "y1",
+            "color": "#BF4858",
+            "xAxisID": "x1",
             "orden": 1
           }
         ]
       }
-    }
+    },
+    //{
+    //  "identificador": "6pr",
+    //  "nombre": {
+    //    "es": "Tipo de proyecto"
+    //  },
+    //  "tipo": "Barras",
+    //  "anchura": 12,
+    //  "config": {
+    //    "orientacionVertical": false,
+    //    "ejeX": "roh:projectType@@@dc:title",
+    //    "orderDesc": false,
+    //    "rellenarEjeX": false,
+    //    "xAxisPrint": [
+    //      {
+    //        "xAxisID": "x1",
+    //        "posicion": "bottom"
+    //      }
+    //    ],
+    //    "dimensiones": [
+    //      {
+    //        "nombre": {
+    //          "es": "Número de proyectos"
+    //        },
+    //        "filtro": "",
+    //        "tipoDimension": "bar",
+    //        "color": "#BF4858",
+    //        "xAxisID": "x1",
+    //        "orden": 1
+    //      }
+    //    ]
+    //  }
+    //},
+    //{
+    //  "identificador": "7pr",
+    //  "nombre": {
+    //    "es": "Grupo/Departamento TODO"
+    //  },
+    //  "tipo": "Barras",
+    //  "anchura": 12,
+    //  "config": {
+    //    "orientacionVertical": false,
+    //    "ejeX": "roh:projectType@@@dc:title",
+    //    "orderDesc": false,
+    //    "rellenarEjeX": false,
+    //    "xAxisPrint": [
+    //      {
+    //        "xAxisID": "x1",
+    //        "posicion": "bottom"
+    //      }
+    //    ],
+    //    "dimensiones": [
+    //      {
+    //        "nombre": {
+    //          "es": "Número de proyectos"
+    //        },
+    //        "filtro": "",
+    //        "tipoDimension": "bar",
+    //        "color": "#BF4858",
+    //        "xAxisID": "x1",
+    //        "orden": 1
+    //      }
+    //    ]
+    //  }
+    //},
+    //{
+    //  "identificador": "8pr",
+    //  "nombre": {
+    //    "es": "Áreas temáticas (Barras) todo"
+    //  },
+    //  "tipo": "Barras",
+    //  "anchura": 12,
+    //  "idgrupo": "atema",
+    //  "config": {
+    //    "orientacionVertical": false,
+    //    "ejeX": "roh:projectType@@@dc:title",
+    //    "orderDesc": false,
+    //    "rellenarEjeX": false,
+    //    "xAxisPrint": [
+    //      {
+    //        "xAxisID": "x1",
+    //        "posicion": "bottom"
+    //      }
+    //    ],
+    //    "dimensiones": [
+    //      {
+    //        "nombre": {
+    //          "es": "Número de proyectos"
+    //        },
+    //        "filtro": "",
+    //        "tipoDimension": "bar",
+    //        "color": "#BF4858",
+    //        "xAxisID": "x1",
+    //        "orden": 1
+    //      }
+    //    ]
+    //  }
+    //},
+    //{
+    //  "identificador": "9pr",
+    //  "nombre": {
+    //    "es": "Áreas temáticas (Nodos) todo"
+    //  },
+    //  "tipo": "Barras",
+    //  "anchura": 12,
+    //  "idgrupo": "atema",
+    //  "config": {
+    //    "orientacionVertical": false,
+    //    "ejeX": "roh:projectType@@@dc:title",
+    //    "orderDesc": false,
+    //    "rellenarEjeX": false,
+    //    "xAxisPrint": [
+    //      {
+    //        "xAxisID": "x1",
+    //        "posicion": "bottom"
+    //      }
+    //    ],
+    //    "dimensiones": [
+    //      {
+    //        "nombre": {
+    //          "es": "Número de proyectos"
+    //        },
+    //        "filtro": "",
+    //        "tipoDimension": "bar",
+    //        "color": "#BF4858",
+    //        "xAxisID": "x1",
+    //        "orden": 1
+    //      }
+    //    ]
+    //  }
+    //},
+    //{
+    //  "identificador": "10pr",
+    //  "nombre": {
+    //    "es": "Ámbito de los proyectos"
+    //  },
+    //  "tipo": "Barras",
+    //  "anchura": 12,
+    //  "config": {
+    //    "orientacionVertical": true,
+    //    "ejeX": "vivo:geographicFocus@@@dc:title",
+    //    "orderDesc": false,
+    //    "rellenarEjeX": false,
+    //    "yAxisPrint": [
+    //      {
+    //        "yAxisID": "y1",
+    //        "posicion": "left"
+    //      }
+    //    ],
+    //    "dimensiones": [
+    //      {
+    //        "nombre": {
+    //          "es": "Número de proyectos por ámbito"
+    //        },
+    //        "filtro": "",
+    //        "tipoDimension": "bar",
+    //        "color": "#BF4858",
+    //        "yAxisID": "y1",
+    //        "orden": 1
+    //      }
+    //    ]
+    //  }
+    //},    
+    //{
+    //  "identificador": "3332",
+    //  "nombre": {
+    //    "es": "Ámbito de los proyectos"
+    //  },
+    //  "tipo": "Barras",
+    //  "anchura": 12,
+    //  "config": {
+    //    "orientacionVertical": true,
+    //    "ejeX": "vivo:geographicFocus@@@dc:title",
+    //    "orderDesc": false,
+    //    "rellenarEjeX": false,
+    //    "yAxisPrint": [
+    //      {
+    //        "yAxisID": "y1",
+    //        "posicion": "left"
+    //      }
+    //    ],
+    //    "dimensiones": [
+    //      {
+    //        "nombre": {
+    //          "es": "Número de proyectos por ámbito"
+    //        },
+    //        "filtro": "",
+    //        "tipoDimension": "bar",
+    //        "color": "#7CBFE3",
+    //        "yAxisID": "y1",
+    //        "orden": 1
+    //      }
+    //    ]
+    //  }
+    //}
   ],
   "facetas": [
     {
