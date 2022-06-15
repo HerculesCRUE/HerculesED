@@ -13,7 +13,7 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
 
-        public TextoLibre(cvnRootResultBean cvn, string cvID, ConfigService configuracion) : base(cvn, cvID,configuracion)
+        public TextoLibre(cvnRootResultBean cvn, string cvID, ConfigService configuracion) : base(cvn, cvID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("070");
         }
@@ -102,19 +102,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             string resumen = item.Value;
             if (resumen.Contains(b1) && resumen.Contains(b2))
             {
-                resumenLibre = resumen.Split(b1)[0];
-                TFG = resumen.Split(b1)[1].Split(b2)[0];
-                TFM = resumen.Split(b2)[1];
+                resumenLibre = resumen.Split(b1, 2).First();
+                TFG = resumen.Split(b1, 2).Last().Split(b2, 2).First();
+                TFM = resumen.Split(b2, 2).Last();
             }
             else if (resumen.Contains(b1))
             {
-                resumenLibre = resumen.Split(b1)[0];
-                TFG = resumen.Split(b1)[1];
+                resumenLibre = resumen.Split(b1, 2).First();
+                TFG = resumen.Split(b1, 2).Last();
             }
             else if (resumen.Contains(b2))
             {
-                resumenLibre = resumen.Split(b2)[0];
-                TFM = resumen.Split(b2)[1];
+                resumenLibre = resumen.Split(b2, 2).First();
+                TFM = resumen.Split(b2, 2).Last();
             }
             else
             {
@@ -139,7 +139,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string item3 = identificadores.Item3;
                 if (string.IsNullOrEmpty(item2))
                 {
-                    string nombreEntidad = rdfTypeItem[0];
+                    string nombreEntidad = rdfTypeItem.First();
                     if (nombreEntidad.Contains("#"))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("#") + 1);
