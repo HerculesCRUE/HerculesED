@@ -250,9 +250,9 @@ namespace EditorCV.Models
         /// <param name="pId">Identificador de la entidad de la sección</param>
         /// <param name="pRdfType">Rdf:type de la entidad de la sección</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
-        /// <param name="pSection">Orden de la sección para la carga parcial</param>
+        /// <param name="pSection">Sección</param>
         /// <returns></returns>
-        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang, int? pSection = null)
+        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
         {
 
             //Obtenemos el template
@@ -754,13 +754,26 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, int? pSection)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection=null)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
-                if (!pSection.HasValue || pTemplate.sections.IndexOf(templateSection) == pSection.Value)
+                if(string.IsNullOrEmpty(pSection))
+                {
+                    propertyDatas.Add(templateSection.GenerarPropertyData(graph));
+                }else if (pSection=="0")
+                {
+                    if (pTemplate.sections.IndexOf(templateSection) == 0)
+                    {
+                        propertyDatas.Add(templateSection.GenerarPropertyData(graph));
+                    }
+                    else
+                    {
+                        propertyDatas.Add(templateSection.GenerarPropertyDataContadores(graph));
+                    }
+                }else if(pSection== templateSection.property)
                 {
                     propertyDatas.Add(templateSection.GenerarPropertyData(graph));
                 }
@@ -865,7 +878,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, int? pSection)
+        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection=null)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
