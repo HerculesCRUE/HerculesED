@@ -397,9 +397,15 @@ var metricas = {
         gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
+            var tipoGrafica = 
+                item[0].isHorizontal ? "horizontal " : "" +
+                item[0].isCircular ? "circular " : "" +
+                item[0].isNodes ? "nodes " : "" +
+                item[0].isAbr ? "abr " : "" +
+                item[0].isPercentage ? "prc " : "";
             item.forEach(function (grafica, index, array) {
 
-                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
 
@@ -763,19 +769,7 @@ var metricas = {
             console.log(data.options.plugins.title.text);
         }
         // En caso de que los datos de la gráfica se representen con porcentajes
-        if (pIdGrafica != null && pIdGrafica.includes("prc")) {
-            data.options.plugins.tooltip = {
-                callbacks: {
-                    afterLabel: function (context) {
-                        let label = "Porcentaje: ";
-                        let sum = context.dataset.data.reduce((a, b) => a + b, 0);
-                        let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
-                        label += porcentaje.toFixed(2) + '%';
-                        return label;
-                    }
-                }
-            }
-        }
+    
 
         // Solo si es una gráfica horizontal.
 
@@ -805,12 +799,25 @@ var metricas = {
             }
             var myChart = new Chart(ctx, data);
 
-            if (pIdGrafica != null && pIdGrafica.includes("abr")) {
+            if (pIdGrafica != null && pIdGrafica.includes("abr")) { //TODO ARREGLAR
                 // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
                 if (horizontal) {
                     data.options.scales.y.ticks.callback = ticksAbr;
                 } else {
                     data.options.scales.x.ticks.callback = ticksAbr;
+                }
+            }
+            if (pIdGrafica != null && pIdGrafica.includes("prc")) {
+                data.options.plugins.tooltip = {
+                    callbacks: {
+                        afterLabel: function (context) {
+                            let label = "Porcentaje: ";
+                            let sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
+                            label += porcentaje.toFixed(2) + '%';
+                            return label;
+                        }
+                    }
                 }
             }
             function ticksAbr(value) {
@@ -914,8 +921,6 @@ var metricas = {
             }
             //
         }
-
-
 
 
     },
