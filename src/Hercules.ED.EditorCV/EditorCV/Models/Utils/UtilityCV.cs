@@ -261,6 +261,84 @@ namespace EditorCV.Models.Utils
         }
 
         /// <summary>
+        /// Obtiene las propiedades para los contadores de las entidades pasadas por parámetro
+        /// </summary>
+        /// <param name="pIds">Identificadores de las entidades de las que recuperar sus propiedades</param>
+        /// <param name="pProperties">Propiedades a recuperar</param>   
+        /// <returns></returns>
+        public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetPropertiesContadores(HashSet<string> pIds,
+            List<PropertyData> pProperties)
+        {
+            int paginacion = 10000;
+            int maxIn = 1000;
+
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = new Dictionary<string, List<Dictionary<string, Data>>>();
+
+
+            SparqlObject sparqlObject = null;
+            if(pProperties.Count>0)
+            {
+                List<List<string>> listOfLists = SplitList(pIds.ToList(), maxIn).ToList();
+                foreach (List<string> list in listOfLists)
+                {
+                    int offset = 0;
+                    int limit = paginacion;
+                    while (limit == paginacion)
+                    {
+                        string select = @$" select * where
+                                            {{
+                                                select distinct ?s ?p ?o ?p2 ?o2 ?relatedBy";
+                        string where = @$"      where
+                                                {{
+                                                    ?s ?p ?o. 
+                                                    FILTER(?s in(<{string.Join(">,<", list.OrderByDescending(x => x))}>)) 
+                                                    FILTER(?p in(<{string.Join(">,<", pProperties.Select(x => x.property).ToList().OrderByDescending(x => x))}>))
+                                                    ?o ?p2 ?o2.
+                                                    FILTER(?p2=<http://vivoweb.org/ontology/core#relatedBy>)
+                                                }} 
+                                                order by asc(?o) asc(?p) asc(?s)
+                                            }} limit {limit} offset {offset}";
+
+                        SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                        limit = sparqlObjectAux.results.bindings.Count;
+                        offset += sparqlObjectAux.results.bindings.Count;
+                        foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObjectAux.results.bindings)
+                        {
+                            Dictionary<string, SparqlObject.Data> fila1 = new Dictionary<string, Data>();
+                            fila1.Add("s", fila["s"]);
+                            fila1.Add("p", fila["p"]);
+                            fila1.Add("o", fila["o"]);
+                            if (!respuesta.ContainsKey(fila1["s"].value))
+                            {
+                                respuesta[fila1["s"].value] = new List<Dictionary<string, Data>>();
+                            }
+                            respuesta[fila1["s"].value].Add(fila1);
+                            Dictionary<string, SparqlObject.Data> fila2 = new Dictionary<string, Data>();
+                            fila2.Add("s", fila["o"]);
+                            fila2.Add("p", fila["p2"]);
+                            fila2.Add("o", fila["o2"]);
+                            if (!respuesta.ContainsKey(fila2["s"].value))
+                            {
+                                respuesta[fila2["s"].value] = new List<Dictionary<string, Data>>();
+                            }
+                            respuesta[fila2["s"].value].Add(fila2);
+
+                        }
+                        if (sparqlObject == null)
+                        {
+                            sparqlObject = sparqlObjectAux;
+                        }
+                        else
+                        {
+                            sparqlObject.results.bindings.AddRange(sparqlObjectAux.results.bindings);
+                        }
+                    }
+                }
+            }
+            return respuesta;
+        }
+
+        /// <summary>
         /// Obtiene los datos multiidioma de la entidad en el CV
         /// </summary>
         /// <param name="pCV">Identificador del CV</param>

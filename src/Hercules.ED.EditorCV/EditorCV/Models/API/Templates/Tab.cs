@@ -127,36 +127,14 @@ namespace EditorCV.Models.API.Templates
         /// <returns></returns>
         public Utils.PropertyData GenerarPropertyDataContadores(string pGraph)
         {
-            switch (presentation.type)
-            {
-                case TabSectionPresentationType.listitems:
-                    {
-                        Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);    
-                        propertyDataListItems.property = this.property;
-                        //Eliminamos 'ispublic'
-                        propertyDataListItems.childs.RemoveAll(x => x.property == "http://w3id.org/roh/isPublic");
-                        //Nos quedamos sólo con el relatedBy
-                        propertyDataListItems.childs.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy").childs=null;
-                        return propertyDataListItems;
-                    }
-                case TabSectionPresentationType.item:
-                    {
-                        List<Utils.PropertyData> propertyDatasItem = this.presentation.itemPresentation.itemEdit.GenerarPropertyDatas(pGraph);
-                        Utils.PropertyData propertyData = new Utils.PropertyData();
-                        propertyData.property = this.property;
-                        propertyData.childs = new List<Utils.PropertyData>() {
-                            new Utils.PropertyData() {
-                                property = this.presentation.itemPresentation.property,
-                                childs=propertyDatasItem,
-                                graph=this.presentation.itemPresentation.itemEdit.graph
-                            }
-                        };
-                        propertyData.graph = "curriculumvitae";
-                        return propertyData;
-                    }
-                default:
-                    throw new Exception("No está implementado la presentación del tipo " + presentation.type);
-            }
+
+            Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+            propertyDataListItems.property = this.property;
+            //Eliminamos 'ispublic'
+            propertyDataListItems.childs.RemoveAll(x => x.property == "http://w3id.org/roh/isPublic");
+            //Nos quedamos sólo con el relatedBy
+            propertyDataListItems.childs.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy").childs = null;
+            return propertyDataListItems;
         }
     }
 
