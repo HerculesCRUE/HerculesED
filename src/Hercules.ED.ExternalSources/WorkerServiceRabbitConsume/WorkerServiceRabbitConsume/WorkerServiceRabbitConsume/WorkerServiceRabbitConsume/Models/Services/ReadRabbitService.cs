@@ -200,8 +200,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
 
                     // Guardado de la información en formato JSON.
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
-                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                    DateTime fecha = DateTime.Now;
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    WorkerServiceRabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
+                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (Exception e)
                 {
@@ -227,8 +229,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
 
                     // Guardado de la información en formato JSON.
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
-                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                    DateTime fecha = DateTime.Now;
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    WorkerServiceRabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
+                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (Exception e)
                 {
@@ -254,8 +258,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
 
                     // Guardado de la información en formato JSON.
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
-                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                    DateTime fecha = DateTime.Now;
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    WorkerServiceRabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
+                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (Exception e)
                 {
@@ -281,8 +287,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
 
                     // Guardado de la información en formato JSON.
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
-                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                    DateTime fecha = DateTime.Now;
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    WorkerServiceRabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
+                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (Exception e)
                 {
@@ -308,8 +316,10 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     }
 
                     // Guardado de la información en formato JSON.
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{DateTime.Now.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
-                    FileLogger.Log($@"{DateTime.Now} - fichero JSON creado.");
+                    DateTime fecha = DateTime.Now;
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    WorkerServiceRabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
+                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (Exception e)
                 {

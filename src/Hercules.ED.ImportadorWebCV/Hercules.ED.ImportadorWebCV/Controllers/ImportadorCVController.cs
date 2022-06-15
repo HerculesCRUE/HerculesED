@@ -95,7 +95,12 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                         xml = sww.ToString();
                     }
                 }
-                preimportar.cvn_xml = xml;
+
+                var ms = new MemoryStream();
+                File.CopyTo(ms);
+                byte[] filebytes = ms.ToArray();
+                //preimportar.cvn_xml = xml;
+                preimportar.cvn_xml = filebytes;
 
                 return Ok(preimportar);
             }
@@ -106,14 +111,21 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         }
 
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] string fileData, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
-                SincroDatos sincroDatos = new SincroDatos(_Configuracion, pCVID, fileData);
+                string stringFile;
+                using (var ms = new MemoryStream(file))
+                {
+                    using (var reader = new StreamReader(ms))
+                    {
+                        stringFile = reader.ReadToEnd();
+                    }
+                }
 
-                AccionesImportacion accionesImportacion = new AccionesImportacion();
-                accionesImportacion.ImportacionTriples(sincroDatos, pCVID, fileData, listaId, listaOpciones);
+                AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
+                accionesImportacion.ImportacionTriples(pCVID, listaId, listaOpciones);
 
                 return Ok();
             }

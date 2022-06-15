@@ -18,6 +18,7 @@ using EditorCV.Models.PreimportModels;
 using System.Text.Json;
 using System.Xml.Serialization;
 using System.IO;
+using System.Text;
 
 namespace EditorCV.Controllers
 {
@@ -105,16 +106,10 @@ namespace EditorCV.Controllers
                     }
                 }
 
-                XmlSerializer ser = new XmlSerializer(typeof(Preimport));
-                Preimport preimport = new Preimport();
-                using (TextReader reader = new StringReader(fileData))
-                {
-                    // Call the Deserialize method to restore the object's state.
-                    preimport = (Preimport)ser.Deserialize(reader);
-                }
+                byte[] file = Encoding.UTF8.GetBytes(fileData);
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion();                
-                accionesImportacion.PostimportarCV(_Configuracion, pCVId, preimport, listadoId, dicOpciones);
+                accionesImportacion.PostimportarCV(_Configuracion, pCVId, file, listadoId, dicOpciones);
 
                 return Ok();
             }

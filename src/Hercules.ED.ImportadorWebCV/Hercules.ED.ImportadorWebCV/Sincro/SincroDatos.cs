@@ -18,12 +18,10 @@ namespace ImportadorWebCV.Sincro
     public class SincroDatos
     {
         readonly ConfigService mConfiguracion;
-        private cvnRootResultBean cvn;
+        protected cvnRootResultBean cvn;
         private string cvID;
         private string personID;
         public FormFile CVFileAsXML;
-        public string xmlStringFile;
-        public Preimport preimport;
 
         /// <summary>
         /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
@@ -51,7 +49,6 @@ namespace ImportadorWebCV.Sincro
                 {
                     cvn = (cvnRootResultBean)ser.Deserialize(reader);                    
                 }
-                xmlStringFile = new StreamReader(CVFileAsXML.OpenReadStream()).ReadToEnd();
                 this.cvID = cvID;
                 this.personID = Utility.PersonaCV(cvID);
             }
@@ -63,7 +60,6 @@ namespace ImportadorWebCV.Sincro
                 {
                     cvn = (cvnRootResultBean)ser.Deserialize(reader);
                 }
-                xmlStringFile = new StreamReader(CVFileAsXML.OpenReadStream()).ReadToEnd();
                 this.cvID = cvID;
                 this.personID = Utility.PersonaCV(cvID);
             }
@@ -72,7 +68,10 @@ namespace ImportadorWebCV.Sincro
         public SincroDatos(ConfigService Configuracion, string cvID, string data)
         {
             mConfiguracion = Configuracion;
-            preimport = System.Text.Json.JsonSerializer.Deserialize<Preimport>(data);
+            XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+            using (StringReader reader = new StringReader(data)) {
+                cvn = (cvnRootResultBean)ser.Deserialize(reader); 
+            }
             this.cvID = cvID;
             this.personID = Utility.PersonaCV(cvID);
         }
