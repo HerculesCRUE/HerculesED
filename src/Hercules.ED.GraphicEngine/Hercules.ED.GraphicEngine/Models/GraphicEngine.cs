@@ -86,37 +86,43 @@ namespace Hercules.ED.GraphicEngine.Models
                 string prefijoCircular = "circular";
                 string prefijoAbreviar = "abr";
                 string prefijoPorcentaje = "prc";
+
+                configPagina.isCircular = itemGrafica.tipo == EnumGraficas.Circular;
+                configPagina.isAbr = itemGrafica.config.abreviar;
+                configPagina.isNodes = itemGrafica.tipo == EnumGraficas.Nodos;
+                configPagina.isHorizontal = !(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical);
+                configPagina.isCircular = itemGrafica.tipo == EnumGraficas.Circular;
+                configPagina.isPercentage = itemGrafica.config.porcentual;
+
                 if (itemGrafica.config.abreviar && !itemGrafica.identificador.Contains(prefijoAbreviar))
                 {
                     itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoAbreviar + "-" + configPagina.id;
-                    configPagina.isAbr = true;
+
                 }
 
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoNodos + "-" + configPagina.id;
-                    configPagina.isNodes = true;
                 }
                 else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal) && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
-                    configPagina.isHorizontal = true;
 
                 }
                 else if (itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular))
                 {
                     itemGrafica.identificador = prefijoCircular + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoCircular + "-" + configPagina.id;
-                    configPagina.isCircular = true;
+                    
                 }
                 if (itemGrafica.config.porcentual && !itemGrafica.identificador.Contains(prefijoPorcentaje))
                 {
                     itemGrafica.identificador = prefijoPorcentaje + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoPorcentaje + "-" + configPagina.id;
-                    configPagina.isPercentage = true;
+
                 }
 
                 // Si la anchura no contiene un valor aceptado, se le asigna 1/2 por defecto.
