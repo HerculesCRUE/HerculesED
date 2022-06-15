@@ -864,6 +864,10 @@ var metricas = {
 
             if (horizontal) { // estilos horizonales
                 chartAreaWrapper.style.height = canvasSize + 100 + "px";
+                scrollContainer.style.height =  "auto";
+                scrollContainer.style.overflowY = "hidden";
+            }else{
+                //chartAreaWrapper.style.height  ="";
             }
            
             var myChart = new Chart(ctx, data);
@@ -875,6 +879,7 @@ var metricas = {
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
 
+            
             if (horizontal) {
                 ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
             } else {// -- vertical
@@ -1612,9 +1617,9 @@ var metricas = {
                     if (!(idgrafica.includes("circular"))) {
                         modalContent.css({ display: 'none' });
                         parent.append(`
-                            <div class="chartWrapper"">
+                            <div class="chartWrapper">
                                 <div class="chartScroll" style="overflow-${(idgrafica.toLowerCase().includes("horizontal")) ? "y" : "x"}: scroll;height:${$(modalContent).height() - 130}px;">
-                                    <div  class="chartAreaWrapper" style="height: 00px;">
+                                    <div  class="chartAreaWrapper" >
                                     </div>
                                 </div>
                             </div>

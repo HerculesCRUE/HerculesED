@@ -126,7 +126,8 @@
     height: 546px;
  }
  .grafica.vertical:not(.small) .chartScroll {
-     overflow-y: scroll;
+    overflow-y: hidden;
+    overflow-x: scroll;
  }
  .grafica.horizontal:not(.small) .chartScroll {
     overflow-y: scroll;
@@ -165,6 +166,6 @@
  .nav-item {
      cursor: pointer;
  }
- div > ul.facetedSearch:empty{
+ div  ul.facetedSearch:empty{
      display: none;
  }
