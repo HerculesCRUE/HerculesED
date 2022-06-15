@@ -59,7 +59,9 @@ var metricas = {
         $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
-                    <li id="${listaData[i].idRecurso}" num="${i}">${listaData[i].titulo}</li>
+                    <li class="nav-item" id="${listaData[i].idRecurso}" num="${i}">
+                        <a class="nav-link ${i == 0 ? "active" : ""} uppercase">${listaData[i].titulo}</a>
+                    </li>
                 `);
             }
             that.createEmptyPagePersonalized(listaData[0].idRecurso.split('/')[listaData[0].idRecurso.split('/').length - 1]);
@@ -315,14 +317,23 @@ var metricas = {
         });
     },
     clearPage: function () {
-        $('canvas').each(function () {
-            Chart.getChart(this)?.destroy();
-        });
-        $(window).unbind('resize');
-
-        $('#panFacetas').empty()
-        $('.resource-list-wrap').empty();
-        $('.borrarFiltros').click();
+        if (!$('div').hasClass('indicadoresPersonalizados')) {
+            $('canvas').each(function () {
+                Chart.getChart(this)?.destroy();
+            });
+            $(window).unbind('resize');
+    
+            $('#panFacetas').empty()
+            $('.resource-list-wrap').empty();
+            $('.borrarFiltros').click();
+        } else {
+            $('canvas').each(function () {
+                Chart.getChart(this)?.destroy();
+            });
+            $(window).unbind('resize');
+    
+            $('.resource-list-wrap').empty();
+        }
     },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -1636,11 +1647,19 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var numero = $(this).attr("num");
-                $(this).parents('ul').find('a.active').removeClass('active');
-                $(this).find('a').addClass('active');
-                metricas.clearPage();
-                metricas.createEmptyPage(listaPaginas[numero].id);
-                metricas.fillPage(listaPaginas[numero]);
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    $(this).parents('ul').find('a.active').removeClass('active');
+                    $(this).find('a').addClass('active');
+                    metricas.clearPage();
+                    metricas.createEmptyPage(listaPaginas[numero].id);
+                    metricas.fillPage(listaPaginas[numero]);
+                } else {
+                    $(this).parents('ul').find('a.active').removeClass('active');
+                    $(this).find('a').addClass('active');
+                    metricas.clearPage();
+                    metricas.createEmptyPagePersonalized(listaPaginas[numero].idRecurso.split('/')[listaPaginas[numero].idRecurso.split('/').length - 1]);
+                    metricas.fillPagePersonalized(listaPaginas[numero]);
+                }
             });
 
         plegarSubFacetas.init();
