@@ -874,7 +874,7 @@ var metricas = {
                 scrollContainer.style.height =  "auto";
                 scrollContainer.style.overflowY = "hidden";
             }else{
-                //chartAreaWrapper.style.height  ="";
+                chartAreaWrapper.style.height  = "546px";
             }
 
             var myChart = new Chart(ctx, data);
@@ -892,6 +892,7 @@ var metricas = {
             } else {// -- vertical
                 //myChart.canvas.parentNode.style.width = canvasSize + 'px';
                 ctx.parentNode.style.height = 100 + '%'; //se escala la altura //css done
+                
                 ctx.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
 
             }
@@ -1222,7 +1223,7 @@ var metricas = {
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros);
                 e.preventDefault();
 
-                that.pintarPagina(idPaginaActual);
+                location.reload();
             });
 
         $('.borrarFiltros')
@@ -1230,7 +1231,7 @@ var metricas = {
             .click(function (e) {
                 history.pushState('', 'New URL: ', '?');
                 e.preventDefault();
-                that.pintarPagina(idPaginaActual);
+                location.reload();
             });
 
 
@@ -1705,7 +1706,7 @@ var metricas = {
                         modalContent.css({ display: 'none' });
                         parent.append(`
                             <div class="chartWrapper">
-                                <div class="chartScroll" style="overflow-${(idgrafica.toLowerCase().includes("horizontal")) ? "y" : "x"}: scroll;height:${$(modalContent).height() - 130}px;">
+                                <div class="chartScroll" style="height:${$(modalContent).height() - 130}px;">
                                     <div  class="chartAreaWrapper" >
                                     </div>
                                 </div>
@@ -1718,7 +1719,7 @@ var metricas = {
                             </div>`);
                         chartWrapper = parent.find('.chartAreaWrapper');
                         chartWrapper.css({ height: '100%' });
-                        chartWrapper.css({ width: parent.parents(".modal-content").height() });
+                        chartWrapper.css({ width: parent.parent().height() });
                         chartWrapper.parent().css({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
                     }
 
