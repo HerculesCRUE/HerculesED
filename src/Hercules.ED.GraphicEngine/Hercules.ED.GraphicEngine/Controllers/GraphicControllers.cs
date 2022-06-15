@@ -112,5 +112,59 @@ namespace Hercules.ED.GraphicEngine.Controllers
         {
             Models.GraphicEngine.BorrarGrafica(pUserId, pPageID, pGraphicID);
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void BorrarPagina(string pUserId, string pPageID)
+        {
+            Models.GraphicEngine.BorrarPagina(pUserId, pPageID);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void EditarNombrePagina(string pUserId, string pPageID, string pNewTitle, string pOldTitle)
+        {
+            Models.GraphicEngine.EditarNombrePagina(pUserId, pPageID, pNewTitle, pOldTitle);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void EditarOrdenPagina(string pUserId, string pPageID, int pNewOrder, int pOldOrder)
+        {
+            Models.GraphicEngine.EditarOrdenPagina(pUserId, pPageID, pNewOrder, pOldOrder);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void EditarNombreGrafica(string pUserId, string pPageID, string pGraphicID, string pNewTitle, string pOldTitle)
+        {
+            Models.GraphicEngine.EditarNombreGrafica(pUserId, pPageID, pGraphicID, pNewTitle, pOldTitle);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void EditarOrdenGrafica(string pUserId, string pPageID, string pGraphicID, int pNewOrder, int pOldOrder)
+        {
+            Models.GraphicEngine.EditarOrdenGrafica(pUserId, pPageID, pGraphicID, pNewOrder, pOldOrder);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public void EditarAnchuraGrafica(string pUserId, string pPageID, string pGraphicID, int pNewWidth, int pOldWidth)
+        {
+            Models.GraphicEngine.EditarAnchuraGrafica(pUserId, pPageID, pGraphicID, pNewWidth, pOldWidth);
+        }
     }
 }
