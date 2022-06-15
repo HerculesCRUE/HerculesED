@@ -1865,10 +1865,10 @@ namespace Hercules.ED.GraphicEngine.Models
                 NewValue = valorBase + pTitulo
             });
 
-            // Orden de la página
+            // Orden de la gráfica
             int orden = 0;
-            List<DataPageUser> listaGraficas = GetPagesUser(pUserId);
-            foreach (DataPageUser item in listaGraficas)
+            List<DataGraphicUser> listaGraficas = GetGraficasUserByPageId(pIdPaginaGrafica);
+            foreach (DataGraphicUser item in listaGraficas)
             {
                 if (item.orden > orden)
                 {
