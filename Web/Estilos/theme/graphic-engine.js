@@ -77,7 +77,11 @@ var metricas = {
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
             if (!ctx) {
-                ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+                if(!$('div').hasClass('indicadoresPersonalizados')) {
+                    ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+                } else {
+                    ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica + "_" + pFiltroFacetas);
+                }
             }
             // Controla si el objeto es de ChartJS o Cytoscape.
             var combo = $(ctx).parents("article").find("select");
@@ -706,14 +710,14 @@ var metricas = {
                                 </li>
                             </ul>
                         </div>
-                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" style="position:relative; margin-top:15px ;width:100%">
                     <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
                         <div style="height: 00px;" class="chartAreaWrapper">
-                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}"></canvas>
+                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}"></canvas>
                         </div>
                     </div>
                 </div>
@@ -721,7 +725,7 @@ var metricas = {
             } else {
                 $(this).css("height", "auto");
                 $(this).append(`
-                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" width = "600" height = "250" ></canvas>
+                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}_${pPageData[index].filtro}" width = "600" height = "250" ></canvas>
                         `);
             }
             that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro);
