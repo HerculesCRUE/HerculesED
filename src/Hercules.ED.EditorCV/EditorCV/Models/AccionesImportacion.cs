@@ -62,11 +62,12 @@ namespace EditorCV.Models
             }
         }
 
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, List<string> listaId, Dictionary<string, string> dicOpciones)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
             multipartFormData.Add(new StringContent(pCVID), "pCVID");
+            multipartFormData.Add(new StringContent(filePreimport), "filePreimport");
             multipartFormData.Add(new ByteArrayContent(file), "file");
             if (listaId != null && listaId.Count > 0)
             {
