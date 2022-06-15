@@ -2145,7 +2145,7 @@ namespace Hercules.ED.GraphicEngine.Models
             Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
             List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
             TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/title";
+            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/order";
             triple.NewValue = pPageID + "|" + pGraphicID + "|" + pNewOrder;
             triple.OldValue = pPageID + "|" + pGraphicID + "|" + pOldOrder;
             listaTriplesModificacion.Add(triple);
@@ -2170,7 +2170,7 @@ namespace Hercules.ED.GraphicEngine.Models
             Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
             List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
             TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/title";
+            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/width";
             triple.NewValue = pPageID + "|" + pGraphicID + "|" + pNewWidth;
             triple.OldValue = pPageID + "|" + pGraphicID + "|" + pOldWidth;
             listaTriplesModificacion.Add(triple);
