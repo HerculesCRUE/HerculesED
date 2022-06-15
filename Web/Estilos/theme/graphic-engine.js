@@ -59,7 +59,9 @@ var metricas = {
         $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
-                    <li id="${listaData[i].idRecurso}" num="${i}">${listaData[i].titulo}</li>
+                    <li class="nav-item" id="${listaData[i].idRecurso}" num="${i}">
+                        <a class="nav-link ${i == 0 ? "active" : ""} uppercase">${listaData[i].titulo}</a>
+                    </li>
                 `);
             }
             that.createEmptyPagePersonalized(listaData[0].idRecurso.split('/')[listaData[0].idRecurso.split('/').length - 1]);
@@ -67,7 +69,7 @@ var metricas = {
             listaPaginas = listaData;
         });
     },
-    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100, pIdRecurso = null, pTitulo = null) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -79,7 +81,11 @@ var metricas = {
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
             if (!ctx) {
-                ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+                if(!pIdRecurso) {
+                    ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+                } else {
+                    ctx = document.getElementById(pIdRecurso);
+                }
             }
             // Controla si el objeto es de ChartJS o Cytoscape.
             var combo = $(ctx).parents("article").find("select");
@@ -101,13 +107,16 @@ var metricas = {
                     console.log(pIdGrafica);
                 }
                 //var combo = $(ctx).parents("article").find("select");
+                var titulo = data.title;
+                if (pTitulo) {
+                    titulo = pTitulo;
+                }
                 if (combo) {
                     combo.append(`
-                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.title}</options>
+                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
                 }
-
-                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(data.title);
+                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(titulo);
 
                 var arrayNodes = [];
                 var nodos = cy.nodes();
@@ -170,11 +179,16 @@ var metricas = {
                     });
 
             } else {
+                var titulo = data.options.plugins.title.text;
+                if (pTitulo) {
+                    titulo = pTitulo;
+                    data.options.plugins.title.text = pTitulo
+                }
                 if (combo) {
                     var option = $(combo).find("option[value='grafica_" + pIdPagina + "_" + pIdGrafica + "']");
                     if (option.length === 0) {
                         combo.append(`
-                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${data.options.plugins.title.text}</options>
+                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
                     }
                 }
@@ -192,7 +206,7 @@ var metricas = {
                 data.plugins = [plugin];
 
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
-                    that.drawChart(ctx, data, pIdGrafica, barSize);
+                    that.drawChart(ctx, data, pIdGrafica, barSize, titulo);
                 } else {
 
                     var myChart = new Chart(ctx, data);
@@ -312,14 +326,23 @@ var metricas = {
         });
     },
     clearPage: function () {
-        $('canvas').each(function () {
-            Chart.getChart(this)?.destroy();
-        });
-        $(window).unbind('resize');
-
-        $('#panFacetas').empty()
-        $('.resource-list-wrap').empty();
-        $('.borrarFiltros').click();
+        if (!$('div').hasClass('indicadoresPersonalizados')) {
+            $('canvas').each(function () {
+                Chart.getChart(this)?.destroy();
+            });
+            $(window).unbind('resize');
+    
+            $('#panFacetas').empty()
+            $('.resource-list-wrap').empty();
+            $('.borrarFiltros').click();
+        } else {
+            $('canvas').each(function () {
+                Chart.getChart(this)?.destroy();
+            });
+            $(window).unbind('resize');
+    
+            $('.resource-list-wrap').empty();
+        }
     },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -719,14 +742,14 @@ var metricas = {
                                 </li>
                             </ul>
                         </div>
-                        <div id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                        <div id="${pPageData[index].idRecurso}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
             } else if (!$(this).attr("tipografica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" style="position:relative; margin-top:15px ;width:100%">
                     <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
                         <div style="height: 00px;" class="chartAreaWrapper">
-                            <canvas width = "600" height = "250" id="grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}"></canvas>
+                            <canvas width = "600" height = "250" id="${pPageData[index].idRecurso}"></canvas>
                         </div>
                     </div>
                 </div>
@@ -734,10 +757,10 @@ var metricas = {
             } else {
                 $(this).css("height", "auto");
                 $(this).append(`
-                    <canvas id = "grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" width = "600" height = "250" ></canvas>
+                    <canvas id = "${pPageData[index].idRecurso}" width = "600" height = "250" ></canvas>
                         `);
             }
-            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro);
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
             index++;
         });
     },
@@ -756,7 +779,7 @@ var metricas = {
             });
         });
     },
-    drawChart: function (ctx, data, pIdGrafica = null, barSize = 100) {
+    drawChart: function (ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) {
         if (Chart.getChart(ctx) != null) {
             return;
         }
@@ -770,8 +793,12 @@ var metricas = {
         var scrollContainer = chartAreaWrapper.parentNode;
         var chartContainer = scrollContainer.parentNode;
         var horizontal = data.options.indexAxis == "y";
+        var titulo = data.options.plugins.title.text;
+        if (pTitulo) {
+            titulo = pTitulo;
+        }
         if (!horizontal) {
-            console.log(data.options.plugins.title.text);
+            console.log(titulo);
         }
         // En caso de que los datos de la gráfica se representen con porcentajes
 
@@ -874,7 +901,7 @@ var metricas = {
             });
             // Leyenda con titulo y contenedor para datasets.
             var legend = $(`<div id="chartLegend" style="text-align: center; position: absolute; top: 0px; background-color: white;">
-                <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${data.options.plugins.title.text}</h4>
+                <h4 id="legendTitle" style="margin: 10px; font-family: Calibri, sans-serif; font-size: 90%; font-weight: bold;">${titulo}</h4>
                 </div>`);
             $(chartContainer).append(legend);
             var dataSetLabels = $(`<div id="dataSetLabels" style="display: flex; flex-flow: row wrap; justify-content: center;"></div>`)
@@ -1649,11 +1676,19 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var numero = $(this).attr("num");
-                $(this).parents('ul').find('a.active').removeClass('active');
-                $(this).find('a').addClass('active');
-                metricas.clearPage();
-                metricas.createEmptyPage(listaPaginas[numero].id);
-                metricas.fillPage(listaPaginas[numero]);
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    $(this).parents('ul').find('a.active').removeClass('active');
+                    $(this).find('a').addClass('active');
+                    metricas.clearPage();
+                    metricas.createEmptyPage(listaPaginas[numero].id);
+                    metricas.fillPage(listaPaginas[numero]);
+                } else {
+                    $(this).parents('ul').find('a.active').removeClass('active');
+                    $(this).find('a').addClass('active');
+                    metricas.clearPage();
+                    metricas.createEmptyPagePersonalized(listaPaginas[numero].idRecurso.split('/')[listaPaginas[numero].idRecurso.split('/').length - 1]);
+                    metricas.fillPagePersonalized(listaPaginas[numero]);
+                }
             });
 
         plegarSubFacetas.init();

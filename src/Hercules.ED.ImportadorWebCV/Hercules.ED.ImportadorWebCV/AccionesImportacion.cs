@@ -15,18 +15,25 @@ namespace Hercules.ED.ImportadorWebCV
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
 
-        public void ImportacionTriples(SincroDatos sincroDatos, string pCVID, List<string> listaId, List<string> listaOpciones)
+        public void ImportacionTriples(SincroDatos sincroDatos, string pCVID,string fileData, List<string> listaId, List<string> listaOpciones)
         {
             List<Subseccion> listadoSubsecciones = new List<Subseccion>();
             Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
 
             string idOpcion;
             string valueOpcion;
-            foreach (string opcion in listaOpciones)
+            if (listaOpciones != null && listaOpciones.Count > 0)
             {
-                idOpcion = opcion.Split("|||").First();
-                valueOpcion = opcion.Split("|||").Last();
-                dicOpciones.Add(idOpcion, valueOpcion);
+                foreach (string opcion in listaOpciones)
+                {
+                    if (opcion == null)
+                    {
+                        continue;
+                    }
+                    idOpcion = opcion.Split("|||").First();
+                    valueOpcion = opcion.Split("|||").Last();
+                    dicOpciones.Add(idOpcion, valueOpcion);
+                }
             }
 
             foreach (Subseccion subseccion in sincroDatos.preimport.secciones)
@@ -47,6 +54,9 @@ namespace Hercules.ED.ImportadorWebCV
             {
                 foreach (SubseccionItem subseccionItem in sub.subsecciones)
                 {
+                    string idBBDD = subseccionItem.idBBDD;
+                    bool isBlocked = subseccionItem.isBlocked;
+
                     if (!listaId.Contains(subseccionItem.guid))
                     {
                         continue;
@@ -58,6 +68,7 @@ namespace Hercules.ED.ImportadorWebCV
                         opcion = dicOpciones[subseccionItem.guid];
                     }
 
+                    //Compruebo el tipo de opcion para tratar
                     switch (opcion)
                     {
                         //Fusionar
@@ -66,10 +77,19 @@ namespace Hercules.ED.ImportadorWebCV
 
                         //Sobrescribir
                         case "so":
+                            if (isBlocked)
+                            {
+                                break;
+                            }
+                            else
+                            {
+
+                            }
                             break;
 
                         //Duplicar
                         case "du":
+
                             break;
 
                         default:
@@ -77,7 +97,6 @@ namespace Hercules.ED.ImportadorWebCV
                     }
 
 
-                    //Compruebo el tipo de opcion para tratar
                     //añado en triplestoinclude/triplestomodify/triplestodelete las propiedades 
                     //inserto/modifico el recurso                        
 

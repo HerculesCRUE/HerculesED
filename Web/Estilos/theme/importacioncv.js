@@ -3,6 +3,7 @@ var urlImportacionCV = "https://localhost:5002/ImportadoCV";
 //var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
 var selectorConflictoNoBloqueado = '';
 var selectorConflictoBloqueado = '';
+var selectorCamposTexto = '';
 
 
 var importarCVN = {
@@ -23,6 +24,9 @@ var importarCVN = {
 											<option value="fu">${GetText('CV_FUSIONAR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
+		selectorCamposTexto = `<select hidden name="itemConflict">
+									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
+								</select>`;
 
         return;        
     },
@@ -214,8 +218,9 @@ function printCientificProduction(id, data){
 											<div class="wrap">
 												<div class="middle-wrap">
 													<div class="title-wrap">
-														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>
-														<span class="material-icons arrow">keyboard_arrow_down</span>
+														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
+														+selectorCamposTexto+
+														`<span class="material-icons arrow">keyboard_arrow_down</span>
 													</div>
 													<div class="content-wrap">
 														<div class="description-wrap">
@@ -300,7 +305,7 @@ function printFreeText(id, data){
 										<div class="title-wrap">
 											<h2 class="resource-title">
 												<a href="#" data-id="${id}" internal-id="">${secciones[seccion].title}</a>
-											</h2>
+											</h2>`+selectorCamposTexto+`
 											<!--span class="material-icons arrow">keyboard_arrow_down</span-->
 										</div>	
 										<div class="content-wrap">
@@ -418,8 +423,9 @@ edicionCV.printPersonalData=function(id, data) {
 														<div class="wrap">
 															<div class="middle-wrap">
 																<div class="title-wrap">
-																	<h2 class="resource-title">Datos de identificación</h2>
-																</div>
+																	<h2 class="resource-title">Datos de identificación</h2>`
+																	+selectorCamposTexto+
+																`</div>
 																<div class="content-wrap">
 																	<div class="description-wrap">
 																		<p>${nombre}</p>
