@@ -1873,7 +1873,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Orden de la gráfica
             int orden = 0;
-            List<DataGraphicUser> listaGraficas = GetGraficasUserByPageId(pIdPaginaGrafica);
+            List<DataGraphicUser> listaGraficas = GetGraficasUserByPageId(idRecursoPagina);
             foreach (DataGraphicUser item in listaGraficas)
             {
                 if (item.orden > orden)
