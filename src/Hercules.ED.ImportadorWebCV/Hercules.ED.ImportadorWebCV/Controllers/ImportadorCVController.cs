@@ -112,7 +112,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
             {
                 SincroDatos sincroDatos = new SincroDatos(_Configuracion, pCVID, fileData);
 
-                AccionesImportacion accionesImportacion = new AccionesImportacion();
+                AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion,pCVID,fileData);
                 accionesImportacion.ImportacionTriples(sincroDatos, pCVID, fileData, listaId, listaOpciones);
 
                 return Ok();
