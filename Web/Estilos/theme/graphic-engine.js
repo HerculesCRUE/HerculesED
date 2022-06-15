@@ -81,7 +81,7 @@ var metricas = {
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
             if (!ctx) {
-                if(!pIdRecurso) {
+                if (!pIdRecurso) {
                     ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
                 } else {
                     ctx = document.getElementById(pIdRecurso);
@@ -205,7 +205,7 @@ var metricas = {
                 };
                 data.plugins = [plugin];
 
-                if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
+                if (pIdGrafica.indexOf("circular") == -1) { //si no es circular //TODO QUITAR
                     that.drawChart(ctx, data, pIdGrafica, barSize, titulo);
                 } else {
 
@@ -331,7 +331,7 @@ var metricas = {
                 Chart.getChart(this)?.destroy();
             });
             $(window).unbind('resize');
-    
+
             $('#panFacetas').empty()
             $('.resource-list-wrap').empty();
             $('.borrarFiltros').click();
@@ -340,7 +340,7 @@ var metricas = {
                 Chart.getChart(this)?.destroy();
             });
             $(window).unbind('resize');
-    
+
             $('.resource-list-wrap').empty();
         }
     },
@@ -430,7 +430,6 @@ var metricas = {
                 tipoGrafica = "vertical";
             }
 
-            console.log(item);
             item.forEach(function (grafica, index, array) {
 
                 tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
@@ -519,12 +518,11 @@ var metricas = {
             gruposDeIDs.forEach(function (item, index, array) {
                 var graficasGrupo;
                 var tmp = '';
-
                 item.forEach(function (grafica, index, array) {
                     if (!grafica.filtro) {
                         grafica.filtro = "";
                     }
-                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}' idrecurso='${grafica.idRecurso}'></div>`;
+                    tmp += `<div style="display:${index === 0 ? "flex" : "none"}; margin-top:20px; flex-direction:column;height:100%;width:100%" class="${index == 0 ? "show" : "hide"} grafica" filtro="${grafica.filtro}" idgrafica='${grafica.idGrafica}' idpagina='${grafica.idPagina}' "idrecurso='${grafica.idRecurso}'></div>`;
                 });
                 graficasGrupo = tmp;
 
@@ -729,7 +727,7 @@ var metricas = {
         // Recorremos el div de las gráficas.
         var index = 0;
         $('#page_' + idPagina + ' .grafica').each(function () {
-            if ($(this).attr("tipografica").includes("nodes")) {
+            if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
                         <p id="titulo_grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
                         <div class="graph-controls" style="position: absolute; top: 24px; left: 20px; z-index: 200;">
@@ -744,7 +742,7 @@ var metricas = {
                         </div>
                         <div id="${pPageData[index].idRecurso}" style="width: 100%; height: 500px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
                     `);
-            } else if (!$(this).attr("tipografica").includes("circular")) {
+            } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" style="position:relative; margin-top:15px ;width:100%">
                     <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
@@ -1569,6 +1567,7 @@ var metricas = {
 
                 // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                var idgrafica = (canvas).parents('div.grafica').attr("tipografica") || (canvas).parents('div.grafica').attr("idgrafica");
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
@@ -1623,7 +1622,7 @@ var metricas = {
                         chartWrapper = parent.find('.chartAreaWrapper');
                         chartWrapper.css({ height: '100%' });
                         chartWrapper.css({ width: parent.parent().height() });
-                        chartWrapper.parent().css({display: 'flex', flexDirection: 'column', alignItems: 'center'});
+                        chartWrapper.parent().css({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
                     }
 
                     parent.find('div.chartAreaWrapper').append(ctx);
