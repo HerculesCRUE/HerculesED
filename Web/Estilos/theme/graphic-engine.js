@@ -780,7 +780,11 @@ var metricas = {
                     <canvas id = "${pPageData[index].idRecurso}" width = "600" height = "250" ></canvas>
                         `);
             }
-            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
+            var idaux = pPageData[index].idGrafica;
+            if (idaux.includes('-')) {
+                idaux = idaux.split('-')[idaux.split('-').length - 1]
+            }
+            that.getGrafica(pPageData[index].idPagina, idaux, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
             index++;
         });
     },
@@ -959,20 +963,20 @@ var metricas = {
                 if (horizontal) {
                     $(scrollContainer).animate({ scrollTop: $(chartAreaWrapper).height() - $(scrollContainer).height() }, 5000);
                     $(scrollContainer).mousedown((e) => {//evento que se dispara al hacer click en el scroll
-                        if(scrollContainer.clientWidth <= e.offsetX){
+                        if (scrollContainer.clientWidth <= e.offsetX) {
                             $(scrollContainer).stop();//y detiene la animacion 
                         }
                     });
                 } else {
                     $(scrollContainer).animate({ scrollLeft: $(chartAreaWrapper).width() - $(scrollContainer).width() }, 5000);
-                    
-                    $(scrollContainer).mousedown((e) => { 
-                        if(scrollContainer.clientHeight <= e.offsetY){
-                            $(scrollContainer).stop(); 
+
+                    $(scrollContainer).mousedown((e) => {
+                        if (scrollContainer.clientHeight <= e.offsetY) {
+                            $(scrollContainer).stop();
                         }
                     });
                 }
-                
+
 
             }
 
@@ -1510,7 +1514,7 @@ var metricas = {
                     location.reload();
                 });
             });
-            
+
         $('a.eliminarpg')
             .unbind()
             .click(function (e) {
@@ -1817,7 +1821,11 @@ var metricas = {
                                 tituloActual = data.titulo;
                             }
                         });
-                        that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, tituloActual)
+                        var idaux = pIdGrafica;
+                        if (idaux.includes('-')) {
+                            idaux = idaux.split('-')[idaux.split('-').length - 1]
+                        }
+                        that.getGrafica(idPagina, idaux, filtro, ctx[0], 50, null, tituloActual)
                     });
                 }
             });
