@@ -155,7 +155,7 @@ namespace EditorCV.Models
             UpdateMultilangProperties(propiedadesActuales, propiedadesNuevas, entityCV, entityDestino);
 
             //Si la entidaad no está referenciada desde ningún CV se elimina también la entidad
-            if (mResourceApi.VirtuosoQuery("select ?s", "where{?s ?p <" + entityDestino + ">}", "curriculumvitae").results.bindings.Count == 0)
+            if (mResourceApi.VirtuosoQuery("select ?cv", @$"where{{?cv a <http://w3id.org/roh/CV>. ?cv ?p1 ?lv1.?lv1 ?p2 ?lv2. ?lv2 ?p3 <{ entityDestino}>}}", "curriculumvitae").results.bindings.Count == 0)
             {
                 try
                 {
