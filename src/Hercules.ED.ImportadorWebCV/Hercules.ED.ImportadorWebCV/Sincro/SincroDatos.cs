@@ -116,12 +116,12 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Datos de identificacion y contacto.
         /// Con el codigo identificativo 000.000.000.000
         /// </summary>
-        public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar)
+        public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar, listadoIdBBDD)));
 
             return listadoSecciones;
         }
@@ -249,12 +249,12 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         /// <param name="preimportar"></param>
         /// <returns></returns>
-        public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar)
+        public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             TextoLibre textoLibre = new TextoLibre(cvn, cvID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"), preimportar, listadoIdBBDD)));
 
             return listadoSecciones;
         }
