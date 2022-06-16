@@ -82,7 +82,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Indicadores generales de calidad de la producción científica".
         /// Con el codigo identificativo 060.010.060.010
         /// </summary>
-        public List<SubseccionItem> SincroIndicadoresGenerales(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroIndicadoresGenerales(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -113,6 +113,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Actualizamos la entidad
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
+                {
+                    listadoIdBBDD.RemoveAt(0);
+                }
                 return null;
             }
         }

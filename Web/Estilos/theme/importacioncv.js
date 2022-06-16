@@ -1,5 +1,3 @@
-//TODO
-//var urlImportacionCV = "https://localhost:5002/ImportadoCV";
 var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
 var selectorConflictoNoBloqueado = '';
 var selectorConflictoBloqueado = '';
@@ -131,7 +129,7 @@ var importarCVN = {
 		return;
     },	
 	importarCV: function(listaId, listaOpcionSeleccionados) {
-		MostrarUpdateProgress();
+		MostrarUpdateProgressTime(0);
 		var that = this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
@@ -306,9 +304,8 @@ function printFreeText(id, data){
 								<div class="wrap">
 									<div class="middle-wrap">
 										<div class="title-wrap">
-											<h2 class="resource-title">
-												<a href="#" data-id="${id}" internal-id="">${secciones[seccion].title}</a>
-											</h2>`+selectorCamposTexto+`
+											<h2 class="resource-title">${secciones[seccion].title}</h2>`
+											+selectorCamposTexto+`
 											<!--span class="material-icons arrow">keyboard_arrow_down</span-->
 										</div>	
 										<div class="content-wrap">
