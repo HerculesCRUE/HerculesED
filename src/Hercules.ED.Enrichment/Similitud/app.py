@@ -7,6 +7,10 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields, ValidationError
 
+import similarity
+import ro_storage_memory
+import ro_cache_memory
+
 import logging
 import json
 import pdb
@@ -48,6 +52,12 @@ class SimilarityQuerySchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type_target = fields.String(required=True, description="Type of the similar research objects to return: 'research_paper', 'code_project', 'protocol'")
 
+
+# Service-level object instances
+
+db = ro_storage_memory.MemoryROStorage()
+cache = ro_cache_memory.MemoryROCache()
+
     
 # Endpoint classes
     
@@ -60,6 +70,10 @@ class SimilarityAddAPI(MethodResource, Resource):
     #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def post(self, **kwargs):
         logger.debug(kwargs)
+        ro = similarity.RO(kwargs['ro_id'])
+        similarity.add_ro(ro, db, cache)
+        logger.debug("RO added")
+        
 
 class SimilarityQueryAPI(MethodResource, Resource):
     
@@ -70,6 +84,8 @@ class SimilarityQueryAPI(MethodResource, Resource):
     #@marshal_with(SimilarityQueryResponseSchema, description="")  # marshalling with marshmallow
     def get(self, **kwargs):
         logger.debug(kwargs)
+        ranking = similarity.get_ro_ranking(kwargs['ro_id'], kwargs['ro_type_target'], db)
+        logger.debug(f"Similar ROs: {ranking}")
 
 
 # Declare endpoints and documentation for the API
