@@ -780,11 +780,8 @@ var metricas = {
                     <canvas id = "${pPageData[index].idRecurso}" width = "600" height = "250" ></canvas>
                         `);
             }
-            var idaux = pPageData[index].idGrafica;
-            if (idaux.includes('-')) {
-                idaux = idaux.split('-')[idaux.split('-').length - 1]
-            }
-            that.getGrafica(pPageData[index].idPagina, idaux, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
+
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
             index++;
         });
     },
@@ -1820,11 +1817,8 @@ var metricas = {
                                 tituloActual = data.titulo;
                             }
                         });
-                        var idaux = pIdGrafica;
-                        if (idaux.includes('-')) {
-                            idaux = idaux.split('-')[idaux.split('-').length - 1]
-                        }
-                        that.getGrafica(idPagina, idaux, filtro, ctx[0], 50, null, tituloActual)
+
+                        that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, tituloActual)
                     });
                 }
             });
