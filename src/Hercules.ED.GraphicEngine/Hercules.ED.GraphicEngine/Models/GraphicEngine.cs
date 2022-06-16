@@ -25,7 +25,7 @@ namespace Hercules.ED.GraphicEngine.Models
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
         private static List<ConfigModel> mTabTemplates;
-        private const int NUM_HILOS = 5;
+        private const int NUM_HILOS = 1;
 
         #region --- Páginas
         /// <summary>
@@ -2227,8 +2227,11 @@ namespace Hercules.ED.GraphicEngine.Models
             List<string> listaAux = new List<string>();
             foreach (string filtro in pListaFiltros)
             {
-                string[] array = filtro.Split("&", StringSplitOptions.RemoveEmptyEntries);
-                listaAux.AddRange(array.ToList());
+                // --- ÑAPA
+                string aux = filtro.Replace(" & ", "|||");
+                string[] array = aux.Split("&", StringSplitOptions.RemoveEmptyEntries);
+                List<string> lista = array.Select(x => x.Replace("|||", " & ")).ToList();
+                listaAux.AddRange(lista);
             }
 
             List<string> filtrosQuery = new List<string>();
