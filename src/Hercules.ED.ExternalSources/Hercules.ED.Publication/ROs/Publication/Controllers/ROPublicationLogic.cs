@@ -34,9 +34,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
         // Configuración.
         readonly ConfigService _Configuracion;
 
-        // TODO: Sacarlo al archivo de configuración.
-        public static string URL_ELHUYAR = "http://herculesapi.elhuyar.eus/";
-
         public ROPublicationLogic(ConfigService pConfig)
         {
             _Configuracion = pConfig;
@@ -347,8 +344,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
+            Log.Information($@"[WoS] Publicaciones procesadas");
 
             int contadoPubScopus = 1;
             try
@@ -422,9 +420,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             if (!string.IsNullOrEmpty(jsonData))
                             {
-                                Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                                Log.Information("[Scopus] Obteniendo topics enriquecidos...");
                                 Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                                Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                                Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
                                 Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                                 if (listaTopics != null && listaTopics.Any())
@@ -504,8 +502,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
+            Log.Information($@"[Scopus] Publicaciones procesadas");
 
             int contadorPubOpenAire = 1;
             try
@@ -577,9 +576,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             if (!string.IsNullOrEmpty(jsonData))
                             {
-                                Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                                Log.Information("[OpenAire] Obteniendo topics enriquecidos...");
                                 Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                                Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                                Log.Information("[OpenAire] Obteniendo freeTextKeywords enriquecidos...");
                                 Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                                 if (listaTopics != null && listaTopics.Any())
@@ -641,8 +640,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
+            Log.Information($@"[OpenAire] Publicaciones procesadas");
 
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
@@ -812,7 +812,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 try
                 {
-                    response = client.PostAsync(URL_ELHUYAR + uri, contentData).Result;
+                    response = client.PostAsync(_Configuracion.GetUrlEnriquecimiento() + uri, contentData).Result;
                     break;
                 }
                 catch
@@ -3044,7 +3044,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
         }
 
-        public static Dictionary<string, string> getDescriptores(string pDataEnriquecimiento, string pTipo)
+        public Dictionary<string, string> getDescriptores(string pDataEnriquecimiento, string pTipo)
         {
             // Petición.
             HttpResponseMessage response = null;
@@ -3057,7 +3057,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 try
                 {
-                    response = client.PostAsync($@"{URL_ELHUYAR}/{pTipo}", contentData).Result;
+                    response = client.PostAsync($@"{_Configuracion.GetUrlEnriquecimiento()}/{pTipo}", contentData).Result;
                     break;
                 }
                 catch

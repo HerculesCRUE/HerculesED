@@ -204,7 +204,9 @@ function printCientificProduction(id, data){
 								<span class="texto">${data.items[seccion].title}</span>
 							</a>
 						</p>
-					</div>
+					</div>`;
+					if(data.items[seccion].properties[0].values.length != 0){
+					htmlSection += `
 					<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 						<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 							<div class="panel-body">
@@ -212,7 +214,7 @@ function printCientificProduction(id, data){
 									<div class="resource-list-wrap">
 										<article class="resource success" >
 											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${data.items[seccion].properties[0].values[0]}_${contador}">
+												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${id2}_${contador}">
 												<label class="custom-control-label" for="check_resource_${id2}"></label>
 											</div>
 											<div class="wrap">
@@ -236,7 +238,9 @@ function printCientificProduction(id, data){
 								</div>
 							</div>
 						</div>
-					</div>
+					</div>`;
+					}
+		htmlSection += `
 				</div>
 			</div>`;
 			contador++;

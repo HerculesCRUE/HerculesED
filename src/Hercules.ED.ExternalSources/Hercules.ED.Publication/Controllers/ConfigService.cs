@@ -19,7 +19,8 @@ namespace PublicationAPI.Controllers
         private string urlCrossRef { get; set; }
         private string urlOpenCitations { get; set; }
         private string urlSemanticScholar { get; set; }
-        private string urlZenodo { get; set; }        
+        private string urlZenodo { get; set; } 
+        private string urlEnriquecimiento { get; set; }
         private string rutaJsonSalida { get; set; }
 
         /// <summary>
@@ -28,6 +29,31 @@ namespace PublicationAPI.Controllers
         public ConfigService()
         {
             configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
+        }
+
+        /// <summary>
+        /// Obtiene la URL del API de enriquecimiento que ha sido configurada.
+        /// </summary>
+        /// <returns>URI del API de enriquecimiento.</returns>
+        public string GetUrlEnriquecimiento()
+        {
+            if (string.IsNullOrEmpty(urlEnriquecimiento))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlEnriquecimiento"))
+                {
+                    connectionString = environmentVariables["UrlEnriquecimiento"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["UrlEnriquecimiento"];
+                }
+
+                urlEnriquecimiento = connectionString;
+            }
+
+            return urlEnriquecimiento;
         }
 
         /// <summary>
