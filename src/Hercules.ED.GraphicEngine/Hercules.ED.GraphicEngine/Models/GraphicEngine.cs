@@ -178,17 +178,13 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
-            if (pIdGrafica == "12")
-            {
-                string s = "a";
-            }
 
             // Obtiene los filtros relacionados con las fechas.
             List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
 
             if (configModel != null)
             {
-                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
+                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica.Split('-').LastOrDefault());
                 return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
 
