@@ -346,6 +346,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 Log.Error(e.Message);
             }
+            Log.Information($@"[WoS] Publicaciones procesadas");
 
             int contadoPubScopus = 1;
             try
@@ -503,6 +504,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 Log.Error(e.Message);
             }
+            Log.Information($@"[Scopus] Publicaciones procesadas");
 
             int contadorPubOpenAire = 1;
             try
@@ -640,6 +642,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 Log.Error(e.Message);
             }
+            Log.Information($@"[OpenAire] Publicaciones procesadas");
 
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
