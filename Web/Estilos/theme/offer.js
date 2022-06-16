@@ -129,8 +129,12 @@ class StepsOffer {
 		this.editarOfertaText = this.crearOferta.data("editaroferta")
 		this.AnadirOtroPerfilText = this.crearOferta.data("addotherprofile")
 		this.AnadirNuevoPerfilText = this.crearOferta.data("addnewprofile")
-		this.areasTematicasText = this.crearOferta.data("areastematicastext")
+		this.lineasInvestigacionText = this.crearOferta.data("lineasinvestigaciontext")
 		this.descriptoresEspecificosText = this.crearOferta.data("descriptoresespecificostext")
+		this.txtProyectos = this.crearOferta.data("PROYECTOS")
+		this.txtPublicaciones = this.crearOferta.data("PUBLICACIONES")
+		this.txtPii = this.crearOferta.data("PII")
+		this.sinEspcificarText = this.crearOferta.data("sinespecificar")
 	}
 
 	/**
@@ -1163,20 +1167,20 @@ class StepsOffer {
 
 
 			// Pintar Estado de madurez
-			let htmlMaturesStates = ""
+			let htmlMaturesStates = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
 			for (const[i, el] of Object.entries(maturesStates)) {
 				htmlMaturesStates += `<option value="${i}">${el}</option>`
 			}
-			this.ddlMadurez.append(htmlMaturesStates)
+			this.ddlMadurez.html(htmlMaturesStates)
 			this.ddlMadurez.select2();
 
 
 			// Pintar categoría de encuadre
-			let htmlFramingsectors = ""
+			let htmlFramingsectors = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
 			for (const[i, el] of Object.entries(framingsectors)) {
 				htmlFramingsectors += `<option value="${i}">${el}</option>`
 			}
-			this.ddlEncuadre.append(htmlFramingsectors)
+			this.ddlEncuadre.html(htmlFramingsectors)
 			this.ddlEncuadre.select2();
 
 			OcultarUpdateProgress();
@@ -2441,7 +2445,7 @@ var comportamientoProyectosOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListProyectos", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init($('#PROYECTOS').val(), "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(ofertaObj.txtProyectos, "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		//Enganchamos comportamiento grafica seleccionados
@@ -2485,7 +2489,7 @@ var comportamientoPublicacionesOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init($('#PUBLICACIONES').val(), "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(ofertaObj.txtPublicaciones, "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		return;
@@ -2524,7 +2528,7 @@ var comportamientoPIIOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init($('#PUBLICACIONES').val(), "#ofertaListPII", "searcherPIIPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(ofertaObj.txtPii, "#ofertaListPII", "searcherPIIPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		return;
