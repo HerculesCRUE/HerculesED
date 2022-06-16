@@ -1,5 +1,3 @@
-//TODO
-//var urlImportacionCV = "https://localhost:5002/ImportadoCV";
 var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
 var selectorConflictoNoBloqueado = '';
 var selectorConflictoBloqueado = '';
