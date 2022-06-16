@@ -71,7 +71,7 @@ var importarCVN = {
     cargarCV: function() {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
-		MostrarUpdateProgress(0);
+		MostrarUpdateProgressTime(0);
 		var that=this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
@@ -87,7 +87,6 @@ var importarCVN = {
             contentType: false,
 			success: function ( response ) {
 				for(var i=0;i<7;i++){
-					MostrarUpdateProgress(0);
 					var id = 'x' + RandomGuid();
 					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
 											<div class="panel">
