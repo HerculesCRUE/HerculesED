@@ -333,25 +333,28 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
                 {
-                    idBBDD = listadoIdBBDD.ElementAt(i).Split("_").First();
+                    idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").First();
                     //Duplicar
-                    if (listadoIdBBDD.ElementAt(i).Split("_").Last().Equals("du"))
+                    if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("du"))
                     {
                         //Añadir
                         entityXML.propTitle = propTitle;
                         entityXML.ontology = graph;
                         entityXML.rdfType = rdfType;
                         idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                        listadoIdBBDD.RemoveAt(i);
                     }
                     //Fusionar
-                    else if (listadoIdBBDD.ElementAt(i).Split("_").Last().Equals("fu"))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu"))
                     {
                         bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
+                        listadoIdBBDD.RemoveAt(i);
                     }
                     //Sobrescribir
-                    else if(listadoIdBBDD.ElementAt(i).Split("_").Last().Equals("so"))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so"))
                     {
-                    
+                        bool res = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
+                        listadoIdBBDD.RemoveAt(i);
                     }
                 }
                 else
@@ -864,6 +867,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             return false;
         }
 
+        /// <summary>
+        /// Edita las propiedades si la entidad en BBDD no esta validada ni bloqueada.
+        /// </summary>
+        /// <param name="entidadBBDD"></param>
+        /// <param name="graph"></param>
+        /// <param name="propTitle"></param>
+        /// <param name="entityXML"></param>
+        /// <returns>True si no esta bloqueado</returns>
         protected bool ModificarExistentes(string entidadBBDD, string graph, string propTitle, Entity entityXML)
         {
             //Entidad a modificar
@@ -878,6 +889,27 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (hasChange)
                 {
                     ComplexOntologyResource resource = ToGnossApiResource(entityBBDD);
+                    mResourceApi.ModifyComplexOntologyResource(resource, false, true);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        protected bool SobrescribirExistentes(string entidadBBDD, string graph, string propTitle, Entity entityXML)
+        {
+            //Entidad a modificar
+            Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
+            //Modificamos si no está bloqueada
+            //TODO meter propiedad de validación para documentos
+            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
+                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            {
+                entityBBDD.propTitle = propTitle;
+                bool hasChange = OverwriteLoadedEntity(entityBBDD, entityXML);
+                if (hasChange)
+                {
+                    ComplexOntologyResource resource = ToGnossApiResource(entityXML);
                     mResourceApi.ModifyComplexOntologyResource(resource, false, true);
                 }
                 return true;
@@ -995,6 +1027,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
+        protected bool OverwriteLoadedEntity(Entity pLoadedEntity, Entity pUpdatedEntity)
+        {
+            pUpdatedEntity.autores = pLoadedEntity.autores;
+            pUpdatedEntity.auxEntityRemove = pLoadedEntity.auxEntityRemove;
+            pUpdatedEntity.id = pLoadedEntity.id;
+            pUpdatedEntity.ontology = pLoadedEntity.ontology;
+            pUpdatedEntity.propDescription = pLoadedEntity.propDescription;
+            pUpdatedEntity.propTitle = pLoadedEntity.propTitle;
+            pUpdatedEntity.rdfType = pLoadedEntity.rdfType;
+
+            return true;
+        }
 
         /// <summary>
         /// Fusiona dos entidades
