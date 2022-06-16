@@ -23,7 +23,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// subapartado "Texto libre"
         /// Con código identificativo "070.010.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroTextoLibre(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroTextoLibre(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -53,6 +53,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             else
             {
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
+                {
+                    listadoIdBBDD.RemoveAt(0);
+                }
                 return null;
             }
         }
