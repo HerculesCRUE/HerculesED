@@ -74,6 +74,8 @@ class StepsOffer {
 		// STEP 3
 		this.ddlMadurez = this.crearOfertaStep3.find("#ddlMadurez2")
 		this.ddlEncuadre = this.crearOfertaStep3.find("#ddlEncuadre2")
+		this.maturesStates = undefined
+		this.framingsectors = undefined
 		
 
 		// STEP 5
@@ -1157,31 +1159,39 @@ class StepsOffer {
 		MostrarUpdateProgress();
 		Promise.all([this.loadLineResearchs(), this.loadMatureStates(), this.loadFramingSectors()]).then(values => {
 
+			// Líneas de investigación
 			let lineResearchs = values[0]
-			let maturesStates = values[1]
-			let framingsectors = values[2]
 
 			// Carga las taxonomías
 			_self.fillDataTaxonomies(lineResearchs)
 			_self.divTesListaCaths = lineResearchs
 
 
-			// Pintar Estado de madurez
-			let htmlMaturesStates = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
-			for (const[i, el] of Object.entries(maturesStates)) {
-				htmlMaturesStates += `<option value="${i}">${el}</option>`
-			}
-			this.ddlMadurez.html(htmlMaturesStates)
-			this.ddlMadurez.select2();
+			// Estado de madurez y sencores de encuadre
+			// Comprueba si existen y los carga si no se han rellenado ya
+			if (!_self.maturesStates || !_self.framingsectors) {
+
+				_self.maturesStates = values[1]
+				_self.framingsectors = values[2]
 
 
-			// Pintar categoría de encuadre
-			let htmlFramingsectors = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
-			for (const[i, el] of Object.entries(framingsectors)) {
-				htmlFramingsectors += `<option value="${i}">${el}</option>`
+				// Pintar Estado de madurez
+				let htmlMaturesStates = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
+				for (const[i, el] of Object.entries(_self.maturesStates)) {
+					htmlMaturesStates += `<option value="${i}">${el}</option>`
+				}
+				this.ddlMadurez.html(htmlMaturesStates)
+				this.ddlMadurez.select2();
+
+
+				// Pintar categoría de encuadre
+				let htmlFramingsectors = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
+				for (const[i, el] of Object.entries(_self.framingsectors)) {
+					htmlFramingsectors += `<option value="${i}">${el}</option>`
+				}
+				this.ddlEncuadre.html(htmlFramingsectors)
+				this.ddlEncuadre.select2();
 			}
-			this.ddlEncuadre.html(htmlFramingsectors)
-			this.ddlEncuadre.select2();
 
 			OcultarUpdateProgress();
 		})
