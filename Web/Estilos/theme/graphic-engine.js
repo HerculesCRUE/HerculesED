@@ -222,6 +222,7 @@ var metricas = {
                             }
                         }
                     }
+                    data.options.radius = "70%";
                     var myChart = new Chart(ctx, data);
                 }
             }
@@ -1732,7 +1733,24 @@ var metricas = {
                     filtro = (canvas).parents('div.grafica').attr("filtro");
                     idPagina = (canvas).parents('div.grafica').attr("idpagina");
                 }
-                that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, "Gráfica con zoom"); //obtenemos los datos y pintamos la grafica TODO título al hacer zoom
+                //obtenemos los datos y pintamos la grafica
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50);
+                } else {
+                    //Obtengo el título de la gráfica
+                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                    var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                    var arg = {};
+                    arg.pPageId = idPaginaActual;
+                    $.get(url, arg, function (listaData) {
+                        listaData.forEach(data => {
+                            if (data.idRecurso == idGraficaActual) {
+                                tituloActual = data.titulo;
+                            }
+                        });
+                        that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, tituloActual)
+                    });
+                }
             });
 
         $('.modal-backdrop')
