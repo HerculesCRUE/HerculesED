@@ -469,8 +469,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="pPropertyCV"></param>
         /// <param name="pRdfTypeCV"></param>
         protected void AniadirModificarPublicaciones(List<Entity> listadoAux, Dictionary<string, HashSet<string>> equivalencias, string propTitle,
-            string graph, string rdfType, string rdfTypePrefix,
-            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
+            string graph, string rdfType, string rdfTypePrefix, List<string> propiedadesItem, string RdfTypeTab, 
+            [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
         {
             //Diccionario para almacenar las notificaciones
             ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
