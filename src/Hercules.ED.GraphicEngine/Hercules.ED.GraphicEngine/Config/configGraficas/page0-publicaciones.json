@@ -1,9 +1,8 @@
 {
   "nombre": {
-    "es": "Publicaciones"
+    "es": "Página de EJEMPLO"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
-  "orden": 0,
   "identificador": "123",
   "graficas": [
     {
@@ -60,38 +59,92 @@
         ]
       }
     },
-    //{
-    //  "identificador": "2",
-    //  "nombre": {
-    //    "es": "Número de publicaciones por tipo de actividad científica"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "dc:type@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Publicaciones por tipo"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
+    {
+      "identificador": "1523",
+      "nombre": {
+        "es": "Número de publicaciones y citas por año"
+      },
+      "tipo": "Barras",
+      /*Representa que % del contenedor ocupara la grafica 12 corresponde 1/2 los valores aceptados son 11,12,13,14,16,23,34,38,58*/
+      "anchura": 11,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": true,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "top",
+            "nombreEje": {
+              "es": "Nº de publicaciones"
+            }
+          },
+          {
+            "xAxisID": "x2",
+            "posicion": "bottom",
+            "nombreEje": {
+              "es": "Nº de citas"
+            }
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Total de citas por año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "SUM",
+            "tipoDimension": "line",
+            "color": "#000000",
+            "xAxisID": "x2",
+            "orden": 1
+          },
+          {
+            "nombre": {
+              "es": "Total de publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 2
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "2",
+      "nombre": {
+        "es": "Número de publicaciones por tipo de actividad científica"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "dc:type@@@dc:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones por tipo"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
     {
       "identificador": "3",
       "nombre": {
@@ -152,7 +205,7 @@
         "es": "Número de publicaciones por grupo"
       },
       "tipo": "Barras",
-      "anchura": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
@@ -211,46 +264,46 @@
         ]
       }
     },
-    //{
-    //  "identificador": "11",
-    //  "nombre": {
-    //    "es": "Publicaciones por tipo de proyecto"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "roh:project@@@roh:projectType@@@dc:title",
-    //    "orderDesc": false,
-    //    "abreviar": true,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de publicaciones"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
+    {
+      "identificador": "11",
+      "nombre": {
+        "es": "Publicaciones por tipo de proyecto"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:project@@@roh:projectType@@@dc:title",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
     {
       "identificador": "12",
       "nombre": {
         "es": "Publicaciones por ámbito de proyecto"
       },
       "tipo": "Barras",
-      "anchura": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",

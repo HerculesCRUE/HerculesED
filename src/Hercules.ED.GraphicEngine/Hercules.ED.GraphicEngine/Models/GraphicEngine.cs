@@ -178,6 +178,10 @@ namespace Hercules.ED.GraphicEngine.Models
         {
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
+            if (pIdGrafica == "12")
+            {
+                string s = "a";
+            }
 
             // Obtiene los filtros relacionados con las fechas.
             List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
@@ -203,6 +207,8 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
+
+            
 
             switch (pGrafica.tipo)
             {
@@ -263,7 +269,7 @@ namespace Hercules.ED.GraphicEngine.Models
             }
 
             // Es fecha.
-            if (pListaDates != null && pListaDates.Any())
+            if (pListaDates != null && pListaDates.Any() && pListaDates.Contains(pGrafica.config.ejeX))
             {
                 grafica.isDate = true;
             }
@@ -661,7 +667,7 @@ namespace Hercules.ED.GraphicEngine.Models
             }
 
             // Es fecha.
-            if (pListaDates != null && pListaDates.Any())
+            if (pListaDates != null && pListaDates.Any() && pListaDates.Contains(pGrafica.config.ejeX))
             {
                 grafica.isDate = true;
             }
