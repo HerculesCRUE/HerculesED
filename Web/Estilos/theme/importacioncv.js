@@ -214,7 +214,7 @@ function printCientificProduction(id, data){
 									<div class="resource-list-wrap">
 										<article class="resource success" >
 											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${data.items[seccion].properties[0].values[0]}_${contador}">
+												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${id2}_${contador}">
 												<label class="custom-control-label" for="check_resource_${id2}"></label>
 											</div>
 											<div class="wrap">
