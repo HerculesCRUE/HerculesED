@@ -27,13 +27,13 @@ namespace ImportadorWebCV.Sincro.Secciones
         readonly ConfigService mConfiguracion;
 
 
-        public SeccionBase(cvnRootResultBean cvn, string cvID,ConfigService configuracion)
+        public SeccionBase(cvnRootResultBean cvn, string cvID, ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
             mConfiguracion = configuracion;
         }
-        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID,ConfigService configuracion)
+        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
@@ -322,29 +322,59 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private void AniadirModificar(List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
-            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
+            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] List<string> listadoIdBBDD)
         {
+            //TODO
             HashSet<string> itemsNuevosOModificados = new HashSet<string>();
             for (int i = 0; i < listadoAux.Count; i++)
             {
                 Entity entityXML = listadoAux[i];
-                string idXML = entidadesXML.Keys.ToList()[i];
                 string idBBDD = "";
-                if (string.IsNullOrEmpty(equivalencias[idXML]))
+
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
                 {
-                    //Añadir
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                    idBBDD = listadoIdBBDD.ElementAt(i).Split("_").First();
+                    //Duplicar
+                    if (listadoIdBBDD.ElementAt(i).Split("_").Last().Equals("du"))
+                    {
+                        //Añadir
+                        entityXML.propTitle = propTitle;
+                        entityXML.ontology = graph;
+                        entityXML.rdfType = rdfType;
+                        idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                    }
+                    //Fusionar
+                    else if (listadoIdBBDD.ElementAt(i).Split("_").Last().Equals("fu"))
+                    {
+                        bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
+                    }
+                    //Sobrescribir
+                    else if(listadoIdBBDD.ElementAt(i).Split("_").Last().Equals("so"))
+                    {
+                    
+                    }
                 }
                 else
                 {
-                    //Modificar
-                    ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
-                    //Añadimos la referencia a BBDD para usarla en caso de añadir elementos en el CV.
-                    idBBDD = equivalencias[idXML];
+                    string idXML = entidadesXML.Keys.ToList()[i];
+
+                    if (string.IsNullOrEmpty(equivalencias[idXML]))
+                    {
+                        //Añadir
+                        entityXML.propTitle = propTitle;
+                        entityXML.ontology = graph;
+                        entityXML.rdfType = rdfType;
+                        idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                    }
+                    else
+                    {
+                        //Modificar
+                        ModificarExistentes(equivalencias, idXML, graph, propTitle, entityXML);
+                        //Añadimos la referencia a BBDD para usarla en caso de añadir elementos en el CV.
+                        idBBDD = equivalencias[idXML];
+                    }
                 }
+
                 if (!string.IsNullOrEmpty(idBBDD))
                 {
                     itemsNuevosOModificados.Add(idBBDD);
@@ -359,7 +389,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
             if (itemsNuevosOModificados.Count > 0)
             {
-                if (rdfType== "http://vivoweb.org/ontology/core#Project")
+                if (rdfType == "http://vivoweb.org/ontology/core#Project")
                 {
                     rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.project, itemsNuevosOModificados));
                 }
@@ -385,7 +415,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         protected List<SubseccionItem> CheckPreimportar(bool preimportar, List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
-            List<string> propiedadesItem, string RdfTypeTab, List<bool> listadoBloqueados,[Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] bool propertiesCV)
+            List<string> propiedadesItem, string RdfTypeTab, List<bool> listadoBloqueados,
+            [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] bool propertiesCV, [Optional] List<string> listadoIdBBDD)
         {
             if (preimportar)
             {
@@ -416,7 +447,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             else
             {
                 //4º Añadimos o modificamos las entidades
-                AniadirModificar(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, pPropertyCV, pRdfTypeCV);
+                AniadirModificar(listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, pPropertyCV, pRdfTypeCV, listadoIdBBDD);
                 return null;
             }
         }
@@ -816,6 +847,27 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             //Entidad a modificar
             Entity entityBBDD = GetLoadedEntity(equivalencias[idXML], graph);
+            //Modificamos si no está bloqueada
+            //TODO meter propiedad de validación para documentos
+            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
+                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            {
+                entityBBDD.propTitle = propTitle;
+                bool hasChange = MergeLoadedEntity(entityBBDD, entityXML);
+                if (hasChange)
+                {
+                    ComplexOntologyResource resource = ToGnossApiResource(entityBBDD);
+                    mResourceApi.ModifyComplexOntologyResource(resource, false, true);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        protected bool ModificarExistentes(string entidadBBDD, string graph, string propTitle, Entity entityXML)
+        {
+            //Entidad a modificar
+            Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
             if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()

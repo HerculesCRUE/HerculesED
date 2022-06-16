@@ -85,21 +85,21 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                 preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
 
-                string xml = "";
+                string xmlPreimporta = "";
                 XmlSerializer serializer = new XmlSerializer(typeof(Preimport));
                 using (var sww = new StringWriter())
                 {
                     using (XmlWriter writer = XmlWriter.Create(sww))
                     {
                         serializer.Serialize(writer, preimportar);
-                        xml = sww.ToString();
+                        xmlPreimporta = sww.ToString();
                     }
                 }
+                preimportar.cvn_preimportar = xmlPreimporta;
 
                 var ms = new MemoryStream();
                 File.CopyTo(ms);
                 byte[] filebytes = ms.ToArray();
-                //preimportar.cvn_xml = xml;
                 preimportar.cvn_xml = filebytes;
 
                 return Ok(preimportar);
@@ -111,7 +111,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         }
 
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                 }
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
-                accionesImportacion.ImportacionTriples(pCVID, listaId, listaOpciones);
+                accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones);
 
                 return Ok();
             }
