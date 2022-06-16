@@ -204,7 +204,9 @@ function printCientificProduction(id, data){
 								<span class="texto">${data.items[seccion].title}</span>
 							</a>
 						</p>
-					</div>
+					</div>`;
+					if(data.items[seccion].properties[0].values.length != 0){
+					htmlSection += `
 					<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 						<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 							<div class="panel-body">
@@ -236,7 +238,9 @@ function printCientificProduction(id, data){
 								</div>
 							</div>
 						</div>
-					</div>
+					</div>`;
+					}
+		htmlSection += `
 				</div>
 			</div>`;
 			contador++;
