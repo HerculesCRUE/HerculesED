@@ -12,11 +12,13 @@ namespace EditorCV.Models.PreimportModels
         /// </summary>
         public List<Subseccion> secciones { get; set; }
         public string cvn_xml { get; set; }
+        public string cvn_preimportar { get; set; }
 
-        public Preimport(List<Subseccion> subsecciones, string cvn_xml)
+        public Preimport(List<Subseccion> subsecciones, string cvn_xml, string cvn_preimportar)
         {
             this.secciones = subsecciones;
             this.cvn_xml = cvn_xml;
+            this.cvn_xml = cvn_preimportar;
         }
 
         public Preimport()

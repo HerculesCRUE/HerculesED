@@ -322,7 +322,7 @@
 								</li>
 							</ul>
 						</div>
-					</div>
+					</div>					
 					<div class="group-collapse cluster  hasCV"  style="display:none">
 						<a href="#cluster" data-toggle="collapse" aria-expanded="true">@Html.Translate("GESTION_CLUSTERS")</a>
 						<div id="cluster" class="collapse show">
@@ -338,6 +338,32 @@
 										string urlNuevoCluster=Comunidad.Url+"/"+Html.Translate("NUEVO_CLUSTER_URL");
 									}
 									<a href="@urlNuevoCluster">@Html.Translate("NUEVO_CLUSTER")</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="group-collapse indicadores-personales hasCV"  style="display:none">
+						<a href="#indicadores-personales" data-toggle="collapse" aria-expanded="true">@Html.Translate("INDICADORES")</a>
+						<div id="cluster" class="collapse show">
+							<ul class="pmd-sidebar-nav">
+								<li class="liInicio">
+									@{
+										string urlIndicadoresPersonales=Comunidad.Url+"/"+Html.Translate("INDICADORES_PERSONALES_URL");
+									}
+									<a href="@urlIndicadoresPersonales">@Html.Translate("MIS_INDICADORES")</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="group-collapse oferta-tecnologica hasCV"  style="display:none">
+						<a href="#oferta-tecnologica" data-toggle="collapse" aria-expanded="true">@Html.Translate("OFERTAS_TECNOLOGICAS")</a>
+						<div id="cluster" class="collapse show">
+							<ul class="pmd-sidebar-nav">
+								<li class="liInicio">
+									@{
+										string urlCrearOfertaTecnologica=Comunidad.Url+"/"+Html.Translate("NUEVA_OFERTA_TECNOLOGICA_URL");
+									}
+									<a href="@urlCrearOfertaTecnologica">@Html.Translate("NUEVA_OFERTA_TECNOLOGICA")</a>
 								</li>
 							</ul>
 						</div>

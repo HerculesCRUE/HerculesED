@@ -18,7 +18,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/TeachingExperience";
 
-        public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID,configuracion)
+        public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("030");
             listadoPremios = mCvn.GetListadoBloque("060.030.080");
@@ -29,7 +29,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Formación académica impartida".
         /// Con el codigo identificativo 030.010.000.000
         /// </summary>
-        public List<SubseccionItem> SincroFormacionAcademica(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroFormacionAcademica(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -43,36 +43,41 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/ImpartedAcademicTraining";
             string rdfTypePrefix = "RelatedImpartedAcademicTrainings";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetFormacionAcademica(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                ActividadDocenteSubclases.FormacionAcademica formacionAcademica = new ActividadDocenteSubclases.FormacionAcademica();
-                formacionAcademica.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaTitulacionUniversitariaNombre)?.values.FirstOrDefault();
-                formacionAcademica.nombreAsignatura = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaNombreAsignatura)?.values.FirstOrDefault();
-                formacionAcademica.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaFechaInicio)?.values.FirstOrDefault();
-                formacionAcademica.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaEntidadRealizacionNombre)?.values.FirstOrDefault();
-                formacionAcademica.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(formacionAcademica.ID, formacionAcademica);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    ActividadDocenteSubclases.FormacionAcademica formacionAcademica = new ActividadDocenteSubclases.FormacionAcademica();
+                    formacionAcademica.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaTitulacionUniversitariaNombre)?.values.FirstOrDefault();
+                    formacionAcademica.nombreAsignatura = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaNombreAsignatura)?.values.FirstOrDefault();
+                    formacionAcademica.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaFechaInicio)?.values.FirstOrDefault();
+                    formacionAcademica.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaEntidadRealizacionNombre)?.values.FirstOrDefault();
+                    formacionAcademica.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(formacionAcademica.ID, formacionAcademica);
+                }
 
-            //2º Obtenemos las entidades de la BBDD.
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = ActividadDocenteSubclases.FormacionAcademica.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD.
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ActividadDocenteSubclases.FormacionAcademica.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x=>x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+              
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -80,7 +85,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Dirección de tesis doctorales y/o proyectos fin de carrera".
         /// Con el codigo identificativo 030.040.000.000
         /// </summary>
-        public List<SubseccionItem> SincroDireccionTesis(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroDireccionTesis(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -94,35 +99,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/ThesisSupervision";
             string rdfTypePrefix = "RelatedThesisSupervisions";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetDireccionTesis(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                DireccionTesis direccionTesis = new DireccionTesis();
-                direccionTesis.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisTituloTrabajo)?.values.FirstOrDefault();
-                direccionTesis.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisFechaDefensa)?.values.FirstOrDefault();
-                direccionTesis.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisEntidadRealizacionNombre)?.values.FirstOrDefault();
-                direccionTesis.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(direccionTesis.ID, direccionTesis);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    DireccionTesis direccionTesis = new DireccionTesis();
+                    direccionTesis.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisTituloTrabajo)?.values.FirstOrDefault();
+                    direccionTesis.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisFechaDefensa)?.values.FirstOrDefault();
+                    direccionTesis.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisEntidadRealizacionNombre)?.values.FirstOrDefault();
+                    direccionTesis.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(direccionTesis.ID, direccionTesis);
+                }
 
-            //2º Obtenemos las entidades de la BBDD.
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = DireccionTesis.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD.
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = DireccionTesis.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+              
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -130,7 +140,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Tutorías académicas de estudiantes".
         /// Con el codigo identificativo 030.050.000.000
         /// </summary>
-        public List<SubseccionItem> SincroTutoriasAcademicas(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroTutoriasAcademicas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -144,35 +154,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Tutorship";
             string rdfTypePrefix = "RelatedAcademicTutorials";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetTutoriasAcademicas(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas();
-                tutoriasAcademicas.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombrePrograma)?.values.FirstOrDefault();
-                tutoriasAcademicas.nombreOtros = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros)?.values.FirstOrDefault();
-                tutoriasAcademicas.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaEntidadRealizacionNombre)?.values.FirstOrDefault();
-                tutoriasAcademicas.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(tutoriasAcademicas.ID, tutoriasAcademicas);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas();
+                    tutoriasAcademicas.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombrePrograma)?.values.FirstOrDefault();
+                    tutoriasAcademicas.nombreOtros = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros)?.values.FirstOrDefault();
+                    tutoriasAcademicas.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaEntidadRealizacionNombre)?.values.FirstOrDefault();
+                    tutoriasAcademicas.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(tutoriasAcademicas.ID, tutoriasAcademicas);
+                }
 
-            //2º Obtenemos las entidades de la BBDD
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = TutoriasAcademicas.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = TutoriasAcademicas.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+              
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -180,7 +195,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Cursos y seminarios impartidos orientados a la formación docente universitaria".
         /// Con el codigo identificativo 030.060.000.000
         /// </summary>
-        public List<SubseccionItem> SincroCursosSeminarios(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroCursosSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -194,35 +209,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/ImpartedCoursesSeminars";
             string rdfTypePrefix = "RelatedImpartedCoursesSeminars";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetCursosSeminarios(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                CursosSeminarios cursosSeminarios = new CursosSeminarios();
-                cursosSeminarios.nombreEvento = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosNombreEvento)?.values.FirstOrDefault();
-                cursosSeminarios.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosFechaImparticion)?.values.FirstOrDefault();
-                cursosSeminarios.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
-                cursosSeminarios.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(cursosSeminarios.ID, cursosSeminarios);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    CursosSeminarios cursosSeminarios = new CursosSeminarios();
+                    cursosSeminarios.nombreEvento = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosNombreEvento)?.values.FirstOrDefault();
+                    cursosSeminarios.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosFechaImparticion)?.values.FirstOrDefault();
+                    cursosSeminarios.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
+                    cursosSeminarios.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(cursosSeminarios.ID, cursosSeminarios);
+                }
 
-            //2º Obtenemos las entidades de la BBDD.
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = CursosSeminarios.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD.
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = CursosSeminarios.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+              
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -230,7 +250,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc.".
         /// Con el codigo identificativo 030.070.000.000
         /// </summary>
-        public List<SubseccionItem> SincroPublicacionDocentes(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroPublicacionDocentes(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -244,35 +264,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/TeachingPublication";
             string rdfTypePrefix = "RelatedTeachingPublications";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPublicacionDocentes(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                PublicacionDocentes publicacionDocentes = new PublicacionDocentes();
-                publicacionDocentes.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteNombre)?.values.FirstOrDefault();
-                publicacionDocentes.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteFechaElaboracion)?.values.FirstOrDefault();
-                publicacionDocentes.tituloPublicacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteTituloPublicacion)?.values.FirstOrDefault();
-                publicacionDocentes.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(publicacionDocentes.ID, publicacionDocentes);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    PublicacionDocentes publicacionDocentes = new PublicacionDocentes();
+                    publicacionDocentes.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteNombre)?.values.FirstOrDefault();
+                    publicacionDocentes.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteFechaElaboracion)?.values.FirstOrDefault();
+                    publicacionDocentes.tituloPublicacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteTituloPublicacion)?.values.FirstOrDefault();
+                    publicacionDocentes.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(publicacionDocentes.ID, publicacionDocentes);
+                }
 
-            //2º Obtenemos las entidades de la BBDD.
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = PublicacionDocentes.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD.
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = PublicacionDocentes.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+              
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -280,7 +305,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Participación en proyectos de innovación docente".
         /// Con el codigo identificativo 030.080.000.000
         /// </summary>
-        public List<SubseccionItem> SincroParticipacionProyectosInnovacionDocente(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroParticipacionProyectosInnovacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -294,35 +319,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/TeachingProject";
             string rdfTypePrefix = "RelatedTeachingProjects";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetParticipacionProyectosInnovacionDocente(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                ParticipacionProyectosInnovacionDocente participacionProyectosInnovacion = new ParticipacionProyectosInnovacionDocente();
-                participacionProyectosInnovacion.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaTitulo)?.values.FirstOrDefault();
-                participacionProyectosInnovacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaFechaInicio)?.values.FirstOrDefault();
-                participacionProyectosInnovacion.entidadFinanciadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaEntidadFinanciadoraNombre)?.values.FirstOrDefault();
-                participacionProyectosInnovacion.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(participacionProyectosInnovacion.ID, participacionProyectosInnovacion);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    ParticipacionProyectosInnovacionDocente participacionProyectosInnovacion = new ParticipacionProyectosInnovacionDocente();
+                    participacionProyectosInnovacion.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaTitulo)?.values.FirstOrDefault();
+                    participacionProyectosInnovacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaFechaInicio)?.values.FirstOrDefault();
+                    participacionProyectosInnovacion.entidadFinanciadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaEntidadFinanciadoraNombre)?.values.FirstOrDefault();
+                    participacionProyectosInnovacion.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(participacionProyectosInnovacion.ID, participacionProyectosInnovacion);
+                }
 
-            //2º Obtenemos las entidades de la BBDD.
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = ParticipacionProyectosInnovacionDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD.
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ParticipacionProyectosInnovacionDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+              
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -330,7 +360,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Participación en congresos con ponencias orientadas a la formación docente".
         /// Con el codigo identificativo 030.090.000.000
         /// </summary>
-        public List<SubseccionItem> SincroParticipacionCongresosFormacionDocente(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroParticipacionCongresosFormacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -344,35 +374,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/TeachingCongress";
             string rdfTypePrefix = "RelatedTeachingCongress";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetParticipacionCongresosFormacionDocente(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente();
-                participacionCongresos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosNombreEvento)?.values.FirstOrDefault();
-                participacionCongresos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosFechaPresentacion)?.values.FirstOrDefault();
-                participacionCongresos.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
-                participacionCongresos.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(participacionCongresos.ID, participacionCongresos);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    ParticipacionCongresosFormacionDocente participacionCongresos = new ParticipacionCongresosFormacionDocente();
+                    participacionCongresos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosNombreEvento)?.values.FirstOrDefault();
+                    participacionCongresos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosFechaPresentacion)?.values.FirstOrDefault();
+                    participacionCongresos.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
+                    participacionCongresos.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(participacionCongresos.ID, participacionCongresos);
+                }
 
-            //2º Obtenemos las entidades de la BBDD.
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = ParticipacionCongresosFormacionDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD.
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ParticipacionCongresosFormacionDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -380,7 +415,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Premios de innovación docente recibidos".
         /// Con el codigo identificativo 060.030.080.000
         /// </summary>
-        public List<SubseccionItem> SincroPremiosInovacionDocente(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroPremiosInovacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -394,35 +429,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Accreditation";
             string rdfTypePrefix = "RelatedTeachingInnovationAwardsReceived";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPremiosInovacionDocente(listadoPremios);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente();
-                premiosInnovacion.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaNombre)?.values.FirstOrDefault();
-                premiosInnovacion.entidadConcesion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaEntidadConcesionariaNombre)?.values.FirstOrDefault();
-                premiosInnovacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaFechaConcesion)?.values.FirstOrDefault();
-                premiosInnovacion.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(premiosInnovacion.ID, premiosInnovacion);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente();
+                    premiosInnovacion.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaNombre)?.values.FirstOrDefault();
+                    premiosInnovacion.entidadConcesion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaEntidadConcesionariaNombre)?.values.FirstOrDefault();
+                    premiosInnovacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaFechaConcesion)?.values.FirstOrDefault();
+                    premiosInnovacion.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(premiosInnovacion.ID, premiosInnovacion);
+                }
 
-            //2º Obtenemos las entidades de la BBDD
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = PremiosInnovacionDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = PremiosInnovacionDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -430,7 +470,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Otras actividades/méritos no incluidos en la relación anterior".
         /// Con el codigo identificativo 030.100.000.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrasActividades(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroOtrasActividades(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -444,35 +484,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Activity";
             string rdfTypePrefix = "RelatedOtherActivities";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetOtrasActividades(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                OtrasActividades otrasActividades = new OtrasActividades();
-                otrasActividades.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesDescripcion)?.values.FirstOrDefault();
-                otrasActividades.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesFechaFinalizacion)?.values.FirstOrDefault();
-                otrasActividades.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre)?.values.FirstOrDefault();
-                otrasActividades.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(otrasActividades.ID, otrasActividades);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    OtrasActividades otrasActividades = new OtrasActividades();
+                    otrasActividades.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesDescripcion)?.values.FirstOrDefault();
+                    otrasActividades.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesFechaFinalizacion)?.values.FirstOrDefault();
+                    otrasActividades.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre)?.values.FirstOrDefault();
+                    otrasActividades.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(otrasActividades.ID, otrasActividades);
+                }
 
-            //2º Obtenemos las entidades de la BBDD
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrasActividades.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrasActividades.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -480,7 +525,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Aportaciones más relevantes de su CV de docencia".
         /// Con el codigo identificativo 030.110.000.000
         /// </summary>
-        public List<SubseccionItem> SincroAportacionesRelevantes(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroAportacionesRelevantes(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -494,35 +539,40 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Activity";
             string rdfTypePrefix = "RelatedMostRelevantContributions";
 
+            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
+            List<bool> listadoBloqueados = new List<bool>();
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetAportacionesRelevantes(listadoDatos);
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            foreach (Entity entityXML in listadoAux)
+            if (listadoIdBBDD == null)
             {
-                AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes();
-                aportacionesRelevantes.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVDescripcion)?.values.FirstOrDefault();
-                aportacionesRelevantes.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVFechaFinalizacion)?.values.FirstOrDefault();
-                aportacionesRelevantes.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre)?.values.FirstOrDefault();
-                aportacionesRelevantes.ID = Guid.NewGuid().ToString();
-                entidadesXML.Add(aportacionesRelevantes.ID, aportacionesRelevantes);
-            }
+                foreach (Entity entityXML in listadoAux)
+                {
+                    AportacionesRelevantes aportacionesRelevantes = new AportacionesRelevantes();
+                    aportacionesRelevantes.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVDescripcion)?.values.FirstOrDefault();
+                    aportacionesRelevantes.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVFechaFinalizacion)?.values.FirstOrDefault();
+                    aportacionesRelevantes.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre)?.values.FirstOrDefault();
+                    aportacionesRelevantes.ID = Guid.NewGuid().ToString();
+                    entidadesXML.Add(aportacionesRelevantes.ID, aportacionesRelevantes);
+                }
 
-            //2º Obtenemos las entidades de la BBDD
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = AportacionesRelevantes.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
-            var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
+                //2º Obtenemos las entidades de la BBDD
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = AportacionesRelevantes.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
-            //3º Comparamos las equivalentes
-            Dictionary<string, string> equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                //3º Comparamos las equivalentes
+                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
 
-            List<bool> listadoBloqueados = new List<bool>();
-            foreach (var item in equivalencias.Values)
-            {
-                listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                foreach (var item in equivalencias.Values)
+                {
+                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
 
@@ -1272,7 +1322,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     UtilitySecciones.CheckProperty(propertyTipo, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipo), propiedadTipo);
                     UtilitySecciones.CheckProperty(propertyTipoOtros, entidadAux, UtilitySecciones.StringGNOSSID(entityPartAux, valorTipoOtros), propiedadTipoOtros);
                 }
-                else if(!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.170")))
+                else if (!string.IsNullOrEmpty(entidad.GetStringCvnCodeGroup("030.080.000.170")))
                 {
                     string valorTipo = mResourceApi.GraphsUrl + "items/organizationtype_" + entidad.GetStringCvnCodeGroup("030.080.000.170");
 

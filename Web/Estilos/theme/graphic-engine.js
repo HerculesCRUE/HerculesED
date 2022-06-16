@@ -183,7 +183,7 @@ var metricas = {
                 var titulo = data.options.plugins.title.text;
                 if (pTitulo) {
                     titulo = pTitulo;
-                    data.options.plugins.title.text = pTitulo
+                    data.options.plugins.title.text = pTitulo;
                 }
                 if (combo) {
                     var option = $(combo).find("option[value='grafica_" + pIdPagina + "_" + pIdGrafica + "']");
@@ -222,6 +222,7 @@ var metricas = {
                             }
                         }
                     }
+                    data.options.radius = "70%";
                     var myChart = new Chart(ctx, data);
                 }
             }
@@ -347,7 +348,7 @@ var metricas = {
 
             $('#panFacetas').empty()
             $('.resource-list-wrap').empty();
-            $('.borrarFiltros').click();
+            history.pushState('', 'New URL: ', '?');
         } else {
             $('canvas').each(function () {
                 Chart.getChart(this)?.destroy();
@@ -1550,30 +1551,28 @@ var metricas = {
                 arg.pNewTitle = $('#labelTituloGrafica').val();
                 arg.pOldTitle = tituloActual;
 
-                $.get(url, arg, function (data) {
-                });
+                $.get(url, arg, function () {
+                    var urlOrd = url_servicio_graphicengine + "EditarOrdenGrafica"; //"https://localhost:44352/EditarOrdenGrafica"
+                    var argOrd = {};
+                    argOrd.pUserId = $('.inpt_usuarioID').attr('value');
+                    argOrd.pPageID = idPaginaActual;
+                    argOrd.pGraphicID = idGraficaActual;
+                    argOrd.pNewOrder = $('#idSelectorOrden option:selected').val();
+                    argOrd.pOldOrder = ordenActual;
 
-                var urlOrd = url_servicio_graphicengine + "EditarOrdenGrafica"; //"https://localhost:44352/EditarOrdenGrafica"
-                var argOrd = {};
-                argOrd.pUserId = $('.inpt_usuarioID').attr('value');
-                argOrd.pPageID = idPaginaActual;
-                argOrd.pGraphicID = idGraficaActual;
-                argOrd.pNewOrder = $('#idSelectorOrden option:selected').val();
-                argOrd.pOldOrder = ordenActual;
+                    $.get(urlOrd, argOrd, function () {
+                        var urlAnch = url_servicio_graphicengine + "EditarAnchuraGrafica"; //"https://localhost:44352/EditarAnchuraGrafica"
+                        var argAnch = {};
+                        argAnch.pUserId = $('.inpt_usuarioID').attr('value');
+                        argAnch.pPageID = idPaginaActual;
+                        argAnch.pGraphicID = idGraficaActual;
+                        argAnch.pNewWidth = $('#idSelectorTamanyo option:selected').val();
+                        argAnch.pOldWidth = tamanioActual;
 
-                $.get(urlOrd, argOrd, function (data) {
-                });
-
-                var urlAnch = url_servicio_graphicengine + "EditarAnchuraGrafica"; //"https://localhost:44352/EditarAnchuraGrafica"
-                var argAnch = {};
-                argAnch.pUserId = $('.inpt_usuarioID').attr('value');
-                argAnch.pPageID = idPaginaActual;
-                argAnch.pGraphicID = idGraficaActual;
-                argAnch.pNewWidth = $('#idSelectorTamanyo option:selected').val();
-                argAnch.pOldWidth = tamanioActual;
-
-                $.get(urlAnch, argAnch, function (data) {
-                    location.reload();
+                        $.get(urlAnch, argAnch, function () {
+                            location.reload();
+                        });
+                    });
                 });
             });
 
@@ -1736,8 +1735,24 @@ var metricas = {
                     filtro = (canvas).parents('div.grafica').attr("filtro");
                     idPagina = (canvas).parents('div.grafica').attr("idpagina");
                 }
-                that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50); //obtenemos los datos y pintamos la grafica
-
+                //obtenemos los datos y pintamos la grafica
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50);
+                } else {
+                    //Obtengo el título de la gráfica
+                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                    var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                    var arg = {};
+                    arg.pPageId = idPaginaActual;
+                    $.get(url, arg, function (listaData) {
+                        listaData.forEach(data => {
+                            if (data.idRecurso == idGraficaActual) {
+                                tituloActual = data.titulo;
+                            }
+                        });
+                        that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, tituloActual)
+                    });
+                }
             });
 
         $('.modal-backdrop')
