@@ -25,7 +25,7 @@ namespace Hercules.ED.GraphicEngine.Models
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
         private static List<ConfigModel> mTabTemplates;
-        private const int NUM_HILOS = 5;
+        private const int NUM_HILOS = 1;
 
         #region --- Páginas
         /// <summary>
@@ -1075,9 +1075,9 @@ namespace Hercules.ED.GraphicEngine.Models
 
             grafica.options = options;
 
-            ConcurrentDictionary<Dimension, Dictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, Dictionary<string, float>>();
+            ConcurrentDictionary<Dimension, ConcurrentDictionary<string, float>> resultadosDimension = new ConcurrentDictionary<Dimension, ConcurrentDictionary<string, float>>();
             Dictionary<Dimension, DatasetCircular> dimensionesDataset = new Dictionary<Dimension, DatasetCircular>();
-            Dictionary<string, float> dicNombreData = new Dictionary<string, float>();
+            ConcurrentDictionary<string, float> dicNombreData = new ConcurrentDictionary<string, float>();
 
             Parallel.ForEach(pGrafica.config.dimensiones, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, itemGrafica =>
             {
@@ -1116,7 +1116,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         try
                         {
-                            dicNombreData.Add(fila["tipo"].value, Int32.Parse(fila["numero"].value));
+                            dicNombreData.TryAdd(fila["tipo"].value, Int32.Parse(fila["numero"].value));
                         }
                         catch (Exception ex)
                         {
@@ -1130,9 +1130,10 @@ namespace Hercules.ED.GraphicEngine.Models
             // Lista de los ordenes de las revistas.
             List<string> listaNombres = new List<string>();
             List<string> listaLabels = new List<string>();
-
+            // Ordeno los datos
+            Dictionary<string, float> ordered = dicNombreData.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             List<float> listaData = new List<float>();
-            foreach (KeyValuePair<string, float> nombreData in dicNombreData)
+            foreach (KeyValuePair<string, float> nombreData in ordered)
             {
                 listaNombres.Add(nombreData.Key);
                 listaData.Add(nombreData.Value);
@@ -1145,7 +1146,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             foreach (string orden in listaNombres)
             {
-                foreach (KeyValuePair<Dimension, Dictionary<string, float>> item in resultadosDimension)
+                foreach (KeyValuePair<Dimension, ConcurrentDictionary<string, float>> item in resultadosDimension)
                 {
                     if (item.Key.colorMaximo != null)
                     {
@@ -2227,8 +2228,11 @@ namespace Hercules.ED.GraphicEngine.Models
             List<string> listaAux = new List<string>();
             foreach (string filtro in pListaFiltros)
             {
-                string[] array = filtro.Split("&", StringSplitOptions.RemoveEmptyEntries);
-                listaAux.AddRange(array.ToList());
+                // --- ÑAPA
+                string aux = filtro.Replace(" & ", "|||");
+                string[] array = aux.Split("&", StringSplitOptions.RemoveEmptyEntries);
+                List<string> lista = array.Select(x => x.Replace("|||", " & ")).ToList();
+                listaAux.AddRange(lista);
             }
 
             List<string> filtrosQuery = new List<string>();

@@ -25,7 +25,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// El cual comprende los subapartados "Identificación CVN" (000.010.000.000)
         /// e Identificación de currículo (000.020.000.000).
         /// </summary>
-        public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -52,6 +52,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Actualizamos la entidad.
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { entityBBDD.id }, entityBBDD, entityXML);
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
+                {
+                    listadoIdBBDD.RemoveAt(0);
+                }
                 return null;
             }
         }

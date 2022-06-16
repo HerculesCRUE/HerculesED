@@ -25,7 +25,6 @@ namespace Hercules.ED.ImportadorWebCV
 
         public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones)
         {
-            List<Subseccion> listadoSubsecciones = new List<Subseccion>();
             Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
             Dictionary<string, string> filtrador = new Dictionary<string, string>();
             foreach (string str in listaId)
@@ -38,6 +37,15 @@ namespace Hercules.ED.ImportadorWebCV
             using (TextReader reader = new StringReader(filePreimport))
             {
                 preimport = (Preimport)serializer.Deserialize(reader);
+            }
+
+            List<SubseccionItem> listadoSubsetionItems = new List<SubseccionItem>();
+            foreach (Subseccion subseccion in preimport.secciones)
+            {
+                foreach (SubseccionItem subseccionItem in subseccion.subsecciones)
+                {
+                    listadoSubsetionItems.Add(subseccionItem);
+                }
             }
 
             string idOpcion;
@@ -61,6 +69,7 @@ namespace Hercules.ED.ImportadorWebCV
             {
                 return;
             }
+            listadoItems.RemoveAt(0);
 
             string opcionSeleccionada = "";
             List<CvnItemBean> listadoDuplicar = new List<CvnItemBean>();
@@ -69,31 +78,40 @@ namespace Hercules.ED.ImportadorWebCV
             List<string> listadoDuplicarBBDD = new List<string>();
             List<string> listadoFusionarBBDD = new List<string>();
             List<string> listadoSobrescribirBBDD = new List<string>();
-            for (int i = 1; i < listadoItems.Count; i++)
+            int contadorEliminados = 1;
+            for (int i = 0; i < listadoItems.Count; i++)
             {
-                if (!filtrador.ContainsValue(i.ToString()))
+                if (listadoSubsetionItems.ElementAt(i).propiedades.Count == 0)
+                {
+                    listadoSubsetionItems.RemoveAt(i);
+                    i--;
+                    contadorEliminados++;
+                    continue;
+                }
+                if (!filtrador.ContainsValue((i+contadorEliminados).ToString()))
                 {
                     continue;
                 }
+
                 opcionSeleccionada = "so";
-                if (dicOpciones.ContainsKey(i.ToString()))
+                if (dicOpciones.ContainsKey((i + contadorEliminados).ToString()))
                 {
-                    opcionSeleccionada = dicOpciones[i.ToString()];
+                    opcionSeleccionada = dicOpciones[(i + contadorEliminados).ToString()];
                 }
                 if (opcionSeleccionada.Equals("du"))
                 {
                     listadoDuplicar.Add(listadoItems.ElementAt(i));
-                    listadoDuplicarBBDD.Add(filtrador.Where(x=>x.Value.Equals(i.ToString())).Select(x=>x.Key).FirstOrDefault() + "_du");
+                    listadoDuplicarBBDD.Add(listadoSubsetionItems.ElementAt(i).idBBDD + "@@@du");
                 }
                 if (opcionSeleccionada.Equals("fu"))
                 {
                     listadoFusionar.Add(listadoItems.ElementAt(i));
-                    listadoFusionarBBDD.Add(filtrador.Where(x => x.Value.Equals(i.ToString())).Select(x => x.Key).FirstOrDefault() + "_fu");
+                    listadoFusionarBBDD.Add(listadoSubsetionItems.ElementAt(i).idBBDD + "@@@fu");
                 }
                 if (opcionSeleccionada.Equals("so"))
                 {
                     listadoSobrescribir.Add(listadoItems.ElementAt(i));
-                    listadoSobrescribirBBDD.Add(filtrador.Where(x => x.Value.Equals(i.ToString())).Select(x => x.Key).FirstOrDefault() + "_so");
+                    listadoSobrescribirBBDD.Add(listadoSubsetionItems.ElementAt(i).idBBDD + "@@@so");
                 }
             }
 
@@ -104,19 +122,33 @@ namespace Hercules.ED.ImportadorWebCV
 
             //Duplicar
             base.cvn = duplicadosResultBean;
-            base.SincroDatosIdentificacion(preimportar: false);
+            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
-            base.SincroTextoLibre(preimportar: false);
+            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
 
             //Fusionar - TODO
             base.cvn = fusionResultBean;
+            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
+            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
 
             //Sobrescribir - TODO
             base.cvn = sobrescribirResultBean;
+            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
         }
     }
 }

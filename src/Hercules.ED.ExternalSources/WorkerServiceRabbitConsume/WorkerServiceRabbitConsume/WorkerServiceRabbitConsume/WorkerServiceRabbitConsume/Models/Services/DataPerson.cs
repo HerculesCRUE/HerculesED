@@ -50,7 +50,7 @@ namespace WorkerServiceRabbitConsume.Models.Services
             }
 
             // Conversión de fecha.
-            string fechaFinal = $@"{pDate.Year}{pDate.Month}{pDate.Day}{pDate.Hour}{pDate.Minute}{pDate.Second}";
+            string fechaFinal = $@"{pDate.ToString("yyyy/MM/dd").Replace("/", "")}000000";
 
             // Inserción/Modificación de triples.
             mResourceApi.ChangeOntoly("person");

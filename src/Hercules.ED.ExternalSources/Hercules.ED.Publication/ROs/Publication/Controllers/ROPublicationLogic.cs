@@ -347,7 +347,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
 
             int contadoPubScopus = 1;
@@ -422,9 +422,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             if (!string.IsNullOrEmpty(jsonData))
                             {
-                                Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                                Log.Information("[Scopus] Obteniendo topics enriquecidos...");
                                 Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                                Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                                Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
                                 Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                                 if (listaTopics != null && listaTopics.Any())
@@ -504,7 +504,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
 
             int contadorPubOpenAire = 1;
@@ -577,9 +577,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             if (!string.IsNullOrEmpty(jsonData))
                             {
-                                Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                                Log.Information("[OpenAire] Obteniendo topics enriquecidos...");
                                 Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                                Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                                Log.Information("[OpenAire] Obteniendo freeTextKeywords enriquecidos...");
                                 Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                                 if (listaTopics != null && listaTopics.Any())
@@ -641,7 +641,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
 
             //string info = JsonConvert.SerializeObject(resultado);
