@@ -250,9 +250,9 @@ namespace EditorCV.Models
         /// <param name="pId">Identificador de la entidad de la sección</param>
         /// <param name="pRdfType">Rdf:type de la entidad de la sección</param>
         /// <param name="pLang">Idioma para recuperar los datos</param>
-        /// <param name="pSection">Orden de la sección para la carga parcial</param>
+        /// <param name="pSection">Sección</param>
         /// <returns></returns>
-        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang, int? pSection = null)
+        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
         {
 
             //Obtenemos el template
@@ -754,18 +754,46 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, int? pSection)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection=null)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
+            List<PropertyData> propertyDatasContadores = new List<PropertyData>();
             string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
-                if (!pSection.HasValue || pTemplate.sections.IndexOf(templateSection) == pSection.Value)
+                if(string.IsNullOrEmpty(pSection))
+                {
+                    propertyDatas.Add(templateSection.GenerarPropertyData(graph));
+                }else if (pSection=="0")
+                {
+                    if (pTemplate.sections.IndexOf(templateSection) == 0 || templateSection.presentation.listItemsPresentation==null)
+                    {
+                        propertyDatas.Add(templateSection.GenerarPropertyData(graph));
+                    }
+                    else
+                    {
+                        propertyDatasContadores.Add(templateSection.GenerarPropertyDataContadores(graph));
+                    }
+                }else if(pSection== templateSection.property)
                 {
                     propertyDatas.Add(templateSection.GenerarPropertyData(graph));
                 }
             }
-            return UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
+            
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataPropiedades = UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataContadores = UtilityCV.GetPropertiesContadores(new HashSet<string>() { pId }, propertyDatasContadores);
+            if(dataContadores.Count>0)
+            {
+                foreach(string key in dataContadores.Keys)
+                {
+                    if(!dataPropiedades.ContainsKey(key))
+                    {
+                        dataPropiedades[key] = new List<Dictionary<string, Data>>();
+                    }
+                    dataPropiedades[key].AddRange(dataContadores[key]);
+                }
+            }
+            return dataPropiedades;
         }
 
         /// <summary>
@@ -865,7 +893,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, int? pSection)
+        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection=null)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -918,6 +946,11 @@ namespace EditorCV.Models
                                 string propiedadIdentificador = templateSection.property;
                                 if (pData.ContainsKey(pId))
                                 {
+                                    bool soloID = false;
+                                    if(pSection=="0" && pTemplate.sections.IndexOf(templateSection)>0)
+                                    {
+                                        soloID = true;
+                                    }
                                     foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
                                     {
                                         Dictionary<string, HashSet<string>> propiedadesMultiIdiomaCargadas = new Dictionary<string, HashSet<string>>();
@@ -926,7 +959,14 @@ namespace EditorCV.Models
                                         {
                                             propiedadesMultiIdiomaCargadas = entidadesMultiidioma[idEntity];
                                         }
-                                        tabSection.items.Add(idEntity, GetItem(idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas));
+                                        if (soloID)
+                                        {
+                                            tabSection.items.Add(idEntity, null);
+                                        }
+                                        else
+                                        {
+                                            tabSection.items.Add(idEntity, GetItem(idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas));
+                                        }
                                     }
                                 }
                                 tab.sections.Add(tabSection);

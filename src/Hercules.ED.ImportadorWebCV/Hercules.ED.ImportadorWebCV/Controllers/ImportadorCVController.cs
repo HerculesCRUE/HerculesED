@@ -85,17 +85,22 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                 preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
 
-                string xml = "";
+                string xmlPreimporta = "";
                 XmlSerializer serializer = new XmlSerializer(typeof(Preimport));
                 using (var sww = new StringWriter())
                 {
                     using (XmlWriter writer = XmlWriter.Create(sww))
                     {
                         serializer.Serialize(writer, preimportar);
-                        xml = sww.ToString();
+                        xmlPreimporta = sww.ToString();
                     }
                 }
-                preimportar.cvn_xml = xml;
+                preimportar.cvn_preimportar = xmlPreimporta;
+
+                var ms = new MemoryStream();
+                File.CopyTo(ms);
+                byte[] filebytes = ms.ToArray();
+                preimportar.cvn_xml = filebytes;
 
                 return Ok(preimportar);
             }
@@ -106,14 +111,21 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         }
 
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] string fileData, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
-                SincroDatos sincroDatos = new SincroDatos(_Configuracion, pCVID, fileData);
+                string stringFile;
+                using (var ms = new MemoryStream(file))
+                {
+                    using (var reader = new StreamReader(ms))
+                    {
+                        stringFile = reader.ReadToEnd();
+                    }
+                }
 
-                AccionesImportacion accionesImportacion = new AccionesImportacion();
-                accionesImportacion.ImportacionTriples(sincroDatos, pCVID, listaId, listaOpciones);
+                AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
+                accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones);
 
                 return Ok();
             }

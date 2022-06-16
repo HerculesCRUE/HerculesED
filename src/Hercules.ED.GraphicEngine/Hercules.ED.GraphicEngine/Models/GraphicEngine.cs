@@ -86,37 +86,43 @@ namespace Hercules.ED.GraphicEngine.Models
                 string prefijoCircular = "circular";
                 string prefijoAbreviar = "abr";
                 string prefijoPorcentaje = "prc";
+
+                configPagina.isCircular = itemGrafica.tipo == EnumGraficas.Circular;
+                configPagina.isAbr = itemGrafica.config.abreviar;
+                configPagina.isNodes = itemGrafica.tipo == EnumGraficas.Nodos;
+                configPagina.isHorizontal = !(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical);
+                configPagina.isCircular = itemGrafica.tipo == EnumGraficas.Circular;
+                configPagina.isPercentage = itemGrafica.config.porcentual;
+
                 if (itemGrafica.config.abreviar && !itemGrafica.identificador.Contains(prefijoAbreviar))
                 {
                     itemGrafica.identificador = prefijoAbreviar + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoAbreviar + "-" + configPagina.id;
-                    configPagina.isAbr = true;
+
                 }
 
                 if (itemGrafica.tipo == EnumGraficas.Nodos && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoNodos + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoNodos + "-" + configPagina.id;
-                    configPagina.isNodes = true;
                 }
                 else if (!(itemGrafica.tipo == EnumGraficas.Circular || itemGrafica.config.orientacionVertical) && !itemGrafica.identificador.Contains(prefijoBarraHorizonal) && !itemGrafica.identificador.Contains(prefijoNodos))
                 {
                     itemGrafica.identificador = prefijoBarraHorizonal + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoBarraHorizonal + "-" + configPagina.id;
-                    configPagina.isHorizontal = true;
 
                 }
                 else if (itemGrafica.tipo == EnumGraficas.Circular && !itemGrafica.identificador.Contains(prefijoCircular))
                 {
                     itemGrafica.identificador = prefijoCircular + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoCircular + "-" + configPagina.id;
-                    configPagina.isCircular = true;
+                    
                 }
                 if (itemGrafica.config.porcentual && !itemGrafica.identificador.Contains(prefijoPorcentaje))
                 {
                     itemGrafica.identificador = prefijoPorcentaje + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoPorcentaje + "-" + configPagina.id;
-                    configPagina.isPercentage = true;
+
                 }
 
                 // Si la anchura no contiene un valor aceptado, se le asigna 1/2 por defecto.
@@ -1865,10 +1871,10 @@ namespace Hercules.ED.GraphicEngine.Models
                 NewValue = valorBase + pTitulo
             });
 
-            // Orden de la página
+            // Orden de la gráfica
             int orden = 0;
-            List<DataPageUser> listaGraficas = GetPagesUser(pUserId);
-            foreach (DataPageUser item in listaGraficas)
+            List<DataGraphicUser> listaGraficas = GetGraficasUserByPageId(idRecursoPagina);
+            foreach (DataGraphicUser item in listaGraficas)
             {
                 if (item.orden > orden)
                 {
@@ -2013,6 +2019,164 @@ namespace Hercules.ED.GraphicEngine.Models
 
             dicBorrado.Add(guid, listaTriplesBorrado);
             Dictionary<Guid, bool> eliminado = mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+        }
+
+        /// <summary>
+        /// Borra la relación de la página.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pPageID">ID del recurso a borrar el triple.</param>
+        public static void BorrarPagina(string pUserId, string pPageID)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new Dictionary<Guid, List<RemoveTriples>>();
+            List<RemoveTriples> listaTriplesBorrado = new List<RemoveTriples>();
+
+            RemoveTriples triple = new RemoveTriples();
+            triple.Title = false;
+            triple.Description = false;
+            triple.Predicate = $@"http://w3id.org/roh/metricPage";
+            triple.Value = pPageID;
+            listaTriplesBorrado.Add(triple);
+
+            dicBorrado.Add(guid, listaTriplesBorrado);
+            Dictionary<Guid, bool> eliminado = mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+        }
+
+        /// <summary>
+        /// Edita el nombre de la página de usuario.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pPageID">ID del recurso a editar el triple.</param>
+        /// <param name="pNewTitle">Nuevo título de la página.</param>
+        /// <param name="pOldTitle">Anterior título de la página.</param>
+        public static void EditarNombrePagina(string pUserId, string pPageID, string pNewTitle, string pOldTitle)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = "http://w3id.org/roh/metricPage|http://w3id.org/roh/title";
+            triple.NewValue = pPageID + "|" + pNewTitle;
+            triple.OldValue = pPageID + "|" + pOldTitle;
+            listaTriplesModificacion.Add(triple);
+
+            dicModificacion.Add(guid, listaTriplesModificacion);
+            Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+
+        /// <summary>
+        /// Borra la relación de la página.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
+        public static void EditarOrdenPagina(string pUserId, string pPageID, int pNewOrder, int pOldOrder)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = "http://w3id.org/roh/metricPage|http://w3id.org/roh/order";
+            triple.NewValue = pPageID + "|" + pNewOrder;
+            triple.OldValue = pPageID + "|" + pOldOrder;
+            listaTriplesModificacion.Add(triple);
+
+            dicModificacion.Add(guid, listaTriplesModificacion);
+            Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+
+        /// <summary>
+        /// Borra la relación de la página.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
+        public static void EditarNombreGrafica(string pUserId, string pPageID, string pGraphicID, string pNewTitle, string pOldTitle)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/title";
+            triple.NewValue = pPageID + "|" + pGraphicID + "|" + pNewTitle;
+            triple.OldValue = pPageID + "|" + pGraphicID + "|" + pOldTitle;
+            listaTriplesModificacion.Add(triple);
+
+            dicModificacion.Add(guid, listaTriplesModificacion);
+            Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+
+        /// <summary>
+        /// Borra la relación de la página.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
+        public static void EditarOrdenGrafica(string pUserId, string pPageID, string pGraphicID, int pNewOrder, int pOldOrder)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/order";
+            triple.NewValue = pPageID + "|" + pGraphicID + "|" + pNewOrder;
+            triple.OldValue = pPageID + "|" + pGraphicID + "|" + pOldOrder;
+            listaTriplesModificacion.Add(triple);
+
+            dicModificacion.Add(guid, listaTriplesModificacion);
+            Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+
+        /// <summary>
+        /// Borra la relación de la página.
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
+        public static void EditarAnchuraGrafica(string pUserId, string pPageID, string pGraphicID, int pNewWidth, int pOldWidth)
+        {
+            mResourceApi.ChangeOntoly("person");
+
+            // ID del recurso del usuario.
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            TriplesToModify triple = new TriplesToModify();
+            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/width";
+            triple.NewValue = pPageID + "|" + pGraphicID + "|" + pNewWidth;
+            triple.OldValue = pPageID + "|" + pGraphicID + "|" + pOldWidth;
+            listaTriplesModificacion.Add(triple);
+
+            dicModificacion.Add(guid, listaTriplesModificacion);
+            Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
         }
 
         /// <summary>

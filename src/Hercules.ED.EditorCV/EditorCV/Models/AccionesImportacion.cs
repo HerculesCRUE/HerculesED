@@ -22,6 +22,7 @@ namespace EditorCV.Models
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
+        public byte[] filebytes;
 
         public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File)
         {
@@ -33,7 +34,7 @@ namespace EditorCV.Models
 
                 var ms = new MemoryStream();
                 File.CopyTo(ms);
-                byte[] filebytes = ms.ToArray();
+                filebytes = ms.ToArray();
                 multipartFormData.Add(new ByteArrayContent(filebytes), "File", File.FileName);
 
                 string urlPreImportador = "";
@@ -61,12 +62,13 @@ namespace EditorCV.Models
             }
         }
 
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, Preimport preimport, List<string> listaId, Dictionary<string, string> dicOpciones)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
             multipartFormData.Add(new StringContent(pCVID), "pCVID");
-            multipartFormData.Add(new ObjectContent(typeof(Preimport), preimport, new JsonMediaTypeFormatter()));
+            multipartFormData.Add(new StringContent(filePreimport), "filePreimport");
+            multipartFormData.Add(new ByteArrayContent(file), "file");
             if (listaId != null && listaId.Count > 0)
             {
                 foreach (string id in listaId)

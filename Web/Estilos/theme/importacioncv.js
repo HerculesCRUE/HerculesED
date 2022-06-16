@@ -1,8 +1,10 @@
 //TODO
-var urlImportacionCV = "https://localhost:5002/ImportadoCV";
-//var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
+//var urlImportacionCV = "https://localhost:5002/ImportadoCV";
+var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
 var selectorConflictoNoBloqueado = '';
 var selectorConflictoBloqueado = '';
+var selectorCamposTexto = '';
+var contador = 1;
 
 
 var importarCVN = {
@@ -11,6 +13,7 @@ var importarCVN = {
 		this.config(),
 		this.idUsuario = $('#inpt_usuarioID').val();
 		this.fileData = '';
+		this.filePreimport = '';
 
 		selectorConflictoNoBloqueado = `<select name="itemConflict" >
 												<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
@@ -23,6 +26,9 @@ var importarCVN = {
 											<option value="fu">${GetText('CV_FUSIONAR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
+		selectorCamposTexto = `<select hidden name="itemConflict">
+									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
+								</select>`;
 
         return;        
     },
@@ -65,7 +71,7 @@ var importarCVN = {
     cargarCV: function() {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
-		MostrarUpdateProgress(0);
+		MostrarUpdateProgressTime(0);
 		var that=this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
@@ -80,9 +86,7 @@ var importarCVN = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function ( response ) {
-				//that.fileData = response;
 				for(var i=0;i<7;i++){
-					MostrarUpdateProgress(0);
 					var id = 'x' + RandomGuid();
 					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
 											<div class="panel">
@@ -117,6 +121,7 @@ var importarCVN = {
 					}
 				};
 				that.fileData = response[99].title;
+				that.filePreimport = response[100].title;
 				
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
@@ -131,6 +136,7 @@ var importarCVN = {
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
 		formData.append('fileData', that.fileData);
+		formData.append('filePreimport', that.filePreimport);
 		formData.append('listaId', listaId);
 		formData.append('listaOpcionSeleccionados', listaOpcionSeleccionados);
 		
@@ -208,14 +214,15 @@ function printCientificProduction(id, data){
 									<div class="resource-list-wrap">
 										<article class="resource success" >
 											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${data.items[seccion].properties[0].values[0]}">
+												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${data.items[seccion].properties[0].values[0]}_${contador}">
 												<label class="custom-control-label" for="check_resource_${id2}"></label>
 											</div>
 											<div class="wrap">
 												<div class="middle-wrap">
 													<div class="title-wrap">
-														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>
-														<span class="material-icons arrow">keyboard_arrow_down</span>
+														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
+														+selectorCamposTexto+
+														`<span class="material-icons arrow">keyboard_arrow_down</span>
 													</div>
 													<div class="content-wrap">
 														<div class="description-wrap">
@@ -234,6 +241,7 @@ function printCientificProduction(id, data){
 					</div>
 				</div>
 			</div>`;
+			contador++;
 		}
 		return htmlSection;
 	}
@@ -282,7 +290,7 @@ function printFreeText(id, data){
 									<div class="resource-list-wrap">`;
 
 		var secciones = data.sections[0].items;
-		for (const seccion in secciones){
+		for (const seccion in secciones){			
 			//Si no hay datos no pinto esa sección
 			if(secciones[seccion].properties[0].values.length>0 && secciones[seccion].properties[0].values[0].length>0){
 				var id = 'x' + RandomGuid();
@@ -292,7 +300,7 @@ function printFreeText(id, data){
 				}
 				var html2 = `<article class="resource success">
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${id}">
+									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${id}_${contador}">
 									<label class="custom-control-label" for="check_resource_${id}"></label>
 								</div>
 								<div class="wrap">
@@ -300,7 +308,7 @@ function printFreeText(id, data){
 										<div class="title-wrap">
 											<h2 class="resource-title">
 												<a href="#" data-id="${id}" internal-id="">${secciones[seccion].title}</a>
-											</h2>
+											</h2>`+selectorCamposTexto+`
 											<!--span class="material-icons arrow">keyboard_arrow_down</span-->
 										</div>	
 										<div class="content-wrap">
@@ -315,6 +323,7 @@ function printFreeText(id, data){
 							</article>`;
 				html += html2;
 			}
+			contador++;
 		}			
 		html += `						</div>
 									</div>
@@ -412,14 +421,15 @@ edicionCV.printPersonalData=function(id, data) {
 												<div class="resource-list-wrap">
 													<article class="resource success" >
 														<div class="custom-control custom-checkbox">
-															<input type="checkbox" class="custom-control-input" id="check_resource_${data.sections[0].items[seccion].identifier}"  value="${data.sections[0].items[seccion].identifier}">
+															<input type="checkbox" class="custom-control-input" id="check_resource_${data.sections[0].items[seccion].identifier}"  value="${data.sections[0].items[seccion].identifier}_${contador}">
 															<label class="custom-control-label" for="check_resource_${data.sections[0].items[seccion].identifier}"></label>
 														</div>
 														<div class="wrap">
 															<div class="middle-wrap">
 																<div class="title-wrap">
-																	<h2 class="resource-title">Datos de identificación</h2>
-																</div>
+																	<h2 class="resource-title">Datos de identificación</h2>`
+																	+selectorCamposTexto+
+																`</div>
 																<div class="content-wrap">
 																	<div class="description-wrap">
 																		<p>${nombre}</p>
@@ -435,6 +445,7 @@ edicionCV.printPersonalData=function(id, data) {
 								</div>
 							</div>
 						</div>	`;
+			contador++;
 			 return html;
 		 }
 	}
@@ -541,7 +552,7 @@ edicionCV.printHtmlListItem= function(id, data) {
 	if(data.title!= null){
 		htmlListItem = `<article class="resource success ${openAccess}" >
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}">
+									<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
 									<label class="custom-control-label" for="check_resource_${id}"></label>
 								</div>
 								<div class="wrap">
@@ -568,5 +579,6 @@ edicionCV.printHtmlListItem= function(id, data) {
 								</div>
 							</article>`;
 	}
+	contador++;
 	return htmlListItem;
 };

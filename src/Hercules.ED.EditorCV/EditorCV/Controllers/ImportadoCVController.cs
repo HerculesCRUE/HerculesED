@@ -18,6 +18,7 @@ using EditorCV.Models.PreimportModels;
 using System.Text.Json;
 using System.Xml.Serialization;
 using System.IO;
+using System.Text;
 
 namespace EditorCV.Controllers
 {
@@ -50,10 +51,15 @@ namespace EditorCV.Controllers
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
                 ConcurrentDictionary<int, Models.API.Response.Tab> respuesta =  accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
 
-                //Añado el archivo en la posicion 99 de la respuesta.
+                //Añado el archivoXML en la posicion 99 de la respuesta.
                 Models.API.Response.Tab tab = new Models.API.Response.Tab();
                 tab.title = preimport.cvn_xml;
                 respuesta.TryAdd(99, tab);
+
+                //Añado XML de preimportacion en la posicion 100 de la respuesta.
+                Models.API.Response.Tab tabPreimportar = new Models.API.Response.Tab();
+                tabPreimportar.title = preimport.cvn_preimportar;
+                respuesta.TryAdd(100, tabPreimportar);
 
                 return Ok(respuesta);
             }
@@ -64,7 +70,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("PostimportarCV")]
-        public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string listaId, [FromForm] string listaOpcionSeleccionados)
+        public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string filePreimport, [FromForm] string listaId, [FromForm] string listaOpcionSeleccionados)
         {
             try
             {
@@ -105,16 +111,10 @@ namespace EditorCV.Controllers
                     }
                 }
 
-                XmlSerializer ser = new XmlSerializer(typeof(Preimport));
-                Preimport preimport = new Preimport();
-                using (TextReader reader = new StringReader(fileData))
-                {
-                    // Call the Deserialize method to restore the object's state.
-                    preimport = (Preimport)ser.Deserialize(reader);
-                }
+                byte[] file = Encoding.UTF8.GetBytes(fileData);
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion();                
-                accionesImportacion.PostimportarCV(_Configuracion, pCVId, preimport, listadoId, dicOpciones);
+                accionesImportacion.PostimportarCV(_Configuracion, pCVId, file, filePreimport, listadoId, dicOpciones);
 
                 return Ok();
             }

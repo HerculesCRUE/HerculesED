@@ -66,8 +66,8 @@ var edicionCV = {
         var that = this;
         $('div[about="' + entityID + '"] .col-12.col-contenido').empty();
         MostrarUpdateProgress();
-
-        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang, null, function(data) {
+		
+        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
 			
@@ -86,40 +86,66 @@ var edicionCV = {
 				
 				//reseteamos la url
 				history.pushState(null, '', document.location.origin+document.location.pathname);
-			}		
+			}
+        });
+        return;
+    },//Métodos de pestañas
+    completeTab: function(entityID, rdfType,section) {
+        var that = this;
+		MostrarUpdateProgress();
+        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection="+section, null, function(data) {
+			if(rdfType==$('div.tab-pane.active>div.cvTab').attr('rdftype'))
+			{
+				that.printTab(entityID, data,section);
+				OcultarUpdateProgress();
+				if(data.sections.length>section+1)
+				{
+					that.completeTab(entityID,rdfType,section+1);
+				}
+			}
+				
         });
         return;
     },
-    printTab: function(entityID, data) {
+    printTab: function(entityID, data,section) {
 		var that=this;
 		if (data.entityID != null) {
 			$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
 		} else {
 			for (var i = 0; i < data.sections.length; i++) {	
-				$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));				
-				if (data.sections[i].items != null) {
-					this.repintarListadoTab(data.sections[i].identifier,true);
-				} else if (data.sections[i].item != null) {
-					that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[about="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
-					//Si no tiene ningun campo valor se repliega
-					var plegar=true;
-					$('div[section="' + data.sections[i].identifier+'"] input').each(function() {
-						if($(this).val()!='')
+				if(section==null)
+				{
+					$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));	
+				}else if(data.sections[i].identifier==section)
+				{
+					$('div[about="' + entityID + '"] .col-12.col-contenido div[section="'+data.sections[i].identifier+'"]').replaceWith(this.printTabSection(data.sections[i]));
+				}
+				if(section==null || data.sections[i].identifier==section)
+				{
+					if (data.sections[i].items != null) {
+						this.repintarListadoTab(data.sections[i].identifier,true);
+					} else if (data.sections[i].item != null) {
+						that.printSectionItem(data.sections[i].item.idContenedor, data.sections[i].item, data.sections[i].identifier, $('div[about="' + entityID + '"]').attr('rdftype'), data.sections[i].item.entityID);
+						//Si no tiene ningun campo valor se repliega
+						var plegar=true;
+						$('div[section="' + data.sections[i].identifier+'"] input').each(function() {
+							if($(this).val()!='')
+							{
+								plegar=false;
+							}
+						});
+						//
+						$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
+							if($(this).html()!='')
+							{
+								plegar=false;
+							}
+						});
+						if(plegar)
 						{
-							plegar=false;
+							$('div[section="' + data.sections[i].identifier+'"] .panel-collapse.collapse').removeClass('show');
+							$('div[section="' + data.sections[i].identifier+'"] .panel-heading a').attr('aria-expanded','false');
 						}
-					});
-                    //
-					$('div[section="' + data.sections[i].identifier+'"] div.visuell-view').each(function() {
-						if($(this).html()!='')
-						{
-							plegar=false;
-						}
-					});
-					if(plegar)
-					{
-						$('div[section="' + data.sections[i].identifier+'"] .panel-collapse.collapse').removeClass('show');
-						$('div[section="' + data.sections[i].identifier+'"] .panel-heading a').attr('aria-expanded','false');
 					}
 				}
 			}
@@ -280,8 +306,13 @@ var edicionCV = {
 
         var expanded = "";
         var show = "";
-        if (data.items != null) {
-            if (Object.keys(data.items).length > 0) {
+        if (data.items != null) {			
+			var tieneElementosCargados=Object.values(data.items).some(function (item) {				
+				return item!=null;				
+			});
+			var tieneItems=Object.keys(data.items).length > 0;
+            //if (Object.keys(data.items).length > 0) {
+			if(tieneElementosCargados){
                 //Desplegado
                 expanded = "true";
                 show = "show";
@@ -289,9 +320,22 @@ var edicionCV = {
                 //No desplegado	
                 expanded = "false";
             }
+			
+			var htmlListItems='';
+			if(tieneElementosCargados)
+			{
+				htmlListItems=this.printHtmlListItems(data.items);
+			}
+			
+			var notLoaded='';
+			if(tieneItems && !tieneElementosCargados)
+			{
+				notLoaded='notLoaded';
+			}
+			
             //TODO texto ver items
             var htmlSection = `
-			<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
+			<div class="panel-group pmd-accordion ${notLoaded}" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
 				<div class="panel">
 					<div class="panel-heading" role="tab" id="publicaciones-tab">
 						<p class="panel-title">
@@ -332,7 +376,7 @@ var edicionCV = {
 							</div>                        
 							<div class="resource-list listView">
 								<div class="resource-list-wrap">
-									${this.printHtmlListItems(data.items)}
+									${htmlListItems}
 									<div class="panNavegador">
 										<div class="items dropdown">
 											<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
@@ -820,7 +864,11 @@ var edicionCV = {
         } else {
             $('div[section="' + id + '"] .pagination.arrows').append(`<li><a href="javascript: void(0)" page="${(paginaActual + 1)}" class="ultimaPagina">Página siguiente</a></li>`);
         }
-        $('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');     
+		
+		if(!$('div[section="' + id + '"]').hasClass('notLoaded'))		
+		{		
+			$('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');     
+		}
 		if(noEngancharComportamientosCV==null || !noEngancharComportamientosCV)
 		{
 			this.engancharComportamientosCV();				
@@ -3565,6 +3613,13 @@ var edicionCV = {
         document.removeEventListener('selectionchange', selectionChange);
         document.addEventListener('selectionchange', selectionChange);
 
+		//Comportamiento desplegar sección no cargada
+		$('div.panel-group.pmd-accordion.notLoaded').off('click').on('click', function(e) {
+			var about= $(this).closest('.cvTab').attr('about');
+			var rdftype= $(this).closest('.cvTab').attr('rdftype');
+			var section= $(this).attr('section');
+			that.completeTab(about,rdftype,section);
+        });
         return;
     },
     validarFormulario: function(formulario, contenedor) {

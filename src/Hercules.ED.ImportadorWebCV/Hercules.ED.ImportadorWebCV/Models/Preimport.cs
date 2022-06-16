@@ -12,7 +12,9 @@ namespace Hercules.ED.ImportadorWebCV.Models
         /// Array de apartados del CV
         /// </summary>
         public List<Subseccion> secciones { get; set; }
-        public string cvn_xml { get; set; }
+        public byte[] cvn_xml { get; set; }
+        public string cvn_preimportar { get; set; }
+
         public Preimport(List<Subseccion> subsecciones)
         {
             this.secciones = subsecciones;

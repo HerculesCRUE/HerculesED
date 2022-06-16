@@ -155,7 +155,7 @@ namespace EditorCV.Models
             UpdateMultilangProperties(propiedadesActuales, propiedadesNuevas, entityCV, entityDestino);
 
             //Si la entidaad no está referenciada desde ningún CV se elimina también la entidad
-            if (mResourceApi.VirtuosoQuery("select ?s", "where{?s ?p <" + entityDestino + ">}", "curriculumvitae").results.bindings.Count == 0)
+            if (mResourceApi.VirtuosoQuery("select ?cv", @$"where{{?cv a <http://w3id.org/roh/CV>. ?cv ?p1 ?lv1.?lv1 ?p2 ?lv2. ?lv2 ?p3 <{ entityDestino}>}}", "curriculumvitae").results.bindings.Count == 0)
             {
                 try
                 {
@@ -173,7 +173,7 @@ namespace EditorCV.Models
             tiposDesnormalizar.Add("Group_", DenormalizerItemQueue.ItemType.group);
             tiposDesnormalizar.Add("Project_", DenormalizerItemQueue.ItemType.project);
             string claveDiccionario = tiposDesnormalizar.Keys.Where(x => entityDestino.Contains(x)).FirstOrDefault();
-            if (tiposDesnormalizar.ContainsKey(claveDiccionario))
+            if (claveDiccionario!=null && tiposDesnormalizar.ContainsKey(claveDiccionario))
             {
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[claveDiccionario], new HashSet<string> { entityDestino }));
             }

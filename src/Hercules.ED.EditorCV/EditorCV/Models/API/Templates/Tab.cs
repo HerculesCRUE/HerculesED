@@ -119,6 +119,23 @@ namespace EditorCV.Models.API.Templates
                     throw new Exception("No está implementado la presentación del tipo " + presentation.type);
             }
         }
+
+        /// <summary>
+        /// Genera el PropertyData para recuperar los datos de los contadores
+        /// </summary>
+        /// <param name="pGraph">grafo</param>
+        /// <returns></returns>
+        public Utils.PropertyData GenerarPropertyDataContadores(string pGraph)
+        {
+
+            Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+            propertyDataListItems.property = this.property;
+            //Eliminamos 'ispublic'
+            propertyDataListItems.childs.RemoveAll(x => x.property == "http://w3id.org/roh/isPublic");
+            //Nos quedamos sólo con el relatedBy
+            propertyDataListItems.childs.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy").childs = null;
+            return propertyDataListItems;
+        }
     }
 
     /// <summary>
