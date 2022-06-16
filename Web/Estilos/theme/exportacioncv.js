@@ -324,9 +324,7 @@ function printFreeText(id, data){
 								<div class="wrap">
 									<div class="middle-wrap">
 										<div class="title-wrap">
-											<h2 class="resource-title">
-												<a href="#" data-id="${id}" internal-id="${data.sections[0].item.entityID}">${secciones[i].properties[0].title}</a>
-											</h2>
+											<h2 class="resource-title">${secciones[i].properties[0].title}</h2>
 										</div>
 										<div class="content-wrap">
 											<div class="description-wrap">
