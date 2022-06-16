@@ -113,7 +113,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Actualizamos la entidad
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
-                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/GeneralQualityIndicatorCV_"))
                 {
                     listadoIdBBDD.RemoveAt(0);
                 }
