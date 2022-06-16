@@ -65,14 +65,6 @@
 {
 
 
-
-
-
-
-
-
-
-
     <div class="col col-12 col-xl-12 col-contenido">
         <div class="wrapCol">
             <div class="cabecera-ficha">
@@ -418,7 +410,7 @@
                             <div class="form-group full-group">
                                 <label class="control-label d-block">@Html.Translate("CONFIRMACION_BORRAR_OFERTA")</label>
                                 <div class="form-actions">
-                                    <a href="javascript: borraroferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
+                                    <a href="javascript: borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
                                 </div>
                             </div>
                         </div>
@@ -547,9 +539,9 @@
 
     // Datos gráfica áreas temáticas
     function borrarOferta() {
-        var url = url_servicio_externo + "Oferta/borrarOferta"
+        var url = url_servicio_externo + "Ofertas/BorrarOferta"
         var arg = {};
-        arg.id = "@pOffer.GNOSSID"
+        arg.pIdOfferId = "@pOffer.GNOSSID"
         $.get(url, arg, function (data) {
             window.location = "@Comunidad.Url/@Html.Translate("OFERTA_URL")"
         });
