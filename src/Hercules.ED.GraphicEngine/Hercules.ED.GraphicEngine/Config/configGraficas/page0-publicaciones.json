@@ -152,7 +152,7 @@
         "es": "Número de publicaciones por grupo"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 12,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
