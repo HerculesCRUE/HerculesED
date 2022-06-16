@@ -15,7 +15,8 @@ import logging
 import json
 import pdb
 
-logger = logging.getLogger(__name__)
+logging.basicConfig()
+logger = logging.getLogger('SIMILARITY_API')
 logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__)

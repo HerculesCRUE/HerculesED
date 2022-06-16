@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import logging
 
+logger = logging.getLogger('SIMILARITY_API')
+
 RO_TYPES = ['research_paper', 'code_project', 'protocol']
 
 # Storage interfaces
@@ -66,7 +68,7 @@ class RO:
         self.specific_descriptors = []
 
     def ro_pair_valid(self, ro: "RO") -> bool:
-        pass
+        return True
 
     def distance(self, ro: "RO") -> float:
         pass
@@ -96,6 +98,3 @@ def add_ro(ro: RO, ro_db: ROStorage, ro_cache: ROCache) -> None:
 def get_ro_ranking(ro_id: str, target_ro_type: str, ro_db: ROStorage) -> list:
 
     pass
-
-
-

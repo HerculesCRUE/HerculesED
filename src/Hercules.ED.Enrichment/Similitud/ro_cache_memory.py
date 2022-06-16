@@ -3,19 +3,23 @@ import similarity
 class MemoryROCache(similarity.ROCache):
 
     def __init__(self):
-        pass
+        self.ros = {}
 
     def add_ro(self, ro: similarity.RO) -> None:
-        pass
+        self.ros[ro.id] = {
+            'id': ro.id,
+            'embedding': ro.embedding,
+            'ranking': ro.ranking,
+        }
 
     def update_ro_ranking(self, ro: similarity.RO) -> None:
-        pass
+        self.ros[ro.id].ranking = ro.ranking
 
     def get_ro(self, ro_id) -> similarity.RO:
-        pass
+        return self.ros[ro_id]
 
     def get_ranking(self, ro_id) -> similarity.Ranking:
-        pass
+        return self.ros[ro_id].ranking
 
     def iterator(self):
-        pass
+        return self.ros.values()
