@@ -862,19 +862,23 @@ var metricas = {
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
         //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
 
-        if ((canvasSize < 550 && horizontal) || (canvasSize < 1100 && !horizontal)) {
+        console.log(data);
+        if ((canvasSize < 550 && horizontal) || (canvasSize < (barSize < 100 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
             if (barSize < 100) {
                 $(ctx).parents(".modal-content").css("height", "auto");
                 $(ctx).parents(".modal-content").css("display", "block");
             }
+            scrollContainer.style.height = "auto";
             graficaContainer.classList.add("small");
 
             if (horizontal) { // estilos horizonales
-                chartAreaWrapper.style.height = canvasSize + 100 + "px";
-                scrollContainer.style.height =  "auto";
+                chartAreaWrapper.style.height = "546px";
                 scrollContainer.style.overflowY = "hidden";
-            }else{
-                chartAreaWrapper.style.height  = "546px";
+
+
+            } else {
+                chartAreaWrapper.style.height = "546px";
+                scrollContainer.style.overflowX = "hidden";
             }
 
             var myChart = new Chart(ctx, data);
@@ -886,13 +890,12 @@ var metricas = {
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
 
-            
+
             if (horizontal) {
                 ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
             } else {// -- vertical
                 //myChart.canvas.parentNode.style.width = canvasSize + 'px';
                 ctx.parentNode.style.height = 100 + '%'; //se escala la altura //css done
-                
                 ctx.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
 
             }
@@ -977,7 +980,6 @@ var metricas = {
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         /*data.options.maintainAspectRatio = false;
         data.options.responsive = true;*/
-
         var scale = window.devicePixelRatio;
 
         //anchura y altura del recorte de la grafica
