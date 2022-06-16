@@ -347,7 +347,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
 
             int contadoPubScopus = 1;
@@ -504,7 +504,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
 
             int contadorPubOpenAire = 1;
@@ -641,7 +641,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
-
+                Log.Error(e.Message);
             }
 
             //string info = JsonConvert.SerializeObject(resultado);
