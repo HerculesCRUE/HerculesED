@@ -152,7 +152,7 @@
         "es": "Número de publicaciones por grupo"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 12,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
@@ -184,7 +184,7 @@
         "es": "Publicaciones por convocatoria de proyecto"
       },
       "tipo": "Barras",
-      "anchura": 13,
+      "anchura": 12,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:conductedBy@@@roh:title",
@@ -250,7 +250,7 @@
         "es": "Publicaciones por ámbito de proyecto"
       },
       "tipo": "Barras",
-      "anchura": 23,
+      "anchura": 12,
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
