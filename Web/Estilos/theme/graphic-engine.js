@@ -7,6 +7,8 @@ var maxYear;
 // Lista de páginas
 // ID de la página actual.
 var idPaginaActual = "";
+var tituloPaginaActual;
+var ordenPaginaActual;
 // ID de la gráfica seleccionada.
 var idGraficaActual = "";
 var tituloActual;
@@ -1421,6 +1423,7 @@ var metricas = {
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
+
         $('a.editargrafica')
             .unbind()
             .click(function (e) {
@@ -1453,22 +1456,42 @@ var metricas = {
                     $("#idSelectorOrden").val(ordenActual).change();
                 });
             });
+
         $('a.editarpagina')
             .unbind()
             .click(function (e) {
                 // Limpia los campos.
                 $("#labelTituloPagina").val("");
-                $("#idSelectorOrden").empty();
-
-
-                // Rellena los campos
-
+                $("#idSelectorOrdenPg").empty();
+                // Leer páginas
+                var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"
+                var arg = {};
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+                var orden = 1;
+                // Petición para obtener los datos de la página.
+                $.get(url, arg, function (listaData) {
+                    listaData.forEach(data => {
+                        if (data.idRecurso == idPaginaActual) {
+                            tituloPaginaActual = data.titulo;
+                            ordenPaginaActual = data.orden;
+                        }
+                        $('#idSelectorOrdenPg').append(`
+                            <option value="${orden}">${orden}</option>    
+                        `)
+                        orden++;
+                    });
+                    // Rellena los campos
+                    $("#labelTituloPagina").val(tituloPaginaActual);
+                    $("#idSelectorOrdenPg").val(ordenPaginaActual).change();
+                });
             });
+
         $('a.eliminargrafica')
             .unbind()
             .click(function (e) {
                 idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
             });
+
         $('a.eliminar')
             .unbind()
             .click(function (e) {
@@ -1487,6 +1510,24 @@ var metricas = {
                     location.reload();
                 });
             });
+            
+        $('a.eliminarpg')
+            .unbind()
+            .click(function (e) {
+                // Leer paginas de usuario
+                var idUsuario = $('.inpt_usuarioID').attr('value');
+                var idPagina = idPaginaActual;
+                var url = url_servicio_graphicengine + "BorrarPagina"; //"https://localhost:44352/BorrarPagina"
+                var arg = {};
+                arg.pUserId = idUsuario;
+                arg.pPageID = idPagina;
+
+                // Petición para eliminar la página.
+                $.get(url, arg, function (listaData) {
+                    location.reload();
+                });
+            });
+
         $('a.guardar')
             .unbind()
             .click(function (e) {
@@ -1540,9 +1581,34 @@ var metricas = {
 
                 });
             });
+        $('#btnGuardarEditPagina')
+            .unbind()
+            .click(function (e) {
+                var user = $('.inpt_usuarioID').attr('value');
+                var url = url_servicio_graphicengine + "EditarNombrePagina"; //"https://localhost:44352/EditarNombrePagina"
+                var arg = {};
+                arg.pUserId = user;
+                arg.pPageID = idPaginaActual;
+                arg.pNewTitle = $('#labelTituloPagina').val();
+                arg.pOldTitle = tituloPaginaActual;
+
+                $.get(url, arg, function () {
+                    var urlOrd = url_servicio_graphicengine + "EditarOrdenPagina"; //"https://localhost:44352/EditarOrdenPagina"
+                    var argOrd = {};
+                    argOrd.pUserId = user;
+                    argOrd.pPageID = idPaginaActual;
+                    argOrd.pNewOrder = $('#idSelectorOrdenPg option:selected').val();
+                    argOrd.pOldOrder = ordenPaginaActual;
+
+                    $.get(urlOrd, argOrd, function () {
+                        location.reload();
+                    });
+                });
+            });
         $('#btnGuardarEditGrafica')
             .unbind()
             .click(function (e) {
+                var user = $('.inpt_usuarioID').attr('value');
                 var url = url_servicio_graphicengine + "EditarNombreGrafica"; //"https://localhost:44352/EditarNombreGrafica"
                 var arg = {};
                 arg.pUserId = $('.inpt_usuarioID').attr('value');
@@ -1554,7 +1620,7 @@ var metricas = {
                 $.get(url, arg, function () {
                     var urlOrd = url_servicio_graphicengine + "EditarOrdenGrafica"; //"https://localhost:44352/EditarOrdenGrafica"
                     var argOrd = {};
-                    argOrd.pUserId = $('.inpt_usuarioID').attr('value');
+                    argOrd.pUserId = user;
                     argOrd.pPageID = idPaginaActual;
                     argOrd.pGraphicID = idGraficaActual;
                     argOrd.pNewOrder = $('#idSelectorOrden option:selected').val();
@@ -1563,7 +1629,7 @@ var metricas = {
                     $.get(urlOrd, argOrd, function () {
                         var urlAnch = url_servicio_graphicengine + "EditarAnchuraGrafica"; //"https://localhost:44352/EditarAnchuraGrafica"
                         var argAnch = {};
-                        argAnch.pUserId = $('.inpt_usuarioID').attr('value');
+                        argAnch.pUserId = user;
                         argAnch.pPageID = idPaginaActual;
                         argAnch.pGraphicID = idGraficaActual;
                         argAnch.pNewWidth = $('#idSelectorTamanyo option:selected').val();
@@ -1662,7 +1728,6 @@ var metricas = {
         $("div.zoom")
             .unbind()
             .click(function (e) {
-
                 // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
                 var idgrafica = (canvas).parents('div.grafica').attr("tipografica") || (canvas).parents('div.grafica').attr("idgrafica");
