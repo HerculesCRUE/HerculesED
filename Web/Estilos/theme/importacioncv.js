@@ -129,7 +129,7 @@ var importarCVN = {
 		return;
     },	
 	importarCV: function(listaId, listaOpcionSeleccionados) {
-		MostrarUpdateProgress();
+		MostrarUpdateProgressTime(0);
 		var that = this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
