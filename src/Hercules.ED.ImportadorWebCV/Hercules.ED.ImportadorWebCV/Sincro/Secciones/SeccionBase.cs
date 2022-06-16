@@ -469,8 +469,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="pPropertyCV"></param>
         /// <param name="pRdfTypeCV"></param>
         protected void AniadirModificarPublicaciones(List<Entity> listadoAux, Dictionary<string, HashSet<string>> equivalencias, string propTitle,
-            string graph, string rdfType, string rdfTypePrefix,
-            List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV)
+            string graph, string rdfType, string rdfTypePrefix, List<string> propiedadesItem, string RdfTypeTab,
+            [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] List<string> listadoIdBBDD)
         {
             //Diccionario para almacenar las notificaciones
             ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
@@ -608,17 +608,191 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string idXML = entityXML.id;
                 string idBBDD = "";
                 bool modificado = false;
-                if (string.IsNullOrEmpty(equivalenciasDocumentos[idXML]))
+                if (listadoIdBBDD != null)
                 {
-                    //Añadir
-                    entityXML.id = "";
-                    entityXML.propTitle = propTitle;
-                    entityXML.ontology = graph;
-                    entityXML.rdfType = rdfType;
-                    idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
-                    if (!string.IsNullOrEmpty(idBBDD))
+                    string opcion = listadoIdBBDD.ElementAt(i).Split("@@@").Last();
+                    if (opcion.Equals("du"))
                     {
-                        modificado = true;
+                        //Añadir
+                        entityXML.id = "";
+                        entityXML.propTitle = propTitle;
+                        entityXML.ontology = graph;
+                        entityXML.rdfType = rdfType;
+                        idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                        if (!string.IsNullOrEmpty(idBBDD))
+                        {
+                            modificado = true;
+                            //Notificar
+                            if (entityXML.autores != null)
+                            {
+                                foreach (Persona autor in entityXML.autores)
+                                {
+                                    //No notifico a quien suben el documento
+                                    if (equivalencias.ContainsKey(idPersona))
+                                    {
+                                        idPersona = equivalencias[idPersona].First();
+                                        if (autor.ID == idPersona.Split("|").Last())
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    //Compruebo que la persona propietaria de la notificación está en BBDD
+                                    if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                    {
+                                        continue;
+                                    }
+
+                                    Notification notificacion = new Notification();
+                                    notificacion.IdRoh_trigger = idPersona;
+                                    notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                    notificacion.Roh_entity = idBBDD;
+                                    notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                    notificacion.Dct_issued = DateTime.Now;
+                                    notificacion.Roh_type = "create";
+                                    notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                        .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
+
+                                    notificaciones.Add(notificacion);
+                                }
+                            }
+                        }
+
+                        listadoIdBBDD.RemoveAt(i);
+                    }
+                    if (opcion.Equals("fu"))
+                    {
+                        //Fusionar
+                        idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").First();
+                        modificado = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
+
+                        //Notificar
+                        if (entityXML.autores != null)
+                        {
+                            foreach (Persona autor in entityXML.autores)
+                            {
+                                //No notifico a quien suben el documento
+                                if (equivalencias.ContainsKey(idPersona))
+                                {
+                                    idPersona = equivalencias[idPersona].First();
+                                    if (autor.ID == idPersona.Split("|").Last())
+                                    {
+                                        continue;
+                                    }
+                                }
+                                //Compruebo que la persona propietaria de la notificación está en BBDD
+                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                {
+                                    continue;
+                                }
+
+                                Notification notificacion = new Notification();
+                                notificacion.IdRoh_trigger = idPersona;
+                                notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                notificacion.Roh_entity = idBBDD;
+                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.Dct_issued = DateTime.Now;
+                                notificacion.Roh_type = "edit";
+                                notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                    .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
+
+                                notificaciones.Add(notificacion);
+                            }
+                        }
+
+                        listadoIdBBDD.RemoveAt(i);
+                    }
+                    if (opcion.Equals("so"))
+                    {
+                        //Sobrescribir
+                        idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").First();
+                        modificado = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
+
+                        //Notificar
+                        if (entityXML.autores != null)
+                        {
+                            foreach (Persona autor in entityXML.autores)
+                            {
+                                //No notifico a quien suben el documento
+                                if (equivalencias.ContainsKey(idPersona))
+                                {
+                                    idPersona = equivalencias[idPersona].First();
+                                    if (autor.ID == idPersona.Split("|").Last())
+                                    {
+                                        continue;
+                                    }
+                                }
+                                //Compruebo que la persona propietaria de la notificación está en BBDD
+                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                {
+                                    continue;
+                                }
+
+                                Notification notificacion = new Notification();
+                                notificacion.IdRoh_trigger = idPersona;
+                                notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                notificacion.Roh_entity = idBBDD;
+                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.Dct_issued = DateTime.Now;
+                                notificacion.Roh_type = "edit";
+                                notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                    .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
+
+                                notificaciones.Add(notificacion);
+                            }
+                        }
+
+                        listadoIdBBDD.RemoveAt(i);
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(equivalenciasDocumentos[idXML]))
+                    {
+                        //Añadir
+                        entityXML.id = "";
+                        entityXML.propTitle = propTitle;
+                        entityXML.ontology = graph;
+                        entityXML.rdfType = rdfType;
+                        idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                        if (!string.IsNullOrEmpty(idBBDD))
+                        {
+                            modificado = true;
+                            //Notificar
+                            foreach (Persona autor in entityXML.autores)
+                            {
+                                //No notifico a quien suben el documento
+                                if (autor.personid == idPersona)
+                                {
+                                    continue;
+                                }
+                                //Compruebo que la persona propietaria de la notificación está en BBDD
+                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                {
+                                    continue;
+                                }
+
+                                Notification notificacion = new Notification();
+                                notificacion.IdRoh_trigger = idPersona;
+                                notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                notificacion.Roh_entity = idBBDD;
+                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.Dct_issued = DateTime.Now;
+                                notificacion.Roh_type = "create";
+                                notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                    .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
+
+                                notificaciones.Add(notificacion);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //Modificar
+                        modificado = ModificarExistentes(equivalenciasDocumentos, idXML, graph, propTitle, entityXML);
+
+                        //Añadimos la referencia a BBDD para usarla en caso de añadir elementos en el CV.
+                        idBBDD = equivalenciasDocumentos[idXML];
+
                         //Notificar
                         foreach (Persona autor in entityXML.autores)
                         {
@@ -639,7 +813,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             notificacion.Roh_entity = idBBDD;
                             notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
                             notificacion.Dct_issued = DateTime.Now;
-                            notificacion.Roh_type = "create";
+                            notificacion.Roh_type = "edit";
                             notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
                                 .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
@@ -647,42 +821,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         }
                     }
                 }
-                else
-                {
-                    //Modificar
-                    modificado = ModificarExistentes(equivalenciasDocumentos, idXML, graph, propTitle, entityXML);
-
-                    //Añadimos la referencia a BBDD para usarla en caso de añadir elementos en el CV.
-                    idBBDD = equivalenciasDocumentos[idXML];
-
-                    //Notificar
-                    foreach (Persona autor in entityXML.autores)
-                    {
-                        //No notifico a quien suben el documento
-                        if (autor.personid == idPersona)
-                        {
-                            continue;
-                        }
-                        //Compruebo que la persona propietaria de la notificación está en BBDD
-                        if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
-                        {
-                            continue;
-                        }
-
-                        Notification notificacion = new Notification();
-                        notificacion.IdRoh_trigger = idPersona;
-                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                        notificacion.Roh_entity = idBBDD;
-                        notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
-                        notificacion.Dct_issued = DateTime.Now;
-                        notificacion.Roh_type = "edit";
-                        notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
-                            .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
-
-                        notificaciones.Add(notificacion);
-                    }
-                }
-
                 if (!string.IsNullOrEmpty(idBBDD))
                 {
                     //Si el documento se ha cargado nuevo o se ha podido modificar añado los autores.
