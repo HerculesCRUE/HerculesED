@@ -25,7 +25,7 @@ namespace Hercules.ED.GraphicEngine.Models
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
         private static List<ConfigModel> mTabTemplates;
-        private const int NUM_HILOS = 1;
+        private const int NUM_HILOS = 5;
 
         #region --- Páginas
         /// <summary>
