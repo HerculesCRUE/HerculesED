@@ -105,8 +105,8 @@ var metricas = {
                 if (graficaContenedor.hasClass("graph-container")) {
                     nodes["pop_" + pIdGrafica] = cy;
 
-                } else {
                     nodes[pIdGrafica] = cy;
+                } else {
 
                 }
                 //var combo = $(ctx).parents("article").find("select");
@@ -1460,7 +1460,6 @@ var metricas = {
                     $("#idSelectorOrden").val(ordenActual).change();
                 });
             });
-
         $('a.editarpagina')
             .unbind()
             .click(function (e) {
