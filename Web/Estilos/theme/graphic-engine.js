@@ -669,9 +669,10 @@ var metricas = {
         // Etiquetas
         $("#panListadoFiltros").children().remove();
         var filtros = decodeURIComponent(ObtenerHash2());
+        filtros = filtros.replaceAll(" & ", "|||");
         var filtrosArray = filtros.split('&');
         for (let i = 0; i < filtrosArray.length; i++) {
-            let filtro = filtrosArray[i];
+            let filtro = filtrosArray[i].replace("|||", " & ");
             let nombre;
             if (filtro === "" || !filtro) {
                 continue;
@@ -1215,15 +1216,17 @@ var metricas = {
             .click(function (e) {
                 var filtroActual = $(this).parent().attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
+                filtros = filtros.replaceAll(" & ", "|||");
                 var filtrosArray = filtros.split('&');
                 filtros = '';
                 var contieneFiltro = false;
                 for (var i = 0; i < filtrosArray.length; i++) {
-                    if (filtrosArray[i] != '') {
-                        if (filtrosArray[i] == filtroActual) {
+                    let filtro = filtrosArray[i].replace("|||", " & ");
+                    if (filtro != '') {
+                        if (filtro == filtroActual) {
                             contieneFiltro = true;
                         } else {
-                            filtros += filtrosArray[i] + '&';
+                            filtros += filtro + '&';
                         }
 
                     }
