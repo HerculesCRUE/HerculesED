@@ -14,9 +14,13 @@ namespace Hercules.ED.ResearcherObjectLoad
        
         static void Main(string[] args)
         {
+            FileLogger.Log($@"Obteniendo mResourceApi...");
             Carga.mResourceApi = mResourceApi;
+            FileLogger.Log($@"Obteniendo mCommunityApi...");
             Carga.mCommunityApi = mCommunityApi;
+            FileLogger.Log($@"ConfigService...");
             Carga.configuracion = new ConfigService();
+            FileLogger.Log($@"Carga.CargaMain...");
             Carga.CargaMain();
         }
 
@@ -25,7 +29,7 @@ namespace Hercules.ED.ResearcherObjectLoad
         /// </summary>
         public static class FileLogger
         {
-            private const string FilePath = "/app/logs/log.txt"; // --- TODO: Sacarlo a archivo de configuración.
+            private const string FilePath = $@"/app/logs/log.txt"; // --- TODO: Sacarlo a archivo de configuración.
 
             /// <summary>
             /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
