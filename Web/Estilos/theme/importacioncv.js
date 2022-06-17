@@ -14,16 +14,18 @@ var importarCVN = {
 		this.filePreimport = '';
 
 		selectorConflictoNoBloqueado = `<select name="itemConflict" >
-												<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
-												<option value="fu">${GetText('CV_FUSIONAR')}</option>
-												<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
-												<option value="du">${GetText('CV_DUPLICAR')}</option>
-											</select>`;
-		selectorConflictoBloqueado = `<select name="itemConflict" >
 											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 											<option value="fu">${GetText('CV_FUSIONAR')}</option>
+											<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
+											
+		selectorConflictoBloqueado = `<select name="itemConflict" >
+										<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
+										<option value="fu">${GetText('CV_FUSIONAR')}</option>
+										<option value="du">${GetText('CV_DUPLICAR')}</option>
+									</select>`;
+										
 		selectorCamposTexto = `<select hidden name="itemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 								</select>`;
@@ -214,23 +216,15 @@ function printCientificProduction(id, data){
 									<div class="resource-list-wrap">
 										<article class="resource success" >
 											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${id2}_${contador}">
-												<label class="custom-control-label" for="check_resource_${id2}"></label>
+												<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].identifier}"  value="${data.items[seccion].identifier}_${contador}">
+												<label class="custom-control-label" for="check_resource_${data.items[seccion].identifier}"></label>
 											</div>
 											<div class="wrap">
 												<div class="middle-wrap">
 													<div class="title-wrap">
 														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
-														+selectorCamposTexto+
-														`<span class="material-icons arrow">keyboard_arrow_down</span>
-													</div>
-													<div class="content-wrap">
-														<div class="description-wrap">
-															<div class="group">
-																<p>${data.items[seccion].title}</p>
-															</div>
-														</div>
-													</div>
+														+selectorCamposTexto+														
+													`</div>
 												</div>
 											</div>
 										</article>
@@ -239,11 +233,12 @@ function printCientificProduction(id, data){
 							</div>
 						</div>
 					</div>`;
+					
+					contador++;
 					}
 		htmlSection += `
 				</div>
 			</div>`;
-			contador++;
 		}
 		return htmlSection;
 	}
@@ -290,11 +285,10 @@ function printFreeText(id, data){
 										</div>
 										<div class="resource-list listView">
 									<div class="resource-list-wrap">`;
-
 		var secciones = data.sections[0].items;
 		for (const seccion in secciones){			
 			//Si no hay datos no pinto esa sección
-			if(secciones[seccion].properties[0].values.length>0 && secciones[seccion].properties[0].values[0].length>0){
+			if(secciones[seccion].properties[0].values.length > 0 && secciones[seccion].properties[0].values[0].length > 0){
 				var id = 'x' + RandomGuid();
 				var valorSeccion = '';
 				if(secciones[seccion].properties[0].values[0]!= null ){
@@ -302,8 +296,8 @@ function printFreeText(id, data){
 				}
 				var html2 = `<article class="resource success">
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${id}_${contador}">
-									<label class="custom-control-label" for="check_resource_${id}"></label>
+									<input type="checkbox" class="custom-control-input" id="check_resource_${secciones[seccion].identifier}_${contador}"  value="${secciones[seccion].identifier}_${contador}">
+									<label class="custom-control-label" for="check_resource_${secciones[seccion].identifier}_${contador}"></label>
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
@@ -414,7 +408,11 @@ edicionCV.printPersonalData=function(id, data) {
 											<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 										</a>
 									</p>
-								</div>
+								</div>`;
+								
+							if(data.sections[0].items[seccion].properties[0].values.length!=0)
+							{
+							html+=`
 								<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 									<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 										<div class="panel-body">
@@ -443,10 +441,12 @@ edicionCV.printPersonalData=function(id, data) {
 											</div>
 										</div>
 									</div>
-								</div>
+							</div>`;
+							contador++;
+							}
+						html += `
 							</div>
-						</div>	`;
-			contador++;
+						</div>`;
 			 return html;
 		 }
 	}

@@ -34,6 +34,12 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
+        /// <summary>
+        /// Servicio de Preimportación del CV
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="File"></param>
+        /// <returns></returns>
         [HttpPost("PreimportarCV")]
         public IActionResult PreimportarCV([Required][FromForm] string userID, [Required] IFormFile File)
         {
@@ -69,6 +75,15 @@ namespace EditorCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Servicio de Postimportación del CV
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="fileData"></param>
+        /// <param name="filePreimport"></param>
+        /// <param name="listaId"></param>
+        /// <param name="listaOpcionSeleccionados"></param>
+        /// <returns></returns>
         [HttpPost("PostimportarCV")]
         public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string filePreimport, [FromForm] string listaId, [FromForm] string listaOpcionSeleccionados)
         {
@@ -88,6 +103,7 @@ namespace EditorCV.Controllers
                 {
                     listadoId = listaId.Split("@@@").ToList();
                 }
+
                 if (!string.IsNullOrEmpty(listaOpcionSeleccionados))
                 {
                     string idOpcion;
@@ -98,16 +114,6 @@ namespace EditorCV.Controllers
                         idOpcion = opcion.Split("|||").First();
                         valueOpcion = opcion.Split("|||").Last();
                         dicOpciones.Add(idOpcion, valueOpcion);
-                    }
-                }
-
-                //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
-                foreach(KeyValuePair<string, string> valuePair in dicOpciones)
-                {
-                    if (valuePair.Value.Equals("ig") && listadoId.Contains(valuePair.Key))
-                    {
-                        listadoId.Remove(valuePair.Key);
-                        dicOpciones.Remove(valuePair.Key);
                     }
                 }
 

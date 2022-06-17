@@ -1,9 +1,8 @@
 {
   "nombre": {
-    "es": "Publicaciones"
+    "es": "Página de EJEMPLO"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
-  "orden": 0,
   "identificador": "123",
   "graficas": [
     {
@@ -60,38 +59,39 @@
         ]
       }
     },
-    //{
-    //  "identificador": "2",
-    //  "nombre": {
-    //    "es": "Número de publicaciones por tipo de actividad científica"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "dc:type@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Publicaciones por tipo"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
+
+    {
+      "identificador": "2",
+      "nombre": {
+        "es": "Número de publicaciones por tipo de actividad científica"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "dc:type@@@dc:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones por tipo"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
     {
       "identificador": "3",
       "nombre": {
@@ -152,7 +152,7 @@
         "es": "Número de publicaciones por grupo"
       },
       "tipo": "Barras",
-      "anchura": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
@@ -211,46 +211,46 @@
         ]
       }
     },
-    //{
-    //  "identificador": "11",
-    //  "nombre": {
-    //    "es": "Publicaciones por tipo de proyecto"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "roh:project@@@roh:projectType@@@dc:title",
-    //    "orderDesc": false,
-    //    "abreviar": true,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de publicaciones"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
+    {
+      "identificador": "11",
+      "nombre": {
+        "es": "Publicaciones por tipo de proyecto"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:project@@@roh:projectType@@@dc:title",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
     {
       "identificador": "12",
       "nombre": {
         "es": "Publicaciones por ámbito de proyecto"
       },
       "tipo": "Barras",
-      "anchura": 12,
+      "anchura": 11,
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
@@ -299,6 +299,7 @@
       },
       "filtro": "vivo:hasPublicationVenue@@@roh:title",
       "numeroItemsFaceta": 10,
+      "verTodos": true,
       "ordenAlfaNum": true
     },
     {

@@ -25,7 +25,7 @@ namespace Hercules.ED.GraphicEngine.Models
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
         private static List<ConfigModel> mTabTemplates;
-        private const int NUM_HILOS = 1;
+        private const int NUM_HILOS = 5;
 
         #region --- Páginas
         /// <summary>
@@ -116,7 +116,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     itemGrafica.identificador = prefijoCircular + "-" + itemGrafica.identificador;
                     configPagina.id = prefijoCircular + "-" + configPagina.id;
-                    
+
                 }
                 if (itemGrafica.config.porcentual && !itemGrafica.identificador.Contains(prefijoPorcentaje))
                 {
@@ -184,7 +184,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             if (configModel != null)
             {
-                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica);
+                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica.Split('-').LastOrDefault());
                 return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
 
@@ -203,6 +203,8 @@ namespace Hercules.ED.GraphicEngine.Models
         public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
+
+
 
             switch (pGrafica.tipo)
             {
@@ -263,7 +265,7 @@ namespace Hercules.ED.GraphicEngine.Models
             }
 
             // Es fecha.
-            if (pListaDates != null && pListaDates.Any())
+            if (pListaDates != null && pListaDates.Any() && pListaDates.Contains(pGrafica.config.ejeX))
             {
                 grafica.isDate = true;
             }
@@ -661,7 +663,7 @@ namespace Hercules.ED.GraphicEngine.Models
             }
 
             // Es fecha.
-            if (pListaDates != null && pListaDates.Any())
+            if (pListaDates != null && pListaDates.Any() && pListaDates.Contains(pGrafica.config.ejeX))
             {
                 grafica.isDate = true;
             }
@@ -1520,6 +1522,12 @@ namespace Hercules.ED.GraphicEngine.Models
                 faceta.isDate = true;
             }
 
+            faceta.verTodos = false;
+            if (pFacetaConf.verTodos)
+            {
+                faceta.verTodos = true;
+            }
+
             faceta.numeroItemsFaceta = int.MaxValue;
             if (pFacetaConf.numeroItemsFaceta != 0)
             {
@@ -1931,7 +1939,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 NewValue = valorBase + pAnchura
             });
 
-            bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);            
+            bool insertado = IncluirTriplesRecurso(mResourceApi, shortId, triplesInclude);
         }
 
         /// <summary>
@@ -2000,7 +2008,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// </summary>
         /// <param name="pUserId">ID del usuario.</param>
         /// <param name="pRecursoId">ID del recurso a borrar el triple.</param>
-        public static void BorrarGrafica(string pUserId,string pPageID, string pGraphicID)
+        public static void BorrarGrafica(string pUserId, string pPageID, string pGraphicID)
         {
             mResourceApi.ChangeOntoly("person");
 
@@ -2015,11 +2023,12 @@ namespace Hercules.ED.GraphicEngine.Models
             triple.Title = false;
             triple.Description = false;
             triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic";
-            triple.Value = pPageID + "|"+ pGraphicID;
+            triple.Value = pPageID + "|" + pGraphicID;
             listaTriplesBorrado.Add(triple);
 
             dicBorrado.Add(guid, listaTriplesBorrado);
             Dictionary<Guid, bool> eliminado = mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+            ReordenarGráficas(pUserId, pPageID);
         }
 
         /// <summary>
@@ -2047,6 +2056,38 @@ namespace Hercules.ED.GraphicEngine.Models
 
             dicBorrado.Add(guid, listaTriplesBorrado);
             Dictionary<Guid, bool> eliminado = mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+            ReordenarPaginas(pUserId);
+        }
+
+        /// <summary>
+        /// Reordena las páginas después de un cambio
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        public static void ReordenarPaginas(string pUserId)
+        {
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            List<DataPageUser> listaPaginas = GetPagesUser(pUserId).OrderBy(x => x.orden).ToList();
+
+            int index = 1;
+            foreach (DataPageUser pagina in listaPaginas)
+            {
+                if (pagina.orden != index)
+                {
+                    TriplesToModify triple = new TriplesToModify();
+                    triple.Predicate = "http://w3id.org/roh/metricPage|http://w3id.org/roh/order";
+                    triple.NewValue = pagina.idRecurso + "|" + index;
+                    triple.OldValue = pagina.idRecurso + "|" + pagina.orden;
+                    listaTriplesModificacion.Add(triple);
+                }
+                index++;
+            }
+
+            dicModificacion.Add(guid, listaTriplesModificacion);
+            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
         }
 
         /// <summary>
@@ -2091,18 +2132,37 @@ namespace Hercules.ED.GraphicEngine.Models
             string idRecurso = GetIdPersonByGnossUser(pUserId);
 
             Guid guid = mResourceApi.GetShortGuid(idRecurso);
-
             Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
             List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-
-            TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = "http://w3id.org/roh/metricPage|http://w3id.org/roh/order";
-            triple.NewValue = pPageID + "|" + pNewOrder;
-            triple.OldValue = pPageID + "|" + pOldOrder;
-            listaTriplesModificacion.Add(triple);
+            List<DataPageUser> listaPaginas = GetPagesUser(pUserId).OrderBy(x => x.orden).ToList();
+            foreach (DataPageUser pagina in listaPaginas)
+            {
+                if (pagina.orden >= pNewOrder && pagina.orden < pOldOrder)
+                {
+                    pagina.orden++;
+                }
+                else if (pagina.orden <= pNewOrder && pagina.orden > pOldOrder)
+                {
+                    pagina.orden--;
+                }
+            }
+            listaPaginas[pOldOrder - 1].orden = pNewOrder;
+            int index = 1;
+            foreach (DataPageUser pagina in listaPaginas)
+            {
+                if (pagina.orden != index)
+                {
+                    TriplesToModify triple = new TriplesToModify();
+                    triple.Predicate = "http://w3id.org/roh/metricPage|http://w3id.org/roh/order";
+                    triple.NewValue = pagina.idRecurso + "|" + pagina.orden;
+                    triple.OldValue = pagina.idRecurso + "|" + index;
+                    listaTriplesModificacion.Add(triple);
+                }
+                index++;
+            }
 
             dicModificacion.Add(guid, listaTriplesModificacion);
-            Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
         }
 
         /// <summary>
@@ -2145,11 +2205,62 @@ namespace Hercules.ED.GraphicEngine.Models
             Guid guid = mResourceApi.GetShortGuid(idRecurso);
             Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
             List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-            TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = $@"http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/order";
-            triple.NewValue = pPageID + "|" + pGraphicID + "|" + pNewOrder;
-            triple.OldValue = pPageID + "|" + pGraphicID + "|" + pOldOrder;
-            listaTriplesModificacion.Add(triple);
+            List<DataGraphicUser> listaGraficas = GetGraficasUserByPageId(pPageID).OrderBy(x => x.orden).ToList();
+            foreach (DataGraphicUser grafica in listaGraficas)
+            {
+                if (grafica.orden >= pNewOrder && grafica.orden < pOldOrder)
+                {
+                    grafica.orden++;
+                }
+                else if (grafica.orden <= pNewOrder && grafica.orden > pOldOrder)
+                {
+                    grafica.orden--;
+                }
+            }
+            listaGraficas[pOldOrder - 1].orden = pNewOrder;
+            int index = 1;
+            foreach (DataGraphicUser grafica in listaGraficas)
+            {
+                if (grafica.orden != index)
+                {
+                    TriplesToModify triple = new TriplesToModify();
+                    triple.Predicate = "http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/order";
+                    triple.NewValue = pPageID + "|" + grafica.idRecurso + "|" + grafica.orden;
+                    triple.OldValue = pPageID + "|" + grafica.idRecurso + "|" + index;
+                    listaTriplesModificacion.Add(triple);
+                }
+                index++;
+            }
+
+            dicModificacion.Add(guid, listaTriplesModificacion);
+            Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+        /// <summary>
+        /// Reordena las gráficas después de un cambio
+        /// </summary>
+        /// <param name="pUserId">ID del usuario.</param>
+        public static void ReordenarGráficas(string pUserId, string pPageID)
+        {
+            string idRecurso = GetIdPersonByGnossUser(pUserId);
+
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            List<DataGraphicUser> listaGraficas = GetGraficasUserByPageId(pPageID).OrderBy(x => x.orden).ToList();
+
+            int index = 1;
+            foreach (DataGraphicUser grafica in listaGraficas)
+            {
+                if (grafica.orden != index)
+                {
+                    TriplesToModify triple = new TriplesToModify();
+                    triple.Predicate = "http://w3id.org/roh/metricPage|http://w3id.org/roh/metricGraphic|http://w3id.org/roh/order";
+                    triple.NewValue = pPageID + "|" + grafica.idRecurso + "|" + index;
+                    triple.OldValue = pPageID + "|" + grafica.idRecurso + "|" + grafica.orden;
+                    listaTriplesModificacion.Add(triple);
+                }
+                index++;
+            }
 
             dicModificacion.Add(guid, listaTriplesModificacion);
             Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);

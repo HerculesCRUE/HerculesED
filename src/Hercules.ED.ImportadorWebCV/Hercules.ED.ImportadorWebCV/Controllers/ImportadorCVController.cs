@@ -95,8 +95,10 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                         xmlPreimporta = sww.ToString();
                     }
                 }
+                //Guardo los datos de Preimport
                 preimportar.cvn_preimportar = xmlPreimporta;
 
+                //Guardo los datos del fichero XML leido para usarlo despues
                 var ms = new MemoryStream();
                 File.CopyTo(ms);
                 byte[] filebytes = ms.ToArray();
@@ -110,6 +112,15 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Servicio de PotImportación del CV
+        /// </summary>
+        /// <param name="pCVID">Identificador del curriculumvitae</param>
+        /// <param name="file">Archivo XML</param>
+        /// <param name="filePreimport">Preimport del archivo XML tras tratarlo en Preimportar</param>
+        /// <param name="listaId">Listado de identificadores de los recursos a añadir</param>
+        /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
+        /// <returns></returns>
         [HttpPost("Postimportar")]
         public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
