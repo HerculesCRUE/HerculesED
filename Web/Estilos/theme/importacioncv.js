@@ -14,16 +14,18 @@ var importarCVN = {
 		this.filePreimport = '';
 
 		selectorConflictoNoBloqueado = `<select name="itemConflict" >
-												<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
-												<option value="fu">${GetText('CV_FUSIONAR')}</option>
-												<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
-												<option value="du">${GetText('CV_DUPLICAR')}</option>
-											</select>`;
-		selectorConflictoBloqueado = `<select name="itemConflict" >
 											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 											<option value="fu">${GetText('CV_FUSIONAR')}</option>
+											<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
+											
+		selectorConflictoBloqueado = `<select name="itemConflict" >
+										<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
+										<option value="fu">${GetText('CV_FUSIONAR')}</option>
+										<option value="du">${GetText('CV_DUPLICAR')}</option>
+									</select>`;
+										
 		selectorCamposTexto = `<select hidden name="itemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 								</select>`;
@@ -290,11 +292,10 @@ function printFreeText(id, data){
 										</div>
 										<div class="resource-list listView">
 									<div class="resource-list-wrap">`;
-
 		var secciones = data.sections[0].items;
 		for (const seccion in secciones){			
 			//Si no hay datos no pinto esa sección
-			if(secciones[seccion].properties[0].values.length>0 && secciones[seccion].properties[0].values[0].length>0){
+			if(secciones[seccion].properties[0].values.length > 0 && secciones[seccion].properties[0].values[0].length > 0){
 				var id = 'x' + RandomGuid();
 				var valorSeccion = '';
 				if(secciones[seccion].properties[0].values[0]!= null ){
@@ -302,8 +303,8 @@ function printFreeText(id, data){
 				}
 				var html2 = `<article class="resource success">
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${id}_${contador}">
-									<label class="custom-control-label" for="check_resource_${id}"></label>
+									<input type="checkbox" class="custom-control-input" id="check_resource_${secciones[seccion].identifier}_${contador}"  value="${secciones[seccion].identifier}_${contador}">
+									<label class="custom-control-label" for="check_resource_${secciones[seccion].identifier}_${contador}"></label>
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
