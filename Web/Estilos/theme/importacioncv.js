@@ -216,23 +216,15 @@ function printCientificProduction(id, data){
 									<div class="resource-list-wrap">
 										<article class="resource success" >
 											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${id2}_${contador}">
-												<label class="custom-control-label" for="check_resource_${id2}"></label>
+												<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].identifier}"  value="${data.items[seccion].identifier}_${contador}">
+												<label class="custom-control-label" for="check_resource_${data.items[seccion].identifier}"></label>
 											</div>
 											<div class="wrap">
 												<div class="middle-wrap">
 													<div class="title-wrap">
 														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
-														+selectorCamposTexto+
-														`<span class="material-icons arrow">keyboard_arrow_down</span>
-													</div>
-													<div class="content-wrap">
-														<div class="description-wrap">
-															<div class="group">
-																<p>${data.items[seccion].title}</p>
-															</div>
-														</div>
-													</div>
+														+selectorCamposTexto+														
+													`</div>
 												</div>
 											</div>
 										</article>
@@ -415,7 +407,11 @@ edicionCV.printPersonalData=function(id, data) {
 											<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 										</a>
 									</p>
-								</div>
+								</div>`;
+								
+							if(data.sections[0].items[seccion].properties[0].values.length!=0)
+							{
+							html+=`
 								<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 									<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 										<div class="panel-body">
@@ -444,7 +440,9 @@ edicionCV.printPersonalData=function(id, data) {
 											</div>
 										</div>
 									</div>
-								</div>
+							</div>`;
+							}
+						html += `
 							</div>
 						</div>	`;
 			contador++;
