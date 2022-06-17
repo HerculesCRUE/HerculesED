@@ -14,13 +14,13 @@ namespace Hercules.ED.ResearcherObjectLoad
        
         static void Main(string[] args)
         {
-            FileLogger.Log($@"Obteniendo mResourceApi...");
+            FileLogger.Log($@"{DateTime.Now} - Obteniendo mResourceApi...");
             Carga.mResourceApi = mResourceApi;
-            FileLogger.Log($@"Obteniendo mCommunityApi...");
+            FileLogger.Log($@"{DateTime.Now} - Obteniendo mCommunityApi...");
             Carga.mCommunityApi = mCommunityApi;
-            FileLogger.Log($@"ConfigService...");
+            FileLogger.Log($@"{DateTime.Now} - ConfigService()...");
             Carga.configuracion = new ConfigService();
-            FileLogger.Log($@"Carga.CargaMain...");
+            FileLogger.Log($@"{DateTime.Now} - Carga.CargaMain()...");
             Carga.CargaMain();
         }
 
