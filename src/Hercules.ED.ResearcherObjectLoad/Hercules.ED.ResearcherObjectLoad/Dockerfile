@@ -10,7 +10,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Hercules.ED.DisambiguationEngine.csproj", ""]
+COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./Hercules.ED.DisambiguationEngine/"]
 COPY ["Hercules.ED.ResearcherObjectLoad.csproj", ""]
 RUN dotnet restore "./Hercules.ED.ResearcherObjectLoad.csproj"
 COPY . .
