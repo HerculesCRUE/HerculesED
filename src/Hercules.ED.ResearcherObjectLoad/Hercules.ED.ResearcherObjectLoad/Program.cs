@@ -9,19 +9,14 @@ namespace Hercules.ED.ResearcherObjectLoad
 {
     class Program
     {
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
-        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
        
         static void Main(string[] args)
         {
-            FileLogger.Log($@"{DateTime.Now} - Obteniendo mResourceApi...");
-            FileLogger.Log($@"{DateTime.Now} - {System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
             Carga.mResourceApi = mResourceApi;
-            FileLogger.Log($@"{DateTime.Now} - Obteniendo mCommunityApi...");
             Carga.mCommunityApi = mCommunityApi;
-            FileLogger.Log($@"{DateTime.Now} - ConfigService()...");
             Carga.configuracion = new ConfigService();
-            FileLogger.Log($@"{DateTime.Now} - Carga.CargaMain()...");
             Carga.CargaMain();
         }
 
