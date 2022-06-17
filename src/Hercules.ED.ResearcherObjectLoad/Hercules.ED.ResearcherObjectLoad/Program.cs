@@ -15,6 +15,7 @@ namespace Hercules.ED.ResearcherObjectLoad
         static void Main(string[] args)
         {
             FileLogger.Log($@"{DateTime.Now} - Obteniendo mResourceApi...");
+            FileLogger.Log($@"{DateTime.Now} - {System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
             Carga.mResourceApi = mResourceApi;
             FileLogger.Log($@"{DateTime.Now} - Obteniendo mCommunityApi...");
             Carga.mCommunityApi = mCommunityApi;
