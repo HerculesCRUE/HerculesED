@@ -233,11 +233,12 @@ function printCientificProduction(id, data){
 							</div>
 						</div>
 					</div>`;
+					
+					contador++;
 					}
 		htmlSection += `
 				</div>
 			</div>`;
-			contador++;
 		}
 		return htmlSection;
 	}
@@ -441,11 +442,11 @@ edicionCV.printPersonalData=function(id, data) {
 										</div>
 									</div>
 							</div>`;
+							contador++;
 							}
 						html += `
 							</div>
-						</div>	`;
-			contador++;
+						</div>`;
 			 return html;
 		 }
 	}

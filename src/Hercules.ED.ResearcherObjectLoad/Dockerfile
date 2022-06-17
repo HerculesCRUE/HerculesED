@@ -1,12 +1,12 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./Hercules.ED.DisambiguationEngine/"]
-COPY ["Hercules.ED.ResearcherObjectLoad/ClasesGeneradas/hercules.csproj", "./Hercules.ED.ResearcherObjectLoad/ClasesGeneradas/"]
+COPY ["ClasesGeneradas/hercules.csproj", "./ClasesGeneradas/"]
 COPY ["Hercules.ED.ResearcherObjectLoad/Hercules.ED.ResearcherObjectLoad.csproj", "./Hercules.ED.ResearcherObjectLoad/"]
 RUN dotnet restore "./Hercules.ED.ResearcherObjectLoad/Hercules.ED.ResearcherObjectLoad.csproj"
 
