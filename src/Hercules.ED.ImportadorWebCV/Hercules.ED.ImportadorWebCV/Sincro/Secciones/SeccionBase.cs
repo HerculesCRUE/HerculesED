@@ -610,6 +610,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string idXML = entityXML.id;
                 string idBBDD = "";
                 bool modificado = false;
+                //Si el listadoIdBBDD no es nulo es que viene de PostImportar
                 if (listadoIdBBDD != null)
                 {
                     string opcion = listadoIdBBDD.ElementAt(i).Split("@@@").Last();
@@ -659,8 +660,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                             }
                         }
 
+                        //Elimino el objeto tratado
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                     if (opcion.Equals("fu"))
                     {
@@ -702,8 +705,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                             }
                         }
 
+                        //Elimino el objeto tratado
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                     if (opcion.Equals("so"))
                     {
@@ -745,8 +750,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                             }
                         }
 
+                        //Elimino el objeto tratado
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                 }
                 else
