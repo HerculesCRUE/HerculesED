@@ -1969,8 +1969,5 @@ var metricas = {
         $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
             that.engancharComportamientos();
         }));
-        $('#panFacetas .open-popup-link-resultados').unbind('.clickresultados').bind("click.clickresultados", (function (event) {
-            that.engancharComportamientos();
-        }));
     }
 }
