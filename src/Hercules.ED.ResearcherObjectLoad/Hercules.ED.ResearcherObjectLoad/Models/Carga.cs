@@ -17,6 +17,7 @@ using Hercules.ED.DisambiguationEngine.Models;
 using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 using System.Collections.Concurrent;
 using Hercules.ED.ResearcherObjectLoad.Utils;
+using static Hercules.ED.ResearcherObjectLoad.Program;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models
 {
@@ -59,6 +60,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
             // Obtención de las categorías.
             Tuple<Dictionary<string, string>, Dictionary<string, string>> tupla = ObtenerDatosTesauro();
+
+            FileLogger.Log($@"Ruta lectura: {pRutaLectura}");
+            FileLogger.Log($@"Ruta escritura: {pRutaEscritura}");
 
             while (true)
             {
