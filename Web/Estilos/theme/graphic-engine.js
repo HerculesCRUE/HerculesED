@@ -303,16 +303,16 @@ var metricas = {
                     <span class="faceta-title">${data.nombre}</span>
                     <span class="facet-arrow"></span><ul class="listadoFacetas"></ul>
                 `);
+                if (data.verTodos) {
+                    $('div[idfaceta="' + data.id + '"]').append(`
+                        <p class="moreResults"><a class="no-close open-popup-link" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
+                    `);
+                }
             }
 
             data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
-                    if (data.verTodos) {
-                        $('div[idfaceta="' + data.id + '"]').append(`
-                            <p class="moreResults"><a class="no-close open-popup-link" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
-                        `);
-                    }
                     return;
                 }
 
@@ -1967,6 +1967,9 @@ var metricas = {
 
         // Agrega el enganche sin sobreescribir la función.
         $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
+            that.engancharComportamientos();
+        }));
+        $('#panFacetas .open-popup-link-resultados').unbind('.clickresultados').bind("click.clickresultados", (function (event) {
             that.engancharComportamientos();
         }));
     }
