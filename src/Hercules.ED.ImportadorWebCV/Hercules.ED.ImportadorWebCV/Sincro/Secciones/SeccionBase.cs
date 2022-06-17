@@ -324,7 +324,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
             List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             HashSet<string> itemsNuevosOModificados = new HashSet<string>();
             for (int i = 0; i < listadoAux.Count; i++)
             {
@@ -345,13 +344,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                         listadoIdBBDD.RemoveAt(i);
                     }
                     //Fusionar
-                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu"))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu") && string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoIdBBDD.RemoveAt(i);
                     }
                     //Sobrescribir
-                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so"))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so") && string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoIdBBDD.RemoveAt(i);

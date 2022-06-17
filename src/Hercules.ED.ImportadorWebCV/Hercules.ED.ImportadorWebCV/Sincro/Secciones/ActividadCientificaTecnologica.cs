@@ -111,12 +111,21 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             else
             {
-                //4º Actualizamos la entidad
-                UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
-                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/GeneralQualityIndicatorCV_"))
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
                 {
-                    listadoIdBBDD.RemoveAt(0);
+                    if (listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/GeneralQualityIndicatorCV_"))
+                    {
+                        //4º Actualizamos la entidad
+                        UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                        listadoIdBBDD.RemoveAt(0);
+                    }
                 }
+                else
+                {
+                    //4º Actualizamos la entidad
+                    UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                }
+                
                 return null;
             }
         }
@@ -128,7 +137,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroPublicacionesDocumentos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -232,7 +240,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroTrabajosCongresos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -337,7 +344,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroTrabajosJornadasSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
