@@ -73,12 +73,11 @@ namespace Hercules.ED.ImportadorWebCV
             {
                 listadoItems.RemoveAt(0);
             }
-            if (listadoItems.ElementAt(0).Items.Count == 0)
-            {
-                listadoItems.RemoveAt(0);
-            }
+            
 
-            string opcionSeleccionada = "";
+            int contadorEliminados = 1;
+            string opcionSeleccionada = "";            
+
             List<CvnItemBean> listadoDuplicar = new List<CvnItemBean>();
             List<CvnItemBean> listadoFusionar = new List<CvnItemBean>();
             List<CvnItemBean> listadoSobrescribir = new List<CvnItemBean>();
@@ -86,15 +85,17 @@ namespace Hercules.ED.ImportadorWebCV
             List<string> listadoFusionarBBDD = new List<string>();
             List<string> listadoSobrescribirBBDD = new List<string>();
             List<string> listadoTextoLibreBBDD = new List<string>();
-            int contadorEliminados = 1;
 
             for (int i = 0; i < listadoItems.Count; i++)
             {
                 if (listadoSubsetionItems.ElementAt(i).propiedades.Count == 0)
                 {
+                    if (listadoItems.ElementAt(i).Items.Count == 0)
+                    {
+                        listadoItems.RemoveAt(i);
+                    }
                     listadoSubsetionItems.RemoveAt(i);
                     i--;
-                    contadorEliminados++;
                     continue;
                 }
                 if (!filtrador.Any(x => x.Item2.Equals((i + contadorEliminados).ToString())))
@@ -106,11 +107,11 @@ namespace Hercules.ED.ImportadorWebCV
                 {
                     if (!listadoSobrescribir.Exists(x => x.Code.Equals("060.010.060.000")))
                     {
-                        listadoSobrescribir.Add(listadoItems.Last());
+                        listadoSobrescribir.Add(listadoItems.ElementAt(i));
                     }
                     if (listadoSubsetionItems.ElementAt(i).idBBDD.StartsWith("http://gnoss.com/items/GeneralQualityIndicatorCV_"))
                     {
-                        listadoSobrescribirBBDD.Add(listadoSubsetionItems.ElementAt(i).idBBDD + "@@@so");                        
+                        listadoSobrescribirBBDD.Add(listadoSubsetionItems.ElementAt(i).idBBDD + "@@@so");
                     }
                     continue;
                 }
@@ -118,6 +119,10 @@ namespace Hercules.ED.ImportadorWebCV
                 {
                     for (int contadorTexto = 0; contadorTexto < 3; contadorTexto++)
                     {
+                        if (!listadoItems.Last().Code.Equals("070.010.000.000"))
+                        {
+                            break;
+                        }
                         if (filtrador.Any(x => x.Item2.Equals((i + contadorEliminados + contadorTexto).ToString())))
                         {
                             if (!listadoSobrescribir.Exists(x => x.Code.Equals("070.010.000.000")))
@@ -130,11 +135,7 @@ namespace Hercules.ED.ImportadorWebCV
                             }
                         }
                     }
-
-                    continue;
                 }
-
-
 
                 opcionSeleccionada = "du";
                 if (dicOpciones.ContainsKey((i + contadorEliminados).ToString()))
@@ -156,8 +157,6 @@ namespace Hercules.ED.ImportadorWebCV
                     listadoSobrescribir.Add(listadoItems.ElementAt(i));
                     listadoSobrescribirBBDD.Add(listadoSubsetionItems.ElementAt(i).idBBDD + "@@@so");
                 }
-
-
             }
 
             cvnRootResultBean duplicadosResultBean = new cvnRootResultBean() { cvnRootBean = listadoDuplicar.ToArray() };
