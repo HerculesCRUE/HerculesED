@@ -74,8 +74,26 @@ class StepsOffer {
 		// STEP 3
 		this.ddlMadurez = this.crearOfertaStep3.find("#ddlMadurez2")
 		this.ddlEncuadre = this.crearOfertaStep3.find("#ddlEncuadre2")
+		this.seleccionLineasInvestigacion = this.crearOfertaStep3.find("#modal-seleccionar-area-tematica-linv")
 		this.maturesStates = undefined
 		this.framingsectors = undefined
+
+
+		// STEP 4
+
+		// Ids de los campos de la sección 4
+		this.listIdsTextsRequired = [
+			"descripcion",
+			"aplicaciones",
+			"destinatarios",
+		]
+		this.listIdsTextsOptional = [
+			"origen",
+			"innovacion",
+			"socios",
+			"colaboracion",
+			"observaciones",
+		]
 		
 
 		// STEP 5
@@ -99,7 +117,7 @@ class StepsOffer {
 		this.modalAreasTematicas = this.body.find('#modal-seleccionar-area-tematica')
 		this.divTesArbol = this.modalAreasTematicas.find('.divTesArbol')
 		this.divTesLista = this.modalAreasTematicas.find('.divTesLista')
-		this.divTesListaCaths = undefined
+		this.divTesListaCats = undefined
 		this.btnSaveAT = this.modalAreasTematicas.find('.btnsave')
 		this.cambiosAreasTematicas = 0
 
@@ -147,26 +165,23 @@ class StepsOffer {
 
 		var _self = this
 
+
+		// Check if we need load the offer
+		var currentUrl = new URL(window.location)
+		_self.ofertaId = currentUrl.searchParams.get("id")
+		if (_self.ofertaId) {
+			// Load the pffer
+			_self.loadOffer().then((res) => {
+
+				// Carga los usuarios del grupo al que perteneces 
+				_self.LoadUsersGroup()
 			
-		// Carga los usuarios del grupo al que perteneces 
-		_self.LoadUsersGroup().then((res) => {
+			})
+		} else {
 
-			// Check if we need load the oferta (after the taxonomies are loaded)
-			var currentUrl = new URL(window.location)
-			_self.ofertaId = currentUrl.searchParams.get("id")
-			if (_self.ofertaId) {
-				// Load the oferta
-				_self.loadOffer()
-			}
-		})
-
-		// Fill taxonomies data
-		// _self.LoadUsersGroup().then((res) => {
-		// 	_self.fillDataTaxonomies(data)
-		// 	_self.dataTaxonomies = data['researcharea']
-
-			
-		// })
+			// Carga los usuarios del grupo al que perteneces 
+			_self.LoadUsersGroup()
+		}
 
 
 		this.topicsM = new ModalSearchTagsOffer()
@@ -178,54 +193,31 @@ class StepsOffer {
 	 */
 	loadOffer() {
 		var _self = this
-		this.callLoadOffer().then((res) => {
-			this.data = res
-			this.editDataSave = res
-			var nameInput = document.getElementById('nombreofertainput')
-			var descInput = document.getElementById('txtDescripcion')
-			var selectTerms = this.crearOferta.find('#oferta-modal-sec1-tax-wrapper')
+		return new Promise((resolve, reject) => {
+			this.callLoadOffer().then((res) => {
+				_self.data = res
+				_self.editDataSave = res
+				var nameInput = document.getElementById('nombreofertainput')
+				// var descInput = document.getElementById('txtDescripcion')
+				// var selectTerms = this.crearOferta.find('#oferta-modal-sec1-tax-wrapper')
 
-			$('h1').text(this.editarOfertaText)
+				$('h1').text(_self.editarOfertaText)
 
-			// Fill section 1
-			nameInput.value = this.data.name
-			descInput.value = this.data.description
-			this.saveAreasTematicasEvent(selectTerms, this.data.terms)
+				// Fill section 1
+				nameInput.value = _self.data.name
+				// descInput.value = this.data.description
+				// this.saveAreasTematicasEvent(selectTerms, this.data.tags)
 
-			// Fill section 2
-			this.data.profiles.forEach(profile => {
-				profile.shortEntityID = profile.entityID.split('_')[2]
+				// CARGAR TAGS
+				let selectTags = $('#oferta-modal-seleccionar-tags-stp1')
+				
+				if (selectTags.length !== 0)
+				{
+					_self.saveTAGS(selectTags, _self.data.tags)
+				}
 
-				// Crea el perfil
-				// this.addPerfilSearch(profile).then(nameId => {
-
-				// 	// Carga las áreas temáticas
-				// 	let selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
-
-				// 	let timer = setTimeout(function () {
-				// 		if (selectTerms.length !== 0)
-				// 		{
-				// 			_self.saveAreasTematicasEvent(selectTerms, profile.terms)
-				// 			clearTimeout(timer)
-				// 		}
-				// 	}, 100);
-
-				// 	// carga los tags
-				// 	let selectTags = $('#modal-seleccionar-tags-' + nameId)
-				// 	let timerTerms = setTimeout(function () {
-				// 		if (selectTerms.length !== 0)
-				// 		{
-				// 			_self.saveTAGS(selectTags, profile.tags)
-				// 			clearTimeout(timerTerms)
-				// 		}
-				// 	}, 100);
-				// })
-
-				// Editamos los IDs de los usuarios
-				profile.users.forEach(user => {
-					user.shortUserID = user.userID.split('_')[1]
-				})
-			})
+				resolve(true)
+			});
 		});
 	}
 
@@ -256,17 +248,34 @@ class StepsOffer {
 
 				if (res && Object.keys(res).length > 0) {
 
-					this.researchers = res;
+					_self.researchers = res;
 
-					let imgUser = this.crearOferta.data('imguser')
+					let imgUser = _self.crearOferta.data('imguser')
 					let resHtml = ""
 					let i = 0
 					for (const [idperson, datospersona] of Object.entries(res)) {
+
+						// Comprueba (si en una carga o se ha cargado en el siguiente paso) si el usuario está cargado
+						let selectedClass = ""
+						let selector = ""
+
+						if (_self.data.researchers && _self.data.researchers[idperson]) {
+							selectedClass = "seleccionado"
+							selector = `
+							<div class="custom-control custom-checkbox-resource done">
+								<span class="material-icons">done</span>
+							</div>`
+						} else {
+							selector = `
+							<div class="custom-control custom-checkbox-resource add">
+								<span class="material-icons">add</span>
+							</div>`
+						}
+
+
 						resHtml += `
-							<article class="resource" id="stp1-res-${idperson}" data-id="${idperson}">
-					            <div class="custom-control custom-checkbox-resource add">
-									<span class="material-icons">add</span>
-								</div>
+							<article class="resource ${selectedClass}" id="stp1-res-${idperson}" data-id="${idperson}">
+					            ${selector}
 					            <div class="wrap">
 					                <div class="usuario-wrap">
 					                    <div class="user-miniatura">
@@ -546,7 +555,7 @@ class StepsOffer {
 		let lineasInvestigacion = this.crearOfertaStep3.find('.edit-etiquetas')
 		let inputsTermsProf = lineasInvestigacion.find('input')
 		let profTerms = {}
-		inputsTermsProf.each((i, el) => {profTerms["id_" + el.value] = _self.divTesListaCaths[el.value]})
+		inputsTermsProf.each((i, el) => {profTerms["id_" + el.value] = _self.divTesListaCats[el.value]})
 
 
 		// Set the post data
@@ -558,7 +567,7 @@ class StepsOffer {
 		}
 		
 		// Comprueba si las líneas de investigación se han rellenado o no hay ninguna disponible
-		let existenTerms = Object.keys(profTerms).length > 0 || _self.divTesListaCaths.length == 0
+		let existenTerms = Object.keys(profTerms).length > 0 || _self.divTesListaCats.length == 0
 
 		// Comprueba si las estado de madurez se ha seleccionado
 		let ematRellenado = _self.ddlMadurez.val() != ""
@@ -577,19 +586,6 @@ class StepsOffer {
 	checkContinue4() {
 		let _self = this
 
-		// Ids de los campos de la sección 4
-		const listIdsTextsRequired = [
-			"descripcion",
-			"aplicaciones",
-			"destinatarios",
-		]
-		const listIdsTextsOptional = [
-			"origen",
-			"innovacion",
-			"socios",
-			"colaboracion",
-			"observaciones",
-		]
 
 		// Objeto para guardar los htmls con sus correspondientes ids
 		let objectFieldsHtml = {}
@@ -598,14 +594,14 @@ class StepsOffer {
 
 		// Obtengo el HTML de los elementos obligatorios y lo guardo, adiccionalmente compruebo si no está vacío,
 		// Si lo está devuelvo false
-		listIdsTextsRequired.forEach(e => {
+		this.listIdsTextsRequired.forEach(e => {
 			objectFieldsHtml[e] = document.getElementById(e).innerHTML
 			// Valida si el item contiene algo
 			validado = objectFieldsHtml[e] != "" && validado
 		})
 
 		// Obtengo el HTML y lo guardo
-		listIdsTextsOptional.forEach(e => {
+		this.listIdsTextsOptional.forEach(e => {
 			objectFieldsHtml[e] = document.getElementById(e).innerHTML
 		})
 
@@ -647,7 +643,7 @@ class StepsOffer {
 		// Set list
 		/* resultHtml = this.fillTaxonomiesList(data['researcharea'])
 		this.divTesLista.append(resultHtml)
-		this.divTesListaCaths = this.divTesLista.find(".categoria-wrap") */
+		this.divTesListaCats = this.divTesLista.find(".categoria-wrap") */
 
 		// Open & close event trigger
 		let desplegables = this.modalAreasTematicas.find('.boton-desplegar')
@@ -741,6 +737,7 @@ class StepsOffer {
 		var _self = this
 		this.data.pIdGnossUser = this.userId
 		
+		MostrarUpdateProgress();
 		return new Promise((resolve) => {
 			
 			$.post(urlSOff, this.data)
@@ -757,6 +754,9 @@ class StepsOffer {
 						resolve(false)
 					}
 				)
+				.always(() => {
+					OcultarUpdateProgress();
+				})
 		})		
 
 	}
@@ -968,7 +968,7 @@ class StepsOffer {
 	 * @param data, array con las areas temáticas seleccionadas
 	 */
 	saveAreasTematicasEvent(relItem, data = null) {
-
+		var _self = this
 
 		if (data != null) {
 			// Entra aquí por primera vez si el oferta ha sido guardado
@@ -978,9 +978,9 @@ class StepsOffer {
 			let htmlRes = ''
 			let dataWithNames = []
 
-			if (this.dataTaxonomies != null) {
+			if (this.divTesListaCats != null) {
 				data.forEach(id => {
-					dataWithNames.push({id, name: this.dataTaxonomies.find(e => e.id == id).name})
+					dataWithNames.push({id, name: _self.divTesListaCats[id]})
 				})
 			}
 
@@ -1164,7 +1164,7 @@ class StepsOffer {
 
 			// Carga las taxonomías
 			_self.fillDataTaxonomies(lineResearchs)
-			_self.divTesListaCaths = lineResearchs
+			_self.divTesListaCats = lineResearchs
 
 
 			// Estado de madurez y sencores de encuadre
@@ -1181,7 +1181,6 @@ class StepsOffer {
 					htmlMaturesStates += `<option value="${i}">${el}</option>`
 				}
 				this.ddlMadurez.html(htmlMaturesStates)
-				this.ddlMadurez.select2();
 
 
 				// Pintar categoría de encuadre
@@ -1190,6 +1189,15 @@ class StepsOffer {
 					htmlFramingsectors += `<option value="${i}">${el}</option>`
 				}
 				this.ddlEncuadre.html(htmlFramingsectors)
+
+
+				if (_self.ofertaId) {
+					_self.loadedOfferStep3()
+				}
+
+				
+				// Start the select2
+				this.ddlMadurez.select2();
 				this.ddlEncuadre.select2();
 			}
 
@@ -1201,10 +1209,52 @@ class StepsOffer {
 	}
 
 	/**
+	 * Establece los valores del paso 3 con los valores obtenidos de la carga de la oferta
+	*/
+	loadedOfferStep3() {
+		var _self = this
+		// Busca las categorías en las listas y las selecciona
+		let resultsCats = Object.keys(_self.divTesListaCats).filter(e => {
+			return Object.values(_self.data.lineResearchs).indexOf(_self.divTesListaCats[e]) != -1
+		})
+		// Pinta las categorías
+		_self.saveAreasTematicasEvent(_self.seleccionLineasInvestigacion, resultsCats)
+
+		// Selecciona los sectores de encuadre y el estado de madurez
+		this.ddlMadurez.val(_self.data.matureState)
+		this.ddlEncuadre.val(_self.data.framingSector)
+
+	}
+
+	/**
 	 * Inicia el paso 4
 	 */
 	startStep4() { 
 		let _self = this
+
+		// Cargo los elementos si estoy editando un elemento
+		if (_self.ofertaId) {
+
+			// Ids de los campos de la sección 4
+			// Todos los ids concatenados
+			let concatedRes = _self.listIdsTextsRequired.concat(_self.listIdsTextsOptional)
+
+			// Comprueba si hay contenido cargado e inicia el editor de texto con el contenido
+			concatedRes.forEach(e => {
+				if (_self.data.objectFieldsHtml[e]) {
+					// Añado el Html
+					let item = document.getElementById(e)
+					item.innerHTML = _self.data.objectFieldsHtml[e]
+					// Inicio el editor
+					let parent = item.parentElement
+					new TextField(parent);
+				}
+			})
+
+		}
+
+
+
 		this.crearOfertaStep4.find('.edmaTextEditor').each((i, el) => {
 			$(el).off('click').on('click', (event) => {
 				if (!el.classList.contains("inicilized")) {
@@ -1221,6 +1271,12 @@ class StepsOffer {
 	startStep5() {
 
 		MostrarUpdateProgress();
+
+		if (this.ofertaId) {
+			this.PrintSelectedProjStp5();
+			this.PrintSelectedDocuStp5();
+			this.PrintSelectedPIIStp5();
+		}
 
 
 		let proyectosTab = document.getElementById("proyectos-tab")
@@ -2307,7 +2363,7 @@ function CompletadaCargaRecursosPIIOfertas()
 				}
 
 				stepsOffer.numSeleccionadosProjects = Object.keys(stepsOffer.data.projects).length
-				stepsOffer.PrintSelectedProjectsStp2();
+				stepsOffer.PrintSelectedPIIStp5();
 			});	
 
 		})

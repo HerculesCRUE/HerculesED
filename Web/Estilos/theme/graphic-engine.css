@@ -172,3 +172,44 @@
  div  ul.facetedSearch:empty{
      display: none;
  }
+
+
+ .pageOptions{
+        display: flex;
+        flex-direction: row;
+
+        padding-left: 15px;
+        padding-right: 15px;
+        right: 0px;
+        justify-content: space-between;
+ }
+ .pageOptions div{
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-top: 5px;
+    border-radius: 5px;
+    transition: all .2s ease-in-out;
+ }
+ .pageOptions div p{
+    margin-bottom: 0;
+ }
+ .topbar-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+ }
+.edit-page:hover{
+    color: #af1a2e;
+}
+.delete-page:hover{
+    background-color: #af1a2e;
+    color:white;
+}
+.form-group{
+    transition: all .2s ease-in-out;    
+}
