@@ -9,14 +9,18 @@ namespace Hercules.ED.ResearcherObjectLoad
 {
     class Program
     {
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
-        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config\configOAuth\OAuthV3.config");
+        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
+        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configOAuth/OAuthV3.config");
        
         static void Main(string[] args)
         {
+            FileLogger.Log($@"{DateTime.Now} - Obteniendo mResourceApi...");
             Carga.mResourceApi = mResourceApi;
+            FileLogger.Log($@"{DateTime.Now} - Obteniendo mCommunityApi...");
             Carga.mCommunityApi = mCommunityApi;
+            FileLogger.Log($@"{DateTime.Now} - ConfigService()...");
             Carga.configuracion = new ConfigService();
+            FileLogger.Log($@"{DateTime.Now} - Carga.CargaMain()...");
             Carga.CargaMain();
         }
 
@@ -25,7 +29,7 @@ namespace Hercules.ED.ResearcherObjectLoad
         /// </summary>
         public static class FileLogger
         {
-            private const string FilePath = "/app/logs/log.txt"; // --- TODO: Sacarlo a archivo de configuración.
+            private const string FilePath = $@"/app/logs/log.txt"; // --- TODO: Sacarlo a archivo de configuración.
 
             /// <summary>
             /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
