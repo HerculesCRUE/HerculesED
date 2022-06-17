@@ -159,7 +159,13 @@ var metricas = {
                     var image = cy.jpg();
                     var a = document.createElement('a');
                     a.href = image;
-                    a.download = Date.now() + '.jpg';
+                    var titulo
+                    if (!$('div').hasClass('indicadoresPersonalizados')) {
+                        titulo = cy._private.options.title;
+                    } else {
+                        titulo = $(this).parents('article').find('div.grafica p').text();
+                    }
+                    a.download = titulo + '.jpg';
                     a.click();
                 });
                 $(download).removeClass("descargar");
@@ -1401,7 +1407,7 @@ var metricas = {
                 // Creación del elemento para empezar la descarga.
                 var a = document.createElement('a');
                 a.href = image;
-                a.download = Date.now() + '.jpg';
+                a.download = chart.config._config.options.plugins.title.text + '.jpg';
                 a.click();
             });
         $('a.csv')
@@ -1413,6 +1419,21 @@ var metricas = {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
                     url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                    url += "&pLang=" + lang;
+                    var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
+                    var argAux = {};
+                    argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
+                    argAux.pLang = lang;
+                    $.get(urlAux, argAux, function (listaData) {
+                        if (!listaData.options) {
+                            url += "&pTitulo=" + listaData.title;
+                        } else {
+                            url += "&pTitulo=" + listaData.options.plugins.title.text;
+                        }
+                        document.location.href = url;
+                    });
                 } else {
                     url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
@@ -1420,9 +1441,21 @@ var metricas = {
                     if (filtro != "") {
                         url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
                     }
+                    url += "&pLang=" + lang;
+                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                    var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                    var argAux = {};
+                    argAux.pPageId = idPaginaActual;
+                    $.get(urlAux, argAux, function (listaData) {
+                        listaData.forEach(data => {
+                            if (data.idRecurso == idGraficaActual) {
+                                tituloActual = data.titulo;
+                            }
+                        });
+                        url += "&pTitulo=" + tituloActual;
+                        document.location.href = url;
+                    });
                 }
-                url += "&pLang=" + lang;
-                document.location.href = url;
             });
 
         $('a.editargrafica')
