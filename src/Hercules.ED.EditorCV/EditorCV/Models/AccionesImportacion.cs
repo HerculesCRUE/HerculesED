@@ -314,6 +314,12 @@ namespace EditorCV.Models
                                         .SelectMany(x => x.subsecciones.SelectMany(x => x.propiedades.Where(x => x.prop.Equals(itemEditSection.property)).ToList()))
                                         .SelectMany(x => x.values).ToList();
 
+                        tabSectionItem.identifier = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
+                            .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x=>x.prop.Equals(itemEditSection.property))))?
+                            .Where(x => x.Count() > 0).FirstOrDefault()?.Select(x => x.guid).FirstOrDefault();
+                        tabSectionItem.idBBDD = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
+                            .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x => x.prop.Equals(itemEditSection.property))))?
+                            .Where(p => p.Count() > 0).FirstOrDefault()?.Select(x=>x.idBBDD).FirstOrDefault();
                         itemEditSection.title.Select(x => x.Value).ToList();
 
                         tabSectionItem.properties.Add(tsip);

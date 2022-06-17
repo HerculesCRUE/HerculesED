@@ -20,6 +20,11 @@ var listaPaginas;
 
 var metricas = {
     init: function () {
+
+        if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
+            history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
+        }
+
         if (!$('div').hasClass('indicadoresPersonalizados')) {
             this.getPages();
         } else {
@@ -34,7 +39,6 @@ var metricas = {
         var that = this;
         var url = url_servicio_graphicengine + "GetPaginasGraficas"; //"https://localhost:44352/GetPaginaGrafica";        
         var arg = {};
-        var nodes = globalThis.nodes = {};
         arg.pLang = lang;
 
         // Petición para obtener los datos de la página.
@@ -46,7 +50,7 @@ var metricas = {
                     </li>
                 `);
             }
-            that.createEmptyPage(listaData[0].id);
+            that.createEmptyPage(listaData[0].id); //TODO cambiar 0 por la id de la pagina actual
             that.fillPage(listaData[0]);
             listaPaginas = listaData;
         });
@@ -55,22 +59,33 @@ var metricas = {
         var that = this;
         var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"  
         var arg = {};
-        var nodes = globalThis.nodes = {};
         arg.pUserId = $('.inpt_usuarioID').attr('value');
-
-        // Petición para obtener los datos de la página.
-        $.get(url, arg, function (listaData) {
-            for (let i = 0; i < listaData.length; i++) {
-                $(".listadoMenuPaginas").append(`
+        if (arg.pUserId == "ffffffff-ffff-ffff-ffff-ffffffffffff") {
+            $('div.row-content').append(`<div><h1>Login Required</h1></div>`);
+        } else {
+            // Petición para obtener los datos de la página.
+            $.get(url, arg, function (listaData) {
+                console.log(listaData);
+                if (listaData.length == 0) {
+                    $('div.row-content').append(`<div><h1>No Pages Found</h1></div>`);
+                } else {
+                    for (let i = 0; i < listaData.length; i++) {
+                        $(".listadoMenuPaginas").append(`
                     <li class="nav-item" id="${listaData[i].idRecurso}" num="${i}">
                         <a class="nav-link ${i == 0 ? "active" : ""} uppercase">${listaData[i].titulo}</a>
                     </li>
                 `);
-            }
-            that.createEmptyPagePersonalized(listaData[0].idRecurso.split('/')[listaData[0].idRecurso.split('/').length - 1]);
-            that.fillPagePersonalized(listaData[0]);
-            listaPaginas = listaData;
-        });
+
+                    }
+                    $('.topbar-container').css('display', 'flex');
+
+
+                    that.createEmptyPagePersonalized(listaData[0].idRecurso.split('/')[listaData[0].idRecurso.split('/').length - 1]);
+                    that.fillPagePersonalized(listaData[0]);
+                    listaPaginas = listaData;
+                }
+            });
+        }
     },
     getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100, pIdRecurso = null, pTitulo = null) {
         var that = this;
@@ -94,7 +109,8 @@ var metricas = {
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
             if ("container" in data) {
-                //nodes = globalThis.nodes = {} //TODO mover declaracion.
+
+
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
                 data.container = ctx;
@@ -102,13 +118,7 @@ var metricas = {
 
                 data.ready = function () { window.cy = this };
                 var cy = cytoscape(data);
-                if (graficaContenedor.hasClass("graph-container")) {
-                    nodes["pop_" + pIdGrafica] = cy;
 
-                    nodes[pIdGrafica] = cy;
-                } else {
-
-                }
                 //var combo = $(ctx).parents("article").find("select");
                 var titulo = data.title;
                 if (pTitulo) {
@@ -159,7 +169,13 @@ var metricas = {
                     var image = cy.jpg();
                     var a = document.createElement('a');
                     a.href = image;
-                    a.download = Date.now() + '.jpg';
+                    var titulo
+                    if (!$('div').hasClass('indicadoresPersonalizados')) {
+                        titulo = cy._private.options.title;
+                    } else {
+                        titulo = $(this).parents('article').find('div.grafica p').text();
+                    }
+                    a.download = titulo + '.jpg';
                     a.click();
                 });
                 $(download).removeClass("descargar");
@@ -292,6 +308,11 @@ var metricas = {
             data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
+                    if (data.verTodos) {
+                        $('div[idfaceta="' + data.id + '"]').append(`
+                            <p class="moreResults"><a class="no-close open-popup-link" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
+                        `);
+                    }
                     return;
                 }
 
@@ -514,6 +535,7 @@ var metricas = {
         that.pintarPagina(pPageData.id)
     },
     fillPagePersonalized: function (pPaginaUsuario) {
+        console.log("adsa");
         idPaginaActual = pPaginaUsuario.idRecurso;
         var that = this;
         var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
@@ -521,6 +543,12 @@ var metricas = {
         arg.pPageId = pPaginaUsuario.idRecurso;
         // Petición para obtener los datos de la página.
         $.get(url, arg, function (listaData) {
+
+            console.log(listaData);
+            if (listaData.length == 0) {
+                $('div.row-content').append(`<div><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
+                metricas.engancharComportamientos();
+            }
             var tmp = [];
             var id = "";
             var gruposDeIDs = [];
@@ -663,9 +691,10 @@ var metricas = {
         // Etiquetas
         $("#panListadoFiltros").children().remove();
         var filtros = decodeURIComponent(ObtenerHash2());
+        filtros = filtros.replaceAll(" & ", "|||");
         var filtrosArray = filtros.split('&');
         for (let i = 0; i < filtrosArray.length; i++) {
-            let filtro = filtrosArray[i];
+            let filtro = filtrosArray[i].replace("|||", " & ");
             let nombre;
             if (filtro === "" || !filtro) {
                 continue;
@@ -757,7 +786,7 @@ var metricas = {
                                 <li class="control zoomin-control" id="zoomIn">
                                     <span class="material-icons">add</span>
                                 </li>
-                                <li class="control zoomout-control">
+                                <li class="control zoomout-control" id="zoomOut">
                                     <span class="material-icons" >remove</span>
                                 </li>
                             </ul>
@@ -869,14 +898,19 @@ var metricas = {
                 // $(ctx).parents(".modal-content").css("height", "auto");
                 $(ctx).parents(".modal-content").css("display", "block");
             }
-            scrollContainer.style.height = "auto";
+            //scrollContainer.style.height = "auto";
             graficaContainer.classList.add("small");
 
             if (horizontal) { // estilos horizonales
                 chartAreaWrapper.style.height = "546px";
                 scrollContainer.style.overflowY = "hidden";
             } else {
-                chartAreaWrapper.style.height = "546px";
+                if (barSize >= 100) {
+                    chartAreaWrapper.style.height = "546px";
+                } else {
+                    chartAreaWrapper.style.height = "100%";
+                }
+
                 scrollContainer.style.overflowX = "hidden";
             }
 
@@ -958,14 +992,14 @@ var metricas = {
 
             if (data.isDate) {
                 if (horizontal) {
-                    $(scrollContainer).animate({ scrollTop: $(chartAreaWrapper).height() - $(scrollContainer).height() }, 5000);
+                    $(scrollContainer).animate({ scrollTop: $(chartAreaWrapper).height() - $(scrollContainer).height() }, 6000);
                     $(scrollContainer).mousedown((e) => {//evento que se dispara al hacer click en el scroll
                         if (scrollContainer.clientWidth <= e.offsetX) {
                             $(scrollContainer).stop();//y detiene la animacion 
                         }
                     });
                 } else {
-                    $(scrollContainer).animate({ scrollLeft: $(chartAreaWrapper).width() - $(scrollContainer).width() }, 5000);
+                    $(scrollContainer).animate({ scrollLeft: $(chartAreaWrapper).width() - $(scrollContainer).width() }, 6000);
 
                     $(scrollContainer).mousedown((e) => {
                         if (scrollContainer.clientHeight <= e.offsetY) {
@@ -1209,15 +1243,17 @@ var metricas = {
             .click(function (e) {
                 var filtroActual = $(this).parent().attr('filtro');
                 var filtros = decodeURIComponent(ObtenerHash2());
+                filtros = filtros.replaceAll(" & ", "|||");
                 var filtrosArray = filtros.split('&');
                 filtros = '';
                 var contieneFiltro = false;
                 for (var i = 0; i < filtrosArray.length; i++) {
-                    if (filtrosArray[i] != '') {
-                        if (filtrosArray[i] == filtroActual) {
+                    let filtro = filtrosArray[i].replace("|||", " & ");
+                    if (filtro != '') {
+                        if (filtro == filtroActual) {
                             contieneFiltro = true;
                         } else {
-                            filtros += filtrosArray[i] + '&';
+                            filtros += filtro + '&';
                         }
 
                     }
@@ -1401,7 +1437,7 @@ var metricas = {
                 // Creación del elemento para empezar la descarga.
                 var a = document.createElement('a');
                 a.href = image;
-                a.download = Date.now() + '.jpg';
+                a.download = chart.config._config.options.plugins.title.text + '.jpg';
                 a.click();
             });
         $('a.csv')
@@ -1413,6 +1449,21 @@ var metricas = {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
                     url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                    url += "&pLang=" + lang;
+                    var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
+                    var argAux = {};
+                    argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
+                    argAux.pLang = lang;
+                    $.get(urlAux, argAux, function (listaData) {
+                        if (!listaData.options) {
+                            url += "&pTitulo=" + listaData.title;
+                        } else {
+                            url += "&pTitulo=" + listaData.options.plugins.title.text;
+                        }
+                        document.location.href = url;
+                    });
                 } else {
                     url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
@@ -1420,9 +1471,21 @@ var metricas = {
                     if (filtro != "") {
                         url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
                     }
+                    url += "&pLang=" + lang;
+                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                    var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                    var argAux = {};
+                    argAux.pPageId = idPaginaActual;
+                    $.get(urlAux, argAux, function (listaData) {
+                        listaData.forEach(data => {
+                            if (data.idRecurso == idGraficaActual) {
+                                tituloActual = data.titulo;
+                            }
+                        });
+                        url += "&pTitulo=" + tituloActual;
+                        document.location.href = url;
+                    });
                 }
-                url += "&pLang=" + lang;
-                document.location.href = url;
             });
 
         $('a.editargrafica')
@@ -1457,7 +1520,7 @@ var metricas = {
                     $("#idSelectorOrden").val(ordenActual).change();
                 });
             });
-        $('a.editarpagina')
+        $('div.edit-page')
             .unbind()
             .click(function (e) {
                 // Limpia los campos.
@@ -1585,6 +1648,14 @@ var metricas = {
         $('#btnGuardarEditPagina')
             .unbind()
             .click(function (e) {
+              //TODO translate
+                var formTituloPagina = $('#labelTituloPagina').val();
+                if (!formTituloPagina) {
+                    mostrarNotificacion("warning", "Introduce el titulo de la pagina por favor");
+                    return;
+                }
+
+                MostrarUpdateProgress();
                 var user = $('.inpt_usuarioID').attr('value');
                 var url = url_servicio_graphicengine + "EditarNombrePagina"; //"https://localhost:44352/EditarNombrePagina"
                 var arg = {};
@@ -1599,6 +1670,7 @@ var metricas = {
                     argOrd.pUserId = user;
                     argOrd.pPageID = idPaginaActual;
                     argOrd.pNewOrder = $('#idSelectorOrdenPg option:selected').val();
+
                     argOrd.pOldOrder = ordenPaginaActual;
 
                     $.get(urlOrd, argOrd, function () {
@@ -1609,6 +1681,14 @@ var metricas = {
         $('#btnGuardarEditGrafica')
             .unbind()
             .click(function (e) {
+              //TODO translate
+                var formTitle = $('#labelTituloGrafica').val();
+                if (!formTitle) {
+                    mostrarNotificacion("warning", "Introduce el titulo por favor");
+                    return;
+                }
+
+                MostrarUpdateProgress();
                 var user = $('.inpt_usuarioID').attr('value');
                 var url = url_servicio_graphicengine + "EditarNombreGrafica"; //"https://localhost:44352/EditarNombreGrafica"
                 var arg = {};
@@ -1641,11 +1721,32 @@ var metricas = {
                         });
                     });
                 });
+
+
             });
 
         $('#btnGuardarGrafica')
             .unbind()
             .click(function (e) {
+
+                //TODO translate
+                var formTitle = $('#labelTituloGrafica').val();
+                if (!formTitle) {
+                    mostrarNotificacion("warning", "Introduce el titulo de la grafica por favor");
+                    return;
+                }
+                var formCreatePageRadio = $('#createPageRadio').is(':checked');
+                if (formCreatePageRadio) {
+                    var formCreatePage = $('#labelTituloPagina').val();
+                    if (!formCreatePage) {
+                        mostrarNotificacion("warning", "Introduce el titulo de la pagina por favor");
+                        return;
+                    }
+                }
+
+
+
+
                 var url = url_servicio_graphicengine + "GuardarGrafica"; //"https://localhost:44352/GuardarGrafica"
                 var arg = {};
                 arg.pTitulo = $('#labelTituloGrafica').val();
@@ -1836,14 +1937,13 @@ var metricas = {
             $('.modal-backdrop').removeClass('show');
             $('.modal-backdrop').css('pointer-events', 'none');
             $('#modal-ampliar-mapa').css('display', 'none');
-
             $('#modal-agregar-datos').removeClass('show');
             $('.modal-backdrop').removeClass('show');
             $('.modal-backdrop').css('pointer-events', 'none');
             $('#modal-agregar-datos').css('display', 'none');
         }
 
-        $(".listadoMenuPaginas li")
+        $(".listadoMenuPaginas li.nav-item")
             .unbind()
             .click(function (e) {
                 var numero = $(this).attr("num");
