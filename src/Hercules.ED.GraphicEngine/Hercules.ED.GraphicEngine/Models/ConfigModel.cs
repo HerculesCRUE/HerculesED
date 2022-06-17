@@ -20,6 +20,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public bool ordenAlfaNum { get; set; }
         public bool tesauro { get; set; }
         public int numeroItemsFaceta { get; set; }
+        public bool verTodos { get; set; }
     }
 
     public class Grafica

@@ -299,6 +299,7 @@
       },
       "filtro": "vivo:hasPublicationVenue@@@roh:title",
       "numeroItemsFaceta": 10,
+      "verTodos": true,
       "ordenAlfaNum": true
     },
     {
