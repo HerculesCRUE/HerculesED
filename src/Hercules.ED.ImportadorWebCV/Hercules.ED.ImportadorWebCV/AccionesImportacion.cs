@@ -69,6 +69,7 @@ namespace Hercules.ED.ImportadorWebCV
             {
                 return;
             }
+            //Elimino la sección de información del fichero.
             if (listadoItems.ElementAt(0).Code.Equals("000.020.000.000"))
             {
                 listadoItems.RemoveAt(0);
@@ -88,6 +89,7 @@ namespace Hercules.ED.ImportadorWebCV
 
             for (int i = 0; i < listadoItems.Count; i++)
             {
+                //Si el elemento no trae propiedades, no lo inserto y continuo con el siguiente del listado.
                 if (listadoSubsetionItems.ElementAt(i).propiedades.Count == 0)
                 {
                     if (listadoItems.ElementAt(i).Items.Count == 0)
@@ -98,11 +100,13 @@ namespace Hercules.ED.ImportadorWebCV
                     i--;
                     continue;
                 }
+                //Si alguno de los datos no está marcado continuo con el siguiente del listado.
                 if (!filtrador.Any(x => x.Item2.Equals((i + contadorEliminados).ToString())))
                 {
                     continue;
                 }
 
+                //Compruebo si es la sección de Indicadores Generales de producción cientifica.
                 if (listadoItems.ElementAt(i).Code.Equals("060.010.060.000"))
                 {
                     if (!listadoSobrescribir.Exists(x => x.Code.Equals("060.010.060.000")))
@@ -115,8 +119,12 @@ namespace Hercules.ED.ImportadorWebCV
                     }
                     continue;
                 }
+
+                //El texto libre siempre llegará en la última posición
                 if (i.Equals(listadoItems.Count() - 1))
                 {
+                    //Recorro resumenLibre(0), resumenTFG(1) y resumenTFM(2) para comprobar si alguno de ellos está marcado,
+                    // e indicando cual de ellos para posteriormente cargar ese dato unicamente.
                     for (int contadorTexto = 0; contadorTexto < 3; contadorTexto++)
                     {
                         if (!listadoItems.Last().Code.Equals("070.010.000.000"))
@@ -137,6 +145,8 @@ namespace Hercules.ED.ImportadorWebCV
                     }
                 }
 
+                //La opción por defecto será la de duplicar el objeto, en caso de que no traiga nada
+                // para que si no hay opción seleccionada carge un recurso nuevo.
                 opcionSeleccionada = "du";
                 if (dicOpciones.ContainsKey((i + contadorEliminados).ToString()))
                 {
@@ -159,6 +169,7 @@ namespace Hercules.ED.ImportadorWebCV
                 }
             }
 
+            //Asigno los cvnRoot dependiendo de cada tipo de acción.
             cvnRootResultBean duplicadosResultBean = new cvnRootResultBean() { cvnRootBean = listadoDuplicar.ToArray() };
             cvnRootResultBean fusionResultBean = new cvnRootResultBean() { cvnRootBean = listadoFusionar.ToArray() };
             cvnRootResultBean sobrescribirResultBean = new cvnRootResultBean() { cvnRootBean = listadoSobrescribir.ToArray() };
