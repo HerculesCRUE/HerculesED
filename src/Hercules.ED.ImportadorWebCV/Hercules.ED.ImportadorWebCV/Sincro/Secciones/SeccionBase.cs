@@ -564,7 +564,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 int contador = 1;
                 foreach (Persona persona in entityXML.autores)
                 {
-                    string idPersonaBBDD = equivalencias.First(x => x.Value.Select(x => x.Split('|')[1]).Contains(persona.ID)).Key;
+                    string idPersonaBBDD = equivalencias.First(x => x.Value.Select(x => x.Split('|').Last()).Contains(persona.ID)).Key;
                     if (Guid.TryParse(idPersonaBBDD, out Guid aux))
                     {
                         idPersonaBBDD = identificadoresPersonasAniadidas[idPersonaBBDD];
