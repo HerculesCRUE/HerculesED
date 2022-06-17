@@ -298,6 +298,11 @@ var metricas = {
             data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
+                    if (data.verTodos) {
+                        $('div[idfaceta="' + data.id + '"]').append(`
+                            <p class="moreResults"><a class="no-close open-popup-link" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
+                        `);
+                    }
                     return;
                 }
 
