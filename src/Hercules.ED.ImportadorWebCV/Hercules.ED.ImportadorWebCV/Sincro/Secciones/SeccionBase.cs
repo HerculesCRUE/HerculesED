@@ -345,13 +345,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                         listadoIdBBDD.RemoveAt(i);
                     }
                     //Fusionar
-                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu"))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu") && string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoIdBBDD.RemoveAt(i);
                     }
                     //Sobrescribir
-                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so"))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so") && string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoIdBBDD.RemoveAt(i);
