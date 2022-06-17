@@ -128,7 +128,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroPublicacionesDocumentos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -232,7 +231,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroTrabajosCongresos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -337,7 +335,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroTrabajosJornadasSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
