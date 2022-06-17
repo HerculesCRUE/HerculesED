@@ -7,6 +7,8 @@ var maxYear;
 // Lista de páginas
 // ID de la página actual.
 var idPaginaActual = "";
+var tituloPaginaActual;
+var ordenPaginaActual;
 // ID de la gráfica seleccionada.
 var idGraficaActual = "";
 var tituloActual;
@@ -103,8 +105,8 @@ var metricas = {
                 if (graficaContenedor.hasClass("graph-container")) {
                     nodes["pop_" + pIdGrafica] = cy;
 
-                } else {
                     nodes[pIdGrafica] = cy;
+                } else {
 
                 }
                 //var combo = $(ctx).parents("article").find("select");
@@ -778,6 +780,7 @@ var metricas = {
                     <canvas id = "${pPageData[index].idRecurso}" width = "600" height = "250" ></canvas>
                         `);
             }
+
             that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
             index++;
         });
@@ -801,10 +804,8 @@ var metricas = {
         if (Chart.getChart(ctx) != null) {
             return;
         }
-
-
         var numBars = data.data.labels.length; // Número de barras.
-        var canvasSize = (numBars * barSize); // Tamaño del canvas.
+        var canvasSize = (numBars * barSize) * 1.5; // Tamaño del canvas, el 1.5 representa el espacio entre las barras.
         var canvas = ctx;
         var chartAreaWrapper = canvas.parentNode;
         var scrollContainer = chartAreaWrapper.parentNode;
@@ -821,16 +822,17 @@ var metricas = {
         } else {
             graficaContainer.classList.add("vertical");
         }
-
         // En caso de que los datos de la gráfica se representen con porcentajes
-
-
         // Solo si es una gráfica horizontal.
-
         // En caso de que los labels de la gráfica deban de estar abreviados...
         data.options.maintainAspectRatio = false;
         data.options.responsive = true;
 
+
+        data.data.datasets.forEach((item) => {
+            item['barThickness'] = barSize;
+
+        })
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
             if (horizontal) {
@@ -838,6 +840,7 @@ var metricas = {
                     ticks: {
                         callback: ticksAbr
                     }
+
                 }
             } else {
 
@@ -858,15 +861,12 @@ var metricas = {
             }
             return value;
         }
-
-
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
         //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
 
-        console.log(data);
         if ((canvasSize < 550 && horizontal) || (canvasSize < (barSize < 100 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
             if (barSize < 100) {
-                $(ctx).parents(".modal-content").css("height", "auto");
+                // $(ctx).parents(".modal-content").css("height", "auto");
                 $(ctx).parents(".modal-content").css("display", "block");
             }
             scrollContainer.style.height = "auto";
@@ -875,8 +875,6 @@ var metricas = {
             if (horizontal) { // estilos horizonales
                 chartAreaWrapper.style.height = "546px";
                 scrollContainer.style.overflowY = "hidden";
-
-
             } else {
                 chartAreaWrapper.style.height = "546px";
                 scrollContainer.style.overflowX = "hidden";
@@ -887,10 +885,8 @@ var metricas = {
             if (barSize < 100) { //para revelar el zoom
                 $(ctx).parents(".modal-content").css("display", "block");
             }
-
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
-
 
             if (horizontal) {
                 ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
@@ -898,10 +894,7 @@ var metricas = {
                 //myChart.canvas.parentNode.style.width = canvasSize + 'px';
                 ctx.parentNode.style.height = 100 + '%'; //se escala la altura //css done
                 ctx.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
-
             }
-
-
 
             var myChart = new Chart(ctx, data);
             // Se comprueba si tiene eje principal/secundario.
@@ -919,8 +912,7 @@ var metricas = {
             var legend = $(`<div class="chartLegend" >
                 <h4 id="legendTitle">${titulo}</h4>
                 </div>`);
-            /*
-            */
+
             $(chartContainer).append(legend);
             var dataSetLabels = $(`<div class="dataSetLabels"></div>`)
             $(legend).append(dataSetLabels);
@@ -933,10 +925,7 @@ var metricas = {
                     <p class="dataSetLabel">${dataset.label}</p>
                     </div>`);
                 $(dataSetLabels).append(labelContainer);
-
-
             });
-
 
             //Se añade el eje principal al contenedor.
             if (hasMainAxis) {
@@ -958,7 +947,6 @@ var metricas = {
                 $(chartContainer).append(secondaryAxis);
             }
 
-
             // Cuando se acutaliza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
@@ -969,12 +957,29 @@ var metricas = {
             }
 
             if (data.isDate) {
-                //$(ctx).parents('div.chartScroll')[0].scrollLeft = canvasSize; //la grafica se posiciona al final directamente
-                $(ctx).parents('div.chartScroll').animate({ scrollLeft: canvasSize }, 5000); // tiempo en ms
+                if (horizontal) {
+                    $(scrollContainer).animate({ scrollTop: $(chartAreaWrapper).height() - $(scrollContainer).height() }, 5000);
+                    $(scrollContainer).mousedown((e) => {//evento que se dispara al hacer click en el scroll
+                        if (scrollContainer.clientWidth <= e.offsetX) {
+                            $(scrollContainer).stop();//y detiene la animacion 
+                        }
+                    });
+                } else {
+                    $(scrollContainer).animate({ scrollLeft: $(chartAreaWrapper).width() - $(scrollContainer).width() }, 5000);
+
+                    $(scrollContainer).mousedown((e) => {
+                        if (scrollContainer.clientHeight <= e.offsetY) {
+                            $(scrollContainer).stop();
+                        }
+                    });
+                }
+
+
             }
+
+
             //
         }
-
 
     },
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
@@ -1035,7 +1040,6 @@ var metricas = {
                 secondaryAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
             }
 
-
         }
 
         // Posición del comienzo del recorte.
@@ -1050,7 +1054,6 @@ var metricas = {
         var width = copyWidth;
         var height = horizontal ? axisHeight + 4 : copyHeight;
         var ctx;
-
 
         if (mainAxis) {
             ctx = mainAxis[0].getContext('2d');
@@ -1421,6 +1424,7 @@ var metricas = {
                 url += "&pLang=" + lang;
                 document.location.href = url;
             });
+
         $('a.editargrafica')
             .unbind()
             .click(function (e) {
@@ -1458,17 +1462,36 @@ var metricas = {
             .click(function (e) {
                 // Limpia los campos.
                 $("#labelTituloPagina").val("");
-                $("#idSelectorOrden").empty();
-
-
-                // Rellena los campos
-
+                $("#idSelectorOrdenPg").empty();
+                // Leer páginas
+                var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"
+                var arg = {};
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+                var orden = 1;
+                // Petición para obtener los datos de la página.
+                $.get(url, arg, function (listaData) {
+                    listaData.forEach(data => {
+                        if (data.idRecurso == idPaginaActual) {
+                            tituloPaginaActual = data.titulo;
+                            ordenPaginaActual = data.orden;
+                        }
+                        $('#idSelectorOrdenPg').append(`
+                            <option value="${orden}">${orden}</option>    
+                        `)
+                        orden++;
+                    });
+                    // Rellena los campos
+                    $("#labelTituloPagina").val(tituloPaginaActual);
+                    $("#idSelectorOrdenPg").val(ordenPaginaActual).change();
+                });
             });
+
         $('a.eliminargrafica')
             .unbind()
             .click(function (e) {
                 idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
             });
+
         $('a.eliminar')
             .unbind()
             .click(function (e) {
@@ -1487,6 +1510,24 @@ var metricas = {
                     location.reload();
                 });
             });
+
+        $('a.eliminarpg')
+            .unbind()
+            .click(function (e) {
+                // Leer paginas de usuario
+                var idUsuario = $('.inpt_usuarioID').attr('value');
+                var idPagina = idPaginaActual;
+                var url = url_servicio_graphicengine + "BorrarPagina"; //"https://localhost:44352/BorrarPagina"
+                var arg = {};
+                arg.pUserId = idUsuario;
+                arg.pPageID = idPagina;
+
+                // Petición para eliminar la página.
+                $.get(url, arg, function (listaData) {
+                    location.reload();
+                });
+            });
+
         $('a.guardar')
             .unbind()
             .click(function (e) {
@@ -1500,6 +1541,7 @@ var metricas = {
                 idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idgrafica");
 
                 // Leer paginas de usuario
+
                 var idUsuario = $('.inpt_usuarioID').attr('value');
                 var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"
                 var arg = {};
@@ -1540,9 +1582,34 @@ var metricas = {
 
                 });
             });
+        $('#btnGuardarEditPagina')
+            .unbind()
+            .click(function (e) {
+                var user = $('.inpt_usuarioID').attr('value');
+                var url = url_servicio_graphicengine + "EditarNombrePagina"; //"https://localhost:44352/EditarNombrePagina"
+                var arg = {};
+                arg.pUserId = user;
+                arg.pPageID = idPaginaActual;
+                arg.pNewTitle = $('#labelTituloPagina').val();
+                arg.pOldTitle = tituloPaginaActual;
+
+                $.get(url, arg, function () {
+                    var urlOrd = url_servicio_graphicengine + "EditarOrdenPagina"; //"https://localhost:44352/EditarOrdenPagina"
+                    var argOrd = {};
+                    argOrd.pUserId = user;
+                    argOrd.pPageID = idPaginaActual;
+                    argOrd.pNewOrder = $('#idSelectorOrdenPg option:selected').val();
+                    argOrd.pOldOrder = ordenPaginaActual;
+
+                    $.get(urlOrd, argOrd, function () {
+                        location.reload();
+                    });
+                });
+            });
         $('#btnGuardarEditGrafica')
             .unbind()
             .click(function (e) {
+                var user = $('.inpt_usuarioID').attr('value');
                 var url = url_servicio_graphicengine + "EditarNombreGrafica"; //"https://localhost:44352/EditarNombreGrafica"
                 var arg = {};
                 arg.pUserId = $('.inpt_usuarioID').attr('value');
@@ -1554,7 +1621,7 @@ var metricas = {
                 $.get(url, arg, function () {
                     var urlOrd = url_servicio_graphicengine + "EditarOrdenGrafica"; //"https://localhost:44352/EditarOrdenGrafica"
                     var argOrd = {};
-                    argOrd.pUserId = $('.inpt_usuarioID').attr('value');
+                    argOrd.pUserId = user;
                     argOrd.pPageID = idPaginaActual;
                     argOrd.pGraphicID = idGraficaActual;
                     argOrd.pNewOrder = $('#idSelectorOrden option:selected').val();
@@ -1563,7 +1630,7 @@ var metricas = {
                     $.get(urlOrd, argOrd, function () {
                         var urlAnch = url_servicio_graphicengine + "EditarAnchuraGrafica"; //"https://localhost:44352/EditarAnchuraGrafica"
                         var argAnch = {};
-                        argAnch.pUserId = $('.inpt_usuarioID').attr('value');
+                        argAnch.pUserId = user;
                         argAnch.pPageID = idPaginaActual;
                         argAnch.pGraphicID = idGraficaActual;
                         argAnch.pNewWidth = $('#idSelectorTamanyo option:selected').val();
@@ -1662,11 +1729,11 @@ var metricas = {
         $("div.zoom")
             .unbind()
             .click(function (e) {
-
                 // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
                 var idgrafica = (canvas).parents('div.grafica').attr("tipografica") || (canvas).parents('div.grafica').attr("idgrafica");
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
+                parent.removeClass('small horizontal vertical');
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
@@ -1682,7 +1749,6 @@ var metricas = {
                 $('#modal-ampliar-mapa').addClass('show');
 
                 //se popula con los contenedores adecuados
-                console.log(idgrafica);
                 if (idgrafica.includes("nodes")) {
                     ctx = $(`<div class="graficoNodos" id="grafica_${idPaginaActual}_${pIdGrafica}" style=" height:${$(modalContent).height() - 130}px;"></div>`)
                     parent.append(`
@@ -1714,13 +1780,14 @@ var metricas = {
                             </div>
                         `);
                     } else {
+
                         var chartWrapper;
                         parent.append(`
                             <div class="chartAreaWrapper">
                             </div>`);
                         chartWrapper = parent.find('.chartAreaWrapper');
                         chartWrapper.css({ height: '100%' });
-                        chartWrapper.css({ width: parent.parent().height() });
+                        chartWrapper.css({ width: $(modalContent).height() - 200 });
                         chartWrapper.parent().css({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
                     }
 
@@ -1750,6 +1817,7 @@ var metricas = {
                                 tituloActual = data.titulo;
                             }
                         });
+
                         that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, tituloActual)
                     });
                 }
@@ -1758,7 +1826,7 @@ var metricas = {
         $('.modal-backdrop')
             .unbind()
             .click(cerrarModal);
-        $('span.cerrar')
+        $('span.cerrar-grafica')
             .unbind()
             .click(cerrarModal);
 

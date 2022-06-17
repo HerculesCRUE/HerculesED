@@ -800,7 +800,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     File.Delete(fichero.FullName);
                 }
 
-                Thread.Sleep(5000);
+               
+
             }
         }
 
@@ -2269,7 +2270,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pData">Datos a guardar.</param>
         private static void CrearZip(string pRutaEscritura, string pNombreFichero, string pData)
         {
-            using (FileStream zipToOpen = new FileStream($@"{pRutaEscritura}\{pNombreFichero.Split('.')[0]}.zip", FileMode.Create))
+            using (FileStream zipToOpen = new FileStream($@"{pRutaEscritura}/{pNombreFichero.Split('.')[0]}.zip", FileMode.Create))
             {
                 using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                 {
