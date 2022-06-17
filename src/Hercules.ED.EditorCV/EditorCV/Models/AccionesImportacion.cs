@@ -24,6 +24,13 @@ namespace EditorCV.Models
         private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
         public byte[] filebytes;
 
+        /// <summary>
+        /// Lectura del archivo <paramref name="File"/> y creación del objeto Preimport
+        /// </summary>
+        /// <param name="_Configuracion"></param>
+        /// <param name="pCVID"></param>
+        /// <param name="File"></param>
+        /// <returns></returns>
         public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File)
         {
             try
@@ -62,13 +69,36 @@ namespace EditorCV.Models
             }
         }
 
+        /// <summary>
+        /// Servicio de PostImportación del CV
+        /// </summary>
+        /// <param name="_Configuracion"></param>
+        /// <param name="pCVID"></param>
+        /// <param name="file"></param>
+        /// <param name="filePreimport"></param>
+        /// <param name="listaId"></param>
+        /// <param name="dicOpciones"></param>
         public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
+            //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
+            foreach (KeyValuePair<string, string> valuePair in dicOpciones)
+            {
+                if (valuePair.Value.Equals("ig") && listaId.Contains(valuePair.Key))
+                {
+                    listaId.Remove(valuePair.Key);
+                    dicOpciones.Remove(valuePair.Key);
+                }
+            }
+
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
+            //Identificador del curriculumvitae
             multipartFormData.Add(new StringContent(pCVID), "pCVID");
+            //Objeto Preimport
             multipartFormData.Add(new StringContent(filePreimport), "filePreimport");
+            //Archivo XML leido
             multipartFormData.Add(new ByteArrayContent(file), "file");
+            //Listado de identificadores de los recursos a cargar
             if (listaId != null && listaId.Count > 0)
             {
                 foreach (string id in listaId)
@@ -80,7 +110,7 @@ namespace EditorCV.Models
             {
                 multipartFormData.Add(new StringContent(""), "listaId");
             }
-
+            //Opciones de los recursos seleccionados
             if (dicOpciones != null && dicOpciones.Count > 0)
             {
                 foreach (KeyValuePair<string, string> opcion in dicOpciones)
@@ -109,6 +139,12 @@ namespace EditorCV.Models
 
         }
 
+        /// <summary>
+        /// Devuelve un diccionario con las Tabs del objeto <paramref name="preimport"/>
+        /// </summary>
+        /// <param name="tabTemplatesAux"></param>
+        /// <param name="preimport"></param>
+        /// <returns></returns>
         public ConcurrentDictionary<int, API.Response.Tab> GetListTabs(ConcurrentBag<API.Templates.Tab> tabTemplatesAux, Preimport preimport)
         {
             ConcurrentDictionary<int, API.Response.Tab> dicTabs = new ConcurrentDictionary<int, API.Response.Tab>();
@@ -122,7 +158,12 @@ namespace EditorCV.Models
             return dicTabs;
         }
 
-
+        /// <summary>
+        /// Devuelve un Tab pasado un identificador de la misma y un objeto Preimport
+        /// </summary>
+        /// <param name="tab"></param>
+        /// <param name="preimport"></param>
+        /// <returns></returns>
         private API.Response.Tab GetTabImport(API.Templates.Tab tab, Preimport preimport)
         {
             API.Response.Tab tabResponse = new API.Response.Tab();
@@ -200,6 +241,12 @@ namespace EditorCV.Models
             return tabSection;
         }
 
+        /// <summary>
+        /// Devuelvo un TabSection dependiendo del <paramref name="section"/> pasado.
+        /// </summary>
+        /// <param name="section"></param>
+        /// <param name="preimport"></param>
+        /// <returns></returns>
         private API.Response.TabSection GetSectionImport(API.Templates.TabSection section, Preimport preimport)
         {
             string lang = "es";
@@ -335,6 +382,12 @@ namespace EditorCV.Models
             return tabSection;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tabSectionListItem"></param>
+        /// <param name="subseccionItem"></param>
+        /// <returns></returns>
         private TabSectionItem GetItemImport(TabSectionListItem tabSectionListItem, SubseccionItem subseccionItem)
         {
             string lang = "es";
