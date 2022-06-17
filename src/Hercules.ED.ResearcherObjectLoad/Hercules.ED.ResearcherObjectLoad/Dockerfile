@@ -10,14 +10,28 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Hercules.ED.ResearcherObjectLoad.csproj", ""]
-RUN dotnet restore "./Hercules.ED.ResearcherObjectLoad.csproj"
+
+
+
+
+
+COPY ["Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine.csproj", "./Hercules.ED.DisambiguationEngine/"]
+
+COPY ["Hercules.ED.ResearcherObjectLoad/Hercules.ED.ResearcherObjectLoad.csproj", "./Hercules.ED.ResearcherObjectLoad/"]
+RUN dotnet restore "./Hercules.ED.ResearcherObjectLoad/Hercules.ED.ResearcherObjectLoad.csproj"
+
+
+
+
+
+
+
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "Hercules.ED.ResearcherObjectLoad.csproj" -c Release -o /app/build
+RUN dotnet build "Hercules.ED.ResearcherObjectLoad/Hercules.ED.ResearcherObjectLoad.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Hercules.ED.ResearcherObjectLoad.csproj" -c Release -o /app/publish
+RUN dotnet publish "Hercules.ED.ResearcherObjectLoad/Hercules.ED.ResearcherObjectLoad.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
