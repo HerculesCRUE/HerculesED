@@ -52,10 +52,27 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             else
             {
-                UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
-                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"))
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.Any(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_")))
                 {
-                    listadoIdBBDD.RemoveAt(0);
+                    List<string> listadoEliminacion = new List<string>() { "0", "1", "2" };
+                    string numero;
+                    for (int i = 0; i < listadoIdBBDD.Count; i++)
+                    {
+                        numero = listadoIdBBDD.ElementAt(i).Split("@@@").Last();
+                        if (!string.IsNullOrEmpty(numero))
+                        {
+                            listadoEliminacion.Remove(numero);
+                        }
+                    }
+                    foreach (string eliminar in listadoEliminacion)
+                    {
+                        entityXML.properties.RemoveAt(int.Parse(eliminar));
+                    }
+                }
+                UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.Any(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_")))
+                {
+                    listadoIdBBDD.RemoveAll(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"));
                 }
                 return null;
             }
