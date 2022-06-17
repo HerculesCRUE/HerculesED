@@ -26,10 +26,10 @@ namespace Hercules.ED.ImportadorWebCV
         public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones)
         {
             Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
-            Dictionary<string, string> filtrador = new Dictionary<string, string>();
+            List<Tuple<string, string>> filtrador = new List<Tuple<string, string>>();
             foreach (string str in listaId)
             {
-                filtrador.Add(str.Split("_").First(), str.Split("_").Last());
+                filtrador.Add(new Tuple<string, string>(str.Split("_").First(), str.Split("_").Last()));
             }
             Preimport preimport = new Preimport();
 
@@ -69,7 +69,10 @@ namespace Hercules.ED.ImportadorWebCV
             {
                 return;
             }
-            listadoItems.RemoveAt(0);
+            if (listadoItems.ElementAt(0).Code.Equals("000.020.000.000"))
+            {
+                listadoItems.RemoveAt(0);
+            }
 
             string opcionSeleccionada = "";
             List<CvnItemBean> listadoDuplicar = new List<CvnItemBean>();
@@ -78,6 +81,7 @@ namespace Hercules.ED.ImportadorWebCV
             List<string> listadoDuplicarBBDD = new List<string>();
             List<string> listadoFusionarBBDD = new List<string>();
             List<string> listadoSobrescribirBBDD = new List<string>();
+            List<string> listadoTextoLibreBBDD = new List<string>();
             int contadorEliminados = 1;
             for (int i = 0; i < listadoItems.Count; i++)
             {
@@ -88,10 +92,33 @@ namespace Hercules.ED.ImportadorWebCV
                     contadorEliminados++;
                     continue;
                 }
-                if (!filtrador.ContainsValue((i+contadorEliminados).ToString()))
+                if (!filtrador.Any(x => x.Item2.Equals((i + contadorEliminados).ToString())))
                 {
                     continue;
                 }
+
+
+                if (i.Equals(listadoItems.Count() - 1))
+                {
+                    for (int contadorTexto = 0; contadorTexto < 3; contadorTexto++)
+                    {
+                        if (filtrador.Any(x => x.Item2.Equals((i + contadorEliminados + contadorTexto).ToString())))
+                        {
+                            if (!listadoSobrescribir.Exists(x => x.Code.Equals("070.010.000.000")))
+                            {
+                                listadoSobrescribir.Add(listadoItems.Last());
+                            }
+                            if (listadoSubsetionItems.Last().idBBDD.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"))
+                            {
+                                listadoTextoLibreBBDD.Add(listadoSubsetionItems.Last().idBBDD + "@@@" + contadorTexto);
+                            }
+                        }
+                    }
+
+                    continue;
+                }
+
+                
 
                 opcionSeleccionada = "so";
                 if (dicOpciones.ContainsKey((i + contadorEliminados).ToString()))
@@ -113,6 +140,8 @@ namespace Hercules.ED.ImportadorWebCV
                     listadoSobrescribir.Add(listadoItems.ElementAt(i));
                     listadoSobrescribirBBDD.Add(listadoSubsetionItems.ElementAt(i).idBBDD + "@@@so");
                 }
+
+                
             }
 
             cvnRootResultBean duplicadosResultBean = new cvnRootResultBean() { cvnRootBean = listadoDuplicar.ToArray() };
@@ -122,23 +151,19 @@ namespace Hercules.ED.ImportadorWebCV
 
             //Duplicar
             base.cvn = duplicadosResultBean;
-            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
-            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
 
             //Fusionar - TODO
             base.cvn = fusionResultBean;
-            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
-            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
 
             //Sobrescribir - TODO
             base.cvn = sobrescribirResultBean;
@@ -148,7 +173,7 @@ namespace Hercules.ED.ImportadorWebCV
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
-            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
         }
     }
 }
