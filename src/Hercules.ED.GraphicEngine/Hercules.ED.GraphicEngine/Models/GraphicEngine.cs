@@ -184,7 +184,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             if (configModel != null)
             {
-                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador == pIdGrafica.Split('-').LastOrDefault());
+                Grafica grafica = configModel.graficas.FirstOrDefault(x => x.identificador.Split('-').LastOrDefault() == pIdGrafica.Split('-').LastOrDefault());
                 return CrearGrafica(grafica, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
             }
 
