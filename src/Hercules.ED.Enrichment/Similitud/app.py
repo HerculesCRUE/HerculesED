@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from flask_apispec import doc, use_kwargs
 from flask_apispec.views import MethodResource
@@ -7,7 +7,7 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from marshmallow import Schema, fields, ValidationError
 
-import similarity
+from similarity import SimilarityService, RO, Ranking, ROIdError, ROTypeError
 import ro_storage_memory
 import ro_cache_memory
 
@@ -46,8 +46,8 @@ class SimilarityAddSchema(Schema):
     ro_type = fields.String(required=True, description="Type of the research object: 'research_paper', 'code_project', 'protocol'")
     text = fields.String(required=True, description="Concatenation of title and abstract of the RO")
     authors = fields.String(required=True, description="Authors of the paper in a single string")
-    thematic_descriptors = fields.String(required=True, description="List of pairs composed by thematic descriptors returned by the enrichment API and their probabilities.")
-    specific_descriptors = fields.String(required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
+    thematic_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by thematic descriptors returned by the enrichment API and their probabilities.")
+    specific_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
 
 class SimilarityQuerySchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
@@ -58,7 +58,7 @@ class SimilarityQuerySchema(Schema):
 
 db = ro_storage_memory.MemoryROStorage()
 cache = ro_cache_memory.MemoryROCache()
-
+similarity = SimilarityService(db, cache)
     
 # Endpoint classes
     
@@ -71,8 +71,10 @@ class SimilarityAddAPI(MethodResource, Resource):
     #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def post(self, **kwargs):
         logger.debug(kwargs)
-        ro = similarity.RO(kwargs['ro_id'])
-        similarity.add_ro(ro, db, cache)
+        ro = RO(kwargs['ro_id'], kwargs['ro_type'])
+        ro.text = kwargs['text']
+        similarity.generate_embedding(ro)
+        similarity.add_ro(ro)
         logger.debug("RO added")
         
 
@@ -85,8 +87,9 @@ class SimilarityQueryAPI(MethodResource, Resource):
     #@marshal_with(SimilarityQueryResponseSchema, description="")  # marshalling with marshmallow
     def get(self, **kwargs):
         logger.debug(kwargs)
-        ranking = similarity.get_ro_ranking(kwargs['ro_id'], kwargs['ro_type_target'], db)
-        logger.debug(f"Similar ROs: {ranking}")
+        similar_ro_ids = similarity.get_ro_ranking(kwargs['ro_id'], kwargs['ro_type_target'])            
+        logger.debug(f"Similar ROs: {similar_ro_ids}")
+        return jsonify(similar_ro_ids)
 
 
 # Declare endpoints and documentation for the API
@@ -96,6 +99,13 @@ api.add_resource(SimilarityQueryAPI, '/query_similar')
 
 docs.register(SimilarityAddAPI)
 docs.register(SimilarityQueryAPI)
+
+
+# Error handlers
+
+@app.errorhandler(ROIdError)
+def handle_bad_request(e):
+    return f"RO not found", 404
 
 
 if __name__ == "__main__":

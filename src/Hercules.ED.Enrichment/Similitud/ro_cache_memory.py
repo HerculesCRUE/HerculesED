@@ -8,18 +8,34 @@ class MemoryROCache(similarity.ROCache):
     def add_ro(self, ro: similarity.RO) -> None:
         self.ros[ro.id] = {
             'id': ro.id,
-            'embedding': ro.embedding,
+            'type': ro.type,
+            'embedding': ro._embedding,
             'ranking': ro.ranking,
         }
 
     def update_ro_ranking(self, ro: similarity.RO) -> None:
-        self.ros[ro.id].ranking = ro.ranking
+        if ro.id not in self.ros:
+            raise similarity.ROIdError()
+        self.ros[ro.id]['ranking'] = ro.ranking
 
     def get_ro(self, ro_id) -> similarity.RO:
-        return self.ros[ro_id]
+        if ro_id not in self.ros:
+            raise similarity.ROIdError()
+        return self._to_ro(self.ros[ro_id])
 
     def get_ranking(self, ro_id) -> similarity.Ranking:
-        return self.ros[ro_id].ranking
+        if ro_id not in self.ros:
+            raise similarity.ROIdError()
+        return self.ros[ro_id]['ranking']
 
     def iterator(self):
-        return self.ros.values()
+        for ro_dic in self.ros.values():
+            ro = self._to_ro(ro_dic)
+            yield ro
+
+    @staticmethod
+    def _to_ro(ro_dic):
+        ro = similarity.RO(ro_dic['id'], ro_dic['type'])
+        ro._embedding = ro_dic['embedding']
+        ro.ranking = ro_dic['ranking']
+        return ro

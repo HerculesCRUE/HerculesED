@@ -12,10 +12,15 @@ class MemoryROStorage(similarity.ROStorage):
         self.ros[ro.id] = ro
 
     def update_ro_ranking(self, ro: similarity.RO) -> None:
+        if ro.id not in self.ros:
+            raise similarity.ROIdError()
         self.ros[ro.id].ranking = ro.ranking
 
     def get_ro(self, ro_id) -> similarity.RO:
+        if ro_id not in self.ros:
+            raise similarity.ROIdError()
         return self.ros[ro_id]
 
     def iterator(self):
-        return self.ros.values()
+        for ro in self.ros.values():
+            yield ro
