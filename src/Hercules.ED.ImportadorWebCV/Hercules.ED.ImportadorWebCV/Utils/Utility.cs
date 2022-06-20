@@ -1895,22 +1895,9 @@ namespace Utils
         {
             try
             {
-                DateTime dateTimeTransform = DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);
-                string fechaString = dateTimeTransform.ToString("yyyyMMdd000000");
-                mResourceApi.Log.Debug("DateTimetransform ex: " + dateTimeTransform.ToString("dd/MM/yyyy HH:mm:ss zzz"));
-                mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
-                mResourceApi.Log.Debug(fechaString);
-
-                
-
-                string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
-                DateTimeOffset dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture).ToOffset(new TimeSpan(int.Parse(testDate.Split("+").Last().Split(":").First()), 0, 0));
-
                 DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
                 dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
 
-                mResourceApi.Log.Debug(dateTime1.ToString());
-                mResourceApi.Log.Debug("offset: " + dateTime.Value.TimeOfDay);
                 return dateTime2.ToString("yyyyMMdd000000");
             }
             catch (Exception e)
@@ -1918,18 +1905,6 @@ namespace Utils
                 mResourceApi.Log.Error("Error en el formato de fecha" + e.Message + " " + e.StackTrace);
                 return null;
             }
-            //fechaString += "000000";
-
-            //mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
-            //mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
-            //string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
-            //var date = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
-            //mResourceApi.Log.Debug("DateTime parse:" + date);
-
-
-            //string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
-            //fechaString += "000000";
-            //return fechaString;
         }
 
         /// <summary>
@@ -1940,9 +1915,10 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
         {
-            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
-            fechaString += "000000";
-            return fechaString;
+            DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
+            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+            return dateTime2.ToString("yyyyMMdd000000");
         }
 
         /// <summary>
@@ -1953,9 +1929,10 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateYear dateTime)
         {
-            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
-            fechaString += "000000";
-            return fechaString;
+            DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
+            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+            return dateTime2.ToString("yyyyMMdd000000");
         }
 
         /// <summary>
