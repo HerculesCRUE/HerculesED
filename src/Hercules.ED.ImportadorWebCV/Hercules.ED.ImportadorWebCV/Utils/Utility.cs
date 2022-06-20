@@ -1892,26 +1892,35 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
-            mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
+            DateTime dateTimeTransform = DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);            
+            string fechaString = dateTimeTransform.ToString("yyyyMMdd000000");
+            mResourceApi.Log.Debug("DateTimetransform ex: " + dateTimeTransform.ToString("dd/MM/yyyy HH:mm:ss zzz"));
             mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
-            string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
-            var date = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
-            mResourceApi.Log.Debug("DateTime parse:" + date);
+            mResourceApi.Log.Debug(fechaString);
 
 
-            mResourceApi.Log.Debug("DateTime ticks: " + new DateTime(dateTime.Value.Ticks));
-            mResourceApi.Log.Debug("DateTime ticks unspecified: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified));
-            mResourceApi.Log.Debug("DateTime ticks unspecified touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToUniversalTime());
-            mResourceApi.Log.Debug("DateTime ticks unspecified tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime());
-            mResourceApi.Log.Debug("DateTime ticks UTC: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc));
-            mResourceApi.Log.Debug("DateTime ticks UTC touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToUniversalTime());
-            mResourceApi.Log.Debug("DateTime ticks UTC tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToLocalTime());
-            mResourceApi.Log.Debug("DateTime ticks local: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local));
-            mResourceApi.Log.Debug("DateTime ticks local touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToUniversalTime());
-            mResourceApi.Log.Debug("DateTime ticks local tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToLocalTime());
+            //fechaString += "000000";
 
-            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
-            fechaString += "000000";
+            //mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
+            //mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
+            //string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
+            //var date = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
+            //mResourceApi.Log.Debug("DateTime parse:" + date);
+
+
+            //mResourceApi.Log.Debug("DateTime ticks: " + new DateTime(dateTime.Value.Ticks));
+            //mResourceApi.Log.Debug("DateTime ticks unspecified: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified));
+            //mResourceApi.Log.Debug("DateTime ticks unspecified touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToUniversalTime());
+            //mResourceApi.Log.Debug("DateTime ticks unspecified tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime());
+            //mResourceApi.Log.Debug("DateTime ticks UTC: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc));
+            //mResourceApi.Log.Debug("DateTime ticks UTC touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToUniversalTime());
+            //mResourceApi.Log.Debug("DateTime ticks UTC tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToLocalTime());
+            //mResourceApi.Log.Debug("DateTime ticks local: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local));
+            //mResourceApi.Log.Debug("DateTime ticks local touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToUniversalTime());
+            //mResourceApi.Log.Debug("DateTime ticks local tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToLocalTime());
+
+            //string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
+            //fechaString += "000000";
             return fechaString;
         }
 
