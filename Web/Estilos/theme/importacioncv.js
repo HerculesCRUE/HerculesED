@@ -125,6 +125,7 @@ var importarCVN = {
 				
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
+				checkAllConflict();
 				OcultarUpdateProgress();				
 			}
 		});		
@@ -157,6 +158,13 @@ var importarCVN = {
 	}
 };
 
+function checkAllConflict(){
+	$('.checkAllConflict input[type="checkbox"]').off('click').on('click', function(e) {
+		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
+		edicionCV.buscarListado(seccion);
+	});
+}
+
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
 		if(!$(this)[0].checked)
@@ -185,6 +193,7 @@ function printCientificProduction(id, data){
 
 	var expanded = "";
 	var show = "";
+	var datos = false;
 	if (data.items != null) {
 		if (Object.keys(data.items).length > 0) {
 			//Desplegado
@@ -195,50 +204,57 @@ function printCientificProduction(id, data){
 			expanded = "false";
 		}
 		for(const seccion in data.items){
-			//TODO texto ver items
-			var htmlSection = `
-			<div class="panel-group pmd-accordion" section="${data.items[seccion].properties[0]}" id="${id}" role="tablist" aria-multiselectable="true">
-				<div class="panel">
-					<div class="panel-heading" role="tab" id="publicaciones-tab">
-						<p class="panel-title">
-							<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
-								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
-								<span class="texto">${data.items[seccion].title}</span>
-							</a>
-						</p>
-					</div>`;
-					if(data.items[seccion].properties[0].values.length != 0){
-					htmlSection += `
-					<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
-						<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
-							<div class="panel-body">
-								<div class="resource-list listView">
-									<div class="resource-list-wrap">
-										<article class="resource success" >
-											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].identifier}"  value="${data.items[seccion].identifier}_${contador}">
-												<label class="custom-control-label" for="check_resource_${data.items[seccion].identifier}"></label>
-											</div>
-											<div class="wrap">
-												<div class="middle-wrap">
-													<div class="title-wrap">
-														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
-														+selectorCamposTexto+														
-													`</div>
+			if(data.items[seccion].properties[0].values.length != 0){
+				datos = true;
+			}
+		}
+		for(const seccion in data.items){
+			if(datos){
+				//TODO texto ver items
+				var htmlSection = `
+				<div class="panel-group pmd-accordion" section="${data.items[seccion].properties[0]}" id="${id}" role="tablist" aria-multiselectable="true">
+					<div class="panel">
+						<div class="panel-heading" role="tab" id="publicaciones-tab">
+							<p class="panel-title">
+								<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+									<span class="material-icons pmd-accordion-icon-left">folder_open</span>
+									<span class="texto">${data.items[seccion].title}</span>
+								</a>
+							</p>
+						</div>`;
+						if(data.items[seccion].properties[0].values.length != 0){
+						htmlSection += `
+						<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
+							<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
+								<div class="panel-body">
+									<div class="resource-list listView">
+										<div class="resource-list-wrap">
+											<article class="resource success" >
+												<div class="custom-control custom-checkbox">
+													<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].identifier}"  value="${data.items[seccion].identifier}_${contador}">
+													<label class="custom-control-label" for="check_resource_${data.items[seccion].identifier}"></label>
 												</div>
-											</div>
-										</article>
+												<div class="wrap">
+													<div class="middle-wrap">
+														<div class="title-wrap">
+															<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
+															+selectorCamposTexto+														
+														`</div>
+													</div>
+												</div>
+											</article>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>`;
-					
-					contador++;
-					}
-		htmlSection += `
-				</div>
-			</div>`;
+						</div>`;
+						
+						contador++;
+						}
+				htmlSection += `
+					</div>
+				</div>`;
+			}
 		}
 		return htmlSection;
 	}
@@ -494,6 +510,12 @@ edicionCV.printTabSection= function(data) {
 											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
 										</div>
 									</div>
+									<div class="checkAllConflict" id="checkAllConflict">
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="checkAllConflict_${id2}">
+											<label class="custom-control-label" for="checkAllConflict_${id2}">Mostrar solo conflictos</label>
+										</div>
+									</div>
 								</div>
 								<div class="wrap">
 									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
@@ -551,17 +573,17 @@ edicionCV.printHtmlListItem= function(id, data) {
 	}
 	var htmlListItem = ``;
 	if(data.title!= null){
-		htmlListItem = `<article class="resource success ${openAccess}" >
-								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
-									<label class="custom-control-label" for="check_resource_${id}"></label>
-								</div>
-								<div class="wrap">
-									<div class="middle-wrap">
-										${this.printHtmlListItemOrders(data)}
-										<div class="title-wrap">
-											<h2 class="resource-title">${data.title}</h2>`;
-		if(data.idBBDD!=""){
+		htmlListItem = `<article class="resource success ${openAccess} conflict-${data.idBBDD != ""}" >
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
+								<label class="custom-control-label" for="check_resource_${id}"></label>
+							</div>
+							<div class="wrap">
+								<div class="middle-wrap">
+									${this.printHtmlListItemOrders(data)}
+									<div class="title-wrap">
+										<h2 class="resource-title">${data.title}</h2>`;
+		if(data.idBBDD != ""){
 			if(data.iseditable){
 				htmlListItem += selectorConflictoNoBloqueado;
 			}else{
@@ -569,16 +591,16 @@ edicionCV.printHtmlListItem= function(id, data) {
 			}	
 		}							
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
-										</div>
-										<div class="content-wrap">
-											<div class="description-wrap">
-												${this.printHtmlListItemEditable(data)}	
-												${this.printHtmlListItemPropiedades(data)}
-											</div>
+									</div>
+									<div class="content-wrap">
+										<div class="description-wrap">
+											${this.printHtmlListItemEditable(data)}	
+											${this.printHtmlListItemPropiedades(data)}
 										</div>
 									</div>
 								</div>
-							</article>`;
+							</div>
+						</article>`;
 	}
 	contador++;
 	return htmlListItem;

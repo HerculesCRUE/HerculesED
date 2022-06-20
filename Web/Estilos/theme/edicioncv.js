@@ -665,6 +665,11 @@ var edicionCV = {
 		var sectionItem=$('.panel-group[section="' + id + '"]');
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
+		var mostrarSoloConflictos=false;
+		if(sectionItem.find('.checkAllConflict input[type="checkbox"]').is(':checked'))
+		{
+			mostrarSoloConflictos=true;
+		}
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
 		var ordenItem=sectionItem.find(' .ordenar.dropdown .texto');
         var ordenProperty = ordenItem.attr('property');
@@ -753,7 +758,8 @@ var edicionCV = {
 			var existe=texto=='';
             var existeEnTitulo = existe || EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
             var existeEnPropiedad = existe || EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
-            if (existe ||existeEnTitulo || existeEnPropiedad) {
+            var filtroConflicto= !mostrarSoloConflictos || (mostrarSoloConflictos && $(this).hasClass('conflict-true'));
+			if ((existe ||existeEnTitulo || existeEnPropiedad) && filtroConflicto) {
                 numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
                 if (numPaginas == paginaActual) {
                     $(this).show();
