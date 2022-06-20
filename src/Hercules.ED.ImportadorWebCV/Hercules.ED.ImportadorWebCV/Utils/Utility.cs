@@ -1907,7 +1907,7 @@ namespace Utils
 
             mResourceApi.Log.Debug(dateTime1.ToString());
             mResourceApi.Log.Debug("offset: " + dateTime.Value.TimeOfDay);
-            return dateTime1.ToString("yyyyMMdd000000");
+            return dateTime2.ToString("yyyyMMdd000000");
             //fechaString += "000000";
 
             //mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
@@ -1916,17 +1916,6 @@ namespace Utils
             //var date = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
             //mResourceApi.Log.Debug("DateTime parse:" + date);
 
-
-            //mResourceApi.Log.Debug("DateTime ticks: " + new DateTime(dateTime.Value.Ticks));
-            //mResourceApi.Log.Debug("DateTime ticks unspecified: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified));
-            //mResourceApi.Log.Debug("DateTime ticks unspecified touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToUniversalTime());
-            //mResourceApi.Log.Debug("DateTime ticks unspecified tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime());
-            //mResourceApi.Log.Debug("DateTime ticks UTC: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc));
-            //mResourceApi.Log.Debug("DateTime ticks UTC touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToUniversalTime());
-            //mResourceApi.Log.Debug("DateTime ticks UTC tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToLocalTime());
-            //mResourceApi.Log.Debug("DateTime ticks local: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local));
-            //mResourceApi.Log.Debug("DateTime ticks local touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToUniversalTime());
-            //mResourceApi.Log.Debug("DateTime ticks local tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToLocalTime());
 
             //string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
             //fechaString += "000000";
