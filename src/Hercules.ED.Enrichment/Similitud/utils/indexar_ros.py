@@ -20,13 +20,19 @@ def index_ros(data_fpath, ro_id):
             raise ValueError(f"RO {ro_id} not found")
         ros = [ ro ]
 
-    URL = 'http://localhost:5000/add_ro'        
+    URL_add = 'http://localhost:5000/add_ro'
+    URL_rebuild = 'http://localhost:5000/rebuild_rankings'
 
     try:
         for ro in tqdm.tqdm(ros):
-            r = requests.post(URL, json=ro)
+            ro['update_ranking'] = False
+            r = requests.post(URL_add, json=ro)
             if r.status_code != 200:
                 logging.error(f"Error adding RO {ro['ro_id']}. http-status:{r.status_code}")
+
+        r = requests.post(URL_rebuild, json={})
+        if r.status_code != 200:
+            logging.error(f"Error rebuilding RO rankings. http-status:{r.status_code}")
     except Exception as e:
         logging.error(str(e))
         exit()

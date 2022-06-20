@@ -44,7 +44,7 @@ class ROStorage(ABC):
         pass
 
     @abstractmethod
-    def iterator(self):
+    def get_embeddings(self) -> list:
         pass
 
     
@@ -198,16 +198,16 @@ class Ranking:
         self.rankings = { ro_type: [] for ro_type in RO_TYPES }
 
         
-    def update_if_needed(self, ro: RO, new_ro: RO, distance: float):
+    def update_if_needed(self, ro: RO, distance: float):
         
-        ranking = self.rankings[new_ro.type]
+        ranking = self.rankings[ro.type]
         if len(ranking) == self.size and distance <= ranking[0][0]:
             return False
 
         if len(ranking) < self.size:
-            heapq.heappush(ranking, (distance, new_ro.id))
+            heapq.heappush(ranking, (distance, ro.id))
         else:
-            heapq.heapreplace(ranking, (distance, new_ro.id))
+            heapq.heapreplace(ranking, (distance, ro.id))
         return True
 
 
@@ -232,10 +232,22 @@ class SimilarityService:
         self.db = db
         self.cache = cache
         self.model = SentenceTransformer(MODEL_ID)
+        self.rebuild_cache()
 
-        # load cache
-        for ro in db.iterator():
-            cache.add_ro(ro)
+
+    def rebuild_cache(self):
+
+        self.cache.clear()
+        
+        ros = self.db.get_embeddings()
+        for i in range(len(ros)):
+            for j in range(i+1, len(ros)):
+                dist = ros[i].distance(ros[j])
+                ros[i].ranking.update_if_needed(ros[j], dist)
+                ros[j].ranking.update_if_needed(ros[i], dist)
+
+        for ro in ros:
+            self.cache.add_ro(ro)
 
 
     def create_RO(self, ro_id, text) -> RO:
@@ -248,19 +260,18 @@ class SimilarityService:
         return self.db.has_ro(ro_id)
         
 
-    def add_ro(self, ro: RO) -> None:
+    def add_ro(self, ro: RO, update_ranking: bool) -> None:
 
         start = time.time()
-        for db_ro in self.cache.iterator():
-            dist = ro.distance(db_ro)
-            #logger.debug(f"Distance ({ro.id}, {db_ro.id}): {dist}")
-
-            ro.ranking.update_if_needed(ro, db_ro, dist)
-            if db_ro.ranking.update_if_needed(db_ro, ro, dist):
-                self.cache.update_ro_ranking(db_ro)
+        if update_ranking:
+            for db_ro in self.cache.iterator():
+                dist = ro.distance(db_ro)
+                ro.ranking.update_if_needed(db_ro, dist)
+                if db_ro.ranking.update_if_needed(ro, dist):
+                    self.cache.update_ro_ranking(db_ro)
+            self.cache.add_ro(ro)
 
         self.db.add_ro(ro)
-        self.cache.add_ro(ro)
         end = time.time()
 
         logger.debug(f"add_ro elapsed time: {(end - start):.2f}")

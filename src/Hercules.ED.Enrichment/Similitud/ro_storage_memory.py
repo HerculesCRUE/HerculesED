@@ -24,6 +24,10 @@ class MemoryROStorage(similarity.ROStorage):
     def has_ro(self, ro_id) -> bool:
         return ro_id in self.ros
 
-    def iterator(self):
-        for ro in self.ros.values():
-            yield ro
+    def get_embeddings(self):
+        ros = []
+        for db_ro in self.ros.values():
+            ro = similarity.RO(db_ro.id, db_ro.type, None)
+            ro._embedding = db_ro._embedding
+            ros.append(ro)
+        return ros
