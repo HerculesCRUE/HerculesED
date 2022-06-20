@@ -1893,6 +1893,8 @@ namespace Utils
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
             mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
+            mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
+            string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
 
 
             mResourceApi.Log.Debug("DateTime ticks: " + new DateTime(dateTime.Value.Ticks));
