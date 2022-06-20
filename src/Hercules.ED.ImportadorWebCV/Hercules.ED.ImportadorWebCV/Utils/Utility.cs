@@ -1892,22 +1892,30 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
-            DateTime dateTimeTransform = DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);
-            string fechaString = dateTimeTransform.ToString("yyyyMMdd000000");
-            mResourceApi.Log.Debug("DateTimetransform ex: " + dateTimeTransform.ToString("dd/MM/yyyy HH:mm:ss zzz"));
-            mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
-            mResourceApi.Log.Debug(fechaString);
+            try
+            {
+                DateTime dateTimeTransform = DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);
+                string fechaString = dateTimeTransform.ToString("yyyyMMdd000000");
+                mResourceApi.Log.Debug("DateTimetransform ex: " + dateTimeTransform.ToString("dd/MM/yyyy HH:mm:ss zzz"));
+                mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
+                mResourceApi.Log.Debug(fechaString);
 
 
-            string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
-            DateTimeOffset dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture).ToOffset(new TimeSpan(int.Parse(testDate.Split("+").Last().Split(":").First()), 0, 0));
+                string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
+                DateTimeOffset dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture).ToOffset(new TimeSpan(int.Parse(testDate.Split("+").Last().Split(":").First()), 0, 0));
 
-            DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
-            dateTime2 = TimeZoneInfo.ConvertTimeFromUtc(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time"));
+                DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
+                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time"));
 
-            mResourceApi.Log.Debug(dateTime1.ToString());
-            mResourceApi.Log.Debug("offset: " + dateTime.Value.TimeOfDay);
-            return dateTime2.ToString("yyyyMMdd000000");
+                mResourceApi.Log.Debug(dateTime1.ToString());
+                mResourceApi.Log.Debug("offset: " + dateTime.Value.TimeOfDay);
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error("Error en el formato de fecha" + e.Message + " " + e.StackTrace);
+                return null;
+            }
             //fechaString += "000000";
 
             //mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
@@ -1919,7 +1927,7 @@ namespace Utils
 
             //string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
             //fechaString += "000000";
-            return fechaString;
+            //return fechaString;
         }
 
         /// <summary>
