@@ -6,6 +6,7 @@ using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -1900,6 +1901,11 @@ namespace Utils
                 mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
                 mResourceApi.Log.Debug(fechaString);
 
+                ReadOnlyCollection<TimeZoneInfo> tz = TimeZoneInfo.GetSystemTimeZones();
+                foreach(TimeZoneInfo tzi in tz)
+                {
+                    mResourceApi.Log.Debug(tzi.Id);
+                }
 
                 string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
                 DateTimeOffset dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture).ToOffset(new TimeSpan(int.Parse(testDate.Split("+").Last().Split(":").First()), 0, 0));
