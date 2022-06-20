@@ -1895,7 +1895,7 @@ namespace Utils
             mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
             mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
             string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
-            var date = DateTime.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
+            var date = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
             mResourceApi.Log.Debug("DateTime parse:" + date);
 
 
