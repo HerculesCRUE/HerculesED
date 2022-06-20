@@ -17,6 +17,10 @@ def tsv_to_json(tsv_fpath, ro_type, json_fpath):
                 'thematic_descriptors': [],
                 'specific_descriptors': [],
             }
+            if 'keyphrases' in row:
+                keyphrases = row['keyphrases'].split('|')
+                probs = [ float(p) for p in row['prob'].split('|') ]
+                ro['specific_descriptors'] = list(zip(keyphrases, probs))
             json_data.append(ro)
 
     with open(json_fpath, 'w') as f:
