@@ -1899,6 +1899,10 @@ namespace Utils
             mResourceApi.Log.Debug(fechaString);
 
 
+            string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
+            var dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", new CultureInfo("es-ES"));
+            mResourceApi.Log.Debug(dateTime1.ToString());
+            return dateTime1.ToString();
             //fechaString += "000000";
 
             //mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
