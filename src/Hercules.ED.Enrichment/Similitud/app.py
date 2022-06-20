@@ -71,9 +71,13 @@ class SimilarityAddAPI(MethodResource, Resource):
     #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def post(self, **kwargs):
         logger.debug(kwargs)
-        ro = RO(kwargs['ro_id'], kwargs['ro_type'])
-        ro.text = kwargs['text']
-        similarity.generate_embedding(ro)
+        if similarity.ro_exists(kwargs['ro_id']):
+            return '{"msg": "RO already exists"}', 409
+        ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
+        ro.set_text(kwargs['text'])
+        names = [ n for n, p in kwargs['specific_descriptors'] ]
+        probs = [ p for n, p in kwargs['specific_descriptors'] ]
+        ro.set_specific_descriptors(names, probs)
         similarity.add_ro(ro)
         logger.debug("RO added")
         

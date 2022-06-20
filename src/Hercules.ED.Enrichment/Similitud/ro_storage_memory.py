@@ -21,6 +21,9 @@ class MemoryROStorage(similarity.ROStorage):
             raise similarity.ROIdError()
         return self.ros[ro_id]
 
+    def has_ro(self, ro_id) -> bool:
+        return ro_id in self.ros
+
     def iterator(self):
         for ro in self.ros.values():
             yield ro
