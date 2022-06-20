@@ -240,8 +240,7 @@ input.form-group-date {
 }
 
 .page-cv .panel-group .panel {
-    border-bottom: none!important;
-    
+    border-bottom: none!important;    
 }
 
 .importar-exportar-cv .panel-group>div .panel {
@@ -274,4 +273,16 @@ input.form-group-date {
     height: 45px;
     padding: 10px 20px;
 	width: 150px;
+}
+
+.importar-exportar-cv .acciones-listado-cv .checkAllCVWrapper {
+	margin-right: 5px;
+}
+
+.importar-exportar-cv .acciones-listado-cv .checkAllConflict {
+    border: 1px solid var(--c-gris-borde);
+    display: flex;
+    align-items: center;
+    padding: 6px;
+	margin-right: 5px;
 }

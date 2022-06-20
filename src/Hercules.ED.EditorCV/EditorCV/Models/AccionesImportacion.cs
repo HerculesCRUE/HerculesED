@@ -383,7 +383,7 @@ namespace EditorCV.Models
         }
 
         /// <summary>
-        /// 
+        /// Devuelve un objeto TabSectionItem de <paramref name="tabSectionListItem"/>
         /// </summary>
         /// <param name="tabSectionListItem"></param>
         /// <param name="subseccionItem"></param>
