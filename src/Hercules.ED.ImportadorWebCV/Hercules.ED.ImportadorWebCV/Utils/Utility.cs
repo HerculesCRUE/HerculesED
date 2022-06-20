@@ -120,7 +120,7 @@ namespace Utils
         /// </summary>
         /// <param name="personas"></param>
         /// <returns></returns>
-        public static Dictionary<string, HashSet<string>> DatosProyectoPersona( List<string> personas)
+        public static Dictionary<string, HashSet<string>> DatosProyectoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> proyectos = new Dictionary<string, HashSet<string>>();
             string select = $@"select distinct ?person ?project
@@ -1280,8 +1280,8 @@ namespace Utils
         /// <returns></returns>
         public static string GetFirmaAutor(this CvnItemBeanCvnAuthorBean item)
         {
-            if (item == null) 
-            { 
+            if (item == null)
+            {
                 return null;
             }
 
@@ -1299,7 +1299,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetOrdenAutor(this CvnItemBeanCvnAuthorBean item)
         {
-            if (item == null) 
+            if (item == null)
             {
                 return null;
             }
@@ -1894,7 +1894,9 @@ namespace Utils
         {
             mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
             mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
-            string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
+            string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
+            var date = DateTime.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture);
+            mResourceApi.Log.Debug("DateTime parse:" + date);
 
 
             mResourceApi.Log.Debug("DateTime ticks: " + new DateTime(dateTime.Value.Ticks));
