@@ -275,3 +275,10 @@ input.form-group-date {
     padding: 10px 20px;
 	width: 150px;
 }
+
+.importar-exportar-cv .acciones-listado-cv .checkAllConflict {
+    border: 1px solid var(--c-gris-borde);
+    display: flex;
+    align-items: center;
+    padding: 6px;
+}
