@@ -6,6 +6,7 @@ using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1891,6 +1892,23 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
+            mResourceApi.Log.Debug("DateTime: " + dateTime.Value);
+            string sdat = dateTime.ToString();
+            DateTime datAux = DateTime.ParseExact(sdat, "dd/MM/yyyyTHH:mm:sszzz", CultureInfo.InvariantCulture);
+            mResourceApi.Log.Debug("DateTime: " + datAux);
+
+
+            mResourceApi.Log.Debug("DateTime ticks: " + new DateTime(dateTime.Value.Ticks));
+            mResourceApi.Log.Debug("DateTime ticks unspecified: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified));
+            mResourceApi.Log.Debug("DateTime ticks unspecified touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToUniversalTime());
+            mResourceApi.Log.Debug("DateTime ticks unspecified tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime());
+            mResourceApi.Log.Debug("DateTime ticks UTC: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc));
+            mResourceApi.Log.Debug("DateTime ticks UTC touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToUniversalTime());
+            mResourceApi.Log.Debug("DateTime ticks UTC tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToLocalTime());
+            mResourceApi.Log.Debug("DateTime ticks local: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local));
+            mResourceApi.Log.Debug("DateTime ticks local touniversaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToUniversalTime());
+            mResourceApi.Log.Debug("DateTime ticks local tolocaltime: " + new DateTime(dateTime.Value.Ticks, DateTimeKind.Local).ToLocalTime());
+
             string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified).ToLocalTime().ToString("yyyyMMdd");
             fechaString += "000000";
             return fechaString;
