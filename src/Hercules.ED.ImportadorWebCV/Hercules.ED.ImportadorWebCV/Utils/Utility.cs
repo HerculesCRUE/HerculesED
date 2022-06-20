@@ -1895,6 +1895,7 @@ namespace Utils
         {
             try
             {
+                //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
                 DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
                 dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
 
@@ -1915,6 +1916,7 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
         {
+            //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
             DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
             dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
 
@@ -1929,6 +1931,7 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateYear dateTime)
         {
+            //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
             DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
             dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
 
