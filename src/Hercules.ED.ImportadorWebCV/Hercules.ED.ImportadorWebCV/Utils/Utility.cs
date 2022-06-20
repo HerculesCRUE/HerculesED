@@ -1900,7 +1900,11 @@ namespace Utils
 
 
             string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
-            var dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture).ToOffset(new TimeSpan(int.Parse(testDate.Split("+").Last().Split(":").First()), 0, 0));
+            DateTimeOffset dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture).ToOffset(new TimeSpan(int.Parse(testDate.Split("+").Last().Split(":").First()), 0, 0));
+
+            DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
+            dateTime2 = TimeZoneInfo.ConvertTimeFromUtc(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time"));
+
             mResourceApi.Log.Debug(dateTime1.ToString());
             mResourceApi.Log.Debug("offset: " + dateTime.Value.TimeOfDay);
             return dateTime1.ToString("yyyyMMdd000000");
