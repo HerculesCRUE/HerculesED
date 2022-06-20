@@ -133,7 +133,7 @@
 
 									<!-- Investigadores del grupo -->
 									<div class="form-group mb-5" id="stp1-ofertas-investigadores-grupo">
-										<label class="control-label d-block">@Html.Translate("ANADIR_PERSONAL_INVESTIGADOR")</label>
+										<label class="control-label d-block">@Html.Translate("ANADIR_PERSONAL_INVESTIGADOR_DE_TU_GRUPO")</label>
 										<div class="acciones-listado acciones-listado-investigadores">
 											<div class="wrap">
 												<div class="usuario-wrap">@Html.Translate("INVESTIGADOR")</div>
@@ -581,6 +581,20 @@
                             </fieldset>
 						</div>
 						<!-- END STEP 5 -->
+					</div>
+					<div class="botonera bottom" id="botonera-steps-bottom">
+						<a href="javascript:stepsOffer.goBack()" class="btn btn-outline-primary uppercase beforeStep" style="display:none">
+							<span class="material-icons">keyboard_arrow_left</span>
+							@Html.Translate("ANTERIOR")
+						</a>
+						<a href="javascript:stepsOffer.goNext()" class="btn btn-primary uppercase nextStep">
+							@Html.Translate("SIGUIENTE")
+							<span class="material-icons">keyboard_arrow_right</span>
+						</a>
+						<a href="javascript:stepsOffer.goEnd()" class="btn btn-primary uppercase endStep" style="display:none">
+							@Html.Translate("GUARDAR_TERMINAR")
+							<span class="material-icons">keyboard_arrow_right</span>
+						</a>
 					</div>
 				</div>
 			</div>

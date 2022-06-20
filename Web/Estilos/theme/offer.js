@@ -60,7 +60,7 @@ class StepsOffer {
 		this.stepsContent = this.stepContentWrap.find(".section-steps")
 
 		// Buttons
-		this.botoneraSteps = this.crearOferta.find('#botonera-steps')
+		this.botoneraSteps = this.crearOferta.find('.botonera')
 		this.btnBefore = this.botoneraSteps.find('.beforeStep')
 		this.nextStep = this.botoneraSteps.find('.nextStep')
 		this.endStep = this.botoneraSteps.find('.endStep')
