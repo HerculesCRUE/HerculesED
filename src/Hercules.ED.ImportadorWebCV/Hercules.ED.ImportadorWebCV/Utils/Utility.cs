@@ -1892,7 +1892,7 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
-            DateTime dateTimeTransform = DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);            
+            DateTime dateTimeTransform = DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);
             string fechaString = dateTimeTransform.ToString("yyyyMMdd000000");
             mResourceApi.Log.Debug("DateTimetransform ex: " + dateTimeTransform.ToString("dd/MM/yyyy HH:mm:ss zzz"));
             mResourceApi.Log.Debug("DateTime ex: " + dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz"));
@@ -1900,8 +1900,9 @@ namespace Utils
 
 
             string testDate = dateTime.Value.ToString("dd/MM/yyyy HH:mm:ss zzz");
-            var dateTime1 = DateTimeOffset.Parse(testDate, new CultureInfo("es-ES"));
+            var dateTime1 = DateTimeOffset.ParseExact(testDate, "dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture).ToOffset(new TimeSpan(int.Parse(testDate.Split("+").Last().Split(":").First()), 0, 0));
             mResourceApi.Log.Debug(dateTime1.ToString());
+            mResourceApi.Log.Debug("offset: " + dateTime.Value.TimeOfDay);
             return dateTime1.ToString("yyyyMMdd000000");
             //fechaString += "000000";
 
