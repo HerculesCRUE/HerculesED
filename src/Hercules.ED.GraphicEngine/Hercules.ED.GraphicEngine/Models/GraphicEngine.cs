@@ -1484,7 +1484,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de la URL.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static Faceta GetFaceta(string pIdPagina, string pIdFaceta, string pFiltroFacetas, string pLang)
+        public static Faceta GetFaceta(string pIdPagina, string pIdFaceta, string pFiltroFacetas, string pLang, bool pGetAll = false)
         {
             // Decode de los filtros.
             pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
@@ -1498,7 +1498,7 @@ namespace Hercules.ED.GraphicEngine.Models
             if (configModel != null)
             {
                 FacetaConf faceta = configModel.facetas.FirstOrDefault(x => x.filtro == pIdFaceta);
-                return CrearFaceta(faceta, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios);
+                return CrearFaceta(faceta, configModel.filtro, pFiltroFacetas, pLang, listaFacetasAnios, pGetAll);
             }
 
             return null;
@@ -1512,7 +1512,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
+        public static Faceta CrearFaceta(FacetaConf pFacetaConf, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates, bool pGetAll = false)
         {
             Faceta faceta = new Faceta();
 
@@ -1528,8 +1528,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 faceta.verTodos = true;
             }
 
-            faceta.numeroItemsFaceta = int.MaxValue;
-            if (pFacetaConf.numeroItemsFaceta != 0)
+            faceta.numeroItemsFaceta = 10000;
+            if (pFacetaConf.numeroItemsFaceta != 0 && !pGetAll)
             {
                 faceta.numeroItemsFaceta = pFacetaConf.numeroItemsFaceta;
             }
@@ -1591,6 +1591,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     where.Append($@"}} ORDER BY DESC (?numero) ");
                 }
+
+                where.Append($@"LIMIT {faceta.numeroItemsFaceta} ");
 
                 resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
