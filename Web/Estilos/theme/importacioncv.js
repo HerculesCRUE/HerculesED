@@ -125,6 +125,7 @@ var importarCVN = {
 				
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
+				checkAllConflict();
 				OcultarUpdateProgress();				
 			}
 		});		
@@ -156,6 +157,13 @@ var importarCVN = {
 		
 	}
 };
+
+function checkAllConflict(){
+	$('.checkAllConflict input[type="checkbox"]').off('click').on('click', function(e) {
+		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
+		edicionCV.buscarListado(seccion);
+	});
+}
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
@@ -502,6 +510,12 @@ edicionCV.printTabSection= function(data) {
 											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
 										</div>
 									</div>
+									<div class="checkAllConflict" id="checkAllConflict">
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="checkAllConflict_${id2}">
+											<label class="custom-control-label" for="checkAllConflict_${id2}">Mostrar solo conflictos</label>
+										</div>
+									</div>
 								</div>
 								<div class="wrap">
 									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
@@ -559,17 +573,17 @@ edicionCV.printHtmlListItem= function(id, data) {
 	}
 	var htmlListItem = ``;
 	if(data.title!= null){
-		htmlListItem = `<article class="resource success ${openAccess}" >
-								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
-									<label class="custom-control-label" for="check_resource_${id}"></label>
-								</div>
-								<div class="wrap">
-									<div class="middle-wrap">
-										${this.printHtmlListItemOrders(data)}
-										<div class="title-wrap">
-											<h2 class="resource-title">${data.title}</h2>`;
-		if(data.idBBDD!=""){
+		htmlListItem = `<article class="resource success ${openAccess} conflict-${data.idBBDD != ""}" >
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
+								<label class="custom-control-label" for="check_resource_${id}"></label>
+							</div>
+							<div class="wrap">
+								<div class="middle-wrap">
+									${this.printHtmlListItemOrders(data)}
+									<div class="title-wrap">
+										<h2 class="resource-title">${data.title}</h2>`;
+		if(data.idBBDD != ""){
 			if(data.iseditable){
 				htmlListItem += selectorConflictoNoBloqueado;
 			}else{
@@ -577,16 +591,16 @@ edicionCV.printHtmlListItem= function(id, data) {
 			}	
 		}							
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
-										</div>
-										<div class="content-wrap">
-											<div class="description-wrap">
-												${this.printHtmlListItemEditable(data)}	
-												${this.printHtmlListItemPropiedades(data)}
-											</div>
+									</div>
+									<div class="content-wrap">
+										<div class="description-wrap">
+											${this.printHtmlListItemEditable(data)}	
+											${this.printHtmlListItemPropiedades(data)}
 										</div>
 									</div>
 								</div>
-							</article>`;
+							</div>
+						</article>`;
 	}
 	contador++;
 	return htmlListItem;
