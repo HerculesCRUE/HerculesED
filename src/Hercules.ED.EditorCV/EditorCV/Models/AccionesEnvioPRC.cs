@@ -77,6 +77,19 @@ where {{
             return listadoProyectos;
         }
 
+        private string ConversorFechas(string fecha)
+        {
+            string fechaConvertida = "";
+            if (fecha.Length > 8)
+            {
+                string anio = fecha.Substring(0, 4);
+                string mes = fecha.Substring(4, 2);
+                string dia = fecha.Substring(6, 2);
+                fechaConvertida = dia + "/" + mes + "/" + anio;
+            }
+            return fechaConvertida;
+        }
+
         /// <summary>
         /// Permite enviar a Producción Científica los datos necesarios para la validación.
         /// </summary>
@@ -755,8 +768,8 @@ where {{
             //060.010.010.100 - Editorial
             dicPropiedadesPublicaciones.Add("numVol", "060.010.010.080"); // Volume e Issue
             dicPropiedadesPublicaciones.Add("paginas", "060.010.010.090"); // PageEnd y PageStart
-            //060.010.010.400 - Identificadores digitales 
-            //060.010.010.410 - Tipo identificadores digitales
+                                                                           //060.010.010.400 - Identificadores digitales 
+                                                                           //060.010.010.410 - Tipo identificadores digitales
             dicPropiedadesPublicaciones.Add("openAccess", "TIPO_OPEN_ACCESS");
             dicPropiedadesPublicaciones.Add("doi", "");
             dicPropiedadesPublicaciones.Add("handle", "");
