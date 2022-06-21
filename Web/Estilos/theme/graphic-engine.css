@@ -227,7 +227,6 @@
 .resource-list.graphView .resource > .wrap{
     height: 335px;
 }
-.resource-list.graphView .resource > .wrap{
 li a.eliminargrafica:hover span{
     color: #af1a2e;
 }

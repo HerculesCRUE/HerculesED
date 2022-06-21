@@ -341,18 +341,21 @@ namespace ImportadorWebCV.Sincro.Secciones
                         entityXML.ontology = graph;
                         entityXML.rdfType = rdfType;
                         idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
+                        listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
                     }
                     //Fusionar
                     else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu") && string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
+                        listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
                     }
                     //Sobrescribir
                     else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so") && string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
+                        listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
                     }
                 }
@@ -561,7 +564,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 int contador = 1;
                 foreach (Persona persona in entityXML.autores)
                 {
-                    string idPersonaBBDD = equivalencias.First(x => x.Value.Select(x => x.Split('|')[1]).Contains(persona.ID)).Key;
+                    string idPersonaBBDD = equivalencias.First(x => x.Value.Select(x => x.Split('|').Last()).Contains(persona.ID)).Key;
                     if (Guid.TryParse(idPersonaBBDD, out Guid aux))
                     {
                         idPersonaBBDD = identificadoresPersonasAniadidas[idPersonaBBDD];
@@ -607,6 +610,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string idXML = entityXML.id;
                 string idBBDD = "";
                 bool modificado = false;
+                //Si el listadoIdBBDD no es nulo es que viene de PostImportar
                 if (listadoIdBBDD != null)
                 {
                     string opcion = listadoIdBBDD.ElementAt(i).Split("@@@").Last();
@@ -656,7 +660,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                             }
                         }
 
+                        //Elimino el objeto tratado
+                        listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                     if (opcion.Equals("fu"))
                     {
@@ -698,7 +705,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                             }
                         }
 
+                        //Elimino el objeto tratado
+                        listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                     if (opcion.Equals("so"))
                     {
@@ -740,7 +750,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                             }
                         }
 
+                        //Elimino el objeto tratado
+                        listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                 }
                 else

@@ -23,6 +23,14 @@ namespace Hercules.ED.ImportadorWebCV
 
         }
 
+        /// <summary>
+        /// Importa los datos de <paramref name="filePreimport"/>, filtrando los items y eliminando los que no sean pertenecientes a <paramref name="listaId"/>
+        /// y tratandolos dependiendo de la opciones marcadas en <paramref name="listaOpciones"/>.
+        /// </summary>
+        /// <param name="pCVID"></param>
+        /// <param name="filePreimport"></param>
+        /// <param name="listaId"></param>
+        /// <param name="listaOpciones"></param>
         public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones)
         {
             Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
@@ -64,6 +72,7 @@ namespace Hercules.ED.ImportadorWebCV
                 }
             }
 
+            //El primer item debe ser la sección "000.020.000.000"
             List<CvnItemBean> listadoItems = base.cvn.cvnRootBean.ToList();
             if (listadoItems.Count == 0 || !listadoItems.ElementAt(0).Code.Equals("000.020.000.000"))
             {
@@ -120,7 +129,7 @@ namespace Hercules.ED.ImportadorWebCV
                     continue;
                 }
 
-                //El texto libre siempre llegará en la última posición
+                //El texto libre siempre debe llegar en la última posición
                 if (i.Equals(listadoItems.Count() - 1))
                 {
                     //Recorro resumenLibre(0), resumenTFG(1) y resumenTFM(2) para comprobar si alguno de ellos está marcado,
@@ -133,10 +142,12 @@ namespace Hercules.ED.ImportadorWebCV
                         }
                         if (filtrador.Any(x => x.Item2.Equals((i + contadorEliminados + contadorTexto).ToString())))
                         {
+                            //Si no existe el CvnItemBean de la sección "070.010.000.000" lo añado, en otro caso sigo.
                             if (!listadoSobrescribir.Exists(x => x.Code.Equals("070.010.000.000")))
                             {
                                 listadoSobrescribir.Add(listadoItems.Last());
                             }
+
                             if (listadoSubsetionItems.Last().idBBDD.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"))
                             {
                                 listadoTextoLibreBBDD.Add(listadoSubsetionItems.Last().idBBDD + "@@@" + contadorTexto);

@@ -88,7 +88,7 @@ var metricas = {
             });
         }
     },
-    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100, pIdRecurso = null, pTitulo = null) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -110,8 +110,6 @@ var metricas = {
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
             if ("container" in data) {
-
-
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
                 data.container = ctx;
@@ -199,6 +197,9 @@ var metricas = {
                     });
 
             } else {
+                data.options.responsive = true;
+                data.options.maintainAspectRatio = false;
+
                 var titulo = data.options.plugins.title.text;
                 if (pTitulo) {
                     titulo = pTitulo;
@@ -241,7 +242,6 @@ var metricas = {
                             }
                         }
                     }
-                    data.options.radius = "70%";
                     var myChart = new Chart(ctx, data);
                 }
             }
@@ -304,16 +304,16 @@ var metricas = {
                     <span class="faceta-title">${data.nombre}</span>
                     <span class="facet-arrow"></span><ul class="listadoFacetas"></ul>
                 `);
+                if (data.verTodos) {
+                    $('div[idfaceta="' + data.id + '"]').append(`
+                        <p class="moreResults"><a class="no-close open-popup-link open-popup-link-resultados" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
+                    `);
+                }
             }
 
             data.items.forEach(function (item, index, array) {
                 // Límite de los ítems de las facetas para mostrar.
                 if (numItemsPintados == data.numeroItemsFaceta) {
-                    if (data.verTodos) {
-                        $('div[idfaceta="' + data.id + '"]').append(`
-                            <p class="moreResults"><a class="no-close open-popup-link" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
-                        `);
-                    }
                     return;
                 }
 
@@ -677,7 +677,7 @@ var metricas = {
                 </div>
                 `);
             } else {
-                $(this).css("height", "auto");
+                $(this).css("height", "300px");
                 $(this).append(`
                     <canvas id = "grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width = "600" height = "250" ></canvas>
                         `);
@@ -798,7 +798,7 @@ var metricas = {
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" >
-                    <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
+                    <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:273px;">
                         <div class="chartAreaWrapper">
                             <canvas width = "600" height = "250" id="${pPageData[index].idRecurso}"></canvas>
                         </div>
@@ -806,9 +806,9 @@ var metricas = {
                 </div>
                 `);
             } else {
-                $(this).css("height", "auto");
+                $(this).css("height", "300px");
                 $(this).append(`
-                    <canvas id = "${pPageData[index].idRecurso}" width = "600" height = "250" ></canvas>
+                    <canvas id = "${pPageData[index].idRecurso}"></canvas>
                         `);
             }
 
@@ -900,11 +900,11 @@ var metricas = {
             graficaContainer.classList.add("small");
 
             if (horizontal) { // estilos horizonales
-                chartAreaWrapper.style.height = "546px";
+                chartAreaWrapper.style.height = "273px"; // TODO: Tamaño
                 scrollContainer.style.overflowY = "hidden";
             } else {
                 if (barSize >= 100) {
-                    chartAreaWrapper.style.height = "546px";
+                    chartAreaWrapper.style.height = "273px"; // TODO: Tamaño
                 } else {
                     chartAreaWrapper.style.height = "100%";
                 }
@@ -1951,5 +1951,123 @@ var metricas = {
         $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
             that.engancharComportamientos();
         }));
+        
+
+        /*$('#panFacetas .open-popup-link').unbind();*/
+        $('#panFacetas .open-popup-link-resultados').unbind().click(function(event) 
+        {      
+            $('#modal-resultados').show();
+            $(".indice-lista.no-letra").html('');
+            event.preventDefault();
+            $('#modal-resultados .modal-dialog .modal-content .modal-title').text($($(this).closest('.box')).find('.faceta-title').text());
+            comportamientoFacetasPopUp.cargarFaceta($(this).closest('.box').attr('idfaceta'));
+        }); 
     }
 }
+
+comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
+    var that = this;
+    var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
+    var arg = {};
+
+    arg.pIdPagina = idPaginaActual;
+    arg.pIdFaceta = pIdFaceta;
+    arg.pFiltroFacetas = ObtenerHash2();
+    arg.pLang = lang;
+    arg.pGetAll=true;
+    that.textoActual='';
+    that.paginaActual=1;
+    // Petición para obtener los datos de las gráficas.
+    $.get(url, arg, function (data) {
+
+        $('.buscador-coleccion .buscar .texto').keyup(function () {             
+            that.textoActual = that.eliminarAcentos($(this).val());
+            that.paginaActual = 1;
+            that.buscarFacetas();
+        });
+
+        that.arrayTotales = new Array(data.items.length);
+        var i = 0;
+        data.items.forEach(function (item, index, array) {
+            that.arrayTotales[i] = new Array(2);
+            that.arrayTotales[i][0] = that.eliminarAcentos(item.nombre.toLowerCase());
+            that.arrayTotales[i][1] = $(`<a href="javascript: void(0);" class="faceta filtroMetrica" filtro="vivo:hasPublicationVenue@@@roh:title='AMERICAN JOURNAL OF PHYSIOLOGY-REGULATORY INTEGRATIVE AND COMPARATIVE PHYSIOLOGY'">
+                                <span class="textoFaceta">${item.nombre}</span>
+                                <span class="num-resultados">(5)</span>
+                            </a>`);
+            i++;
+        });
+
+        //Ordena por orden alfabético
+        that.arrayTotales = that.arrayTotales.sort(function (a, b) {
+            if (a[0] > b[0]) return 1;
+            if (a[0] < b[0]) return -1;
+            return 0;
+        });
+
+        that.paginaActual = 1;
+        
+        $(".modal-body .buscador-coleccion .action-buttons-resultados").remove();
+        $(".modal-body .buscador-coleccion").append($('<div></div>').attr('class', 'action-buttons-resultados'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados").append($('<ul></ul>').attr('class', 'no-list-style'));
+        
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style").append($('<li></li>').attr('class', 'js-anterior-facetas-modal'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal").append($('<span></span>').attr('class', 'material-icons').text('navigate_before'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal").append($('<span></span>').attr('class', 'texto').text('Anteriores'));
+        
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style").append($('<li></li>').attr('class', 'js-siguiente-facetas-modal'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal").append($('<span></span>').attr('class', 'texto').text('Siguientes'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal").append($('<span></span>').attr('class', 'material-icons').text('navigate_next'));
+                    
+        
+        $('.modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal .texto').click(function () {
+            if (!that.buscando && that.paginaActual > 1) {
+                that.buscando = true;
+                that.paginaActual--;
+                var hacerPeticion = true;
+                $('.indice-lista ul').animate({
+                    marginLeft: 30,
+                    opacity: 0
+                }, 200, function () {
+                    if (hacerPeticion) {
+                        that.buscarFacetas();
+                        hacerPeticion = false;
+                    }
+                    $('.indice-lista ul').css({ marginLeft: -30 });
+                    $('.indice-lista ul').animate({
+                        marginLeft: 20,
+                        opacity: 1
+                    }, 200, function () {
+                        // Left Animation complete.                         
+                    });
+                });
+            }
+        });
+
+        $('.modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal .texto').click(function () {
+            if (!that.buscando && !that.fin) {
+                that.buscando = true;
+                that.paginaActual++;
+                var hacerPeticion = true;
+                $('.indice-lista ul').animate({
+                    marginLeft: -30,
+                    opacity: 0
+                }, 200, function () {
+                    if (hacerPeticion) {
+                        that.buscarFacetas();
+                        hacerPeticion = false;
+                    }
+                    $('.indice-lista ul').css({ marginLeft: 30 });
+                    $('.indice-lista ul').animate({
+                        marginLeft: 20,
+                        opacity: 1
+                    }, 200, function () {
+                        // Right Animation complete.                            
+                    });
+                });
+            }
+        });
+        that.buscarFacetas();
+        metricas.engancharComportamientos();
+    });
+};
