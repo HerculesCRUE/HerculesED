@@ -1193,8 +1193,7 @@ var metricas = {
             }
             $(".faceta-date-range .ui-slider").slider("values", valores);
         });
-
-        $('.containerFacetas a.filtroMetrica,.listadoTesauro a.filtroMetrica')
+        $('.containerFacetas a.filtroMetrica,.listadoTesauro a.filtroMetrica, .indice-lista .faceta')
             .unbind()
             .click(function (e) {
                 var filtroActual = $(this).attr('filtro');
@@ -1961,7 +1960,8 @@ var metricas = {
             event.preventDefault();
             $('#modal-resultados .modal-dialog .modal-content .modal-title').text($($(this).closest('.box')).find('.faceta-title').text());
             comportamientoFacetasPopUp.cargarFaceta($(this).closest('.box').attr('idfaceta'));
-        }); 
+            that.engancharComportamientos();
+        });
     }
 }
 
@@ -1984,6 +1984,35 @@ comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
             that.textoActual = that.eliminarAcentos($(this).val());
             that.paginaActual = 1;
             that.buscarFacetas();
+            $('.indice-lista .faceta')
+            .unbind()
+            .click(function (e) {
+                var filtroActual = $(this).attr('filtro');
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                var contieneFiltro = false;
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        if (filtrosArray[i] == filtroActual) {
+                            contieneFiltro = true;
+                        } else {
+                            filtros += filtrosArray[i] + '&';
+                        }
+
+                    }
+                }
+                if (!contieneFiltro) {
+                    filtros += filtroActual;
+                } else {
+                    location.reload();
+                }
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                metricas.pintarPagina(idPaginaActual);
+            });
         });
 
         that.arrayTotales = new Array(data.items.length);
@@ -1991,7 +2020,7 @@ comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
         data.items.forEach(function (item, index, array) {
             that.arrayTotales[i] = new Array(2);
             that.arrayTotales[i][0] = that.eliminarAcentos(item.nombre.toLowerCase());
-            that.arrayTotales[i][1] = $(`<a href="javascript: void(0);" class="faceta filtroMetrica" filtro="vivo:hasPublicationVenue@@@roh:title='AMERICAN JOURNAL OF PHYSIOLOGY-REGULATORY INTEGRATIVE AND COMPARATIVE PHYSIOLOGY'">
+            that.arrayTotales[i][1] = $(`<a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
                                 <span class="textoFaceta">${item.nombre}</span>
                                 <span class="num-resultados">(5)</span>
                             </a>`);
@@ -2068,6 +2097,34 @@ comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
             }
         });
         that.buscarFacetas();
-        metricas.engancharComportamientos();
+        $('.indice-lista .faceta')
+            .unbind()
+            .click(function (e) {
+                var filtroActual = $(this).attr('filtro');
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                var contieneFiltro = false;
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        if (filtrosArray[i] == filtroActual) {
+                            contieneFiltro = true;
+                        } else {
+                            filtros += filtrosArray[i] + '&';
+                        }
+
+                    }
+                }
+                if (!contieneFiltro) {
+                    filtros += filtroActual;
+                } else {
+                    location.reload();
+                }
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                metricas.pintarPagina(idPaginaActual);
+            });
     });
 };
