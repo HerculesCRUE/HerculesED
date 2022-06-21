@@ -115,8 +115,7 @@
      overflow-x: hidden;
  }
 
- .small.graph-container.vertical .chartAreaWrapper
- .small.grafica.vertical .chartAreaWrapper {
+ .small.graph-container.vertical .chartAreaWrapper .small.grafica.vertical .chartAreaWrapper {
      height: 100%;
  }
 
@@ -126,17 +125,19 @@
  }
 
  .grafica:not(.small) .chartScroll {
-    height: 273px;
+     height: 273px;
  }
+
  .graph-container.vertical:not(.small) .chartScroll,
  .grafica.vertical:not(.small) .chartScroll {
-    overflow-y: hidden;
-    overflow-x: scroll;
+     overflow-y: hidden;
+     overflow-x: scroll;
  }
+
  .grafica.horizontal:not(.small) .chartScroll,
  .graph-container.horizontal:not(.small) .chartScroll {
-    overflow-y: scroll;
-}
+     overflow-y: scroll;
+ }
 
 
  div.grafica {
@@ -171,80 +172,116 @@
  .nav-item {
      cursor: pointer;
  }
- div  ul.facetedSearch:empty{
+
+ div ul.facetedSearch:empty {
      display: none;
  }
 
 
- .pageOptions{
-        display: flex;
-        flex-direction: row;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #d5d5d5;
-        padding-left: 15px;
-        padding-right: 15px;
-        right: 0px;
-        justify-content: space-between;
-        width: 35%;
+ .pageOptions {
+     display: flex;
+     flex-direction: row;
+     padding-bottom: 10px;
+     border-bottom: 1px solid #d5d5d5;
+     padding-left: 15px;
+     padding-right: 15px;
+     right: 0px;
+     justify-content: space-between;
+     width: 35%;
  }
- .listadoMenuPaginas{
+
+ .listadoMenuPaginas {
+     width: 100%;
+ }
+
+ .pageOptions div {
+     cursor: pointer;
+     display: flex;
+     flex-direction: row;
+     height: 100%;
+     align-items: center;
+     padding-right: 15px;
+     padding-left: 15px;
+     margin-top: 5px;
+     border-radius: 5px;
+     transition: all .2s ease-in-out;
+ }
+
+ .pageOptions div p {
+     margin-bottom: 0;
+ }
+
+ .topbar-container {
+     display: flex;
+     flex-direction: row;
+     justify-content: space-between;
+     width: 100%;
+     padding: 8px;
+ }
+
+ .edit-page:hover {
+     color: #af1a2e;
+ }
+
+ .delete-page:hover {
+     background-color: #af1a2e;
+     color: white;
+ }
+
+ .form-group {
+     transition: all .2s ease-in-out;
+ }
+
+ .resource-list.graphView .resource>.wrap {
+     height: 335px;
+ }
+
+ li a.eliminargrafica:hover span {
+     color: #af1a2e;
+ }
+
+ a.btn-facetas {
+     border: 1px solid #d5d5d5;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 38px;
+     cursor: pointer;
+     text-decoration: none;
+     color: black;
+ }
+
+ a.btn-facetas:focus,
+ a.btn-facetas:hover {
+     background-color: #d5d5d5;
+     color: #af1a2e;
+ }
+
+ ul.listadoMenuPaginas li.nav-item:hover .nav-link {
+     background-color: #f3f3f3;
+ }
+
+ .listado.vista-grafico.facetas-abiertas .topbar-container a.btn-filtrar-movil::before {
+    content: '';
+    display: block;
+    position: fixed;
+    top: -0px;
+    left: -0px;
     width: 100%;
- }
- .pageOptions div{
+    height: 150vh;
+    background: rgba(0,0,0,.2);
     cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    align-items: center;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-top: 5px;
-    border-radius: 5px;
-    transition: all .2s ease-in-out;
+    z-index: 800;
  }
- .pageOptions div p{
-    margin-bottom: 0;
- }
- .topbar-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    padding:8px;
- }
-.edit-page:hover{
-    color: #af1a2e;
-}
-
-.delete-page:hover{
-    background-color: #af1a2e;
-    color:white;
-}
-.form-group{
-    transition: all .2s ease-in-out;    
-}
-
-.resource-list.graphView .resource > .wrap{
-    height: 335px;
-}
-li a.eliminargrafica:hover span{
-    color: #af1a2e;
-}
-a.btn-facetas{
-    border: 1px solid #d5d5d5;
+ .topbar-container .btn-filtrar-movil{
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    cursor: pointer;
-    text-decoration: none;
+    width: 40px;
     color: black;
-}
-a.btn-facetas:focus,
-a.btn-facetas:hover{
-    background-color: #d5d5d5;
-    color: #af1a2e;
-}
-ul.listadoMenuPaginas li.nav-item:hover .nav-link{
+ }
+ .topbar-container .btn-filtrar-movil:hover{
     background-color: #f3f3f3;
-}
+    text-decoration: none;
+    color: #af1a2e;
+ }

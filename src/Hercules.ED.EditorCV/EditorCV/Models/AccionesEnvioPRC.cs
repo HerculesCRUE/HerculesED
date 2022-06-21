@@ -30,28 +30,51 @@ namespace EditorCV.Models
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
 
-        public void ObtenerDatosEnvioPRC(ConfigService _Configuracion, string pIdDocumento, string pIdPersona, string pIdProyecto)
+        public Dictionary<string, Dictionary<string, string>> ObtenerDatosEnvioPRC(ConfigService _Configuracion, string pIdDocumento, string pIdPersona, string pIdProyecto)
         {
-            string select = $@"select distinct  ?project
-FROM <{mResourceApi.GraphsUrl}person.owl>
-FROM <{mResourceApi.GraphsUrl}project.owl>";
+            Dictionary<string, Dictionary<string, string>> listadoProyectos = new Dictionary<string, Dictionary<string, string>>();
+
+            string select = $@"select distinct  ?project ?titulo ?fechaInicio ?fechaFin ?organizacion";
             string where = $@"
 where {{
-    ?person a <http://xmlns.com/foaf/0.1/Person> .
-    ?person <http://w3id.org/roh/gnossUser> <http://gnoss/{pIdPersona}> .
-    ?s <http://w3id.org/roh/cvOf> ?person .
-    ?person a <http://xmlns.com/foaf/0.1/Person>.
     ?project a <http://vivoweb.org/ontology/core#Project>.
-    ?project ?propRol ?rol .
-    FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
-    ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
+    ?project <http://vivoweb.org/ontology/core#relates> ?rol .
+    ?rol <http://w3id.org/roh/roleOf> <{pIdPersona}> .
+    OPTIONAL{{?project <http://w3id.org/roh/title> ?titulo}}
+    OPTIONAL{{?project <http://vivoweb.org/ontology/core#start> ?fechaInicio}}
+    OPTIONAL{{?project <http://vivoweb.org/ontology/core#end> ?fechaFin}}
+    OPTIONAL{{?project <http://w3id.org/roh/conductedByTitle> ?organizacion}}
 }}";
-            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "curriculumvitae");
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "project");
             if (resultadoQuery.results.bindings.Count != 0)
             {
+                foreach (Dictionary<string, SparqlObject.Data> res in resultadoQuery.results.bindings)
+                {
+                    if (res.ContainsKey("project"))
+                    {
+                        Dictionary<string, string> keyValues = new Dictionary<string, string>();
+                        if (res.ContainsKey("titulo"))
+                        {
+                            keyValues.Add("titulo", res["titulo"].value);
+                        }
+                        if (res.ContainsKey("fechaInicio"))
+                        {
+                            keyValues.Add("fechaInicio", res["fechaInicio"].value);
+                        }
+                        if (res.ContainsKey("fechaFin"))
+                        {
+                            keyValues.Add("fechaFin", res["fechaFin"].value);
+                        }
+                        if (res.ContainsKey("organizacion"))
+                        {
+                            keyValues.Add("organizacion", res["organizacion"].value);
+                        }
 
+                        listadoProyectos.Add(res["project"].value, keyValues);
+                    }
+                }
             }
-
+            return listadoProyectos;
         }
 
         /// <summary>

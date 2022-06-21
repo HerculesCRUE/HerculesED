@@ -1,18 +1,18 @@
 {
   "nombre": {
-    "es": "Página de EJEMPLO"
+    "es": "Publicaciones"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
-  "identificador": "123",
+  "identificador": "pagina1",
   "graficas": [
     {
-      "identificador": "1",
+      "identificador": "grafica2",
       "nombre": {
         "es": "Número de publicaciones y citas por año"
       },
       "tipo": "Barras",
-      /*Representa que % del contenedor ocupara la grafica 12 corresponde 1/2 los valores aceptados son 11,12,13,14,16,23,34,38,58*/
       "anchura": 11,
+      "idGrupo": "grupo1",
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:year",
@@ -59,9 +59,89 @@
         ]
       }
     },
-
     {
-      "identificador": "2",
+      "identificador": "grafica1",
+      "nombre": {
+        "es": "Número de publicaciones y citas por año"
+      },
+      "tipo": "Barras",
+      "anchura": 11,
+      "idGrupo": "grupo1",
+      "config": {
+        "orientacionVertical": true,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": true,
+        "yAxisPrint": [
+          {
+            "yAxisID": "y1",
+            "posicion": "left",
+            "nombreEje": {
+              "es": "Nº de publicaciones"
+            }
+          },
+          {
+            "yAxisID": "y2",
+            "posicion": "right",
+            "nombreEje": {
+              "es": "Nº de citas"
+            }
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Total de publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "yAxisID": "y1",
+            "orden": 1
+          },
+          {
+            "nombre": {
+              "es": "Total de citas por año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "SUM",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "yAxisID": "y2",
+            "orden": 2
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica22",
+      "nombre": {
+        "es": "Géneros de los IP por publicaciones"
+      },
+      "tipo": "Circular",
+      "anchura": 13,
+      "config": {
+        "porcentual": true,
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Hombre"
+            },
+            "filtro": "roh:genderIP='hombre'",
+            "color": "#BF4858"
+          },
+          {
+            "nombre": {
+              "es": "Mujer"
+            },
+            "filtro": "roh:genderIP='mujer'",
+            "color": "#7CBFE3"
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica3",
       "nombre": {
         "es": "Número de publicaciones por tipo de actividad científica"
       },
@@ -93,13 +173,13 @@
       }
     },
     {
-      "identificador": "3",
+      "identificador": "grafica4",
       "nombre": {
-        "es": "Nombre de la Gráfica Nodos"
+        "es": "Áreas temáticas de las publicaciones"
       },
       "tipo": "Nodos",
+      "idGrupo": "grupo3",
       "anchura": 12,
-      "idGrupo": "1111",
       "config": {
         "dimensiones": [
           {
@@ -115,15 +195,17 @@
       }
     },
     {
-      "identificador": "88",
+      "identificador": "grafica5",
       "nombre": {
-        "es": "Número de publicaciones por tipo de actividad científica"
+        "es": "Áreas temáticas de las publicaciones"
       },
+      "idGrupo": "grupo3",
       "tipo": "Barras",
       "anchura": 12,
       "config": {
+        "datosNodos": true,
         "orientacionVertical": false,
-        "ejeX": "roh:hasKnowledgeArea@@@roh:categoryNode@@@skos:prefLabel",
+        "ejeX": "dc:type@@@dc:title",
         "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
@@ -135,9 +217,9 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Publicaciones por tipo"
+              "es": "Áreas temáticas de las publicaciones"
             },
-            "filtro": "dc:type@@@dc:title",
+            "filtro": "",
             "tipoDimension": "bar",
             "color": "#BF4858",
             "xAxisID": "x1",
@@ -147,17 +229,18 @@
       }
     },
     {
-      "identificador": "5",
+      "identificador": "grafica6",
       "nombre": {
         "es": "Número de publicaciones por grupo"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 12,
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:isProducedBy@@@roh:title",
         "orderDesc": false,
         "rellenarEjeX": false,
+        "abreviar": true,
         "xAxisPrint": [
           {
             "xAxisID": "x1",
@@ -179,15 +262,16 @@
       }
     },
     {
-      "identificador": "9",
+      "identificador": "grafica7",
       "nombre": {
         "es": "Publicaciones por convocatoria de proyecto"
       },
       "tipo": "Barras",
+      "idGrupo": "grupo2",
       "anchura": 12,
       "config": {
         "orientacionVertical": false,
-        "ejeX": "roh:project@@@roh:conductedBy@@@roh:title",
+        "ejeX": "roh:project@@@roh:isSupportedBy",
         "orderDesc": false,
         "abreviar": true,
         "rellenarEjeX": false,
@@ -212,7 +296,74 @@
       }
     },
     {
-      "identificador": "11",
+      "identificador": "grafica8",
+      "nombre": {
+        "es": "Publicaciones por organismo de proyecto"
+      },
+      "tipo": "Barras",
+      "idGrupo": "grupo2",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:project@@@roh:grantedBy@@@roh:organizationTitle",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica9",
+      "nombre": {
+        "es": "Publicaciones por categorías de PDI (IP)"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:hasPositionIp",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica10",
       "nombre": {
         "es": "Publicaciones por tipo de proyecto"
       },
@@ -245,12 +396,12 @@
       }
     },
     {
-      "identificador": "12",
+      "identificador": "grafica11",
       "nombre": {
         "es": "Publicaciones por ámbito de proyecto"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 12,
       "config": {
         "orientacionVertical": true,
         "ejeX": "roh:project@@@vivo:geographicFocus@@@dc:title",
