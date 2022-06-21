@@ -21,6 +21,7 @@ var listaPaginas;
 var metricas = {
     init: function () {
 
+        // Esto impide que las facetas se apliquen a la primera pagina al recargar desde otra pagina
         if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
             history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
         }
@@ -67,7 +68,7 @@ var metricas = {
             $.get(url, arg, function (listaData) {
                 console.log(listaData);
                 if (listaData.length == 0) {
-                    $('div.row-content').append(`<div><h1>No Pages Found</h1></div>`);
+                    $('div.row-content').append(`<div><h1>No tienes paginas</h1></div>`);
                 } else {
                     for (let i = 0; i < listaData.length; i++) {
                         $(".listadoMenuPaginas").append(`
@@ -119,12 +120,12 @@ var metricas = {
                 data.ready = function () { window.cy = this };
                 var cy = cytoscape(data);
 
-                //var combo = $(ctx).parents("article").find("select");
+                var combo = $(ctx).parents("article").find("select");
                 var titulo = data.title;
                 if (pTitulo) {
                     titulo = pTitulo;
                 }
-                if (combo) {
+                if (combo) { //para graficas agrupadas
                     combo.append(`
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
@@ -546,8 +547,9 @@ var metricas = {
 
             console.log(listaData);
             if (listaData.length == 0) {
-                $('div.row-content').append(`<div><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
-                metricas.engancharComportamientos();
+                if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                    $('div.row-content').append(`<div class="sin-graficas"><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
+                } metricas.engancharComportamientos();
             }
             var tmp = [];
             var id = "";
@@ -830,7 +832,7 @@ var metricas = {
         });
     },
     drawChart: function (ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) {
-        if (Chart.getChart(ctx) != null) {
+        if (Chart.getChart(ctx) != null) {// en caso de que se ejecute esto despues de cambiar de pagina desde la anterior
             return;
         }
         var numBars = data.data.labels.length; // Número de barras.
@@ -851,17 +853,16 @@ var metricas = {
         } else {
             graficaContainer.classList.add("vertical");
         }
-        // En caso de que los datos de la gráfica se representen con porcentajes
-        // Solo si es una gráfica horizontal.
-        // En caso de que los labels de la gráfica deban de estar abreviados...
+
         data.options.maintainAspectRatio = false;
         data.options.responsive = true;
 
-
-        data.data.datasets.forEach((item) => {
+        //esto modifica el tamaño de las barras 
+        data.data.datasets.forEach((item) => { 
             item['barThickness'] = barSize;
 
         })
+        //Abrebiacion de los labels del eje
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
             if (horizontal) {
@@ -871,8 +872,7 @@ var metricas = {
                     }
 
                 }
-            } else {
-
+            } else { //vertical
                 data.options.scales['x'] = {
                     ticks: {
                         callback: ticksAbr
@@ -892,10 +892,8 @@ var metricas = {
         }
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
         //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
-
         if ((canvasSize < 550 && horizontal) || (canvasSize < (barSize < 100 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
             if (barSize < 100) {
-                // $(ctx).parents(".modal-content").css("height", "auto");
                 $(ctx).parents(".modal-content").css("display", "block");
             }
             //scrollContainer.style.height = "auto";
@@ -916,7 +914,7 @@ var metricas = {
 
             var myChart = new Chart(ctx, data);
         } else { // a partir de aqui se prepara el scroll
-            if (barSize < 100) { //para revelar el zoom
+            if (barSize < 100) { //para revelar el modal del zoom 
                 $(ctx).parents(".modal-content").css("display", "block");
             }
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
@@ -981,7 +979,7 @@ var metricas = {
                 $(chartContainer).append(secondaryAxis);
             }
 
-            // Cuando se acutaliza el canvas.
+            // Cuando se actualiza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                 $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
@@ -990,7 +988,7 @@ var metricas = {
                 });
             }
 
-            if (data.isDate) {
+            if (data.isDate) { //las graficas de fechas se mueven hasta el año mas reciente que se encuentra al final del scroll
                 if (horizontal) {
                     $(scrollContainer).animate({ scrollTop: $(chartAreaWrapper).height() - $(scrollContainer).height() }, 6000);
                     $(scrollContainer).mousedown((e) => {//evento que se dispara al hacer click en el scroll
@@ -1018,14 +1016,10 @@ var metricas = {
     },
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
-        /*data.options.maintainAspectRatio = false;
-        data.options.responsive = true;*/
         var scale = window.devicePixelRatio;
-
         //anchura y altura del recorte de la grafica
         var copyWidth;
         var copyHeight;
-
         // Anchura y altura del pegado a los ejes.
         var axisHeight;
         var axisWidth;
@@ -1055,18 +1049,8 @@ var metricas = {
         //si la leyenda falsa es mayor a la del canvas se añade la diferencia en margen para compensar
         //esto sucede cuando en el canvas la leyenda ocupa una fila pero en el div 2 o mas;
         if ($(legend).height() > myChart.chartArea.top) {
-
-            /*
-            if (!horizontal) {
-                //importante por que el margen añadido hace que aparezca un scroll horizontal
-                myChart.canvas.parentNode.parentNode.style.overflowY = "hidden";
-            }*/
-
             //añadimos el margen
             myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
-            //Aun que no lo parezca este tamaño es importante (1px tambien funcionaria)
-            //Obliga al canvas a reescalarse y ajustarse al div, sin el los labels se esconden debajo de la scrollbar
-            //myChart.canvas.parentNode.style.paddingBottom = 0.02 + "px";
             if (mainAxis) {
                 mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
             }
@@ -1399,7 +1383,6 @@ var metricas = {
                 // Se obtiene el chart desde el canvas.
                 var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
                 var chart = Chart.getChart(canvas);
-
                 // El ID del dataset está en el ID del contenedor del label.
                 var id = $(this).attr('id').split('-')[1];
                 var label = $(this).find('p.dataSetLabel');
@@ -1444,7 +1427,6 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
-
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
@@ -1648,7 +1630,7 @@ var metricas = {
         $('#btnGuardarEditPagina')
             .unbind()
             .click(function (e) {
-              //TODO translate
+                //TODO translate
                 var formTituloPagina = $('#labelTituloPagina').val();
                 if (!formTituloPagina) {
                     mostrarNotificacion("warning", "Introduce el titulo de la pagina por favor");
@@ -1681,7 +1663,7 @@ var metricas = {
         $('#btnGuardarEditGrafica')
             .unbind()
             .click(function (e) {
-              //TODO translate
+                //TODO translate
                 var formTitle = $('#labelTituloGrafica').val();
                 if (!formTitle) {
                     mostrarNotificacion("warning", "Introduce el titulo por favor");
