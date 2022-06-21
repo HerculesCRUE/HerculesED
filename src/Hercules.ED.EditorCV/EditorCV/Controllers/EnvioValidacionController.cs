@@ -17,6 +17,21 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
+        [HttpGet("ObtenerDatosEnvioPRC")]
+        public IActionResult ObtenerDatosEnvioPRC(string pIdDocumento, string pIdPersona, string pIdProyecto)
+        {
+            try
+            {
+                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
+                accionesPRC.ObtenerDatosEnvioPRC(_Configuracion, pIdDocumento, pIdPersona, pIdProyecto);
+            }
+            catch (Exception)
+            {
+                
+            }
+            return Ok();
+        }
+
         [HttpPost("EnvioPRC")]
         public IActionResult EnvioPRC(string pIdDocumento, string pIdProyecto)
         {
