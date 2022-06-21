@@ -491,7 +491,7 @@ var metricas = {
                                         <span class="material-icons">zoom_in</span>
                                     </a>
                                 </div>
-                                <div class="dropdown show">
+                                <div class="dropdown">
                                     <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
                                         <span class="material-icons">more_vert</span>
                                     </a>
@@ -589,7 +589,7 @@ var metricas = {
                                             <span class="material-icons">zoom_in</span>
                                         </a>
                                     </div>
-                                    <div class="dropdown show">
+                                    <div class="dropdown">
                                         <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
                                             <span class="material-icons">more_vert</span>
                                         </a>

@@ -968,7 +968,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         }
                     }
 
-                    // Nodos. 
+                    // Añado a la lista de tuplas el nodo con su valor.
                     if (dicNodos != null && dicNodos.Count > 0)
                     {
                         foreach (KeyValuePair<string, string> nodo in dicNodos)
