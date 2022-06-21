@@ -30,7 +30,7 @@ namespace EditorCV.Models
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
 
-        public Dictionary<string, Dictionary<string, string>> ObtenerDatosEnvioPRC(ConfigService _Configuracion, string pIdDocumento, string pIdPersona, string pIdProyecto)
+        public Dictionary<string, Dictionary<string, string>> ObtenerDatosEnvioPRC(string pIdPersona)
         {
             Dictionary<string, Dictionary<string, string>> listadoProyectos = new Dictionary<string, Dictionary<string, string>>();
 
