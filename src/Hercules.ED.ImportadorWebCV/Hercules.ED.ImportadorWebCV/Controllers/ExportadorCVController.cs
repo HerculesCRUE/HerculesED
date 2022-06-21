@@ -133,7 +133,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 return NotFound();
             }
 
-            return File(resp.dataHandler, "application/pdf");
+            return File(resp.dataHandler, "application/pdf", resp.filename);
         }
     }
 }

@@ -15,18 +15,19 @@ var tituloActual;
 var tamanioActual;
 var ordenActual;
 
+var numPagina = 0;
 // Lista de páginas.
 var listaPaginas;
 
 var metricas = {
     init: function () {
-
-        
         // Esto impide que las facetas se apliquen a la primera pagina al recargar desde otra pagina
-        if (ObtenerHash2().includes('~~~')){
-            var hash = ObtenerHash2().replace('~~~', '');
-            history.pushState('', 'New URL: ', '?' + hash);
-        }else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
+
+        if (ObtenerHash2().includes('~~~')) {//este codigo se incluye para no borrar las facetas al quitar una
+            var splitHash = ObtenerHash2().split('~~~');
+            numPagina = ObtenerHash2().split('~~~')[1];
+            history.pushState('', 'New URL: ', '?' + splitHash[0]);
+        } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
             history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
         }
 
@@ -52,12 +53,12 @@ var metricas = {
             for (let i = 0; i < listaData.length; i++) {
                 $(".listadoMenuPaginas").append(`
                     <li class="nav-item" id="${listaData[i].id}" num="${i}">
-                        <a class="nav-link ${i == 0 ? "active" : ""} uppercase">${listaData[i].nombre}</a>
+                        <a class="nav-link ${i == numPagina ? "active" : ""} uppercase">${listaData[i].nombre}</a>
                     </li>
                 `);
             }
-            that.createEmptyPage(listaData[0].id); //TODO cambiar 0 por la id de la pagina actual
-            that.fillPage(listaData[0]);
+            that.createEmptyPage(listaData[numPagina].id);
+            that.fillPage(listaData[numPagina]);
             listaPaginas = listaData;
         });
     },
@@ -114,6 +115,7 @@ var metricas = {
             // Controla si el objeto es de ChartJS o Cytoscape.
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
+            console.log(graficaContenedor[0]);
             if ("container" in data) {
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
@@ -200,10 +202,7 @@ var metricas = {
                             renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
                         });
                     });
-
             } else {
-                data.options.responsive = true;
-                data.options.maintainAspectRatio = false;
 
                 var titulo = data.options.plugins.title.text;
                 if (pTitulo) {
@@ -234,6 +233,11 @@ var metricas = {
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
                     that.drawChart(ctx, data, pIdGrafica, barSize, titulo);
                 } else {
+                    if (!graficaContenedor[0].classList.contains("chartAreaWrapper")) {
+                        data.options.responsive = true;
+                        data.options.maintainAspectRatio = false;
+                    }
+
                     if (pIdGrafica != null && pIdGrafica.includes("prc")) {
                         data.options.plugins.tooltip = {
                             callbacks: {
@@ -491,7 +495,7 @@ var metricas = {
                                         <span class="material-icons">zoom_in</span>
                                     </a>
                                 </div>
-                                <div class="dropdown show">
+                                <div class="dropdown">
                                     <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
                                         <span class="material-icons">more_vert</span>
                                     </a>
@@ -541,7 +545,6 @@ var metricas = {
         that.pintarPagina(pPageData.id)
     },
     fillPagePersonalized: function (pPaginaUsuario) {
-        console.log("adsa");
         idPaginaActual = pPaginaUsuario.idRecurso;
         var that = this;
         var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"  
@@ -589,7 +592,7 @@ var metricas = {
                                             <span class="material-icons">zoom_in</span>
                                         </a>
                                     </div>
-                                    <div class="dropdown show">
+                                    <div class="dropdown">
                                         <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
                                             <span class="material-icons">more_vert</span>
                                         </a>
@@ -817,7 +820,7 @@ var metricas = {
                         `);
             }
 
-            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 100, pPageData[index].idRecurso, pPageData[index].titulo);
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 50, pPageData[index].idRecurso, pPageData[index].titulo);
             index++;
         });
     },
@@ -863,10 +866,16 @@ var metricas = {
         data.options.responsive = true;
 
         //esto modifica el tamaño de las barras 
-        data.data.datasets.forEach((item) => { 
+        data.data.datasets.forEach((item) => {
             item['barThickness'] = barSize;
 
-        })
+        }) //todo mover a json
+        data.options.scale = {
+            ticks: {
+                precision: 0
+            }
+        }
+        console.log(canvasSize);
         //Abrebiacion de los labels del eje
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
@@ -896,26 +905,23 @@ var metricas = {
             return value;
         }
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
-        //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
-        if ((canvasSize < 550 && horizontal) || (canvasSize < (barSize < 100 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
+
+        var modalBody = $(graficaContainer).parents(".modal-body");
+        //si la grafica es horizontal y su altura es menor a 273 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
+        if ((canvasSize < (modalBody.length != 0 ? $(window).height() - 230 : 273) && horizontal) || (canvasSize < (modalBody.length != 0 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
             if (barSize < 100) {
                 $(ctx).parents(".modal-content").css("display", "block");
             }
             //scrollContainer.style.height = "auto";
             graficaContainer.classList.add("small");
-
-            if (horizontal) { // estilos horizonales
+            if (modalBody.length == 0) {
                 chartAreaWrapper.style.height = "273px"; // TODO: Tamaño
-                scrollContainer.style.overflowY = "hidden";
             } else {
-                if (barSize >= 100) {
-                    chartAreaWrapper.style.height = "273px"; // TODO: Tamaño
-                } else {
-                    chartAreaWrapper.style.height = "100%";
-                }
-
-                scrollContainer.style.overflowX = "hidden";
+                chartAreaWrapper.style.height = "100%";
             }
+            scrollContainer.style.overflow = "hidden";
+
+
 
             var myChart = new Chart(ctx, data);
         } else { // a partir de aqui se prepara el scroll
@@ -1091,6 +1097,7 @@ var metricas = {
             targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
+
             ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
         }
 
@@ -1250,7 +1257,8 @@ var metricas = {
                     filtros += filtroActual;
                 }
 
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros+'~~~');
+                var numPagina = $(".nav-item#" + idPaginaActual).attr("num");
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros + '~~~' + numPagina);
                 e.preventDefault();
 
                 location.reload();
@@ -1955,11 +1963,10 @@ var metricas = {
         $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
             that.engancharComportamientos();
         }));
-        
+
 
         /*$('#panFacetas .open-popup-link').unbind();*/
-        $('#panFacetas .open-popup-link-resultados').unbind().click(function(event) 
-        {      
+        $('#panFacetas .open-popup-link-resultados').unbind().click(function (event) {
             $('#modal-resultados').show();
             $(".indice-lista.no-letra").html('');
             event.preventDefault();
@@ -1970,7 +1977,7 @@ var metricas = {
     }
 }
 
-comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
+comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
     var that = this;
     var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
     var arg = {};
@@ -1979,45 +1986,45 @@ comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
     arg.pIdFaceta = pIdFaceta;
     arg.pFiltroFacetas = ObtenerHash2();
     arg.pLang = lang;
-    arg.pGetAll=true;
-    that.textoActual='';
-    that.paginaActual=1;
+    arg.pGetAll = true;
+    that.textoActual = '';
+    that.paginaActual = 1;
     // Petición para obtener los datos de las gráficas.
     $.get(url, arg, function (data) {
 
-        $('.buscador-coleccion .buscar .texto').keyup(function () {             
+        $('.buscador-coleccion .buscar .texto').keyup(function () {
             that.textoActual = that.eliminarAcentos($(this).val());
             that.paginaActual = 1;
             that.buscarFacetas();
             $('.indice-lista .faceta')
-            .unbind()
-            .click(function (e) {
-                var filtroActual = $(this).attr('filtro');
-                var filtros = decodeURIComponent(ObtenerHash2());
-                var filtrosArray = filtros.split('&');
-                filtros = '';
-                var contieneFiltro = false;
-                for (var i = 0; i < filtrosArray.length; i++) {
-                    if (filtrosArray[i] != '') {
-                        if (filtrosArray[i] == filtroActual) {
-                            contieneFiltro = true;
-                        } else {
-                            filtros += filtrosArray[i] + '&';
+                .unbind()
+                .click(function (e) {
+                    var filtroActual = $(this).attr('filtro');
+                    var filtros = decodeURIComponent(ObtenerHash2());
+                    var filtrosArray = filtros.split('&');
+                    filtros = '';
+                    var contieneFiltro = false;
+                    for (var i = 0; i < filtrosArray.length; i++) {
+                        if (filtrosArray[i] != '') {
+                            if (filtrosArray[i] == filtroActual) {
+                                contieneFiltro = true;
+                            } else {
+                                filtros += filtrosArray[i] + '&';
+                            }
+
                         }
-
                     }
-                }
-                if (!contieneFiltro) {
-                    filtros += filtroActual;
-                } else {
-                    location.reload();
-                }
+                    if (!contieneFiltro) {
+                        filtros += filtroActual;
+                    } else {
+                        location.reload();
+                    }
 
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
-                e.preventDefault();
+                    history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                    e.preventDefault();
 
-                metricas.pintarPagina(idPaginaActual);
-            });
+                    metricas.pintarPagina(idPaginaActual);
+                });
         });
 
         that.arrayTotales = new Array(data.items.length);
@@ -2040,20 +2047,20 @@ comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
         });
 
         that.paginaActual = 1;
-        
+
         $(".modal-body .buscador-coleccion .action-buttons-resultados").remove();
         $(".modal-body .buscador-coleccion").append($('<div></div>').attr('class', 'action-buttons-resultados'));
         $(".modal-body .buscador-coleccion .action-buttons-resultados").append($('<ul></ul>').attr('class', 'no-list-style'));
-        
+
         $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style").append($('<li></li>').attr('class', 'js-anterior-facetas-modal'));
         $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal").append($('<span></span>').attr('class', 'material-icons').text('navigate_before'));
         $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal").append($('<span></span>').attr('class', 'texto').text('Anteriores'));
-        
+
         $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style").append($('<li></li>').attr('class', 'js-siguiente-facetas-modal'));
         $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal").append($('<span></span>').attr('class', 'texto').text('Siguientes'));
         $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal").append($('<span></span>').attr('class', 'material-icons').text('navigate_next'));
-                    
-        
+
+
         $('.modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal .texto').click(function () {
             if (!that.buscando && that.paginaActual > 1) {
                 that.buscando = true;
