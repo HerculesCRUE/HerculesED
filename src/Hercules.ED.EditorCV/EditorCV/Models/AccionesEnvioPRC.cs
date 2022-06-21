@@ -59,11 +59,11 @@ where {{
                         }
                         if (res.ContainsKey("fechaInicio"))
                         {
-                            keyValues.Add("fechaInicio", res["fechaInicio"].value);
+                            keyValues.Add("fechaInicio", ConversorFechas(res["fechaInicio"].value));
                         }
                         if (res.ContainsKey("fechaFin"))
                         {
-                            keyValues.Add("fechaFin", res["fechaFin"].value);
+                            keyValues.Add("fechaFin", ConversorFechas(res["fechaFin"].value));
                         }
                         if (res.ContainsKey("organizacion"))
                         {
@@ -80,13 +80,14 @@ where {{
         private string ConversorFechas(string fecha)
         {
             string fechaConvertida = "";
-            if (fecha.Length > 8)
+            if (string.IsNullOrEmpty(fecha) && fecha.Length > 8)
             {
                 string anio = fecha.Substring(0, 4);
                 string mes = fecha.Substring(4, 2);
                 string dia = fecha.Substring(6, 2);
                 fechaConvertida = dia + "/" + mes + "/" + anio;
             }
+
             return fechaConvertida;
         }
 
