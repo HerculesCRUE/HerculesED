@@ -1,4 +1,5 @@
 var urlEdicionCV = url_servicio_editorcv+"EdicionCV/";
+var urlEnvioValidacionCV = url_servicio_editorcv+"EnvioValidacion/";
 var urlGuardadoCV = url_servicio_editorcv+"GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];
 
@@ -3637,8 +3638,72 @@ var edicionCV = {
 			var section= $(this).attr('section');
 			that.completeTab(about,rdftype,section);
         });
+		
+		
+		//TODO boton enviar PRC
+		$('.texto.prodCientItem').off('click').on('click', function(e) {
+			var dataId = $(this)[0].dataset.id;
+			that.sendPRC(dataId, that.idPerson);
+		});
+		
         return;
     },
+	sendPRC: function(dataId, idPerson){		
+		$.ajax({
+			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
+			type: 'GET',
+			data: {
+				pIdDocumento: dataId,
+				pIdPersona: idPerson,
+				pIdProyecto: null
+			},
+			success: function ( response ) {
+				var contador = 0;
+				for(const seccion in response){
+					var html = `<article class="resource folder">
+								<div class="form-group">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}">
+										<label class="form-check-label" for="proyecto-${contador}"></label>
+									</div>
+								</div>
+								<div class="wrap">
+									<div class="middle-wrap">
+										<div class="title-wrap">
+											<h2 class="resource-title">
+												<a href="javascript: void(0);">${response[seccion].titulo}</a>
+											</h2>
+											<div class="block-wrapper" data-original-title="" title="">
+												<span class="material-icons">block</span>
+											</div>
+											<div class="visibility-wrapper">
+												<div class="con-icono-before eye" data-original-title="" title=""></div>
+											</div>
+										</div>
+										<div class="content-wrap">
+											<div class="description-wrap counted">
+												<div class="group fecha">
+													<p class="title">Fecha inicio</p>
+													<p>${response[seccion].fechaInicio}</p>
+												</div>
+												<div class="group fecha">
+													<p class="title">Fecha fin</p>
+													<p>${response[seccion].fechaFin}</p>
+												</div>
+												<div class="group publicacion">
+													<p class="title">Organización</p>
+													<p>${response[seccion].organizacion}</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</article>`;
+					contador++;
+				}
+			}
+		});
+	},
     validarFormulario: function(formulario, contenedor) {
         var that = this;
         //Validamos los campos obligatorios
