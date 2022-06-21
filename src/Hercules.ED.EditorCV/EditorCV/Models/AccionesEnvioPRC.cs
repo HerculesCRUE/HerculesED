@@ -30,7 +30,12 @@ namespace EditorCV.Models
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
 
-        public Dictionary<string, Dictionary<string, string>> ObtenerDatosEnvioPRC(ConfigService _Configuracion, string pIdDocumento, string pIdPersona, string pIdProyecto)
+        /// <summary>
+        /// Devuelve un diccionario con todos los proyectos de <paramref name="pIdPersona"/>, junto a su titulo, fecha de inicio, fecha de fin y organización.
+        /// </summary>
+        /// <param name="pIdPersona"></param>
+        /// <returns></returns>
+        public Dictionary<string, Dictionary<string, string>> ObtenerDatosEnvioPRC(string pIdPersona)
         {
             Dictionary<string, Dictionary<string, string>> listadoProyectos = new Dictionary<string, Dictionary<string, string>>();
 
@@ -39,6 +44,7 @@ namespace EditorCV.Models
 where {{
     ?project a <http://vivoweb.org/ontology/core#Project>.
     ?project <http://vivoweb.org/ontology/core#relates> ?rol .
+    ?project <http://w3id.org/roh/isValidated> 'true'.
     ?rol <http://w3id.org/roh/roleOf> <{pIdPersona}> .
     OPTIONAL{{?project <http://w3id.org/roh/title> ?titulo}}
     OPTIONAL{{?project <http://vivoweb.org/ontology/core#start> ?fechaInicio}}
@@ -59,11 +65,11 @@ where {{
                         }
                         if (res.ContainsKey("fechaInicio"))
                         {
-                            keyValues.Add("fechaInicio", res["fechaInicio"].value);
+                            keyValues.Add("fechaInicio", ConversorFechas(res["fechaInicio"].value));
                         }
                         if (res.ContainsKey("fechaFin"))
                         {
-                            keyValues.Add("fechaFin", res["fechaFin"].value);
+                            keyValues.Add("fechaFin", ConversorFechas(res["fechaFin"].value));
                         }
                         if (res.ContainsKey("organizacion"))
                         {
@@ -75,6 +81,25 @@ where {{
                 }
             }
             return listadoProyectos;
+        }
+
+        /// <summary>
+        /// Convierte un string con formato 20221231000000 a 31/12/2022
+        /// </summary>
+        /// <param name="fecha"></param>
+        /// <returns></returns>
+        private string ConversorFechas(string fecha)
+        {
+            string fechaConvertida = "";
+            if (!string.IsNullOrEmpty(fecha) && fecha.Length > 8)
+            {
+                string anio = fecha.Substring(0, 4);
+                string mes = fecha.Substring(4, 2);
+                string dia = fecha.Substring(6, 2);
+                fechaConvertida = dia + "/" + mes + "/" + anio;
+            }
+
+            return fechaConvertida;
         }
 
         /// <summary>
@@ -755,8 +780,8 @@ where {{
             //060.010.010.100 - Editorial
             dicPropiedadesPublicaciones.Add("numVol", "060.010.010.080"); // Volume e Issue
             dicPropiedadesPublicaciones.Add("paginas", "060.010.010.090"); // PageEnd y PageStart
-            //060.010.010.400 - Identificadores digitales 
-            //060.010.010.410 - Tipo identificadores digitales
+                                                                           //060.010.010.400 - Identificadores digitales 
+                                                                           //060.010.010.410 - Tipo identificadores digitales
             dicPropiedadesPublicaciones.Add("openAccess", "TIPO_OPEN_ACCESS");
             dicPropiedadesPublicaciones.Add("doi", "");
             dicPropiedadesPublicaciones.Add("handle", "");

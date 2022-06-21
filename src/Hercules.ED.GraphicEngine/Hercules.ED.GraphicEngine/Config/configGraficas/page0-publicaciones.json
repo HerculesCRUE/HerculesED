@@ -6,12 +6,12 @@
   "identificador": "pagina1",
   "graficas": [
     {
-      "identificador": "grafica2",
+      "identificador": "grafica1",
       "nombre": {
         "es": "Número de publicaciones y citas por año"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 23,
       "idGrupo": "grupo1",
       "config": {
         "orientacionVertical": true,
@@ -60,12 +60,12 @@
       }
     },
     {
-      "identificador": "grafica1",
+      "identificador": "grafica2",
       "nombre": {
         "es": "Número de publicaciones y citas por año"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 23,
       "idGrupo": "grupo1",
       "config": {
         "orientacionVertical": true,
@@ -114,7 +114,7 @@
       }
     },
     {
-      "identificador": "grafica22",
+      "identificador": "grafica3",
       "nombre": {
         "es": "Géneros de los IP por publicaciones"
       },
@@ -141,7 +141,7 @@
       }
     },
     {
-      "identificador": "grafica3",
+      "identificador": "grafica4",
       "nombre": {
         "es": "Número de publicaciones por tipo de actividad científica"
       },
@@ -173,7 +173,7 @@
       }
     },
     {
-      "identificador": "grafica4",
+      "identificador": "grafica5",
       "nombre": {
         "es": "Áreas temáticas de las publicaciones"
       },
@@ -195,7 +195,7 @@
       }
     },
     {
-      "identificador": "grafica5",
+      "identificador": "grafica6",
       "nombre": {
         "es": "Áreas temáticas de las publicaciones"
       },
@@ -229,7 +229,7 @@
       }
     },
     {
-      "identificador": "grafica6",
+      "identificador": "grafica7",
       "nombre": {
         "es": "Número de publicaciones por grupo"
       },
@@ -262,7 +262,40 @@
       }
     },
     {
-      "identificador": "grafica7",
+      "identificador": "grafica8",
+      "nombre": {
+        "es": "Publicaciones por categorías de PDI (IP)"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:hasPositionIp",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica9",
       "nombre": {
         "es": "Publicaciones por convocatoria de proyecto"
       },
@@ -296,7 +329,7 @@
       }
     },
     {
-      "identificador": "grafica8",
+      "identificador": "grafica10",
       "nombre": {
         "es": "Publicaciones por organismo de proyecto"
       },
@@ -330,40 +363,7 @@
       }
     },
     {
-      "identificador": "grafica9",
-      "nombre": {
-        "es": "Publicaciones por categorías de PDI (IP)"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:hasPositionIp",
-        "orderDesc": false,
-        "abreviar": true,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de publicaciones"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "grafica10",
+      "identificador": "grafica11",
       "nombre": {
         "es": "Publicaciones por tipo de proyecto"
       },
@@ -396,7 +396,7 @@
       }
     },
     {
-      "identificador": "grafica11",
+      "identificador": "grafica12",
       "nombre": {
         "es": "Publicaciones por ámbito de proyecto"
       },

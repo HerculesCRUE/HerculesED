@@ -3638,11 +3638,21 @@ var edicionCV = {
 			var section= $(this).attr('section');
 			that.completeTab(about,rdftype,section);
         });
-		
-		
+				
 		//TODO boton enviar PRC
 		$('.texto.prodCientItem').off('click').on('click', function(e) {
+			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
+			$('#modal-enviar-produccion-cientifica .resource-list.listView .resource-list-wrap').empty();
+			
+			
+			$(this).closest("article").clone().appendTo('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap');
+			$('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap article .acciones-recurso-listado.acciones-recurso').remove();
+			$('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap article .material-icons.arrow').remove();
+			
+			
 			var dataId = $(this)[0].dataset.id;
+			var nombreProy = $(this).closest("resource-success");
+			var fechaProy = "";
 			that.sendPRC(dataId, that.idPerson);
 		});
 		
@@ -3653,14 +3663,13 @@ var edicionCV = {
 			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
 			type: 'GET',
 			data: {
-				pIdDocumento: dataId,
-				pIdPersona: idPerson,
-				pIdProyecto: null
+				pIdPersona: idPerson
 			},
 			success: function ( response ) {
 				var contador = 0;
+				var html = '';
 				for(const seccion in response){
-					var html = `<article class="resource folder">
+					html += `<article class="resource folder">
 								<div class="form-group">
 									<div class="form-check form-check-inline">
 										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}">
@@ -3671,29 +3680,31 @@ var edicionCV = {
 									<div class="middle-wrap">
 										<div class="title-wrap">
 											<h2 class="resource-title">
-												<a href="javascript: void(0);">${response[seccion].titulo}</a>
+												${response[seccion].titulo}
 											</h2>
-											<div class="block-wrapper" data-original-title="" title="">
-												<span class="material-icons">block</span>
-											</div>
-											<div class="visibility-wrapper">
-												<div class="con-icono-before eye" data-original-title="" title=""></div>
-											</div>
 										</div>
 										<div class="content-wrap">
-											<div class="description-wrap counted">
+											<div class="description-wrap counted">`;
+										if(response[seccion].fechaInicio!=null){
+										html+=`
 												<div class="group fecha">
 													<p class="title">Fecha inicio</p>
 													<p>${response[seccion].fechaInicio}</p>
-												</div>
-												<div class="group fecha">
+												</div>`;
+										}
+										if(response[seccion].fechaFin!=null){
+										html+=`<div class="group fecha">
 													<p class="title">Fecha fin</p>
 													<p>${response[seccion].fechaFin}</p>
-												</div>
-												<div class="group publicacion">
+												</div>`;
+										}
+										if(response[seccion].organizacion!=null){
+										html+=`<div class="group publicacion">
 													<p class="title">Organización</p>
 													<p>${response[seccion].organizacion}</p>
-												</div>
+												</div>`;
+										}
+										html+=`
 											</div>
 										</div>
 									</div>
@@ -3701,6 +3712,8 @@ var edicionCV = {
 							</article>`;
 					contador++;
 				}
+				
+				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
 			}
 		});
 	},
