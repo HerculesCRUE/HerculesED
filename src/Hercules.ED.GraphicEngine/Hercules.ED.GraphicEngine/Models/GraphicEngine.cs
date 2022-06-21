@@ -212,12 +212,12 @@ namespace Hercules.ED.GraphicEngine.Models
                     if (pGrafica.config.orientacionVertical)
                     {
                         ControlarExcepcionesBarrasX(pGrafica);
-                        return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates);
+                        return CrearGraficaBarras(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates, pGrafica.config.datosNodos);
                     }
                     else
                     {
                         ControlarExcepcionesBarrasY(pGrafica);
-                        return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates);
+                        return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates, pGrafica.config.datosNodos);
                     }
                 case EnumGraficas.Circular:
                     ControlarExcepcionesCircular(pGrafica);
@@ -237,7 +237,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static GraficaBarras CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
+        public static GraficaBarras CrearGraficaBarras(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates, bool pNodos)
         {
             // Objeto a devolver.
             GraficaBarras grafica = new GraficaBarras();
@@ -364,7 +364,150 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
                 }
-                if (string.IsNullOrEmpty(itemGrafica.calculo))
+                if (pNodos)
+                {
+                    //Nodos            
+                    Dictionary<string, string> dicNodos = new Dictionary<string, string>();
+
+                    //Relaciones
+                    Dictionary<string, List<DataQueryRelaciones>> dicRelaciones = new Dictionary<string, List<DataQueryRelaciones>>();
+
+                    //Respuesta
+                    List<DataItemRelacion> itemsRelacion = new List<DataItemRelacion>();
+
+                    Dictionary<string, List<string>> dicResultadosAreaRelacionAreas = new Dictionary<string, List<string>>();
+                    Dictionary<string, int> scoreNodes = new Dictionary<string, int>();
+                    Dictionary<string, float> dicResultados = new Dictionary<string, float>();
+                    // Consulta sparql.
+                    select.Append(mPrefijos);
+                    select.Append("SELECT ?s group_concat(?categoria;separator=\",\") AS ?idCategorias ");
+                    where.Append("WHERE { ");
+                    foreach (string item in filtros)
+                    {
+                        where.Append(item);
+                    }
+                    where.Append("?s roh:hasKnowledgeArea ?area. ");
+                    where.Append("?area roh:categoryNode ?categoria. ");
+                    where.Append("MINUS { ?categoria skos:narrower ?hijos } ");
+                    where.Append("} ");
+
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        {
+                            string idCategorias = fila["idCategorias"].value;
+                            HashSet<string> categorias = new HashSet<string>(idCategorias.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
+
+                            foreach (string categoria in categorias)
+                            {
+                                if (!scoreNodes.ContainsKey(categoria))
+                                {
+                                    scoreNodes.Add(categoria, 0);
+                                }
+
+                                scoreNodes[categoria]++;
+
+                                if (!dicResultadosAreaRelacionAreas.ContainsKey(categoria))
+                                {
+                                    dicResultadosAreaRelacionAreas.Add(categoria, new List<string>());
+                                }
+
+                                dicResultadosAreaRelacionAreas[categoria].AddRange(categorias.Except(new List<string>() { categoria }));
+                            }
+                        }
+                    }
+
+                    ProcesarRelaciones("Category", dicResultadosAreaRelacionAreas, ref dicRelaciones);
+
+                    int maximasRelaciones = 0;
+                    foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+                    {
+                        foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                        {
+                            foreach (Datos relaciones2 in relaciones.idRelacionados)
+                            {
+                                maximasRelaciones = Math.Max(maximasRelaciones, relaciones2.numVeces);
+                            }
+                        }
+                    }
+
+                    // Creamos los nodos y las relaciones en función de pNumAreas.
+                    int pNumAreas = pGrafica.config.dimensiones.FirstOrDefault().numMaxNodos;
+
+                    Dictionary<string, int> numRelaciones = new Dictionary<string, int>();
+                    foreach (KeyValuePair<string, List<DataQueryRelaciones>> sujeto in dicRelaciones)
+                    {
+                        if (!numRelaciones.ContainsKey(sujeto.Key))
+                        {
+                            numRelaciones.Add(sujeto.Key, 0);
+                        }
+                        foreach (DataQueryRelaciones relaciones in sujeto.Value)
+                        {
+                            foreach (Datos relaciones2 in relaciones.idRelacionados)
+                            {
+                                if (!numRelaciones.ContainsKey(relaciones2.idRelacionado))
+                                {
+                                    numRelaciones.Add(relaciones2.idRelacionado, 0);
+                                }
+                                numRelaciones[sujeto.Key] += relaciones2.numVeces;
+                                numRelaciones[relaciones2.idRelacionado] += relaciones2.numVeces;
+                            }
+                        }
+                    }
+
+                    List<string> itemsSeleccionados = numRelaciones.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.Distinct().ToList();
+                    if (itemsSeleccionados.Count() > pNumAreas)
+                    {
+                        itemsSeleccionados = itemsSeleccionados.GetRange(0, pNumAreas);
+                    }
+
+                    if (itemsSeleccionados.Count > 0)
+                    {
+                        // Recuperamos los nombres de categorías y creamos los nodos.
+                        select = new StringBuilder();
+                        where = new StringBuilder();
+
+                        select.Append(mPrefijos);
+                        select.Append("SELECT ?categoria ?nombreCategoria ");
+                        where.Append("WHERE { ");
+                        where.Append("?categoria skos:prefLabel ?nombreCategoria. ");
+                        where.Append($@"FILTER(?categoria IN (<{string.Join(">,<", itemsSeleccionados)}>)) ");
+                        where.Append("} ");
+
+                        resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                        {
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                            {
+                                if (!dicNodos.ContainsKey(fila["categoria"].value))
+                                {
+                                    dicNodos.Add(fila["categoria"].value, fila["nombreCategoria"].value);
+                                }
+                            }
+                        }
+
+                        // Nodos. 
+                        if (dicNodos != null && dicNodos.Count > 0)
+                        {
+                            foreach (KeyValuePair<string, string> nodo in dicNodos)
+                            {
+                                string clave = nodo.Key;
+                                Data data = new Data(clave, nodo.Value, null, null, null, "nodes", Data.Type.icon_area);
+                                if (scoreNodes.ContainsKey(clave))
+                                {
+                                    data.score = scoreNodes[clave];
+                                    data.name = data.name + " (" + data.score + ")";
+                                }
+                                DataItemRelacion dataColabo = new DataItemRelacion(data, true, true);
+                                itemsRelacion.Add(dataColabo);
+                            }
+                        }
+                    }
+
+                    resultadosDimension[itemGrafica] = listaTuplas;
+                }
+                else if (string.IsNullOrEmpty(itemGrafica.calculo))
                 {
                     // Consulta sparql.                    
                     select = new StringBuilder();
@@ -635,7 +778,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pFiltroFacetas">Filtros de las facetas.</param>
         /// <param name="pLang">Idioma.</param>
         /// <returns></returns>
-        public static GraficaBarrasY CrearGraficaBarrasY(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
+        public static GraficaBarrasY CrearGraficaBarrasY(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates, bool pNodos)
         {
             // Objeto a devolver.
             GraficaBarrasY grafica = new GraficaBarrasY();
@@ -762,7 +905,83 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { itemGrafica.filtro }));
                 }
-                if (string.IsNullOrEmpty(itemGrafica.calculo))
+                if (pNodos)
+                {
+                    //Nodos            
+                    Dictionary<string, string> dicNodos = new Dictionary<string, string>();
+                    Dictionary<string, int> scoreNodes = new Dictionary<string, int>();
+
+                    // Consulta sparql.
+                    select.Append(mPrefijos);
+                    select.Append("SELECT ?s group_concat(?categoria;separator=\",\") AS ?idCategorias ");
+                    where.Append("WHERE { ");
+                    foreach (string item in filtros)
+                    {
+                        where.Append(item);
+                    }
+                    where.Append("?s roh:hasKnowledgeArea ?area. ");
+                    where.Append("?area roh:categoryNode ?categoria. ");
+                    where.Append("MINUS { ?categoria skos:narrower ?hijos } ");
+                    where.Append("} ");
+
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        {
+                            string idCategorias = fila["idCategorias"].value;
+                            HashSet<string> categorias = new HashSet<string>(idCategorias.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
+
+                            foreach (string categoria in categorias)
+                            {
+                                if (!scoreNodes.ContainsKey(categoria))
+                                {
+                                    scoreNodes.Add(categoria, 0);
+                                }
+
+                                scoreNodes[categoria]++;
+                            }
+                        }
+                    }
+                    List<string> itemsSeleccionados = scoreNodes.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.Distinct().ToList();
+
+                    // Recuperamos los nombres de categorías y creamos los nodos.
+                    select = new StringBuilder();
+                    where = new StringBuilder();
+
+                    select.Append(mPrefijos);
+                    select.Append("SELECT ?categoria ?nombreCategoria ");
+                    where.Append("WHERE { ");
+                    where.Append("?categoria skos:prefLabel ?nombreCategoria. ");
+                    where.Append($@"FILTER(?categoria IN (<{string.Join(">,<", itemsSeleccionados)}>)) ");
+                    where.Append("} ");
+
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        {
+                            if (!dicNodos.ContainsKey(fila["categoria"].value))
+                            {
+                                dicNodos.Add(fila["categoria"].value, fila["nombreCategoria"].value);
+                            }
+                        }
+                    }
+
+                    // Nodos. 
+                    if (dicNodos != null && dicNodos.Count > 0)
+                    {
+                        foreach (KeyValuePair<string, string> nodo in dicNodos)
+                        {
+                            if (scoreNodes.ContainsKey(nodo.Key))
+                            {
+                                listaTuplas.Add(new Tuple<string, string, float>(nodo.Value, string.Empty, float.Parse(scoreNodes[nodo.Key].ToString().Replace(",", "."), CultureInfo.InvariantCulture)));
+                            }
+                        }
+                    }
+                    resultadosDimension[itemGrafica] = listaTuplas.OrderByDescending(x => x.Item3).ToList();
+                }
+                else if (string.IsNullOrEmpty(itemGrafica.calculo))
                 {
                     // Consulta sparql.                    
                     select = new StringBuilder();
@@ -825,23 +1044,25 @@ namespace Hercules.ED.GraphicEngine.Models
                         where.Append($@"}} ORDER BY {orden}(?numero) ");
                     }
                 }
-
-                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                if (!pNodos)
                 {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), mCommunityID);
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                     {
-                        if (filtroEspecial && string.IsNullOrEmpty(itemGrafica.calculo))
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                         {
-                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, fila["aux"].value, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
-                        }
-                        else
-                        {
-                            listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, string.Empty, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                            if (filtroEspecial && string.IsNullOrEmpty(itemGrafica.calculo))
+                            {
+                                listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, fila["aux"].value, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                            }
+                            else
+                            {
+                                listaTuplas.Add(new Tuple<string, string, float>(fila["ejeX"].value, string.Empty, float.Parse(fila["numero"].value.Replace(",", "."), CultureInfo.InvariantCulture)));
+                            }
                         }
                     }
+                    resultadosDimension[itemGrafica] = listaTuplas;
                 }
-                resultadosDimension[itemGrafica] = listaTuplas;
             });
 
             #region --- Cálculo de los valores del Eje X

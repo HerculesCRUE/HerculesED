@@ -115,6 +115,39 @@
       }
     },
     {
+      "identificador": "3b",
+      "nombre": {
+        "es": "Nombre de la Gráfica de barras a partir de nodos"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "datosNodos": true,
+        "orientacionVertical": false,
+        "ejeX": "dc:type@@@dc:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Áreas temáticas de las publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
       "identificador": "88",
       "nombre": {
         "es": "Número de publicaciones por tipo de actividad científica"
