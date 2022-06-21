@@ -72,7 +72,7 @@
  .graph-container .graph-controls,
  .wrap .grafica .graph-controls {
      position: absolute;
-     top: 24px;
+     top: 70px;
      left: 20px;
      z-index: 200;
  }
@@ -145,7 +145,7 @@
      margin-top: 20px;
      flex-direction: column;
      height: 100%;
-     width: 100%;
+     width: 99%;
  }
 
  /*<div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px` : ""}">
@@ -284,4 +284,19 @@
     background-color: #f3f3f3;
     text-decoration: none;
     color: #af1a2e;
+ }
+ .grafica.show > p{
+    position: absolute;
+    top:70px;
+
+ }
+ .grafica.show .graficoNodos {
+    margin-top: 70px;
+    overflow:hidden;
+ }
+ .acciones-mapa.showAcciones{
+    z-index: 1;
+ }
+ .article .wrap{
+    overflow: hidden;
  }

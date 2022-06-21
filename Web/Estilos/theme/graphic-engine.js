@@ -72,7 +72,6 @@ var metricas = {
         } else {
             // Petición para obtener los datos de la página.
             $.get(url, arg, function (listaData) {
-                console.log(listaData);
                 if (listaData.length == 0) {
                     $('div.row-content').append(`<div><h1>No tienes paginas</h1></div>`);
                 } else {
@@ -115,7 +114,10 @@ var metricas = {
             // Controla si el objeto es de ChartJS o Cytoscape.
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
-            console.log(graficaContenedor[0]);
+
+
+
+
             if ("container" in data) {
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
@@ -471,7 +473,6 @@ var metricas = {
 
 
             item.forEach(function (grafica, index, array) {
-                //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
                 var tipoGrafica = (grafica.isHorizontal ? "horizontal " : "") +
                     (grafica.isNodes ? "nodes " : "") +
                     (grafica.isCircular ? "circular " : "") +
@@ -480,17 +481,17 @@ var metricas = {
                 if (!tipoGrafica) {
                     tipoGrafica = "vertical";
                 }
+                //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
 
-                tmp += `<div class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "100"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
-
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item[0].anchura}"> 
                     <div class="wrap" >
                         <div class="acciones-mapa ${item.length != 1 ? 'showAcciones' : ''}" >
                             ${item.length != 1 ? `
-                            <select class="chartMenu js-select2" href="javascript: void(0);" ></select>`: ""}
+                            <select class="chartMenu js-select2" href="javascript: void(0);" style="width:" ></select>`: ""}
                             <div class="wrap">
                                 <div class="zoom">
                                     <a href="javascript: void(0);"   data-toggle="modal">
@@ -554,8 +555,6 @@ var metricas = {
         arg.pPageId = pPaginaUsuario.idRecurso;
         // Petición para obtener los datos de la página.
         $.get(url, arg, function (listaData) {
-
-            console.log(listaData);
             if (listaData.length == 0) {
                 if ($('div.row-content').find('div.sin-graficas').length == 0) {
                     $('div.row-content').append(`<div class="sin-graficas"><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
@@ -854,6 +853,7 @@ var metricas = {
         var graficaContainer = chartContainer.parentNode;
         var horizontal = data.options.indexAxis == "y";
         var titulo = data.options.plugins.title.text;
+        barSize /= data.data.datasets.length;
         if (pTitulo) {
             titulo = pTitulo;
         }
@@ -877,7 +877,6 @@ var metricas = {
                 precision: 0
             }
         }
-        console.log(canvasSize);
         //Abrebiacion de los labels del eje
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
@@ -1028,15 +1027,19 @@ var metricas = {
 
     },
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
+
+
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
+        if (myChart.canvas.id.includes("grafica_pagina2_isHorizontal-abr-grafica5")) {
+            var s = "sdads";
+        }
         //anchura y altura del recorte de la grafica
         var copyWidth;
         var copyHeight;
         // Anchura y altura del pegado a los ejes.
         var axisHeight;
         var axisWidth;
-        console.log(myChart.boxes);
         if (horizontal) {
             myChart.canvas.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
             copyWidth = myChart.width;
@@ -1091,10 +1094,14 @@ var metricas = {
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
             } else {
+                copyWidth = myChart.chartArea.left;
+                targetWidth = copyWidth * scale;
+                width = copyWidth;
+
+                
                 ctx.canvas.height = copyHeight;
                 targetHeight -= 10 * scale; //margenes
                 //targetWidth += 1; //para que coja el sepadador entre eje y grafica
-
             }
             targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
@@ -1105,13 +1112,17 @@ var metricas = {
 
         // Preparamos el eje inferior.
         if (secondaryAxis) {
-            copyWidth = myChart.boxes[2]?.width + myChart.boxes[2].right; //anchura del eje
+            copyWidth = myChart.boxes[2]?.width; //anchura del eje
 
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
+                ctx.canvas.style.paddingLeft = myChart.chartArea.left -5 + "px";
+                copyWidth += 15;
+                targetX = myChart.chartArea.left * scale - 5;
             } else {
+
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
@@ -1182,9 +1193,10 @@ var metricas = {
         var menus = $("select.chartMenu");
         menus.each((index, menu) => { //por cada menu en la pagina
             var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica"); //Obtiene la id de la grafica visible
-
+            //$(menu).parents("article div.wrap").find("div.hide").css("display", "none"); //Oculta todas las graficas
             $(menu).val("grafica_" + idPaginaActual + "_" + selectedID); // y la selecciona en el menu
         });
+
 
         iniciarSelects2.init(); // Se inicializa la libreria selects2.
 
@@ -1815,12 +1827,19 @@ var metricas = {
                 shown.css('display', 'none');
                 shown.removeClass('show');
                 shown.addClass('hide');
-                var selected = parent.find('canvas#' + $(this).val()).parents('div.hide');
+                var selected = parent.find('#' + $(this).val()).parents('div.hide');
                 if (selected.length) {
                     selected.css('display', 'flex');
+                    selected.css('opacity', '1');
                     selected.css('width', '100%');
                     selected.removeClass('hide');
                     selected.addClass('show');
+                }
+                var canvas = parent.find('canvas#' + $(this).val());
+                if (canvas.length) {
+                    var chart = Chart.getChart(canvas[0]);
+                    chart.config._config.options.animation.onProgress();
+                    chart.config._config.options.animation.onProgress();
                 }
             });
 
