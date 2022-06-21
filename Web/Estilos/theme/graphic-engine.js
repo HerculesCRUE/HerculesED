@@ -25,7 +25,7 @@ var metricas = {
 
         if (ObtenerHash2().includes('~~~')) {//este codigo se incluye para no borrar las facetas al quitar una
             var splitHash = ObtenerHash2().split('~~~');
-            numPagina = ObtenerHash2().split('~~~')[1];         
+            numPagina = ObtenerHash2().split('~~~')[1];
             history.pushState('', 'New URL: ', '?' + splitHash[0]);
         } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
             history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
@@ -869,18 +869,10 @@ var metricas = {
         data.data.datasets.forEach((item) => {
             item['barThickness'] = barSize;
 
-        })
-        if (horizontal) { //todo mover a json
-            data.options.scales['x1'] = {
-                ticks: {
-                    precision: 0
-                }
-            }
-        } else {
-            data.options.scales['y1'] = {
-                ticks: {
-                    precision: 0
-                }
+        }) //todo mover a json
+        data.options.scale = {
+            ticks: {
+                precision: 0
             }
         }
         console.log(canvasSize);
@@ -1105,7 +1097,7 @@ var metricas = {
             targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
-          
+
             ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
         }
 
@@ -1265,7 +1257,7 @@ var metricas = {
                     filtros += filtroActual;
                 }
 
-                var numPagina = $(".nav-item#"+idPaginaActual).attr("num");
+                var numPagina = $(".nav-item#" + idPaginaActual).attr("num");
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros + '~~~' + numPagina);
                 e.preventDefault();
 
@@ -2005,34 +1997,34 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
             that.paginaActual = 1;
             that.buscarFacetas();
             $('.indice-lista .faceta')
-            .unbind()
-            .click(function (e) {
-                var filtroActual = $(this).attr('filtro');
-                var filtros = decodeURIComponent(ObtenerHash2());
-                var filtrosArray = filtros.split('&');
-                filtros = '';
-                var contieneFiltro = false;
-                for (var i = 0; i < filtrosArray.length; i++) {
-                    if (filtrosArray[i] != '') {
-                        if (filtrosArray[i] == filtroActual) {
-                            contieneFiltro = true;
-                        } else {
-                            filtros += filtrosArray[i] + '&';
+                .unbind()
+                .click(function (e) {
+                    var filtroActual = $(this).attr('filtro');
+                    var filtros = decodeURIComponent(ObtenerHash2());
+                    var filtrosArray = filtros.split('&');
+                    filtros = '';
+                    var contieneFiltro = false;
+                    for (var i = 0; i < filtrosArray.length; i++) {
+                        if (filtrosArray[i] != '') {
+                            if (filtrosArray[i] == filtroActual) {
+                                contieneFiltro = true;
+                            } else {
+                                filtros += filtrosArray[i] + '&';
+                            }
+
                         }
-
                     }
-                }
-                if (!contieneFiltro) {
-                    filtros += filtroActual;
-                } else {
-                    location.reload();
-                }
+                    if (!contieneFiltro) {
+                        filtros += filtroActual;
+                    } else {
+                        location.reload();
+                    }
 
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
-                e.preventDefault();
+                    history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                    e.preventDefault();
 
-                metricas.pintarPagina(idPaginaActual);
-            });
+                    metricas.pintarPagina(idPaginaActual);
+                });
         });
 
         that.arrayTotales = new Array(data.items.length);
