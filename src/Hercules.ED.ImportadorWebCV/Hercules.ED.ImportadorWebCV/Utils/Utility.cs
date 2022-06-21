@@ -6,6 +6,8 @@ using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -119,7 +121,7 @@ namespace Utils
         /// </summary>
         /// <param name="personas"></param>
         /// <returns></returns>
-        public static Dictionary<string, HashSet<string>> DatosProyectoPersona( List<string> personas)
+        public static Dictionary<string, HashSet<string>> DatosProyectoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> proyectos = new Dictionary<string, HashSet<string>>();
             string select = $@"select distinct ?person ?project
@@ -826,6 +828,12 @@ namespace Utils
             return diccionarioPersonasFirma;
         }
 
+        /// <summary>
+        /// Cambia las letras acentuadas a, e, i, o, u por las mismas sin el signo de puntuación, la letra ñ por n y la letra ç por c.
+        /// </summary>
+        /// <param name="pWord"></param>
+        /// <param name="pVar"></param>
+        /// <returns></returns>
         public static string FilterWordComplete(string pWord, string pVar)
         {
             Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();
@@ -1279,8 +1287,8 @@ namespace Utils
         /// <returns></returns>
         public static string GetFirmaAutor(this CvnItemBeanCvnAuthorBean item)
         {
-            if (item == null) 
-            { 
+            if (item == null)
+            {
                 return null;
             }
 
@@ -1298,7 +1306,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetOrdenAutor(this CvnItemBeanCvnAuthorBean item)
         {
-            if (item == null) 
+            if (item == null)
             {
                 return null;
             }
@@ -1891,9 +1899,19 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
-            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToString("yyyyMMdd");
-            fechaString += "000000";
-            return fechaString;
+            try
+            {
+                //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
+                DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
+                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error("Error en el formato de fecha" + e.Message + " " + e.StackTrace);
+                return null;
+            }
         }
 
         /// <summary>
@@ -1904,9 +1922,11 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
         {
-            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToString("yyyyMMdd");
-            fechaString += "000000";
-            return fechaString;
+            //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
+            DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
+            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+            return dateTime2.ToString("yyyyMMdd000000");
         }
 
         /// <summary>
@@ -1917,9 +1937,11 @@ namespace Utils
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateYear dateTime)
         {
-            string fechaString = new DateTime(dateTime.Value.Ticks, DateTimeKind.Utc).ToString("yyyyMMdd");
-            fechaString += "000000";
-            return fechaString;
+            //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
+            DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
+            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+            return dateTime2.ToString("yyyyMMdd000000");
         }
 
         /// <summary>

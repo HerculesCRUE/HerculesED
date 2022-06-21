@@ -116,12 +116,12 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Datos de identificacion y contacto.
         /// Con el codigo identificativo 000.000.000.000
         /// </summary>
-        public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar)
+        public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar, listadoIdBBDD)));
 
             return listadoSecciones;
         }
@@ -217,10 +217,10 @@ namespace ImportadorWebCV.Sincro
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(UtilitySecciones.CheckSecciones(secciones, "060.010.000.000"), preimportar, listadoIdBBDD)));
-            listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(UtilitySecciones.CheckSecciones(secciones, "060.010.060.010"), preimportar)));
-            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(UtilitySecciones.CheckSecciones(secciones, "060.010.010.000"), preimportar, listadoIdBBDD)));//TODO
-            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(UtilitySecciones.CheckSecciones(secciones, "060.010.020.000"), preimportar, listadoIdBBDD)));//TODO
-            listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(UtilitySecciones.CheckSecciones(secciones, "060.010.030.000"), preimportar, listadoIdBBDD))); //TODO - error al insertar despues de eliminar todos
+            listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(UtilitySecciones.CheckSecciones(secciones, "060.010.060.010"), preimportar, listadoIdBBDD)));
+            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(UtilitySecciones.CheckSecciones(secciones, "060.010.010.000"), preimportar, listadoIdBBDD)));
+            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(UtilitySecciones.CheckSecciones(secciones, "060.010.020.000"), preimportar, listadoIdBBDD)));
+            listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(UtilitySecciones.CheckSecciones(secciones, "060.010.030.000"), preimportar, listadoIdBBDD)));
             listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(UtilitySecciones.CheckSecciones(secciones, "060.010.040.000"), preimportar, listadoIdBBDD)));
             listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(UtilitySecciones.CheckSecciones(secciones, "060.020.010.000"), preimportar, listadoIdBBDD)));
             listadoSecciones.Add(new Subseccion("060.020.030.000", actividadCientificaTecnologica.SincroOrganizacionIDI(UtilitySecciones.CheckSecciones(secciones, "060.020.030.000"), preimportar, listadoIdBBDD)));
@@ -249,12 +249,12 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         /// <param name="preimportar"></param>
         /// <returns></returns>
-        public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar)
+        public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             TextoLibre textoLibre = new TextoLibre(cvn, cvID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"), preimportar)));
+            listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"), preimportar, listadoIdBBDD)));
 
             return listadoSecciones;
         }

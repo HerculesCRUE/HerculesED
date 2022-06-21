@@ -585,9 +585,20 @@ var edicionCV = {
     },
     printHtmlListItemAcciones: function(data, id) {
         var htmlAcciones = "";
+		
+		//Si está en validación o pendiente no se permite el envio a produccion cientifica
+		if(data.sendPRC){
+			htmlAcciones += `<li>
+								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+									<span class="material-icons">send</span>
+									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_PRODUCCION_CIENTIFICA")}</span>
+								</a>
+							</li>`;
+		}
+
         if (!data.ispublic) {
             //Si no está publicado siempre se puede publicar
-            htmlAcciones = `	<li>
+            htmlAcciones += `<li>
 								<a class="item-dropdown">
 									<span class="material-icons">visibility</span>
 									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
@@ -595,7 +606,7 @@ var edicionCV = {
 							</li>`;
         } else if (data.iseditable) {
             //Si está publicado sólo se puede despublicar si es editable
-            htmlAcciones = `	<li>
+            htmlAcciones += `<li>
 								<a class="item-dropdown">
 									<span class="material-icons">visibility_off</span>
 									<span class="texto despublicaritem" data-id="${id}">${GetText("CV_DESPUBLICAR")}</span>
@@ -665,6 +676,11 @@ var edicionCV = {
 		var sectionItem=$('.panel-group[section="' + id + '"]');
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
+		var mostrarSoloConflictos=false;
+		if(sectionItem.find('.checkAllConflict input[type="checkbox"]').is(':checked'))
+		{
+			mostrarSoloConflictos=true;
+		}
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
 		var ordenItem=sectionItem.find(' .ordenar.dropdown .texto');
         var ordenProperty = ordenItem.attr('property');
@@ -753,7 +769,8 @@ var edicionCV = {
 			var existe=texto=='';
             var existeEnTitulo = existe || EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
             var existeEnPropiedad = existe || EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
-            if (existe ||existeEnTitulo || existeEnPropiedad) {
+            var filtroConflicto= !mostrarSoloConflictos || (mostrarSoloConflictos && $(this).hasClass('conflict-true'));
+			if ((existe ||existeEnTitulo || existeEnPropiedad) && filtroConflicto) {
                 numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
                 if (numPaginas == paginaActual) {
                     $(this).show();

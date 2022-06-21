@@ -23,7 +23,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// subapartado "Texto libre"
         /// Con código identificativo "070.010.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroTextoLibre(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroTextoLibre(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -52,7 +52,28 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             else
             {
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.Any(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_")))
+                {
+                    List<string> listadoEliminacion = new List<string>() { "0", "1", "2" };
+                    string numero;
+                    for (int i = 0; i < listadoIdBBDD.Count; i++)
+                    {
+                        numero = listadoIdBBDD.ElementAt(i).Split("@@@").Last();
+                        if (!string.IsNullOrEmpty(numero))
+                        {
+                            listadoEliminacion.Remove(numero);
+                        }
+                    }
+                    foreach (string eliminar in listadoEliminacion)
+                    {
+                        entityXML.properties.RemoveAt(int.Parse(eliminar));
+                    }
+                }
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.Any(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_")))
+                {
+                    listadoIdBBDD.RemoveAll(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"));
+                }
                 return null;
             }
         }

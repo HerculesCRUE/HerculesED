@@ -12,11 +12,23 @@
     string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
     Html.GetListaJS().Add(urlJS);
 }
-
-<ul class="listadoMenuPaginas nav nav-tabs" id="myTab" role="tablist"></ul>
-
+<div class="topbar-container" style="display: none;">
+    <ul class="listadoMenuPaginas nav nav-tabs" id="myTab" role="tablist"></ul>
+    <div class="pageOptions">
+        <div class="edit-page" data-toggle="modal" data-target="#modal-editarpagina">
+            <span class="material-icons btn-edit-page">edit</span>   
+            <p>@Html.Translate("EDITAR_PAGINA")</p>                            
+        </div>
+        <div class="delete-page" data-toggle="modal" data-target="#modal-eliminarpagina">
+            <span class="material-icons btn-delete-page">delete</span>
+            <p>@Html.Translate("BORRAR_PAGINA")</p>
+        </div>
+    </div>
+</div>
 <div class="row containerPage indicadoresPersonalizados">
-    <div class="col col-12 col-xl-9 col-contenido derecha">                        
+    <div class="col col-12 col-xl-9 col-contenido derecha">
+        <div class="col-buscador tab-content">
+        </div>                         
         <div class="resource-list graphView ">
             <div class="resource-list-wrap"></div>
         </div>                        
@@ -28,10 +40,125 @@
         <div class="modal-content">
             <div class="modal-header">
                 <p class="modal-title"></p>
-                <span class="material-icons cerrar" aria-label="Close">close</span>
+                <span class="material-icons cerrar cerrar-grafica" aria-label="Close">close</span>
             </div>
             <div class="modal-body">
                 <div class="graph-container" style="width:100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-eliminar" class="modal modal-top fade modal-edicion" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"><span class="material-icons">delete</span>Eliminar</p>
+                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="formulario-edicion">
+                    <div class="form-group">
+                        <label class="control-label">¿Está seguro de que desea eliminar la gráfica?</label>
+                    </div>
+                    <div class="form-actions">
+                        <a data-dismiss="modal" class="btn btn-primary cerrar">NO</a>
+                        <a class="btn btn-outline-primary eliminar">SI</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-editargrafica" class="modal modal-top fade modal-edicion" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"><span class="material-icons">edit</span>Editar gráfica</p>
+                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="custom-form-row">
+                    <div class="form-group full-group disabled ">
+					    <label class="control-label d-block">@Html.Translate("TITULO_GRAFICA")</label>
+                        <input id="labelTituloGrafica" placeholder="" onfocus="" type="text" class="form-control not-outline">
+			        </div>
+                </div>
+                <div class="custom-form-row">
+                    <div class="form-group ">
+				        <label class="control-label d-block">@Html.Translate("ANCHURA")</label>
+				        <select id="idSelectorTamanyo" class="js-select2 select2-hidden-accessible" dependency="" data-select-search="true" tabindex="-1" aria-hidden="true">
+                            <option value="11">100%</option>
+                            <option value="34">75%</option>
+                            <option value="23">66%</option>
+                            <option value="12">50%</option>
+                            <option value="13">33%</option>
+                            <option value="14">25%</option>
+                        </select>
+			        </div>
+                </div>
+                <div class="custom-form-row">
+                    <div class="form-group full-group disabled ">
+					    <label class="control-label d-block">Orden de la gráfica</label>
+                        <select id="idSelectorOrden" class="js-select2 select2-hidden-accessible" dependency="" data-select-search="true" tabindex="-1" aria-hidden="true">
+                        </select>
+			        </div>
+                </div>
+                <div class="form-actions">
+                    <a class="btn btn-primary" id="btnGuardarEditGrafica">@Html.Translate("GUARDAR")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-editarpagina" class="modal modal-top fade modal-edicion" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"><span class="material-icons">edit</span>Editar página</p>
+                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="custom-form-row">
+                    <div class="form-group full-group disabled ">
+					    <label class="control-label d-block">Título de la página</label>
+                        <input id="labelTituloPagina" placeholder="" onfocus="" type="text" class="form-control not-outline">
+			        </div>
+                </div>
+                <div class="custom-form-row">
+                    <div class="form-group full-group disabled ">
+					    <label class="control-label d-block">Orden de la página</label>
+                        <select id="idSelectorOrdenPg" class="js-select2 select2-hidden-accessible" dependency="" data-select-search="true" tabindex="-1" aria-hidden="true">
+                        </select>
+			        </div>
+                </div>
+                <div class="form-actions">
+                    <a class="btn btn-primary" id="btnGuardarEditPagina">@Html.Translate("GUARDAR")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-eliminarpagina" class="modal modal-top fade modal-edicion" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" style="margin:50px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"><span class="material-icons">delete</span>Eliminar</p>
+                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="formulario-edicion">
+                    <div class="form-group">
+                        <label class="control-label">¿Está seguro de que desea eliminar la página?</label>
+                    </div>
+                    <div class="form-actions">
+                        <a data-dismiss="modal" class="btn btn-primary cerrar">NO</a>
+                        <a class="btn btn-outline-primary eliminarpg">SI</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,5 +1,3 @@
-//TODO
-//var urlImportacionCV = "https://localhost:5002/ImportadoCV";
 var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
 var selectorConflictoNoBloqueado = '';
 var selectorConflictoBloqueado = '';
@@ -16,16 +14,18 @@ var importarCVN = {
 		this.filePreimport = '';
 
 		selectorConflictoNoBloqueado = `<select name="itemConflict" >
-												<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
-												<option value="fu">${GetText('CV_FUSIONAR')}</option>
-												<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
-												<option value="du">${GetText('CV_DUPLICAR')}</option>
-											</select>`;
-		selectorConflictoBloqueado = `<select name="itemConflict" >
 											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 											<option value="fu">${GetText('CV_FUSIONAR')}</option>
+											<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
+											
+		selectorConflictoBloqueado = `<select name="itemConflict" >
+										<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
+										<option value="fu">${GetText('CV_FUSIONAR')}</option>
+										<option value="du">${GetText('CV_DUPLICAR')}</option>
+									</select>`;
+										
 		selectorCamposTexto = `<select hidden name="itemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 								</select>`;
@@ -125,13 +125,14 @@ var importarCVN = {
 				
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
+				checkAllConflict();
 				OcultarUpdateProgress();				
 			}
 		});		
 		return;
     },	
 	importarCV: function(listaId, listaOpcionSeleccionados) {
-		MostrarUpdateProgress();
+		MostrarUpdateProgressTime(0);
 		var that = this;
 		var formData = new FormData();
 		formData.append('userID', that.idUsuario);
@@ -157,15 +158,22 @@ var importarCVN = {
 	}
 };
 
+function checkAllConflict(){
+	$('.checkAllConflict input[type="checkbox"]').off('click').on('click', function(e) {
+		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
+		edicionCV.buscarListado(seccion);
+	});
+}
+
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
 		if(!$(this)[0].checked)
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text('Seleccionar todos');
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_TODOS')}`);
 		}
 		else
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text('Deseleccionar todos');
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_TODOS')}`);
 		}
 		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
@@ -185,6 +193,7 @@ function printCientificProduction(id, data){
 
 	var expanded = "";
 	var show = "";
+	var datos = false;
 	if (data.items != null) {
 		if (Object.keys(data.items).length > 0) {
 			//Desplegado
@@ -195,53 +204,57 @@ function printCientificProduction(id, data){
 			expanded = "false";
 		}
 		for(const seccion in data.items){
-			//TODO texto ver items
-			var htmlSection = `
-			<div class="panel-group pmd-accordion" section="${data.items[seccion].properties[0]}" id="${id}" role="tablist" aria-multiselectable="true">
-				<div class="panel">
-					<div class="panel-heading" role="tab" id="publicaciones-tab">
-						<p class="panel-title">
-							<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
-								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
-								<span class="texto">${data.items[seccion].title}</span>
-							</a>
-						</p>
-					</div>
-					<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
-						<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
-							<div class="panel-body">
-								<div class="resource-list listView">
-									<div class="resource-list-wrap">
-										<article class="resource success" >
-											<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="check_resource_${id2}"  value="${data.items[seccion].properties[0].values[0]}_${contador}">
-												<label class="custom-control-label" for="check_resource_${id2}"></label>
-											</div>
-											<div class="wrap">
-												<div class="middle-wrap">
-													<div class="title-wrap">
-														<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
-														+selectorCamposTexto+
-														`<span class="material-icons arrow">keyboard_arrow_down</span>
-													</div>
-													<div class="content-wrap">
-														<div class="description-wrap">
-															<div class="group">
-																<p>${data.items[seccion].title}</p>
-															</div>
-														</div>
+			if(data.items[seccion].properties[0].values.length != 0){
+				datos = true;
+			}
+		}
+		for(const seccion in data.items){
+			if(datos){
+				//TODO texto ver items
+				var htmlSection = `
+				<div class="panel-group pmd-accordion" section="${data.items[seccion].properties[0]}" id="${id}" role="tablist" aria-multiselectable="true">
+					<div class="panel">
+						<div class="panel-heading" role="tab" id="publicaciones-tab">
+							<p class="panel-title">
+								<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+									<span class="material-icons pmd-accordion-icon-left">folder_open</span>
+									<span class="texto">${data.items[seccion].title}</span>
+								</a>
+							</p>
+						</div>`;
+						if(data.items[seccion].properties[0].values.length != 0){
+						htmlSection += `
+						<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
+							<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
+								<div class="panel-body">
+									<div class="resource-list listView">
+										<div class="resource-list-wrap">
+											<article class="resource success" >
+												<div class="custom-control custom-checkbox">
+													<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].identifier}"  value="${data.items[seccion].identifier}_${contador}">
+													<label class="custom-control-label" for="check_resource_${data.items[seccion].identifier}"></label>
+												</div>
+												<div class="wrap">
+													<div class="middle-wrap">
+														<div class="title-wrap">
+															<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
+															+selectorCamposTexto+														
+														`</div>
 													</div>
 												</div>
-											</div>
-										</article>
+											</article>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+						</div>`;
+						
+						contador++;
+						}
+				htmlSection += `
 					</div>
-				</div>
-			</div>`;
-			contador++;
+				</div>`;
+			}
 		}
 		return htmlSection;
 	}
@@ -288,11 +301,10 @@ function printFreeText(id, data){
 										</div>
 										<div class="resource-list listView">
 									<div class="resource-list-wrap">`;
-
 		var secciones = data.sections[0].items;
 		for (const seccion in secciones){			
 			//Si no hay datos no pinto esa sección
-			if(secciones[seccion].properties[0].values.length>0 && secciones[seccion].properties[0].values[0].length>0){
+			if(secciones[seccion].properties[0].values.length > 0 && secciones[seccion].properties[0].values[0].length > 0){
 				var id = 'x' + RandomGuid();
 				var valorSeccion = '';
 				if(secciones[seccion].properties[0].values[0]!= null ){
@@ -300,15 +312,14 @@ function printFreeText(id, data){
 				}
 				var html2 = `<article class="resource success">
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${id}_${contador}">
-									<label class="custom-control-label" for="check_resource_${id}"></label>
+									<input type="checkbox" class="custom-control-input" id="check_resource_${secciones[seccion].identifier}_${contador}"  value="${secciones[seccion].identifier}_${contador}">
+									<label class="custom-control-label" for="check_resource_${secciones[seccion].identifier}_${contador}"></label>
 								</div>
 								<div class="wrap">
 									<div class="middle-wrap">
 										<div class="title-wrap">
-											<h2 class="resource-title">
-												<a href="#" data-id="${id}" internal-id="">${secciones[seccion].title}</a>
-											</h2>`+selectorCamposTexto+`
+											<h2 class="resource-title">${secciones[seccion].title}</h2>`
+											+selectorCamposTexto+`
 											<!--span class="material-icons arrow">keyboard_arrow_down</span-->
 										</div>	
 										<div class="content-wrap">
@@ -413,7 +424,11 @@ edicionCV.printPersonalData=function(id, data) {
 											<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 										</a>
 									</p>
-								</div>
+								</div>`;
+								
+							if(data.sections[0].items[seccion].properties[0].values.length!=0)
+							{
+							html+=`
 								<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 									<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 										<div class="panel-body">
@@ -442,10 +457,12 @@ edicionCV.printPersonalData=function(id, data) {
 											</div>
 										</div>
 									</div>
-								</div>
+							</div>`;
+							contador++;
+							}
+						html += `
 							</div>
-						</div>	`;
-			contador++;
+						</div>`;
 			 return html;
 		 }
 	}
@@ -491,6 +508,12 @@ edicionCV.printTabSection= function(data) {
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
 											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
+										</div>
+									</div>
+									<div class="checkAllConflict" id="checkAllConflict">
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="checkAllConflict_${id2}">
+											<label class="custom-control-label" for="checkAllConflict_${id2}">${GetText('CV_MOSTRAR_CONFLICTOS')}</label>
 										</div>
 									</div>
 								</div>
@@ -550,17 +573,17 @@ edicionCV.printHtmlListItem= function(id, data) {
 	}
 	var htmlListItem = ``;
 	if(data.title!= null){
-		htmlListItem = `<article class="resource success ${openAccess}" >
-								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
-									<label class="custom-control-label" for="check_resource_${id}"></label>
-								</div>
-								<div class="wrap">
-									<div class="middle-wrap">
-										${this.printHtmlListItemOrders(data)}
-										<div class="title-wrap">
-											<h2 class="resource-title">${data.title}</h2>`;
-		if(data.idBBDD!=""){
+		htmlListItem = `<article class="resource success ${openAccess} conflict-${data.idBBDD != ""}" >
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
+								<label class="custom-control-label" for="check_resource_${id}"></label>
+							</div>
+							<div class="wrap">
+								<div class="middle-wrap">
+									${this.printHtmlListItemOrders(data)}
+									<div class="title-wrap">
+										<h2 class="resource-title">${data.title}</h2>`;
+		if(data.idBBDD != ""){
 			if(data.iseditable){
 				htmlListItem += selectorConflictoNoBloqueado;
 			}else{
@@ -568,16 +591,16 @@ edicionCV.printHtmlListItem= function(id, data) {
 			}	
 		}							
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
-										</div>
-										<div class="content-wrap">
-											<div class="description-wrap">
-												${this.printHtmlListItemEditable(data)}	
-												${this.printHtmlListItemPropiedades(data)}
-											</div>
+									</div>
+									<div class="content-wrap">
+										<div class="description-wrap">
+											${this.printHtmlListItemEditable(data)}	
+											${this.printHtmlListItemPropiedades(data)}
 										</div>
 									</div>
 								</div>
-							</article>`;
+							</div>
+						</article>`;
 	}
 	contador++;
 	return htmlListItem;

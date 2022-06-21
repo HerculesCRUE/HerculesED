@@ -11,7 +11,13 @@ namespace EditorCV.Models.PreimportModels
         /// Array de apartados del CV
         /// </summary>
         public List<Subseccion> secciones { get; set; }
+        /// <summary>
+        /// Archivo XML
+        /// </summary>
         public string cvn_xml { get; set; }
+        /// <summary>
+        /// Objeto Preimport
+        /// </summary>
         public string cvn_preimportar { get; set; }
 
         public Preimport(List<Subseccion> subsecciones, string cvn_xml, string cvn_preimportar)
@@ -62,6 +68,9 @@ namespace EditorCV.Models.PreimportModels
         /// Valor numerico del orden de lectura
         /// </summary>
         public int id { get; set; }
+        /// <summary>
+        /// GUID del recurso
+        /// </summary>
         public string guid { get; set; }
 
         /// <summary>

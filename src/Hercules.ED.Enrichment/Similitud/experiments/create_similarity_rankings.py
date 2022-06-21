@@ -9,7 +9,7 @@ MAX_DF = 0.1
 
 MODEL = 'all-MiniLM-L6-v2'
 #MODEL = 'all-mpnet-base-v2'
-# MODEL = 'paraphrase-multilingual-mpnet-base-v2'
+#MODEL = 'paraphrase-multilingual-mpnet-base-v2'
 
 
 def main(train_fpath, test_fpath, n_similar, out_fpath, method):

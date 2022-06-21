@@ -82,7 +82,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Indicadores generales de calidad de la producción científica".
         /// Con el codigo identificativo 060.010.060.010
         /// </summary>
-        public List<SubseccionItem> SincroIndicadoresGenerales(bool procesar, [Optional] bool preimportar)
+        public List<SubseccionItem> SincroIndicadoresGenerales(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -111,8 +111,21 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             else
             {
-                //4º Actualizamos la entidad
-                UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
+                {
+                    if (listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/GeneralQualityIndicatorCV_"))
+                    {
+                        //4º Actualizamos la entidad
+                        UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                        listadoIdBBDD.RemoveAt(0);
+                    }
+                }
+                else
+                {
+                    //4º Actualizamos la entidad
+                    UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                }
+                
                 return null;
             }
         }
@@ -124,7 +137,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroPublicacionesDocumentos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -183,7 +195,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
 
-
             //2º Obtenemos las entidades de la BBDD
             Dictionary<string, DisambiguableEntity> entidadesBBDD = PublicacionesDocumentos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem, listadoAux);
             List<string> idValuesBBDD = entidadesBBDD.Values.Select(x => x.ID).ToList();
@@ -217,7 +228,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Añadimos o modificamos las entidades
                 AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedScientificPublicationCV", "http://w3id.org/roh/RelatedScientificPublicationCV");
+                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedScientificPublicationCV", "http://w3id.org/roh/RelatedScientificPublicationCV", listadoIdBBDD: listadoIdBBDD);
                 return null;
             }
         }
@@ -229,7 +240,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroTrabajosCongresos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -321,7 +331,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Añadimos o modificamos las entidades
                 AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedConferencesCV", "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV");
+                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedConferencesCV", "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV", listadoIdBBDD: listadoIdBBDD);
                 return null;
             }
         }
@@ -334,7 +344,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroTrabajosJornadasSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
-            //TODO
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -427,7 +436,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Añadimos o modificamos las entidades
                 AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV", "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV");
+                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV", "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", listadoIdBBDD: listadoIdBBDD);
                 return null;
             }
         }

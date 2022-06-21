@@ -282,7 +282,26 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
     display: flex;
 }
 
+.edicionOfertaTecnologica .botonera.bottom {
+    bottom: 0;
+    top: initial;
+    position: relative;
+    float: right;
+    margin-top: 15px;
+}
 
+
+/* Fin Estilos para los usuarios de oferta tecnológica */
+
+/* Estilos para la ficha de oferta tecnológica */
+.fichaRecurso-ofertas-tecnologicas .resource-list-wrap .user-miniatura .imagen-usuario-wrap .imagen span {
+    color: var(--c-texto);
+    margin-top: -10px;
+    font-size: 4rem;
+}
+
+
+/* Fin Estilos para la ficha de oferta tecnológica */
 
 
 
