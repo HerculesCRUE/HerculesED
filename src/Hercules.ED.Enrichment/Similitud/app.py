@@ -48,12 +48,12 @@ class SimilarityAddSchema(Schema):
     authors = fields.String(required=True, description="Authors of the paper in a single string")
     thematic_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by thematic descriptors returned by the enrichment API and their probabilities.")
     specific_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
+    update_ranking = fields.Bool(required=False, default=True, description="Don't update rankings and cache if False. Useful for batch loading. RebuildRankings must be called after loading ROs with update_ranking=False.")
 
 class SimilarityQuerySchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type_target = fields.String(required=True, description="Type of the similar research objects to return: 'research_paper', 'code_project', 'protocol'")
-
-
+    
 # Service-level object instances
 
 db = ro_storage_memory.MemoryROStorage()
@@ -71,13 +71,30 @@ class SimilarityAddAPI(MethodResource, Resource):
     #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def post(self, **kwargs):
         logger.debug(kwargs)
-        ro = RO(kwargs['ro_id'], kwargs['ro_type'])
-        ro.text = kwargs['text']
-        similarity.generate_embedding(ro)
-        similarity.add_ro(ro)
+        update_ranking = kwargs['update_ranking'] if 'update_ranking' in kwargs else True
+        if similarity.ro_exists(kwargs['ro_id']):
+            return '{"msg": "RO already exists"}', 409
+        ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
+        ro.set_text(kwargs['text'])
+        names = [ n for n, p in kwargs['specific_descriptors'] ]
+        probs = [ p for n, p in kwargs['specific_descriptors'] ]
+        ro.set_specific_descriptors(names, probs)
+        similarity.add_ro(ro, update_ranking=update_ranking)
         logger.debug("RO added")
-        
 
+
+class RebuildRankingsAPI(MethodResource, Resource):
+    
+    #decorators = [auth.login_required]
+    @doc(description='Rebuilds cache and all the rankings of similar ROs.',
+         tags=['Hercules', 'similarity'])
+    @use_kwargs({}, location='json')
+    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
+    def post(self, **kwargs):
+        logger.debug(kwargs)
+        similarity.rebuild_cache()
+
+        
 class SimilarityQueryAPI(MethodResource, Resource):
     
     #decorators = [auth.login_required]
@@ -95,9 +112,11 @@ class SimilarityQueryAPI(MethodResource, Resource):
 # Declare endpoints and documentation for the API
 
 api.add_resource(SimilarityAddAPI, '/add_ro')
+api.add_resource(RebuildRankingsAPI, '/rebuild_rankings')
 api.add_resource(SimilarityQueryAPI, '/query_similar')
 
 docs.register(SimilarityAddAPI)
+#docs.register(RebuildRankingsAPI)
 docs.register(SimilarityQueryAPI)
 
 

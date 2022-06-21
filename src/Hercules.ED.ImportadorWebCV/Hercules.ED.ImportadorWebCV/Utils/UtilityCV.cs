@@ -53,6 +53,11 @@ namespace Utils
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
         }
         
+        /// <summary>
+        /// Devuelve el identificador numerico apartir del tipo de documento.
+        /// </summary>
+        /// <param name="tipoDocumento"></param>
+        /// <returns></returns>
         public static string IdentificadorFECYT(string tipoDocumento)
         {
             if (string.IsNullOrEmpty(tipoDocumento))

@@ -69,7 +69,8 @@
      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
  }
 
- .graph-controls {
+ .graph-container .graph-controls,
+ .wrap .grafica .graph-controls {
      position: absolute;
      top: 24px;
      left: 20px;
@@ -178,11 +179,16 @@
  .pageOptions{
         display: flex;
         flex-direction: row;
-
+        padding-bottom: 10px;
+        border-bottom: 1px solid #d5d5d5;
         padding-left: 15px;
         padding-right: 15px;
         right: 0px;
         justify-content: space-between;
+        width: 35%;
+ }
+ .listadoMenuPaginas{
+    width: 100%;
  }
  .pageOptions div{
     cursor: pointer;
@@ -203,10 +209,13 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    width: 100%;
+    padding:8px;
  }
 .edit-page:hover{
     color: #af1a2e;
 }
+
 .delete-page:hover{
     background-color: #af1a2e;
     color:white;
@@ -214,6 +223,28 @@
 .form-group{
     transition: all .2s ease-in-out;    
 }
+
 .resource-list.graphView .resource > .wrap{
     height: 335px;
+}
+li a.eliminargrafica:hover span{
+    color: #af1a2e;
+}
+a.btn-facetas{
+    border: 1px solid #d5d5d5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+a.btn-facetas:focus,
+a.btn-facetas:hover{
+    background-color: #d5d5d5;
+    color: #af1a2e;
+}
+ul.listadoMenuPaginas li.nav-item:hover .nav-link{
+    background-color: #f3f3f3;
 }

@@ -21,9 +21,15 @@ var listaPaginas;
 var metricas = {
     init: function () {
 
-        if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
+        
+        // Esto impide que las facetas se apliquen a la primera pagina al recargar desde otra pagina
+        if (ObtenerHash2().includes('~~~')){
+            var hash = ObtenerHash2().replace('~~~', '');
+            history.pushState('', 'New URL: ', '?' + hash);
+        }else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
             history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
         }
+
 
         if (!$('div').hasClass('indicadoresPersonalizados')) {
             this.getPages();
@@ -67,7 +73,7 @@ var metricas = {
             $.get(url, arg, function (listaData) {
                 console.log(listaData);
                 if (listaData.length == 0) {
-                    $('div.row-content').append(`<div><h1>No Pages Found</h1></div>`);
+                    $('div.row-content').append(`<div><h1>No tienes paginas</h1></div>`);
                 } else {
                     for (let i = 0; i < listaData.length; i++) {
                         $(".listadoMenuPaginas").append(`
@@ -87,7 +93,7 @@ var metricas = {
             });
         }
     },
-    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 100, pIdRecurso = null, pTitulo = null) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -109,8 +115,6 @@ var metricas = {
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
             if ("container" in data) {
-
-
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
                 data.container = ctx;
@@ -119,12 +123,12 @@ var metricas = {
                 data.ready = function () { window.cy = this };
                 var cy = cytoscape(data);
 
-                //var combo = $(ctx).parents("article").find("select");
+                var combo = $(ctx).parents("article").find("select");
                 var titulo = data.title;
                 if (pTitulo) {
                     titulo = pTitulo;
                 }
-                if (combo) {
+                if (combo) { //para graficas agrupadas
                     combo.append(`
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
@@ -198,6 +202,9 @@ var metricas = {
                     });
 
             } else {
+                data.options.responsive = true;
+                data.options.maintainAspectRatio = false;
+
                 var titulo = data.options.plugins.title.text;
                 if (pTitulo) {
                     titulo = pTitulo;
@@ -240,7 +247,6 @@ var metricas = {
                             }
                         }
                     }
-                    data.options.radius = "70%";
                     var myChart = new Chart(ctx, data);
                 }
             }
@@ -305,7 +311,7 @@ var metricas = {
                 `);
                 if (data.verTodos) {
                     $('div[idfaceta="' + data.id + '"]').append(`
-                        <p class="moreResults"><a class="no-close open-popup-link" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
+                        <p class="moreResults"><a class="no-close open-popup-link open-popup-link-resultados" href="#" data-toggle="modal" faceta="6" data-target="#modal-resultados">Ver todos</a></p>
                     `);
                 }
             }
@@ -546,8 +552,9 @@ var metricas = {
 
             console.log(listaData);
             if (listaData.length == 0) {
-                $('div.row-content').append(`<div><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
-                metricas.engancharComportamientos();
+                if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                    $('div.row-content').append(`<div class="sin-graficas"><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
+                } metricas.engancharComportamientos();
             }
             var tmp = [];
             var id = "";
@@ -675,7 +682,7 @@ var metricas = {
                 </div>
                 `);
             } else {
-                $(this).css("height", "auto");
+                $(this).css("height", "300px");
                 $(this).append(`
                     <canvas id = "grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width = "600" height = "250" ></canvas>
                         `);
@@ -796,7 +803,7 @@ var metricas = {
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" >
-                    <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:546px;">
+                    <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:273px;">
                         <div class="chartAreaWrapper">
                             <canvas width = "600" height = "250" id="${pPageData[index].idRecurso}"></canvas>
                         </div>
@@ -804,9 +811,9 @@ var metricas = {
                 </div>
                 `);
             } else {
-                $(this).css("height", "auto");
+                $(this).css("height", "300px");
                 $(this).append(`
-                    <canvas id = "${pPageData[index].idRecurso}" width = "600" height = "250" ></canvas>
+                    <canvas id = "${pPageData[index].idRecurso}"></canvas>
                         `);
             }
 
@@ -830,7 +837,7 @@ var metricas = {
         });
     },
     drawChart: function (ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) {
-        if (Chart.getChart(ctx) != null) {
+        if (Chart.getChart(ctx) != null) {// en caso de que se ejecute esto despues de cambiar de pagina desde la anterior
             return;
         }
         var numBars = data.data.labels.length; // Número de barras.
@@ -851,17 +858,16 @@ var metricas = {
         } else {
             graficaContainer.classList.add("vertical");
         }
-        // En caso de que los datos de la gráfica se representen con porcentajes
-        // Solo si es una gráfica horizontal.
-        // En caso de que los labels de la gráfica deban de estar abreviados...
+
         data.options.maintainAspectRatio = false;
         data.options.responsive = true;
 
-
-        data.data.datasets.forEach((item) => {
+        //esto modifica el tamaño de las barras 
+        data.data.datasets.forEach((item) => { 
             item['barThickness'] = barSize;
 
         })
+        //Abrebiacion de los labels del eje
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
             if (horizontal) {
@@ -871,8 +877,7 @@ var metricas = {
                     }
 
                 }
-            } else {
-
+            } else { //vertical
                 data.options.scales['x'] = {
                     ticks: {
                         callback: ticksAbr
@@ -892,21 +897,19 @@ var metricas = {
         }
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
         //si la grafica es horizontal y su altura es menor a 550 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
-
         if ((canvasSize < 550 && horizontal) || (canvasSize < (barSize < 100 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
             if (barSize < 100) {
-                // $(ctx).parents(".modal-content").css("height", "auto");
                 $(ctx).parents(".modal-content").css("display", "block");
             }
             //scrollContainer.style.height = "auto";
             graficaContainer.classList.add("small");
 
             if (horizontal) { // estilos horizonales
-                chartAreaWrapper.style.height = "546px";
+                chartAreaWrapper.style.height = "273px"; // TODO: Tamaño
                 scrollContainer.style.overflowY = "hidden";
             } else {
                 if (barSize >= 100) {
-                    chartAreaWrapper.style.height = "546px";
+                    chartAreaWrapper.style.height = "273px"; // TODO: Tamaño
                 } else {
                     chartAreaWrapper.style.height = "100%";
                 }
@@ -916,7 +919,7 @@ var metricas = {
 
             var myChart = new Chart(ctx, data);
         } else { // a partir de aqui se prepara el scroll
-            if (barSize < 100) { //para revelar el zoom
+            if (barSize < 100) { //para revelar el modal del zoom 
                 $(ctx).parents(".modal-content").css("display", "block");
             }
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
@@ -981,7 +984,7 @@ var metricas = {
                 $(chartContainer).append(secondaryAxis);
             }
 
-            // Cuando se acutaliza el canvas.
+            // Cuando se actualiza el canvas.
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                 $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
@@ -990,7 +993,7 @@ var metricas = {
                 });
             }
 
-            if (data.isDate) {
+            if (data.isDate) { //las graficas de fechas se mueven hasta el año mas reciente que se encuentra al final del scroll
                 if (horizontal) {
                     $(scrollContainer).animate({ scrollTop: $(chartAreaWrapper).height() - $(scrollContainer).height() }, 6000);
                     $(scrollContainer).mousedown((e) => {//evento que se dispara al hacer click en el scroll
@@ -1018,14 +1021,10 @@ var metricas = {
     },
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
-        /*data.options.maintainAspectRatio = false;
-        data.options.responsive = true;*/
         var scale = window.devicePixelRatio;
-
         //anchura y altura del recorte de la grafica
         var copyWidth;
         var copyHeight;
-
         // Anchura y altura del pegado a los ejes.
         var axisHeight;
         var axisWidth;
@@ -1055,18 +1054,8 @@ var metricas = {
         //si la leyenda falsa es mayor a la del canvas se añade la diferencia en margen para compensar
         //esto sucede cuando en el canvas la leyenda ocupa una fila pero en el div 2 o mas;
         if ($(legend).height() > myChart.chartArea.top) {
-
-            /*
-            if (!horizontal) {
-                //importante por que el margen añadido hace que aparezca un scroll horizontal
-                myChart.canvas.parentNode.parentNode.style.overflowY = "hidden";
-            }*/
-
             //añadimos el margen
             myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
-            //Aun que no lo parezca este tamaño es importante (1px tambien funcionaria)
-            //Obliga al canvas a reescalarse y ajustarse al div, sin el los labels se esconden debajo de la scrollbar
-            //myChart.canvas.parentNode.style.paddingBottom = 0.02 + "px";
             if (mainAxis) {
                 mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
             }
@@ -1209,8 +1198,7 @@ var metricas = {
             }
             $(".faceta-date-range .ui-slider").slider("values", valores);
         });
-
-        $('.containerFacetas a.filtroMetrica,.listadoTesauro a.filtroMetrica')
+        $('.containerFacetas a.filtroMetrica,.listadoTesauro a.filtroMetrica, .indice-lista .faceta')
             .unbind()
             .click(function (e) {
                 var filtroActual = $(this).attr('filtro');
@@ -1262,7 +1250,7 @@ var metricas = {
                     filtros += filtroActual;
                 }
 
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros+'~~~');
                 e.preventDefault();
 
                 location.reload();
@@ -1399,7 +1387,6 @@ var metricas = {
                 // Se obtiene el chart desde el canvas.
                 var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
                 var chart = Chart.getChart(canvas);
-
                 // El ID del dataset está en el ID del contenedor del label.
                 var id = $(this).attr('id').split('-')[1];
                 var label = $(this).find('p.dataSetLabel');
@@ -1444,7 +1431,6 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
-
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
@@ -1648,7 +1634,7 @@ var metricas = {
         $('#btnGuardarEditPagina')
             .unbind()
             .click(function (e) {
-              //TODO translate
+                //TODO translate
                 var formTituloPagina = $('#labelTituloPagina').val();
                 if (!formTituloPagina) {
                     mostrarNotificacion("warning", "Introduce el titulo de la pagina por favor");
@@ -1681,7 +1667,7 @@ var metricas = {
         $('#btnGuardarEditGrafica')
             .unbind()
             .click(function (e) {
-              //TODO translate
+                //TODO translate
                 var formTitle = $('#labelTituloGrafica').val();
                 if (!formTitle) {
                     mostrarNotificacion("warning", "Introduce el titulo por favor");
@@ -1969,5 +1955,181 @@ var metricas = {
         $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
             that.engancharComportamientos();
         }));
+        
+
+        /*$('#panFacetas .open-popup-link').unbind();*/
+        $('#panFacetas .open-popup-link-resultados').unbind().click(function(event) 
+        {      
+            $('#modal-resultados').show();
+            $(".indice-lista.no-letra").html('');
+            event.preventDefault();
+            $('#modal-resultados .modal-dialog .modal-content .modal-title').text($($(this).closest('.box')).find('.faceta-title').text());
+            comportamientoFacetasPopUp.cargarFaceta($(this).closest('.box').attr('idfaceta'));
+            that.engancharComportamientos();
+        });
     }
 }
+
+comportamientoFacetasPopUp.cargarFaceta= function (pIdFaceta) {
+    var that = this;
+    var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
+    var arg = {};
+
+    arg.pIdPagina = idPaginaActual;
+    arg.pIdFaceta = pIdFaceta;
+    arg.pFiltroFacetas = ObtenerHash2();
+    arg.pLang = lang;
+    arg.pGetAll=true;
+    that.textoActual='';
+    that.paginaActual=1;
+    // Petición para obtener los datos de las gráficas.
+    $.get(url, arg, function (data) {
+
+        $('.buscador-coleccion .buscar .texto').keyup(function () {             
+            that.textoActual = that.eliminarAcentos($(this).val());
+            that.paginaActual = 1;
+            that.buscarFacetas();
+            $('.indice-lista .faceta')
+            .unbind()
+            .click(function (e) {
+                var filtroActual = $(this).attr('filtro');
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                var contieneFiltro = false;
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        if (filtrosArray[i] == filtroActual) {
+                            contieneFiltro = true;
+                        } else {
+                            filtros += filtrosArray[i] + '&';
+                        }
+
+                    }
+                }
+                if (!contieneFiltro) {
+                    filtros += filtroActual;
+                } else {
+                    location.reload();
+                }
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                metricas.pintarPagina(idPaginaActual);
+            });
+        });
+
+        that.arrayTotales = new Array(data.items.length);
+        var i = 0;
+        data.items.forEach(function (item, index, array) {
+            that.arrayTotales[i] = new Array(2);
+            that.arrayTotales[i][0] = that.eliminarAcentos(item.nombre.toLowerCase());
+            that.arrayTotales[i][1] = $(`<a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
+                                <span class="textoFaceta">${item.nombre}</span>
+                                <span class="num-resultados">(5)</span>
+                            </a>`);
+            i++;
+        });
+
+        //Ordena por orden alfabético
+        that.arrayTotales = that.arrayTotales.sort(function (a, b) {
+            if (a[0] > b[0]) return 1;
+            if (a[0] < b[0]) return -1;
+            return 0;
+        });
+
+        that.paginaActual = 1;
+        
+        $(".modal-body .buscador-coleccion .action-buttons-resultados").remove();
+        $(".modal-body .buscador-coleccion").append($('<div></div>').attr('class', 'action-buttons-resultados'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados").append($('<ul></ul>').attr('class', 'no-list-style'));
+        
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style").append($('<li></li>').attr('class', 'js-anterior-facetas-modal'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal").append($('<span></span>').attr('class', 'material-icons').text('navigate_before'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal").append($('<span></span>').attr('class', 'texto').text('Anteriores'));
+        
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style").append($('<li></li>').attr('class', 'js-siguiente-facetas-modal'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal").append($('<span></span>').attr('class', 'texto').text('Siguientes'));
+        $(".modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal").append($('<span></span>').attr('class', 'material-icons').text('navigate_next'));
+                    
+        
+        $('.modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-anterior-facetas-modal .texto').click(function () {
+            if (!that.buscando && that.paginaActual > 1) {
+                that.buscando = true;
+                that.paginaActual--;
+                var hacerPeticion = true;
+                $('.indice-lista ul').animate({
+                    marginLeft: 30,
+                    opacity: 0
+                }, 200, function () {
+                    if (hacerPeticion) {
+                        that.buscarFacetas();
+                        hacerPeticion = false;
+                    }
+                    $('.indice-lista ul').css({ marginLeft: -30 });
+                    $('.indice-lista ul').animate({
+                        marginLeft: 20,
+                        opacity: 1
+                    }, 200, function () {
+                        // Left Animation complete.                         
+                    });
+                });
+            }
+        });
+
+        $('.modal-body .buscador-coleccion .action-buttons-resultados .no-list-style .js-siguiente-facetas-modal .texto').click(function () {
+            if (!that.buscando && !that.fin) {
+                that.buscando = true;
+                that.paginaActual++;
+                var hacerPeticion = true;
+                $('.indice-lista ul').animate({
+                    marginLeft: -30,
+                    opacity: 0
+                }, 200, function () {
+                    if (hacerPeticion) {
+                        that.buscarFacetas();
+                        hacerPeticion = false;
+                    }
+                    $('.indice-lista ul').css({ marginLeft: 30 });
+                    $('.indice-lista ul').animate({
+                        marginLeft: 20,
+                        opacity: 1
+                    }, 200, function () {
+                        // Right Animation complete.                            
+                    });
+                });
+            }
+        });
+        that.buscarFacetas();
+        $('.indice-lista .faceta')
+            .unbind()
+            .click(function (e) {
+                var filtroActual = $(this).attr('filtro');
+                var filtros = decodeURIComponent(ObtenerHash2());
+                var filtrosArray = filtros.split('&');
+                filtros = '';
+                var contieneFiltro = false;
+                for (var i = 0; i < filtrosArray.length; i++) {
+                    if (filtrosArray[i] != '') {
+                        if (filtrosArray[i] == filtroActual) {
+                            contieneFiltro = true;
+                        } else {
+                            filtros += filtrosArray[i] + '&';
+                        }
+
+                    }
+                }
+                if (!contieneFiltro) {
+                    filtros += filtroActual;
+                } else {
+                    location.reload();
+                }
+
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                e.preventDefault();
+
+                metricas.pintarPagina(idPaginaActual);
+            });
+    });
+};

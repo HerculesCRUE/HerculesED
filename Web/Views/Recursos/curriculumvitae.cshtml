@@ -95,11 +95,76 @@
 <input type="hidden" id="CV_SINTRADUCCION" value="@Html.Translate("CV_SINTRADUCCION")"/>
 <input type="hidden" id="CV_CONTRADUCCION" value="@Html.Translate("CV_CONTRADUCCION")"/>
 <input type="hidden" id="CV_OCULTAR_EDICION" value="@Html.Translate("CV_OCULTAR_EDICION")"/>
+<input type="hidden" id="ENVIAR_PRODUCCION_CIENTIFICA" value="@Html.Translate("ENVIAR_PRODUCCION_CIENTIFICA")"/>
 <script>
 $(function() {
     edicionCV.init();
 });
 </script>
+	
+	
+<div id="modal-enviar-produccion-cientifica" class="modal modal-top modal-wide modal-enviar-produccion-cientifica fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("ENVIAR_PRODUCCION_CIENTIFICA")</p>
+                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="alert">
+                    <p class="alert-title">
+                        <span class="material-icons">warning</span>
+                        @Html.Translate("POSIBLE_DUPLICIDAD")
+                    </p>
+                </div>
+                <div class="resource-list listView">
+                    <div class="resource-list-wrap">
+                        <article class="resource">
+                            <div class="wrap">
+                                <div class="middle-wrap">                                    
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="formulario-edicion formulario-publicacion">
+                    <div class="select-resource-list">
+                        <p class="title">@Html.Translate("CV_SELECCIONA_PUBLICACION_FUSIONARLA")</p>
+                        <div class="resource-list listView list-con-checks">
+                            <div class="resource-list-wrap">                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <a class="btn btn-primary uppercase btn-fusionar">@Html.Translate("CV_FUSIONAR_CONTINUAR")</a>
+                        <a class="btn btn-primary uppercase">@Html.Translate("CV_CONTINUAR")</a>
+                    </div>
+                </div>
+                <div class="formulario-edicion formulario-proyecto" style="display: none;">
+                    <div class="alert">
+                        <p class="alert-title">
+                            <span class="material-icons">warning</span>
+                            @Html.Translate("NO_HAS_ASOCIADO_PROYECTO")
+                            <a href="javascript: void(0);">@Html.Translate("CONTINUAR_SIN_ASOCIAR")</a>
+                        </p>
+                    </div>
+                    <div class="select-resource-list">
+                        <p class="title">@Html.Translate("CV_RELACIONA_PUBLICACION")</p>
+                        <div class="resource-list listView list-con-checks">
+                            <div class="resource-list-wrap">                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <a class="btn btn-primary uppercase">@Html.Translate("CV_ENVIAR")</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>	
+	
+	
 	
 <div class="row">
     <div class="col col-12 col-breadcrumb">

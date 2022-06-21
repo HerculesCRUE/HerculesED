@@ -30,6 +30,30 @@ namespace EditorCV.Models
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
 
+        public void ObtenerDatosEnvioPRC(ConfigService _Configuracion, string pIdDocumento, string pIdPersona, string pIdProyecto)
+        {
+            string select = $@"select distinct  ?project
+FROM <{mResourceApi.GraphsUrl}person.owl>
+FROM <{mResourceApi.GraphsUrl}project.owl>";
+            string where = $@"
+where {{
+    ?person a <http://xmlns.com/foaf/0.1/Person> .
+    ?person <http://w3id.org/roh/gnossUser> <http://gnoss/{pIdPersona}> .
+    ?s <http://w3id.org/roh/cvOf> ?person .
+    ?person a <http://xmlns.com/foaf/0.1/Person>.
+    ?project a <http://vivoweb.org/ontology/core#Project>.
+    ?project ?propRol ?rol .
+    FILTER(?propRol in (<http://w3id.org/roh/researchers>,<http://w3id.org/roh/mainResearchers>))
+    ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
+}}";
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "curriculumvitae");
+            if (resultadoQuery.results.bindings.Count != 0)
+            {
+
+            }
+
+        }
+
         /// <summary>
         /// Permite enviar a Producción Científica los datos necesarios para la validación.
         /// </summary>
@@ -604,7 +628,7 @@ namespace EditorCV.Models
 
             #region --- Envío a SGI.
             try
-            {                
+            {
                 IRestResponse response = null;
 
                 if (valorEnviado == "rechazado")
@@ -624,7 +648,7 @@ namespace EditorCV.Models
                     request.AddJsonBody(PRC);
                     string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
                     response = client.Execute(request);
-                }                
+                }
 
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
@@ -702,14 +726,14 @@ namespace EditorCV.Models
             dicPropiedadesPublicaciones.Add("issued", "060.010.010.140");
             dicPropiedadesPublicaciones.Add("type", "060.010.010.010");
             dicPropiedadesPublicaciones.Add("supportType", "060.010.010.070");
-            //060.010.010.210 - Nombre de la revista (HECHO ARRIBA)
-            dicPropiedadesPublicaciones.Add("isbn", "060.010.010.160"); // TODO: PREGUNTAR A ALICIA
-            dicPropiedadesPublicaciones.Add("issn", "060.010.010.160"); // TODO: PREGUNTAR A ALICIA
-            //060.010.010.100 - Editorial (HECHO ARRIBA)
+            //060.010.010.210 - Nombre de la revista
+            dicPropiedadesPublicaciones.Add("isbn", "060.010.010.160");
+            dicPropiedadesPublicaciones.Add("issn", "060.010.010.160");
+            //060.010.010.100 - Editorial
             dicPropiedadesPublicaciones.Add("numVol", "060.010.010.080"); // Volume e Issue
             dicPropiedadesPublicaciones.Add("paginas", "060.010.010.090"); // PageEnd y PageStart
-            //060.010.010.400 - Identificadores digitales // TODO: PREGUNTAR A ALICIA
-            //060.010.010.410 - Tipo identificadores digitales // TODO: PREGUNTAR A ALICIA
+            //060.010.010.400 - Identificadores digitales 
+            //060.010.010.410 - Tipo identificadores digitales
             dicPropiedadesPublicaciones.Add("openAccess", "TIPO_OPEN_ACCESS");
             dicPropiedadesPublicaciones.Add("doi", "");
             dicPropiedadesPublicaciones.Add("handle", "");
@@ -730,8 +754,8 @@ namespace EditorCV.Models
             dicPropiedadesCongresos.Add("geographicFocus", "060.010.020.080");
             dicPropiedadesCongresos.Add("presentedAt", "060.010.020.100");
             dicPropiedadesCongresos.Add("publicationVenueText", "060.010.020.370");
-            dicPropiedadesCongresos.Add("issn", "060.010.020.320"); // TODO: PREGUNTAR A ALICIA
-            dicPropiedadesCongresos.Add("isbn", "060.010.020.320"); // TODO: PREGUNTAR A ALICIA
+            dicPropiedadesCongresos.Add("issn", "060.010.020.320");
+            dicPropiedadesCongresos.Add("isbn", "060.010.020.320");
             dicPropiedadesCongresos.Add("participationType", "060.010.020.050");
             dicPropiedadesCongresos.Add("doi", "");
             dicPropiedadesCongresos.Add("handle", "");
