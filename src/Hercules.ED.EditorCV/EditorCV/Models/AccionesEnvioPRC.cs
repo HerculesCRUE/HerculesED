@@ -39,6 +39,7 @@ namespace EditorCV.Models
 where {{
     ?project a <http://vivoweb.org/ontology/core#Project>.
     ?project <http://vivoweb.org/ontology/core#relates> ?rol .
+    ?project <http://w3id.org/roh/isValidated> 'true'.
     ?rol <http://w3id.org/roh/roleOf> <{pIdPersona}> .
     OPTIONAL{{?project <http://w3id.org/roh/title> ?titulo}}
     OPTIONAL{{?project <http://vivoweb.org/ontology/core#start> ?fechaInicio}}
