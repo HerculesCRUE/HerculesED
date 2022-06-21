@@ -11,7 +11,7 @@
         "es": "Número de publicaciones y citas por año"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 23,
       "idGrupo": "grupo1",
       "config": {
         "orientacionVertical": true,
@@ -65,7 +65,7 @@
         "es": "Número de publicaciones y citas por año"
       },
       "tipo": "Barras",
-      "anchura": 11,
+      "anchura": 23,
       "idGrupo": "grupo1",
       "config": {
         "orientacionVertical": true,
@@ -264,6 +264,39 @@
     {
       "identificador": "grafica8",
       "nombre": {
+        "es": "Publicaciones por categorías de PDI (IP)"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:hasPositionIp",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica9",
+      "nombre": {
         "es": "Publicaciones por convocatoria de proyecto"
       },
       "tipo": "Barras",
@@ -296,7 +329,7 @@
       }
     },
     {
-      "identificador": "grafica9",
+      "identificador": "grafica10",
       "nombre": {
         "es": "Publicaciones por organismo de proyecto"
       },
@@ -306,39 +339,6 @@
       "config": {
         "orientacionVertical": false,
         "ejeX": "roh:project@@@roh:grantedBy@@@roh:organizationTitle",
-        "orderDesc": false,
-        "abreviar": true,
-        "rellenarEjeX": false,
-        "xAxisPrint": [
-          {
-            "xAxisID": "x1",
-            "posicion": "bottom"
-          }
-        ],
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "Número de publicaciones"
-            },
-            "filtro": "",
-            "tipoDimension": "bar",
-            "color": "#BF4858",
-            "xAxisID": "x1",
-            "orden": 1
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "grafica10",
-      "nombre": {
-        "es": "Publicaciones por categorías de PDI (IP)"
-      },
-      "tipo": "Barras",
-      "anchura": 12,
-      "config": {
-        "orientacionVertical": false,
-        "ejeX": "roh:hasPositionIp",
         "orderDesc": false,
         "abreviar": true,
         "rellenarEjeX": false,
@@ -396,7 +396,7 @@
       }
     },
     {
-      "identificador": "grafica11",
+      "identificador": "grafica12",
       "nombre": {
         "es": "Publicaciones por ámbito de proyecto"
       },
