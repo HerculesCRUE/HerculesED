@@ -3638,11 +3638,12 @@ var edicionCV = {
 			var section= $(this).attr('section');
 			that.completeTab(about,rdftype,section);
         });
-		
-		
+				
 		//TODO boton enviar PRC
 		$('.texto.prodCientItem').off('click').on('click', function(e) {
 			var dataId = $(this)[0].dataset.id;
+			var nombreProy = "";
+			var fechaProy
 			that.sendPRC(dataId, that.idPerson);
 		});
 		
@@ -3653,9 +3654,7 @@ var edicionCV = {
 			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
 			type: 'GET',
 			data: {
-				pIdDocumento: dataId,
-				pIdPersona: idPerson,
-				pIdProyecto: null
+				pIdPersona: idPerson
 			},
 			success: function ( response ) {
 				var contador = 0;
