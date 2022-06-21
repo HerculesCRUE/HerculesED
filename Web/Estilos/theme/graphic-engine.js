@@ -21,10 +21,15 @@ var listaPaginas;
 var metricas = {
     init: function () {
 
+        
         // Esto impide que las facetas se apliquen a la primera pagina al recargar desde otra pagina
-        if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
+        if (ObtenerHash2().includes('~~~')){
+            var hash = ObtenerHash2().replace('~~~', '');
+            history.pushState('', 'New URL: ', '?' + hash);
+        }else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
             history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
         }
+
 
         if (!$('div').hasClass('indicadoresPersonalizados')) {
             this.getPages();
@@ -1245,7 +1250,7 @@ var metricas = {
                     filtros += filtroActual;
                 }
 
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros+'~~~');
                 e.preventDefault();
 
                 location.reload();
