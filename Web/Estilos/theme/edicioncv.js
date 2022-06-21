@@ -3659,8 +3659,9 @@ var edicionCV = {
 			},
 			success: function ( response ) {
 				var contador = 0;
+				var html = '';
 				for(const seccion in response){
-					var html = `<article class="resource folder">
+					html += `<article class="resource folder">
 								<div class="form-group">
 									<div class="form-check form-check-inline">
 										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}">
@@ -3701,6 +3702,8 @@ var edicionCV = {
 							</article>`;
 					contador++;
 				}
+				
+				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
 			}
 		});
 	},
