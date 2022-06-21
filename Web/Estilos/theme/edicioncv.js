@@ -3682,27 +3682,29 @@ var edicionCV = {
 											<h2 class="resource-title">
 												${response[seccion].titulo}
 											</h2>
-											<div class="block-wrapper" data-original-title="" title="">
-												<span class="material-icons">block</span>
-											</div>
-											<div class="visibility-wrapper">
-												<div class="con-icono-before eye" data-original-title="" title=""></div>
-											</div>
 										</div>
 										<div class="content-wrap">
-											<div class="description-wrap counted">
+											<div class="description-wrap counted">`;
+										if(response[seccion].fechaInicio!=null){
+										html+=`
 												<div class="group fecha">
 													<p class="title">Fecha inicio</p>
 													<p>${response[seccion].fechaInicio}</p>
-												</div>
-												<div class="group fecha">
+												</div>`;
+										}
+										if(response[seccion].fechaFin!=null){
+										html+=`<div class="group fecha">
 													<p class="title">Fecha fin</p>
 													<p>${response[seccion].fechaFin}</p>
-												</div>
-												<div class="group publicacion">
+												</div>`;
+										}
+										if(response[seccion].organizacion!=null){
+										html+=`<div class="group publicacion">
 													<p class="title">Organización</p>
 													<p>${response[seccion].organizacion}</p>
-												</div>
+												</div>`;
+										}
+										html+=`
 											</div>
 										</div>
 									</div>
