@@ -80,7 +80,7 @@ where {{
         private string ConversorFechas(string fecha)
         {
             string fechaConvertida = "";
-            if (string.IsNullOrEmpty(fecha) && fecha.Length > 8)
+            if (!string.IsNullOrEmpty(fecha) && fecha.Length > 8)
             {
                 string anio = fecha.Substring(0, 4);
                 string mes = fecha.Substring(4, 2);
