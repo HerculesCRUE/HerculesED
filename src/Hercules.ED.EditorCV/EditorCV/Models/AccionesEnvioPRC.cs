@@ -30,6 +30,11 @@ namespace EditorCV.Models
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Devuelve un diccionario con todos los proyectos de <paramref name="pIdPersona"/>, junto a su titulo, fecha de inicio, fecha de fin y organización.
+        /// </summary>
+        /// <param name="pIdPersona"></param>
+        /// <returns></returns>
         public Dictionary<string, Dictionary<string, string>> ObtenerDatosEnvioPRC(string pIdPersona)
         {
             Dictionary<string, Dictionary<string, string>> listadoProyectos = new Dictionary<string, Dictionary<string, string>>();
@@ -78,6 +83,11 @@ where {{
             return listadoProyectos;
         }
 
+        /// <summary>
+        /// Convierte un string con formato 20221231000000 a 31/12/2022
+        /// </summary>
+        /// <param name="fecha"></param>
+        /// <returns></returns>
         private string ConversorFechas(string fecha)
         {
             string fechaConvertida = "";
