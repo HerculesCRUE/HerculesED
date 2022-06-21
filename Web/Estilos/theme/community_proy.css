@@ -297,7 +297,7 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
 .fichaRecurso-ofertas-tecnologicas .resource-list-wrap .user-miniatura .imagen-usuario-wrap .imagen span {
     color: var(--c-texto);
     margin-top: -10px;
-    font-size: 4rem;
+    font-size: 3rem;
 }
 
 

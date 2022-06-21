@@ -16,6 +16,11 @@ namespace Utils
 {
     public class UtilityExportar
     {
+        /// <summary>
+        /// Devuelve true si <paramref name="lang"/> es alguno de los idiomas validos.
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <returns></returns>
         public static bool EsMultiidioma(string lang)
         {
             if (lang.Equals("es") || lang.Equals("ca") || lang.Equals("eu") ||
@@ -26,6 +31,11 @@ namespace Utils
             return false;
         }
 
+        /// <summary>
+        /// Devuelve con el codigo del idioma <paramref name="lang"/>
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <returns></returns>
         public static string CvnLangCode(string lang)
         {
             Dictionary<string, string> langCodeGnossCVN = new Dictionary<string, string>();
@@ -538,6 +548,12 @@ namespace Utils
             itemBean.Items.Add(cvnFamilyNameBean);
         }
 
+        /// <summary>
+        /// Añade en <paramref name="familyNameBean"/> la propiedad del primer apellido
+        /// </summary>
+        /// <param name="familyNameBean"></param>
+        /// <param name="prop"></param>
+        /// <param name="entity"></param>
         private static void AddCvnItemBeanCvnFamilyNameBeanFirstFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
             if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
@@ -548,6 +564,12 @@ namespace Utils
                 .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1];
         }
 
+        /// <summary>
+        /// Añade en <paramref name="familyNameBean"/> la propiedad del segundo apellido
+        /// </summary>
+        /// <param name="familyNameBean"></param>
+        /// <param name="prop"></param>
+        /// <param name="entity"></param>
         private static void AddCvnItemBeanCvnFamilyNameBeanSecondFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
             if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
