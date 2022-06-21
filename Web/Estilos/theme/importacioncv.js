@@ -169,11 +169,11 @@ function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
 		if(!$(this)[0].checked)
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text('Seleccionar todos');
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_TODOS')}`);
 		}
 		else
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text('Deseleccionar todos');
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_TODOS')}`);
 		}
 		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
@@ -513,7 +513,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllConflict" id="checkAllConflict">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllConflict_${id2}">
-											<label class="custom-control-label" for="checkAllConflict_${id2}">Mostrar solo conflictos</label>
+											<label class="custom-control-label" for="checkAllConflict_${id2}">${GetText('CV_MOSTRAR_CONFLICTOS')}</label>
 										</div>
 									</div>
 								</div>
