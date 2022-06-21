@@ -151,8 +151,8 @@ class StepsOffer {
 		this.AnadirNuevoPerfilText = this.crearOferta.data("addnewprofile")
 		this.lineasInvestigacionText = this.crearOferta.data("lineasinvestigaciontext")
 		this.descriptoresEspecificosText = this.crearOferta.data("descriptoresespecificostext")
-		this.txtProyectos = this.crearOferta.data("PROYECTOS")
-		this.txtPublicaciones = this.crearOferta.data("PUBLICACIONES")
+		this.txtProyectos = this.crearOferta.data("proyectos")
+		this.txtPublicaciones = this.crearOferta.data("publicaciones")
 		this.txtPii = this.crearOferta.data("PII")
 		this.sinEspcificarText = this.crearOferta.data("sinespecificar")
 	}
@@ -2511,7 +2511,7 @@ var comportamientoProyectosOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListProyectos", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(ofertaObj.txtProyectos, "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(stepsOffer.txtProyectos, "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		//Enganchamos comportamiento grafica seleccionados
@@ -2555,7 +2555,7 @@ var comportamientoPublicacionesOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(ofertaObj.txtPublicaciones, "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(stepsOffer.txtPublicaciones, "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		return;
