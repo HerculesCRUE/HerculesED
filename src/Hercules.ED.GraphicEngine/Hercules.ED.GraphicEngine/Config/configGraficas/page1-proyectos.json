@@ -288,24 +288,56 @@
     }
   ],
   "facetas": [
+    //{
+    //  "nombre": {
+    //    "es": "Convocatorias"
+    //  },
+    //  "filtro": "roh:isSupportedBy"
+    //},
     {
       "nombre": {
-        "es": "Número de publicaciones"
+        "es": "Ámbito geográfico"
       },
-      "filtro": "roh:publicationsNumber"
+      "filtro": "vivo:geographicFocus@@@dc:title"
+    },
+    //{ 
+    //  "nombre": {
+    //    "es": "Áreas Temáticas"
+    //  },
+    //  "filtro": "roh:hasKnowledgeArea@@@roh:categoryNode",
+    //  "tesauro": true
+    //},
+    {
+      "nombre": {
+        "es": "Organismo financiador"
+      },
+      "filtro": "roh:grantedBy@@@roh:organizationTitle"
     },
     {
       "nombre": {
-        "es": "vivo:start TODO"
+        "es": "Grupos"
+      },
+      "filtro": "roh:isProducedBy@@@roh:title"
+    },
+    {
+      "nombre": {
+        "es": "Unidad funcional"
+      },
+      "filtro": "vivo:relates@@@roh:roleOf@@@roh:hasPosition"
+    },
+    {
+      "nombre": {
+        "es": "Participantes"
+      },
+      "filtro": "vivo:relates@@@roh:roleOf@@@foaf:name",
+      "numeroItemsFaceta": 10,
+      "verTodos": true
+    },
+    {
+      "nombre": {
+        "es": "Años (TODO: Desnormalizar)"
       },  
       "filtro": "vivo:start",
-      "numeroItemsFaceta": 10
-    },
-    {
-      "nombre": {
-        "es": "Tipo de proyecto"
-      },
-      "filtro": "roh:projectType@@@dc:title",
       "numeroItemsFaceta": 10
     }
   ]
