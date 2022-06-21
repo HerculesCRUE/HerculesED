@@ -4,15 +4,15 @@
   },
   "filtro": "rdf:type='project'&roh:isValidated='true'",
   "orden": 1,
-  "identificador": "456",
+  "identificador": "pagina2",
   "graficas": [
     {
-      "identificador": "1pr",
+      "identificador": "grafica1",
       "nombre": {
         "es": "Proyectos concedidos y solicitados"
       },
       "tipo": "Barras",
-      "anchura": 12,
+      "anchura": 23,
       "config": {
         "orientacionVertical": true,
         "ejeX": "vivo:start",
@@ -61,7 +61,34 @@
       }
     },
     {
-      "identificador": "2pr",
+      "identificador": "grafica8",
+      "nombre": {
+        "es": "IP principal de la UMU"
+      },
+      "tipo": "Circular",
+      "anchura": 13,
+      "config": {
+        "porcentual": true,
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "IP principal de la UMU"
+            },
+            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive='true'",
+            "color": "#BF4858"
+          },
+          {
+            "nombre": {
+              "es": "IP principal fuera de la UMU"
+            },
+            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive='false'",
+            "color": "#7CBFE3"
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica2",
       "nombre": {
         "es": "Investigadores por proyecto"
       },
@@ -94,7 +121,7 @@
       }
     },
     {
-      "identificador": "3pr",
+      "identificador": "grafica3",
       "nombre": {
         "es": "Ámbito de los proyectos"
       },
@@ -125,77 +152,19 @@
         ]
       }
     },
-    //{
-    //  "identificador": "4pr",
-    //  "nombre": {
-    //    "es": "Proyectos por convocatoria TODO"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "idgrupo": "conorg",
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "roh:conductedByTitle",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de proyectos por convocatoria"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
     {
-      "identificador": "11pr",
+      "identificador": "grafica4",
       "nombre": {
-        "es": "IP principal de la UMU"
-      },
-      "tipo": "Circular",
-      "anchura": 12,
-      "config": {
-        "porcentual": true,
-        "dimensiones": [
-          {
-            "nombre": {
-              "es": "IP principal de la UMU"
-            },
-            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive='true'",
-            "color": "#BF4858"
-          },
-          {
-            "nombre": {
-              "es": "IP principal fuera de la UMU"
-            },
-            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive='false'",
-            "color": "#7CBFE3"
-          }
-        ]
-      }
-    },
-    {
-      "identificador": "5pr",
-      "nombre": {
-        "es": "Proyectos por organismo"
+        "es": "Proyectos por convocatoria"
       },
       "tipo": "Barras",
+      "idGrupo": "grupo1",
       "anchura": 12,
       "config": {
         "orientacionVertical": false,
-        "ejeX": "roh:conductedByTitle",
+        "ejeX": "roh:isSupportedBy",
         "orderDesc": false,
+        "abreviar": true,
         "rellenarEjeX": false,
         "xAxisPrint": [
           {
@@ -206,7 +175,7 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de proyectos por organismo"
+              "es": "Número de publicaciones"
             },
             "filtro": "",
             "tipoDimension": "bar",
@@ -217,220 +186,158 @@
         ]
       }
     },
-    //{
-    //  "identificador": "6pr",
-    //  "nombre": {
-    //    "es": "Tipo de proyecto"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "roh:projectType@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de proyectos"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
-    //{
-    //  "identificador": "7pr",
-    //  "nombre": {
-    //    "es": "Grupo/Departamento TODO"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "roh:projectType@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de proyectos"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
-    //{
-    //  "identificador": "8pr",
-    //  "nombre": {
-    //    "es": "Áreas temáticas (Barras) todo"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "idgrupo": "atema",
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "roh:projectType@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de proyectos"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
-    //{
-    //  "identificador": "9pr",
-    //  "nombre": {
-    //    "es": "Áreas temáticas (Nodos) todo"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "idgrupo": "atema",
-    //  "config": {
-    //    "orientacionVertical": false,
-    //    "ejeX": "roh:projectType@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "xAxisPrint": [
-    //      {
-    //        "xAxisID": "x1",
-    //        "posicion": "bottom"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de proyectos"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "xAxisID": "x1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},
-    //{
-    //  "identificador": "10pr",
-    //  "nombre": {
-    //    "es": "Ámbito de los proyectos"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": true,
-    //    "ejeX": "vivo:geographicFocus@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "yAxisPrint": [
-    //      {
-    //        "yAxisID": "y1",
-    //        "posicion": "left"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de proyectos por ámbito"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#BF4858",
-    //        "yAxisID": "y1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //},    
-    //{
-    //  "identificador": "3332",
-    //  "nombre": {
-    //    "es": "Ámbito de los proyectos"
-    //  },
-    //  "tipo": "Barras",
-    //  "anchura": 12,
-    //  "config": {
-    //    "orientacionVertical": true,
-    //    "ejeX": "vivo:geographicFocus@@@dc:title",
-    //    "orderDesc": false,
-    //    "rellenarEjeX": false,
-    //    "yAxisPrint": [
-    //      {
-    //        "yAxisID": "y1",
-    //        "posicion": "left"
-    //      }
-    //    ],
-    //    "dimensiones": [
-    //      {
-    //        "nombre": {
-    //          "es": "Número de proyectos por ámbito"
-    //        },
-    //        "filtro": "",
-    //        "tipoDimension": "bar",
-    //        "color": "#7CBFE3",
-    //        "yAxisID": "y1",
-    //        "orden": 1
-    //      }
-    //    ]
-    //  }
-    //}
+    {
+      "identificador": "grafica5",
+      "nombre": {
+        "es": "Proyectos por organismos"
+      },
+      "tipo": "Barras",
+      "idGrupo": "grupo1",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:grantedBy@@@roh:organizationTitle",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica6",
+      "nombre": {
+        "es": "Proyectos por tipo"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:projectType@@@dc:title",
+        "orderDesc": false,
+        "abreviar": true,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica7",
+      "nombre": {
+        "es": "Proyectos por grupo"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:isProducedBy@@@roh:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "abreviar": true,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones por tipo"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    }
   ],
   "facetas": [
+    //{
+    //  "nombre": {
+    //    "es": "Convocatorias"
+    //  },
+    //  "filtro": "roh:isSupportedBy"
+    //},
     {
       "nombre": {
-        "es": "Número de publicaciones"
+        "es": "Ámbito geográfico"
       },
-      "filtro": "roh:publicationsNumber"
+      "filtro": "vivo:geographicFocus@@@dc:title"
+    },
+    //{ 
+    //  "nombre": {
+    //    "es": "Áreas Temáticas"
+    //  },
+    //  "filtro": "roh:hasKnowledgeArea@@@roh:categoryNode",
+    //  "tesauro": true
+    //},
+    {
+      "nombre": {
+        "es": "Organismo financiador"
+      },
+      "filtro": "roh:grantedBy@@@roh:organizationTitle"
     },
     {
       "nombre": {
-        "es": "vivo:start TODO"
+        "es": "Grupos"
+      },
+      "filtro": "roh:isProducedBy@@@roh:title"
+    },
+    {
+      "nombre": {
+        "es": "Unidad funcional"
+      },
+      "filtro": "vivo:relates@@@roh:roleOf@@@roh:hasPosition"
+    },
+    {
+      "nombre": {
+        "es": "Participantes"
+      },
+      "filtro": "vivo:relates@@@roh:roleOf@@@foaf:name",
+      "numeroItemsFaceta": 10,
+      "verTodos": true
+    },
+    {
+      "nombre": {
+        "es": "Años (TODO: Desnormalizar)"
       },  
       "filtro": "vivo:start",
-      "numeroItemsFaceta": 10
-    },
-    {
-      "nombre": {
-        "es": "Tipo de proyecto"
-      },
-      "filtro": "roh:projectType@@@dc:title",
       "numeroItemsFaceta": 10
     }
   ]

@@ -72,7 +72,6 @@ var metricas = {
         } else {
             // Petición para obtener los datos de la página.
             $.get(url, arg, function (listaData) {
-                console.log(listaData);
                 if (listaData.length == 0) {
                     $('div.row-content').append(`<div><h1>No tienes paginas</h1></div>`);
                 } else {
@@ -115,7 +114,10 @@ var metricas = {
             // Controla si el objeto es de ChartJS o Cytoscape.
             var combo = $(ctx).parents("article").find("select");
             var graficaContenedor = $(ctx).parent();
-            console.log(graficaContenedor[0]);
+
+
+
+
             if ("container" in data) {
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
@@ -471,7 +473,6 @@ var metricas = {
 
 
             item.forEach(function (grafica, index, array) {
-                //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
                 var tipoGrafica = (grafica.isHorizontal ? "horizontal " : "") +
                     (grafica.isNodes ? "nodes " : "") +
                     (grafica.isCircular ? "circular " : "") +
@@ -480,17 +481,17 @@ var metricas = {
                 if (!tipoGrafica) {
                     tipoGrafica = "vertical";
                 }
+                //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
 
-                tmp += `<div class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "100"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
-
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item[0].anchura}"> 
                     <div class="wrap" >
                         <div class="acciones-mapa ${item.length != 1 ? 'showAcciones' : ''}" >
                             ${item.length != 1 ? `
-                            <select class="chartMenu js-select2" href="javascript: void(0);" ></select>`: ""}
+                            <select class="chartMenu js-select2" href="javascript: void(0);" style="width:" ></select>`: ""}
                             <div class="wrap">
                                 <div class="zoom">
                                     <a href="javascript: void(0);"   data-toggle="modal">
@@ -502,27 +503,27 @@ var metricas = {
                                         <span class="material-icons">more_vert</span>
                                     </a>
                                     <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
-                                            <p class="dropdown-title">Acciones</p>
-                                            <ul class="no-list-style">
-                                                <li>
-                                                    <a class="item-dropdown guardar">
-                                                        <span class="material-icons">assessment</span>
-                                                        <span class="texto">Guardar en espacio personal</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="item-dropdown csv">
-                                                        <span class="material-icons">insert_drive_file</span>
-                                                        <span class="texto">Descargar como .csv</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="item-dropdown descargar">
-                                                        <span class="material-icons">download</span>
-                                                        <span class="texto">Descargar como imagen .jpg</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
+                                        <p class="dropdown-title">Acciones</p>
+                                        <ul class="no-list-style">
+                                            <li>
+                                                <a class="item-dropdown guardar">
+                                                    <span class="material-icons">assessment</span>
+                                                    <span class="texto">Guardar en mi panel</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="item-dropdown csv">
+                                                    <span class="material-icons">insert_drive_file</span>
+                                                    <span class="texto">Descargar como .csv</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="item-dropdown descargar">
+                                                    <span class="material-icons">download</span>
+                                                    <span class="texto">Descargar como imagen .jpg</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -554,8 +555,6 @@ var metricas = {
         arg.pPageId = pPaginaUsuario.idRecurso;
         // Petición para obtener los datos de la página.
         $.get(url, arg, function (listaData) {
-
-            console.log(listaData);
             if (listaData.length == 0) {
                 if ($('div.row-content').find('div.sin-graficas').length == 0) {
                     $('div.row-content').append(`<div class="sin-graficas"><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
@@ -854,6 +853,7 @@ var metricas = {
         var graficaContainer = chartContainer.parentNode;
         var horizontal = data.options.indexAxis == "y";
         var titulo = data.options.plugins.title.text;
+        barSize /= data.data.datasets.length;
         if (pTitulo) {
             titulo = pTitulo;
         }
@@ -877,7 +877,6 @@ var metricas = {
                 precision: 0
             }
         }
-        console.log(canvasSize);
         //Abrebiacion de los labels del eje
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
@@ -1028,15 +1027,19 @@ var metricas = {
 
     },
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
+
+
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
+        if (myChart.canvas.id.includes("grafica_pagina2_isHorizontal-abr-grafica5")) {
+            var s = "sdads";
+        }
         //anchura y altura del recorte de la grafica
         var copyWidth;
         var copyHeight;
         // Anchura y altura del pegado a los ejes.
         var axisHeight;
         var axisWidth;
-        console.log(myChart.boxes);
         if (horizontal) {
             myChart.canvas.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
             copyWidth = myChart.width;
@@ -1091,10 +1094,14 @@ var metricas = {
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
             } else {
+                copyWidth = myChart.chartArea.left;
+                targetWidth = copyWidth * scale;
+                width = copyWidth;
                 ctx.canvas.height = copyHeight;
+                
+                
                 targetHeight -= 10 * scale; //margenes
                 //targetWidth += 1; //para que coja el sepadador entre eje y grafica
-
             }
             targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
@@ -1105,13 +1112,17 @@ var metricas = {
 
         // Preparamos el eje inferior.
         if (secondaryAxis) {
-            copyWidth = myChart.boxes[2]?.width + myChart.boxes[2].right; //anchura del eje
+            copyWidth = myChart.boxes[2]?.width; //anchura del eje
 
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
+                ctx.canvas.style.paddingLeft = myChart.chartArea.left -5 + "px";
+                copyWidth += 15;
+                targetX = myChart.chartArea.left * scale - 5;
             } else {
+
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
@@ -1182,9 +1193,10 @@ var metricas = {
         var menus = $("select.chartMenu");
         menus.each((index, menu) => { //por cada menu en la pagina
             var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica"); //Obtiene la id de la grafica visible
-
+            //$(menu).parents("article div.wrap").find("div.hide").css("display", "none"); //Oculta todas las graficas
             $(menu).val("grafica_" + idPaginaActual + "_" + selectedID); // y la selecciona en el menu
         });
+
 
         iniciarSelects2.init(); // Se inicializa la libreria selects2.
 
@@ -1444,45 +1456,88 @@ var metricas = {
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
-                    url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
-                    url += "&pLang=" + lang;
-                    var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
-                    var argAux = {};
-                    argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                    argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
-                    argAux.pLang = lang;
-                    $.get(urlAux, argAux, function (listaData) {
-                        if (!listaData.options) {
-                            url += "&pTitulo=" + listaData.title;
-                        } else {
-                            url += "&pTitulo=" + listaData.options.plugins.title.text;
-                        }
-                        document.location.href = url;
-                    });
-                } else {
-                    url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
-                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
-                    if (filtro != "") {
-                        url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
-                    }
-                    url += "&pLang=" + lang;
-                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
-                    var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
-                    var argAux = {};
-                    argAux.pPageId = idPaginaActual;
-                    $.get(urlAux, argAux, function (listaData) {
-                        listaData.forEach(data => {
-                            if (data.idRecurso == idGraficaActual) {
-                                tituloActual = data.titulo;
+                    if ($('div.modal-ampliar-mapa').hasClass('show')) {
+                        url += "?pIdPagina=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[1];
+                        url += "&pIdGrafica=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[2];
+                        url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                        url += "&pLang=" + lang;
+                        var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
+                        var argAux = {};
+                        argAux.pIdPagina = $(this).closest('.modal-body').find('canvas').attr('id').split('_')[1];
+                        argAux.pIdGrafica = $(this).closest('.modal-body').find('canvas').attr('id').split('_')[2];
+                        argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
+                        argAux.pLang = lang;
+                        $.get(urlAux, argAux, function (listaData) {
+                            if (!listaData.options) {
+                                url += "&pTitulo=" + listaData.title;
+                            } else {
+                                url += "&pTitulo=" + listaData.options.plugins.title.text;
                             }
+                            document.location.href = url;
                         });
-                        url += "&pTitulo=" + tituloActual;
-                        document.location.href = url;
-                    });
+                    } else {
+                        url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                        url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                        url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                        url += "&pLang=" + lang;
+                        var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
+                        var argAux = {};
+                        argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                        argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                        argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
+                        argAux.pLang = lang;
+                        $.get(urlAux, argAux, function (listaData) {
+                            if (!listaData.options) {
+                                url += "&pTitulo=" + listaData.title;
+                            } else {
+                                url += "&pTitulo=" + listaData.options.plugins.title.text;
+                            }
+                            document.location.href = url;
+                        });
+                    }
+                } else {
+                    if ($('div.modal-ampliar-mapa').hasClass('show')) {
+                        url += "?pIdPagina=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[1];
+                        url += "&pIdGrafica=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[2];
+                        var filtro = $(this).closest('.modal-body').find('canvas').attr('filtro');
+                        if (filtro != "") {
+                            url += "&pFiltroFacetas=" + filtro;
+                        }
+                        url += "&pLang=" + lang;
+                        var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                        var argAux = {};
+                        argAux.pPageId = idPaginaActual;
+                        $.get(urlAux, argAux, function (listaData) {
+                            listaData.forEach(data => {
+                                if (data.idRecurso == idGraficaActual) {
+                                    tituloActual = data.titulo;
+                                }
+                            });
+                            url += "&pTitulo=" + tituloActual;
+                            document.location.href = url;
+                        });
+                    } else {
+                        url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
+                        url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                        var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                        if (filtro != "") {
+                            url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                        }
+                        url += "&pLang=" + lang;
+                        idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                        var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                        var argAux = {};
+                        argAux.pPageId = idPaginaActual;
+                        $.get(urlAux, argAux, function (listaData) {
+                            listaData.forEach(data => {
+                                if (data.idRecurso == idGraficaActual) {
+                                    tituloActual = data.titulo;
+                                }
+                            });
+                            url += "&pTitulo=" + tituloActual;
+                            document.location.href = url;
+                        });
+                    }
                 }
             });
 
@@ -1815,12 +1870,19 @@ var metricas = {
                 shown.css('display', 'none');
                 shown.removeClass('show');
                 shown.addClass('hide');
-                var selected = parent.find('canvas#' + $(this).val()).parents('div.hide');
+                var selected = parent.find('#' + $(this).val()).parents('div.hide');
                 if (selected.length) {
                     selected.css('display', 'flex');
+                    selected.css('opacity', '1');
                     selected.css('width', '100%');
                     selected.removeClass('hide');
                     selected.addClass('show');
+                }
+                var canvas = parent.find('canvas#' + $(this).val());
+                if (canvas.length) {
+                    var chart = Chart.getChart(canvas[0]);
+                    chart.config._config.options.animation.onProgress();
+                    chart.config._config.options.animation.onProgress();
                 }
             });
 
@@ -1848,6 +1910,79 @@ var metricas = {
                 $('#modal-ampliar-mapa').addClass('show');
 
                 //se popula con los contenedores adecuados
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    parent.append(`<div class="acciones-mapa">
+                    <div class="wrap">
+                        <div class="dropdown">
+                            <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
+                                <span class="material-icons">more_vert</span>
+                            </a>
+                            <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                <p class="dropdown-title">Acciones</p>
+                                <ul class="no-list-style">
+                                    <li>
+                                        <a class="item-dropdown guardar">
+                                            <span class="material-icons">assessment</span>
+                                            <span class="texto">Guardar en mi panel</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="item-dropdown csv">
+                                            <span class="material-icons">insert_drive_file</span>
+                                            <span class="texto">Descargar como .csv</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="item-dropdown descargar">
+                                            <span class="material-icons">download</span>
+                                            <span class="texto">Descargar como imagen .jpg</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div> `)
+                } else {
+                    parent.append(`<div class="acciones-mapa">
+                    <div class="wrap">
+                        <div class="dropdown">
+                            <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
+                                <span class="material-icons">more_vert</span>
+                            </a>
+                            <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                                <p class="dropdown-title">Acciones</p>
+                                <ul class="no-list-style">
+                                    <li>
+                                        <a class="item-dropdown csv">
+                                            <span class="material-icons">insert_drive_file</span>
+                                            <span class="texto">Descargar como .csv</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="item-dropdown descargar">
+                                            <span class="material-icons">download</span>
+                                            <span class="texto">Descargar como imagen .jpg</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                            <a class="item-dropdown editargrafica" data-toggle="modal" data-target="#modal-editargrafica">
+                                                <span class="material-icons">edit</span>
+                                                <span class="texto">Editar y ordenar gráfica</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown eliminargrafica" data-toggle="modal" data-target="#modal-eliminar">
+                                                <span class="material-icons">delete</span>
+                                                <span class="texto">Eliminar gráfica</span>
+                                            </a>
+                                        </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>`)
+                }
                 if (idgrafica.includes("nodes")) {
                     ctx = $(`<div class="graficoNodos" id="grafica_${idPaginaActual}_${pIdGrafica}" style=" height:${$(modalContent).height() - 130}px;"></div>`)
                     parent.append(`
@@ -1889,7 +2024,6 @@ var metricas = {
                         chartWrapper.css({ width: $(modalContent).height() - 200 });
                         chartWrapper.parent().css({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
                     }
-
                     parent.find('div.chartAreaWrapper').append(ctx);
                 }
                 var filtro;
@@ -1901,7 +2035,10 @@ var metricas = {
                     filtro = (canvas).parents('div.grafica').attr("filtro");
                     idPagina = (canvas).parents('div.grafica').attr("idpagina");
                 }
+                $('#grafica_' + idPagina + '_' + pIdGrafica).attr('filtro', filtro);
+
                 //obtenemos los datos y pintamos la grafica
+
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50);
                 } else {
@@ -2076,6 +2213,35 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
                 }, 200, function () {
                     if (hacerPeticion) {
                         that.buscarFacetas();
+                        $('.indice-lista .faceta')
+                            .unbind()
+                            .click(function (e) {
+                                var filtroActual = $(this).attr('filtro');
+                                var filtros = decodeURIComponent(ObtenerHash2());
+                                var filtrosArray = filtros.split('&');
+                                filtros = '';
+                                var contieneFiltro = false;
+                                for (var i = 0; i < filtrosArray.length; i++) {
+                                    if (filtrosArray[i] != '') {
+                                        if (filtrosArray[i] == filtroActual) {
+                                            contieneFiltro = true;
+                                        } else {
+                                            filtros += filtrosArray[i] + '&';
+                                        }
+
+                                    }
+                                }
+                                if (!contieneFiltro) {
+                                    filtros += filtroActual;
+                                } else {
+                                    location.reload();
+                                }
+
+                                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                                e.preventDefault();
+
+                                metricas.pintarPagina(idPaginaActual);
+                            });
                         hacerPeticion = false;
                     }
                     $('.indice-lista ul').css({ marginLeft: -30 });
@@ -2100,6 +2266,35 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
                 }, 200, function () {
                     if (hacerPeticion) {
                         that.buscarFacetas();
+                        $('.indice-lista .faceta')
+                            .unbind()
+                            .click(function (e) {
+                                var filtroActual = $(this).attr('filtro');
+                                var filtros = decodeURIComponent(ObtenerHash2());
+                                var filtrosArray = filtros.split('&');
+                                filtros = '';
+                                var contieneFiltro = false;
+                                for (var i = 0; i < filtrosArray.length; i++) {
+                                    if (filtrosArray[i] != '') {
+                                        if (filtrosArray[i] == filtroActual) {
+                                            contieneFiltro = true;
+                                        } else {
+                                            filtros += filtrosArray[i] + '&';
+                                        }
+
+                                    }
+                                }
+                                if (!contieneFiltro) {
+                                    filtros += filtroActual;
+                                } else {
+                                    location.reload();
+                                }
+
+                                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                                e.preventDefault();
+
+                                metricas.pintarPagina(idPaginaActual);
+                            });
                         hacerPeticion = false;
                     }
                     $('.indice-lista ul').css({ marginLeft: 30 });

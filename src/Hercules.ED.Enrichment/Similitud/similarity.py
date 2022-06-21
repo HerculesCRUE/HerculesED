@@ -33,7 +33,7 @@ class ROStorage(ABC):
         pass
 
     @abstractmethod
-    def update_ro_ranking(self, ro: "RO") -> None:
+    def add_ros(self, ros: list) -> None:
         pass
 
     @abstractmethod
@@ -79,9 +79,8 @@ MAX_KEYPHRASES = 5
 
 class RO:
 
-    def __init__(self, ro_id, ro_type, model):
+    def __init__(self, ro_id, ro_type, model=None):
 
-        self.model = model
         self.id = ro_id
         self.type = ro_type
         self.text = None
@@ -100,19 +99,19 @@ class RO:
         self.ranking = Ranking(size=RANKING_SIZE)
 
 
-    def set_text(self, text: str) -> None:
+    def set_text(self, text: str, model) -> None:
 
         self.text = text
-        self._embedding = self.model.encode(text)
+        self._embedding = model.encode(text)
 
     def set_specific_descriptors(self, names, probs):
 
         self.specific_descriptors['names'] = names
         self.specific_descriptors['probs'] = probs
 
-    def encode_specific_descriptors(self):
+    def encode_specific_descriptors(self, model):
 
-        self.specific_descriptors['embeddings'] = self.model.encode(self.specific_descriptors['names'])
+        self.specific_descriptors['embeddings'] = model.encode(self.specific_descriptors['names'])
 
     def ro_pair_valid(self, ro: "RO") -> bool:
         
@@ -229,6 +228,7 @@ class SimilarityService:
     def __init__(self, db, cache):
         
         self.db = db
+        self.db.connect()
         self.cache = cache
         self.model = SentenceTransformer(MODEL_ID)
         self.rebuild_cache()
@@ -237,6 +237,7 @@ class SimilarityService:
     def rebuild_cache(self):
 
         self.cache.clear()
+        logger.info("Building ranking cache")
         
         ros = self.db.get_embeddings()
         for i in range(len(ros)-1):
@@ -248,6 +249,7 @@ class SimilarityService:
 
         for ro in ros:
             self.cache.add_ro(ro)
+        logger.info("Ranking cache built")
 
 
     def create_RO(self, ro_id, text) -> RO:
@@ -255,9 +257,9 @@ class SimilarityService:
         return RO(ro_id, text, self.model)
 
 
-    def ro_exists(self, ro_id) -> bool:
+    def ro_exists(self, ro) -> bool:
 
-        return self.db.has_ro(ro_id)
+        return self.db.has_ro(ro.id)
 
 
     def encode_batch(self, ros) -> None:
@@ -286,8 +288,11 @@ class SimilarityService:
         
     def add_ros(self, ros: list, update_ranking: bool) -> None:
 
-        for ro in ros:
-            self.add_ro(ro, update_ranking=update_ranking)
+        ros = [ ro for ro in ros if not self.ro_exists(ro) ]
+        if len(ros) == 0:
+            return
+
+        self.db.add_ros(ros)
 
         if update_ranking:
             self.rebuild_cache()
@@ -300,10 +305,10 @@ class SimilarityService:
         similarity_keys = []
         
         ro = self.db.get_ro(ro_id)
-        ro.encode_specific_descriptors()
+        ro.encode_specific_descriptors(self.model)
         for sim_ro_id in ro_ids:
             sim_ro = self.db.get_ro(sim_ro_id)
-            sim_ro.encode_specific_descriptors()
+            sim_ro.encode_specific_descriptors(self.model)
             similarity_keys.append(ro.explain_similarity(sim_ro))
             
         return list(zip(ro_ids, similarity_keys))
