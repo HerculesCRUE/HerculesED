@@ -104,7 +104,6 @@ namespace ImportadorWebCV.Exporta.Secciones
                 while (cargar)
                 {
                     string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
-                    //TODO
                     string from = "";
                     if (listadoFrom != null)
                     {
