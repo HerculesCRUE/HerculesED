@@ -1097,9 +1097,9 @@ var metricas = {
                 copyWidth = myChart.chartArea.left;
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
-
-                
                 ctx.canvas.height = copyHeight;
+                
+                
                 targetHeight -= 10 * scale; //margenes
                 //targetWidth += 1; //para que coja el sepadador entre eje y grafica
             }
