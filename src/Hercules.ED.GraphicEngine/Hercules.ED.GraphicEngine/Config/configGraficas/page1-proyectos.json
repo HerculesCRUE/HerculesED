@@ -158,7 +158,7 @@
         "es": "Proyectos por convocatoria"
       },
       "tipo": "Barras",
-      //"idGrupo": "grupo101",
+      "idGrupo": "grupo1",
       "anchura": 12,
       "config": {
         "orientacionVertical": false,
@@ -192,7 +192,7 @@
         "es": "Proyectos por organismos"
       },
       "tipo": "Barras",
-      //"idGrupo": "grupo101",
+      "idGrupo": "grupo1",
       "anchura": 12,
       "config": {
         "orientacionVertical": false,
