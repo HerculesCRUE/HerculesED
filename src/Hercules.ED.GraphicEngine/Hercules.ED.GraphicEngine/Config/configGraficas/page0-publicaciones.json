@@ -177,6 +177,39 @@
     {
       "identificador": "grafica6",
       "nombre": {
+        "es": "Número de publicaciones por grupo"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "roh:isProducedBy@@@roh:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "abreviar": true,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Publicaciones por tipo"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica7",
+      "nombre": {
         "es": "Publicaciones por convocatoria de proyecto"
       },
       "tipo": "Barras",
@@ -209,7 +242,7 @@
       }
     },
     {
-      "identificador": "grafica7",
+      "identificador": "grafica8",
       "nombre": {
         "es": "Publicaciones por organismo de proyecto"
       },
@@ -243,7 +276,7 @@
       }
     },
     {
-      "identificador": "grafica8",
+      "identificador": "grafica9",
       "nombre": {
         "es": "Publicaciones por categorías de PDI (IP)"
       },
@@ -276,7 +309,7 @@
       }
     },
     {
-      "identificador": "grafica9",
+      "identificador": "grafica10",
       "nombre": {
         "es": "Publicaciones por tipo de proyecto"
       },
@@ -309,7 +342,7 @@
       }
     },
     {
-      "identificador": "grafica10",
+      "identificador": "grafica11",
       "nombre": {
         "es": "Publicaciones por ámbito de proyecto"
       },
