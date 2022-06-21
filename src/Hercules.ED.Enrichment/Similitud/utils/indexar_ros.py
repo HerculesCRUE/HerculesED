@@ -3,10 +3,12 @@ import requests
 import json
 import logging
 import tqdm
+import math
 import pdb
 
-logging.basicConfig()
+logging.basicConfig(level=logging.INFO)
 
+BATCH_SIZE = 100
 
 def index_ros(data_fpath, ro_id):
 
@@ -20,15 +22,20 @@ def index_ros(data_fpath, ro_id):
             raise ValueError(f"RO {ro_id} not found")
         ros = [ ro ]
 
-    URL_add = 'http://localhost:5000/add_ro'
-    URL_rebuild = 'http://localhost:5000/rebuild_rankings'
+    def batch(iterable, n=1):
+        l = len(iterable)
+        for ndx in range(0, l, n):
+            yield iterable[ndx:min(ndx + n, l)]
 
+    URL_add_batch = 'http://localhost:5000/add_batch'
+    URL_rebuild = 'http://localhost:5000/rebuild_rankings'
+    
     try:
-        for ro in tqdm.tqdm(ros):
-            ro['update_ranking'] = False
-            r = requests.post(URL_add, json=ro)
+        for ros in tqdm.tqdm(batch(ros, n=BATCH_SIZE), total=math.ceil(len(ros)/BATCH_SIZE)):
+            r = requests.post(URL_add_batch, json={"batch": ros})
             if r.status_code != 200:
-                logging.error(f"Error adding RO {ro['ro_id']}. http-status:{r.status_code}")
+                raise Exception(f"Error adding ROs. http-status:{r.status_code}")
+            logging.debug("Batch added")
 
         r = requests.post(URL_rebuild, json={})
         if r.status_code != 200:

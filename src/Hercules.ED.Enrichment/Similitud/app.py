@@ -50,6 +50,9 @@ class SimilarityAddSchema(Schema):
     specific_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
     update_ranking = fields.Bool(required=False, default=True, description="Don't update rankings and cache if False. Useful for batch loading. RebuildRankings must be called after loading ROs with update_ranking=False.")
 
+class SimilarityAddBatchSchema(Schema):
+    batch = fields.List(fields.Nested(SimilarityAddSchema))
+
 class SimilarityQuerySchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type_target = fields.String(required=True, description="Type of the similar research objects to return: 'research_paper', 'code_project', 'protocol'")
@@ -59,9 +62,9 @@ class SimilarityQuerySchema(Schema):
 db = ro_storage_memory.MemoryROStorage()
 cache = ro_cache_memory.MemoryROCache()
 similarity = SimilarityService(db, cache)
-    
+
 # Endpoint classes
-    
+
 class SimilarityAddAPI(MethodResource, Resource):
     
     #decorators = [auth.login_required]
@@ -71,18 +74,35 @@ class SimilarityAddAPI(MethodResource, Resource):
     #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def post(self, **kwargs):
         logger.debug(kwargs)
-        update_ranking = kwargs['update_ranking'] if 'update_ranking' in kwargs else True
-        if similarity.ro_exists(kwargs['ro_id']):
-            return '{"msg": "RO already exists"}', 409
         ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
         ro.set_text(kwargs['text'])
         names = [ n for n, p in kwargs['specific_descriptors'] ]
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)
-        similarity.add_ro(ro, update_ranking=update_ranking)
-        logger.debug("RO added")
+        similarity.add_ro(ro, update_ranking=True)
 
+    
+class SimilarityAddBatchAPI(MethodResource, Resource):
+    
+    #decorators = [auth.login_required]
+    @doc(description='Hercules similarity API: Add a batch of research objects.',
+         tags=['Hercules', 'similarity'])
+    @use_kwargs(SimilarityAddBatchSchema, location='json')
+    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
+    def post(self, **kwargs):
+        batch = []
+        for ro_kwargs in kwargs['batch']:
+            ro = similarity.create_RO(ro_kwargs['ro_id'], ro_kwargs['ro_type'])
+            ro.text = ro_kwargs['text']
+            names = [ n for n, p in ro_kwargs['specific_descriptors'] ]
+            probs = [ p for n, p in ro_kwargs['specific_descriptors'] ]
+            ro.set_specific_descriptors(names, probs)
+            batch.append(ro)
+        similarity.encode_batch(batch)
+        similarity.add_ros(batch, update_ranking=False)
+        logger.debug("Batch of ROs added")
 
+        
 class RebuildRankingsAPI(MethodResource, Resource):
     
     #decorators = [auth.login_required]
@@ -112,10 +132,12 @@ class SimilarityQueryAPI(MethodResource, Resource):
 # Declare endpoints and documentation for the API
 
 api.add_resource(SimilarityAddAPI, '/add_ro')
+api.add_resource(SimilarityAddBatchAPI, '/add_batch')
 api.add_resource(RebuildRankingsAPI, '/rebuild_rankings')
 api.add_resource(SimilarityQueryAPI, '/query_similar')
 
 docs.register(SimilarityAddAPI)
+docs.register(SimilarityAddBatchAPI)
 #docs.register(RebuildRankingsAPI)
 docs.register(SimilarityQueryAPI)
 
