@@ -828,6 +828,12 @@ namespace Utils
             return diccionarioPersonasFirma;
         }
 
+        /// <summary>
+        /// Cambia las letras acentuadas a, e, i, o, u por las mismas sin el signo de puntuación, la letra ñ por n y la letra ç por c.
+        /// </summary>
+        /// <param name="pWord"></param>
+        /// <param name="pVar"></param>
+        /// <returns></returns>
         public static string FilterWordComplete(string pWord, string pVar)
         {
             Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();

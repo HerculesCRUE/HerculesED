@@ -32,8 +32,8 @@ namespace EditorCV.Models.Utils
         public static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
         {
             { "http://w3id.org/roh/crisIdentifier", new List<string>() },
-            { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} }
-            //TODO estado de validacion
+            { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} },
+            { "http://w3id.org/roh/validationStatusPRC", new List<string>(){ "pendiente", "validado" } }
         };
 
         public static Dictionary<string, string> dicPrefix = new Dictionary<string, string>() {
@@ -276,7 +276,7 @@ namespace EditorCV.Models.Utils
 
 
             SparqlObject sparqlObject = null;
-            if(pProperties.Count>0)
+            if (pProperties.Count > 0)
             {
                 List<List<string>> listOfLists = SplitList(pIds.ToList(), maxIn).ToList();
                 foreach (List<string> list in listOfLists)

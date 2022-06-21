@@ -754,19 +754,20 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection=null)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             List<PropertyData> propertyDatasContadores = new List<PropertyData>();
             string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
-                if(string.IsNullOrEmpty(pSection))
+                if (string.IsNullOrEmpty(pSection))
                 {
                     propertyDatas.Add(templateSection.GenerarPropertyData(graph));
-                }else if (pSection=="0")
+                }
+                else if (pSection == "0")
                 {
-                    if (pTemplate.sections.IndexOf(templateSection) == 0 || templateSection.presentation.listItemsPresentation==null)
+                    if (pTemplate.sections.IndexOf(templateSection) == 0 || templateSection.presentation.listItemsPresentation == null)
                     {
                         propertyDatas.Add(templateSection.GenerarPropertyData(graph));
                     }
@@ -774,19 +775,20 @@ namespace EditorCV.Models
                     {
                         propertyDatasContadores.Add(templateSection.GenerarPropertyDataContadores(graph));
                     }
-                }else if(pSection== templateSection.property)
+                }
+                else if (pSection == templateSection.property)
                 {
                     propertyDatas.Add(templateSection.GenerarPropertyData(graph));
                 }
             }
-            
+
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataPropiedades = UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataContadores = UtilityCV.GetPropertiesContadores(new HashSet<string>() { pId }, propertyDatasContadores);
-            if(dataContadores.Count>0)
+            if (dataContadores.Count > 0)
             {
-                foreach(string key in dataContadores.Keys)
+                foreach (string key in dataContadores.Keys)
                 {
-                    if(!dataPropiedades.ContainsKey(key))
+                    if (!dataPropiedades.ContainsKey(key))
                     {
                         dataPropiedades[key] = new List<Dictionary<string, Data>>();
                     }
@@ -893,7 +895,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection=null)
+        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -947,7 +949,7 @@ namespace EditorCV.Models
                                 if (pData.ContainsKey(pId))
                                 {
                                     bool soloID = false;
-                                    if(pSection=="0" && pTemplate.sections.IndexOf(templateSection)>0)
+                                    if (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0)
                                     {
                                         soloID = true;
                                     }
@@ -1046,6 +1048,26 @@ namespace EditorCV.Models
                 item.title = "";
             }
             item.identifier = mResourceApi.GetShortGuid(GetPropValues(pId, pListItemConfig.listItem.propertyTitle.property, pData).FirstOrDefault()).ToString().ToLower();
+
+            item.sendPRC = false;
+            //SendPRC
+            item.sendPRC = false;
+            if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
+            {
+                item.sendPRC = true;
+                if (!string.IsNullOrEmpty(pId))
+                {
+                    foreach (string propEditabilidad in UtilityCV.PropertyNotEditable.Keys)
+                    {
+                        string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
+                        if (propEditabilidad.Equals("http://w3id.org/roh/validationStatusPRC") && UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                        {
+                            item.sendPRC = false;
+                        }
+                    }
+                }
+            }
+
             //Editabilidad
             item.iseditable = true;
             if (!string.IsNullOrEmpty(pId))
@@ -1053,6 +1075,17 @@ namespace EditorCV.Models
                 foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
                 {
                     string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
+                    if (propEditabilidad.Equals("http://w3id.org/roh/validationStatusPRC"))
+                    {
+                        if (UtilityCV.PropertyNotEditable[propEditabilidad] == null || UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0 && !string.IsNullOrEmpty(valorPropiedad))
+                        {
+                            item.sendPRC = true;
+                        }
+                        else if (UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                        {
+                            item.sendPRC = false;
+                        }
+                    }
                     if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedad))
                     {
                         item.iseditable = false;
@@ -1082,6 +1115,7 @@ namespace EditorCV.Models
             {
                 item.ispublic = true;
             }
+
             item.properties = new List<TabSectionItemProperty>();
             if (pListItemConfig.listItem.properties != null)
             {

@@ -35,6 +35,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
     public class Config
     {
+        public bool datosNodos { get; set; }
         public bool orientacionVertical { get; set; }
         public string ejeX { get; set; }
         public bool rango { get; set; }
