@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from sentence_transformers import SentenceTransformer, util
 import heapq
 import logging
+import numpy
 import time
 import pdb
 
@@ -119,17 +120,15 @@ class RO:
 
     def distance(self, ro: "RO") -> float:
 
-        if self._embedding is None:
-            logger.error(f"RO {self.id} doesn't have its embedding set")
-            raise RuntimeError()
-        elif ro._embedding is None:
-            logger.error(f"RO {ro.id} doesn't have its embedding set")
-            raise RuntimeError()
+        return self.distances([ro])[0]
 
-        distance_res = util.cos_sim(self._embedding, ro._embedding)
-        distance = distance_res[0][0].item()
+    def distances(self, ros: list) -> list:
 
-        return distance
+        ros_embeddings = numpy.array([ ro._embedding for ro in ros ])
+        distances_res = util.cos_sim(self._embedding, ros_embeddings)
+        distances = [ d for d in numpy.array(distances_res)[0] ]
+        
+        return distances
 
     def explain_similarity(self, ro: "RO") -> list:
 
@@ -240,9 +239,10 @@ class SimilarityService:
         self.cache.clear()
         
         ros = self.db.get_embeddings()
-        for i in range(len(ros)):
+        for i in range(len(ros)-1):
+            dists = ros[i].distances(ros[i+1:])
             for j in range(i+1, len(ros)):
-                dist = ros[i].distance(ros[j])
+                dist = dists[j-i-1]
                 ros[i].ranking.update_if_needed(ros[j], dist)
                 ros[j].ranking.update_if_needed(ros[i], dist)
 
@@ -258,11 +258,21 @@ class SimilarityService:
     def ro_exists(self, ro_id) -> bool:
 
         return self.db.has_ro(ro_id)
+
+
+    def encode_batch(self, ros) -> None:
+
+        texts = [ ro.text for ro in ros ]
+        embeddings = self.model.encode(texts)
+        for i in range(len(ros)):
+            ros[i]._embedding = embeddings[i]
         
 
     def add_ro(self, ro: RO, update_ranking: bool) -> None:
 
-        start = time.time()
+        if self.ro_exists(ro):
+            return
+
         if update_ranking:
             for db_ro in self.cache.iterator():
                 dist = ro.distance(db_ro)
@@ -272,11 +282,17 @@ class SimilarityService:
             self.cache.add_ro(ro)
 
         self.db.add_ro(ro)
-        end = time.time()
 
-        logger.debug(f"add_ro elapsed time: {(end - start):.2f}")
         
+    def add_ros(self, ros: list, update_ranking: bool) -> None:
 
+        for ro in ros:
+            self.add_ro(ro, update_ranking=update_ranking)
+
+        if update_ranking:
+            self.rebuild_cache()
+        
+        
     def get_ro_ranking(self, ro_id: str, target_ro_type: str) -> list:
 
         ranking = self.cache.get_ranking(ro_id)
