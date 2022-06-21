@@ -228,10 +228,6 @@ input.form-group-date {
 	align-items: center;
 }
 
-.page-cv .resource-list .resource .middle-wrap .content-wrap .description-wrap .group {
-    display: block!important;
-}
-
 .importar-exportar-cv .contenido-cv {
     border: 1px solid var(--c-gris-borde);
     border-bottom: 0;
