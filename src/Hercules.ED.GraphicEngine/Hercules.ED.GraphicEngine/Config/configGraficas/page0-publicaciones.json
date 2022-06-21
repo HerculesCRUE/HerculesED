@@ -6,12 +6,12 @@
   "identificador": "pagina1",
   "graficas": [
     {
-      "identificador": "grafica1",
+      "identificador": "grafica2",
       "nombre": {
         "es": "Número de publicaciones y citas por año"
       },
       "tipo": "Barras",
-      "anchura": 23,
+      "anchura": 11,
       "idGrupo": "grupo1",
       "config": {
         "orientacionVertical": true,
@@ -60,7 +60,61 @@
       }
     },
     {
-      "identificador": "grafica2",
+      "identificador": "grafica1",
+      "nombre": {
+        "es": "Número de publicaciones y citas por año"
+      },
+      "tipo": "Barras",
+      "anchura": 11,
+      "idGrupo": "grupo1",
+      "config": {
+        "orientacionVertical": true,
+        "ejeX": "roh:year",
+        "orderDesc": false,
+        "rellenarEjeX": true,
+        "yAxisPrint": [
+          {
+            "yAxisID": "y1",
+            "posicion": "left",
+            "nombreEje": {
+              "es": "Nº de publicaciones"
+            }
+          },
+          {
+            "yAxisID": "y2",
+            "posicion": "right",
+            "nombreEje": {
+              "es": "Nº de citas"
+            }
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Total de publicaciones por año"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "yAxisID": "y1",
+            "orden": 1
+          },
+          {
+            "nombre": {
+              "es": "Total de citas por año"
+            },
+            "filtro": "roh:citationCount",
+            "calculo": "SUM",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "yAxisID": "y2",
+            "orden": 2
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica22",
       "nombre": {
         "es": "Géneros de los IP por publicaciones"
       },

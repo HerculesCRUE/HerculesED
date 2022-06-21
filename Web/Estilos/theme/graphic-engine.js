@@ -25,7 +25,7 @@ var metricas = {
 
         if (ObtenerHash2().includes('~~~')) {//este codigo se incluye para no borrar las facetas al quitar una
             var splitHash = ObtenerHash2().split('~~~');
-            numPagina = ObtenerHash2().split('~~~')[1];         
+            numPagina = ObtenerHash2().split('~~~')[1];
             history.pushState('', 'New URL: ', '?' + splitHash[0]);
         } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
             history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
@@ -468,18 +468,20 @@ var metricas = {
         gruposDeIDs.forEach(function (item, index, array) {
             var graficasGrupo;
             var tmp = '';
-            var tipoGrafica = (item[0].isHorizontal ? "horizontal " : "") +
-                (item[0].isNodes ? "nodes " : "") +
-                (item[0].isCircular ? "circular " : "") +
-                (item[0].isAbr ? "abr " : "") +
-                (item[0].isPercentage ? "prc " : "");
-            if (!tipoGrafica) {
-                tipoGrafica = "vertical";
-            }
+
 
             item.forEach(function (grafica, index, array) {
+                //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
+                var tipoGrafica = (grafica.isHorizontal ? "horizontal " : "") +
+                    (grafica.isNodes ? "nodes " : "") +
+                    (grafica.isCircular ? "circular " : "") +
+                    (grafica.isAbr ? "abr " : "") +
+                    (grafica.isPercentage ? "prc " : "");
+                if (!tipoGrafica) {
+                    tipoGrafica = "vertical";
+                }
 
-                tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
 
@@ -1042,7 +1044,7 @@ var metricas = {
         // Anchura y altura del pegado a los ejes.
         var axisHeight;
         var axisWidth;
-
+        console.log(myChart.boxes);
         if (horizontal) {
             myChart.canvas.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
             copyWidth = myChart.width;
@@ -1105,22 +1107,24 @@ var metricas = {
             targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
-          
+
             ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
         }
 
         // Preparamos el eje inferior.
         if (secondaryAxis) {
+            copyWidth = myChart.boxes[2]?.width + myChart.boxes[2].right; //anchura del eje
+
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
             } else {
                 ctx.canvas.height = copyHeight;
-                targetX = (myChart.width - copyWidth - 7) * scale;
-                targetWidth += 5;
+                targetX = (myChart.width - copyWidth) * scale;
+                targetWidth = copyWidth * scale;
+                width = targetWidth;
                 //width += 5;
-
                 //estos valores sirven para que no se corte el 0 inferior y no se pase de tamaño tampoco
                 targetHeight -= 5 * scale;
                 axisHeight -= 7 * scale;
@@ -1265,7 +1269,7 @@ var metricas = {
                     filtros += filtroActual;
                 }
 
-                var numPagina = $(".nav-item#"+idPaginaActual).attr("num");
+                var numPagina = $(".nav-item#" + idPaginaActual).attr("num");
                 history.pushState('', 'New URL: ' + filtros, '?' + filtros + '~~~' + numPagina);
                 e.preventDefault();
 
@@ -2005,34 +2009,34 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
             that.paginaActual = 1;
             that.buscarFacetas();
             $('.indice-lista .faceta')
-            .unbind()
-            .click(function (e) {
-                var filtroActual = $(this).attr('filtro');
-                var filtros = decodeURIComponent(ObtenerHash2());
-                var filtrosArray = filtros.split('&');
-                filtros = '';
-                var contieneFiltro = false;
-                for (var i = 0; i < filtrosArray.length; i++) {
-                    if (filtrosArray[i] != '') {
-                        if (filtrosArray[i] == filtroActual) {
-                            contieneFiltro = true;
-                        } else {
-                            filtros += filtrosArray[i] + '&';
+                .unbind()
+                .click(function (e) {
+                    var filtroActual = $(this).attr('filtro');
+                    var filtros = decodeURIComponent(ObtenerHash2());
+                    var filtrosArray = filtros.split('&');
+                    filtros = '';
+                    var contieneFiltro = false;
+                    for (var i = 0; i < filtrosArray.length; i++) {
+                        if (filtrosArray[i] != '') {
+                            if (filtrosArray[i] == filtroActual) {
+                                contieneFiltro = true;
+                            } else {
+                                filtros += filtrosArray[i] + '&';
+                            }
+
                         }
-
                     }
-                }
-                if (!contieneFiltro) {
-                    filtros += filtroActual;
-                } else {
-                    location.reload();
-                }
+                    if (!contieneFiltro) {
+                        filtros += filtroActual;
+                    } else {
+                        location.reload();
+                    }
 
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
-                e.preventDefault();
+                    history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                    e.preventDefault();
 
-                metricas.pintarPagina(idPaginaActual);
-            });
+                    metricas.pintarPagina(idPaginaActual);
+                });
         });
 
         that.arrayTotales = new Array(data.items.length);
