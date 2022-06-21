@@ -497,7 +497,7 @@ var metricas = {
                                         <span class="material-icons">zoom_in</span>
                                     </a>
                                 </div>
-                                <div class="dropdown show">
+                                <div class="dropdown">
                                     <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
                                         <span class="material-icons">more_vert</span>
                                     </a>
@@ -594,7 +594,7 @@ var metricas = {
                                             <span class="material-icons">zoom_in</span>
                                         </a>
                                     </div>
-                                    <div class="dropdown show">
+                                    <div class="dropdown">
                                         <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
                                             <span class="material-icons">more_vert</span>
                                         </a>
@@ -871,18 +871,10 @@ var metricas = {
         data.data.datasets.forEach((item) => {
             item['barThickness'] = barSize;
 
-        })
-        if (horizontal) { //todo mover a json
-            data.options.scales['x1'] = {
-                ticks: {
-                    precision: 0
-                }
-            }
-        } else {
-            data.options.scales['y1'] = {
-                ticks: {
-                    precision: 0
-                }
+        }) //todo mover a json
+        data.options.scale = {
+            ticks: {
+                precision: 0
             }
         }
         console.log(canvasSize);

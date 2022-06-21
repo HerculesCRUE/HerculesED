@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace EditorCV.Controllers
 {
@@ -23,11 +24,11 @@ namespace EditorCV.Controllers
             try
             {
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
-                accionesPRC.ObtenerDatosEnvioPRC(_Configuracion, pIdDocumento, pIdPersona, pIdProyecto);
+                return Ok(accionesPRC.ObtenerDatosEnvioPRC(_Configuracion, pIdDocumento, pIdPersona, pIdProyecto));
             }
             catch (Exception)
             {
-                
+
             }
             return Ok();
         }
