@@ -139,7 +139,25 @@ TODO:
 
 Indicadores
 ============
+Una vez que el usuario administrador haya configurado las gráficas, el resto de usuarios van a poder verlas desde la página de Indicadores.
+En la parte superior se puede ver un menú de pestañas y el botón que despliega las facetas.
 
+![image](https://user-images.githubusercontent.com/88077103/174986969-ac547490-7612-4bc6-b2b7-3e1a03a1c335.png)
+
+Pasando a las gráficas, puede haber tres tipos de botones.
+
+![image](https://user-images.githubusercontent.com/88077103/174993662-7c0b8c0a-733a-47c3-8358-90f830019c0f.png)
+
+- Desplegable (arriba a la izquierda): Está opción únicamente se mostra cuando en la gráfica esté agregada la configuración de idGrupo. Dicha opción mostrará un listado de gráficas para poder seleccionar la que se quiera visualizar.
+
+- Lupa (arriba a la derecha): Se abrirá un popup con la gráfica ampliada.
+
+![image](https://user-images.githubusercontent.com/88077103/174994173-3eb7e90a-e757-4fc1-8b80-5211ed20ff4e.png)
+
+- Tres puntos (arriba a la derecha): Se abrirá un menú con diversas acciones.
+  - Guardar en mi panel: Permite al usuario guardarse la gráfica en "Mis indicadores" (Explicado en el siguiente apartado). 
+  - Descargar como .csv: Permite descargar los datos de la gráfica en formato .csv.
+  - Descargar como imagen .jpg: Permite descargar la gráfica como una imagen .jpg.
 
 Ejemplo de guardado de gráficas y funcionamiento de Indicadores Personales
 ==========================================================================
