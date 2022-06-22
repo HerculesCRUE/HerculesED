@@ -1057,13 +1057,21 @@ namespace EditorCV.Models
                 item.sendPRC = true;
                 if (!string.IsNullOrEmpty(pId))
                 {
-                    foreach (string propEditabilidad in UtilityCV.PropertyNotEditable.Keys)
+                    // Si el estado de validación es "pendiente" o "validado", no permito el envío a PRC
+                    string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+                    if (valorPropiedad == "pendiente" || valorPropiedad == "validado")
                     {
-                        string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
-                        if (propEditabilidad.Equals("http://w3id.org/roh/validationStatusPRC") && UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
-                        {
-                            item.sendPRC = false;
-                        }
+                        item.sendPRC = false;
+                    }
+                    //Si el item no tiene fecha, no permito el envío
+                    if (false)
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si el item no tiene tipo de proyecto, no permito el envío
+                    if (false)
+                    {
+                        item.sendPRC = false;
                     }
                 }
             }
