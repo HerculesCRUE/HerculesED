@@ -565,7 +565,7 @@ edicionCV.printTabSection= function(data) {
 		return htmlSection;
 	}
 };
-								
+
 edicionCV.printHtmlListItem= function(id, data) {
 	let openAccess="";
 	if (data.isopenaccess) {
