@@ -192,6 +192,7 @@ var metricas = {
                     a.download = titulo + '.jpg';
                     a.click();
                 });
+                $(download).addClass("descargarcyto");
                 $(download).removeClass("descargar");
 
                 $(controls.find("#zoomOut"))
@@ -1939,7 +1940,7 @@ var metricas = {
                 </div>`)
                 }
                 // Preparo la imagen a descargar
-                var botonImagen = $(this).parent().find('.descargar');
+                var botonImagen = idgrafica.includes("nodes") ? $(this).parent().find('.descargarcyto') : $(this).parent().find('.descargar');
                 $('.descargarzoom').unbind().click(function(e) {
                     botonImagen.click();
                 });
