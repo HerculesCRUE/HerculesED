@@ -1271,7 +1271,7 @@ namespace EditorCV.Models
                         int dia = int.Parse(fechaPublicacion.Substring(6, 2));
                         DateTime fecha = new DateTime(anio, mes, dia);
                         DateTime fechaMax = DateTime.Now;
-                        fechaMax.AddMonths(-pConfig.GetMaxMonthsValidationDocument());
+                        fechaMax = fechaMax.AddMonths(-pConfig.GetMaxMonthsValidationDocument());
                         if (fechaMax > fecha)
                         {
                             item.sendPRC = false;
