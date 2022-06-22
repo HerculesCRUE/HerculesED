@@ -511,6 +511,7 @@ var edicionCV = {
 												<h2 class="resource-title">
 													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>													
 												</h2>
+												${this.printHtmlListItemValidacion(data)}
 												${this.printHtmlListItemEditable(data)}
 												${this.printHtmlListItemVisibilidad(data)}		
 												${this.printHtmlListItemIdiomas(data)}		
@@ -542,6 +543,19 @@ var edicionCV = {
         html += '</div>';
         return html;
     },
+	printHtmlListItemValidacion: function(data){
+		if(data.validationStatus=='pendiente'){
+			return `<div class="block-wrapper">
+						<span class="material-icons">manage_history</span>
+					</div>`;
+		}
+		if(data.validationStatus=='validado'){
+			return `<div class="block-wrapper">
+						<span class="material-icons">verified_user</span>
+					</div>`;
+		}
+		return ``;
+	},
     printHtmlListItemEditable: function(data) {
         if (!data.iseditable) {
             return `	<div class="block-wrapper">
