@@ -1098,8 +1098,8 @@ var metricas = {
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
                 ctx.canvas.height = copyHeight;
-                
-                
+
+
                 targetHeight -= 10 * scale; //margenes
                 //targetWidth += 1; //para que coja el sepadador entre eje y grafica
             }
@@ -1118,7 +1118,7 @@ var metricas = {
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
-                ctx.canvas.style.paddingLeft = myChart.chartArea.left -5 + "px";
+                ctx.canvas.style.paddingLeft = myChart.chartArea.left - 5 + "px";
                 copyWidth += 15;
                 targetX = myChart.chartArea.left * scale - 5;
             } else {
@@ -1456,88 +1456,45 @@ var metricas = {
             .click(function (e) {
                 var url = url_servicio_graphicengine + "GetCSVGrafica";
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
-                    if ($('div.modal-ampliar-mapa').hasClass('show')) {
-                        url += "?pIdPagina=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[1];
-                        url += "&pIdGrafica=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[2];
-                        url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
-                        url += "&pLang=" + lang;
-                        var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
-                        var argAux = {};
-                        argAux.pIdPagina = $(this).closest('.modal-body').find('canvas').attr('id').split('_')[1];
-                        argAux.pIdGrafica = $(this).closest('.modal-body').find('canvas').attr('id').split('_')[2];
-                        argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
-                        argAux.pLang = lang;
-                        $.get(urlAux, argAux, function (listaData) {
-                            if (!listaData.options) {
-                                url += "&pTitulo=" + listaData.title;
-                            } else {
-                                url += "&pTitulo=" + listaData.options.plugins.title.text;
-                            }
-                            document.location.href = url;
-                        });
-                    } else {
-                        url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                        url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                        url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
-                        url += "&pLang=" + lang;
-                        var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
-                        var argAux = {};
-                        argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                        argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                        argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
-                        argAux.pLang = lang;
-                        $.get(urlAux, argAux, function (listaData) {
-                            if (!listaData.options) {
-                                url += "&pTitulo=" + listaData.title;
-                            } else {
-                                url += "&pTitulo=" + listaData.options.plugins.title.text;
-                            }
-                            document.location.href = url;
-                        });
-                    }
+                    url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                    url += "&pLang=" + lang;
+                    var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
+                    var argAux = {};
+                    argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
+                    argAux.pLang = lang;
+                    $.get(urlAux, argAux, function (listaData) {
+                        if (!listaData.options) {
+                            url += "&pTitulo=" + listaData.title;
+                        } else {
+                            url += "&pTitulo=" + listaData.options.plugins.title.text;
+                        }
+                        document.location.href = url;
+                    });
                 } else {
-                    if ($('div.modal-ampliar-mapa').hasClass('show')) {
-                        url += "?pIdPagina=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[1];
-                        url += "&pIdGrafica=" + $(this).closest('.modal-body').find('canvas').attr('id').split('_')[2];
-                        var filtro = $(this).closest('.modal-body').find('canvas').attr('filtro');
-                        if (filtro != "") {
-                            url += "&pFiltroFacetas=" + filtro;
-                        }
-                        url += "&pLang=" + lang;
-                        var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
-                        var argAux = {};
-                        argAux.pPageId = idPaginaActual;
-                        $.get(urlAux, argAux, function (listaData) {
-                            listaData.forEach(data => {
-                                if (data.idRecurso == idGraficaActual) {
-                                    tituloActual = data.titulo;
-                                }
-                            });
-                            url += "&pTitulo=" + tituloActual;
-                            document.location.href = url;
-                        });
-                    } else {
-                        url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
-                        url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                        var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
-                        if (filtro != "") {
-                            url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
-                        }
-                        url += "&pLang=" + lang;
-                        idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
-                        var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
-                        var argAux = {};
-                        argAux.pPageId = idPaginaActual;
-                        $.get(urlAux, argAux, function (listaData) {
-                            listaData.forEach(data => {
-                                if (data.idRecurso == idGraficaActual) {
-                                    tituloActual = data.titulo;
-                                }
-                            });
-                            url += "&pTitulo=" + tituloActual;
-                            document.location.href = url;
-                        });
+                    url += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
+                    url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    if (filtro != "") {
+                        url += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
                     }
+                    url += "&pLang=" + lang;
+                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                    var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                    var argAux = {};
+                    argAux.pPageId = idPaginaActual;
+                    $.get(urlAux, argAux, function (listaData) {
+                        listaData.forEach(data => {
+                            if (data.idRecurso == idGraficaActual) {
+                                tituloActual = data.titulo;
+                            }
+                        });
+                        url += "&pTitulo=" + tituloActual;
+                        document.location.href = url;
+                    });
                 }
             });
 
@@ -1921,19 +1878,19 @@ var metricas = {
                                 <p class="dropdown-title">Acciones</p>
                                 <ul class="no-list-style">
                                     <li>
-                                        <a class="item-dropdown guardar">
+                                        <a class="item-dropdown guardar guardarzoom">
                                             <span class="material-icons">assessment</span>
                                             <span class="texto">Guardar en mi panel</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown csv">
+                                        <a class="item-dropdown csvzoom">
                                             <span class="material-icons">insert_drive_file</span>
                                             <span class="texto">Descargar como .csv</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown descargar">
+                                        <a class="item-dropdown descargarzoom">
                                             <span class="material-icons">download</span>
                                             <span class="texto">Descargar como imagen .jpg</span>
                                         </a>
@@ -1954,35 +1911,106 @@ var metricas = {
                                 <p class="dropdown-title">Acciones</p>
                                 <ul class="no-list-style">
                                     <li>
-                                        <a class="item-dropdown csv">
+                                        <a class="item-dropdown csvzoom">
                                             <span class="material-icons">insert_drive_file</span>
                                             <span class="texto">Descargar como .csv</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown descargar">
+                                        <a class="item-dropdown descargarzoom">
                                             <span class="material-icons">download</span>
                                             <span class="texto">Descargar como imagen .jpg</span>
                                         </a>
                                     </li>
                                     <li>
-                                            <a class="item-dropdown editargrafica" data-toggle="modal" data-target="#modal-editargrafica">
-                                                <span class="material-icons">edit</span>
-                                                <span class="texto">Editar y ordenar gráfica</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="item-dropdown eliminargrafica" data-toggle="modal" data-target="#modal-eliminar">
-                                                <span class="material-icons">delete</span>
-                                                <span class="texto">Eliminar gráfica</span>
-                                            </a>
-                                        </li>
+                                        <a class="item-dropdown editargrafica editargraficazoom" data-toggle="modal" data-target="#modal-editargrafica">
+                                            <span class="material-icons">edit</span>
+                                            <span class="texto">Editar y ordenar gráfica</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="item-dropdown eliminargrafica eliminargraficazoom" data-toggle="modal" data-target="#modal-eliminar">
+                                            <span class="material-icons">delete</span>
+                                            <span class="texto">Eliminar gráfica</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>`)
                 }
+                // Preparo la imagen a descargar
+                if (!idgrafica.includes("nodes")) {
+                    var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+                    var chart = Chart.getChart(canvas);
+                    if (chart == null) {
+                        canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
+                        chart = Chart.getChart(canvas);
+                    }
+                    var image = chart.toBase64Image('image/jpeg', 1);
+                    var a = document.createElement('a');
+                    a.href = image;
+                    a.download = chart.config._config.options.plugins.title.text + '.jpg';
+                } else {
+                    var image = cy.jpg();
+                    var a = document.createElement('a');
+                    a.href = image;
+                    var titulo
+                    if (!$('div').hasClass('indicadoresPersonalizados')) {
+                        titulo = cy._private.options.title;
+                    } else {
+                        titulo = $(this).parents('article').find('div.grafica p').text();
+                    }
+                    a.download = titulo + '.jpg';
+                }
+                $('.descargarzoom').unbind().click(function (e) {
+                    a.click();
+                });
+                // Preparo el csv a descargar
+                var b = url_servicio_graphicengine + "GetCSVGrafica";
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    b += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    b += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    b += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                    b += "&pLang=" + lang;
+                    var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
+                    var argAux = {};
+                    argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
+                    argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
+                    argAux.pLang = lang;
+                    $.get(urlAux, argAux, function (listaData) {
+                        if (!listaData.options) {
+                            b += "&pTitulo=" + listaData.title;
+                        } else {
+                            b += "&pTitulo=" + listaData.options.plugins.title.text;
+                        }
+                    });
+                } else {
+                    b += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
+                    b += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
+                    var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    if (filtro != "") {
+                        b += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
+                    }
+                    b += "&pLang=" + lang;
+                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
+                    var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                    var argAux = {};
+                    argAux.pPageId = idPaginaActual;
+                    $.get(urlAux, argAux, function (listaData) {
+                        listaData.forEach(data => {
+                            if (data.idRecurso == idGraficaActual) {
+                                tituloActual = data.titulo;
+                            }
+                        });
+                        b += "&pTitulo=" + tituloActual;
+                    });
+                }
+                $('.csvzoom').unbind().click(function (e) {
+                    document.location.href = b;
+                });
                 if (idgrafica.includes("nodes")) {
                     ctx = $(`<div class="graficoNodos" id="grafica_${idPaginaActual}_${pIdGrafica}" style=" height:${$(modalContent).height() - 130}px;"></div>`)
                     parent.append(`
