@@ -23,6 +23,8 @@ namespace EditorCV.Models
         private string urlEnrichment { get; set; }
         private string urlSGI { get; set; }
         private string urlImportadorExportador { get; set; }
+        private int? maxMonthsValidationDocument { get; set; }
+        private int? maxMonthsValidationProjectsDocument { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -296,6 +298,52 @@ namespace EditorCV.Models
             }
 
             return urlImportadorExportador;
+        }
+
+        /// <summary>
+        /// Obtiene los meses máximos para el envío a validación de documentos
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxMonthsValidationDocument()
+        {
+            if (!maxMonthsValidationDocument.HasValue)
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("max_months_validation_document"))
+                {
+                    connectionString = environmentVariables["max_months_validation_document"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["max_months_validation_document"];
+                }
+                maxMonthsValidationDocument = int.Parse(connectionString);
+            }
+            return maxMonthsValidationDocument.Value;
+        }
+
+        /// <summary>
+        /// Obtiene los meses máximos de los proyectos para el envío a validación de documentos
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxMonthsValidationProjectsDocument()
+        {
+            if (!maxMonthsValidationProjectsDocument.HasValue)
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("max_months_validation_projects_document"))
+                {
+                    connectionString = environmentVariables["max_months_validation_projects_document"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["max_months_validation_projects_document"];
+                }
+                maxMonthsValidationProjectsDocument = int.Parse(connectionString);
+            }
+            return maxMonthsValidationProjectsDocument.Value;
         }
 
         /// <summary>
