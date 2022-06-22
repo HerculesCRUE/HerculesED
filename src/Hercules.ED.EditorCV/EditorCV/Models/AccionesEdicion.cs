@@ -1055,23 +1055,23 @@ namespace EditorCV.Models
             {
                 foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
                 {
-                    string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
+                    string valorPropiedadEditabilidad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
                     if (propEditabilidad.Equals("http://w3id.org/roh/validationStatusPRC"))
                     {
-                        if (UtilityCV.PropertyNotEditable[propEditabilidad] == null || UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0 && !string.IsNullOrEmpty(valorPropiedad))
+                        if (UtilityCV.PropertyNotEditable[propEditabilidad] == null || UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0 && !string.IsNullOrEmpty(valorPropiedadEditabilidad))
                         {
                             item.sendPRC = true;
                         }
-                        else if (UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                        else if (UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedadEditabilidad))
                         {
                             item.sendPRC = false;
                         }
                     }
-                    if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedad))
+                    if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
                     }
-                    else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
+                    else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
                     }
@@ -1082,8 +1082,8 @@ namespace EditorCV.Models
             item.isopenaccess = false;
             if (!string.IsNullOrEmpty(pId))
             {
-                string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + UtilityCV.PropertyOpenAccess, pData).FirstOrDefault();
-                if (valorPropiedad == "true")
+                string valorPropiedadOpenAccess = GetPropValues(pId, pListItemConfig.property + "@@@" + UtilityCV.PropertyOpenAccess, pData).FirstOrDefault();
+                if (valorPropiedadOpenAccess == "true")
                 {
                     item.isopenaccess = true;
                 }
@@ -1244,7 +1244,6 @@ namespace EditorCV.Models
                 }
             }
 
-            item.sendPRC = false;
             //SendPRC
             item.sendPRC = false;
             if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
@@ -1253,8 +1252,8 @@ namespace EditorCV.Models
                 if (!string.IsNullOrEmpty(pId))
                 {
                     // Si el estado de validación es "pendiente" o "validado", no permito el envío a PRC.
-                    string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
-                    if (valorPropiedad == "pendiente" || valorPropiedad == "validado")
+                    string validationStatus = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+                    if (validationStatus == "pendiente" || validationStatus == "validado")
                     {
                         item.sendPRC = false;
                     }
@@ -1296,6 +1295,20 @@ namespace EditorCV.Models
                     }
 
                 }
+            }
+
+            //Estado de validación
+            item.validationStatus = "";
+            string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+            // Si el estado de validación es "pendiente".
+            if (valorPropiedad == "pendiente") 
+            {
+                item.validationStatus = "pendiente";
+            }
+            // Si el estado de validación es "validado".
+            if (valorPropiedad == "validado")
+            {
+                item.validationStatus = "validado";
             }
 
             return item;
