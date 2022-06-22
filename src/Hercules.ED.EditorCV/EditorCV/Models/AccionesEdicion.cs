@@ -1049,33 +1049,6 @@ namespace EditorCV.Models
             }
             item.identifier = mResourceApi.GetShortGuid(GetPropValues(pId, pListItemConfig.listItem.propertyTitle.property, pData).FirstOrDefault()).ToString().ToLower();
 
-            item.sendPRC = false;
-            //SendPRC
-            item.sendPRC = false;
-            if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
-            {
-                item.sendPRC = true;
-                if (!string.IsNullOrEmpty(pId))
-                {
-                    // Si el estado de validación es "pendiente" o "validado", no permito el envío a PRC
-                    string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
-                    if (valorPropiedad == "pendiente" || valorPropiedad == "validado")
-                    {
-                        item.sendPRC = false;
-                    }
-                    //Si el item no tiene fecha, no permito el envío
-                    if (false)
-                    {
-                        item.sendPRC = false;
-                    }
-                    //Si el item no tiene tipo de proyecto, no permito el envío
-                    if (false)
-                    {
-                        item.sendPRC = false;
-                    }
-                }
-            }
-
             //Editabilidad
             item.iseditable = true;
             if (!string.IsNullOrEmpty(pId))
@@ -1270,6 +1243,47 @@ namespace EditorCV.Models
                     }
                 }
             }
+
+            item.sendPRC = false;
+            //SendPRC
+            item.sendPRC = false;
+            if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
+            {
+                item.sendPRC = true;
+                if (!string.IsNullOrEmpty(pId))
+                {
+                    // Si el estado de validación es "pendiente" o "validado", no permito el envío a PRC
+                    string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+                    if (valorPropiedad == "pendiente" || valorPropiedad == "validado")
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si el item no tiene fecha, no permito el envío
+                    if (!item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).Any())
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si es de tipo publicaciín y no tiene tipo de proyecto, no permito el envío
+                    if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV") 
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si es de tipo congreso y no tiene tipo de proyecto, no permito el envío
+                    if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV")
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si el documento es de tipo "Trabajos presentados en jornadas", no permito el envío
+                    if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV"))
+                    {
+                        item.sendPRC = false;
+                    }
+
+                }
+            }
+
             return item;
         }
 
