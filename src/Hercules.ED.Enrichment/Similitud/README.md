@@ -1,17 +1,17 @@
 # Requisitos
 Se han observado los requisitos de hardware al procesar una serie de rankings de RO similares. A continuación se detallan el tamaño del conjunto de datos utilizado, las especificaciones de la máquina en la que se ha ejecutado y los requisitos observados.
 
-*Conjunto de datos*
+**Conjunto de datos**
 - Tipo de RO: artículos científicos de medicina.
 - Tamaño del conjunto de test: 30 RO.
 - Tamaño total del conjunto de datos: 112.487 RO.
 
-*Especificaciones de la máquina*
+**Especificaciones de la máquina**
 - Modelo CPU: Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz (48 núcleos, 96 threads)
 - Modelo GPU: GeForce RTX 3090, 24 GB
 - Memoria RAM: 128 GB
 
-*Uso de hardware durante el procesamiento de rankings*
+**Uso de hardware durante el procesamiento de rankings**
 - Procesamiento en CPU:
   - Memoria RAM del sistema: 8 GB
 - Procesamiento en GPU:
@@ -26,7 +26,7 @@ Se han observado los requisitos de hardware al procesar una serie de rankings de
 Este método sirve para crear un nuevo RO en la base de datos. Se debe ejecutar cada vez que se quiera añadir un nuevo RO al sistema. En el caso de que se necesite incorporar un gran lote de ROs, como por ejemplo en el caso de una carga masiva inicial, se utilizará un script creado con ese propósito.
 Esta función se ejecuta de forma síncrona. 
 
-*Parámetros de entrada (JSON)*
+**Parámetros de entrada (JSON)**
 - ro_id: El identificador del RO.
 - ro_type: Tipo de RO. Debe ser uno de los siguientes: papers, bio-protocol, sourceForge.
 - text: El texto del RO resultante de la concatenación entre el título y el abstract.
@@ -34,10 +34,10 @@ Esta función se ejecuta de forma síncrona.
 - thematic_descriptors: Lista de los descriptores temáticos y sus probabilidades obtenidos a través de la API de los descriptores.
 - specific_descriptors: Lista de los descriptores específicos y sus probabilidades obtenidos a través de la API de los descriptores.
 
-*Parámetros de salida (JSON)*
+**Parámetros de salida (JSON)**
 - error_msg: Mensaje de error textual en caso de que el servicio no haya podido procesar la petición.
 
-*Información adicional*
+**Información adicional**
 - Tanto los parámetros de entrada como los de salida estarán en formato JSON.
 - Habrá un comando para cargas iniciales masivas de RO. El script recibirá un archivo JSON como entrada, siendo este una lista de objetos con el mismo formato de los parámetros de entrada de add_ro.
 ```
@@ -49,7 +49,7 @@ $ indexar_ros lote_ros.json
     - GPU: 1.5 s / 1000 RO + tiempo de operaciones BBDD
     - CPU: 23.5 s / 1000 RO + tiempo de operaciones BBDD
 
-*Ejemplo*
+**Ejemplo**
 
 Comando curl:
 ```
@@ -77,18 +77,18 @@ Respuesta:
 
 Este método devuelve los diez RO más similares al RO de entrada. Se puede limitar el tipo de ROs a devolver (solo artículos científicos, protocolos…).
 
-*Parámetros de entrada*
+**Parámetros de entrada**
 - ro_id: ID del RO del que se quieren obtener RO similares. El RO correspondiente al ro_id debe estar en la colección de este servicio. 
 - ro_type_target: Tipo de RO requerido para los RO similares.
 
-*Parámetros de salida*
+**Parámetros de salida**
 - similar_ros: Lista de los diez RO más similares de tipo ro_type_target al RO de entrada con ID ro_id. Se devuelven los IDs de los RO y los descriptores más relevantes de la relación. Los datos tienen el siguiente formato: list<text_id, relevant_descriptors>.
 - error_msg: Mensaje de error textual en caso de que el servicio no haya podido procesar la petición.
 
-*Información adicional*
+**Información adicional**
 - Tiempo de respuesta estimado: 1 s aprox.
 
-*Ejemplo*
+**Ejemplo**
 
 Comando curl:
 ```
