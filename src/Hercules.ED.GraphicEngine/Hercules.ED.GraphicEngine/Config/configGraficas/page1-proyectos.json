@@ -3,7 +3,7 @@
     "es": "Proyectos"
   },
   "filtro": "rdf:type='project'&roh:isValidated='true'",
-  "orden": 1,
+  "orden": 2,
   "identificador": "pagina2",
   "graficas": [
     {

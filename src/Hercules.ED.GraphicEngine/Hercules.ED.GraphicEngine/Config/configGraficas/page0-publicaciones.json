@@ -3,6 +3,7 @@
     "es": "Publicaciones"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
+  "orden": 1,
   "identificador": "pagina1",
   "graficas": [
     {

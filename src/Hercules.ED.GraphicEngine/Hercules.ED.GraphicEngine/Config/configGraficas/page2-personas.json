@@ -3,7 +3,7 @@
     "es": "PDI"
   },
   "filtro": "rdf:type='person'&roh:isValidated='true'",
-  "orden": 1,
+  "orden": 3,
   "identificador": "pagina3",
   "graficas": [
     {
