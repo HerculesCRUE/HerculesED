@@ -203,9 +203,6 @@ where {{
                         case "http://gnoss.com/items/scientificactivitydocument_SAD3":
                             PRC.epigrafeCVN = "060.010.030.000";
                             break;
-                        case "http://gnoss.com/items/scientificactivitydocument_SAD4":
-                            PRC.epigrafeCVN = "060.010.040.000";
-                            break;
                     }
                 }
             }
@@ -730,7 +727,7 @@ where {{
             {
                 IRestResponse response = null;
 
-                if (!PRC.campos.Any(x => x.codigoCVN.Equals("060.010.010.010")))
+                if (PRC.epigrafeCVN.Equals("060.010.010.000") && !PRC.campos.Any(x => x.codigoCVN.Equals("060.010.010.010")))
                 {
                     throw new Exception("El recurso no tiene tipo de proyecto");
                 }
