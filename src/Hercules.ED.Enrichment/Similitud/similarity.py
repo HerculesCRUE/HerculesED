@@ -197,7 +197,7 @@ class Ranking:
 
         
     def update_if_needed(self, ro: RO, distance: float):
-        
+
         ranking = self.rankings[ro.type]
         if len(ranking) == self.size and distance <= ranking[0][0]:
             return False
@@ -213,7 +213,7 @@ class Ranking:
 
         if ro_type not in RO_TYPES:
             raise ROTypeError()
-        
+
         ranking = self.rankings[ro_type]
         sorted_ranking = sorted(ranking, reverse=True)
         ro_ids = [ ro_id for dist, ro_id in sorted_ranking ]
@@ -230,7 +230,7 @@ class SimilarityService:
         self.db = db
         self.db.connect()
         self.cache = cache
-        self.model = SentenceTransformer(MODEL_ID)
+        self.model = SentenceTransformer(MODEL_ID, device='cpu')
         self.rebuild_cache()
 
 
