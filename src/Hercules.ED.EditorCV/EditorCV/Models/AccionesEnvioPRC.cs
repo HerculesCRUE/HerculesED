@@ -136,7 +136,6 @@ where {{
                 return;
             }
 
-
             // Rellena el diccionario de propiedades.
             if (!dicPropiedadesPublicaciones.Any())
             {
