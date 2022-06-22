@@ -46,7 +46,7 @@ namespace EditorCV.Models
         {
             Dictionary<string, Dictionary<string, string>> listadoProyectos = new Dictionary<string, Dictionary<string, string>>();
             DateTime fechaFinMaximaProyectosEnvioPRC = DateTime.Now;
-            fechaFinMaximaProyectosEnvioPRC.AddMonths(1-_Configuracion.GetMaxMonthsValidationProjectsDocument());
+            fechaFinMaximaProyectosEnvioPRC.AddMonths(-_Configuracion.GetMaxMonthsValidationProjectsDocument());
             string fechaFinMaximaProyectosEnvioPRCString = fechaFinMaximaProyectosEnvioPRC.ToString("yyyyMMdd000000");
             string select = $@"select distinct  ?project ?titulo ?fechaInicio ?fechaFin ?organizacion";
             string where = $@"
