@@ -133,6 +133,7 @@ var metricas = {
                     titulo = pTitulo;
                 }
                 if (combo) { //para graficas agrupadas
+                    combo.html('');
                     combo.append(`
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
@@ -178,7 +179,6 @@ var metricas = {
                         {
                             full: true,
                             quality: 1,
-                            scale: 1
                         }
                     );
                     var a = document.createElement('a');
@@ -1032,6 +1032,12 @@ var metricas = {
     },
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
 
+        /* TODO - Actualizar el tamaño de las barras dependiendo de los datasets visibles.
+        myChart.data.datasets.forEach((dataset, index) => {
+            dataset['barThickness'] = 50/(myChart.getVisibleDatasetCount());
+        })
+        */
+
 
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
@@ -1093,13 +1099,13 @@ var metricas = {
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
             } else {
-                copyHeight = myChart.chartArea.bottom+5;
+                copyHeight = myChart.chartArea.bottom + 5;
                 targetHeight = copyHeight * scale;
                 height = copyHeight;
                 copyWidth = myChart.chartArea.left;
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
-                ctx.canvas.height = copyHeight;               
+                ctx.canvas.height = copyHeight;
 
             }
             ctx.scale(scale, scale); // Escala del zoom.
@@ -1116,20 +1122,18 @@ var metricas = {
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
-                ctx.canvas.style.paddingLeft = myChart.chartArea.left -5 + "px";
+                ctx.canvas.style.paddingLeft = myChart.chartArea.left - 5 + "px";
                 copyWidth += 15;
                 targetX = myChart.chartArea.left * scale - 5;
             } else {
+
 
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
                 width = targetWidth;
-                //width += 5;
-                //estos valores sirven para que no se corte el 0 inferior y no se pase de tamaño tampoco
-                targetHeight -= 5 * scale;
-                axisHeight -= 7 * scale;
-                height -= 5 * scale;
+                axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
+
 
 
             }
@@ -1821,6 +1825,7 @@ var metricas = {
 
                 // Petición para obtener los datos de la página.
                 $.get(url, arg, function (data) {
+                    mostrarNotificacion("success", "Grafica guardada correctamente"); //TODO - asegurarse que se guarda, por que si falla sigue saliendo este mensaje
                     cerrarModal();
                 });
             });
@@ -1865,13 +1870,16 @@ var metricas = {
             .change(function (e) {
                 var parent = $(this).parents('div.wrap');
                 var shown = parent.find('div.show');
-                shown.css('display', 'none');
+                shown.css('opacity', '0');
+                shown.css('position', 'absolute');
+
                 shown.removeClass('show');
                 shown.addClass('hide');
                 var selected = parent.find('#' + $(this).val()).parents('div.hide');
                 if (selected.length) {
                     selected.css('display', 'flex');
                     selected.css('opacity', '1');
+                    selected.css('position', 'relative');
                     selected.css('width', '100%');
                     selected.removeClass('hide');
                     selected.addClass('show');
