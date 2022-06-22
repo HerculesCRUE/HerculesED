@@ -132,11 +132,15 @@ var metricas = {
                 if (pTitulo) {
                     titulo = pTitulo;
                 }
-                if (combo) { //para graficas agrupadas
-                    combo.html('');
-                    combo.append(`
+                if (combo) { //para graficas agrupadas 
+
+                    //find the option with the value of the selected value of the combo
+                    var selectedOption = combo.find('option[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
+                    if (selectedOption.length == 0) {
+                        combo.append(`
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
+                    }
                 }
                 $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(titulo);
 
