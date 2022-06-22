@@ -1,4 +1,4 @@
-![](../../Docs/media/CabeceraDocumentosMD.png)
+![](./Docs/media/CabeceraDocumentosMD.png)
 
 # Herramienta de CV. Hércules ED - Enriquecimiento de Datos
 
