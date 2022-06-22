@@ -34,12 +34,12 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("EnvioPRC")]
-        public IActionResult EnvioPRC(string pIdDocumento, string pIdProyecto)
+        public IActionResult EnvioPRC(string pIdRecurso, string pIdProyecto)
         {
             try
             {
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
-                accionesPRC.EnvioPRC(_Configuracion, pIdDocumento, pIdProyecto);
+                accionesPRC.EnvioPRC(_Configuracion, pIdRecurso, pIdProyecto);
             }
             catch (Exception)
             {
