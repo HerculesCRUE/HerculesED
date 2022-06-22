@@ -3,7 +3,7 @@
     "es": "Proyectos"
   },
   "filtro": "rdf:type='project'&roh:isValidated='true'",
-  "orden": 1,
+  "orden": 2,
   "identificador": "pagina2",
   "graficas": [
     {
@@ -15,7 +15,7 @@
       "anchura": 23,
       "config": {
         "orientacionVertical": true,
-        "ejeX": "vivo:start",
+        "ejeX": "roh:yearStart",
         "orderDesc": false,
         "rellenarEjeX": false,
         "yAxisPrint": [
@@ -335,9 +335,9 @@
     },
     {
       "nombre": {
-        "es": "Años (TODO: Desnormalizar)"
-      },  
-      "filtro": "vivo:start",
+        "es": "Años"
+      },
+      "filtro": "roh:yearStart",
       "numeroItemsFaceta": 10
     }
   ]

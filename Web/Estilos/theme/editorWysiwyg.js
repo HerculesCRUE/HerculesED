@@ -24,6 +24,8 @@ class TextField {
       toolbar.classList.remove('d-none')
       // Oculta el textarea para sustutir la edición por el div
       visuellView.classList.remove('d-none')
+      visuellView.focus()
+
     }
 
 
