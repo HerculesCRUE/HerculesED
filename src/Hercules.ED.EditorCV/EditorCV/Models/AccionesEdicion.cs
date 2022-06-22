@@ -1299,9 +1299,17 @@ namespace EditorCV.Models
 
             //Estado de validación
             item.validationStatus = "";
-            string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+            string valorPropiedad = "";
+            if (string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
+            {
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+            }
+            if (string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV"))
+            {
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+            }
             // Si el estado de validación es "pendiente".
-            if (valorPropiedad == "pendiente") 
+            if (valorPropiedad == "pendiente")
             {
                 item.validationStatus = "pendiente";
             }
