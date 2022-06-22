@@ -137,7 +137,11 @@ var metricas = {
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
                 }
-                $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(titulo);
+                if (!pIdRecurso) {
+                    $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(titulo);
+                } else {
+                    document.getElementById('titulo_grafica_' + pIdRecurso).textContent =titulo;
+                }
 
                 var arrayNodes = [];
                 var nodos = cy.nodes();
@@ -798,7 +802,7 @@ var metricas = {
         $('#page_' + idPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
-                        <p id="titulo_grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <p id="titulo_grafica_${pPageData[index].idRecurso}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
                         <div class="graph-controls">
                             <ul class="no-list-style align-items-center">
                                 <li class="control zoomin-control" id="zoomIn">
