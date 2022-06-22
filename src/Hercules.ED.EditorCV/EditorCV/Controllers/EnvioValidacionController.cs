@@ -42,9 +42,9 @@ namespace EditorCV.Controllers
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
                 accionesPRC.EnvioPRC(_Configuracion, pIdRecurso, pIdProyecto);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                return Ok(e.Message);
             }
 
             return Ok();

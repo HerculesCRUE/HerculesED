@@ -125,7 +125,7 @@ where {{
             {
                 return;
             }
-            
+
 
             // Rellena el diccionario de propiedades.
             if (!dicPropiedadesPublicaciones.Any())
@@ -138,7 +138,6 @@ where {{
             }
 
             SparqlObject resultadoQuery = null;
-            StringBuilder select = new StringBuilder(), where = new StringBuilder();
 
             ProduccionCientifica PRC = new ProduccionCientifica();
 
@@ -152,18 +151,16 @@ where {{
             #region --- Estado de validación
             // Comprobar si está el triple del estado.
             string valorEnviado = string.Empty;
-            select = new StringBuilder();
-            where = new StringBuilder();
 
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?enviado ");
-            where.Append("WHERE { ");
-            where.Append("?s a bibo:Document. ");
-            where.Append("OPTIONAL{?s roh:validationStatusPRC ?enviado. } ");
-            where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-            where.Append("} ");
+            string selectEstadoValidacion = mPrefijos;
+            selectEstadoValidacion += "SELECT DISTINCT ?enviado ";
+            string whereEstadoValidacion = $@"WHERE {{
+                                                ?s a bibo:Document . 
+                                                OPTIONAL{{?s roh:validationStatusPRC ?enviado . }} 
+                                                FILTER(?s = <{pIdDocumento}>) 
+                                            }} ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+            resultadoQuery = mResourceApi.VirtuosoQuery(selectEstadoValidacion, whereEstadoValidacion, "document");
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -175,19 +172,19 @@ where {{
             #endregion
 
             #region --- Tipo del Documento.
-            select = new StringBuilder();
-            where = new StringBuilder();
+            string selectTipoDoc = "";
+            string whereTipoDoc = "";
 
             // Consulta sparql (Tipo del documento).
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?tipoDocumento ");
-            where.Append("WHERE { ");
-            where.Append("?s a bibo:Document. ");
-            where.Append("?s roh:scientificActivityDocument ?tipoDocumento. ");
-            where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-            where.Append("} ");
+            selectTipoDoc = mPrefijos;
+            selectTipoDoc += "SELECT DISTINCT ?tipoDocumento ";
+            whereTipoDoc = $@"WHERE {{ 
+                                ?s a bibo:Document . 
+                                ?s roh:scientificActivityDocument ?tipoDocumento . 
+                                FILTER(?s = <{pIdDocumento}>) 
+                            }} ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+            resultadoQuery = mResourceApi.VirtuosoQuery(selectTipoDoc, whereTipoDoc, "document");
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -216,28 +213,28 @@ where {{
 
             #region --- Autores.
             // Consulta sparql (Obtención de datos de la persona).
-            select = new StringBuilder();
-            where = new StringBuilder();
+            string selectAutores = "";
+            string whereAutores = "";
 
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?crisIdentifier ?orcid ?orden ?nombre ?apellidos ?firma ");
-            where.Append("FROM <http://gnoss.com/person.owl> ");
-            where.Append("WHERE { ");
-            where.Append("?s a bibo:Document. ");
-            where.Append("OPTIONAL{ ");
-            where.Append("?s bibo:authorList ?listaAutores. ");
-            where.Append("?listaAutores rdf:member ?persona. ");
-            where.Append("?listaAutores rdf:comment ?orden. ");
-            where.Append("?persona foaf:firstName ?nombre. ");
-            where.Append("?persona foaf:lastName ?apellidos. ");
-            where.Append("OPTIONAL{?persona roh:crisIdentifier ?crisIdentifier. } ");
-            where.Append("OPTIONAL{?persona roh:ORCID ?orcid. } ");
-            where.Append("OPTIONAL{?persona foaf:nick ?firma. } ");
-            where.Append("} ");
-            where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-            where.Append("} ORDER BY ?orden ");
+            selectAutores = mPrefijos;
+            selectAutores += "SELECT DISTINCT ?crisIdentifier ?orcid ?orden ?nombre ?apellidos ?firma ";
+            whereAutores = $@"FROM <http://gnoss.com/person.owl>
+                            WHERE {{
+                                ?s a bibo:Document . 
+                                OPTIONAL{{
+                                    ?s bibo:authorList ?listaAutores . 
+                                    ?listaAutores rdf:member ?persona .
+                                    ?listaAutores rdf:comment ?orden .
+                                    ?persona foaf:firstName ?nombre .
+                                    ?persona foaf:lastName ?apellidos .
+                                    OPTIONAL{{?persona roh:crisIdentifier ?crisIdentifier . }} 
+                                    OPTIONAL{{?persona roh:ORCID ?orcid . }} 
+                                    OPTIONAL{{?persona foaf:nick ?firma . }} 
+                                }} 
+                                FILTER(?s = <{pIdDocumento}>) 
+                            }} ORDER BY ?orden ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+            resultadoQuery = mResourceApi.VirtuosoQuery(selectAutores, whereAutores, "document");
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -264,18 +261,18 @@ where {{
             #region --- Inserción y obtención del Proyecto asociado.
             // Comprobar si está el triple.
             string idProyectoAux = string.Empty;
-            select = new StringBuilder();
-            where = new StringBuilder();
+            string selectProyectoAsociado = "";
+            string whereProyectoAsociado = "";
 
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?proyecto ");
-            where.Append("WHERE { ");
-            where.Append("?s a bibo:Document. ");
-            where.Append("OPTIONAL{?s roh:projectAux ?proyecto. } ");
-            where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-            where.Append("} ");
+            selectProyectoAsociado = mPrefijos;
+            selectProyectoAsociado += "SELECT DISTINCT ?proyecto ";
+            whereProyectoAsociado = $@"WHERE {{ 
+                                            ?s a bibo:Document . 
+                                            OPTIONAL{{?s roh:projectAux ?proyecto . }}
+                                            FILTER(?s = <{pIdDocumento}>) 
+                                        }} ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+            resultadoQuery = mResourceApi.VirtuosoQuery(selectProyectoAsociado, whereProyectoAsociado, "document");
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -300,18 +297,18 @@ where {{
             }
 
             // Consulta sparql (Obtención del ID del proyecto).
-            select = new StringBuilder();
-            where = new StringBuilder();
+            string selectIdProyecto ="";
+            string whereIdProyecto ="";
 
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?crisIdentifier ");
-            where.Append("WHERE { ");
-            where.Append("?s a vivo:Project. ");
-            where.Append("OPTIONAL{?s roh:crisIdentifier ?crisIdentifier. } ");
-            where.Append($@"FILTER(?s = <{pIdProyecto}>) ");
-            where.Append("} ");
+            selectIdProyecto = mPrefijos;
+            selectIdProyecto +="SELECT DISTINCT ?crisIdentifier ";
+            whereIdProyecto = $@"WHERE {{ 
+                                    ?s a vivo:Project .
+                                    OPTIONAL{{?s roh:crisIdentifier ?crisIdentifier . }}
+                                    FILTER(?s = <{pIdProyecto}>)
+                                }} ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "project");
+            resultadoQuery = mResourceApi.VirtuosoQuery(selectIdProyecto, whereIdProyecto, "project");
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -320,8 +317,11 @@ where {{
                     string crisIdentifier = UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
                     if (!string.IsNullOrEmpty(crisIdentifier))
                     {
-                        PRC.proyectos = new List<float>() { float.Parse(140012 + "") };
-                        //PRC.proyectos = new List<float>() { float.Parse(crisIdentifier) };
+                        if (crisIdentifier.Contains("|"))
+                        {
+                            crisIdentifier = crisIdentifier.Split("|").Last();
+                        }
+                        PRC.proyectos = new List<float>() { float.Parse(crisIdentifier) };
                     }
                 }
             }
@@ -332,23 +332,26 @@ where {{
             {
                 PRC.indicesImpacto = new List<IndiceImpacto>();
                 Dictionary<string, string> dicDataRevista = new Dictionary<string, string>();
-                select = new StringBuilder();
-                where = new StringBuilder();
-                select.Append(mPrefijos);
-                select.Append("SELECT DISTINCT ?titulo ?editor ?issn ?formato ");
-                where.Append("FROM <http://gnoss.com/maindocument.owl> ");
-                where.Append("FROM <http://gnoss.com/documentformat.owl> ");
-                where.Append("WHERE { ");
-                where.Append("?s a bibo:Document. ");
-                where.Append("OPTIONAL{?s vivo:hasPublicationVenue ?revista. } ");
-                where.Append("?revista roh:title ?titulo. ");
-                where.Append("OPTIONAL{?revista bibo:editor ?editor. } ");
-                where.Append("OPTIONAL{?revista bibo:issn ?issn. } ");
-                where.Append("OPTIONAL{?revista roh:format ?formatoAux. ?formatoAux dc:identifier ?formato. } ");
-                where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-                where.Append("} ");
+                string selectIndicesImpacto = "";
+                string whereIndicesImpacto = "";
+                selectIndicesImpacto = mPrefijos;
+                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato
+                                           FROM <http://gnoss.com/maindocument.owl> 
+                                           FROM <http://gnoss.com/documentformat.owl> ";
+                whereIndicesImpacto = $@"WHERE {{
+                                           ?s a bibo:Document.
+                                           OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
+                                           ?revista roh:title ?titulo . 
+                                           OPTIONAL{{?revista bibo:editor ?editor . }} 
+                                           OPTIONAL{{?revista bibo:issn ?issn . }}
+                                           OPTIONAL{{
+                                                ?revista roh:format ?formatoAux .
+                                                ?formatoAux dc:identifier ?formato .
+                                           }} 
+                                           FILTER(?s = <{pIdDocumento}>)
+                                       }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                resultadoQuery = mResourceApi.VirtuosoQuery(selectIndicesImpacto, whereIndicesImpacto, "document");
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -360,30 +363,38 @@ where {{
                     }
                 }
 
-                select = new StringBuilder();
-                where = new StringBuilder();
-                select.Append(mPrefijos);
-                select.Append("SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas ");
-                where.Append("FROM <http://gnoss.com/maindocument.owl> ");
-                where.Append("FROM <http://gnoss.com/documentformat.owl> ");
-                where.Append("FROM <http://gnoss.com/referencesource.owl> ");
-                where.Append("WHERE { ");
-                where.Append("?s a bibo:Document. ");
-                where.Append("OPTIONAL{?s vivo:hasPublicationVenue ?revista. } ");
-                where.Append("?revista roh:title ?titulo. ");
-                where.Append("OPTIONAL{ ");
-                where.Append("?revista roh:impactIndex ?indicesImpacto. ");
-                where.Append("OPTIONAL{?indicesImpacto roh:impactSource ?impactSource. ?impactSource dc:identifier ?fuenteImpacto. } ");
-                where.Append("?indicesImpacto roh:year ?anio. ");
-                where.Append("?indicesImpacto roh:impactIndexInYear ?indiceImpacto. ");
-                where.Append("OPTIONAL{ ");
-                where.Append("?indicesImpacto  roh:impactCategory ?categoria. ");
-                where.Append("?categoria roh:quartile ?cuartil. ");
-                where.Append("OPTIONAL{?categoria roh:publicationPosition ?posicionPublicacion. ?categoria roh:journalNumberInCat ?numeroRevistas. }}} ");
-                where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-                where.Append("} ");
+                string selectFuenteImpacto = "";
+                string whereFuenteImpacto = "";
+                selectFuenteImpacto = mPrefijos;
+                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas 
+                                        FROM <http://gnoss.com/maindocument.owl> 
+                                        FROM <http://gnoss.com/documentformat.owl>
+                                        FROM <http://gnoss.com/referencesource.owl> ";
+                whereFuenteImpacto = $@"WHERE {{ 
+                                            ?s a bibo:Document . 
+                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
+                                            ?revista roh:title ?titulo . 
+                                            OPTIONAL{{
+                                                ?revista roh:impactIndex ?indicesImpacto . 
+                                                OPTIONAL{{
+                                                    ?indicesImpacto roh:impactSource ?impactSource .
+                                                    ?impactSource dc:identifier ?fuenteImpacto . 
+                                                }} 
+                                                ?indicesImpacto roh:year ?anio . 
+                                                ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
+                                                OPTIONAL{{
+                                                    ?indicesImpacto  roh:impactCategory ?categoria . 
+                                                    ?categoria roh:quartile ?cuartil . 
+                                                    OPTIONAL{{
+                                                        ?categoria roh:publicationPosition ?posicionPublicacion .
+                                                        ?categoria roh:journalNumberInCat ?numeroRevistas .
+                                                    }}
+                                                }}
+                                            }}
+                                            FILTER(?s = <{pIdDocumento}>) 
+                                        }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                resultadoQuery = mResourceApi.VirtuosoQuery(selectFuenteImpacto, whereFuenteImpacto, "document");
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -460,33 +471,39 @@ where {{
                 dicIds.Add("130", "");
 
                 // Consulta sparql (Obtención de datos del proyecto).
-                select = new StringBuilder();
-                where = new StringBuilder();
+                string selectObtencionProyecto = "";
+                string whereObtencionProyecto = "";
 
-                select.Append(mPrefijos);
-                select.Append("SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess ");
-                where.Append("FROM <http://gnoss.com/documentformat.owl> ");
-                where.Append("FROM <http://gnoss.com/publicationtype.owl> ");
-                where.Append("WHERE { ");
-                where.Append("?s a bibo:Document. ");
-                where.Append("?s roh:title ?title. ");
-                where.Append("OPTIONAL{?s dct:issued ?issued. } ");
-                where.Append("OPTIONAL{?s dc:type ?typeAux. ?typeAux dc:identifier ?type. } ");
-                where.Append("OPTIONAL{?s roh:supportType ?support. ?support dc:identifier ?supportType. } ");
-                where.Append("OPTIONAL{?s bibo:volume ?volume. } ");
-                where.Append("OPTIONAL{?s bibo:issue ?issue. } ");
-                where.Append($"BIND(CONCAT(?volume, \"-\", ?issue) AS ?numVol). ");
-                where.Append("OPTIONAL{?s bibo:pageStart ?pageStart. } ");
-                where.Append("OPTIONAL{?s bibo:pageEnd ?pageEnd. } ");
-                where.Append($"BIND(CONCAT(?pageStart, \"-\", ?pageEnd) AS ?paginas). ");
-                where.Append("OPTIONAL{?s bibo:doi ?doi. } ");
-                where.Append("OPTIONAL{?s bibo:handle ?handle. } ");
-                where.Append("OPTIONAL{?s bibo:pmid ?pmid. } ");
-                where.Append("OPTIONAL{?s roh:openAccess ?openAccess. } ");
-                where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-                where.Append("} ");
+                selectObtencionProyecto = mPrefijos;
+                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess 
+                                            FROM <http://gnoss.com/documentformat.owl>
+                                            FROM <http://gnoss.com/publicationtype.owl> ";
+                whereObtencionProyecto = $@"WHERE {{
+                                                ?s a bibo:Document . 
+                                                ?s roh:title ?title .
+                                                OPTIONAL{{?s dct:issued ?issued . }} 
+                                                OPTIONAL{{
+                                                    ?s dc:type ?typeAux . 
+                                                    ?typeAux dc:identifier ?type . 
+                                                }} 
+                                                OPTIONAL{{
+                                                    ?s roh:supportType ?support .
+                                                    ?support dc:identifier ?supportType . 
+                                                }}
+                                                OPTIONAL{{?s bibo:volume ?volume . }} 
+                                                OPTIONAL{{?s bibo:issue ?issue . }}
+                                                BIND(CONCAT(?volume, ""-"", ?issue) AS ?numVol) . 
+                                                OPTIONAL{{?s bibo:pageStart ?pageStart . }}
+                                                OPTIONAL{{?s bibo:pageEnd ?pageEnd . }} 
+                                                BIND(CONCAT(?pageStart, ""-"", ?pageEnd) AS ?paginas) .
+                                                OPTIONAL{{?s bibo:doi ?doi . }}
+                                                OPTIONAL{{?s bibo:handle ?handle . }} 
+                                                OPTIONAL{{?s bibo:pmid ?pmid . }}
+                                                OPTIONAL{{?s roh:openAccess ?openAccess . }}
+                                                FILTER(?s = <{pIdDocumento}>) 
+                                            }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                resultadoQuery = mResourceApi.VirtuosoQuery(selectObtencionProyecto, whereObtencionProyecto, "document");
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -587,34 +604,49 @@ where {{
                 dicIds.Add("130", "");
 
                 // Consulta sparql (Obtención de datos del proyecto).
-                select = new StringBuilder();
-                where = new StringBuilder();
+                string selectDatosCongresos = "";
+                string whereDatosCongresos = "";
 
-                select.Append(mPrefijos);
-                select.Append("SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType ");
-                where.Append("FROM <http://gnoss.com/documentformat.owl> ");
-                where.Append("FROM <http://gnoss.com/publicationtype.owl> ");
-                where.Append("WHERE { ");
-                where.Append("?s a bibo:Document. ");
-                where.Append("?s roh:title ?title. ");
-                where.Append("OPTIONAL{?s dc:type ?pubTypeAux. ?pubTypeAux dc:identifier ?type. } ");
-                where.Append("OPTIONAL{?s roh:supportType ?supType. ?supType dc:identifier ?supportType. } ");
-                where.Append("OPTIONAL{?s roh:presentedAtStart ?fechaCelebracion. } ");
-                where.Append("OPTIONAL{?s roh:presentedAtEnd ?fechaFinalizacion. } ");
-                where.Append("OPTIONAL{?s roh:presentedAtType ?tipoEventoAux. ?tipoEventoAux dc:identifier ?tipoEvento. } ");
-                where.Append("OPTIONAL{?s roh:presentedAtGeographicFocus ?geographicFocusAux. ?geographicFocusAux dc:identifier ?geographicFocus. } ");
-                where.Append("OPTIONAL{?s bibo:presentedAt ?presentedAt. } ");
-                where.Append("OPTIONAL{?s roh:hasPublicationVenueText ?publicationVenueText. } ");
-                where.Append("OPTIONAL{?s bibo:doi ?doi. } ");
-                where.Append("OPTIONAL{?s bibo:handle ?handle. } ");
-                where.Append("OPTIONAL{?s bibo:pmid ?pmid. } ");
-                where.Append("OPTIONAL{?s roh:isbn ?isbn. } ");
-                where.Append("OPTIONAL{?s bibo:issn ?issn. } ");
-                where.Append("OPTIONAL{?s roh:participationType ?participationTypeAux. ?participationTypeAux dc:identifier ?participationType. } ");
-                where.Append($@"FILTER(?s = <{pIdDocumento}>) ");
-                where.Append("} ");
+                selectDatosCongresos = mPrefijos;
+                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType 
+                                            FROM <http://gnoss.com/documentformat.owl> 
+                                            FROM <http://gnoss.com/publicationtype.owl> ";
+                whereDatosCongresos = $@"WHERE {{
+                                            ?s a bibo:Document . 
+                                            ?s roh:title ?title . 
+                                            OPTIONAL{{
+                                                ?s dc:type ?pubTypeAux . 
+                                                ?pubTypeAux dc:identifier ?type .
+                                            }}
+                                            OPTIONAL{{
+                                                ?s roh:supportType ?supType .
+                                                ?supType dc:identifier ?supportType .
+                                            }}
+                                            OPTIONAL{{?s roh:presentedAtStart ?fechaCelebracion . }}
+                                            OPTIONAL{{?s roh:presentedAtEnd ?fechaFinalizacion . }} 
+                                            OPTIONAL{{
+                                                ?s roh:presentedAtType ?tipoEventoAux . 
+                                                ?tipoEventoAux dc:identifier ?tipoEvento .
+                                            }} 
+                                            OPTIONAL{{
+                                                ?s roh:presentedAtGeographicFocus ?geographicFocusAux .
+                                                ?geographicFocusAux dc:identifier ?geographicFocus . 
+                                            }}
+                                            OPTIONAL{{?s bibo:presentedAt ?presentedAt . }} 
+                                            OPTIONAL{{?s roh:hasPublicationVenueText ?publicationVenueText . }}
+                                            OPTIONAL{{?s bibo:doi ?doi . }} 
+                                            OPTIONAL{{?s bibo:handle ?handle . }} 
+                                            OPTIONAL{{?s bibo:pmid ?pmid . }} 
+                                            OPTIONAL{{?s roh:isbn ?isbn . }} 
+                                            OPTIONAL{{?s bibo:issn ?issn . }} 
+                                            OPTIONAL{{
+                                                ?s roh:participationType ?participationTypeAux .
+                                                ?participationTypeAux dc:identifier ?participationType .
+                                            }}
+                                            FILTER(?s = <{pIdDocumento}>) 
+                                        }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                resultadoQuery = mResourceApi.VirtuosoQuery(selectDatosCongresos, whereDatosCongresos, "document");
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -698,6 +730,11 @@ where {{
             {
                 IRestResponse response = null;
 
+                if (!PRC.campos.Any(x => x.codigoCVN.Equals("060.010.010.010")))
+                {
+                    throw new Exception("El recurso no tiene tipo de proyecto");
+                }
+
                 if (valorEnviado == "rechazado")
                 {
                     RestClient client = new($@"{pConfig.GetUrlProduccionCientifica()}/{PRC.idRef}");
@@ -719,7 +756,7 @@ where {{
 
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
-                    throw new Exception();
+                    throw new Exception(response.StatusCode.ToString()+", "+response.Content);
                 }
             }
             catch (Exception)
