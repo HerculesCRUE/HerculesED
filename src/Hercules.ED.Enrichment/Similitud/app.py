@@ -78,6 +78,7 @@ class SimilarityAddAPI(MethodResource, Resource):
         logger.debug(kwargs)
         ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
         ro.set_text(kwargs['text'], similarity.model)
+        ro.authors = kwargs['authors']
         names = [ n for n, p in kwargs['specific_descriptors'] ]
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)
@@ -97,6 +98,7 @@ class SimilarityAddBatchAPI(MethodResource, Resource):
         for ro_kwargs in kwargs['batch']:
             ro = similarity.create_RO(ro_kwargs['ro_id'], ro_kwargs['ro_type'])
             ro.text = ro_kwargs['text']
+            ro.authors = ro_kwargs['authors']
             names = [ n for n, p in ro_kwargs['specific_descriptors'] ]
             probs = [ p for n, p in ro_kwargs['specific_descriptors'] ]
             ro.set_specific_descriptors(names, probs)
