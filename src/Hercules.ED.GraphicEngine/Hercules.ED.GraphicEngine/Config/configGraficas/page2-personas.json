@@ -40,7 +40,7 @@
       }
     },
     {
-      "identificador": "grafica3",
+      "identificador": "grafica2",
       "nombre": {
         "es": "Número de personas por departamento"
       },
@@ -65,7 +65,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#581845",
             "xAxisID": "x1",
             "orden": 1
           }
