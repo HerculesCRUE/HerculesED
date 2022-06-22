@@ -895,12 +895,19 @@ var metricas = {
             }
         }
         //Abrebiacion de los labels del eje
+        // TODO echar un vistazo para ver como queda el tema de la abreviación
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
             if (horizontal) {
                 data.options.scales['y'] = {
                     ticks: {
-                        callback: ticksAbr
+                        callback: ticksAbr,
+                        mirror: true,
+                        padding: -5,
+                        font: {
+                            weight: "bold"
+                        },
+                        z: 1000
                     }
 
                 }
@@ -915,8 +922,8 @@ var metricas = {
         function ticksAbr(value) {
             const labels = data.data.labels; // Obtención de los labels.
             if (value >= 0 && value < labels.length) {
-                if (labels[value].length >= 7) {
-                    return labels[value].substring(0, 7) + "..."; // Se muestran solo los 7 primeros caractéres.
+                if (labels[value].length >= 45) {
+                    return labels[value].substring(0, 45) + "..."; // Se muestran solo los 45 primeros caractéres.
                 }
                 return labels[value];
             }
