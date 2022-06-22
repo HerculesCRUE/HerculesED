@@ -3661,10 +3661,10 @@ var edicionCV = {
 			var idproyecto = $('input[name="proyecto"]:checked').attr('projectId');
 			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
 			if(idproyecto==null){
-				alert("No se encuentra el identificador del proyecto");
+				alert("No se encuentra el identificador del proyecto, debe seleccionar uno");
 			};
 			if(idrecurso==null){
-				alert("No se encuentra el identificador del recurso, debe seleccionar uno");
+				alert("No se encuentra el identificador del recurso");
 			};
 			that.sendPRC(idrecurso,idproyecto);
 		});
