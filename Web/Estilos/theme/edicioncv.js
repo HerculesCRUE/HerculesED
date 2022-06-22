@@ -3639,7 +3639,7 @@ var edicionCV = {
 			that.completeTab(about,rdftype,section);
         });
 				
-		//TODO boton enviar PRC
+		//Obtener datos envio PRC
 		$('.texto.prodCientItem').off('click').on('click', function(e) {
 			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 			$('#modal-enviar-produccion-cientifica .resource-list.listView .resource-list-wrap').empty();
@@ -3653,12 +3653,43 @@ var edicionCV = {
 			var dataId = $(this)[0].dataset.id;
 			var nombreProy = $(this).closest("resource-success");
 			var fechaProy = "";
-			that.sendPRC(dataId, that.idPerson);
+			that.GetDataPRC(dataId, that.idPerson);
+		});
+		
+		//Botón envio PRC
+		$('.btnEnvioPRC').off('click').on('click', function(e) {
+			var idproyecto = $('input[name="proyecto"]:checked').attr('projectId');
+			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
+			if(idproyecto==null){
+				alert("No se encuentra el identificador del proyecto, debe seleccionar uno");
+			};
+			if(idrecurso==null){
+				alert("No se encuentra el identificador del recurso");
+			};
+			that.sendPRC(idrecurso,idproyecto);
 		});
 		
         return;
     },
-	sendPRC: function(dataId, idPerson){		
+	sendPRC: function(idrecurso, idproyecto){
+		var formData = new FormData();
+		formData.append('pIdRecurso', idrecurso);
+		formData.append('pIdProyecto', idproyecto);
+		
+		$.ajax({
+			url: urlEnvioValidacionCV + 'EnvioPRC',
+			type: 'POST',
+			data: formData,	
+			cache: false,
+			processData: false,
+            enctype: 'multipart/form-data',
+            contentType: false,
+			success: function ( response ) {
+				
+			}
+		});
+	},
+	GetDataPRC: function(dataId, idPerson){		
 		$.ajax({
 			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
 			type: 'GET',
@@ -3672,7 +3703,7 @@ var edicionCV = {
 					html += `<article class="resource folder">
 								<div class="form-group">
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}">
+										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
 										<label class="form-check-label" for="proyecto-${contador}"></label>
 									</div>
 								</div>

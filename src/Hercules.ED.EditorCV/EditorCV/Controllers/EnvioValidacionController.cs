@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EditorCV.Controllers
 {
@@ -34,12 +35,12 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("EnvioPRC")]
-        public IActionResult EnvioPRC(string pIdDocumento, string pIdProyecto)
+        public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm][Required] string pIdProyecto)
         {
             try
             {
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
-                accionesPRC.EnvioPRC(_Configuracion, pIdDocumento, pIdProyecto);
+                accionesPRC.EnvioPRC(_Configuracion, pIdRecurso, pIdProyecto);
             }
             catch (Exception)
             {

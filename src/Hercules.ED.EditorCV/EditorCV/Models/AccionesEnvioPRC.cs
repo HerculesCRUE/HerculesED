@@ -106,8 +106,27 @@ where {{
         /// Permite enviar a Producción Científica los datos necesarios para la validación.
         /// </summary>
         /// <param name="pId">ID del documento.</param>
-        public void EnvioPRC(ConfigService pConfig, string pIdDocumento, string pIdProyecto)
+        public void EnvioPRC(ConfigService pConfig, string pIdRecurso, string pIdProyecto)
         {
+            string pIdDocumento = "";
+            string selectProyecto = "select distinct ?documento";
+            string whereProyecto = $@"where{{
+    <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
+}}";
+            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
+            if (query.results.bindings.Count != 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> res in query.results.bindings)
+                {
+                    pIdDocumento = res["documento"].value;
+                }
+            }
+            if (string.IsNullOrEmpty(pIdDocumento))
+            {
+                return;
+            }
+            
+
             // Rellena el diccionario de propiedades.
             if (!dicPropiedadesPublicaciones.Any())
             {

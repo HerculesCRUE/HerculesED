@@ -11,6 +11,10 @@ class MemoryROStorage(similarity.ROStorage):
     def add_ro(self, ro: similarity.RO) -> None:
         self.ros[ro.id] = ro
 
+    def add_ros(self, ros) -> None:
+        for ro in ros:
+            self.add_ro(ro)
+
     def update_ro_ranking(self, ro: similarity.RO) -> None:
         if ro.id not in self.ros:
             raise similarity.ROIdError()
