@@ -101,12 +101,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
         [HttpGet("GetItemMini")]
-        public IActionResult GetItemMini(ConfigService pConfig, string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public IActionResult GetItemMini(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetItemMini(pConfig, pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
+                return Ok(accionesEdicion.GetItemMini(_Configuracion, pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
             catch (Exception ex)
             {
