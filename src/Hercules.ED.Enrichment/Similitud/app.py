@@ -35,7 +35,8 @@ app.config.update({
         plugins=[MarshmallowPlugin()]
     ),
     'APISPEC_SWAGGER_URL': '/doc-json/',  # URI to access API Doc JSON 
-    'APISPEC_SWAGGER_UI_URL': '/doc/'  # URI to access UI of API Doc
+    'APISPEC_SWAGGER_UI_URL': '/doc/',  # URI to access UI of API Doc
+    'PROPAGATE_EXCEPTIONS': True,
 })
 docs = FlaskApiSpec(app)
 
