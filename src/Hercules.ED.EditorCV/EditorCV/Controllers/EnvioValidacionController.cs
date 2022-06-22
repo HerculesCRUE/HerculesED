@@ -24,7 +24,7 @@ namespace EditorCV.Controllers
         {
             try
             {
-                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
+                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 return Ok(accionesPRC.ObtenerDatosEnvioPRC(pIdPersona));
             }
             catch (Exception)
@@ -39,7 +39,7 @@ namespace EditorCV.Controllers
         {
             try
             {
-                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
+                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 accionesPRC.EnvioPRC(_Configuracion, pIdRecurso, pIdProyecto);
             }
             catch (Exception e)
