@@ -1276,7 +1276,7 @@ namespace EditorCV.Models
                             item.sendPRC = false;
                         }
                     }
-                    //Si es de tipo publicaciín y no tiene tipo de proyecto, no permito el envío
+                    //Si es de tipo publicación y no tiene tipo de proyecto, no permito el envío
                     if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV")
                         && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
                     {
@@ -1300,14 +1300,16 @@ namespace EditorCV.Models
             //Estado de validación
             item.validationStatus = "";
             string valorPropiedad = "";
-            if (string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
-            {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
-            }
-            if (string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV"))
+            //valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
             }
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV"))
+            {
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+            }
+
             // Si el estado de validación es "pendiente".
             if (valorPropiedad == "pendiente")
             {
