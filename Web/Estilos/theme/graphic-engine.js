@@ -174,7 +174,13 @@ var metricas = {
                 });
 
                 $(download).unbind().click(function (e) {
-                    var image = cy.jpg();
+                    var image = cy.jpg(
+                        {
+                            full: true,
+                            quality: 1,
+                            scale: 1
+                        }
+                    );
                     var a = document.createElement('a');
                     a.href = image;
                     var titulo
@@ -1021,8 +1027,6 @@ var metricas = {
 
             }
 
-
-            //
         }
 
     },
@@ -1031,9 +1035,6 @@ var metricas = {
 
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
-        if (myChart.canvas.id.includes("grafica_pagina2_isHorizontal-abr-grafica5")) {
-            var s = "sdads";
-        }
         //anchura y altura del recorte de la grafica
         var copyWidth;
         var copyHeight;
@@ -1048,12 +1049,10 @@ var metricas = {
             // Altura del eje
             axisHeight = myChart.boxes[2]?.height;
         } else {// -- vertical
-            //myChart.canvas.parentNode.style.width = canvasSize + 'px';
-            //myChart.canvas.parentNode.style.height = 100 + '%'; //se escala la altura
             myChart.canvas.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
 
             copyWidth = myChart.boxes[2]?.width; //anchura del eje
-            copyHeight = myChart.height - 20;
+            copyHeight = myChart.chartArea.bottom + 5;
             targetY = 20; //posicion del eje
             // Le asignamos tamaño a la leyenda.
             axisHeight = myChart.height - 10;
@@ -1094,16 +1093,15 @@ var metricas = {
             if (horizontal) {
                 ctx.canvas.height = axisHeight;
             } else {
+                copyHeight = myChart.chartArea.bottom+5;
+                targetHeight = copyHeight * scale;
+                height = copyHeight;
                 copyWidth = myChart.chartArea.left;
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
-                ctx.canvas.height = copyHeight;
-                
-                
-                targetHeight -= 10 * scale; //margenes
-                //targetWidth += 1; //para que coja el sepadador entre eje y grafica
+                ctx.canvas.height = copyHeight;               
+
             }
-            targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
 
