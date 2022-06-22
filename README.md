@@ -10,4 +10,4 @@ El análisis funcional se puede consultar en [Análisis funcional. Herramienta d
 
 ![](https://content.gnoss.ws/imagenes/proyectos/personalizacion/7e72bf14-28b9-4beb-82f8-e32a3b49d9d3/cms/logognossazulprincipal.png)
 
-Los componentes de Hércules ED funcionan y son compatibles con la versión 5 de [GNOSS Open Core]([https://github.com/equipognoss/Gnoss.Platform.OpenCORE](https://github.com/equipognoss/Gnoss.SemanticAIPlatform.OpenCORE) y con la [versión Enterprise de GNOSS](https://www.gnoss.com/contacto).
+Los componentes de Hércules ED funcionan y son compatibles con la versión 5 de [GNOSS Open Core](https://github.com/equipognoss/Gnoss.SemanticAIPlatform.OpenCORE) y con la [versión Enterprise de GNOSS](https://www.gnoss.com/contacto).
