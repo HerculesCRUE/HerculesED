@@ -3656,19 +3656,6 @@ var edicionCV = {
 			that.GetDataPRC(dataId, that.idPerson);
 		});
 		
-		//Botón envio PRC
-		$('.btnEnvioPRC').off('click').on('click', function(e) {
-			var idproyecto = $('input[name="proyecto"]:checked').attr('projectId');
-			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
-			if(idproyecto==null){
-				alert("No se encuentra el identificador del proyecto, debe seleccionar uno");
-			};
-			if(idrecurso==null){
-				alert("No se encuentra el identificador del recurso");
-			};
-			that.sendPRC(idrecurso,idproyecto);
-		});
-		
         return;
     },
 	sendPRC: function(idrecurso, idproyecto){
@@ -3745,6 +3732,7 @@ var edicionCV = {
 				}
 				
 				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
+				operativaFormularioProduccionCientifica.formProyecto();
 			}
 		});
 	},
@@ -6308,5 +6296,39 @@ operativaFormularioProduccionCientifica.modal= function () {
 		that.formularioProyecto.find('> .alert').hide();
 		//that.formularioProyecto.find('.btn').removeClass('disabled').attr('data-dismiss', '');
 		//that.formularioProyecto.find('.resource .form-check-input').prop('checked', false);
+	});
+}
+
+operativaFormularioProduccionCientifica.formProyecto= function () {
+	var that = this;
+	that.formularioProyecto.find('> .alert').hide();
+	this.formularioProyecto.find('.btn').off('click').on('click', function () {
+		if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
+			that.formularioProyecto.find('> .alert').hide();
+			$(this).attr('data-dismiss', 'modal');
+			mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
+			
+			if($('input[name="proyecto"]:checked').length)
+			{
+				idproyecto = $('input[name="proyecto"]:checked').attr('projectId');
+			}
+			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
+			edicionCV.sendPRC(idrecurso,idproyecto);
+			
+		} else {
+			that.formularioProyecto.find('> .alert').show();
+			$(this).addClass('disabled');
+		}
+	});
+	
+	this.formularioProyecto.find('.alert-title a').off('click').on('click', function () {
+		$(this).attr('data-dismiss', 'modal');
+		mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
+		var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
+		edicionCV.sendPRC(idrecurso,'');
+	});
+
+	this.resourceList.find('.resource .form-check-inline').on('change', function () {
+		that.formularioProyecto.find('.btn').removeClass('disabled');
 	});
 }
