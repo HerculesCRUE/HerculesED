@@ -28,7 +28,7 @@ Esta función se ejecuta de forma síncrona.
 
 **Parámetros de entrada (JSON)**
 - ro_id: El identificador del RO.
-- ro_type: Tipo de RO. Debe ser uno de los siguientes: papers, bio-protocol, sourceForge.
+- ro_type: Tipo de RO. Debe ser uno de los siguientes: `research_paper`, `code_project`.
 - text: El texto del RO resultante de la concatenación entre el título y el abstract.
 - authors: Lista de nombres completos de los autores del RO.
 - thematic_descriptors: Lista de los descriptores temáticos y sus probabilidades obtenidos a través de la API de los descriptores.
@@ -60,7 +60,7 @@ Archivo query.json
 ```
 {
     "ro_id": "2-s2.0-85032573110",
-    "ro_type": "papers",
+    "ro_type": "research_paper",
     "text": "Analysis of the microstructure and mechanical properties of titanium-based composites reinforced by secondary phases and B In the last decade, titanium metal matrix composites (TMCs) have received considerable attention thanks to their interesting properties as a consequence of the clear interface between the matrix and the reinforcing phases formed. In this work, TMCs with 30 vol % of B",
     "authors": ["Montealegre-Melendez, Isabel", "Arévalo, Cristina", "Ariza, Enrique", "Pérez-Soriano, Eva M.", "Rubio-Escudero, Cristina", "Kitzmantel, Michael", "Neubauer, Erich"],
     "thematic_descriptors": [("Physical Sciences", 0.998)],
@@ -99,7 +99,7 @@ Archivo query.json:
 ```
 {
     "ro_id": "2-s2.0-85032573110",
-    "ro_type_target": "papers"
+    "ro_type_target": "research_paper"
 }
 ```
 
