@@ -823,5 +823,144 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
         }
 
+
+        /// <summary>
+        /// Insertamos en la propiedad http://w3id.org/roh/yearStart de los http://vivoweb.org/ontology/core#Project
+        /// el año de inicio
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">ID de documentos</param>
+        public void ActualizarAniosInicio(List<string> pProjects = null)
+        {
+            //Eliminamos los duplicados
+            EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/yearStart");
+
+            HashSet<string> filters = new HashSet<string>();
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" FILTER(?project in(<{string.Join(">,<", pProjects)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+                //Inserciones
+                while (true)
+                {
+                    int limit = 500;
+
+                    String select = @"select distinct * where{select ?project ?yearCargado ?yearCargar  ";
+                    String where = @$"where{{
+                                ?project a <http://vivoweb.org/ontology/core#Project>.
+                                {filter}
+                                OPTIONAL{{
+	                                ?project <http://vivoweb.org/ontology/core#start> ?fecha.
+	                                BIND(substr(str(?fecha),0,4) as ?yearCargar).
+                                }}
+                                OPTIONAL{{
+                                    ?project <http://w3id.org/roh/yearStart> ?yearCargado.      
+                                }}
+                                
+                                FILTER(?yearCargado!= ?yearCargar)
+
+                            }}}} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string project = fila["project"].value;
+                        string yearCargar = "";
+                        if (fila.ContainsKey("yearCargar"))
+                        {
+                            yearCargar = fila["yearCargar"].value;
+                        }
+                        string yearCargado = "";
+                        if (fila.ContainsKey("yearCargado"))
+                        {
+                            yearCargado = fila["yearCargado"].value;
+                        }
+                        ActualizadorTriple(project, "http://w3id.org/roh/yearStart", yearCargado, yearCargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Insertamos en la propiedad http://w3id.org/roh/yearEnd de los http://vivoweb.org/ontology/core#Project
+        /// el año de inicio
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">ID de documentos</param>
+        public void ActualizarAniosFin(List<string> pProjects = null)
+        {
+            //Eliminamos los duplicados
+            EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/yearEnd");
+
+            HashSet<string> filters = new HashSet<string>();
+            if (pProjects != null && pProjects.Count > 0)
+            {
+                filters.Add($" FILTER(?project in(<{string.Join(">,<", pProjects)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+                //Inserciones
+                while (true)
+                {
+                    int limit = 500;
+
+                    String select = @"select distinct * where{select ?project ?yearCargado ?yearCargar  ";
+                    String where = @$"where{{
+                                ?project a <http://vivoweb.org/ontology/core#Project>.
+                                {filter}
+                                OPTIONAL{{
+	                                ?project <http://vivoweb.org/ontology/core#end> ?fecha.
+	                                BIND(substr(str(?fecha),0,4) as ?yearCargar).
+                                }}
+                                OPTIONAL{{
+                                    ?project <http://w3id.org/roh/yearEnd> ?yearCargado.      
+                                }}
+                                
+                                FILTER(?yearCargado!= ?yearCargar)
+
+                            }}}} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string project = fila["project"].value;
+                        string yearCargar = "";
+                        if (fila.ContainsKey("yearCargar"))
+                        {
+                            yearCargar = fila["yearCargar"].value;
+                        }
+                        string yearCargado = "";
+                        if (fila.ContainsKey("yearCargado"))
+                        {
+                            yearCargado = fila["yearCargado"].value;
+                        }
+                        ActualizadorTriple(project, "http://w3id.org/roh/yearEnd", yearCargado, yearCargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 }
