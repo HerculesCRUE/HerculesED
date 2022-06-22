@@ -204,6 +204,7 @@
       "anchura": 12,
       "config": {
         "datosNodos": true,
+        "abreviar": true,
         "orientacionVertical": false,
         "ejeX": "dc:type@@@dc:title",
         "orderDesc": false,
