@@ -1,6 +1,6 @@
 ![](../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 21/06/2021                                                   2
+| Fecha         | 21/06/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
 |Título|Configuración del Servicio de Login con SAML| 
 |Descripción|Descripción de la configuración del Servicio de Login con SAML|
