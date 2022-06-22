@@ -1939,75 +1939,13 @@ var metricas = {
                 </div>`)
                 }
                 // Preparo la imagen a descargar
-                if (!idgrafica.includes("nodes")) {
-                    var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
-                    var chart = Chart.getChart(canvas);
-                    if (chart == null) {
-                        canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
-                        chart = Chart.getChart(canvas);
-                    }
-                    var image = chart.toBase64Image('image/jpeg', 1);
-                    var a = document.createElement('a');
-                    a.href = image;
-                    a.download = chart.config._config.options.plugins.title.text + '.jpg';
-                } else {
-                    var image = cy.jpg();
-                    var a = document.createElement('a');
-                    a.href = image;
-                    var titulo
-                    if (!$('div').hasClass('indicadoresPersonalizados')) {
-                        titulo = cy._private.options.title;
-                    } else {
-                        titulo = $(this).parents('article').find('div.grafica p').text();
-                    }
-                    a.download = titulo + '.jpg';
-                }
-                $('.descargarzoom').unbind().click(function (e) {
-                    a.click();
+                var botonImagen = $(this).parent().find('.descargar');
+                $('.descargarzoom').unbind().click(function(e) {
+                    botonImagen.click();
                 });
-                // Preparo el csv a descargar
-                var b = url_servicio_graphicengine + "GetCSVGrafica";
-                if (!$('div').hasClass('indicadoresPersonalizados')) {
-                    b += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                    b += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    b += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
-                    b += "&pLang=" + lang;
-                    var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
-                    var argAux = {};
-                    argAux.pIdPagina = $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
-                    argAux.pIdGrafica = $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    argAux.pFiltroFacetas = decodeURIComponent(ObtenerHash2());
-                    argAux.pLang = lang;
-                    $.get(urlAux, argAux, function (listaData) {
-                        if (!listaData.options) {
-                            b += "&pTitulo=" + listaData.title;
-                        } else {
-                            b += "&pTitulo=" + listaData.options.plugins.title.text;
-                        }
-                    });
-                } else {
-                    b += "?pIdPagina=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idpagina');
-                    b += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    var filtro = $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
-                    if (filtro != "") {
-                        b += "&pFiltroFacetas=" + $(this).parents('div.wrap').find('div.grafica.show').attr('filtro');
-                    }
-                    b += "&pLang=" + lang;
-                    idGraficaActual = $(this).closest('article').find("div[idgrafica]").attr("idrecurso");
-                    var urlAux = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
-                    var argAux = {};
-                    argAux.pPageId = idPaginaActual;
-                    $.get(urlAux, argAux, function (listaData) {
-                        listaData.forEach(data => {
-                            if (data.idRecurso == idGraficaActual) {
-                                tituloActual = data.titulo;
-                            }
-                        });
-                        b += "&pTitulo=" + tituloActual;
-                    });
-                }
-                $('.csvzoom').unbind().click(function (e) {
-                    document.location.href = b;
+                var botonCSV = $(this).parent().find('.csv');
+                $('.csvzoom').unbind().click(function(e) {
+                    botonCSV.click();
                 });
                 // Preparo los modales
                 var botonGuardar = $(this).parent().find('.guardar');
