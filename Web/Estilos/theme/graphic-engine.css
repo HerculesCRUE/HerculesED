@@ -299,13 +299,13 @@
 
  }
 
- .grafica.show>p {
+ body.vista-grafico .grafica.show>p {
      position: absolute;
      top: 75px;
 
  }
 
- .grafica.show .graficoNodos {
+ body.vista-grafico .grafica.show .graficoNodos {
      margin-top: 75px;
      overflow: hidden;
  }
@@ -314,9 +314,9 @@
      z-index: 1;
  }
 
- article.resource .wrap {
+ body.vista-grafico article.resource > .wrap {
      overflow: hidden;
  }
- .acciones-mapa.showAcciones span.select2-selection {
-    height: 100%;
- }
+body.listado div.chartLegend{
+    cursor: context-menu; 
+}
