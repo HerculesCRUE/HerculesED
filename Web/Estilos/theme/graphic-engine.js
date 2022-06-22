@@ -1876,7 +1876,7 @@ var metricas = {
                                 <p class="dropdown-title">Acciones</p>
                                 <ul class="no-list-style">
                                     <li>
-                                        <a class="item-dropdown guardar guardarzoom">
+                                        <a class="item-dropdown guardarzoom">
                                             <span class="material-icons">assessment</span>
                                             <span class="texto">Guardar en mi panel</span>
                                         </a>
@@ -1921,13 +1921,13 @@ var metricas = {
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown editargrafica editargraficazoom" data-toggle="modal" data-target="#modal-editargrafica">
+                                        <a class="item-dropdown editargraficazoom" data-toggle="modal" data-target="#modal-editargrafica">
                                             <span class="material-icons">edit</span>
                                             <span class="texto">Editar y ordenar gráfica</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown eliminargrafica eliminargraficazoom" data-toggle="modal" data-target="#modal-eliminar">
+                                        <a class="item-dropdown eliminargraficazoom" data-toggle="modal" data-target="#modal-eliminar">
                                             <span class="material-icons">delete</span>
                                             <span class="texto">Eliminar gráfica</span>
                                         </a>
@@ -2010,6 +2010,22 @@ var metricas = {
                     document.location.href = b;
                 });
                 // Preparo los modales
+                var botonGuardar = $(this).parent().find('.guardar');
+                $('.guardarzoom').unbind().click(function(e) {
+                    cerrarModal();
+                    botonGuardar.click();
+                });
+                var botonEditar = $(this).parent().find('.editargrafica');
+                $('.editargraficazoom').unbind().click(function(e) {
+                    cerrarModal();
+                    botonEditar.click();
+                });
+                var botonEliminar = $(this).parent().find('.eliminargrafica');
+                $('.eliminargraficazoom').unbind().click(function(e) {
+                    cerrarModal();
+                    botonEliminar.click();
+                });
+
                 if (idgrafica.includes("nodes")) {
                     ctx = $(`<div class="graficoNodos" id="grafica_${idPaginaActual}_${pIdGrafica}" style=" height:${$(modalContent).height() - 130}px;"></div>`)
                     parent.append(`
