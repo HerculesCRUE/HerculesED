@@ -6296,3 +6296,17 @@ function selectionChange(e) {
       button.classList.add('active');
     }
 }
+
+operativaFormularioProduccionCientifica.modal= function () {
+	var that = this;
+	this.modal_prod_cientifica.on('hide.bs.modal', function () {
+		// Status initial
+		//that.modal_prod_cientifica.find('.modal-body > .alert').show();
+		//that.formularioPublicacion.show();
+		//that.formularioPublicacion.find('.resource .form-check-input').prop('checked', false);
+		//that.formularioProyecto.hide();
+		that.formularioProyecto.find('> .alert').hide();
+		//that.formularioProyecto.find('.btn').removeClass('disabled').attr('data-dismiss', '');
+		//that.formularioProyecto.find('.resource .form-check-input').prop('checked', false);
+	});
+}

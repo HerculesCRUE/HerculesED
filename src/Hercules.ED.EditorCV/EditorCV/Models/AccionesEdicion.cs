@@ -252,7 +252,7 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Sección</param>
         /// <returns></returns>
-        public AuxTab GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
+        public AuxTab GetTab(ConfigService pConfig, string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
         {
 
             //Obtenemos el template
@@ -263,7 +263,7 @@ namespace EditorCV.Models
                 //Obtenemos los datos necesarios para el pintado
                 Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang, pSection);
                 //Obtenemos el modelo para devolver
-                respuesta = GetTabModel(pCVId, pId, data, template, pLang, pSection);
+                respuesta = GetTabModel(pConfig, pCVId, pId, data, template, pLang, pSection);
             }
             else
             {
@@ -282,7 +282,7 @@ namespace EditorCV.Models
         /// <param name="pEntity">Identificador de la entidad</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        public TabSectionItem GetItemMini(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public TabSectionItem GetItemMini(ConfigService pConfig, string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             TabSectionPresentationListItems presentationListItem = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab).sections.First(x => x.property == pIdSection).presentation.listItemsPresentation;
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetItemMiniData(pEntityID, presentationListItem.listItem, pLang);
@@ -293,7 +293,7 @@ namespace EditorCV.Models
                 propiedadesMultiIdiomaCargadas = entidadesMultiidioma[pEntityID];
             }
             List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = presentationListItem.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
-            return GetItem(pEntityID, data, presentationListItem, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas);
+            return GetItem(pConfig, pEntityID, data, presentationListItem, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas);
         }
 
 
@@ -895,7 +895,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null)
+        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -967,7 +967,7 @@ namespace EditorCV.Models
                                         }
                                         else
                                         {
-                                            tabSection.items.Add(idEntity, GetItem(idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas));
+                                            tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas));
                                         }
                                     }
                                 }
@@ -1018,7 +1018,7 @@ namespace EditorCV.Models
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
         /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidoima configurado</param>
         /// <returns></returns>
-        private TabSectionItem GetItem(string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas, List<ItemEditSectionRowProperty> pListaPropiedadesMultiidiomaConfiguradas)
+        private TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas, List<ItemEditSectionRowProperty> pListaPropiedadesMultiidiomaConfiguradas)
         {
             TabSectionItem item = new TabSectionItem();
             string propertyInTitle = "";
@@ -1048,25 +1048,6 @@ namespace EditorCV.Models
                 item.title = "";
             }
             item.identifier = mResourceApi.GetShortGuid(GetPropValues(pId, pListItemConfig.listItem.propertyTitle.property, pData).FirstOrDefault()).ToString().ToLower();
-
-            item.sendPRC = false;
-            //SendPRC
-            item.sendPRC = false;
-            if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
-            {
-                item.sendPRC = true;
-                if (!string.IsNullOrEmpty(pId))
-                {
-                    foreach (string propEditabilidad in UtilityCV.PropertyNotEditable.Keys)
-                    {
-                        string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
-                        if (propEditabilidad.Equals("http://w3id.org/roh/validationStatusPRC") && UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedad))
-                        {
-                            item.sendPRC = false;
-                        }
-                    }
-                }
-            }
 
             //Editabilidad
             item.iseditable = true;
@@ -1262,6 +1243,61 @@ namespace EditorCV.Models
                     }
                 }
             }
+
+            item.sendPRC = false;
+            //SendPRC
+            item.sendPRC = false;
+            if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
+            {
+                item.sendPRC = true;
+                if (!string.IsNullOrEmpty(pId))
+                {
+                    // Si el estado de validación es "pendiente" o "validado", no permito el envío a PRC.
+                    string valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
+                    if (valorPropiedad == "pendiente" || valorPropiedad == "validado")
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si el item no tiene fecha, no permito el envío
+                    if (!item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).Any())
+                    {
+                        item.sendPRC = false;
+                    }
+                    else
+                    {
+                        string fechaPublicacion = item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).First().values.First();
+                        int anio = int.Parse(fechaPublicacion.Substring(0, 4));
+                        int mes = int.Parse(fechaPublicacion.Substring(4, 2));
+                        int dia = int.Parse(fechaPublicacion.Substring(6, 2));
+                        DateTime fecha = new DateTime(anio, mes, dia);
+                        DateTime fechaMax = DateTime.Now;
+                        fechaMax = fechaMax.AddMonths(-pConfig.GetMaxMonthsValidationDocument());
+                        if (fechaMax > fecha)
+                        {
+                            item.sendPRC = false;
+                        }
+                    }
+                    //Si es de tipo publicaciín y no tiene tipo de proyecto, no permito el envío
+                    if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV")
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si es de tipo congreso y no tiene tipo de proyecto, no permito el envío
+                    if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV")
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                    {
+                        item.sendPRC = false;
+                    }
+                    //Si el documento es de tipo "Trabajos presentados en jornadas", no permito el envío
+                    if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV"))
+                    {
+                        item.sendPRC = false;
+                    }
+
+                }
+            }
+
             return item;
         }
 

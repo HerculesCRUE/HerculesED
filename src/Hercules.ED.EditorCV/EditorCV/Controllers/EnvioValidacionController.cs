@@ -24,7 +24,7 @@ namespace EditorCV.Controllers
         {
             try
             {
-                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
+                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 return Ok(accionesPRC.ObtenerDatosEnvioPRC(pIdPersona));
             }
             catch (Exception)
@@ -35,16 +35,16 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("EnvioPRC")]
-        public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm][Required] string pIdProyecto)
+        public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm] string pIdProyecto)
         {
             try
             {
-                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC();
+                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 accionesPRC.EnvioPRC(_Configuracion, pIdRecurso, pIdProyecto);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                return Ok(e.Message);
             }
 
             return Ok();
