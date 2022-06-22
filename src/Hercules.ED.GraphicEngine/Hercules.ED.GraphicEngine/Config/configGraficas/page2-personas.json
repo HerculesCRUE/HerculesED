@@ -2,7 +2,7 @@
   "nombre": {
     "es": "PDI"
   },
-  "filtro": "rdf:type='person'&roh:isValidated='true'",
+  "filtro": "rdf:type='person'",
   "orden": 3,
   "identificador": "pagina3",
   "graficas": [
@@ -29,6 +29,39 @@
           {
             "nombre": {
               "es": "Personas por grupos"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica2",
+      "nombre": {
+        "es": "Número de personas por departamento"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "vivo:departmentOrSchool@@@dc:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "abreviar": true,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Personas por departamento"
             },
             "filtro": "",
             "tipoDimension": "bar",
