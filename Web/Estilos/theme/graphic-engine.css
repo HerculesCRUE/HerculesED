@@ -72,7 +72,7 @@
  .graph-container .graph-controls,
  .wrap .grafica .graph-controls {
      position: absolute;
-     top: 70px;
+     top: 75px;
      left: 20px;
      z-index: 200;
  }
@@ -154,8 +154,8 @@
      display: flex;
      justify-content: space-between;
      width: 100%;
-     padding-left: 15px;
-     padding-right: 15px;
+     padding-left: 25px;
+     padding-right: 25px;
      right: 0px;
  }
 
@@ -220,7 +220,7 @@
  }
 
  .topbar-container * {
-     transition: all .2s ease-in-out;
+     transition: all .1s ease-in-out;
  }
 
  .edit-page:hover {
@@ -299,14 +299,14 @@
 
  }
 
- .grafica.show>p {
+ body.vista-grafico .grafica.show>p {
      position: absolute;
-     top: 70px;
+     top: 75px;
 
  }
 
- .grafica.show .graficoNodos {
-     margin-top: 70px;
+ body.vista-grafico .grafica.show .graficoNodos {
+     margin-top: 75px;
      overflow: hidden;
  }
 
@@ -314,6 +314,9 @@
      z-index: 1;
  }
 
- .article .wrap {
+ body.vista-grafico article.resource > .wrap {
      overflow: hidden;
  }
+body.listado div.chartLegend{
+    cursor: context-menu; 
+}

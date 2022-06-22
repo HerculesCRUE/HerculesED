@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_restful import Api, Resource
 from flask_apispec import doc, use_kwargs
 from flask_apispec.views import MethodResource
@@ -35,7 +35,8 @@ app.config.update({
         plugins=[MarshmallowPlugin()]
     ),
     'APISPEC_SWAGGER_URL': '/doc-json/',  # URI to access API Doc JSON 
-    'APISPEC_SWAGGER_UI_URL': '/doc/'  # URI to access UI of API Doc
+    'APISPEC_SWAGGER_UI_URL': '/doc/',  # URI to access UI of API Doc
+    'PROPAGATE_EXCEPTIONS': True,
 })
 docs = FlaskApiSpec(app)
 
@@ -81,6 +82,7 @@ class SimilarityAddAPI(MethodResource, Resource):
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)
         similarity.add_ro(ro, update_ranking=True)
+        return jsonify()
 
     
 class SimilarityAddBatchAPI(MethodResource, Resource):
@@ -102,6 +104,7 @@ class SimilarityAddBatchAPI(MethodResource, Resource):
         similarity.encode_batch(batch)
         similarity.add_ros(batch, update_ranking=False)
         logger.debug("Batch of ROs added")
+        return jsonify()
 
         
 class RebuildRankingsAPI(MethodResource, Resource):
@@ -114,6 +117,7 @@ class RebuildRankingsAPI(MethodResource, Resource):
     def post(self, **kwargs):
         logger.debug(kwargs)
         similarity.rebuild_cache()
+        return jsonify()
 
         
 class SimilarityQueryAPI(MethodResource, Resource):
@@ -127,7 +131,7 @@ class SimilarityQueryAPI(MethodResource, Resource):
         logger.debug(kwargs)
         similar_ro_ids = similarity.get_ro_ranking(kwargs['ro_id'], kwargs['ro_type_target'])            
         logger.debug(f"Similar ROs: {similar_ro_ids}")
-        return jsonify(similar_ro_ids)
+        return jsonify({ 'similar_ros': similar_ro_ids })
 
 
 # Declare endpoints and documentation for the API
@@ -147,8 +151,11 @@ docs.register(SimilarityQueryAPI)
 
 @app.errorhandler(ROIdError)
 def handle_bad_request(e):
-    return f"RO not found", 404
+    return '{"error_msg": "RO not found"}', 404
 
+@app.errorhandler(ROTypeError)
+def handle_bad_request(e):
+    return '{"error_msg": "Invalid RO type"}', 400
 
 if __name__ == "__main__":
     app.run()

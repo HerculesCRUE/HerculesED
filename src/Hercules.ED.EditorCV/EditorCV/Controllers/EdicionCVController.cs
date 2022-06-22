@@ -28,12 +28,12 @@ namespace GuardadoCV.Controllers
         /// <param name="userID"></param>
         /// <returns></returns>
         [HttpGet("GetCVUrl")]
-        public IActionResult GetCVUrl(string userID,string lang)
+        public IActionResult GetCVUrl(string userID, string lang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetCVUrl(userID,lang));
+                return Ok(accionesEdicion.GetCVUrl(userID, lang));
             }
             catch (Exception ex)
             {
@@ -55,12 +55,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pCache">Indica si hay que cachear</param>
         /// <returns></returns>
         [HttpPost("GetAutocomplete")]
-        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] bool pGetEntityID, [FromForm] string lista, [FromForm] string pLang,[FromForm] bool pCache)
+        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] bool pGetEntityID, [FromForm] string lista, [FromForm] string pLang, [FromForm] bool pCache)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph, pGetEntityID, lista?.Split(',').ToList(), pLang,pCache));
+                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph, pGetEntityID, lista?.Split(',').ToList(), pLang, pCache));
             }
             catch (Exception ex)
             {
@@ -78,12 +78,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pSection">Sección</param>
         /// <returns></returns>
         [HttpGet("GetTab")]
-        public IActionResult GetTab(string pCVId,string pId, string pRdfType, string pLang,string pSection=null)
+        public IActionResult GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetTab( pCVId, pId, pRdfType, pLang, pSection));
+                return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection));
             }
             catch (Exception ex)
             {
@@ -101,12 +101,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
         [HttpGet("GetItemMini")]
-        public IActionResult GetItemMini(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
+        public IActionResult GetItemMini(ConfigService pConfig, string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetItemMini(pCVId,pIdSection, pRdfTypeTab, pEntityID, pLang));
+                return Ok(accionesEdicion.GetItemMini(pConfig, pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
             catch (Exception ex)
             {

@@ -132,10 +132,15 @@ var metricas = {
                 if (pTitulo) {
                     titulo = pTitulo;
                 }
-                if (combo) { //para graficas agrupadas
-                    combo.append(`
+                if (combo) { //para graficas agrupadas 
+
+                    //find the option with the value of the selected value of the combo
+                    var selectedOption = combo.find('option[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
+                    if (selectedOption.length == 0) {
+                        combo.append(`
                         <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
                     `)
+                    }
                 }
                 if (!pIdRecurso) {
                     $(`#titulo_grafica_${pIdPagina}_${pIdGrafica}`).empty().append(titulo);
@@ -186,7 +191,6 @@ var metricas = {
                         {
                             full: true,
                             quality: 1,
-                            scale: 1
                         }
                     );
                     var a = document.createElement('a');
@@ -804,7 +808,7 @@ var metricas = {
         $('#page_' + idPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
-                        <p id="titulo_grafica_${pPageData[index].idRecurso}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <p id="titulo_grafica_${pPageData[index].idPagina}_${pPageData[index].idGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
                         <div class="graph-controls">
                             <ul class="no-list-style align-items-center">
                                 <li class="control zoomin-control" id="zoomIn">
@@ -1039,6 +1043,12 @@ var metricas = {
     },
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
 
+        /* TODO - Actualizar el tamaño de las barras dependiendo de los datasets visibles.
+        myChart.data.datasets.forEach((dataset, index) => {
+            dataset['barThickness'] = 50/(myChart.getVisibleDatasetCount());
+        })
+        */
+
 
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
@@ -1108,7 +1118,6 @@ var metricas = {
                 width = copyWidth;
                 ctx.canvas.height = copyHeight;
             }
-            targetY = (copyHeight - axisHeight + 10) * scale;
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
 
@@ -1128,15 +1137,13 @@ var metricas = {
                 targetX = myChart.chartArea.left * scale - 5;
             } else {
 
+
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
                 width = targetWidth;
-                //width += 5;
-                //estos valores sirven para que no se corte el 0 inferior y no se pase de tamaño tampoco
-                targetHeight -= 5 * scale;
-                axisHeight -= 7 * scale;
-                height -= 5 * scale;
+                axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
+
 
 
             }
@@ -1786,6 +1793,7 @@ var metricas = {
 
                 // Petición para obtener los datos de la página.
                 $.get(url, arg, function (data) {
+                    mostrarNotificacion("success", "Grafica guardada correctamente"); //TODO - asegurarse que se guarda, por que si falla sigue saliendo este mensaje
                     cerrarModal();
                 });
             });
@@ -1830,13 +1838,16 @@ var metricas = {
             .change(function (e) {
                 var parent = $(this).parents('div.wrap');
                 var shown = parent.find('div.show');
-                shown.css('display', 'none');
+                shown.css('opacity', '0');
+                shown.css('position', 'absolute');
+
                 shown.removeClass('show');
                 shown.addClass('hide');
                 var selected = parent.find('#' + $(this).val()).parents('div.hide');
                 if (selected.length) {
                     selected.css('display', 'flex');
                     selected.css('opacity', '1');
+                    selected.css('position', 'relative');
                     selected.css('width', '100%');
                     selected.removeClass('hide');
                     selected.addClass('show');
@@ -1892,19 +1903,19 @@ var metricas = {
                                 <p class="dropdown-title">Acciones</p>
                                 <ul class="no-list-style">
                                     <li>
-                                        <a class="item-dropdown guardarzoom">
+                                        <a class="item-dropdown guardar">
                                             <span class="material-icons">assessment</span>
                                             <span class="texto">Guardar en mi panel</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown csvzoom">
+                                        <a class="item-dropdown csv">
                                             <span class="material-icons">insert_drive_file</span>
                                             <span class="texto">Descargar como .csv</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown descargarzoom">
+                                        <a class="item-dropdown descargar">
                                             <span class="material-icons">download</span>
                                             <span class="texto">Descargar como imagen .jpg</span>
                                         </a>
@@ -1925,29 +1936,29 @@ var metricas = {
                                 <p class="dropdown-title">Acciones</p>
                                 <ul class="no-list-style">
                                     <li>
-                                        <a class="item-dropdown csvzoom">
+                                        <a class="item-dropdown csv">
                                             <span class="material-icons">insert_drive_file</span>
                                             <span class="texto">Descargar como .csv</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown descargarzoom">
+                                        <a class="item-dropdown descargar">
                                             <span class="material-icons">download</span>
                                             <span class="texto">Descargar como imagen .jpg</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="item-dropdown editargraficazoom" data-toggle="modal" data-target="#modal-editargrafica">
-                                            <span class="material-icons">edit</span>
-                                            <span class="texto">Editar y ordenar gráfica</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="item-dropdown eliminargraficazoom" data-toggle="modal" data-target="#modal-eliminar">
-                                            <span class="material-icons">delete</span>
-                                            <span class="texto">Eliminar gráfica</span>
-                                        </a>
-                                    </li>
+                                            <a class="item-dropdown editargrafica" data-toggle="modal" data-target="#modal-editargrafica">
+                                                <span class="material-icons">edit</span>
+                                                <span class="texto">Editar y ordenar gráfica</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="item-dropdown eliminargrafica" data-toggle="modal" data-target="#modal-eliminar">
+                                                <span class="material-icons">delete</span>
+                                                <span class="texto">Eliminar gráfica</span>
+                                            </a>
+                                        </li>
                                 </ul>
                             </div>
                         </div>
