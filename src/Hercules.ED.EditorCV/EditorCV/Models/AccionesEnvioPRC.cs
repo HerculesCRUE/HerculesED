@@ -30,6 +30,13 @@ namespace EditorCV.Models
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
 
+        readonly ConfigService _Configuracion;
+
+        public AccionesEnvioPRC(ConfigService pConfig)
+        {
+            _Configuracion = pConfig;
+        }
+
         /// <summary>
         /// Devuelve un diccionario con todos los proyectos de <paramref name="pIdPersona"/>, junto a su titulo, fecha de inicio, fecha de fin y organización.
         /// </summary>
@@ -38,7 +45,9 @@ namespace EditorCV.Models
         public Dictionary<string, Dictionary<string, string>> ObtenerDatosEnvioPRC(string pIdPersona)
         {
             Dictionary<string, Dictionary<string, string>> listadoProyectos = new Dictionary<string, Dictionary<string, string>>();
-
+            DateTime fechaFinMaximaProyectosEnvioPRC = DateTime.Now;
+            fechaFinMaximaProyectosEnvioPRC.AddMonths(1-_Configuracion.GetMaxMonthsValidationProjectsDocument());
+            string fechaFinMaximaProyectosEnvioPRCString = fechaFinMaximaProyectosEnvioPRC.ToString("yyyyMMdd000000");
             string select = $@"select distinct  ?project ?titulo ?fechaInicio ?fechaFin ?organizacion";
             string where = $@"
 where {{
@@ -50,6 +59,7 @@ where {{
     OPTIONAL{{?project <http://vivoweb.org/ontology/core#start> ?fechaInicio}}
     OPTIONAL{{?project <http://vivoweb.org/ontology/core#end> ?fechaFin}}
     OPTIONAL{{?project <http://w3id.org/roh/conductedByTitle> ?organizacion}}
+    FILTER(!BOUND(?fechaFin) OR xsd:long(?fechaFin)>{fechaFinMaximaProyectosEnvioPRCString})
 }}";
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "project");
             if (resultadoQuery.results.bindings.Count != 0)
