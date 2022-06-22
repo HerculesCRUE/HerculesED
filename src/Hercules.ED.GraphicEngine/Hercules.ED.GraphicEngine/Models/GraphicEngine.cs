@@ -181,6 +181,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Obtiene los filtros relacionados con las fechas.
             List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
+            listaFacetasAnios.Add("roh:yearStart");
 
             if (configModel != null)
             {
