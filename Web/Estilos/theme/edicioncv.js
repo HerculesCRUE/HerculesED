@@ -587,12 +587,21 @@ var edicionCV = {
     printHtmlListItemAcciones: function(data, id) {
         var htmlAcciones = "";
 		
-		//Si está en validación o pendiente no se permite el envio a produccion cientifica
+		//Si la publicación está en validación o pendiente no se permite el envio a produccion cientifica
 		if(data.sendPRC){
 			htmlAcciones += `<li>
 								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
 									<span class="material-icons">send</span>
 									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_PRODUCCION_CIENTIFICA")}</span>
+								</a>
+							</li>`;
+		}
+		//Si el proyecto está en validación o pendiente no se permite el envio
+		if(data.sendValidationProject){
+			htmlAcciones += `<li>
+								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+									<span class="material-icons">send</span>
+									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_VALIDACION)}</span>
 								</a>
 							</li>`;
 		}
