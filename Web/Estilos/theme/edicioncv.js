@@ -615,7 +615,7 @@ var edicionCV = {
 			htmlAcciones += `<li>
 								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
 									<span class="material-icons">send</span>
-									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_VALIDACION)}</span>
+									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_VALIDACION")}</span>
 								</a>
 							</li>`;
 		}
