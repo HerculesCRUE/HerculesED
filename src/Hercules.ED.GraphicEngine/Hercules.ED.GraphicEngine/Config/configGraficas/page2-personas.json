@@ -1,6 +1,6 @@
 {
   "nombre": {
-    "es": "PDI"
+    "es": "Personal Docente e Investigador"
   },
   "filtro": "rdf:type='person'",
   "orden": 3,

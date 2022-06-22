@@ -1,6 +1,6 @@
 {
   "nombre": {
-    "es": "Invenciones"
+    "es": "Propiedad Industrial e Intelectual"
   },
   "filtro": "rdf:type='patent'&roh:isValidated='true'",
   "orden": 4,
