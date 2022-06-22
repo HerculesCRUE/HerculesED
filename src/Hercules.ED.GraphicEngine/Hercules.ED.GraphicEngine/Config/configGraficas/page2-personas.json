@@ -1,0 +1,46 @@
+{
+  "nombre": {
+    "es": "PDI"
+  },
+  "filtro": "rdf:type='person'&roh:isValidated='true'",
+  "orden": 1,
+  "identificador": "pagina3",
+  "graficas": [
+    {
+      "identificador": "grafica1",
+      "nombre": {
+        "es": "Número de personas por grupo"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "vivo:relates@@@roh:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "abreviar": true,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Personas por grupos"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#BF4858",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    }
+  ],
+  "facetas": [
+    
+  ]
+}
