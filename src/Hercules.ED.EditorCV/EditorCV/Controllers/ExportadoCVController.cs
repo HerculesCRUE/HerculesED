@@ -55,13 +55,13 @@ namespace EditorCV.Controllers
                 //Añado el archivo
                 AccionesExportacion accionesExportacion = new AccionesExportacion();
                 accionesExportacion.AddFile(_Configuracion, pCVId, nombreCV, lang, listadoId);
-                return Ok(new Models.API.Response.JsonResult() { ok=true });
+                return Ok(new Models.API.Response.JsonResult() { ok = true });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
-           
+
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace EditorCV.Controllers
                 Parallel.ForEach(pListId, new ParallelOptions { MaxDegreeOfParallelism = 6 }, keyValue =>
                 {
                     int index = tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
-                    listTabs.TryAdd(index, accionesEdicion.GetTab(pCVId, keyValue.Value, keyValue.Key, pLang));
+                    listTabs.TryAdd(index, accionesEdicion.GetTab(_Configuracion, pCVId, keyValue.Value, keyValue.Key, pLang));
                 });
 
                 return Ok(listTabs.OrderBy(x => x.Key).Select(x => (object)x.Value));
@@ -112,7 +112,7 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
-                List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId,baseUrl, timezoneOffset);
+                List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId, baseUrl, timezoneOffset);
                 return Ok(pListId);
             }
             catch (Exception ex)

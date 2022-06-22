@@ -35,7 +35,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("EnvioPRC")]
-        public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm][Required] string pIdProyecto)
+        public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm] string pIdProyecto)
         {
             try
             {

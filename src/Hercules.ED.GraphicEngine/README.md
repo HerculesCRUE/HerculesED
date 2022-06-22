@@ -135,11 +135,115 @@ Gráficas de Barras
       - xAxisID: Eje X al que está asociado. Obligatorio si es horizontal. String.
       - orden: Orden de dibujado de la dimensión. Opcional. Número.
       - colorLinea: Color en hexadecimal de la línea. Únicamente utilizar si es una dimensión de tipo line. Opcional.
-TODO:
+
+Graficas Ciculares:
+```
+ {
+      "identificador": "grafica8",
+      "nombre": {
+        "es": "IP principal de la UMU"
+      },
+      "tipo": "Circular",
+      "anchura": 13,
+      "config": {
+        "porcentual": true,
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "IP principal de la UMU"
+            },
+            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive",
+            "color": "#BF4858",
+            "colorMax": "#7CBFE3"
+          },
+          {
+            "nombre": {
+              "es": "IP principal fuera de la UMU"
+            },
+            "filtro": "roh:mainResearchers@@@rdf:member@@@roh:isActive='false'",
+            "color": "#666666"
+          }
+        ]
+      }
+    },
+```
+  - identificador: Es el identificador de la gráfica. Único. Obligatorio. String.
+  - nombre: Es el nombre o título de la gráfica. Multiidioma. Obligatorio. String.
+  - tipo: Representa el tipo de gráfica (Barras, Circular, Nodos). Obligatorio. String.
+  - anchura: Representa el ancho de la gráfica a modo de fracción, es decir, 11 es 1/1, 23 es 2/3, etc... (11, 12, 13, 14, 16, 23, 34, 38, 58). Obligatorio. Número.
+  - idGrupo: Junta las gráficas con este mismo identificador en un desplegable. Opcional. String.
+  - config: Configuración específica de la gráfica. Varía en función del tipo de gráfica. Obligatorio.
+    - porcentual: Indica si el porcentaje de cada porción deberá ser mostrado cuando se pasa el raton por encima. Opcional. Boolean
+    - dimensiones: Distintas dimensiones de la gráfica. Obligatorio.
+      - nombre: Es el nombre de la dimensión. Multiidioma. Obligatorio. String.
+      - filtro: Es el filtro de la dimensión. En caso de estar vacío ("") tomará los valores del ejeX. Obligatorio. String.
+      - calculo: Es el cálculo que aplica la dimensión para sus datos (SUM, AVG, MIN, MAX). Opcional. String.
+      - color: Es el color en hexadecimal de la dimensión. Opcional. String.
+      - colorMaximo: Crea un degradado entre este color hexadecimal y el color de la opcion anterior, se utiliza en los casos en los que el filtro devuelve más de un valor. Opcional. String
+      - orden: Orden de dibujado de la dimensión. Opcional. Número.
+
+Graficas de Nodos:
+```
+{
+      "identificador": "grafica5",
+      "nombre": {
+        "es": "Áreas temáticas de las publicaciones"
+      },
+      "tipo": "Nodos",
+      "idGrupo": "grupo3",
+      "anchura": 12,
+      "config": {
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Áreas temáticas de las publicaciones"
+            },
+            "filtro": "dc:type@@@dc:title",
+            "numMaxNodos": 10,
+            "colorNodo": "#7CBFE3",
+            "colorLinea": "#BF4858"
+          }
+        ]
+      }
+    }
+```
+  - identificador: Es el identificador de la gráfica. Único. Obligatorio. String.
+  - nombre: Es el nombre o título de la gráfica. Multiidioma. Obligatorio. String.
+  - tipo: Representa el tipo de gráfica (Barras, Circular, Nodos). Obligatorio. String.
+  - anchura: Representa el ancho de la gráfica a modo de fracción, es decir, 11 es 1/1, 23 es 2/3, etc... (11, 12, 13, 14, 16, 23, 34, 38, 58). Obligatorio. Número.
+  - idGrupo: Junta las gráficas con este mismo identificador en un desplegable. Opcional. String.
+  - config: Configuración específica de la gráfica. Varía en función del tipo de gráfica. Obligatorio
+    - dimensiones: Distintas dimensiones de la gráfica. Obligatorio.
+      - nombre: Es el nombre de la dimensión. Multiidioma. Obligatorio. String.
+      - filtro: Es el filtro de la dimensión. En caso de estar vacío ("") tomará los valores del ejeX. Obligatorio. String.
+      - calculo: Es el cálculo que aplica la dimensión para sus datos (SUM, AVG, MIN, MAX). Opcional. String.
+      - numMaxNodos: Representa la máxima cantidad de nodos que se mostrarán, quitando el resto de nodos menos relevantes. Opcional. Número
+      - colorNodo: Es el color en hexadecimal de los nodos. Obligatorio. String
+      - colorLinea: Es el color en hexadecimal de las líneas. Obligatorio. String
+
+
 
 Indicadores
 ============
+Una vez que el usuario administrador haya configurado las gráficas, el resto de usuarios van a poder verlas desde la página de Indicadores.
+En la parte superior se puede ver un menú de pestañas y el botón que despliega las facetas.
 
+![image](https://user-images.githubusercontent.com/88077103/174986969-ac547490-7612-4bc6-b2b7-3e1a03a1c335.png)
+
+Pasando a las gráficas, puede haber tres tipos de botones.
+
+![image](https://user-images.githubusercontent.com/88077103/174993662-7c0b8c0a-733a-47c3-8358-90f830019c0f.png)
+
+- Desplegable (arriba a la izquierda): Está opción únicamente se mostra cuando en la gráfica esté agregada la configuración de idGrupo. Dicha opción mostrará un listado de gráficas para poder seleccionar la que se quiera visualizar.
+
+- Lupa (arriba a la derecha): Se abrirá un popup con la gráfica ampliada.
+
+![image](https://user-images.githubusercontent.com/88077103/174994173-3eb7e90a-e757-4fc1-8b80-5211ed20ff4e.png)
+
+- Tres puntos (arriba a la derecha): Se abrirá un menú con diversas acciones.
+  - Guardar en mi panel: Permite al usuario guardarse la gráfica en "Mis indicadores" (Explicado en el siguiente apartado). 
+  - Descargar como .csv: Permite descargar los datos de la gráfica en formato .csv.
+  - Descargar como imagen .jpg: Permite descargar la gráfica como una imagen .jpg.
 
 Ejemplo de guardado de gráficas y funcionamiento de Indicadores Personales
 ==========================================================================
