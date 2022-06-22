@@ -12,6 +12,18 @@
 # Hércules ED. Configuración de las gráficas de indicadores.
 [Introducción](#introducción)
 
+[Ejemplo de configuración de las gráficas de indicadores](#ejemplo-de-configuración-de-las-gráficas-de-indicadores)
+
+[Gráficas de barras](#graficabarras)
+
+[Gráficas ciculares](#graficacircular)
+
+[Gráficas de nodos](#graficanodos)
+
+[Indicadores](#indicadores)
+
+[Ejemplo de guardado de gráficas y funcionamiento de Indicadores Personales](#ejemplo-de-guardado-de-gráficas-y-funcionamiento-de-indicadores-personales)
+
 Introducción
 ============
 
@@ -65,7 +77,7 @@ Dentro de la lista de facetas, se van a configurar cada una de las facetas que s
 
 Dentro de la lista de gráficas, se van a configurar cada una de las gráficas que se van a mostrar en la página en cuestión. La estructura sería la siguiente:
 
-Gráficas de Barras
+**Gráficas de Barras:** <a name="graficabarras"></a>
 ```
 {
       "identificador": "grafica1",
@@ -136,7 +148,7 @@ Gráficas de Barras
       - orden: Orden de dibujado de la dimensión. Opcional. Número.
       - colorLinea: Color en hexadecimal de la línea. Únicamente utilizar si es una dimensión de tipo line. Opcional.
 
-Graficas Ciculares:
+**Graficas Ciculares:** <a name="graficacircular"></a>
 ```
  {
       "identificador": "grafica8",
@@ -179,10 +191,10 @@ Graficas Ciculares:
       - filtro: Es el filtro de la dimensión. En caso de estar vacío ("") tomará los valores del ejeX. Obligatorio. String.
       - calculo: Es el cálculo que aplica la dimensión para sus datos (SUM, AVG, MIN, MAX). Opcional. String.
       - color: Es el color en hexadecimal de la dimensión. Opcional. String.
-      - colorMaximo: Crea un degradado entre este color hexadecimal y el color de la opcion anterior, se utiliza en los casos en los que el filtro devuelve más de un valor. Opcional. String
+      - colorMaximo: Crea un degradado entre este color hexadecimal y el color de la opción anterior, se utiliza en los casos en los que el filtro devuelve más de un valor. Opcional. String
       - orden: Orden de dibujado de la dimensión. Opcional. Número.
 
-Graficas de Nodos:
+**Graficas de Nodos:** <a name="graficanodos"></a>
 ```
 {
       "identificador": "grafica5",
