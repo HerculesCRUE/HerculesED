@@ -511,6 +511,7 @@ var edicionCV = {
 												<h2 class="resource-title">
 													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>													
 												</h2>
+												${this.printHtmlListItemValidacion(data)}
 												${this.printHtmlListItemEditable(data)}
 												${this.printHtmlListItemVisibilidad(data)}		
 												${this.printHtmlListItemIdiomas(data)}		
@@ -542,6 +543,19 @@ var edicionCV = {
         html += '</div>';
         return html;
     },
+	printHtmlListItemValidacion: function(data){
+		if(data.validationStatus=='pendiente'){
+			return `<div class="block-wrapper">
+						<span class="material-icons">manage_history</span>
+					</div>`;
+		}
+		if(data.validationStatus=='validado'){
+			return `<div class="block-wrapper">
+						<span class="material-icons">verified_user</span>
+					</div>`;
+		}
+		return ``;
+	},
     printHtmlListItemEditable: function(data) {
         if (!data.iseditable) {
             return `	<div class="block-wrapper">
@@ -587,12 +601,21 @@ var edicionCV = {
     printHtmlListItemAcciones: function(data, id) {
         var htmlAcciones = "";
 		
-		//Si está en validación o pendiente no se permite el envio a produccion cientifica
+		//Si la publicación está en validación o pendiente no se permite el envio a produccion cientifica
 		if(data.sendPRC){
 			htmlAcciones += `<li>
 								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
 									<span class="material-icons">send</span>
 									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_PRODUCCION_CIENTIFICA")}</span>
+								</a>
+							</li>`;
+		}
+		//Si el proyecto está en validación o pendiente no se permite el envio
+		if(data.sendValidationProject){
+			htmlAcciones += `<li>
+								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+									<span class="material-icons">send</span>
+									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_VALIDACION")}</span>
 								</a>
 							</li>`;
 		}
@@ -3639,7 +3662,7 @@ var edicionCV = {
 			that.completeTab(about,rdftype,section);
         });
 				
-		//TODO boton enviar PRC
+		//Obtener datos envio PRC
 		$('.texto.prodCientItem').off('click').on('click', function(e) {
 			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 			$('#modal-enviar-produccion-cientifica .resource-list.listView .resource-list-wrap').empty();
@@ -3653,12 +3676,30 @@ var edicionCV = {
 			var dataId = $(this)[0].dataset.id;
 			var nombreProy = $(this).closest("resource-success");
 			var fechaProy = "";
-			that.sendPRC(dataId, that.idPerson);
+			that.GetDataPRC(dataId, that.idPerson);
 		});
 		
         return;
     },
-	sendPRC: function(dataId, idPerson){		
+	sendPRC: function(idrecurso, idproyecto){
+		var formData = new FormData();
+		formData.append('pIdRecurso', idrecurso);
+		formData.append('pIdProyecto', idproyecto);
+		
+		$.ajax({
+			url: urlEnvioValidacionCV + 'EnvioPRC',
+			type: 'POST',
+			data: formData,	
+			cache: false,
+			processData: false,
+            enctype: 'multipart/form-data',
+            contentType: false,
+			success: function ( response ) {
+				
+			}
+		});
+	},
+	GetDataPRC: function(dataId, idPerson){		
 		$.ajax({
 			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
 			type: 'GET',
@@ -3672,7 +3713,7 @@ var edicionCV = {
 					html += `<article class="resource folder">
 								<div class="form-group">
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}">
+										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
 										<label class="form-check-label" for="proyecto-${contador}"></label>
 									</div>
 								</div>
@@ -3714,6 +3755,7 @@ var edicionCV = {
 				}
 				
 				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
+				operativaFormularioProduccionCientifica.formProyecto();
 			}
 		});
 	},
@@ -6264,4 +6306,52 @@ function selectionChange(e) {
     if (elem.tagName == "B") {
       button.classList.add('active');
     }
+}
+
+operativaFormularioProduccionCientifica.modal= function () {
+	var that = this;
+	this.modal_prod_cientifica.on('hide.bs.modal', function () {
+		// Status initial
+		//that.modal_prod_cientifica.find('.modal-body > .alert').show();
+		//that.formularioPublicacion.show();
+		//that.formularioPublicacion.find('.resource .form-check-input').prop('checked', false);
+		//that.formularioProyecto.hide();
+		that.formularioProyecto.find('> .alert').hide();
+		//that.formularioProyecto.find('.btn').removeClass('disabled').attr('data-dismiss', '');
+		//that.formularioProyecto.find('.resource .form-check-input').prop('checked', false);
+	});
+}
+
+operativaFormularioProduccionCientifica.formProyecto= function () {
+	var that = this;
+	that.formularioProyecto.find('> .alert').hide();
+	this.formularioProyecto.find('.btn').off('click').on('click', function () {
+		if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
+			that.formularioProyecto.find('> .alert').hide();
+			$(this).attr('data-dismiss', 'modal');
+			mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
+			
+			if($('input[name="proyecto"]:checked').length)
+			{
+				idproyecto = $('input[name="proyecto"]:checked').attr('projectId');
+			}
+			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
+			edicionCV.sendPRC(idrecurso,idproyecto);
+			
+		} else {
+			that.formularioProyecto.find('> .alert').show();
+			$(this).addClass('disabled');
+		}
+	});
+	
+	this.formularioProyecto.find('.alert-title a').off('click').on('click', function () {
+		$(this).attr('data-dismiss', 'modal');
+		mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
+		var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
+		edicionCV.sendPRC(idrecurso,'');
+	});
+
+	this.resourceList.find('.resource .form-check-inline').on('change', function () {
+		that.formularioProyecto.find('.btn').removeClass('disabled');
+	});
 }

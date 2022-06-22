@@ -105,9 +105,17 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public bool isopenaccess { get; set; }
         /// <summary>
-        /// Indica si el proyecto está validado o pendiente de validacion, de producción cientifica
+        /// Indica si se ha de mostrar el botón de envío a producción cientifica
         /// </summary>
         public bool sendPRC { get; set; }
+        /// <summary>
+        /// Indica si se ha de mostrar el botón de validación
+        /// </summary>
+        public bool sendValidationProject { get; set; }
+        /// <summary>
+        /// Indica el estado de validación
+        /// </summary>
+        public string validationStatus { get; set; }
         /// <summary>
         /// Propiedades del item
         /// </summary>

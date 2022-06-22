@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_restful import Api, Resource
 from flask_apispec import doc, use_kwargs
 from flask_apispec.views import MethodResource
@@ -35,7 +35,8 @@ app.config.update({
         plugins=[MarshmallowPlugin()]
     ),
     'APISPEC_SWAGGER_URL': '/doc-json/',  # URI to access API Doc JSON 
-    'APISPEC_SWAGGER_UI_URL': '/doc/'  # URI to access UI of API Doc
+    'APISPEC_SWAGGER_UI_URL': '/doc/',  # URI to access UI of API Doc
+    'PROPAGATE_EXCEPTIONS': True,
 })
 docs = FlaskApiSpec(app)
 
@@ -46,7 +47,7 @@ class SimilarityAddSchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type = fields.String(required=True, description="Type of the research object: 'research_paper', 'code_project', 'protocol'")
     text = fields.String(required=True, description="Concatenation of title and abstract of the RO")
-    authors = fields.String(required=True, description="Authors of the paper in a single string")
+    authors = fields.List(fields.String, required=True, description="Authors of the paper in a single string")
     thematic_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by thematic descriptors returned by the enrichment API and their probabilities.")
     specific_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
     update_ranking = fields.Bool(required=False, default=True, description="Don't update rankings and cache if False. Useful for batch loading. RebuildRankings must be called after loading ROs with update_ranking=False.")
@@ -77,10 +78,12 @@ class SimilarityAddAPI(MethodResource, Resource):
         logger.debug(kwargs)
         ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
         ro.set_text(kwargs['text'], similarity.model)
+        ro.authors = kwargs['authors']
         names = [ n for n, p in kwargs['specific_descriptors'] ]
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)
         similarity.add_ro(ro, update_ranking=True)
+        return jsonify()
 
     
 class SimilarityAddBatchAPI(MethodResource, Resource):
@@ -95,6 +98,7 @@ class SimilarityAddBatchAPI(MethodResource, Resource):
         for ro_kwargs in kwargs['batch']:
             ro = similarity.create_RO(ro_kwargs['ro_id'], ro_kwargs['ro_type'])
             ro.text = ro_kwargs['text']
+            ro.authors = ro_kwargs['authors']
             names = [ n for n, p in ro_kwargs['specific_descriptors'] ]
             probs = [ p for n, p in ro_kwargs['specific_descriptors'] ]
             ro.set_specific_descriptors(names, probs)
@@ -102,6 +106,7 @@ class SimilarityAddBatchAPI(MethodResource, Resource):
         similarity.encode_batch(batch)
         similarity.add_ros(batch, update_ranking=False)
         logger.debug("Batch of ROs added")
+        return jsonify()
 
         
 class RebuildRankingsAPI(MethodResource, Resource):
@@ -114,6 +119,7 @@ class RebuildRankingsAPI(MethodResource, Resource):
     def post(self, **kwargs):
         logger.debug(kwargs)
         similarity.rebuild_cache()
+        return jsonify()
 
         
 class SimilarityQueryAPI(MethodResource, Resource):
@@ -127,7 +133,7 @@ class SimilarityQueryAPI(MethodResource, Resource):
         logger.debug(kwargs)
         similar_ro_ids = similarity.get_ro_ranking(kwargs['ro_id'], kwargs['ro_type_target'])            
         logger.debug(f"Similar ROs: {similar_ro_ids}")
-        return jsonify(similar_ro_ids)
+        return jsonify({ 'similar_ros': similar_ro_ids })
 
 
 # Declare endpoints and documentation for the API
@@ -147,8 +153,11 @@ docs.register(SimilarityQueryAPI)
 
 @app.errorhandler(ROIdError)
 def handle_bad_request(e):
-    return f"RO not found", 404
+    return '{"error_msg": "RO not found"}', 404
 
+@app.errorhandler(ROTypeError)
+def handle_bad_request(e):
+    return '{"error_msg": "Invalid RO type"}', 400
 
 if __name__ == "__main__":
     app.run()

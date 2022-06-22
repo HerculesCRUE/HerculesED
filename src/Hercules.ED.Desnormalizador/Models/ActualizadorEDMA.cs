@@ -51,6 +51,8 @@ namespace DesnormalizadorHercules.Models
             actualizadorProject.ActualizarProyectosValidados();
             actualizadorProject.ActualizarMiembros();
             actualizadorProject.ActualizarPertenenciaGrupos();
+            actualizadorProject.ActualizarAniosInicio();
+            actualizadorProject.ActualizarAniosFin();
 
             //Documentos sin dependencias
             actualizadorDocument.ActualizarDocumentosValidados();
@@ -182,12 +184,14 @@ namespace DesnormalizadorHercules.Models
             //Persona sin dependencias                
             actualizadorPersonas.ActualizarNumeroIPProyectos(pProjects: pProjects);
             actualizadorPersonas.ActualizarIPProyectosActuales(pProjects: pProjects);
-            actualizadorPersonas.ActualizarIPProyectosHistoricos(pProjects: pProjects);
+            actualizadorPersonas.ActualizarIPProyectosHistoricos(pProjects: pProjects);            
 
             //Proyectos sin dependencias
             actualizadorProject.ActualizarProyectosValidados(pProjects: pProjects);
             actualizadorProject.ActualizarMiembros(pProjects: pProjects);
             actualizadorProject.ActualizarPertenenciaGrupos(pProjects: pProjects);
+            actualizadorProject.ActualizarAniosInicio(pProjects: pProjects);
+            actualizadorProject.ActualizarAniosFin(pProjects: pProjects);
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas(pProjects: pProjects);

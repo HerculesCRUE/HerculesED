@@ -3,6 +3,7 @@
     "es": "Publicaciones"
   },
   "filtro": "rdf:type='document'&roh:isValidated='true'",
+  "orden": 1,
   "identificador": "pagina1",
   "graficas": [
     {
@@ -204,6 +205,7 @@
       "anchura": 12,
       "config": {
         "datosNodos": true,
+        "abreviar": true,
         "orientacionVertical": false,
         "ejeX": "dc:type@@@dc:title",
         "orderDesc": false,
@@ -221,7 +223,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -254,7 +256,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -287,7 +289,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -321,7 +323,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -355,7 +357,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -388,7 +390,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }

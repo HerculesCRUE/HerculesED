@@ -181,6 +181,7 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Obtiene los filtros relacionados con las fechas.
             List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
+            listaFacetasAnios.Add("roh:yearStart");
 
             if (configModel != null)
             {
@@ -2655,7 +2656,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         }
                         else if (varActual.Equals("fiveyears"))
                         {
-                            fechaInicio = (DateTime.Now.Year - 4).ToString();
+                            fechaInicio = (DateTime.Now.Year - 5).ToString();
                             fechaFin = DateTime.Now.Year.ToString();
                         }
                         filtro.Append($@"{pVarAnterior} ");
