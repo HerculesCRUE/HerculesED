@@ -2655,7 +2655,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         }
                         else if (varActual.Equals("fiveyears"))
                         {
-                            fechaInicio = (DateTime.Now.Year - 4).ToString();
+                            fechaInicio = (DateTime.Now.Year - 5).ToString();
                             fechaFin = DateTime.Now.Year.ToString();
                         }
                         filtro.Append($@"{pVarAnterior} ");

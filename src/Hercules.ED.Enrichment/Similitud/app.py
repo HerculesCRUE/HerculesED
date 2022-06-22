@@ -47,7 +47,7 @@ class SimilarityAddSchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type = fields.String(required=True, description="Type of the research object: 'research_paper', 'code_project', 'protocol'")
     text = fields.String(required=True, description="Concatenation of title and abstract of the RO")
-    authors = fields.String(required=True, description="Authors of the paper in a single string")
+    authors = fields.List(fields.String, required=True, description="Authors of the paper in a single string")
     thematic_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by thematic descriptors returned by the enrichment API and their probabilities.")
     specific_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
     update_ranking = fields.Bool(required=False, default=True, description="Don't update rankings and cache if False. Useful for batch loading. RebuildRankings must be called after loading ROs with update_ranking=False.")
@@ -78,6 +78,7 @@ class SimilarityAddAPI(MethodResource, Resource):
         logger.debug(kwargs)
         ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
         ro.set_text(kwargs['text'], similarity.model)
+        ro.authors = kwargs['authors']
         names = [ n for n, p in kwargs['specific_descriptors'] ]
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)
@@ -97,6 +98,7 @@ class SimilarityAddBatchAPI(MethodResource, Resource):
         for ro_kwargs in kwargs['batch']:
             ro = similarity.create_RO(ro_kwargs['ro_id'], ro_kwargs['ro_type'])
             ro.text = ro_kwargs['text']
+            ro.authors = ro_kwargs['authors']
             names = [ n for n, p in ro_kwargs['specific_descriptors'] ]
             probs = [ p for n, p in ro_kwargs['specific_descriptors'] ]
             ro.set_specific_descriptors(names, probs)

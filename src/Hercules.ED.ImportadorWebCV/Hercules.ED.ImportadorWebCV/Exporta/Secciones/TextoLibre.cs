@@ -41,12 +41,6 @@ namespace ImportadorWebCV.Exporta.Secciones
                 {
                     opciones.AddRange(listaId.Where(x => x.StartsWith(cv)).Select(x => x.Split("|||").Last()));
                 }
-
-                //listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item1)).ToList();
-                //if (listadoIdentificadores.Count == 0)
-                //{
-                //    return;
-                //}
             }
             string propResumenLibre = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.resumenLibre)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFG = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b1DescripcionTFG)).Select(x => x.prop).FirstOrDefault());
