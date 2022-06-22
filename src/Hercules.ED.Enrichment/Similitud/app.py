@@ -9,6 +9,7 @@ from marshmallow import Schema, fields, ValidationError
 
 from similarity import SimilarityService, RO, Ranking, ROIdError, ROTypeError
 import ro_storage_memory
+import ro_storage_mongodb
 import ro_cache_memory
 
 import logging
@@ -59,7 +60,7 @@ class SimilarityQuerySchema(Schema):
     
 # Service-level object instances
 
-db = ro_storage_memory.MemoryROStorage()
+db = ro_storage_mongodb.MongoROStorage()
 cache = ro_cache_memory.MemoryROCache()
 similarity = SimilarityService(db, cache)
 
@@ -75,7 +76,7 @@ class SimilarityAddAPI(MethodResource, Resource):
     def post(self, **kwargs):
         logger.debug(kwargs)
         ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
-        ro.set_text(kwargs['text'])
+        ro.set_text(kwargs['text'], similarity.model)
         names = [ n for n, p in kwargs['specific_descriptors'] ]
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)

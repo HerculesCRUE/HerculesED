@@ -2266,6 +2266,35 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
                 }, 200, function () {
                     if (hacerPeticion) {
                         that.buscarFacetas();
+                        $('.indice-lista .faceta')
+                            .unbind()
+                            .click(function (e) {
+                                var filtroActual = $(this).attr('filtro');
+                                var filtros = decodeURIComponent(ObtenerHash2());
+                                var filtrosArray = filtros.split('&');
+                                filtros = '';
+                                var contieneFiltro = false;
+                                for (var i = 0; i < filtrosArray.length; i++) {
+                                    if (filtrosArray[i] != '') {
+                                        if (filtrosArray[i] == filtroActual) {
+                                            contieneFiltro = true;
+                                        } else {
+                                            filtros += filtrosArray[i] + '&';
+                                        }
+
+                                    }
+                                }
+                                if (!contieneFiltro) {
+                                    filtros += filtroActual;
+                                } else {
+                                    location.reload();
+                                }
+
+                                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                                e.preventDefault();
+
+                                metricas.pintarPagina(idPaginaActual);
+                            });
                         hacerPeticion = false;
                     }
                     $('.indice-lista ul').css({ marginLeft: 30 });
