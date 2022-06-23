@@ -351,7 +351,14 @@ namespace Hercules.ED.GraphicEngine.Models
                 List<Tuple<string, string, float>> listaTuplas = new List<Tuple<string, string, float>>();
                 SparqlObject resultadoQuery = null;
                 StringBuilder select = new StringBuilder(), where = new StringBuilder();
-                filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
+                if (!string.IsNullOrEmpty(pGrafica.config.reciproco))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX", null, pGrafica.config.reciproco));
+                }
+                else
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
+                }
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
@@ -892,7 +899,14 @@ namespace Hercules.ED.GraphicEngine.Models
                 List<Tuple<string, string, float>> listaTuplas = new List<Tuple<string, string, float>>();
                 SparqlObject resultadoQuery = null;
                 StringBuilder select = new StringBuilder(), where = new StringBuilder();
-                filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
+                if (!string.IsNullOrEmpty(pGrafica.config.reciproco))
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX", null, pGrafica.config.reciproco));
+                }
+                else
+                {
+                    filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
+                } 
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
@@ -2557,7 +2571,7 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pListaFiltros">Listado de filtros.</param>
         /// <param name="pNombreVar">Nombre a poner a la última variable.</param>
         /// <returns></returns>
-        public static List<string> ObtenerFiltros(List<string> pListaFiltros, string pNombreVar = null, List<string> pListaDates = null)
+        public static List<string> ObtenerFiltros(List<string> pListaFiltros, string pNombreVar = null, List<string> pListaDates = null, string pReciproco = null)
         {
             // Split por filtro.
             List<string> listaAux = new List<string>();
@@ -2573,6 +2587,10 @@ namespace Hercules.ED.GraphicEngine.Models
             List<string> filtrosQuery = new List<string>();
 
             // Split por salto de ontología.
+            if (!string.IsNullOrEmpty(pReciproco))
+            {
+
+            }
             int i = 0;
             foreach (string item in listaAux)
             {
@@ -2581,8 +2599,8 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     isDate = true;
                 }
+                filtrosQuery.Add(TratarParametros(item, "?s", i, pNombreVar, isDate, pReciproco));
 
-                filtrosQuery.Add(TratarParametros(item, "?s", i, pNombreVar, isDate));
                 i += 10;
             }
 
@@ -2597,11 +2615,48 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <param name="pAux">Iterador incremental.</param>
         /// <param name="pNombreVar">Nombre de la última variable.</param>
         /// <returns></returns>
-        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux, string pNombreVar = null, bool pIsDate = false)
+        public static string TratarParametros(string pFiltro, string pVarAnterior, int pAux, string pNombreVar = null, bool pIsDate = false, string pReciproco = null)
         {
             StringBuilder filtro = new StringBuilder();
             string[] filtros = pFiltro.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries);
             int i = 0;
+
+            string[] filtrosReciproco = null;
+            // TODO Revisar con más casos o ejemplos para ver si funciona totalmente bien
+            if (!string.IsNullOrEmpty(pReciproco))
+            {
+                filtrosReciproco = pReciproco.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries);
+                filtro.Append($@"?aux {filtrosReciproco[0].Split('=').FirstOrDefault()} {filtrosReciproco[0].Split('=').LastOrDefault()}. ");
+                int j = 0;
+                pVarAnterior = "?aux";
+                foreach (string filtroReciproco in filtrosReciproco)
+                {
+                    j++;
+                    if (j == 1)
+                    {
+                        continue;
+                    }
+                    int pAuxR = pAux;
+                    if (!filtroReciproco.Contains("="))
+                    {
+                        string varActual = $@"?{filtroReciproco.Substring(filtroReciproco.IndexOf(":") + 1)}{pAuxR}";
+                        filtro.Append($@"{pVarAnterior} ");
+                        filtro.Append($@"{filtroReciproco} ");
+                        // Si es el último, le asignamos el nombre que queramos.
+                        if (j == filtrosReciproco.Length)
+                        {
+                            filtro.Append($@"?s. ");
+                        }
+                        else
+                        {
+                            filtro.Append($@"{varActual}. ");
+                        }
+                        pVarAnterior = varActual;
+                        pAuxR++;
+                    }
+                }
+                pVarAnterior = "?aux";
+            }
             foreach (string parteFiltro in filtros)
             {
                 i++;
@@ -2656,7 +2711,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         }
                         else if (varActual.Equals("fiveyears"))
                         {
-                            fechaInicio = (DateTime.Now.Year - 5).ToString();
+                            fechaInicio = (DateTime.Now.Year - 4).ToString();
                             fechaFin = DateTime.Now.Year.ToString();
                         }
                         filtro.Append($@"{pVarAnterior} ");
