@@ -922,8 +922,8 @@ var metricas = {
         function ticksAbr(value) {
             const labels = data.data.labels; // Obtención de los labels.
             if (value >= 0 && value < labels.length) {
-                if (labels[value].length >= 45) {
-                    return labels[value].substring(0, 45) + "..."; // Se muestran solo los 45 primeros caractéres.
+                if (labels[value].length >= 40) {
+                    return labels[value].substring(0, 40) + "..."; // Se muestran solo los 40 primeros caractéres para que no se salga de la barra.
                 }
                 return labels[value];
             }
