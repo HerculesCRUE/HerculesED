@@ -125,8 +125,8 @@
  }
 
  .grafica:not(.small) .chartScroll {
-     /*height: 310px;*/
-     height: 273px
+     height: 318px;
+     /*height: 273px*/
  }
 
  .graph-container.vertical:not(.small) .chartScroll,
@@ -143,11 +143,12 @@
 
  div.grafica {
      display: flex;
-     margin-top: 20px;
+     margin-top: 15px;
      flex-direction: column;
      height: 100%;
-     width: 99%;
-     margin-top: 55px;
+     width: 100%;
+     overflow: hidden;
+
  }
 
  /*<div class="acciones-mapa" ${item.length != 1 ? `style="display:flex;justify-content: space-between;width: 100%;padding-left: 15px;padding-right: 15px;right:0px` : ""}">
@@ -159,6 +160,10 @@
      padding-left: 25px;
      padding-right: 25px;
      right: 0px;
+     pointer-events: none;
+ }
+ div.wrap div.acciones-mapa.showAcciones *{
+     pointer-events: all;
  }
 
  /*height 24px*/
@@ -219,6 +224,12 @@
      justify-content: space-between;
      width: 100%;
      padding: 8px;
+ }
+ .topbar-container a{
+    cursor: pointer;
+ }
+ .topbar-container span{
+    user-select: none;
  }
 
  .topbar-container * {
@@ -301,6 +312,7 @@
 
  }
 
+ /*
  body.vista-grafico .grafica.show>p {
      position: absolute;
      top: 75px;
@@ -308,17 +320,49 @@
  }
 
  body.vista-grafico .grafica.show .graficoNodos {
-     margin-top: 75px;
+    
      overflow: hidden;
  }
-
- .acciones-mapa.showAcciones {
-     z-index: 1;
+*/
+ body.listado .acciones-mapa {
+     z-index: 201;
  }
 
- body.vista-grafico article.resource > .wrap {
-     overflow: hidden;
+
+
+ body.listado div.chartLegend {
+     cursor: context-menu;
  }
-body.listado div.chartLegend{
-    cursor: context-menu; 
+ .toggleGraficas ul a:hover {
+    background-color: #f3f3f3;
+    color: #af1a2e;
 }
+ .toggleGraficas ul a.active {
+     background-color: #af1a2e;
+     color: white !important;
+ }
+
+ .toggleGraficas ul a {
+     padding: 5px;
+     border-radius: 5px;
+     margin-top: 5px;
+ }
+
+ .toggleGraficas {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    line-height: 38px;
+    border: 1px solid var(--c-gris-borde);
+    padding: 0 6px 0 6px;
+ }
+ .toggleGraficas a#dropdownMasOpciones{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #999;
+ }
+    .toggleGraficas a#dropdownMasOpciones span{
+        user-select: none;
+    }
+ .custom-css-scroll::-webkit-scrollbar { height: 6px;}

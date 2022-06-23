@@ -97,6 +97,16 @@ namespace EditorCV.Models.API.Templates
                                 }
                             );
 
+                        //ProjectAuthorization
+                        propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
+                               //Editabilidad
+                               new Utils.PropertyData()
+                               {
+                                   property = "http://w3id.org/roh/projectAuthorization",
+                                   childs = new List<Utils.PropertyData>()
+                               }
+                           );
+
                         propertyDataListItems.property = this.property;
                         return propertyDataListItems;
                     }

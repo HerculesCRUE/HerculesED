@@ -3767,7 +3767,7 @@ var edicionCV = {
 	},
     EnvioValidacion: function(dataId, idPerson){
 		var formData = new FormData();
-		formData.append('pIdProyecto', dataId);
+		formData.append('pIdRecurso', dataId);
 		formData.append('pIdPersona', idPerson);
 		formData.append('pIdAutorizacion', '');
 		
@@ -3781,6 +3781,9 @@ var edicionCV = {
             contentType: false,
 			success: function(response){
 				mostrarNotificacion('success', GetText('CV_DOCUMENTO_VALIDACION'));
+			},
+			error: function(response){
+				mostrarNotificacion('error', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
 			}
 		});
 		return;

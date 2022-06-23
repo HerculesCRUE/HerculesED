@@ -115,7 +115,9 @@ where {{
         /// <summary>
         /// Permite enviar a Producción Científica los datos necesarios para la validación.
         /// </summary>
-        /// <param name="pId">ID del documento.</param>
+        /// <param name="pConfig">Configuración.</param>
+        /// <param name="pIdRecurso">ID del recurso que apunta al documento.</param>
+        /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
         public void EnvioPRC(ConfigService pConfig, string pIdRecurso, string pIdProyecto)
         {
             string pIdDocumento = "";
