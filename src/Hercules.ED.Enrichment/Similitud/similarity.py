@@ -8,9 +8,10 @@ import pdb
 
 logger = logging.getLogger('SIMILARITY_API')
 
-MODEL_ID = 'all-MiniLM-L6-v2'
-RO_TYPES = ['research_paper', 'code_project', 'protocol']
+DEFAULT_MODEL = 'all-MiniLM-L6-v2'
+DEFAULT_DEVICE = 'cpu'
 RANKING_SIZE = 5
+RO_TYPES = ['research_paper', 'code_project', 'protocol']
 
 # Custom exceptions
 class ROTypeError(Exception):
@@ -225,12 +226,12 @@ class Ranking:
 
 class SimilarityService:
 
-    def __init__(self, db, cache):
+    def __init__(self, db, cache, model=DEFAULT_MODEL, device=DEFAULT_DEVICE):
         
         self.db = db
         self.db.connect()
         self.cache = cache
-        self.model = SentenceTransformer(MODEL_ID, device='cpu')
+        self.model = SentenceTransformer(model, device=device)
         self.rebuild_cache()
 
 

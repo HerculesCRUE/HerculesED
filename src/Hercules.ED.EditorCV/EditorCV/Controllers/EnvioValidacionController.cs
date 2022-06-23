@@ -51,7 +51,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("EnvioProyecto")]
-        public IActionResult EnvioProyecto(string pIdProyecto, string pIdPersona, string pIdAutorizacion)
+        public IActionResult EnvioProyecto([FromForm] string pIdProyecto, [FromForm] string pIdPersona, [FromForm] string pIdAutorizacion)
         {
             try
             {

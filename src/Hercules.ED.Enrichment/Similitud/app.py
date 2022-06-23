@@ -14,6 +14,7 @@ import ro_cache_memory
 
 import logging
 import json
+import os
 import pdb
 
 logging.basicConfig()
@@ -40,6 +41,23 @@ app.config.update({
 })
 docs = FlaskApiSpec(app)
 
+# config
+
+def load_conf():
+    
+    CONFDIR = os.path.dirname(os.path.realpath(__file__))
+    with open('{}/conf.json'.format(CONFDIR), 'r', encoding='utf-8') as f:
+        conf = json.load(f)
+
+    fields = ['device', 'model']
+    for fieldname in fields:
+        if fieldname not in conf:
+            raise Exception(f"Field '{fieldname}' is missing in configuration JSON")
+
+    return conf
+
+conf = load_conf()
+
 
 # Type definitions
 
@@ -58,12 +76,21 @@ class SimilarityAddBatchSchema(Schema):
 class SimilarityQuerySchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type_target = fields.String(required=True, description="Type of the similar research objects to return: 'research_paper', 'code_project', 'protocol'")
+
+def validate_descriptors(jdoc):
+    def validate_descriptor_type(dtype):
+        if dtype in jdoc:
+            for desc in jdoc[dtype]:
+                if len(desc) != 2 or type(desc[0]) != str or type(desc[1]) != float:
+                    raise ValueError(f"'{dtype}' argument is not valid")
+    validate_descriptor_type('thematic_descriptors')
+    validate_descriptor_type('specific_descriptors')
     
 # Service-level object instances
 
 db = ro_storage_mongodb.MongoROStorage()
 cache = ro_cache_memory.MemoryROCache()
-similarity = SimilarityService(db, cache)
+similarity = SimilarityService(db, cache, conf['model'], conf['device'])
 
 # Endpoint classes
 
@@ -76,6 +103,11 @@ class SimilarityAddAPI(MethodResource, Resource):
     #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def post(self, **kwargs):
         logger.debug(kwargs)
+        try:
+            validate_descriptors(kwargs)
+        except ValueError as e:
+            resp_json = '{"error_msg": "' + str(e) + '"}'
+            return Response(response=resp_json, status=422, mimetype='application/json')
         ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
         ro.set_text(kwargs['text'], similarity.model)
         ro.authors = kwargs['authors']
@@ -96,6 +128,11 @@ class SimilarityAddBatchAPI(MethodResource, Resource):
     def post(self, **kwargs):
         batch = []
         for ro_kwargs in kwargs['batch']:
+            try:
+                validate_descriptors(ro_kwargs)
+            except ValueError as e:
+                resp_json = '{"error_msg": "' + str(e) + '"}'
+                return Response(response=resp_json, status=422, mimetype='application/json')
             ro = similarity.create_RO(ro_kwargs['ro_id'], ro_kwargs['ro_type'])
             ro.text = ro_kwargs['text']
             ro.authors = ro_kwargs['authors']
@@ -145,7 +182,7 @@ api.add_resource(SimilarityQueryAPI, '/query_similar')
 
 docs.register(SimilarityAddAPI)
 docs.register(SimilarityAddBatchAPI)
-#docs.register(RebuildRankingsAPI)
+docs.register(RebuildRankingsAPI)
 docs.register(SimilarityQueryAPI)
 
 
@@ -153,11 +190,15 @@ docs.register(SimilarityQueryAPI)
 
 @app.errorhandler(ROIdError)
 def handle_bad_request(e):
-    return '{"error_msg": "RO not found"}', 404
+    return Response(response='{"error_msg": "RO not found"}',
+                    status=404,
+                    mimetype='application/json')
 
 @app.errorhandler(ROTypeError)
 def handle_bad_request(e):
-    return '{"error_msg": "Invalid RO type"}', 400
+    return Response(response='{"error_msg": "Invalid RO type"}',
+                    status=400,
+                    mimetype='application/json')
 
 if __name__ == "__main__":
     app.run()
