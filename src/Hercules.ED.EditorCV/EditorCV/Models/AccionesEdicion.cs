@@ -1329,11 +1329,7 @@ namespace EditorCV.Models
             if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) &&
                 pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
             {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
-                if (string.IsNullOrEmpty(valorPropiedad))
-                {
-                    item.sendValidationProject = true;
-                }
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();                
             }
 
             // Si el estado de validación es "pendiente".
@@ -1348,19 +1344,8 @@ namespace EditorCV.Models
             }
 
             //Boton de envío a validación de proyectos
-            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
-            {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
-                if (!string.IsNullOrEmpty(valorPropiedad))
-                {
-                    valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
-                    if (string.IsNullOrEmpty(valorPropiedad))
-                    {
-                        item.sendValidationProject = true;
-                    }
-                }
-            }
-            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && 
+                pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
                 if (!string.IsNullOrEmpty(valorPropiedad))
