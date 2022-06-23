@@ -14,6 +14,7 @@ import ro_cache_memory
 
 import logging
 import json
+import os
 import pdb
 
 logging.basicConfig()
@@ -39,6 +40,23 @@ app.config.update({
     'PROPAGATE_EXCEPTIONS': True,
 })
 docs = FlaskApiSpec(app)
+
+# config
+
+def load_conf():
+    
+    CONFDIR = os.path.dirname(os.path.realpath(__file__))
+    with open('{}/conf.json'.format(CONFDIR), 'r', encoding='utf-8') as f:
+        conf = json.load(f)
+
+    fields = ['device', 'model']
+    for fieldname in fields:
+        if fieldname not in conf:
+            raise Exception(f"Field '{fieldname}' is missing in configuration JSON")
+
+    return conf
+
+conf = load_conf()
 
 
 # Type definitions
@@ -72,7 +90,7 @@ def validate_descriptors(jdoc):
 
 db = ro_storage_mongodb.MongoROStorage()
 cache = ro_cache_memory.MemoryROCache()
-similarity = SimilarityService(db, cache)
+similarity = SimilarityService(db, cache, conf['model'], conf['device'])
 
 # Endpoint classes
 
