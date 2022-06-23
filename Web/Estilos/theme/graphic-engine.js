@@ -27,8 +27,8 @@ var metricas = {
             var splitHash = ObtenerHash2().split('~~~');
             numPagina = ObtenerHash2().split('~~~')[1];
             history.pushState('', 'New URL: ', '?' + splitHash[0]);
-        } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
-            history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
+        } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, se eliminan estos para que no se apliquen a la 2a pagina por error
+            history.pushState('', 'New URL: ', '?'); //TODO quitar esto haciendo que obtenga la pagina en la que se esta
         }
 
 
@@ -67,7 +67,7 @@ var metricas = {
         var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"  
         var arg = {};
         arg.pUserId = $('.inpt_usuarioID').attr('value');
-        if (arg.pUserId == "ffffffff-ffff-ffff-ffff-ffffffffffff") {
+        if (arg.pUserId == "ffffffff-ffff-ffff-ffff-ffffffffffff") { // Sin usuario
             $('div.row-content').append(`<div><h1>Login Required</h1></div>`);
         } else {
             // Petición para obtener los datos de la página.
@@ -204,7 +204,7 @@ var metricas = {
                     a.download = titulo + '.jpg';
                     a.click();
                 });
-                
+
                 $(controls.find("#zoomOut"))
                     .unbind()
                     .click(function (e) {
@@ -257,7 +257,7 @@ var metricas = {
                         data.options.maintainAspectRatio = false;
                     }
 
-                    if (pIdGrafica != null && pIdGrafica.includes("prc")) {
+                    if (pIdGrafica != null && pIdGrafica.includes("prc")) { //prefijo que indica porcentaje
                         data.options.plugins.tooltip = {
                             callbacks: {
                                 afterLabel: function (context) {
@@ -574,7 +574,7 @@ var metricas = {
         $.get(url, arg, function (listaData) {
             if (listaData.length == 0) {
                 if ($('div.row-content').find('div.sin-graficas').length == 0) {
-                    $('div.row-content').append(`<div class="sin-graficas"><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
+                    $('div.row-content').append(`<div class="sin-graficas"><h1>Aún no hay gráficas en esta página</h1></div>`); //TODO Cambiar
                 } metricas.engancharComportamientos();
             }
             var tmp = [];
@@ -922,8 +922,8 @@ var metricas = {
         function ticksAbr(value) {
             const labels = data.data.labels; // Obtención de los labels.
             if (value >= 0 && value < labels.length) {
-                if (labels[value].length >= 45) {
-                    return labels[value].substring(0, 45) + "..."; // Se muestran solo los 45 primeros caractéres.
+                if (labels[value].length >= 40) {
+                    return labels[value].substring(0, 40) + "..."; // Se muestran solo los 40 primeros caractéres para que no se salga de la barra.
                 }
                 return labels[value];
             }
@@ -1149,7 +1149,7 @@ var metricas = {
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
-                width = targetWidth;
+                width = copyWidth;
                 axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
 
 
@@ -1454,24 +1454,24 @@ var metricas = {
 
         // Botón de descarga.
         $('a.descargar').off('click.img').on('click.img', function (e) {
-                if ($(this).hasClass('descargarcyto')) {
-                    return;
-                }
-                // Obtención del chart usando el elemento canvas de graficas con scroll.
-                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
-                var chart = Chart.getChart(canvas);
-                // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
-                if (chart == null) {
-                    canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
-                    chart = Chart.getChart(canvas);
-                }
-                var image = chart.toBase64Image('image/jpeg', 1);
-                // Creación del elemento para empezar la descarga.
-                var a = document.createElement('a');
-                a.href = image;
-                a.download = chart.config._config.options.plugins.title.text + '.jpg';
-                a.click();
-            });
+            if ($(this).hasClass('descargarcyto')) {
+                return;
+            }
+            // Obtención del chart usando el elemento canvas de graficas con scroll.
+            var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+            var chart = Chart.getChart(canvas);
+            // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
+            if (chart == null) {
+                canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
+                chart = Chart.getChart(canvas);
+            }
+            var image = chart.toBase64Image('image/jpeg', 1);
+            // Creación del elemento para empezar la descarga.
+            var a = document.createElement('a');
+            a.href = image;
+            a.download = chart.config._config.options.plugins.title.text + '.jpg';
+            a.click();
+        });
         $('a.csv')
             .unbind()
             .click(function (e) {
@@ -1871,7 +1871,6 @@ var metricas = {
                 var canvas = parent.find('canvas#' + $(this).val());
                 if (canvas.length) {
                     var chart = Chart.getChart(canvas[0]);
-                    chart.config._config.options.animation.onProgress();
                     chart.config._config.options.animation.onProgress();
                 }
             });

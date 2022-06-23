@@ -9,7 +9,7 @@
     {
       "identificador": "grafica1",
       "nombre": {
-        "es": "Número de personas por grupo"
+        "es": "NÃºmero de personas por grupo"
       },
       "tipo": "Barras",
       "anchura": 12,
@@ -42,7 +42,7 @@
     {
       "identificador": "grafica2",
       "nombre": {
-        "es": "Número de personas por departamento"
+        "es": "NÃºmero de personas por departamento"
       },
       "tipo": "Barras",
       "anchura": 12,
@@ -65,7 +65,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
