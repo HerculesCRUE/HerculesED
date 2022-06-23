@@ -181,7 +181,6 @@ namespace Hercules.ED.GraphicEngine.Models
 
             // Obtiene los filtros relacionados con las fechas.
             List<string> listaFacetasAnios = configModel.facetas.Where(x => x.rangoAnio).Select(x => x.filtro).ToList();
-            listaFacetasAnios.Add("roh:yearStart");
 
             if (configModel != null)
             {
@@ -217,7 +216,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                     else
                     {
-                        ControlarExcepcionesBarrasY(pGrafica);
+                        //ControlarExcepcionesBarrasY(pGrafica);
                         return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates, pGrafica.config.datosNodos);
                     }
                 case EnumGraficas.Circular:
@@ -394,7 +393,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append(item);
                     }
-                    where.Append("?s roh:hasKnowledgeArea ?area. ");
+                    where.Append($@"?s {pGrafica.propCategoryPath} ?area. ");
                     where.Append("?area roh:categoryNode ?categoria. ");
                     where.Append("MINUS { ?categoria skos:narrower ?hijos } ");
                     where.Append("} ");
@@ -934,7 +933,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     {
                         where.Append(item);
                     }
-                    where.Append("?s roh:hasKnowledgeArea ?area. ");
+                    where.Append($@"?s {pGrafica.propCategoryPath} ?area. ");
                     where.Append("?area roh:categoryNode ?categoria. ");
                     where.Append("MINUS { ?categoria skos:narrower ?hijos } ");
                     where.Append("} ");
@@ -1562,7 +1561,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 {
                     where.Append(item);
                 }
-                where.Append("?s roh:hasKnowledgeArea ?area. ");
+                where.Append($@"?s {pGrafica.propCategoryPath} ?area. ");
                 where.Append("?area roh:categoryNode ?categoria. ");
                 where.Append("MINUS { ?categoria skos:narrower ?hijos } ");
                 where.Append("} ");

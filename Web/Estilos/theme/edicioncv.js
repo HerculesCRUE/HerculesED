@@ -3767,7 +3767,7 @@ var edicionCV = {
 	},
     EnvioValidacion: function(dataId, idPerson){
 		var formData = new FormData();
-		formData.append('pIdProyecto', dataId);
+		formData.append('pIdRecurso', dataId);
 		formData.append('pIdPersona', idPerson);
 		formData.append('pIdAutorizacion', '');
 		
