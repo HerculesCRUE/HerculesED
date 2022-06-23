@@ -216,7 +216,7 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                     else
                     {
-                        //ControlarExcepcionesBarrasY(pGrafica);
+                        ControlarExcepcionesBarrasY(pGrafica);
                         return CrearGraficaBarrasY(pGrafica, pFiltroBase, pFiltroFacetas, pLang, pListaDates, pGrafica.config.datosNodos);
                     }
                 case EnumGraficas.Circular:
@@ -2874,10 +2874,6 @@ namespace Hercules.ED.GraphicEngine.Models
             {
                 throw new Exception("La gráfica no tiene configuración");
             }
-            if (string.IsNullOrEmpty(pGrafica.config.ejeX))
-            {
-                throw new Exception("No está configurada la propiedad del agrupación del eje x.");
-            }
             if (pGrafica.config.yAxisPrint == null)
             {
                 throw new Exception("No está configurada la propiedad yAxisPrint");
@@ -2892,10 +2888,6 @@ namespace Hercules.ED.GraphicEngine.Models
             if (pGrafica.config == null)
             {
                 throw new Exception("La gráfica no tiene configuración");
-            }
-            if (string.IsNullOrEmpty(pGrafica.config.ejeX))
-            {
-                throw new Exception("No está configurada la propiedad del agrupación del eje x.");
             }
             if (pGrafica.config.xAxisPrint == null)
             {
