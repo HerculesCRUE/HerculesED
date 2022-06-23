@@ -182,7 +182,7 @@ api.add_resource(SimilarityQueryAPI, '/query_similar')
 
 docs.register(SimilarityAddAPI)
 docs.register(SimilarityAddBatchAPI)
-#docs.register(RebuildRankingsAPI)
+docs.register(RebuildRankingsAPI)
 docs.register(SimilarityQueryAPI)
 
 
