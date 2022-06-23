@@ -202,9 +202,12 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <exception cref="Exception"></exception>
         public static GraficaBase CrearGrafica(Grafica pGrafica, string pFiltroBase, string pFiltroFacetas, string pLang, List<string> pListaDates)
         {
-            pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
-
-
+            // Cambio los '+' para decodificar correctamente
+            if (!string.IsNullOrEmpty(pFiltroFacetas))
+            {
+                pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas.Replace("+", "simbolomasdecodificar"));
+                pFiltroFacetas = pFiltroFacetas.Replace("simbolomasdecodificar", "+");
+            }
 
             switch (pGrafica.tipo)
             {
@@ -1721,8 +1724,12 @@ namespace Hercules.ED.GraphicEngine.Models
         /// <returns></returns>
         public static Faceta GetFaceta(string pIdPagina, string pIdFaceta, string pFiltroFacetas, string pLang, bool pGetAll = false)
         {
-            // Decode de los filtros.
-            pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas);
+            // Decode de los filtros. Cambio los '+' para decodificar correctamente
+            if (!string.IsNullOrEmpty(pFiltroFacetas))
+            {
+                pFiltroFacetas = HttpUtility.UrlDecode(pFiltroFacetas.Replace("+", "simbolomasdecodificar"));
+                pFiltroFacetas = pFiltroFacetas.Replace("simbolomasdecodificar", "+");
+            }
 
             // Lectura del JSON de configuración.
             ConfigModel configModel = TabTemplates.FirstOrDefault(x => x.identificador == pIdPagina);
