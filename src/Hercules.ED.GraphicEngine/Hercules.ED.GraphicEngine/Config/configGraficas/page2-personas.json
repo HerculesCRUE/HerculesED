@@ -76,7 +76,7 @@
     {
       "identificador": "grafica6",
       "nombre": {
-        "es": "Áreas temáticas de las publicaciones"
+        "es": "Áreas temáticas de las personas"
       },
       "idGrupo": "grupo3",
       "tipo": "Barras",
@@ -98,7 +98,7 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Áreas temáticas de las publicaciones"
+              "es": "Áreas temáticas de las personas"
             },
             "filtro": "",
             "tipoDimension": "bar",
