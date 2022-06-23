@@ -102,16 +102,27 @@
                                     {
                                         string propCV = "cv";
                                         string propUser = "gnossUser";
+										string propTypeDocumentID = "typeDocumentID";
                                         foreach (Dictionary<string, string> row in item.Rows)
                                         {
-                                            if (row.ContainsKey(propCV) && row.ContainsKey(propUser))
+                                            if (row.ContainsKey(propCV) && row.ContainsKey(propUser) && row.ContainsKey(propTypeDocumentID))
                                             {
                                                 string idCV = row[propCV].Replace("http://gnoss/", "").ToLower();
                                                 string idUser = row[propUser].Replace("http://gnoss/", "").ToLower();
+												string idTypeDocument = row[propTypeDocumentID];
                                                 if(IdentidadActual.KeyUser == new Guid(idUser))
                                                 {
+													string section="http://w3id.org/roh/scientificPublications";
+													if(idTypeDocument=="SAD2")
+													{
+														section="http://w3id.org/roh/worksSubmittedConferences";
+													}else if(idTypeDocument=="SAD3")
+													{
+														section="http://w3id.org/roh/worksSubmittedSeminars";
+													}
+													
                                                     urlCV = Comunidad.Url+"/"+ Html.GetText("URLSEM","RECURSO")+"/cv/"+ row[propCV].Replace("http://gnoss/", "").ToLower();
-                                                    urlCV += "?tab=http://w3id.org/roh/scientificActivity&id=" + Model.Key.ToString().ToLower();
+                                                    urlCV += "?tab=http://w3id.org/roh/scientificActivity&id=" + Model.Key.ToString().ToLower()+"&section="+section;
                                                 }
                                             }
                                         }
@@ -591,9 +602,9 @@
                                                 string idCV = row[propCV].Replace("http://gnoss/", "").ToLower();
                                                 string idUser = row[propUser].Replace("http://gnoss/", "").ToLower();
                                                 if (IdentidadActual.KeyUser == new Guid(idUser))
-                                                {
+                                                {												
                                                     urlCV = Comunidad.Url + "/" + Html.GetText("URLSEM", "RECURSO") + "/cv/" + row[propCV].Replace("http://gnoss/", "").ToLower();
-                                                    urlCV += "?tab=researchobject-tab&id=" + Model.Key.ToString().ToLower();
+                                                    urlCV += "?tab=http://w3id.org/roh/researchObject&id=" + Model.Key.ToString().ToLower()+"&section=http://w3id.org/roh/researchObjects";
                                                 }
                                             }
                                         }
