@@ -1880,7 +1880,7 @@ namespace Hercules.ED.GraphicEngine.Models
                         itemFaceta.idTesauro = fila["categoria"].value.Substring(fila["categoria"].value.LastIndexOf("_") + 1);
                         itemFaceta.nombre = fila["nombre"].value;
                         itemFaceta.numero = Int32.Parse(fila["numero"].value);
-                        itemFaceta.filtro = $@"roh:hasKnowledgeArea@@@roh:categoryNode={fila["categoria"].value}";
+                        itemFaceta.filtro = $@"{pFacetaConf.filtro}={fila["categoria"].value}";
                         itemFaceta.childsTesauro = new List<ItemFaceta>();
                         // Asigno el nivel del item.
                         int nivel = 0;
