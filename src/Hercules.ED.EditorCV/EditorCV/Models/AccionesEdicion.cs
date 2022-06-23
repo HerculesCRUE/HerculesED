@@ -1316,7 +1316,7 @@ namespace EditorCV.Models
             //Estado de validación
             item.validationStatus = "";
             string valorPropiedad = "";
-            //valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+            //Estado de validación de documentos
             if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
@@ -1325,6 +1325,29 @@ namespace EditorCV.Models
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
             }
+            //Estado de validación para los proyectos
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) &&
+                pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
+            {
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+                if (string.IsNullOrEmpty(valorPropiedad))
+                {
+                    item.sendValidationProject = true;
+                }
+            }
+
+            // Si el estado de validación es "pendiente".
+            if (valorPropiedad == "pendiente")
+            {
+                item.validationStatus = "pendiente";
+            }
+            // Si el estado de validación es "validado".
+            if (valorPropiedad == "validado")
+            {
+                item.validationStatus = "validado";
+            }
+
+            //Boton de envío a validación de proyectos
             if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
@@ -1350,17 +1373,6 @@ namespace EditorCV.Models
                 }
             }
 
-
-            // Si el estado de validación es "pendiente".
-            if (valorPropiedad == "pendiente")
-            {
-                item.validationStatus = "pendiente";
-            }
-            // Si el estado de validación es "validado".
-            if (valorPropiedad == "validado")
-            {
-                item.validationStatus = "validado";
-            }
 
             return item;
         }
