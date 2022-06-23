@@ -382,6 +382,10 @@ var metricas = {
                 numItemsPintados++;
             });
             if (data.isDate) {
+                if (minYear == 10000 && maxYear == 0) {
+                    minYear = new Date().getFullYear();
+                    maxYear = minYear;
+                }
                 $('div[idfaceta="' + data.id + '"] #inputs_rango').append(`
                     <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker minVal" placeholder="${minYear}" value="${minYear}" name="gmd_ci_datef1" id="gmd_ci_datef1">
                     <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker maxVal" placeholder="${maxYear}" value="${maxYear}" name="gmd_ci_datef2" id="gmd_ci_datef2">
