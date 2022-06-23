@@ -74,19 +74,28 @@ var edicionCV = {
 			
 			if(getParam('tab')!=null)
 			{
-				if(getParam('id')!=null)
-				{
-					//Abrimos edición
-					$('a[internal-id="'+getParam('id')+'"]').click();
-				}
-				if(getParam('section')!=null)
+				if(getParam('section')!=null && getParam('id')==null)
 				{
 					//Abrimos creacion
 					$('div[section="'+getParam('section')+'"] a.aniadirEntidad').click();
+					//reseteamos la url
+					history.pushState(null, '', document.location.origin+document.location.pathname);
+				}
+				if(getParam('section')!=null && getParam('id')!=null)
+				{
+					//Si existe el ID abrimos edición
+					if($('a[internal-id="'+getParam('id')+'"]').length)
+					{
+						$('a[internal-id="'+getParam('id')+'"]').click();
+						history.pushState(null, '', document.location.origin+document.location.pathname);
+					}else
+					{
+						//Si no existe abrimos la seccion
+						$('div.panel-group.pmd-accordion.notLoaded[section="'+getParam('section')+'"]').click();
+					}
 				}
 				
-				//reseteamos la url
-				history.pushState(null, '', document.location.origin+document.location.pathname);
+				
 			}
         });
         return;
@@ -102,6 +111,11 @@ var edicionCV = {
 				if(data.sections.length>section+1)
 				{
 					that.completeTab(entityID,rdfType,section+1);
+				}
+				if($('a[internal-id="'+getParam('id')+'"]').length)
+				{
+					$('a[internal-id="'+getParam('id')+'"]').click();
+					history.pushState(null, '', document.location.origin+document.location.pathname);
 				}
 			}
 				
