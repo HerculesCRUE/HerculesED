@@ -9,7 +9,8 @@
 .candado-wrapper { padding-left: 14px; }
 .candado::before { content: 'lock'; font-size: 1.4rem; /*color: #ababab;*/ }
 .candado-activo::before { content: 'lock_open'; font-size: 1.4rem;/* color: #00a8ff; */}
-
+.manage-history-wrapper { padding-left: 14px; color: var(--c-texto-claro); }
+.verified-wrapper { padding-left: 14px; color: var(--c-texto-claro); }
 
 
 /**

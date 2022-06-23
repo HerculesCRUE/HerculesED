@@ -30,14 +30,16 @@ namespace Hercules.ED.GraphicEngine.Models
         public EnumGraficas tipo { get; set; }
         public int anchura { get; set; }
         public string idGrupo { get; set; }
+        public string propCategoryPath { get; set; }
         public Config config { get; set; }
     }
 
     public class Config
     {
-        public bool datosNodos { get; set; }
+        public bool datosNodos { get; set; }        
         public bool orientacionVertical { get; set; }
         public string ejeX { get; set; }
+        public string reciproco { get; set; }
         public bool rango { get; set; }
         public bool porcentual { get; set; }
         public bool abreviar { get; set; }

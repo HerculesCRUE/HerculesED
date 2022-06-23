@@ -3,7 +3,7 @@
     "es": "Proyectos"
   },
   "filtro": "rdf:type='project'&roh:isValidated='true'",
-  "orden": 1,
+  "orden": 2,
   "identificador": "pagina2",
   "graficas": [
     {
@@ -15,7 +15,7 @@
       "anchura": 23,
       "config": {
         "orientacionVertical": true,
-        "ejeX": "vivo:start",
+        "ejeX": "roh:yearStart",
         "orderDesc": false,
         "rellenarEjeX": false,
         "yAxisPrint": [
@@ -175,11 +175,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de publicaciones"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -209,11 +209,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de publicaciones"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -242,11 +242,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de publicaciones"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -275,11 +275,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Publicaciones por tipo"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -288,12 +288,12 @@
     }
   ],
   "facetas": [
-    //{
-    //  "nombre": {
-    //    "es": "Convocatorias"
-    //  },
-    //  "filtro": "roh:isSupportedBy"
-    //},
+    {
+      "nombre": {
+        "es": "Convocatorias"
+      },
+      "filtro": "roh:isSupportedBy"
+    },
     {
       "nombre": {
         "es": "Ámbito geográfico"
@@ -335,10 +335,10 @@
     },
     {
       "nombre": {
-        "es": "Años (TODO: Desnormalizar)"
-      },  
-      "filtro": "vivo:start",
-      "numeroItemsFaceta": 10
+        "es": "Años"
+      },
+      "filtro": "roh:yearStart",
+      "rangoAnio": true
     }
   ]
 }

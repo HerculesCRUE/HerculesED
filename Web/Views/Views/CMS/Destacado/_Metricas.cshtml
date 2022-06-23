@@ -15,8 +15,12 @@
 
 <input type="hidden" id="ULTIMO_ANIO" value="@Html.Translate("ULTIMO_ANIO")"/>
 <input type="hidden" id="ULTIMOS_CINCO_ANIOS" value="@Html.Translate("ULTIMOS_CINCO_ANIOS")"/>
-
-<ul class="listadoMenuPaginas nav nav-tabs" id="myTab" role="tablist"></ul>
+<div class="topbar-container">
+    <a class="btn-filtrar-movil">
+        <span class="material-icons">filter_list</span>
+    </a>
+    <ul class="listadoMenuPaginas nav nav-tabs" id="myTab" role="tablist"></ul>
+</div>
 <div class="row containerPage">
     <div class="col col-12 col-xl-3 col-facetas col-lateral izquierda">
         <div class="wrapCol">
@@ -32,7 +36,7 @@
     </div>
     <div class="col col-12 col-xl-9 col-contenido derecha">
         <div class="wrapCol">
-            <div class="col-buscador tab-content">
+            @*<div class="col-buscador tab-content">
                 <form method="post" id="formCajaBusqueda">
                     <fieldset style="display: block">
                         <legend class="nota">facetas</legend>
@@ -48,7 +52,7 @@
                         </div>
                     </fieldset>
                 </form>                            
-            </div>
+            </div>*@
             <div class="etiquetas" id="panFiltros">
                 <ul class="facetedSearch tags" id="panListadoFiltros"></ul>
             </div>                            
@@ -79,7 +83,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <p class="modal-title">@Html.Translate("GUARDAR_GRAFICA_ESPACIO_PERSONAL")</p>
-                <span class="material-icons cerrar" aria-label="Close">close</span>
+                <span class="material-icons cerrar cerrar-grafica" aria-label="Close">close</span>
             </div>
             <div class="modal-body">
                 <div class="custom-form-row">
