@@ -2,7 +2,7 @@
   "nombre": {
     "es": "Personal Docente e Investigador"
   },
-  "filtro": "rdf:type='person'",
+  "filtro": "rdf:type='person'&roh:isActive='true'",
   "orden": 3,
   "identificador": "pagina3",
   "graficas": [
@@ -15,7 +15,8 @@
       "anchura": 12,
       "config": {
         "orientacionVertical": false,
-        "ejeX": "vivo:relates@@@roh:title",
+        "ejeX": "roh:title",
+        "reciproco": "rdf:type='group'@@@vivo:relates@@@roh:roleOf",
         "orderDesc": false,
         "rellenarEjeX": false,
         "abreviar": true,
@@ -32,7 +33,7 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -74,6 +75,6 @@
     }
   ],
   "facetas": [
-    
+
   ]
 }

@@ -38,6 +38,7 @@ namespace Hercules.ED.GraphicEngine.Models
         public bool datosNodos { get; set; }
         public bool orientacionVertical { get; set; }
         public string ejeX { get; set; }
+        public string reciproco { get; set; }
         public bool rango { get; set; }
         public bool porcentual { get; set; }
         public bool abreviar { get; set; }

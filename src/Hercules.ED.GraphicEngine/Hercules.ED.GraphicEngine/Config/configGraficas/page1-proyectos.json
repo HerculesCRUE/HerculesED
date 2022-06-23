@@ -288,12 +288,12 @@
     }
   ],
   "facetas": [
-    //{
-    //  "nombre": {
-    //    "es": "Convocatorias"
-    //  },
-    //  "filtro": "roh:isSupportedBy"
-    //},
+    {
+      "nombre": {
+        "es": "Convocatorias"
+      },
+      "filtro": "roh:isSupportedBy"
+    },
     {
       "nombre": {
         "es": "Ámbito geográfico"
@@ -338,7 +338,7 @@
         "es": "Años"
       },
       "filtro": "roh:yearStart",
-      "numeroItemsFaceta": 10
+      "rangoAnio": true
     }
   ]
 }
