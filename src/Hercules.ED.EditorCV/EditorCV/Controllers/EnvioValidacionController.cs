@@ -34,6 +34,12 @@ namespace EditorCV.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Servicio de envío a Producción Científica.
+        /// </summary>
+        /// <param name="pIdRecurso">ID del recurso que apunta al documento.</param>
+        /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
+        /// <returns></returns>
         [HttpPost("EnvioPRC")]
         public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm] string pIdProyecto)
         {
@@ -50,13 +56,20 @@ namespace EditorCV.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Servicio de envío de un proyecto a validación.
+        /// </summary>
+        /// <param name="pIdRecurso">ID del recurso que apunta al proyecto.</param>
+        /// <param name="pIdPersona">ID del recurso de la persona.</param>
+        /// <param name="pIdAutorizacion">ID del recurso de la autorización.</param>
+        /// <returns></returns>
         [HttpPost("EnvioProyecto")]
-        public IActionResult EnvioProyecto([FromForm] string pIdProyecto, [FromForm] string pIdPersona, [FromForm] string pIdAutorizacion)
+        public IActionResult EnvioProyecto([FromForm] string pIdRecurso, [FromForm] string pIdPersona, [FromForm] string pIdAutorizacion)
         {
             try
             {
                 AccionesEnvioProyecto accionesProyecto = new AccionesEnvioProyecto();
-                accionesProyecto.EnvioProyecto(_Configuracion, pIdProyecto, pIdPersona, pIdAutorizacion);
+                accionesProyecto.EnvioProyecto(_Configuracion, pIdRecurso, pIdPersona, pIdAutorizacion);
             }
             catch (Exception)
             {
