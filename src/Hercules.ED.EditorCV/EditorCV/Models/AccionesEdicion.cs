@@ -833,10 +833,26 @@ namespace EditorCV.Models
                 if (propertyItem != null)
                 {
                     propertyItem.childs.Add(
-                        //Editabilidad
+                        //OpenAccess
                         new Utils.PropertyData()
                         {
                             property = UtilityCV.PropertyOpenAccess,
+                            childs = new List<Utils.PropertyData>()
+                        }
+                    );
+                }
+            }
+
+            //ProjectAuthorization
+            {
+                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+                if (propertyItem != null)
+                {
+                    propertyItem.childs.Add(
+                        //ProjectAuthorization
+                        new Utils.PropertyData()
+                        {
+                            property = "http://w3id.org/roh/projectAuthorization",
                             childs = new List<Utils.PropertyData>()
                         }
                     );
@@ -1300,7 +1316,7 @@ namespace EditorCV.Models
             //Estado de validación
             item.validationStatus = "";
             string valorPropiedad = "";
-            //valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+            //Estado de validación de documentos
             if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
@@ -1309,13 +1325,11 @@ namespace EditorCV.Models
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
             }
-            if(!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
+            //Estado de validación para los proyectos
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) &&(
+                pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV")))
             {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
-            }
-            if(!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
-            {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();                
             }
 
             // Si el estado de validación es "pendiente".
@@ -1328,6 +1342,22 @@ namespace EditorCV.Models
             {
                 item.validationStatus = "validado";
             }
+
+            //Boton de envío a validación de proyectos
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && 
+                (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV")))
+            {
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
+                if (!string.IsNullOrEmpty(valorPropiedad))
+                {
+                    valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+                    if (string.IsNullOrEmpty(valorPropiedad))
+                    {
+                        item.sendValidationProject = true;
+                    }
+                }
+            }
+
 
             return item;
         }

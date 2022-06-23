@@ -176,7 +176,7 @@
     {
       "identificador": "grafica5",
       "nombre": {
-        "es": "Áreas temáticas de las publicaciones"
+        "es": "Relaciones entre las áreas temáticas de las publicaciones"
       },
       "tipo": "Nodos",
       "idGrupo": "grupo3",
@@ -185,7 +185,7 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Áreas temáticas de las publicaciones"
+              "es": "Relaciones entre las áreas temáticas de las publicaciones"
             },
             "filtro": "dc:type@@@dc:title",
             "numMaxNodos": 10,

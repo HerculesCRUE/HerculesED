@@ -413,6 +413,10 @@ var metricas = {
                 numItemsPintados++;
             });
             if (data.isDate) {
+                if (minYear == 10000 && maxYear == 0) {
+                    minYear = new Date().getFullYear();
+                    maxYear = minYear;
+                }
                 $('div[idfaceta="' + data.id + '"] #inputs_rango').append(`
                     <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker minVal" placeholder="${minYear}" value="${minYear}" name="gmd_ci_datef1" id="gmd_ci_datef1">
                     <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker maxVal" placeholder="${maxYear}" value="${maxYear}" name="gmd_ci_datef2" id="gmd_ci_datef2">
@@ -975,8 +979,8 @@ var metricas = {
         function ticksAbr(value) {
             const labels = data.data.labels; // Obtención de los labels.
             if (value >= 0 && value < labels.length) {
-                if (labels[value].length >= 45) {
-                    return labels[value].substring(0, 45) + "..."; // Se muestran solo los 45 primeros caractéres.
+                if (labels[value].length >= 40) {
+                    return labels[value].substring(0, 40) + "..."; // Se muestran solo los 40 primeros caractéres para que no se salga de la barra.
                 }
                 return labels[value];
             }

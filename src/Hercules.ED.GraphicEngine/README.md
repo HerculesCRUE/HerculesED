@@ -244,7 +244,7 @@ En la parte superior se puede ver un menú de pestañas y el botón que desplieg
 
 Pasando a las gráficas, puede haber tres tipos de botones.
 
-![image](https://user-images.githubusercontent.com/88077103/174993662-7c0b8c0a-733a-47c3-8358-90f830019c0f.png)
+![image](https://user-images.githubusercontent.com/105039324/175277550-a70a9999-02fd-4160-9019-446150545657.png)
 
 - Desplegable (arriba a la izquierda): Está opción únicamente se mostra cuando en la gráfica esté agregada la configuración de idGrupo. Dicha opción mostrará un listado de gráficas para poder seleccionar la que se quiera visualizar.
 
