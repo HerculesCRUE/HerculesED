@@ -736,7 +736,7 @@ var metricas = {
         $('#page_' + pIdPagina + ' .grafica').each(function () {
             if ($(this).attr("tipografica").includes("nodes")) {
                 $(this).append(`
-                        <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; margin-top: 0.55em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
+                        <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                         <div class="graph-controls">
                             <ul class="no-list-style align-items-center">
                                 <li class="control zoomin-control" id="zoomIn">
@@ -865,7 +865,7 @@ var metricas = {
         $('#page_' + idPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
-                        <p id="titulo_grafica_${pPageData[index].idRecurso}" style="text-align:center; margin-top: 0.55em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
+                        <p id="titulo_grafica_${pPageData[index].idRecurso}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                         <div class="graph-controls">
                             <ul class="no-list-style align-items-center">
                                 <li class="control zoomin-control" id="zoomIn">
@@ -2067,7 +2067,7 @@ var metricas = {
                 if (idgrafica.includes("nodes")) {
                     ctx = $(`<div class="graficoNodos" id="grafica_${idPaginaActual}_${pIdGrafica}" style=" height:${$(modalContent).height() - 130}px;"></div>`)
                     parent.append(`
-                            <p id="grafica_${idPaginaActual}_${pIdGrafica}" style="text-align:center;margin-top: 0.55em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
+                            <p id="grafica_${idPaginaActual}_${pIdGrafica}" style="text-align:center;margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                             <div class="graph-controls">
                                 <ul class="no-list-style align-items-center">
                                     <li class="control zoomin-control" id="zoomIn">
