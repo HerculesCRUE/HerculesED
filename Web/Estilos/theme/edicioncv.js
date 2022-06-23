@@ -3781,6 +3781,9 @@ var edicionCV = {
             contentType: false,
 			success: function(response){
 				mostrarNotificacion('success', GetText('CV_DOCUMENTO_VALIDACION'));
+			},
+			error: function(response){
+				mostrarNotificacion('error', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
 			}
 		});
 		return;
