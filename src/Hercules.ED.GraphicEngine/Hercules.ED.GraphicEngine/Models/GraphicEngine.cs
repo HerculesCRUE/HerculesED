@@ -686,7 +686,10 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                     else
                     {
-                        resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                        if (!string.IsNullOrEmpty(pGrafica.config.ejeX))
+                        {
+                            resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                        }
                     }
                 }
 
@@ -696,7 +699,10 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
                 else
                 {
-                    valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
+                    if (!string.IsNullOrEmpty(pGrafica.config.ejeX))
+                    {
+                        valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
+                    }
                 }
             }
             #endregion
@@ -908,7 +914,7 @@ namespace Hercules.ED.GraphicEngine.Models
                 else
                 {
                     filtros.AddRange(ObtenerFiltros(new List<string>() { pGrafica.config.ejeX }, "ejeX"));
-                } 
+                }
                 filtros.AddRange(ObtenerFiltros(new List<string>() { pFiltroBase }));
                 if (!string.IsNullOrEmpty(pFiltroFacetas))
                 {
@@ -1169,7 +1175,10 @@ namespace Hercules.ED.GraphicEngine.Models
                     }
                     else
                     {
-                        resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                        if (!string.IsNullOrEmpty(pGrafica.config.ejeX))
+                        {
+                            resultadosDimension[item.Key] = item.Value.OrderBy(x => x.Item1).ToList();
+                        }
                     }
                 }
 
@@ -1179,7 +1188,10 @@ namespace Hercules.ED.GraphicEngine.Models
                 }
                 else
                 {
-                    valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item));
+                    if (!string.IsNullOrEmpty(pGrafica.config.ejeX))
+                    { 
+                        valuesEje = new HashSet<string>(valuesEje.OrderBy(item => item)); 
+                    }
                 }
             }
             #endregion
