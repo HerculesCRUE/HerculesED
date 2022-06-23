@@ -74,7 +74,7 @@
       }
     },
     {
-      "identificador": "grafica6",
+      "identificador": "grafica3",
       "nombre": {
         "es": "Áreas temáticas de las personas"
       },
@@ -111,6 +111,12 @@
     }
   ],
   "facetas": [
-
+    {
+      "nombre": {
+        "es": "Áreas Temáticas"
+      },
+      "filtro": "vivo:hasResearchArea@@@roh:categoryNode",
+      "tesauro": true
+    }
   ]
 }
