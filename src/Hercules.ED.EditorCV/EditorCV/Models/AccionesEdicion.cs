@@ -1326,8 +1326,8 @@ namespace EditorCV.Models
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
             }
             //Estado de validación para los proyectos
-            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) &&
-                pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) &&(
+                pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV")))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();                
             }
@@ -1345,7 +1345,7 @@ namespace EditorCV.Models
 
             //Boton de envío a validación de proyectos
             if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && 
-                pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
+                (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV")))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
                 if (!string.IsNullOrEmpty(valorPropiedad))
