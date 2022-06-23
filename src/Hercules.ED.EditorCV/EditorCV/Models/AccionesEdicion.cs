@@ -833,10 +833,26 @@ namespace EditorCV.Models
                 if (propertyItem != null)
                 {
                     propertyItem.childs.Add(
-                        //Editabilidad
+                        //OpenAccess
                         new Utils.PropertyData()
                         {
                             property = UtilityCV.PropertyOpenAccess,
+                            childs = new List<Utils.PropertyData>()
+                        }
+                    );
+                }
+            }
+
+            //ProjectAuthorization
+            {
+                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+                if (propertyItem != null)
+                {
+                    propertyItem.childs.Add(
+                        //ProjectAuthorization
+                        new Utils.PropertyData()
+                        {
+                            property = "http://w3id.org/roh/projectAuthorization",
                             childs = new List<Utils.PropertyData>()
                         }
                     );
@@ -1309,14 +1325,31 @@ namespace EditorCV.Models
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
             }
-            if(!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
             {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
+                if (!string.IsNullOrEmpty(valorPropiedad))
+                {
+                    valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+                    if (string.IsNullOrEmpty(valorPropiedad))
+                    {
+                        item.sendValidationProject = true;
+                    }
+                }
             }
-            if(!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
             {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
+                if (!string.IsNullOrEmpty(valorPropiedad))
+                {
+                    valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
+                    if (string.IsNullOrEmpty(valorPropiedad))
+                    {
+                        item.sendValidationProject = true;
+                    }
+                }
             }
+
 
             // Si el estado de validación es "pendiente".
             if (valorPropiedad == "pendiente")
