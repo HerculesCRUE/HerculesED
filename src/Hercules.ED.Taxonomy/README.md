@@ -1,5 +1,9 @@
 # Conversión del Excel de la taxonomía en un fichero .ttl.
 
+La documentación acerca de la taxonomía unificada y sus mapeos se puede conultar en el análisis funcional del proyecto:
+[Análisis de taxonomías](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534598)
+[Taxonomía unificada de descriptores temáticos para Hércules](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534599)
+
 ## Definición de los ficheros 
 En este fragmento de código se define de que Excel se van a extraer los datos (df) y en donde se van a almacenar (file). *Si se quiere cambiar el fichero Excel inicial o el .ttl final debe hacerse en estas líneas.* 
 ```
