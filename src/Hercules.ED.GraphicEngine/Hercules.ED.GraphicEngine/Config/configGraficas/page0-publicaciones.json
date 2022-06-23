@@ -179,6 +179,7 @@
         "es": "Relaciones entre las áreas temáticas de las publicaciones"
       },
       "tipo": "Nodos",
+      "propCategoryPath": "roh:hasKnowledgeArea",
       "idGrupo": "grupo3",
       "anchura": 12,
       "config": {
@@ -202,6 +203,7 @@
       },
       "idGrupo": "grupo3",
       "tipo": "Barras",
+      "propCategoryPath": "roh:hasKnowledgeArea",
       "anchura": 12,
       "config": {
         "datosNodos": true,

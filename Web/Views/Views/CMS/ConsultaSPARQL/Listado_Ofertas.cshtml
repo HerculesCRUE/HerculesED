@@ -70,41 +70,111 @@
                                                         <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones" style="will-change: transform;">
                                                             <p class="dropdown-title">Acciones</p>
                                                             <ul class="no-list-style">
-                                                                <li>
-                                                                    <a class="item-dropdown" href="@Comunidad.Url/nueva-oferta-tecnologica?id=@oferta.id">
-                                                                        <span class="material-icons">create</span>
-                                                                        <span class="texto">@Html.Translate("EDITAR")</span>
-                                                                    </a>
-                                                                </li>
-                                                                    @{
-                                                                        string idEstadoOFerta = "";
-                                                                        string txtEnviar = "";
-                                                                        if (oferta.availability == "http://gnoss.com/items/offerstate_001")
-                                                                        {
-                                                                            idEstadoOFerta = "http://gnoss.com/items/offerstate_002";
-                                                                            txtEnviar = Html.Translate("ENVIAR_REVISION");
-                                                                        } else if(oferta.availability == "http://gnoss.com/items/offerstate_002") {
-                                                                            idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
-                                                                            txtEnviar = Html.Translate("ENVIAR_BORRADOR");
-                                                                        }
+                                                                
+                                                                @{
 
-                                                                        if (idEstadoOFerta != "")
-                                                                        {
-                                                                            <li>
-                                                                                <a class="item-dropdown" href="javascript:cambiarEstado('@oferta.id','@idEstadoOFerta', '@oferta.availability')">
-                                                                                    <span class="material-icons">send</span>
-                                                                                    <span class="texto">@txtEnviar</span>
-                                                                                </a>
-                                                                            </li>
-                                                                        }
+                                                                    if (oferta.actUser == oferta.members)
+                                                                    {
+                                                                        <li>
+                                                                            <a class="item-dropdown" href="@Comunidad.Url/nueva-oferta-tecnologica?id=@oferta.id">
+                                                                                <span class="material-icons">create</span>
+                                                                                <span class="texto">@Html.Translate("EDITAR")</span>
+                                                                            </a>
+                                                                        </li>
                                                                     }
 
-                                                                <li>
-                                                                    <a class="item-dropdown" href="javascript: void(0)" data-toggle="modal" data-target="#modal-eliminar-oferta-confirmacion">
-                                                                        <span class="material-icons">delete</span>
-                                                                        <span class="texto" onclick="currentId='@oferta.id'" >@Html.Translate("BORRAR")</span>
-                                                                    </a>
-                                                                </li>
+                                                                    string HtmlRes = "";
+                                                                    List<Tuple<string, string>> estados = new();
+                                                                    string idEstadoOFerta = "";
+                                                                    string txtEnviar = "";
+
+                                                                    switch (oferta.availability) 
+                                                                    {
+                                                                        case "http://gnoss.com/items/offerstate_001":
+                                                                        // Es el creador de la oferta
+                                                                            // Puede pasar la oferta a revisión
+                                                                            if (oferta.actUser == oferta.members) 
+                                                                            {
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_002";
+                                                                                txtEnviar = Html.Translate("ENVIAR_REVISION");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+
+                                                                            }
+                                                                            break;
+                                                                        case "http://gnoss.com/items/offerstate_002":
+                                                                        // Es el creador de la oferta
+                                                                            // Puede pasar la oferta a borrador
+                                                                            if (oferta.actUser == oferta.members || oferta.isOtriManager == "true") 
+                                                                            {
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
+                                                                                txtEnviar = Html.Translate("ENVIAR_BORRADOR");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+
+                                                                            }
+                                                                                // Es el gestor otri
+                                                                            // Puede pasar la oferta a borrador
+                                                                            if (oferta.isOtriManager == "true")
+                                                                            {
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_003";
+                                                                                txtEnviar = Html.Translate("VALIDAR");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_004";
+                                                                                txtEnviar = Html.Translate("DENEGAR");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+                                                                            }
+                                                                            break;
+                                                                        case "http://gnoss.com/items/offerstate_003":
+                                                                            if (oferta.isOtriManager == "true")
+                                                                            {
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+                                                                                txtEnviar = Html.Translate("ARCHIVAR");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
+                                                                                txtEnviar = Html.Translate("ENVIAR_BORRADOR");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+                                                                            }
+                                                                            break;
+                                                                        case "http://gnoss.com/items/offerstate_004":
+                                                                            if (oferta.actUser == oferta.members) 
+                                                                            {
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
+                                                                                txtEnviar = Html.Translate("ENVIAR_BORRADOR");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+
+                                                                            }
+                                                                            if (oferta.isOtriManager == "true")
+                                                                            {
+                                                                                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+                                                                                txtEnviar = Html.Translate("ARCHIVAR");
+                                                                                estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
+                                                                            }
+                                                                            break;
+
+                                                                    }
+
+
+                                                                    foreach (var e in estados)
+                                                                    {
+                                                                        <li>
+                                                                            <a class="item-dropdown" href="javascript:cambiarEstado('@oferta.id','@e.Item1', '@oferta.availability')">
+                                                                                <span class="material-icons">send</span>
+                                                                                <span class="texto">@e.Item2</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    }
+
+                                                                    if (oferta.actUser == oferta.members)
+                                                                    {
+                                                                        <li>
+                                                                            <a class="item-dropdown" href="javascript: void(0)" data-toggle="modal" data-target="#modal-eliminar-oferta-confirmacion">
+                                                                                <span class="material-icons">delete</span>
+                                                                                <span class="texto" onclick="currentId='@oferta.id'" >@Html.Translate("BORRAR")</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    } 
+                                                                }
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -193,7 +263,7 @@
                 arg.estado = estado
                 arg.estadoActual = estadoActual
                 arg.pIdGnossUser = "@IdentidadActual.KeyUser"
-                $.get(url, arg, function (data) {
+                $.post(url, arg, function (data) {
                     location.reload()
                 });
             }
@@ -224,6 +294,9 @@
         public string framingSector { get; set; }
         public string availability { get; set; }
         public string colorEstado { get; set; }
+        public string actUser { get; set; }
+        public string members { get; set; }
+        public string isOtriManager { get; set; }
 
         public Offer()
         {
@@ -237,6 +310,9 @@
             availability = "";
             framingSector = "";
             matureState = "";
+            actUser = "";
+            members = "";
+            isOtriManager = "";
         }
 
         public Offer(System.Data.DataRow fila)
@@ -254,6 +330,17 @@
                 this.availability = fila["availability"].ToString();
                 this.framingSector = fila["framingSector"].ToString();
                 this.matureState = fila["matureState"].ToString();
+                this.actUser = fila["actUser"].ToString();
+                this.members = fila["members"].ToString();
+
+            } catch (Exception e ) {}
+
+            try
+            {
+                if (!fila.IsNull("isOtriManager"))
+                {
+                    this.isOtriManager = fila["isOtriManager"].ToString();
+                }
 
             } catch (Exception e ) {}
 
@@ -274,5 +361,6 @@
             }
             return fecha;
         }
+
     }
 }
