@@ -545,13 +545,13 @@ var edicionCV = {
     },
 	printHtmlListItemValidacion: function(data){
 		if(data.validationStatus=='pendiente'){
-			return `<div class="block-wrapper">
+			return `<div class="manage-history-wrapper">
 						<span class="material-icons">manage_history</span>
 					</div>`;
 		}
 		if(data.validationStatus=='validado'){
-			return `<div class="block-wrapper">
-						<span class="material-icons">verified_user</span>
+			return `<div class="verified-wrapper">
+						<span class="material-icons-outlined">verified_user</span>
 					</div>`;
 		}
 		return ``;
