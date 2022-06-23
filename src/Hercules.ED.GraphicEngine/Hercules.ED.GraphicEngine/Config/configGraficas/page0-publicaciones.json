@@ -176,16 +176,17 @@
     {
       "identificador": "grafica5",
       "nombre": {
-        "es": "Áreas temáticas de las publicaciones"
+        "es": "Relaciones entre las áreas temáticas de las publicaciones"
       },
       "tipo": "Nodos",
+      "propCategoryPath": "roh:hasKnowledgeArea",
       "idGrupo": "grupo3",
       "anchura": 12,
       "config": {
         "dimensiones": [
           {
             "nombre": {
-              "es": "Áreas temáticas de las publicaciones"
+              "es": "Relaciones entre las áreas temáticas de las publicaciones"
             },
             "filtro": "dc:type@@@dc:title",
             "numMaxNodos": 10,
@@ -202,6 +203,7 @@
       },
       "idGrupo": "grupo3",
       "tipo": "Barras",
+      "propCategoryPath": "roh:hasKnowledgeArea",
       "anchura": 12,
       "config": {
         "datosNodos": true,

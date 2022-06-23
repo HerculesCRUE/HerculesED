@@ -1,21 +1,22 @@
 {
   "nombre": {
-    "es": "PDI"
+    "es": "Personal Docente e Investigador"
   },
-  "filtro": "rdf:type='person'&roh:isValidated='true'",
+  "filtro": "rdf:type='person'&roh:isActive='true'",
   "orden": 3,
   "identificador": "pagina3",
   "graficas": [
     {
       "identificador": "grafica1",
       "nombre": {
-        "es": "N�mero de personas por grupo"
+        "es": "Número de personas por grupo"
       },
       "tipo": "Barras",
       "anchura": 12,
       "config": {
         "orientacionVertical": false,
-        "ejeX": "vivo:relates@@@roh:title",
+        "ejeX": "roh:title",
+        "reciproco": "rdf:type='group'@@@vivo:relates@@@roh:roleOf",
         "orderDesc": false,
         "rellenarEjeX": false,
         "abreviar": true,
@@ -32,7 +33,76 @@
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica2",
+      "nombre": {
+        "es": "Número de personas por departamento"
+      },
+      "tipo": "Barras",
+      "anchura": 12,
+      "config": {
+        "orientacionVertical": false,
+        "ejeX": "vivo:departmentOrSchool@@@dc:title",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "abreviar": true,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Personas por departamento"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica3",
+      "nombre": {
+        "es": "Áreas temáticas de las personas"
+      },
+      "idGrupo": "grupo3",
+      "tipo": "Barras",
+      "propCategoryPath": "vivo:hasResearchArea",
+      "anchura": 12,
+      "config": {
+        "datosNodos": true,
+        "abreviar": true,
+        "orientacionVertical": false,
+        "ejeX": "",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Áreas temáticas de las personas"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -41,6 +111,12 @@
     }
   ],
   "facetas": [
-    
+    {
+      "nombre": {
+        "es": "Áreas Temáticas"
+      },
+      "filtro": "vivo:hasResearchArea@@@roh:categoryNode",
+      "tesauro": true
+    }
   ]
 }

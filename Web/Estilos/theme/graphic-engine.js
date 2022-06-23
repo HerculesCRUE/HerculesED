@@ -14,6 +14,7 @@ var idGraficaActual = "";
 var tituloActual;
 var tamanioActual;
 var ordenActual;
+var TAMANIO_GRAFICA_MIN = 318;
 
 var numPagina = 0;
 // Lista de páginas.
@@ -27,8 +28,8 @@ var metricas = {
             var splitHash = ObtenerHash2().split('~~~');
             numPagina = ObtenerHash2().split('~~~')[1];
             history.pushState('', 'New URL: ', '?' + splitHash[0]);
-        } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, 
-            history.pushState('', 'New URL: ', '?'); //TOOD quitar esto haciendo que obtenga la pagina en la que se esta
+        } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, se eliminan estos para que no se apliquen a la 2a pagina por error
+            history.pushState('', 'New URL: ', '?'); //TODO quitar esto haciendo que obtenga la pagina en la que se esta
         }
 
 
@@ -67,7 +68,7 @@ var metricas = {
         var url = url_servicio_graphicengine + "GetPaginasUsuario"; //"https://localhost:44352/GetPaginasUsuario"  
         var arg = {};
         arg.pUserId = $('.inpt_usuarioID').attr('value');
-        if (arg.pUserId == "ffffffff-ffff-ffff-ffff-ffffffffffff") {
+        if (arg.pUserId == "ffffffff-ffff-ffff-ffff-ffffffffffff") { // Sin usuario
             $('div.row-content').append(`<div><h1>Login Required</h1></div>`);
         } else {
             // Petición para obtener los datos de la página.
@@ -104,6 +105,8 @@ var metricas = {
 
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
+
+            console.log(data);
             if (!ctx) {
                 if (!pIdRecurso) {
                     ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
@@ -111,13 +114,13 @@ var metricas = {
                     ctx = document.getElementById(pIdRecurso);
                 }
             }
-            // Controla si el objeto es de ChartJS o Cytoscape.
-            var combo = $(ctx).parents("article").find("select");
+
+            var combo = $(ctx).parents("article").find(".toggleGraficas ul.no-list-style");
             var graficaContenedor = $(ctx).parent();
 
 
 
-
+            // Controla si el objeto es de ChartJS o Cytoscape.
             if ("container" in data) {
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
@@ -127,18 +130,28 @@ var metricas = {
                 data.ready = function () { window.cy = this };
                 var cy = cytoscape(data);
 
-                var combo = $(ctx).parents("article").find("select");
+                var combo = $(ctx).parents("article").find(".toggleGraficas ul.no-list-style");
                 var titulo = data.title;
                 if (pTitulo) {
                     titulo = pTitulo;
                 }
                 if (combo) { //para graficas agrupadas 
 
+
+                    /*
+                    <a value="grafica_123_123" class="item-dropdown guardar">
+                        <span class="material-icons">assessment</span>
+                        <span class="texto">Titulo</span>
+                    </a>
+                    */
                     //find the option with the value of the selected value of the combo
-                    var selectedOption = combo.find('option[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
-                    if (selectedOption.length == 0) {
+                    var selectedOption = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
+                    if (true || selectedOption.length == 0) {
                         combo.append(`
-                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
+                        <a value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
+                            <span class="material-icons">bubble_chart</span>
+                            <span class="texto">${titulo}</span>
+                        </a>
                     `)
                     }
                 }
@@ -204,7 +217,7 @@ var metricas = {
                     a.download = titulo + '.jpg';
                     a.click();
                 });
-                
+
                 $(controls.find("#zoomOut"))
                     .unbind()
                     .click(function (e) {
@@ -229,11 +242,29 @@ var metricas = {
                     data.options.plugins.title.text = pTitulo;
                 }
                 if (combo) {
-                    var option = $(combo).find("option[value='grafica_" + pIdPagina + "_" + pIdGrafica + "']");
+                    var tipo = "";
+                    switch (data.type) {
+                        case "bar":
+                            if (data.isHorizontal){
+                                tipo = "bar_chart"
+                            }else{
+                                tipo = "align_horizontal_left"
+                              
+                            }
+                            break;
+                        case "pie":
+                            tipo = "pie_chart";
+                        
+                    }
+              
+                    var option = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
                     if (option.length === 0) {
                         combo.append(`
-                        <option value="${"grafica_" + pIdPagina + "_" + pIdGrafica}">${titulo}</options>
-                    `)
+                            <a value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
+                                <span class="material-icons">${tipo}</span>
+                                <span class="texto">${titulo}</span>
+                            </a>
+                        `)
                     }
                 }
                 // Plugin para color de fondo, le pongo el color blanco.
@@ -257,7 +288,7 @@ var metricas = {
                         data.options.maintainAspectRatio = false;
                     }
 
-                    if (pIdGrafica != null && pIdGrafica.includes("prc")) {
+                    if (pIdGrafica != null && pIdGrafica.includes("prc")) { //prefijo que indica porcentaje
                         data.options.plugins.tooltip = {
                             callbacks: {
                                 afterLabel: function (context) {
@@ -382,6 +413,10 @@ var metricas = {
                 numItemsPintados++;
             });
             if (data.isDate) {
+                if (minYear == 10000 && maxYear == 0) {
+                    minYear = new Date().getFullYear();
+                    maxYear = minYear;
+                }
                 $('div[idfaceta="' + data.id + '"] #inputs_rango').append(`
                     <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker minVal" placeholder="${minYear}" value="${minYear}" name="gmd_ci_datef1" id="gmd_ci_datef1">
                     <input title="Año" type="number" min="${minYear}" max="${maxYear}" autocomplete="off" class="filtroFacetaFecha hasDatepicker maxVal" placeholder="${maxYear}" value="${maxYear}" name="gmd_ci_datef2" id="gmd_ci_datef2">
@@ -503,12 +538,25 @@ var metricas = {
                 tmp += `<div class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "100"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
+            /*
+            ${item.length != 1 ? `
+            <select class="chartMenu js-select2" href="javascript: void(0);" style="width:" ></select>`: ""}
+            */
             $('#page_' + pPageData.id + '.containerPage').find('.resource-list-wrap').append(`
                 <article class="resource span${item[0].anchura}"> 
                     <div class="wrap" >
                         <div class="acciones-mapa ${item.length != 1 ? 'showAcciones' : ''}" >
                             ${item.length != 1 ? `
-                            <select class="chartMenu js-select2" href="javascript: void(0);" style="width:" ></select>`: ""}
+                            <div class="toggleGraficas">
+                                <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
+                                    <span class="material-icons">sync_alt</span>
+                                </a>
+                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-left" aria-labelledby="dropdownMasOpciones">
+                                        <p class="dropdown-title">Gráficas</p>
+                                        <ul class="no-list-style">
+                                        </ul>
+                                    </div>
+                            </div>`: ""}
                             <div class="wrap">
                                 <div class="zoom">
                                     <a href="javascript: void(0);"   data-toggle="modal">
@@ -574,7 +622,7 @@ var metricas = {
         $.get(url, arg, function (listaData) {
             if (listaData.length == 0) {
                 if ($('div.row-content').find('div.sin-graficas').length == 0) {
-                    $('div.row-content').append(`<div class="sin-graficas"><h1>Te quedaste sin gráficas en esta pagina :c</h1></div>`); //TODO Cambiar
+                    $('div.row-content').append(`<div class="sin-graficas"><h1>Aún no hay gráficas en esta página</h1></div>`); //TODO Cambiar
                 } metricas.engancharComportamientos();
             }
             var tmp = [];
@@ -602,8 +650,17 @@ var metricas = {
                     <article class="resource span${item[0].anchura}"> 
                         <div class="wrap" >
                             <div class="acciones-mapa ${item.length != 1 ? "showAcciones" : ""}">
-                                ${item.length != 1 ? `
-                                <select class="chartMenu js-select2" href="javascript: void(0);" ></select>`: ""}
+                            ${item.length != 1 ? `
+                                <div class="toggleGraficas">
+                                    <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
+                                        <span class="material-icons">sync_alt</span>
+                                    </a>
+                                    <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-left" aria-labelledby="dropdownMasOpciones">
+                                            <p class="dropdown-title">Gráficas</p>
+                                            <ul class="no-list-style">
+                                            </ul>
+                                        </div>
+                                </div>`: ""}
                                 <div class="wrap">
                                     <div class="zoom">
                                         <a href="javascript: void(0);"   data-toggle="modal">
@@ -679,7 +736,7 @@ var metricas = {
         $('#page_' + pIdPagina + ' .grafica').each(function () {
             if ($(this).attr("tipografica").includes("nodes")) {
                 $(this).append(`
-                        <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                         <div class="graph-controls">
                             <ul class="no-list-style align-items-center">
                                 <li class="control zoomin-control" id="zoomIn">
@@ -695,7 +752,7 @@ var metricas = {
             } else if (!$(this).attr("tipografica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" >
-                    <div class="chartScroll">
+                    <div class="chartScroll custom-css-scroll">
                         <div class="chartAreaWrapper">
                             <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}"></canvas>
                         </div>
@@ -808,7 +865,7 @@ var metricas = {
         $('#page_' + idPagina + ' .grafica').each(function () {
             if ($(this).attr("idgrafica").includes("nodes")) {
                 $(this).append(`
-                        <p id="titulo_grafica_${pPageData[index].idRecurso}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                        <p id="titulo_grafica_${pPageData[index].idRecurso}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                         <div class="graph-controls">
                             <ul class="no-list-style align-items-center">
                                 <li class="control zoomin-control" id="zoomIn">
@@ -824,7 +881,7 @@ var metricas = {
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" >
-                    <div class="chartScroll" style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:273px;">
+                    <div class="chartScroll custom-css-scroll " style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:${TAMANIO_GRAFICA_MIN}px;">
                         <div class="chartAreaWrapper">
                             <canvas width = "600" height = "250" id="${pPageData[index].idRecurso}"></canvas>
                         </div>
@@ -922,8 +979,8 @@ var metricas = {
         function ticksAbr(value) {
             const labels = data.data.labels; // Obtención de los labels.
             if (value >= 0 && value < labels.length) {
-                if (labels[value].length >= 45) {
-                    return labels[value].substring(0, 45) + "..."; // Se muestran solo los 45 primeros caractéres.
+                if (labels[value].length >= 40) {
+                    return labels[value].substring(0, 40) + "..."; // Se muestran solo los 40 primeros caractéres para que no se salga de la barra.
                 }
                 return labels[value];
             }
@@ -932,15 +989,14 @@ var metricas = {
         // Si el canvas no supera el tamaño del contenedor, no se hace scroll.
 
         var modalBody = $(graficaContainer).parents(".modal-body");
-        //si la grafica es horizontal y su altura es menor a 273 o si es vertical y su ancho es menor a su contenedor no necesita scroll 
-        if ((canvasSize < (modalBody.length != 0 ? $(window).height() - 230 : 273) && horizontal) || (canvasSize < (modalBody.length != 0 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
+        //si la grafica es horizontal y su altura es menor a (310 si no esta en zoom, tamaño de ventana - 270 si esta en zoom ) o si es vertical y su ancho es menor a (su contenedor si no tiene zoom, 1110 si tiene zoom) no necesita scroll 
+        if ((canvasSize < (modalBody.length != 0 ? $(window).height() - 230 : TAMANIO_GRAFICA_MIN) && horizontal) || (canvasSize < (modalBody.length != 0 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
             if (barSize < 100) {
                 $(ctx).parents(".modal-content").css("display", "block");
             }
-            //scrollContainer.style.height = "auto";
             graficaContainer.classList.add("small");
             if (modalBody.length == 0) {
-                chartAreaWrapper.style.height = "273px"; // TODO: Tamaño
+                chartAreaWrapper.style.height = TAMANIO_GRAFICA_MIN + "px";
             } else {
                 chartAreaWrapper.style.height = "100%";
             }
@@ -1019,7 +1075,6 @@ var metricas = {
             if (!pIdGrafica.includes("circular")) {
                 data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                 $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
-                    //metricas.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
                     myChart.update();
                 });
             }
@@ -1034,12 +1089,14 @@ var metricas = {
                     });
                 } else {
                     $(scrollContainer).animate({ scrollLeft: $(chartAreaWrapper).width() - $(scrollContainer).width() }, 6000);
-
+                    // Se detiene la animacion al hacer click en el scroll o al pulsar la rueda del raton.
                     $(scrollContainer).mousedown((e) => {
-                        if (scrollContainer.clientHeight <= e.offsetY) {
+                        if (e.button == 1  || scrollContainer.clientHeight <= e.offsetY) {
                             $(scrollContainer).stop();
                         }
                     });
+                  
+
                 }
 
 
@@ -1048,10 +1105,11 @@ var metricas = {
         }
 
     },
+    //funcion que se encarga de actualizar el tamaño de los ejes y el scroll en caso de reescalado. tambien los pinta al generarse la grafica
     reDrawChart: function (myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal = false) {
 
         /* TODO - Actualizar el tamaño de las barras dependiendo de los datasets visibles.
-        myChart.data.datasets.forEach((dataset, index) => {
+        myChart.data.datasets.forEach((dataset, index) => { // esto casi funciona, pero hace cosas raras
             dataset['barThickness'] = 50/(myChart.getVisibleDatasetCount());
         })
         */
@@ -1111,6 +1169,7 @@ var metricas = {
         var width = copyWidth;
         var height = horizontal ? axisHeight + 4 : copyHeight;
         var ctx;
+        // (Preparamos el eje superior o izquierdo.) 
 
         if (mainAxis) {
             ctx = mainAxis[0].getContext('2d');
@@ -1132,7 +1191,7 @@ var metricas = {
             ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
         }
 
-        // Preparamos el eje inferior.
+        // Preparamos el eje inferior o derecho.
         if (secondaryAxis) {
             copyWidth = myChart.boxes[2]?.width; //anchura del eje
 
@@ -1149,7 +1208,7 @@ var metricas = {
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
-                width = targetWidth;
+                width = copyWidth;
                 axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
 
 
@@ -1210,15 +1269,11 @@ var metricas = {
     engancharComportamientos: function (cyto = null) {
         var that = this;
         //este codigo se asegura que el item seleccionado en los menus es el que esta mostrandose. 
-        var menus = $("select.chartMenu");
-        menus.each((index, menu) => { //por cada menu en la pagina
+        var menus = $(".toggleGraficas");
+        menus.each((index, menu) => { //recorre todos los menus 
             var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica"); //Obtiene la id de la grafica visible
-            //$(menu).parents("article div.wrap").find("div.hide").css("display", "none"); //Oculta todas las graficas
-            $(menu).val("grafica_" + idPaginaActual + "_" + selectedID); // y la selecciona en el menu
+            $(menu).find("a[value='" + "grafica_" + idPaginaActual + "_" + selectedID + "']").addClass("active"); //Añade la clase active al item que esta visible
         });
-
-
-        iniciarSelects2.init(); // Se inicializa la libreria selects2.
 
         $(".faceta-date-range .ui-slider").slider({
             range: true,
@@ -1444,34 +1499,34 @@ var metricas = {
                     chart.setDatasetVisibility(id, true);
                 }
 
-                try { // Hay problemas con el gráfico de líneas, si falla se repinta el chart.
+                try { // Hay problemas con el gráfico de líneas + grafico de barras stackeado, si falla se repinta el chart.
                     chart.update();
-                    chart.redraw();
                 } catch (e) {
+                    console.log(e);
                     chart.draw();
                 }
             });
 
         // Botón de descarga.
         $('a.descargar').off('click.img').on('click.img', function (e) {
-                if ($(this).hasClass('descargarcyto')) {
-                    return;
-                }
-                // Obtención del chart usando el elemento canvas de graficas con scroll.
-                var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
-                var chart = Chart.getChart(canvas);
-                // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
-                if (chart == null) {
-                    canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
-                    chart = Chart.getChart(canvas);
-                }
-                var image = chart.toBase64Image('image/jpeg', 1);
-                // Creación del elemento para empezar la descarga.
-                var a = document.createElement('a');
-                a.href = image;
-                a.download = chart.config._config.options.plugins.title.text + '.jpg';
-                a.click();
-            });
+            if ($(this).hasClass('descargarcyto')) {
+                return;
+            }
+            // Obtención del chart usando el elemento canvas de graficas con scroll.
+            var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
+            var chart = Chart.getChart(canvas);
+            // Obtención del chart usando el elemento canvas de graficas sin scroll y de Chart.js
+            if (chart == null) {
+                canvas = $(this).parents('div.acciones-mapa').parents("div.wrap").find("div.grafica canvas");
+                chart = Chart.getChart(canvas);
+            }
+            var image = chart.toBase64Image('image/jpeg', 1);
+            // Creación del elemento para empezar la descarga.
+            var a = document.createElement('a');
+            a.href = image;
+            a.download = chart.config._config.options.plugins.title.text + '.jpg';
+            a.click();
+        });
         $('a.csv')
             .unbind()
             .click(function (e) {
@@ -1841,24 +1896,33 @@ var metricas = {
             });
         */
         //menu para cambiar entre graficas
-        $("select.chartMenu")
+        $(".toggleGraficas ul a")
             .unbind()
-            .change(function (e) {
+            .click(function (e) {
+                // Establecemos la grafica seleccionada como activa en el menu
+                $(this).parent().find(".active").removeClass("active");
+                $(this).addClass("active");
+                // enconntramos la grafica que esta siendo mostrada
                 var parent = $(this).parents('div.wrap');
-                var shown = parent.find('div.show');
-                shown.css('opacity', '0');
+                var shown = parent.find('div.grafica.show');
+                // y la ocultamos
+                shown.css('opacity', '0'); // display none causa problemas con redrawChart por que intenta modifica un elemento sin altura
                 shown.css('position', 'absolute');
-
                 shown.removeClass('show');
                 shown.addClass('hide');
-                var selected = parent.find('#' + $(this).val()).parents('div.hide');
-                if (selected.length) {
+
+                // ahora buscamos la grafica que se quiere mostrar
+                var selected = parent.find('#' + $(this).attr("value")).parents('div.hide');
+                if (selected.length) { // si la grafica existe
+                    // la mostramos
                     selected.css('display', 'flex');
                     selected.css('opacity', '1');
                     selected.css('position', 'relative');
                     selected.css('width', '100%');
                     selected.removeClass('hide');
                     selected.addClass('show');
+
+
                     if (selected.attr('idgrafica').includes('nodes')) {
                         selected.parents('article').find('a#img').addClass('descargarcyto');
                         selected.parents('article').find('a#img').removeClass('descargar');
@@ -1868,12 +1932,13 @@ var metricas = {
                         metricas.engancharComportamientos();
                     }
                 }
-                var canvas = parent.find('canvas#' + $(this).val());
+                /* TODO testear sin esto
+                var canvas = parent.find('canvas#' + $(this).attr("value"));
                 if (canvas.length) {
                     var chart = Chart.getChart(canvas[0]);
-                    chart.config._config.options.animation.onProgress();
-                    chart.config._config.options.animation.onProgress();
-                }
+                    // ejecutamos el redraw para reescalar la grafica en caso que sea necesario.
+                    chart.config._config.options.animation.onProgress(); 
+                }*/
             });
 
         //boton del pop-up con la grafica escalada
@@ -1884,7 +1949,7 @@ var metricas = {
                 var canvas = $(this).parents('div.wrap').find('div.grafica.show canvas') || $(this).parents('div.wrap').find('div.chartAreaWrapper canvas');
                 var idgrafica = (canvas).parents('div.grafica').attr("tipografica") || (canvas).parents('div.grafica').attr("idgrafica");
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
-                parent.removeClass('small horizontal vertical');
+                parent.removeClass('small horizontal vertical'); // se le quitan los estilos que podria tener
                 var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
                 var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
@@ -2002,7 +2067,7 @@ var metricas = {
                 if (idgrafica.includes("nodes")) {
                     ctx = $(`<div class="graficoNodos" id="grafica_${idPaginaActual}_${pIdGrafica}" style=" height:${$(modalContent).height() - 130}px;"></div>`)
                     parent.append(`
-                            <p id="grafica_${idPaginaActual}_${pIdGrafica}" style="text-align:center; width: 100%; font-weight: bold; color: #6F6F6F; font-size: 0.90em;"></p>
+                            <p id="grafica_${idPaginaActual}_${pIdGrafica}" style="text-align:center;margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                             <div class="graph-controls">
                                 <ul class="no-list-style align-items-center">
                                     <li class="control zoomin-control" id="zoomIn">
@@ -2018,19 +2083,7 @@ var metricas = {
                 } else {
                     ctx = $(`<canvas id="grafica_${idPaginaActual}_${pIdGrafica}" width = "600" height = "250"></canvas>`);
 
-
-                    if (!(idgrafica.includes("circular"))) {
-                        modalContent.css({ display: 'none' });
-                        parent.append(`
-                            <div class="chartWrapper">
-                                <div class="chartScroll" style="height:${$(modalContent).height() - 130}px;">
-                                    <div  class="chartAreaWrapper" >
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                    } else {
-
+                    if (idgrafica.includes("circular")) {
                         var chartWrapper;
                         parent.append(`
                             <div class="chartAreaWrapper">
@@ -2039,6 +2092,18 @@ var metricas = {
                         chartWrapper.css({ height: '100%' });
                         chartWrapper.css({ width: $(modalContent).height() - 200 });
                         chartWrapper.parent().css({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
+
+                    } else {
+                        modalContent.css({ display: 'none' });
+                        parent.append(`
+                            <div class="chartWrapper">
+                                <div class="chartScroll custom-css-scroll" style="height:${$(modalContent).height() - 130}px;">
+                                    <div  class="chartAreaWrapper" >
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            `);
                     }
                     parent.find('div.chartAreaWrapper').append(ctx);
                 }

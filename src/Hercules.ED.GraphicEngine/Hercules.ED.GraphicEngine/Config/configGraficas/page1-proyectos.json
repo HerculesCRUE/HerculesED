@@ -175,11 +175,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de publicaciones"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -209,11 +209,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de publicaciones"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -242,11 +242,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Número de publicaciones"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -275,11 +275,11 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Publicaciones por tipo"
+              "es": "Número de proyectos"
             },
             "filtro": "",
             "tipoDimension": "bar",
-            "color": "#BF4858",
+            "color": "#7CBFE3",
             "xAxisID": "x1",
             "orden": 1
           }
@@ -288,12 +288,12 @@
     }
   ],
   "facetas": [
-    //{
-    //  "nombre": {
-    //    "es": "Convocatorias"
-    //  },
-    //  "filtro": "roh:isSupportedBy"
-    //},
+    {
+      "nombre": {
+        "es": "Convocatorias"
+      },
+      "filtro": "roh:isSupportedBy"
+    },
     {
       "nombre": {
         "es": "Ámbito geográfico"
@@ -338,7 +338,7 @@
         "es": "Años"
       },
       "filtro": "roh:yearStart",
-      "numeroItemsFaceta": 10
+      "rangoAnio": true
     }
   ]
 }

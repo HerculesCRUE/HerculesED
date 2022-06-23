@@ -558,21 +558,21 @@ var edicionCV = {
 	},
     printHtmlListItemEditable: function(data) {
         if (!data.iseditable) {
-            return `	<div class="block-wrapper">
-                            <span class="material-icons">block</span>
-                        </div>`;
+			return `<div class="block-wrapper">
+						<span class="material-icons">block</span>
+					</div>`;
         }
 		return '';
     },
     printHtmlListItemVisibilidad: function(data) {
         if (data.ispublic) {
-            return `	<div class="visibility-wrapper">
-							<div class="con-icono-before eye"></div>
-						</div>`;
+            return `<div class="visibility-wrapper">
+						<div class="con-icono-before eye"></div>
+					</div>`;
         } else {
-            return `	<div class="visibility-wrapper">
-							<div class="con-icono-before visibility-activo"></div>
-						</div>`;
+            return `<div class="visibility-wrapper">
+						<div class="con-icono-before visibility-activo"></div>
+					</div>`;
         }
     },
     printHtmlListItemIdiomas: function(data) {
@@ -613,9 +613,9 @@ var edicionCV = {
 		//Si el proyecto está en validación o pendiente no se permite el envio
 		if(data.sendValidationProject){
 			htmlAcciones += `<li>
-								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+								<a class="item-dropdown" data-toggle="modal">
 									<span class="material-icons">send</span>
-									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_VALIDACION")}</span>
+									<span class="texto validacionItem" data-id="${id}" >${GetText("ENVIAR_VALIDACION")}</span>
 								</a>
 							</li>`;
 		}
@@ -3679,6 +3679,12 @@ var edicionCV = {
 			that.GetDataPRC(dataId, that.idPerson);
 		});
 		
+		$('.texto.validacionItem').off('click').on('click', function(e) {
+			var dataId = $(this)[0].dataset.id;
+			
+			that.EnvioValidacion(dataId, that.idPerson);			
+		});
+		
         return;
     },
 	sendPRC: function(idrecurso, idproyecto){
@@ -3759,7 +3765,30 @@ var edicionCV = {
 			}
 		});
 	},
-    validarFormulario: function(formulario, contenedor) {
+    EnvioValidacion: function(dataId, idPerson){
+		var formData = new FormData();
+		formData.append('pIdRecurso', dataId);
+		formData.append('pIdPersona', idPerson);
+		formData.append('pIdAutorizacion', '');
+		
+		$.ajax({
+			url: urlEnvioValidacionCV + 'EnvioProyecto',
+			type: 'POST',
+			data: formData,		
+			cache: false,
+			processData: false,
+            enctype: 'multipart/form-data',
+            contentType: false,
+			success: function(response){
+				mostrarNotificacion('success', GetText('CV_DOCUMENTO_VALIDACION'));
+			},
+			error: function(response){
+				mostrarNotificacion('error', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
+			}
+		});
+		return;
+	},
+	validarFormulario: function(formulario, contenedor) {
         var that = this;
         //Validamos los campos obligatorios
         var camposObligatorios = [];
