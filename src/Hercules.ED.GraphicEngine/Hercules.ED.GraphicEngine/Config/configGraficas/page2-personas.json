@@ -72,6 +72,42 @@
           }
         ]
       }
+    },
+    {
+      "identificador": "grafica6",
+      "nombre": {
+        "es": "Áreas temáticas de las publicaciones"
+      },
+      "idGrupo": "grupo3",
+      "tipo": "Barras",
+      "propCategoryPath": "vivo:hasResearchArea",
+      "anchura": 12,
+      "config": {
+        "datosNodos": true,
+        "abreviar": true,
+        "orientacionVertical": false,
+        "ejeX": "",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Áreas temáticas de las publicaciones"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
     }
   ],
   "facetas": [
