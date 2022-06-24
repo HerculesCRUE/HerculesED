@@ -50,6 +50,10 @@ class ROStorage(ABC):
         pass
 
     @abstractmethod
+    def get_ro_ids(self) -> list:
+        pass
+
+    @abstractmethod
     def has_ro(self, ro_id) -> bool:
         pass
 
@@ -361,12 +365,15 @@ class SimilarityService:
         if ro.text == old_ro.text:
             # text unmodified, just update the RO in DB
             self.db.update_ro(ro)
-            logger.debug("Text unmodified")
         else:
             # text modified, delete and add it again
             self.delete_ro(ro.id)
             self.add_ro(ro, update_ranking=True)
-            logger.debug("Text modified")
+
+
+    def get_ro_ids(self) -> list:
+
+        return self.db.get_ro_ids()
         
         
     def get_ro_ranking(self, ro_id: str, target_ro_type: str) -> list:

@@ -34,7 +34,11 @@ class MongoROStorage(similarity.ROStorage):
         if jro is None:
             raise similarity.ROIdError()
         return self.json_to_ro(jro)
-
+    
+    def get_ro_ids(self) -> list:
+        ro_cursor = self.db.ro.find({}, {'_id':1})
+        return [ jro['_id'] for jro in ro_cursor ]
+    
     def has_ro(self, ro_id) -> bool:
         return self.db.ro.find_one({'_id': ro_id}) is not None
 
