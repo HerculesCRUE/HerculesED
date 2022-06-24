@@ -84,7 +84,7 @@ Respuesta:
 {}
 ```
 
-## query_similar (GET)
+## query_similar (POST)
 
 Este método devuelve los diez RO más similares al RO de entrada. Se puede limitar el tipo de ROs a devolver (solo artículos científicos, protocolos…).
 
