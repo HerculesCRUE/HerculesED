@@ -44,6 +44,9 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             if (preimportar)
             {
+                //TODO - eliminar
+                foreach(var tz in TimeZoneInfo.GetSystemTimeZones())
+                mResourceApi.Log.Info(tz.Id);
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
                 listaAux.Add( new SubseccionItem(0, entityBBDD.id, entityXML.properties));
                 return listaAux;
