@@ -61,7 +61,7 @@ conf = load_conf()
 
 # Type definitions
 
-class SimilarityAddSchema(Schema):
+class ROSchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type = fields.String(required=True, description="Type of the research object: 'research_paper', 'code_project', 'protocol'")
     text = fields.String(required=True, description="Concatenation of title and abstract of the RO")
@@ -70,13 +70,13 @@ class SimilarityAddSchema(Schema):
     specific_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
     update_ranking = fields.Bool(required=False, default=True, description="Don't update rankings and cache if False. Useful for batch loading. RebuildRankings must be called after loading ROs with update_ranking=False.")
     
-class SimilarityDeleteSchema(Schema):
+class ROIdSchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     
-class SimilarityAddBatchSchema(Schema):
-    batch = fields.List(fields.Nested(SimilarityAddSchema))
+class BatchSchema(Schema):
+    batch = fields.List(fields.Nested(ROSchema))
     
-class SimilarityQuerySchema(Schema):
+class QuerySchema(Schema):
     ro_id = fields.String(required=True, description="ID of the research object")
     ro_type_target = fields.String(required=True, description="Type of the similar research objects to return: 'research_paper', 'code_project', 'protocol'")
 
@@ -97,13 +97,12 @@ similarity = SimilarityService(db, cache, conf['model'], conf['device'])
 
 # Endpoint classes
 
-class SimilarityAddAPI(MethodResource, Resource):
+class RO_API(MethodResource, Resource):
     
     #decorators = [auth.login_required]
-    @doc(description='Hercules similarity API: Add new research objects.',
+    @doc(description='Hercules similarity API: Add a new research object.',
          tags=['Hercules', 'similarity'])
-    @use_kwargs(SimilarityAddSchema, location='json')
-    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
+    @use_kwargs(ROSchema, location='json')
     def post(self, **kwargs):
         logger.debug(kwargs)
         try:
@@ -120,27 +119,10 @@ class SimilarityAddAPI(MethodResource, Resource):
         similarity.add_ro(ro, update_ranking=True)
         return jsonify()
 
-
-class SimilarityDeleteAPI(MethodResource, Resource):
-        
-    #decorators = [auth.login_required]
-    @doc(description='Hercules similarity API: Delete a research object.',
-         tags=['Hercules', 'similarity'])
-    @use_kwargs(SimilarityDeleteSchema, location='query')
-    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
-    def delete(self, **kwargs):
-        logger.debug(kwargs)
-        similarity.delete_ro(kwargs['ro_id'])
-        return jsonify()
-
-    
-class SimilarityUpdateAPI(MethodResource, Resource):
-        
     #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Update a research object.',
          tags=['Hercules', 'similarity'])
-    @use_kwargs(SimilarityAddSchema, location='json')
-    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
+    @use_kwargs(ROSchema, location='json')
     def put(self, **kwargs):
         logger.debug(kwargs)
         try:
@@ -156,15 +138,23 @@ class SimilarityUpdateAPI(MethodResource, Resource):
         ro.set_specific_descriptors(names, probs)
         similarity.update_ro(ro)
         return jsonify()
+    
+    #decorators = [auth.login_required]
+    @doc(description='Hercules similarity API: Delete a research object.',
+         tags=['Hercules', 'similarity'])
+    @use_kwargs(ROIdSchema, location='query')
+    def delete(self, **kwargs):
+        logger.debug(kwargs)
+        similarity.delete_ro(kwargs['ro_id'])
+        return jsonify()
 
     
-class SimilarityAddBatchAPI(MethodResource, Resource):
+class ROCollection_API(MethodResource, Resource):
     
     #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Add a batch of research objects.',
          tags=['Hercules', 'similarity'])
-    @use_kwargs(SimilarityAddBatchSchema, location='json')
-    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
+    @use_kwargs(BatchSchema, location='json')
     def post(self, **kwargs):
         batch = []
         for ro_kwargs in kwargs['batch']:
@@ -185,39 +175,33 @@ class SimilarityAddBatchAPI(MethodResource, Resource):
         logger.debug("Batch of ROs added")
         return jsonify()
 
-
-class SimilarityGetAllAPI(MethodResource, Resource):
-    
     #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Retrieve all RO ids.',
          tags=['Hercules', 'similarity'])
     @use_kwargs({}, location='query')
-    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def get(self, **kwargs):
         ids = similarity.get_ro_ids()
         return jsonify(ids)
     
         
-class RebuildRankingsAPI(MethodResource, Resource):
+class RebuildRankings_API(MethodResource, Resource):
     
     #decorators = [auth.login_required]
     @doc(description='Rebuilds cache and all the rankings of similar ROs.',
          tags=['Hercules', 'similarity'])
     @use_kwargs({}, location='json')
-    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
     def post(self, **kwargs):
         logger.debug(kwargs)
         similarity.rebuild_cache()
         return jsonify()
 
         
-class SimilarityQueryAPI(MethodResource, Resource):
+class Similar_API(MethodResource, Resource):
     
     #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Query similar ROs.',
          tags=['Hercules', 'similarity'])
-    @use_kwargs(SimilarityQuerySchema, location='json')
-    #@marshal_with(SimilarityQueryResponseSchema, description="")  # marshalling with marshmallow
+    @use_kwargs(QuerySchema, location='json')
     def post(self, **kwargs):
         logger.debug(kwargs)
         similar_ro_ids = similarity.get_ro_ranking(kwargs['ro_id'], kwargs['ro_type_target'])            
@@ -227,21 +211,15 @@ class SimilarityQueryAPI(MethodResource, Resource):
 
 # Declare endpoints and documentation for the API
 
-api.add_resource(SimilarityAddAPI, '/add_ro')
-api.add_resource(SimilarityDeleteAPI, '/delete_ro')
-api.add_resource(SimilarityUpdateAPI, '/update_ro')
-api.add_resource(SimilarityAddBatchAPI, '/add_batch')
-api.add_resource(SimilarityGetAllAPI, '/get_all')
-api.add_resource(RebuildRankingsAPI, '/rebuild_rankings')
-api.add_resource(SimilarityQueryAPI, '/query_similar')
+api.add_resource(RO_API, '/ro')
+api.add_resource(ROCollection_API, '/ro-collection')
+api.add_resource(RebuildRankings_API, '/rebuild-rankings')
+api.add_resource(Similar_API, '/similar')
 
-docs.register(SimilarityAddAPI)
-docs.register(SimilarityDeleteAPI)
-docs.register(SimilarityUpdateAPI)
-docs.register(SimilarityAddBatchAPI)
-docs.register(SimilarityGetAllAPI)
-docs.register(RebuildRankingsAPI)
-docs.register(SimilarityQueryAPI)
+docs.register(RO_API)
+docs.register(ROCollection_API)
+docs.register(RebuildRankings_API)
+docs.register(Similar_API)
 
 
 # Error handlers
