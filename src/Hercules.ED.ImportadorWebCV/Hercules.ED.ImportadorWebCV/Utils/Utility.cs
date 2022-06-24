@@ -1903,7 +1903,25 @@ namespace Utils
             {
                 //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
                 DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
-                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+                try
+                {
+                    dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+                }
+                catch (InvalidTimeZoneException itze)
+                {
+                    mResourceApi.Log.Error(itze.Message);
+                    return dateTime2.ToString("yyyyMMdd000000");
+                }
+                catch (TimeZoneNotFoundException tznfe)
+                {
+                    mResourceApi.Log.Error(tznfe.Message);
+                    return dateTime2.ToString("yyyyMMdd000000");
+                }
+                catch (Exception e)
+                {
+                    mResourceApi.Log.Error(e.Message);
+                    return dateTime2.ToString("yyyyMMdd000000");
+                }
 
                 return dateTime2.ToString("yyyyMMdd000000");
             }
@@ -1924,7 +1942,25 @@ namespace Utils
         {
             //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
             DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
-            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+            try
+            {
+                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+            }
+            catch (InvalidTimeZoneException itze)
+            {
+                mResourceApi.Log.Error(itze.Message);
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (TimeZoneNotFoundException tznfe)
+            {
+                mResourceApi.Log.Error(tznfe.Message);
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error(e.Message);
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
 
             return dateTime2.ToString("yyyyMMdd000000");
         }
@@ -1939,7 +1975,26 @@ namespace Utils
         {
             //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
             DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
-            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+            try
+            {
+                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+            }
+            catch (InvalidTimeZoneException itze)
+            {
+                mResourceApi.Log.Error(itze.Message);
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (TimeZoneNotFoundException tznfe)
+            {
+                mResourceApi.Log.Error(tznfe.Message);
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error(e.Message);
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+
 
             return dateTime2.ToString("yyyyMMdd000000");
         }

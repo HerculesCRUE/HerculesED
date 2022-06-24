@@ -2664,6 +2664,10 @@ var edicionCV = {
         data.pUrlPdf = documento;
 
         MostrarUpdateProgress();
+		
+		//TODO
+		var ul = $('#modal-editar-entidad-0').find('.formulario-edicion');
+		conseguirTesauro('researcharea', lang, '', ul, false, false);
 
         $.post(urlEdicionCV + 'EnrichmentTopics', data, function(data) {
             // Borrar TAGS y ETIQUETAS enriquecidas precargadas.
@@ -2967,7 +2971,7 @@ var edicionCV = {
             MostrarUpdateProgress();
 			var edit = $(this).hasClass('edit');
 			
-			//TODO
+			// Mostrar el tesauro
 			var listadoInputSeleccionados = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('.item.added').find('input');
 			var listadoValoresSeleccionados = "";
 			for(var i = 0; i < listadoInputSeleccionados.length; i++)
@@ -2983,10 +2987,8 @@ var edicionCV = {
 				var tesauro = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('ul.listadoTesauro.partial')[0].getAttribute('thesaurusID');
 			}
 			if(ul.length != 0 && tesauro.length != 0){
-				MostrarUpdateProgress();
-				conseguirTesauro(tesauro, lang, listadoValoresSeleccionados, ul, edit);
+				conseguirTesauro(tesauro, lang, listadoValoresSeleccionados, ul, edit, true);
 			}
-			
 			
 			
             if ($(this).closest('.entityauxauthorlist').length > 0) {
@@ -6365,7 +6367,7 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 	});
 }
 
-function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit){
+function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit, mostrarModal){
 	$.ajax({
 		url: urlEdicionCV + "GetTesaurus",
 		data:{
@@ -6378,9 +6380,8 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 			ul.removeClass('partial');
 			ul.empty();
 			ul.append(edicionCV.printThesaurusItemsByParent(listadoValoresSeleccionados, response[0], itemsHijo, 0));
-			pintadoTesauro(ul, edit);
+			pintadoTesauro(ul, edit, mostrarModal);
 			edicionCV.engancharComportamientosCV();
-			OcultarUpdateProgress();
 		}, 
 		error: function(response){
 			
@@ -6388,7 +6389,7 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 	});
 }
 
-function pintadoTesauro(elementoActual, edit){
+function pintadoTesauro(elementoActual, edit, mostrarModal){
 	var modalPopUp = elementoActual.closest('.modal-top').attr('id')
 	if (modalPopUp == 'modal-editar-entidad') {
 		modalPopUp = 'modal-editar-entidad-0'
@@ -6396,8 +6397,10 @@ function pintadoTesauro(elementoActual, edit){
 		modalPopUp = 'modal-editar-entidad-' + (parseInt(modalPopUp.substring(21)) + 1);
 	}
 	modalPopUp = '#' + modalPopUp;
-	$(modalPopUp).modal('show');
-
+	if(mostrarModal!=false){
+		$(modalPopUp).modal('show');
+	}
+	
 	//IDS
 	var contenedor = elementoActual.closest('.entityauxcontainer');
 	var idTemp = $(contenedor).attr('idtemp');
