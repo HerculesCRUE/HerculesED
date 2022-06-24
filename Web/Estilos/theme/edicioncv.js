@@ -2983,6 +2983,7 @@ var edicionCV = {
 				var tesauro = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('ul.listadoTesauro.partial')[0].getAttribute('thesaurusID');
 			}
 			if(ul.length != 0 && tesauro.length != 0){
+				MostrarUpdateProgress();
 				conseguirTesauro(tesauro, lang, listadoValoresSeleccionados, ul, edit);
 			}
 			
@@ -6379,6 +6380,7 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 			ul.append(edicionCV.printThesaurusItemsByParent(listadoValoresSeleccionados, response[0], itemsHijo, 0));
 			pintadoTesauro(ul, edit);
 			edicionCV.engancharComportamientosCV();
+			OcultarUpdateProgress();
 		}, 
 		error: function(response){
 			
