@@ -106,7 +106,7 @@ var metricas = {
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
 
-            console.log(data);
+
             if (!ctx) {
                 if (!pIdRecurso) {
                     ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
@@ -139,19 +139,31 @@ var metricas = {
 
 
                     /*
-                    <a value="grafica_123_123" class="item-dropdown guardar">
-                        <span class="material-icons">assessment</span>
-                        <span class="texto">Titulo</span>
-                    </a>
+                    var option = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
+                    var canvasOrder = combo.parents('.wrap').find("canvas#grafica_" + pIdPagina + "_" + pIdGrafica);
+                    var parent = canvasOrder.parents('div.grafica');
+                    if (option.length === 0) {
+                        combo.append(`
+                            <a order=${parent.attr("order")} value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
+                                <span class="material-icons">${tipo}</span>
+                                <span class="texto">${titulo}</span>
+                            </a>
+                        `)
+                    }
                     */
                     //find the option with the value of the selected value of the combo
+
+
+
                     var selectedOption = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
-                    if (true || selectedOption.length == 0) {
+                    var canvasOrder = combo.parents('.wrap').find("div#grafica_" + pIdPagina + "_" + pIdGrafica);
+                    var parent = canvasOrder.parents('div.grafica');
+                    if (selectedOption.length == 0) {
                         combo.append(`
-                        <a value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
-                            <span class="material-icons">bubble_chart</span>
-                            <span class="texto">${titulo}</span>
-                        </a>
+                        <a order=${parent.attr("order")} value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
+                                <span class="material-icons">bubble_chart</span>
+                                <span class="texto">${titulo}</span>
+                            </a>
                     `)
                     }
                 }
@@ -245,22 +257,24 @@ var metricas = {
                     var tipo = "";
                     switch (data.type) {
                         case "bar":
-                            if (data.isHorizontal){
+                            if (data.isHorizontal) {
                                 tipo = "bar_chart"
-                            }else{
+                            } else {
                                 tipo = "align_horizontal_left"
-                              
+
                             }
                             break;
                         case "pie":
                             tipo = "pie_chart";
-                        
+
                     }
-              
+
                     var option = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
+                    var canvasOrder = combo.parents('.wrap').find("canvas#grafica_" + pIdPagina + "_" + pIdGrafica);
+                    var parent = canvasOrder.parents('div.grafica');
                     if (option.length === 0) {
                         combo.append(`
-                            <a value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
+                            <a order=${parent.attr("order")} value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
                                 <span class="material-icons">${tipo}</span>
                                 <span class="texto">${titulo}</span>
                             </a>
@@ -535,7 +549,7 @@ var metricas = {
                 }
                 //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
 
-                tmp += `<div class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "100"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div order="${index}" class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "100"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
             /*
@@ -558,11 +572,18 @@ var metricas = {
                                     </div>
                             </div>`: ""}
                             <div class="wrap">
+                                <div class="expand">
+                                    <a href="javascript: void(0);">
+                                        <span class="material-icons">expand_more</span>
+                                    </a>
+                                </div>
+
                                 <div class="zoom">
                                     <a href="javascript: void(0);"   data-toggle="modal">
                                         <span class="material-icons">zoom_in</span>
                                     </a>
                                 </div>
+
                                 <div class="dropdown">
                                     <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
                                         <span class="material-icons">more_vert</span>
@@ -662,6 +683,11 @@ var metricas = {
                                         </div>
                                 </div>`: ""}
                                 <div class="wrap">
+                                    <div class="expand">
+                                        <a href="javascript: void(0);">
+                                            <span class="material-icons">expand_more</span>
+                                        </a>
+                                    </div>
                                     <div class="zoom">
                                         <a href="javascript: void(0);"   data-toggle="modal">
                                             <span class="material-icons">zoom_in</span>
@@ -1091,11 +1117,11 @@ var metricas = {
                     $(scrollContainer).animate({ scrollLeft: $(chartAreaWrapper).width() - $(scrollContainer).width() }, 6000);
                     // Se detiene la animacion al hacer click en el scroll o al pulsar la rueda del raton.
                     $(scrollContainer).mousedown((e) => {
-                        if (e.button == 1  || scrollContainer.clientHeight <= e.offsetY) {
+                        if (e.button == 1 || scrollContainer.clientHeight <= e.offsetY) {
                             $(scrollContainer).stop();
                         }
                     });
-                  
+
 
                 }
 
@@ -1268,9 +1294,14 @@ var metricas = {
     },
     engancharComportamientos: function (cyto = null) {
         var that = this;
-        //este codigo se asegura que el item seleccionado en los menus es el que esta mostrandose. 
+        // este codigo se asegura que el item seleccionado en los menus es el que esta mostrandose. 
         var menus = $(".toggleGraficas");
-        menus.each((index, menu) => { //recorre todos los menus 
+        menus.each((index, menu) => { // recorre todos los menus 
+
+            var listItems = $(menu).find("ul").children(); // obtiene todos los items de un menu
+            listItems.detach().sort(function (a, b) { // bordena los items
+                return $(a).attr("order") < $(b).attr("order") ? -1 : 1;
+            }).appendTo($(menu).find("ul")); // los agrega al menu
             var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica"); //Obtiene la id de la grafica visible
             $(menu).find("a[value='" + "grafica_" + idPaginaActual + "_" + selectedID + "']").addClass("active"); //Añade la clase active al item que esta visible
         });
