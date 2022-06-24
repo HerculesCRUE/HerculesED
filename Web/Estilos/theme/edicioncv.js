@@ -1297,7 +1297,7 @@ var edicionCV = {
                         var values = entity[0].properties[0].values;
                         return values;
                     });
-                    htmlMultiple += this.printThesaurus(property.property, valuesThesaurus, property.thesaurus, property.required, !iseditable);
+                    htmlMultiple += this.printThesaurus(property.property, property.thesaurusID, valuesThesaurus, property.thesaurus, property.required, !iseditable);
                     htmlMultiple += this.printRowsEdit(iseditable, property.entityAuxData.rows);
                     break;
                 case 'textarea':
@@ -1797,7 +1797,7 @@ var edicionCV = {
         selector += "</select>";
         return selector;
     },
-    printThesaurus: function(property, values, pItems, required, pDisabled) {        
+    printThesaurus: function(property, thesaurusID, values, pItems, required, pDisabled) {        
         var css = "";
         
         if (required) {
@@ -1837,8 +1837,8 @@ var edicionCV = {
                                     <span class="material-icons">expand_more</span>
                                 </li>
                             </ul>
-                        </div>						
-						<ul class="listadoTesauro ${disabled}">${this.printThesaurusItemsByParent(values, pItems, itemsHijo, 0)}</ul>`;
+                        </div>
+						<ul class="listadoTesauro partial ${disabled}" thesaurusID = "${thesaurusID}">${this.printThesaurusItemsByParent(values, pItems, itemsHijo, 0)}</ul>`;
 
         return selector;
     },
@@ -1850,7 +1850,7 @@ var edicionCV = {
             var itemsHijo = $.grep(pItems, function(p) { return p.parentId == propiedad.id; });
             var classAux = '';
             var propAux = '';
-            if (values.find(x => x == propiedad.id) != null) {
+            if (values !='' && values.find(x => x == propiedad.id) != null) {
                 classAux = ' selected ';
             }
             if (itemsHijo.length == 0) {
@@ -2966,6 +2966,28 @@ var edicionCV = {
         $('.entityauxcontainer .acciones-listado-edicion .add,.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function(e) {
             MostrarUpdateProgress();
 			var edit = $(this).hasClass('edit');
+			
+			//TODO
+			var listadoInputSeleccionados = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('.item.added').find('input');
+			var listadoValoresSeleccionados = "";
+			for(var i = 0; i < listadoInputSeleccionados.length; i++)
+			{
+				var item = listadoInputSeleccionados[i].value;
+				if(item != null && item != '')
+				{
+					listadoValoresSeleccionados += listadoInputSeleccionados[i].value + "|||";
+				}
+			}
+			var ul = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('ul.listadoTesauro.partial');
+			if($(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('ul.listadoTesauro.partial').length!=0){
+				var tesauro = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('ul.listadoTesauro.partial')[0].getAttribute('thesaurusID');
+			}
+			if(ul.length != 0 && tesauro.length != 0){
+				conseguirTesauro(tesauro, lang, listadoValoresSeleccionados, ul, edit);
+			}
+			
+			
+			
             if ($(this).closest('.entityauxauthorlist').length > 0) {
                 if (!edit) {
                     //Creación
@@ -2988,64 +3010,7 @@ var edicionCV = {
                     //Edición
                 }
             } else {
-                var modalPopUp = $(this).closest('.modal-top').attr('id')
-                if (modalPopUp == 'modal-editar-entidad') {
-                    modalPopUp = 'modal-editar-entidad-0'
-                } else {
-                    modalPopUp = 'modal-editar-entidad-' + (parseInt(modalPopUp.substring(21)) + 1);
-                }
-                modalPopUp = '#' + modalPopUp;
-                $(modalPopUp).modal('show');
-
-                //IDS
-                var contenedor = $(this).closest('.entityauxcontainer');
-                var idTemp = $(contenedor).attr('idtemp');
-                var id = RandomGuid();
-                if (edit) {
-                    id = $('input[name="edicion-listado-' + idTemp + '"]:checked').closest('article').attr('about');
-                }
-                //Clonamos la entidad auxiliar vacía
-                var entityAux = $(contenedor).children('.item.aux.entityaux[about=""]').clone();
-                if (edit) {
-                    entityAux = $(contenedor).children('.item.added.entityaux[about="' + id + '"]').clone();
-                }
-                if (!edit) {
-                    //Cambiamos cosas del clon
-                    entityAux.attr('about', id);
-                    entityAux.removeClass('aux');
-                    entityAux.addClass('added');
-                }
-                //Rellenamos el popup
-                $(modalPopUp + ' .formulario-edicion').empty();
-                $(modalPopUp + ' .form-actions .ko').remove();
-                $(modalPopUp + ' .formulario-edicion').append(entityAux);
-                $(modalPopUp).attr('idtemp', idTemp);
-                $(modalPopUp).attr('about', id);
-                $(modalPopUp).attr('new', 'true');
-                if (edit) {
-                    $(modalPopUp).attr('new', 'false');
-                    //Reseteamos los campos para mostrar en el listado
-                    $(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.title').attr('loaded', 'false');
-                    $(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.title').html('');
-                    $(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.property').attr('loaded', 'false');
-                    $(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.property').html('');
-                }
-                //Cambiamos los id temporales del clon
-                $(entityAux.find('div.entityauxcontainer,div.entitycontainer')).each(function() {
-                    if ($(this).attr('idtemp') != null && $(this).attr('idtemp') != '') {
-                        $(this).attr('idtemp', RandomGuid());
-                    }
-                });
-
-                if ($(modalPopUp + ' .formulario-edicion>div>ul.listadoTesauro').length > 0) {
-                    $(modalPopUp + ' .formulario-edicion>div>div.custom-form-row').hide();
-                    $(modalPopUp).addClass('modal-con-buscador');
-                    $(modalPopUp).addClass('modal-tesauro');
-                } else {
-                    $(modalPopUp + ' .formulario-edicion>div>div.custom-form-row').show();
-                    $(modalPopUp).removeClass('modal-con-buscador');
-                    $(modalPopUp).removeClass('modal-tesauro');
-                }
+                pintadoTesauro($(this), edit);
             }
             that.repintarListadoEntity();
 			OcultarUpdateProgress();
@@ -6397,4 +6362,87 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 	this.resourceList.find('.resource .form-check-inline').on('change', function () {
 		that.formularioProyecto.find('.btn').removeClass('disabled');
 	});
+}
+
+function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit){
+	$.ajax({
+		url: urlEdicionCV + "GetTesaurus",
+		data:{
+			"tesaurus": tesaurus,
+			"pLang": pLang
+		},
+		type: "GET",
+		success: function(response){
+			var itemsHijo = $.grep(response[0], function(p) { return p.parentId == ''; });
+			ul.removeClass('partial');
+			ul.empty();
+			ul.append(edicionCV.printThesaurusItemsByParent(listadoValoresSeleccionados, response[0], itemsHijo, 0));
+			pintadoTesauro(ul, edit);
+			edicionCV.engancharComportamientosCV();
+		}, 
+		error: function(response){
+			
+		}
+	});
+}
+
+function pintadoTesauro(elementoActual, edit){
+	var modalPopUp = elementoActual.closest('.modal-top').attr('id')
+	if (modalPopUp == 'modal-editar-entidad') {
+		modalPopUp = 'modal-editar-entidad-0'
+	} else {
+		modalPopUp = 'modal-editar-entidad-' + (parseInt(modalPopUp.substring(21)) + 1);
+	}
+	modalPopUp = '#' + modalPopUp;
+	$(modalPopUp).modal('show');
+
+	//IDS
+	var contenedor = elementoActual.closest('.entityauxcontainer');
+	var idTemp = $(contenedor).attr('idtemp');
+	var id = RandomGuid();
+	if (edit) {
+		id = $('input[name="edicion-listado-' + idTemp + '"]:checked').closest('article').attr('about');
+	}
+	//Clonamos la entidad auxiliar vacía
+	var entityAux = $(contenedor).children('.item.aux.entityaux[about=""]').clone();
+	if (edit) {
+		entityAux = $(contenedor).children('.item.added.entityaux[about="' + id + '"]').clone();
+	}
+	if (!edit) {
+		//Cambiamos cosas del clon
+		entityAux.attr('about', id);
+		entityAux.removeClass('aux');
+		entityAux.addClass('added');
+	}
+	//Rellenamos el popup
+	$(modalPopUp + ' .formulario-edicion').empty();
+	$(modalPopUp + ' .form-actions .ko').remove();
+	$(modalPopUp + ' .formulario-edicion').append(entityAux);
+	$(modalPopUp).attr('idtemp', idTemp);
+	$(modalPopUp).attr('about', id);
+	$(modalPopUp).attr('new', 'true');
+	if (edit) {
+		$(modalPopUp).attr('new', 'false');
+		//Reseteamos los campos para mostrar en el listado
+		$(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.title').attr('loaded', 'false');
+		$(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.title').html('');
+		$(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.property').attr('loaded', 'false');
+		$(modalPopUp + ' .formulario-edicion').children('.entityaux').children('span.property').html('');
+	}
+	//Cambiamos los id temporales del clon
+	$(entityAux.find('div.entityauxcontainer,div.entitycontainer')).each(function() {
+		if (elementoActual.attr('idtemp') != null && $(this).attr('idtemp') != '') {
+			elementoActual.attr('idtemp', RandomGuid());
+		}
+	});
+
+	if ($(modalPopUp + ' .formulario-edicion>div>ul.listadoTesauro').length > 0) {
+		$(modalPopUp + ' .formulario-edicion>div>div.custom-form-row').hide();
+		$(modalPopUp).addClass('modal-con-buscador');
+		$(modalPopUp).addClass('modal-tesauro');
+	} else {
+		$(modalPopUp + ' .formulario-edicion>div>div.custom-form-row').show();
+		$(modalPopUp).removeClass('modal-con-buscador');
+		$(modalPopUp).removeClass('modal-tesauro');
+	}
 }
