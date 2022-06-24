@@ -221,7 +221,7 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Áreas temáticas de las publicaciones"
+              "es": "Número de publicaciones"
             },
             "filtro": "",
             "tipoDimension": "bar",

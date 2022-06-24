@@ -98,7 +98,7 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Áreas temáticas de las personas"
+              "es": "Número de personas"
             },
             "filtro": "",
             "tipoDimension": "bar",

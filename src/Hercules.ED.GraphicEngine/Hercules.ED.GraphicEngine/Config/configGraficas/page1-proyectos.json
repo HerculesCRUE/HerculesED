@@ -27,7 +27,7 @@
         "dimensiones": [
           {
             "nombre": {
-              "es": "Proyectos concedidos competitivos"
+              "es": "Concedidos competitivos"
             },
             "filtro": "roh:scientificExperienceProject@@@dc:title='Competitivos'@es",
             "tipoDimension": "bar",
@@ -38,7 +38,7 @@
           },
           {
             "nombre": {
-              "es": "Proyectos concedidos no competitivos"
+              "es": "Concedidos no competitivos"
             },
             "filtro": "roh:scientificExperienceProject@@@dc:title='No competitivos'@es",
             "tipoDimension": "bar",
@@ -49,13 +49,25 @@
           },
           {
             "nombre": {
-              "es": "Proyectos solicitados"
+              "es": "Solicitados competitivos"
+            },
+            "filtro": "roh:scientificExperienceProject@@@dc:title='Competitivos'@es",
+            "tipoDimension": "bar",
+            "color": "#BDECB6",
+            "stack": "stack2",
+            "yAxisID": "y1",
+            "orden": 3
+          },
+          {
+            "nombre": {
+              "es": "Solicitados no competitivos"
             },
             "filtro": "roh:scientificExperienceProject@@@dc:title='No competitivos'@es",
             "tipoDimension": "bar",
-            "color": "#581845",
+            "color": "#FFCC66",
+            "stack": "stack2",
             "yAxisID": "y1",
-            "orden": 3
+            "orden": 4
           }
         ]
       }
@@ -285,6 +297,65 @@
           }
         ]
       }
+    },
+    {
+      "identificador": "grafica9",
+      "nombre": {
+        "es": "Áreas temáticas de los proyectos"
+      },
+      "tipo": "Nodos",
+      "propCategoryPath": "roh:hasKnowledgeArea",
+      "idGrupo": "grupo3",
+      "anchura": 12,
+      "config": {
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Relaciones entre las áreas temáticas de los proyectos"
+            },
+            "filtro": "",
+            "numMaxNodos": 10,
+            "colorNodo": "#7CBFE3",
+            "colorLinea": "#BF4858"
+          }
+        ]
+      }
+    },
+    {
+      "identificador": "grafica10",
+      "nombre": {
+        "es": "Áreas temáticas de los proyectos"
+      },
+      "idGrupo": "grupo3",
+      "tipo": "Barras",
+      "propCategoryPath": "roh:hasKnowledgeArea",
+      "anchura": 12,
+      "config": {
+        "datosNodos": true,
+        "abreviar": true,
+        "orientacionVertical": false,
+        "ejeX": "",
+        "orderDesc": false,
+        "rellenarEjeX": false,
+        "xAxisPrint": [
+          {
+            "xAxisID": "x1",
+            "posicion": "bottom"
+          }
+        ],
+        "dimensiones": [
+          {
+            "nombre": {
+              "es": "Número de proyectos"
+            },
+            "filtro": "",
+            "tipoDimension": "bar",
+            "color": "#7CBFE3",
+            "xAxisID": "x1",
+            "orden": 1
+          }
+        ]
+      }
     }
   ],
   "facetas": [
@@ -339,6 +410,13 @@
       },
       "filtro": "roh:yearStart",
       "rangoAnio": true
+    },
+    {
+      "nombre": {
+        "es": "Áreas Temáticas"
+      },
+      "filtro": "roh:hasKnowledgeArea@@@roh:categoryNode",
+      "tesauro": true
     }
   ]
 }
