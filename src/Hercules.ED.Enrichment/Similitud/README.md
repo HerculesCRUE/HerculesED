@@ -74,8 +74,8 @@ Archivo query.json
     "ro_type": "research_paper",
     "text": "Analysis of the microstructure and mechanical properties of titanium-based composites reinforced by secondary phases and B In the last decade, titanium metal matrix composites (TMCs) have received considerable attention thanks to their interesting properties as a consequence of the clear interface between the matrix and the reinforcing phases formed. In this work, TMCs with 30 vol % of B",
     "authors": ["Montealegre-Melendez, Isabel", "Arévalo, Cristina", "Ariza, Enrique", "Pérez-Soriano, Eva M.", "Rubio-Escudero, Cristina", "Kitzmantel, Michael", "Neubauer, Erich"],
-    "thematic_descriptors": [("Physical Sciences", 0.998)],
-    "specific_descriptors": [("tmcs", 0.777), ("titanium-based composites", 0.702), ("secondary phases", 0.664), ("clear interface", 0.564), ("reinforcing phases", 0.534), ("their interesting properties", 0.476), ("titanium metal matrix composites", 0.394), ("consequence", 0.376), ("considerable attention", 0.347), ("thanks", 0.291), ("interesting properties", 0.276), ("analysis", 0.243), ("microstructure and mechanical properties", 0.188), ("decade", 0.187), ("last decade", 0.083), ("work", 0.025)]
+    "thematic_descriptors": [["Physical Sciences", 0.998]],
+    "specific_descriptors": [["tmcs", 0.777], ["titanium-based composites", 0.702], ["secondary phases", 0.664], ["clear interface", 0.564], ["reinforcing phases", 0.534], ["their interesting properties", 0.476], ["titanium metal matrix composites", 0.394], ["consequence", 0.376], ["considerable attention", 0.347], ["thanks", 0.291], ["interesting properties", 0.276], ["analysis", 0.243], ["microstructure and mechanical properties", 0.188], ["decade", 0.187], ["last decade", 0.083], ["work", 0.025]]
 }
 ```
 
@@ -118,40 +118,40 @@ Respuesta:
 ```
 {
   "similar_ros": [
-    ("2-s2.0-84984599941", [
-        ("titanium metal matrix composites", 0.390),
-        ("titanium-based composites", 0.257),
-        ("conventional hot-pressing titanium", 0.144),
-        ("titanium", 0.071),
-        ("microstructure and mechanical properties", 0.048)
-    ]),
-    ("2-s2.0-84952673849", [
-        ("particle reinforced titanium matrix composites", 0.405),
-        ("titanium-based composites", 0.255),
-        ("titanium alloys", 0.142),
-        ("tic-ti", 0.010),
-        ("microstructure and mechanical properties", 0.009)
-    ]),
-    ("2-s2.0-56249090374", [
-        ("titanium metal-matrix composites", 0.380),
-        ("net-shape titanium-matrix composites", 0.338),
-        ("titanium-based composites", 0.330),
-        ("titanium alloys", 0.176),
-        ("composite materials", 0.056)
-    ]),
-    ("2-s2.0-84984605052", [
-        ("titanium matrix composites", 0.362),
-        ("titanium-based composites", 0.289),
-        ("microstructure and mechanical properties", 0.051),
-        ("fiber-reinforced materials", 0.045),
-        ("microstructure", 0.016)
-    ]),
-    ("2-s2.0-66849122582", [
-        ("titanium-based composites", 0.257),
-        ("titanium metal matrix composites", 0.230),
-        ("mg-ti composites", 0.178),
-        ("titanium additions", 0.075),
-        ("titanium volume fraction", 0.072)
-    ])
+    ["2-s2.0-84984599941", [
+        ["titanium metal matrix composites", 0.390],
+        ["titanium-based composites", 0.257],
+        ["conventional hot-pressing titanium", 0.144],
+        ["titanium", 0.071],
+        ["microstructure and mechanical properties", 0.048]
+    ]],
+    ["2-s2.0-84952673849", [
+        ["particle reinforced titanium matrix composites", 0.405],
+        ["titanium-based composites", 0.255],
+        ["titanium alloys", 0.142],
+        ["tic-ti", 0.010],
+        ["microstructure and mechanical properties", 0.009]
+    ]],
+    ["2-s2.0-56249090374", [
+        ["titanium metal-matrix composites", 0.380],
+        ["net-shape titanium-matrix composites", 0.338],
+        ["titanium-based composites", 0.330],
+        ["titanium alloys", 0.176],
+        ["composite materials", 0.056]
+    ]],
+    ["2-s2.0-84984605052", [
+        ["titanium matrix composites", 0.362],
+        ["titanium-based composites", 0.289],
+        ["microstructure and mechanical properties", 0.051],
+        ["fiber-reinforced materials", 0.045],
+        ["microstructure", 0.016]
+    ]],
+    ["2-s2.0-66849122582", [
+        ["titanium-based composites", 0.257],
+        ["titanium metal matrix composites", 0.230],
+        ["mg-ti composites", 0.178],
+        ["titanium additions", 0.075],
+        ["titanium volume fraction", 0.072]
+    ]]
 ]}
 ```
