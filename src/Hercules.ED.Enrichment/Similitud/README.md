@@ -1,3 +1,14 @@
+![](../../../Docs/media/CabeceraDocumentosMD.png)
+
+| Fecha         | 22/06/2022                                                   |
+| ------------- | ------------------------------------------------------------ |
+|Título|Configuración del Editor de CV| 
+|Descripción|Similitud. Requisitos y documentación del API|
+|Versión|1.0|
+|Módulo|Documentación|
+|Tipo|Especificación|
+|Cambios de la Versión|Versión inicial|
+
 # Requisitos
 Se han observado los requisitos de hardware al procesar una serie de rankings de RO similares. A continuación se detallan el tamaño del conjunto de datos utilizado, las especificaciones de la máquina en la que se ha ejecutado y los requisitos observados.
 

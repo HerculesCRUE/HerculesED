@@ -19,6 +19,11 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
+        /// <summary>
+        ///Servicio para obtener todos los proyectos de <paramref name="pIdPersona"/>, junto a su titulo, fecha de inicio, fecha de fin y organización.
+        /// </summary>
+        /// <param name="pIdPersona"></param>
+        /// <returns></returns>
         [HttpGet("ObtenerDatosEnvioPRC")]
         public IActionResult ObtenerDatosEnvioPRC(string pIdPersona)
         {
@@ -27,9 +32,9 @@ namespace EditorCV.Controllers
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 return Ok(accionesPRC.ObtenerDatosEnvioPRC(pIdPersona));
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                return Ok(e.Message);
             }
             return Ok();
         }
@@ -71,9 +76,9 @@ namespace EditorCV.Controllers
                 AccionesEnvioProyecto accionesProyecto = new AccionesEnvioProyecto();
                 accionesProyecto.EnvioProyecto(_Configuracion, pIdRecurso, pIdPersona, pIdAutorizacion);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                return Ok(e.Message);
             }
 
             return Ok();

@@ -179,6 +179,7 @@
         "es": "Relaciones entre las áreas temáticas de las publicaciones"
       },
       "tipo": "Nodos",
+      "propCategoryPath": "roh:hasKnowledgeArea",
       "idGrupo": "grupo3",
       "anchura": 12,
       "config": {
@@ -187,7 +188,7 @@
             "nombre": {
               "es": "Relaciones entre las áreas temáticas de las publicaciones"
             },
-            "filtro": "dc:type@@@dc:title",
+            "filtro": "",
             "numMaxNodos": 10,
             "colorNodo": "#7CBFE3",
             "colorLinea": "#BF4858"
@@ -202,12 +203,13 @@
       },
       "idGrupo": "grupo3",
       "tipo": "Barras",
+      "propCategoryPath": "roh:hasKnowledgeArea",
       "anchura": 12,
       "config": {
         "datosNodos": true,
         "abreviar": true,
         "orientacionVertical": false,
-        "ejeX": "dc:type@@@dc:title",
+        "ejeX": "",
         "orderDesc": false,
         "rellenarEjeX": false,
         "xAxisPrint": [
