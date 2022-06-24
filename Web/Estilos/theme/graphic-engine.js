@@ -572,12 +572,6 @@ var metricas = {
                                     </div>
                             </div>`: ""}
                             <div class="wrap">
-                                <div class="expand">
-                                    <a href="javascript: void(0);">
-                                        <span class="material-icons">expand_more</span>
-                                    </a>
-                                </div>
-
                                 <div class="zoom">
                                     <a href="javascript: void(0);"   data-toggle="modal">
                                         <span class="material-icons">zoom_in</span>
@@ -683,11 +677,6 @@ var metricas = {
                                         </div>
                                 </div>`: ""}
                                 <div class="wrap">
-                                    <div class="expand">
-                                        <a href="javascript: void(0);">
-                                            <span class="material-icons">expand_more</span>
-                                        </a>
-                                    </div>
                                     <div class="zoom">
                                         <a href="javascript: void(0);"   data-toggle="modal">
                                             <span class="material-icons">zoom_in</span>
@@ -953,7 +942,28 @@ var metricas = {
         var graficaContainer = chartContainer.parentNode;
         var horizontal = data.options.indexAxis == "y";
         var titulo = data.options.plugins.title.text;
-        barSize /= data.data.datasets.length;
+
+        var barCount = 0;
+        var stacks = []
+        //Obtenemos el numero de barras que tendra la grafica por cada dataset
+        data.data.datasets.forEach(function (dataset) {
+            if (dataset.type == "bar") {
+                if (dataset.stack != null) {
+                    if (stacks.indexOf(dataset.stack) == -1) {
+                        stacks.push(dataset.stack);
+                        barCount++;
+                    }
+                } else {
+                    barCount++;
+                }
+            }
+        })
+        if (barCount == 0) {
+            barCount = 1;
+        }
+
+        barSize /= barCount;
+
         if (pTitulo) {
             titulo = pTitulo;
         }
@@ -1032,15 +1042,26 @@ var metricas = {
 
             var myChart = new Chart(ctx, data);
         } else { // a partir de aqui se prepara el scroll
-            if (barSize < 100) { //para revelar el modal del zoom 
-                $(ctx).parents(".modal-content").css("display", "block");
-            }
+
+            //Se revela el modal de zoom
+            $(ctx).parents(".modal-content").css("display", "block");
+
             var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
             var hasSecondaryAxis = false; // eje inferior o derecho
 
             if (horizontal) {
                 ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
             } else {// -- vertical
+                var parent = $(ctx).parents(".wrap")[0] || $(ctx).parents(".modal-content")[0];
+                if ($(parent).find(".acciones-mapa .expand").length == 0) {
+                    $(parent).find(".acciones-mapa .wrap").prepend(`
+                    <div class="expand">
+                        <a href="javascript: void(0);">
+                            <span class="material-icons">close_fullscreen</span>
+                        </a>
+                    </div>
+                `)
+                }
                 //myChart.canvas.parentNode.style.width = canvasSize + 'px';
                 ctx.parentNode.style.height = 100 + '%'; //se escala la altura //css done
                 ctx.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
@@ -1061,8 +1082,8 @@ var metricas = {
             // Leyenda con titulo y contenedor para datasets. style="text-align: center; position: absolute; top: 0px; background-color: white;
             var legend = $(`<div class="chartLegend" >
                 <h4 id="legendTitle">${titulo}</h4>
+                
                 </div>`);
-
             $(chartContainer).append(legend);
             var dataSetLabels = $(`<div class="dataSetLabels"></div>`)
             $(legend).append(dataSetLabels);
@@ -1936,6 +1957,9 @@ var metricas = {
                 // enconntramos la grafica que esta siendo mostrada
                 var parent = $(this).parents('div.wrap');
                 var shown = parent.find('div.grafica.show');
+
+
+
                 // y la ocultamos
                 shown.css('opacity', '0'); // display none causa problemas con redrawChart por que intenta modifica un elemento sin altura
                 shown.css('position', 'absolute');
@@ -1963,6 +1987,15 @@ var metricas = {
                         metricas.engancharComportamientos();
                     }
                 }
+                shown = parent.find('div.grafica.show');
+                if (shown.find(".chartAreaWrapper").hasClass("collapsed")) {
+                    parent.find(".expand span").text("open_in_full");
+                    parent.find(".expand").addClass("collapsed");
+                } else {
+                    parent.find(".expand span").text("close_fullscreen");
+                    parent.find(".expand").removeClass("collapsed");
+
+                }
                 /* TODO testear sin esto
                 var canvas = parent.find('canvas#' + $(this).attr("value"));
                 if (canvas.length) {
@@ -1970,6 +2003,117 @@ var metricas = {
                     // ejecutamos el redraw para reescalar la grafica en caso que sea necesario.
                     chart.config._config.options.animation.onProgress(); 
                 }*/
+            });
+
+
+        $("div.expand")
+            .unbind()
+            .click(function (e) {
+                var parent = $(this).parents('article > div.wrap')[0] || $(this).parents('.modal-body > .graph-container')[0];
+                parent = $(parent);
+                var canvas = parent.find('.show.grafica .chartAreaWrapper canvas')[0] || parent.find('.chartAreaWrapper canvas')[0];
+                canvas = $(canvas);
+                var myChart = Chart.getChart(canvas[0]);
+                var data = myChart.data;
+                var config = myChart.config;
+
+                var idGrafica = canvas.attr('id').split('_')[2];
+                var idPagina = canvas.attr('id').split('_')[1];
+                if ($('div').hasClass('indicadoresPersonalizados')) {
+                    parent = $(this).parents('article > div.wrap');
+                    if (parent.length != 0) {
+                        idGrafica = parent.find("div.grafica").attr("idGrafica");
+                        idPagina = parent.find("div.grafica").attr("idPagina");
+                        idGraficaActual = idGrafica;
+                        idPaginaActual = idPagina;
+                     
+                    }else{
+                        idPagina = idPaginaActual;
+                        idGrafica = idGraficaActual;
+                    }
+                }
+
+           
+              
+
+                //plugin para que el color de fondo sea blanco.
+                var plugin = {
+                    id: 'custom_canvas_background_color',
+                    beforeDraw: (chart) => {
+                        chart.ctx.save();
+                        chart.ctx.globalCompositeOperation = 'destination-over';
+                        chart.ctx.fillStyle = '#FFFFFF';
+                        chart.ctx.fillRect(0, 0, chart.width, chart.height);
+                        chart.ctx.restore();
+                    }
+                };
+                var isExpanded = !$(this).hasClass('collapsed');
+                $(this).toggleClass('collapsed');
+                if (isExpanded) {
+                    $(this).find("span").text("open_in_full");
+
+                    data.datasets.forEach(function (dataset) {
+                        delete dataset['barThickness'];
+                    });
+
+                    //Destruyo el chart para que se redibuje con el nuevo tamaño
+                    myChart.destroy();
+                    canvas.parents(".chartScroll").addClass('collapsed');
+                    canvas.parent().css('width', 'auto');
+                    var chartWrapper = canvas.parents(".chartWrapper");
+                    //Elimino la leyenda y los ejes
+                    chartWrapper.find(".myChartAxis, .chartLegend").remove();
+                    //Elimino el callback que llama a reDrawChart
+                    delete config.options.animation['onProgress'];
+
+                    //Remake the chart with the data obtained from the previous chart
+                    var newChart = new Chart(canvas[0].getContext('2d'), {
+                        type: 'bar',
+                        data: data,
+                        options: config.options,
+                        plugins: [plugin]
+                    });
+                    idGraficaActual = idGrafica;
+                    idPaginaActual = idPagina;
+                } else {
+                    // cambio el icono
+                    $(this).find("span").text("close_fullscreen");
+                    canvas.parents(".chartScroll").removeClass('collapsed');
+                    myChart.destroy();
+
+
+                    var filtro;
+                    var idPagina;
+                    if (!$('div').hasClass('indicadoresPersonalizados')) {
+                        filtro = ObtenerHash2();
+                        idPagina = idPaginaActual;
+                    } else {
+                        filtro = (canvas).parents('div.grafica.show').attr("filtro");
+                        idPagina = (canvas).parents('div.grafica.show').attr("idpagina") || idPaginaActual;
+                        idGrafica = idGraficaActual;
+                    }
+                    $('#grafica_' + idPagina + '_' + idGrafica).attr('filtro', filtro);
+
+                    //obtenemos los datos y pintamos la grafica
+
+                    if (!$('div').hasClass('indicadoresPersonalizados')) {
+                        that.getGrafica(idPagina, idGrafica, filtro, canvas[0], 50);
+                    } else {
+                        //idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idrecurso");
+                        var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                        var arg = {};
+                        arg.pPageId = idPaginaActual;
+                        $.get(url, arg, function (listaData) {
+                            listaData.forEach(data => {
+                                if (data.idRecurso == idGraficaActual) {
+                                    tituloActual = data.titulo;
+                                }
+                            });
+    
+                            that.getGrafica(idPagina, idGrafica, filtro, canvas[0], 50, null, tituloActual)
+                        });
+                    }
+                }
             });
 
         //boton del pop-up con la grafica escalada
@@ -2159,6 +2303,8 @@ var metricas = {
                     var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
                     var arg = {};
                     arg.pPageId = idPaginaActual;
+                    idPaginaActual = $(this).closest('article').find("div.show.grafica").attr("idpagina");
+                    idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idgrafica");
                     $.get(url, arg, function (listaData) {
                         listaData.forEach(data => {
                             if (data.idRecurso == idGraficaActual) {
@@ -2170,6 +2316,7 @@ var metricas = {
                     });
                 }
             });
+
 
         $('.modal-backdrop')
             .unbind()
