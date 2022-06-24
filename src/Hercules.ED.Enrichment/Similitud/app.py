@@ -69,7 +69,10 @@ class SimilarityAddSchema(Schema):
     thematic_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by thematic descriptors returned by the enrichment API and their probabilities.")
     specific_descriptors = fields.List(fields.List(fields.Raw), required=True, description="List of pairs composed by specific descriptors returned by the enrichment API and their probabilities.")
     update_ranking = fields.Bool(required=False, default=True, description="Don't update rankings and cache if False. Useful for batch loading. RebuildRankings must be called after loading ROs with update_ranking=False.")
-
+    
+class SimilarityDeleteSchema(Schema):
+    ro_id = fields.String(required=True, description="ID of the research object")
+    
 class SimilarityAddBatchSchema(Schema):
     batch = fields.List(fields.Nested(SimilarityAddSchema))
 
@@ -115,6 +118,19 @@ class SimilarityAddAPI(MethodResource, Resource):
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)
         similarity.add_ro(ro, update_ranking=True)
+        return jsonify()
+
+
+class SimilarityDeleteAPI(MethodResource, Resource):
+        
+    #decorators = [auth.login_required]
+    @doc(description='Hercules similarity API: Delete a research object.',
+         tags=['Hercules', 'similarity'])
+    @use_kwargs(SimilarityDeleteSchema, location='query')
+    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
+    def delete(self, **kwargs):
+        logger.debug(kwargs)
+        similarity.delete_ro(kwargs['ro_id'])
         return jsonify()
 
     
@@ -176,11 +192,13 @@ class SimilarityQueryAPI(MethodResource, Resource):
 # Declare endpoints and documentation for the API
 
 api.add_resource(SimilarityAddAPI, '/add_ro')
+api.add_resource(SimilarityDeleteAPI, '/delete_ro')
 api.add_resource(SimilarityAddBatchAPI, '/add_batch')
 api.add_resource(RebuildRankingsAPI, '/rebuild_rankings')
 api.add_resource(SimilarityQueryAPI, '/query_similar')
 
 docs.register(SimilarityAddAPI)
+docs.register(SimilarityDeleteAPI)
 docs.register(SimilarityAddBatchAPI)
 docs.register(RebuildRankingsAPI)
 docs.register(SimilarityQueryAPI)

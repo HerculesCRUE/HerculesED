@@ -10,6 +10,11 @@ class MemoryROStorage(similarity.ROStorage):
 
     def add_ro(self, ro: similarity.RO) -> None:
         self.ros[ro.id] = ro
+        
+    def delete_ro(self, ro_id: str) -> None:
+        if ro_id not in self.ros:
+            raise similarity.ROIdError()
+        del self.ros[ro_id]
 
     def add_ros(self, ros) -> None:
         for ro in ros:

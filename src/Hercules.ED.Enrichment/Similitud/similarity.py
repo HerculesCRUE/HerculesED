@@ -34,6 +34,10 @@ class ROStorage(ABC):
         pass
 
     @abstractmethod
+    def delete_ro(self, ro_id: str) -> None:
+        pass
+
+    @abstractmethod
     def add_ros(self, ros: list) -> None:
         pass
 
@@ -61,7 +65,11 @@ class ROCache(ABC):
         pass
 
     @abstractmethod
-    def get_ro(self, ro_id) -> "RO":
+    def get_ro(self, ro_id: str) -> "RO":
+        pass
+
+    @abstractmethod
+    def delete_ro(self, ro_id) -> None:
         pass
 
     @abstractmethod
@@ -195,7 +203,6 @@ class Ranking:
 
         self.size = size
         self.rankings = { ro_type: [] for ro_type in RO_TYPES }
-
         
     def update_if_needed(self, ro: RO, distance: float):
 
@@ -203,12 +210,14 @@ class Ranking:
         if len(ranking) == self.size and distance <= ranking[0][0]:
             return False
 
+        if self.has_ro(ro):
+            return False
+
         if len(ranking) < self.size:
             heapq.heappush(ranking, (distance, ro.id))
         else:
             heapq.heapreplace(ranking, (distance, ro.id))
         return True
-
 
     def get_ro_ids(self, ro_type):
 
@@ -220,6 +229,28 @@ class Ranking:
         ro_ids = [ ro_id for dist, ro_id in sorted_ranking ]
 
         return ro_ids
+
+    def remove_ro(self, ro: RO) -> None:
+
+        ranking = self.rankings[ro.type]
+        idx = None
+        for i in range(len(ranking)):
+            if ranking[i][1] == ro.id:
+                idx = i
+
+        if idx is not None:
+            ranking[idx] = ranking[-1]
+            ranking.pop()
+            heapq.heapify(ranking)
+
+    def has_ro(self, ro: RO) -> bool:
+
+        ranking = self.rankings[ro.type]
+        for _, ro_id in ranking:
+            if ro_id == ro.id:
+                return True
+            
+        return False
                 
 
 # Application logic
@@ -241,16 +272,20 @@ class SimilarityService:
         logger.info("Building ranking cache")
         
         ros = self.db.get_embeddings()
-        for i in range(len(ros)-1):
-            dists = ros[i].distances(ros[i+1:])
-            for j in range(i+1, len(ros)):
-                dist = dists[j-i-1]
-                ros[i].ranking.update_if_needed(ros[j], dist)
-                ros[j].ranking.update_if_needed(ros[i], dist)
-
         for ro in ros:
+            self.build_ro_ranking(ro, ros)
             self.cache.add_ro(ro)
+
         logger.info("Ranking cache built")
+
+
+    def build_ro_ranking(self, ro, collection_ros):
+
+        distances = ro.distances(collection_ros)
+        for collection_ro, distance in zip(collection_ros, distances):
+            if ro.id == collection_ro.id:
+                continue
+            ro.ranking.update_if_needed(collection_ro, distance)
 
 
     def create_RO(self, ro_id, text) -> RO:
@@ -297,6 +332,21 @@ class SimilarityService:
 
         if update_ranking:
             self.rebuild_cache()
+
+
+    def delete_ro(self, ro_id: str) -> None:
+
+        ro = self.db.get_ro(ro_id)
+        ro_collection = list([ ro for ro in self.cache.iterator() if ro.id != ro_id ])
+        
+        for db_ro in ro_collection:
+            if db_ro.ranking.has_ro(ro):
+                db_ro.ranking.remove_ro(ro)
+                self.build_ro_ranking(db_ro, ro_collection)
+                self.cache.add_ro(db_ro)
+
+        self.cache.delete_ro(ro_id)
+        self.db.delete_ro(ro_id)
         
         
     def get_ro_ranking(self, ro_id: str, target_ro_type: str) -> list:
