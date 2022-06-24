@@ -20,6 +20,10 @@ class MongoROStorage(similarity.ROStorage):
         if not self.has_ro(ro_id):
             raise similarity.ROIdError()
         self.db.ro.delete_one({'_id': ro_id})
+
+    def update_ro(self, ro: similarity.RO) -> None:
+        jro = self.ro_to_json(ro)
+        self.db.ro.replace_one({'_id': ro.id}, jro)
                 
     def add_ros(self, ros) -> None:
         jros = [ self.ro_to_json(ro) for ro in ros ]

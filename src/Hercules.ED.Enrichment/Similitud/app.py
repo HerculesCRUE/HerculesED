@@ -134,6 +134,30 @@ class SimilarityDeleteAPI(MethodResource, Resource):
         return jsonify()
 
     
+class SimilarityUpdateAPI(MethodResource, Resource):
+        
+    #decorators = [auth.login_required]
+    @doc(description='Hercules similarity API: Update a research object.',
+         tags=['Hercules', 'similarity'])
+    @use_kwargs(SimilarityAddSchema, location='json')
+    #@marshal_with(SimilarityAddResponseSchema, description="")  # marshalling with marshmallow
+    def put(self, **kwargs):
+        logger.debug(kwargs)
+        try:
+            validate_descriptors(kwargs)
+        except ValueError as e:
+            resp_json = '{"error_msg": "' + str(e) + '"}'
+            return Response(response=resp_json, status=422, mimetype='application/json')
+        ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
+        ro.set_text(kwargs['text'], similarity.model)
+        ro.authors = kwargs['authors']
+        names = [ n for n, p in kwargs['specific_descriptors'] ]
+        probs = [ p for n, p in kwargs['specific_descriptors'] ]
+        ro.set_specific_descriptors(names, probs)
+        similarity.update_ro(ro)
+        return jsonify()
+
+    
 class SimilarityAddBatchAPI(MethodResource, Resource):
     
     #decorators = [auth.login_required]
@@ -193,12 +217,14 @@ class SimilarityQueryAPI(MethodResource, Resource):
 
 api.add_resource(SimilarityAddAPI, '/add_ro')
 api.add_resource(SimilarityDeleteAPI, '/delete_ro')
+api.add_resource(SimilarityUpdateAPI, '/update_ro')
 api.add_resource(SimilarityAddBatchAPI, '/add_batch')
 api.add_resource(RebuildRankingsAPI, '/rebuild_rankings')
 api.add_resource(SimilarityQueryAPI, '/query_similar')
 
 docs.register(SimilarityAddAPI)
 docs.register(SimilarityDeleteAPI)
+docs.register(SimilarityUpdateAPI)
 docs.register(SimilarityAddBatchAPI)
 docs.register(RebuildRankingsAPI)
 docs.register(SimilarityQueryAPI)

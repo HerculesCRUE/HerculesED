@@ -38,6 +38,10 @@ class ROStorage(ABC):
         pass
 
     @abstractmethod
+    def update_ro(self, ro: "RO") -> None:
+        pass
+
+    @abstractmethod
     def add_ros(self, ros: list) -> None:
         pass
 
@@ -312,8 +316,9 @@ class SimilarityService:
             return
 
         if update_ranking:
-            for db_ro in self.cache.iterator():
-                dist = ro.distance(db_ro)
+            cache_ros = list(self.cache.iterator())
+            distances = ro.distances(cache_ros)
+            for db_ro, dist in zip(cache_ros, distances):
                 ro.ranking.update_if_needed(db_ro, dist)
                 if db_ro.ranking.update_if_needed(ro, dist):
                     self.cache.update_ro_ranking(db_ro)
@@ -347,6 +352,21 @@ class SimilarityService:
 
         self.cache.delete_ro(ro_id)
         self.db.delete_ro(ro_id)
+
+
+    def update_ro(self, ro: RO) -> None:
+
+        old_ro = self.db.get_ro(ro.id)
+
+        if ro.text == old_ro.text:
+            # text unmodified, just update the RO in DB
+            self.db.update_ro(ro)
+            logger.debug("Text unmodified")
+        else:
+            # text modified, delete and add it again
+            self.delete_ro(ro.id)
+            self.add_ro(ro, update_ranking=True)
+            logger.debug("Text modified")
         
         
     def get_ro_ranking(self, ro_id: str, target_ro_type: str) -> list:

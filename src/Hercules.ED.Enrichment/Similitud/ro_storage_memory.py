@@ -16,6 +16,9 @@ class MemoryROStorage(similarity.ROStorage):
             raise similarity.ROIdError()
         del self.ros[ro_id]
 
+    def update_ro(self, ro: similarity.RO) -> None:
+        self.ros[ro.id] = ro
+        
     def add_ros(self, ros) -> None:
         for ro in ros:
             self.add_ro(ro)
