@@ -387,6 +387,17 @@ namespace EditorCV.Models
             return listCombosConfig;
         }
 
+        public List<string> ConseguirNombreTesauro(string tesaurus)
+        {
+            List<string> listadoTesauros = tesaurus.Split("|||").ToList();
+            List<ItemEditSectionRowProperty> listadoTesaurosItem = new List<ItemEditSectionRowProperty>();
+            foreach (string tesauro in listadoTesauros)
+            {
+                listadoTesaurosItem.Add(new ItemEditSectionRowProperty() { thesaurus = tesauro });
+            }
+            return GetEditThesaurus(listadoTesaurosItem);
+        }
+
         /// <summary>
         /// Obtiene todos los tesauros de edición que hay configurados en una serie de propiedades
         /// </summary>
@@ -1752,6 +1763,7 @@ namespace EditorCV.Models
                     title = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.title),
                     placeholder = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.placeholder),
                     type = pItemEditSectionRowProperty.type.ToString(),
+                    thesaurusID = pItemEditSectionRowProperty.thesaurus,
                     values = new List<string>()
                 };
                 if (pItemEditSectionRowProperty.auxEntityData != null)
@@ -1915,7 +1927,7 @@ namespace EditorCV.Models
 
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
                 {
-                    entityEditSectionRowProperty.thesaurus = pTesauros[pItemEditSectionRowProperty.thesaurus];
+                    entityEditSectionRowProperty.thesaurus = new List<ThesaurusItem>( pTesauros[pItemEditSectionRowProperty.thesaurus]);
                     entityEditSectionRowProperty.entityAuxData = new EntityEditAuxEntity()
                     {
                         childsOrder = new Dictionary<string, int>(),
@@ -1947,6 +1959,22 @@ namespace EditorCV.Models
                     {
                         entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, rowsEdit, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
                     }
+
+                    //Lista categorias seleccionadas
+                    List<string> cat = new List<string>();
+                    foreach (var value in entityEditSectionRowProperty.entityAuxData.entities.Values)
+                    {
+                        foreach(var propertiesValue in value.Select(x => x.properties))
+                        {
+                            foreach(var selectionValues in propertiesValue.Select(x => x.values))
+                            {
+                                cat.AddRange(selectionValues);
+                            }
+                        }
+                    }
+                    entityEditSectionRowProperty.thesaurus.RemoveAll(y => !cat.Contains(y.id));
+                    //HashSet<string> cat = entityEditSectionRowProperty.entityAuxData.entities.Values.Select(x => x.Select(x => x.properties.Select(x => x.values)));
+
                     return entityEditSectionRowProperty;
                 }
 
@@ -2070,7 +2098,7 @@ namespace EditorCV.Models
 
         #region Métodos de recolección de datos
 
-        private Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros, string pLang)
+        public Dictionary<string, List<ThesaurusItem>> GetTesauros(List<string> pListaTesauros, string pLang)
         {
             Dictionary<string, List<ThesaurusItem>> elementosTesauros = new Dictionary<string, List<ThesaurusItem>>();
             foreach (string tesauro in pListaTesauros)
