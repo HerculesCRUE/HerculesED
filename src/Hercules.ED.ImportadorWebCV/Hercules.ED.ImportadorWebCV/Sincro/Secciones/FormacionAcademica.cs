@@ -317,7 +317,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetConocimientoIdiomas(listadoDatos);
+            List<Entity> listadoAux = GetConocimientoIdiomas(listadoDatos, preimportar);
 
             if (listadoIdBBDD == null)
             {
@@ -953,7 +953,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetConocimientoIdiomas(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetConocimientoIdiomas(List<CvnItemBean> listadoDatos, [Optional] bool preimportar)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -974,14 +974,27 @@ namespace ImportadorWebCV.Sincro.Secciones
                                new Property(Variables.Generico.codigoCVN, "020.060.000.000"),
                                new Property(Variables.Generico.personaCVN, mPersonID)
                            ));
-                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.FormacionAcademica.conocimientoIdiomasIdioma, idioma.GetTraduccion()),
-                            new Property(Variables.FormacionAcademica.conocimientoIdiomasComprensionAuditiva, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.120"))),
-                            new Property(Variables.FormacionAcademica.conocimientoIdiomasComprensionLectura, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.130"))),
-                            new Property(Variables.FormacionAcademica.conocimientoIdiomasInteraccionOral, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.140"))),
-                            new Property(Variables.FormacionAcademica.conocimientoIdiomasExpresionOral, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.150"))),
-                            new Property(Variables.FormacionAcademica.conocimientoIdiomasExpresionEscrita, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.160")))
-                        ));
+                        if (preimportar)
+                        {
+                            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                new Property(Variables.FormacionAcademica.conocimientoIdiomasIdioma, idioma.GetTraduccion()),
+                                new Property(Variables.FormacionAcademica.conocimientoIdiomasComprensionAuditiva, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.120"))),
+                                new Property(Variables.FormacionAcademica.conocimientoIdiomasComprensionLectura, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.130"))),
+                                new Property(Variables.FormacionAcademica.conocimientoIdiomasInteraccionOral, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.140"))),
+                                new Property(Variables.FormacionAcademica.conocimientoIdiomasExpresionOral, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.150"))),
+                                new Property(Variables.FormacionAcademica.conocimientoIdiomasExpresionEscrita, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.160")))
+                            ));
+                        }
+                        else {
+                            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                    new Property(Variables.FormacionAcademica.conocimientoIdiomasIdioma.Split("@@@").First(), idioma.GetTraduccion()),
+                                    new Property(Variables.FormacionAcademica.conocimientoIdiomasComprensionAuditiva.Split("@@@").First(), Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.120"))),
+                                    new Property(Variables.FormacionAcademica.conocimientoIdiomasComprensionLectura.Split("@@@").First(), Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.130"))),
+                                    new Property(Variables.FormacionAcademica.conocimientoIdiomasInteraccionOral.Split("@@@").First(), Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.140"))),
+                                    new Property(Variables.FormacionAcademica.conocimientoIdiomasExpresionOral.Split("@@@").First(), Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.150"))),
+                                    new Property(Variables.FormacionAcademica.conocimientoIdiomasExpresionEscrita.Split("@@@").First(), Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.160")))
+                                ));
+                        }
 
                         listado.Add(entidadAux);
                     }
