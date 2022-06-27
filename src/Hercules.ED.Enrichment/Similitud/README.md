@@ -32,6 +32,15 @@ Se han observado los requisitos de hardware al procesar una serie de rankings de
 
 # Especificaciones de la API de similitud
 
+/ro [POST]
+/ro [PUT]
+/ro [DELETE]
+/ro-collection [GET]
+/ro-collection [POST]
+/similar [GET]
+/rebuild-rankings [POST]
+
+
 ## add_ro (POST)
 
 Este método sirve para crear un nuevo RO en la base de datos. Se debe ejecutar cada vez que se quiera añadir un nuevo RO al sistema. En el caso de que se necesite incorporar un gran lote de ROs, como por ejemplo en el caso de una carga masiva inicial, se utilizará un script creado con ese propósito.
