@@ -90,6 +90,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string type { get; set; }
         /// <summary>
+        /// Identificador del tesauro
+        /// </summary>
+        public string thesaurusID { get; set; }
+        /// <summary>
         /// Anchura del campo (1, 2 o 3)
         /// </summary>
         public int width { get; set; }

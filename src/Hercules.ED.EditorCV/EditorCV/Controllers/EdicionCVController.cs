@@ -192,6 +192,20 @@ namespace GuardadoCV.Controllers
             }
         }
 
+        [HttpGet("GetTesaurus")]
+        public IActionResult GetTesaurus(string tesaurus, string pLang)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetTesauros(accionesEdicion.ConseguirNombreTesauro(tesaurus), pLang).Values);
+            }
+            catch(Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
+            }
+        }
+
         //TODO entidades del propio CV
         //GEstión multiidioma
 

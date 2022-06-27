@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -26,15 +27,34 @@ namespace EditorCV.Models
         private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
         #endregion
 
+
         /// <summary>
         /// Envia un proyecto a validación.
         /// </summary>
         /// <param name="pConfig">Configuración.</param>
-        /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
+        /// <param name="pIdRecurso">ID del recurso que apunta al proyecto.</param>
         /// <param name="pIdPersona">ID del recurso de la persona.</param>
         /// <param name="pIdAutorizacion">ID del recurso de la autorización.</param>
-        public void EnvioProyecto(ConfigService pConfig, string pIdProyecto, string pIdPersona, string pIdAutorizacion)
+        public void EnvioProyecto(ConfigService pConfig, string pIdRecurso, string pIdPersona, string pIdAutorizacion)
         {
+            string pIdProyecto = "";
+            string selectProyecto = "select distinct ?proyecto";
+            string whereProyecto = $@"where{{
+    <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?proyecto .
+}}";
+            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
+            if (query.results.bindings.Count != 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> res in query.results.bindings)
+                {
+                    pIdProyecto = res["proyecto"].value;
+                }
+            }
+            if (string.IsNullOrEmpty(pIdProyecto))
+            {
+                return;
+            }
+
             NotificacionProyecto proyecto = CrearProyecto(pIdProyecto, pIdPersona, pIdAutorizacion);
 
             try
@@ -42,7 +62,7 @@ namespace EditorCV.Models
                 RestClient client = new(pConfig.GetUrlEnvioProyecto());
                 client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
                 var request = new RestRequest(Method.POST);
-                request.AddJsonBody(proyecto);                
+                request.AddJsonBody(proyecto);
                 IRestResponse response = client.Execute(request);
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
@@ -266,6 +286,8 @@ namespace EditorCV.Models
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
+                    //TODO
+                    return int.Parse(fila["crisIdentifier"].value.Split("|").Last());
                     return Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier"));
                 }
             }
