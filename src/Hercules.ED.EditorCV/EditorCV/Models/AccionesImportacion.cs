@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Text;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -78,7 +79,7 @@ namespace EditorCV.Models
         /// <param name="filePreimport"></param>
         /// <param name="listaId"></param>
         /// <param name="dicOpciones"></param>
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, byte[] filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
             foreach (KeyValuePair<string, string> valuePair in dicOpciones)
@@ -94,10 +95,10 @@ namespace EditorCV.Models
             var multipartFormData = new MultipartFormDataContent();
             //Identificador del curriculumvitae
             multipartFormData.Add(new StringContent(pCVID), "pCVID");
-            //Objeto Preimport
-            multipartFormData.Add(new StringContent(filePreimport), "filePreimport");
             //Archivo XML leido
             multipartFormData.Add(new ByteArrayContent(file), "file");
+            //Objeto Preimport
+            multipartFormData.Add(new ByteArrayContent(filePreimport), "filePreimport");            
             //Listado de identificadores de los recursos a cargar
             if (listaId != null && listaId.Count > 0)
             {
