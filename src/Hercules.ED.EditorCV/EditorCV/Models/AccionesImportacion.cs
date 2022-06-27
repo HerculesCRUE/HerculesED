@@ -98,7 +98,7 @@ namespace EditorCV.Models
             //Archivo XML leido
             multipartFormData.Add(new ByteArrayContent(file), "file");
             //Objeto Preimport
-            multipartFormData.Add(new StringContent(filePreimport), "filePreimport");            
+            multipartFormData.Add(new StringContent(filePreimport), "filePreimport");
             //Listado de identificadores de los recursos a cargar
             if (listaId != null && listaId.Count > 0)
             {
@@ -363,11 +363,11 @@ namespace EditorCV.Models
                                         .SelectMany(x => x.values).ToList();
 
                         tabSectionItem.identifier = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
-                            .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x=>x.prop.Equals(itemEditSection.property))))?
+                            .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x => x.prop.Equals(itemEditSection.property))))?
                             .Where(x => x.Count() > 0).FirstOrDefault()?.Select(x => x.guid).FirstOrDefault();
                         tabSectionItem.idBBDD = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
                             .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x => x.prop.Equals(itemEditSection.property))))?
-                            .Where(p => p.Count() > 0).FirstOrDefault()?.Select(x=>x.idBBDD).FirstOrDefault();
+                            .Where(p => p.Count() > 0).FirstOrDefault()?.Select(x => x.idBBDD).FirstOrDefault();
                         itemEditSection.title.Select(x => x.Value).ToList();
 
                         tabSectionItem.properties.Add(tsip);
@@ -412,11 +412,40 @@ namespace EditorCV.Models
             }
 
             TabSectionItem sectionItem = new TabSectionItem();
+            List<string> valor = new List<string>();
+            string graph = "";
+
             //Título
             PropertyDataTemplate configTitulo = tabSectionListItem.propertyTitle;
 
             string propCompleteTitle = UtilityCV.GetPropComplete(configTitulo);
             sectionItem.title = subseccionItem.propiedades.FirstOrDefault(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?.values.FirstOrDefault();
+            if (sectionItem.title == null)
+            {
+                valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?
+                            .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                if (valor == null || valor.Count == 0)
+                {
+                    valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle).Split("@@@").First())?
+                        .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                }
+                graph = tabSectionListItem.propertyTitle.child.graph;
+
+                string select = "select distinct ?w";
+                string where = $@"where{{
+    <{valor.First()}> <{propCompleteTitle.Split("@@@").Last()}> ?w .
+    FILTER( lang(?w) = '{lang}' OR lang(?w) = '')
+}}";
+                SparqlObject sparqlObjectTitle = mResourceApi.VirtuosoQuery(select, where, graph);
+
+                if (sparqlObjectTitle.results.bindings.Count != 0)
+                {
+                    foreach (Dictionary<string, Data> fila in sparqlObjectTitle.results.bindings)
+                    {
+                        sectionItem.title = fila["w"].value;
+                    }
+                }
+            }
             sectionItem.properties = new List<TabSectionItemProperty>();
             sectionItem.iseditable = !subseccionItem.isBlocked;
             sectionItem.idBBDD = subseccionItem.idBBDD;
@@ -430,8 +459,8 @@ namespace EditorCV.Models
                 foreach (TabSectionListItemProperty property in tabSectionListItem.properties)
                 {
                     string propComplete = "";
-                    List<string> valor = new List<string>();
-                    string graph = "";
+                    valor = new List<string>();
+                    graph = "";
                     PropertyDataTemplate childOR = new PropertyDataTemplate();
 
                     if (property.childOR != null && property.childOR.Count != 0)
@@ -463,9 +492,10 @@ namespace EditorCV.Models
                     else
                     {
                         propComplete = UtilityCV.GetPropComplete(property.child);
+
                         valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
                             .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
-                        if (valor == null && valor.Count == 0)
+                        if (valor == null || valor.Count == 0)
                         {
                             valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
                                 .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
