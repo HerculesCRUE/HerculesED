@@ -333,6 +333,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
                 {
                     idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").First();
+                    if (idBBDD.Equals(""))
+                    {
+                        idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").Last()();
+                    }
                     //Duplicar
                     if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("du"))
                     {
