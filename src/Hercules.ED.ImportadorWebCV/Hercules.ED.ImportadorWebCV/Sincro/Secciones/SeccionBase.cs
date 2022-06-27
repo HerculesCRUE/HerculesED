@@ -335,7 +335,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").First();
                     if (idBBDD.Equals(""))
                     {
-                        idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").Last()();
+                        idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").Last();
                     }
                     //Duplicar
                     if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("du"))
@@ -347,6 +347,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         idBBDD = CreateListEntityAux(mCvID, RdfTypeTab, rdfTypePrefix, propiedadesItem, entityXML);
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                     //Fusionar
                     else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu") && string.IsNullOrEmpty(idBBDD))
@@ -354,6 +355,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                     //Sobrescribir
                     else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so") && string.IsNullOrEmpty(idBBDD))
@@ -361,6 +363,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         bool res = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
+                        i--;
                     }
                 }
                 else
