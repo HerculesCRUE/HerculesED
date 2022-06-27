@@ -129,11 +129,11 @@
         /// <summary>
         /// Conocimiento de idiomas - 020.060.000.000
         /// </summary>
-        public const string conocimientoIdiomasIdioma = "http://w3id.org/roh/languageOfTheCertificate";
-        public const string conocimientoIdiomasComprensionAuditiva = "http://w3id.org/roh/listeningSkill";
-        public const string conocimientoIdiomasComprensionLectura = "http://w3id.org/roh/readingSkill";
-        public const string conocimientoIdiomasInteraccionOral = "http://w3id.org/roh/spokingInteractionSkill";
-        public const string conocimientoIdiomasExpresionOral = "http://w3id.org/roh/speakingSkill";
-        public const string conocimientoIdiomasExpresionEscrita = "http://w3id.org/roh/writingSkill";
+        public const string conocimientoIdiomasIdioma = "http://w3id.org/roh/languageOfTheCertificate@@@http://purl.org/dc/elements/1.1/title";
+        public const string conocimientoIdiomasComprensionAuditiva = "http://w3id.org/roh/listeningSkill@@@http://purl.org/dc/elements/1.1/title";
+        public const string conocimientoIdiomasComprensionLectura = "http://w3id.org/roh/readingSkill@@@http://purl.org/dc/elements/1.1/title";
+        public const string conocimientoIdiomasInteraccionOral = "http://w3id.org/roh/spokingInteractionSkill@@@http://purl.org/dc/elements/1.1/title";
+        public const string conocimientoIdiomasExpresionOral = "http://w3id.org/roh/speakingSkill@@@http://purl.org/dc/elements/1.1/title";
+        public const string conocimientoIdiomasExpresionEscrita = "http://w3id.org/roh/writingSkill@@@http://purl.org/dc/elements/1.1/title";
     }
 }
