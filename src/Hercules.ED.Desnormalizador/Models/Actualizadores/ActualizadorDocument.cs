@@ -743,7 +743,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
             foreach (string filter in filters)
             {
-                //Insertamos
                 while (true)
                 {
                     int limit = 500;
@@ -755,7 +754,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 {{
                                   ?document <http://w3id.org/roh/genderIP> ?genderIPCargado.
                                 }}
-                                {{
+                                OPTIONAL{{
                                   select ?document ?genderIPACargar
                                   Where{{
                                     ?document a <http://purl.org/ontology/bibo/Document>.                                    
@@ -776,14 +775,26 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 	                                }}  
                                   }}
                                 }}
-                                FILTER(?genderIPCargado!= ?genderIPACargar OR !BOUND(?genderIPCargado) )
+                                
+                                FILTER(
+                                    #Hay que cambiarlo
+                                    (BOUND(?genderIPCargado) AND BOUND(?genderIPACargar) AND ?genderIPCargado!= ?genderIPACargar) OR
+                                    #Hay que insertarlo
+                                    (!BOUND(?genderIPCargado) AND BOUND(?genderIPACargar)) OR
+                                    #Hay que eliminarlo
+                                    (BOUND(?genderIPCargado) AND !BOUND(?genderIPACargar)) 
+                                    )
                             }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string document = fila["document"].value;
-                        string genderIPACargar = fila["genderIPACargar"].value;
+                        string genderIPACargar = "";
+                        if (fila.ContainsKey("genderIPACargar"))
+                        {
+                            genderIPACargar = fila["genderIPACargar"].value;
+                        }
                         string genderIPCargado = "";
                         if (fila.ContainsKey("genderIPCargado"))
                         {
@@ -798,51 +809,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     }
                 }
 
-                //Eliminaciones (documento sin IP activo o IP activo sin gender)
-                while (true)
-                {
-                    int limit = 500;
-                    String select = @"select ?document ?genderIPCargado from <http://gnoss.com/person.owl>";
-                    String where = @$"where{{
-                                ?document a <http://purl.org/ontology/bibo/Document>.
-                                {filter}
-                                ?document <http://w3id.org/roh/genderIP> ?genderIPCargado.                                
-                                MINUS{{
-                                  select ?document
-                                  Where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.                                    
-                                    ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-                                    ?person <http://xmlns.com/foaf/0.1/gender> ?gender.
-                                    ?person <http://w3id.org/roh/isActive>  'true'.
-                                    {{
-		                                select ?document  min(?orden) as ?orden sample(?author) as ?author where
-		                                {{
-			                                select ?document  ?orden ?author where
-			                                {{
-				                                ?document a <http://purl.org/ontology/bibo/Document>.
-				                                ?document <http://purl.org/ontology/bibo/authorList> ?author.
-				                                ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
-				                                BIND(xsd:int(?ordenAux) as ?orden)
-			                                }}order by asc(?orden) 
-		                                }}group by (?document)
-	                                }}  
-                                  }}
-                                }}
-                            }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
-                    {
-                        string document = fila["document"].value;
-                        string genderIPCargado = fila["genderIPCargado"].value;
-                        ActualizadorTriple(document, "http://w3id.org/roh/genderIP", genderIPCargado, "");
-                    });
-
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
             }
         }
 
