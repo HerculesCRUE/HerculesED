@@ -118,10 +118,9 @@ namespace EditorCV.Controllers
                 }
 
                 byte[] file = Encoding.UTF8.GetBytes(fileData);
-                byte[] filePreimportByte = Encoding.UTF8.GetBytes(filePreimport);
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion();                
-                accionesImportacion.PostimportarCV(_Configuracion, pCVId, file, filePreimportByte, listadoId, dicOpciones);
+                accionesImportacion.PostimportarCV(_Configuracion, pCVId, file, filePreimport, listadoId, dicOpciones);
 
                 return Ok();
             }

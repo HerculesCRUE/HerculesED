@@ -79,7 +79,7 @@ namespace EditorCV.Models
         /// <param name="filePreimport"></param>
         /// <param name="listaId"></param>
         /// <param name="dicOpciones"></param>
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, byte[] filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
             foreach (KeyValuePair<string, string> valuePair in dicOpciones)
@@ -98,7 +98,7 @@ namespace EditorCV.Models
             //Archivo XML leido
             multipartFormData.Add(new ByteArrayContent(file), "file");
             //Objeto Preimport
-            multipartFormData.Add(new ByteArrayContent(filePreimport), "filePreimport");            
+            multipartFormData.Add(new StringContent(filePreimport), "filePreimport");            
             //Listado de identificadores de los recursos a cargar
             if (listaId != null && listaId.Count > 0)
             {

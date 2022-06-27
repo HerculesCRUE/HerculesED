@@ -100,7 +100,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
 
                 //Guardo los datos del fichero XML leido para usarlo despues
                 var ms = new MemoryStream();
-                File.CopyTo(ms);
+                sincro.CVFileAsXML.CopyTo(ms);
                 byte[] filebytes = ms.ToArray();
                 preimportar.cvn_xml = filebytes;
 
@@ -122,7 +122,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
         /// <returns></returns>
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] byte[] filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
@@ -134,17 +134,9 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
                         stringFile = reader.ReadToEnd();
                     }
                 }
-                string stringFilePreimport;
-                using (var msPreimport = new MemoryStream(filePreimport))
-                {
-                    using (var reader = new StreamReader(msPreimport))
-                    {
-                        stringFilePreimport = reader.ReadToEnd();
-                    }
-                }
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
-                accionesImportacion.ImportacionTriples(pCVID, stringFilePreimport, listaId, listaOpciones);
+                accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones);
 
                 return Ok();
             }
