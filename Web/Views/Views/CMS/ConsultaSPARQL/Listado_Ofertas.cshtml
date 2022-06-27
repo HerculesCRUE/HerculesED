@@ -9,8 +9,10 @@
 @using System.Linq;
 @using System.Collections;
 @model CMSComponentQuerySPARQL
-@{ CommunityModel Comunidad = Html.GetComunidad();
+@{
+    CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+    int numItems = 0;
 }
 
 @if (Model != null)
@@ -20,9 +22,38 @@
     listaOfertas = new List<Offer>();
     @foreach (System.Data.DataRow fila in Model.DataSetResult.Tables[0].Rows)
     {
-        Offer oferta = new Offer(fila);
-        listaOfertas.Add(oferta);
+        // Busca que la oferta no se haya cargado antes (debido a algún union en el que coincida)
+        if (listaOfertas.FindAll(e => e.id == fila["oferta"].ToString()).Count == 0)
+        {
+            Offer oferta = new Offer(fila);
+            listaOfertas.Add(oferta);
+        } else
+        {
+            var oferta = listaOfertas.Find(e => e.id == fila["oferta"].ToString());
+            oferta.Editar(fila);
+        }
     }
+
+    foreach (Offer oferta in listaOfertas)
+    {
+        TipoUser typeUser = TipoUser.otro;
+        if (oferta.actUser == oferta.members)
+        {
+            typeUser = TipoUser.actUser;
+        } else if (oferta.isOtriManager == "true")
+        {
+            typeUser = TipoUser.isOtriManager;
+        }else if (oferta.isIp == "true")
+        {
+            typeUser = TipoUser.ip;
+        }
+
+        if (mostrar(oferta.availability, typeUser))
+        {
+            numItems++;
+        } 
+    }
+
 
     @if (!IdentidadActual.IsGuestUser)
     {
@@ -39,7 +70,7 @@
             </div>
             <div class="col col-12 col-xl-9 header-listado">
                 <div class="h1-container">
-                    <h1>@Model.Title <span class="numResultados">@listaOfertas.Count</span></h1>
+                    <h1>@Model.Title <span class="numResultados">@numItems</span></h1>
                 </div>
             </div>
             <div class="col col-12 col-xl-9 col-contenido">
@@ -102,9 +133,11 @@
                                                                         string idEstadoOFerta = "";
                                                                         string txtEnviar = "";
 
-                                                                        switch (oferta.availability) 
+                                                                        var estadoAct = getEstado(oferta.availability);
+
+                                                                        switch (estadoAct) 
                                                                         {
-                                                                            case "http://gnoss.com/items/offerstate_001":
+                                                                            case Estado.Borrador:
                                                                             // Es el creador de la oferta
                                                                                 // Puede pasar la oferta a revisión
                                                                                 if (oferta.actUser == oferta.members) 
@@ -115,7 +148,7 @@
 
                                                                                 }
                                                                                 break;
-                                                                            case "http://gnoss.com/items/offerstate_002":
+                                                                            case Estado.Revision:
                                                                             // Es el creador de la oferta
                                                                                 // Puede pasar la oferta a borrador
                                                                                 if (oferta.actUser == oferta.members || oferta.isOtriManager == "true") 
@@ -138,7 +171,7 @@
                                                                                     estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
                                                                                 }
                                                                                 break;
-                                                                            case "http://gnoss.com/items/offerstate_003":
+                                                                            case Estado.Validada:
                                                                                 if (oferta.isOtriManager == "true")
                                                                                 {
                                                                                     idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
@@ -150,7 +183,7 @@
                                                                                     estados.Add(new Tuple<string, string>( idEstadoOFerta, txtEnviar ));
                                                                                 }
                                                                                 break;
-                                                                            case "http://gnoss.com/items/offerstate_004":
+                                                                            case Estado.Denegada:
                                                                                 if (oferta.actUser == oferta.members) 
                                                                                 {
                                                                                     idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
@@ -179,7 +212,7 @@
                                                                             </li>
                                                                         }
 
-                                                                        if (oferta.actUser == oferta.members || oferta.isOtriManager == "true" || oferta.isIp == "true")
+                                                                        if ((oferta.actUser == oferta.members || oferta.isOtriManager == "true" || oferta.isIp == "true") && (estadoAct.Equals(Estado.Borrador) || estadoAct.Equals(Estado.Revision)))
                                                                         {
                                                                             <li>
                                                                                 <a class="item-dropdown" href="javascript: void(0)" data-toggle="modal" data-target="#modal-eliminar-oferta-confirmacion">
@@ -218,6 +251,7 @@
                                             </div>
                                         </div>
                                     </article>
+
                                 }
 
 
@@ -315,6 +349,7 @@
         public string members { get; set; }
         public string isOtriManager { get; set; }
         public string isIp { get; set; }
+        public string otherResearcher { get; set; }
 
         public Offer()
         {
@@ -332,6 +367,7 @@
             members = "";
             isOtriManager = "";
             isIp = "";
+            otherResearcher = "";
         }
 
         public Offer(System.Data.DataRow fila)
@@ -364,11 +400,40 @@
                 {
                     this.isIp = fila["isIp"].ToString();
                 }
+                if (!fila.IsNull("otherResearcher"))
+                {
+                    this.otherResearcher = fila["otherResearcher"].ToString();
+                }
 
             } catch (Exception e ) {}
 
 
         }
+
+        public void Editar(System.Data.DataRow fila)
+        {
+
+
+            try
+            {
+                if (!fila.IsNull("isOtriManager"))
+                {
+                    this.isOtriManager = fila["isOtriManager"].ToString() != "" ? fila["isOtriManager"].ToString() : this.isOtriManager;
+                }
+                if (!fila.IsNull("isIp"))
+                {
+                    this.isIp = fila["isIp"].ToString() != "" ? fila["isIp"].ToString() : this.isIp;
+                }
+                if (!fila.IsNull("otherResearcher"))
+                {
+                    this.isIp = fila["otherResearcher"].ToString() != "" ? fila["otherResearcher"].ToString() : this.isIp;
+                }
+
+            } catch (Exception e ) {}
+
+
+        }
+
 
         private string GetFecha(string fecha)
         {
@@ -396,7 +461,7 @@
     }
 
 
-    enum Estados
+    enum Estado
     {
         Borrador,
         Revision,
@@ -411,14 +476,25 @@
 
         switch (tipoUser) {
             case TipoUser.ip:
-                return true;
+                switch (estado)
+                {
+                    case Estado.Archivada:
+                        return false;
+                        break;
+                    default:
+                        return true;
+                        break;
+                }
                 break;
 
             case TipoUser.isOtriManager:
 
                 switch (estado)
                 {
-                    case Estados.Borrador:
+                    case Estado.Borrador:
+                        return false;
+                        break;
+                    case Estado.Archivada:
                         return false;
                         break;
                     default:
@@ -428,44 +504,60 @@
                 break;
 
             case TipoUser.actUser:
-                return true;
+                switch (estado)
+                {
+                    case Estado.Archivada:
+                        return false;
+                        break;
+                    default:
+                        return true;
+                        break;
+                }
                 break;
 
             default:
-                return false;
+                switch (estado)
+                {
+                    case Estado.Archivada:
+                        return false;
+                        break;
+                    default:
+                        return true;
+                        break;
+                }
                 break;
         }
     }
 
-    private Estados getEstado (string estado)
+    private Estado getEstado (string estado)
     {
         switch (estado)
         {
             case "http://gnoss.com/items/offerstate_001":
-                return Estados.Borrador;
+                return Estado.Borrador;
                 break;
             
             case "http://gnoss.com/items/offerstate_002":
-                return Estados.Revision;
+                return Estado.Revision;
                 break;
 
                 
             case "http://gnoss.com/items/offerstate_003":
-                return Estados.Validada;
+                return Estado.Validada;
                 break;
 
                 
             case "http://gnoss.com/items/offerstate_004":
-                return Estados.Denegada;
+                return Estado.Denegada;
                 break;
 
                 
             case "http://gnoss.com/items/offerstate_005":
-                return Estados.Archivada;
+                return Estado.Archivada;
                 break;
 
             default:
-                return Estados.Borrador;
+                return Estado.Borrador;
                 break;
         }
     }
