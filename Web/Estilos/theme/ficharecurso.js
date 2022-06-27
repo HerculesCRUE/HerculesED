@@ -6,14 +6,19 @@ var buscadorPersonalizado = {
 	filtro: null,
 	orden:null,
 	orders:null,
-	init: function (nombreelemento, contenedor, filtro, orden, parametrosadicionales, urlcomunidad, idcomunidad, callback = () => {}) {
+	init: function (nombreelemento, contenedor, filtro, orden, parametrosadicionales, urlcomunidad, idcomunidad, urlPush = "", callback = () => {}) {
 		this.nombreelemento = nombreelemento;
 		this.contenedor = contenedor;
 		this.filtro = filtro;
 		this.orden = orden;
 		this.config();
 
-		history.pushState('', 'New URL: ', ResetearURL());
+		if (urlPush != "" && urlPush != null) {
+			history.pushState('', 'New URL: ', ResetearURL());
+			history.pushState('','',"?" + urlPush.join("&"))
+		} else {
+			history.pushState('', 'New URL: ', ResetearURL());
+		}
 		urlComunidad = urlcomunidad;
 		urlCargarAccionesRecursos = urlcomunidad+'/load-resource-actions';
 		panFacetas = 'panFacetas';
@@ -44,11 +49,8 @@ var buscadorPersonalizado = {
 			$(htmlRespuesta).find('article').each(function () {
 				$('#panResultados article').last().after(this);
 			});
-			console.log("loaded $(htmlRespuesta).find('article')")
 			comportamientoVerMasVerMenosTags.init();
-			console.log("loaded comportamientoVerMasVerMenosTags")
 			enlazarFacetasBusqueda();
-			console.log("enlazarFacetasBusqueda")
 			if (callback && typeof(callback) === "function") {
 				callback();
 			}
