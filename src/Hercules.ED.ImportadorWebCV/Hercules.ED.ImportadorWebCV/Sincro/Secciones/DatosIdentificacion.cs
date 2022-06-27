@@ -43,7 +43,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityXML = ObtenerDatosPersonales(entityBBDD, listadoDatosIdentificacion);
 
             if (preimportar)
-            {
+            {                
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
                 listaAux.Add( new SubseccionItem(0, entityBBDD.id, entityXML.properties));
                 return listaAux;

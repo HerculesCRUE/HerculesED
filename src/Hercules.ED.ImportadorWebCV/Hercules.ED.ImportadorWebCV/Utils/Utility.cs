@@ -1903,7 +1903,12 @@ namespace Utils
             {
                 //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
                 DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
-                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+                if (TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id.Contains("Europe/Madrid")))
+                {
+                    dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+                }
+
 
                 return dateTime2.ToString("yyyyMMdd000000");
             }
@@ -1924,7 +1929,11 @@ namespace Utils
         {
             //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
             DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
-            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+            if (TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id.Contains("Europe/Madrid")))
+            {
+                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+            }
 
             return dateTime2.ToString("yyyyMMdd000000");
         }
@@ -1939,7 +1948,12 @@ namespace Utils
         {
             //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
             DateTime dateTime2 = new DateTime(dateTime.Value.Ticks, DateTimeKind.Unspecified);
-            dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+
+            if (TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id.Contains("Europe/Madrid")))
+            {
+                dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+            }
+
 
             return dateTime2.ToString("yyyyMMdd000000");
         }

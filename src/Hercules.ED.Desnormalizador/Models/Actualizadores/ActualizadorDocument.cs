@@ -2,11 +2,16 @@
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+
 namespace DesnormalizadorHercules.Models.Actualizadores
 {
     //TODO comentarios completados, falta eliminar froms
@@ -33,7 +38,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// <param name="pDocuments">ID de documentos</param>
         public void ActualizarDocumentosValidados(List<string> pDocuments = null)
         {
-            HashSet<string> filters = new HashSet<string>();            
+            HashSet<string> filters = new HashSet<string>();
             if (pDocuments != null && pDocuments.Count > 0)
             {
                 filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
@@ -216,7 +221,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
         }
 
-        
+
         /// <summary>
         /// Insertamos en la propiedad http://w3id.org/roh/citationCount de los http://purl.org/ontology/bibo/Document
         /// el nº máximo de citas con el que cuenta
@@ -351,8 +356,8 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     {
                         string document = fila["document"].value;
                         string categoryNode = fila["categoryNode"].value;
-                    //TODO from
-                    select = @"select ?document ?hasKnowledgeArea   ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                        //TODO from
+                        select = @"select ?document ?hasKnowledgeArea   ?categoryNode from <http://gnoss.com/taxonomy.owl>";
                         where = @$"where{{
                                     FILTER(?document=<{document}>)
                                     FILTER(?categoryNode =<{categoryNode}>)
@@ -629,7 +634,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         String where2 = @$"where
                             {{                            
                                 ?document <http://vivoweb.org/ontology/core#freeTextKeyword> ?data. 
-                                ?data <http://w3id.org/roh/title> '{tag.Replace("'","\\'")}'. 
+                                ?data <http://w3id.org/roh/title> '{tag.Replace("'", "\\'")}'. 
                                 FILTER(?document=<{document}>)
                             }}";
                         SparqlObject resultado2 = mResourceApi.VirtuosoQuery(select2, where2, "document");
@@ -738,7 +743,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
             foreach (string filter in filters)
             {
-                //Actualizamos los datos
+                //Insertamos
                 while (true)
                 {
                     int limit = 500;
@@ -750,28 +755,25 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 {{
                                   ?document <http://w3id.org/roh/genderIP> ?genderIPCargado.
                                 }}
-                                OPTIONAL{{
-                                  select ?document IF (BOUND (?genderIPACargar), ?genderIPACargar, '-' ) as ?genderIPACargar
+                                {{
+                                  select ?document ?genderIPACargar
                                   Where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    OPTIONAL{{
-                                        ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-                                        ?person <http://xmlns.com/foaf/0.1/gender> ?genderIPACargar.
-                                        ?person <http://w3id.org/roh/isActive>  'true'.
-                                        {{
-		                                    select ?document  min(?orden) as ?orden sample(?author) as ?author where
-		                                    {{
-			                                    select ?document  ?orden ?author where
-			                                    {{
-				                                    ?document a <http://purl.org/ontology/bibo/Document>.
-				                                    ?document <http://purl.org/ontology/bibo/authorList> ?author.
-				                                    ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
-				                                    BIND(xsd:int(?ordenAux) as ?orden)
-			                                    }}order by asc(?orden) 
-		                                    }}group by (?document)
-	                                    }}                                    
-                                    }}
-
+                                    ?document a <http://purl.org/ontology/bibo/Document>.                                    
+                                    ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                    ?person <http://xmlns.com/foaf/0.1/gender> ?genderIPACargar.
+                                    ?person <http://w3id.org/roh/isActive>  'true'.
+                                    {{
+		                                select ?document  min(?orden) as ?orden sample(?author) as ?author where
+		                                {{
+			                                select ?document  ?orden ?author where
+			                                {{
+				                                ?document a <http://purl.org/ontology/bibo/Document>.
+				                                ?document <http://purl.org/ontology/bibo/authorList> ?author.
+				                                ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
+				                                BIND(xsd:int(?ordenAux) as ?orden)
+			                                }}order by asc(?orden) 
+		                                }}group by (?document)
+	                                }}  
                                   }}
                                 }}
                                 FILTER(?genderIPCargado!= ?genderIPACargar OR !BOUND(?genderIPCargado) )
@@ -788,6 +790,52 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             genderIPCargado = fila["genderIPCargado"].value;
                         }
                         ActualizadorTriple(document, "http://w3id.org/roh/genderIP", genderIPCargado, genderIPACargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //Eliminaciones (documento sin IP activo o IP activo sin gender)
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?document ?genderIPCargado from <http://gnoss.com/person.owl>";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                ?document <http://w3id.org/roh/genderIP> ?genderIPCargado.                                
+                                MINUS{{
+                                  select ?document
+                                  Where{{
+                                    ?document a <http://purl.org/ontology/bibo/Document>.                                    
+                                    ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                    ?person <http://xmlns.com/foaf/0.1/gender> ?gender.
+                                    ?person <http://w3id.org/roh/isActive>  'true'.
+                                    {{
+		                                select ?document  min(?orden) as ?orden sample(?author) as ?author where
+		                                {{
+			                                select ?document  ?orden ?author where
+			                                {{
+				                                ?document a <http://purl.org/ontology/bibo/Document>.
+				                                ?document <http://purl.org/ontology/bibo/authorList> ?author.
+				                                ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
+				                                BIND(xsd:int(?ordenAux) as ?orden)
+			                                }}order by asc(?orden) 
+		                                }}group by (?document)
+	                                }}  
+                                  }}
+                                }}
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string document = fila["document"].value;
+                        string genderIPCargado = fila["genderIPCargado"].value;
+                        ActualizadorTriple(document, "http://w3id.org/roh/genderIP", genderIPCargado, "");
                     });
 
                     if (resultado.results.bindings.Count != limit)
@@ -1292,5 +1340,310 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         //        });
         //    }
         //}
+
+        /// <summary>
+        /// Método para inserción múltiple de indices de impacto
+        /// </summary>
+        /// <param name="pFilas">Filas con los datos para insertar</param>
+        public void EnvioServicioSimilaridad(string pIdDoc)
+        {
+            EnrichmentSimilarityPut enrichmentSimilarityPut = null;
+
+            //Obtenemos título y descripción
+            string select = "select ?doc ?title ?abstract";
+            string where = $@"
+where{{
+    ?doc a <http://purl.org/ontology/bibo/Document>.
+    ?doc <http://w3id.org/roh/title> ?title.
+    FILTER(?doc=<{pIdDoc}>)
+    OPTIONAL{{?doc <http://purl.org/ontology/bibo/abstract> ?abstract}}
+}}";
+            SparqlObject response = mResourceApi.VirtuosoQuery(select, where, "document");
+            foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
+            {
+                string text = fila["title"].value.Trim();
+                if (fila.ContainsKey("abstract"))
+                {
+                    text += " " + fila["abstract"].value.Trim();
+                }
+                enrichmentSimilarityPut = new EnrichmentSimilarityPut();
+                enrichmentSimilarityPut.ro_id = pIdDoc;
+                enrichmentSimilarityPut.ro_type = "research_paper";
+                enrichmentSimilarityPut.text = text;
+                enrichmentSimilarityPut.authors = new List<string>();
+                enrichmentSimilarityPut.specific_descriptors = new List<List<object>>();
+                enrichmentSimilarityPut.thematic_descriptors = new List<List<object>>();
+            }
+
+
+            if (enrichmentSimilarityPut != null)
+            {
+                #region Obtenemos autores
+                select = "select ?orden ?authorName from <http://gnoss.com/person.owl>";
+                where = $@"
+where
+{{
+	?doc a <http://purl.org/ontology/bibo/Document>.
+	?doc <http://purl.org/ontology/bibo/authorList> ?author.
+    FILTER(?doc=<{pIdDoc}>)
+	?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
+    ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+    ?person <http://xmlns.com/foaf/0.1/name> ?authorName
+	BIND(xsd:int(?ordenAux) as ?orden)
+}}order by asc(?orden) ";
+                response = mResourceApi.VirtuosoQuery(select, where, "document");
+                foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
+                {
+                    enrichmentSimilarityPut.authors.Add(fila["authorName"].value.Trim());
+                }
+                #endregion
+
+                #region Obtenemos etiquetas
+
+                select = "select ?tag";
+                where = $@"
+where
+{{
+	?doc a <http://purl.org/ontology/bibo/Document>.
+	?doc <http://vivoweb.org/ontology/core#freeTextKeyword> ?tagAux.
+    ?tagAux <http://w3id.org/roh/title> ?tag
+    FILTER(?doc=<{pIdDoc}>)
+}} ";
+                response = mResourceApi.VirtuosoQuery(select, where, "document");
+                foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
+                {
+                    enrichmentSimilarityPut.specific_descriptors.Add(new List<object>() { fila["tag"].value.Trim(), 1 });
+                }
+
+                select = "select ?tag ?score";
+                where = $@"
+where
+{{
+	?doc a <http://purl.org/ontology/bibo/Document>.
+	?doc <http://w3id.org/roh/enrichedKeywords> ?enrichedKeywords.
+    ?enrichedKeywords <http://w3id.org/roh/title> ?tag.
+    ?enrichedKeywords <http://w3id.org/roh/score> ?score.
+    FILTER(?doc=<{pIdDoc}>)
+}} ";
+                response = mResourceApi.VirtuosoQuery(select, where, "document");
+                foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
+                {
+                    string tag = fila["tag"].value.Trim();
+                    float score = float.Parse(fila["score"].value.Trim().Replace(",", "."), CultureInfo.InvariantCulture);
+                    if (enrichmentSimilarityPut.specific_descriptors.Exists(x => (string)x[0] == tag))
+                    {
+                        enrichmentSimilarityPut.specific_descriptors.First(x => (string)x[0] == tag)[1] = score;
+                    }
+                    else
+                    {
+                        enrichmentSimilarityPut.specific_descriptors.Add(new List<object>() { tag, score });
+                    }
+                }
+                #endregion
+
+                #region Obtenemos categorías
+
+                select = "select ?category from <http://gnoss.com/taxonomy.owl>";
+                where = $@"
+where
+{{
+	?doc a <http://purl.org/ontology/bibo/Document>.
+    ?doc  <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeAreaAux.
+    ?hasKnowledgeAreaAux <http://w3id.org/roh/categoryNode> ?categoryNode.
+    ?categoryNode <http://www.w3.org/2008/05/skos#prefLabel> ?category
+    MINUS{{
+        ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
+    }}
+    FILTER(?doc=<{pIdDoc}>)
+}} ";
+                response = mResourceApi.VirtuosoQuery(select, where, "document");
+                foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
+                {
+                    enrichmentSimilarityPut.thematic_descriptors.Add(new List<object>() { fila["category"].value.Trim(), 1 });
+                }
+                #endregion
+
+                //TODO enriquecidas
+
+
+                // Cliente.
+                HttpClient client = new HttpClient();
+                client.Timeout = TimeSpan.FromDays(1);
+
+                // Conversión de los datos.
+                string informacion = JsonConvert.SerializeObject(enrichmentSimilarityPut, new DecimalFormatConverter());
+                StringContent contentData = new StringContent(informacion, System.Text.Encoding.UTF8, "application/json");
+
+                var responsePost = client.PostAsync("http://herculesapi.elhuyar.eus/similarity/add_ro", contentData).Result;
+                if (responsePost.IsSuccessStatusCode)
+                {
+                    EnrichmentSimilarityPutResponse responsePostObject = responsePost.Content.ReadAsAsync<EnrichmentSimilarityPutResponse>().Result;
+                }
+                else
+                {
+
+                }
+
+
+
+
+
+                // Cliente.
+                HttpClient client2 = new HttpClient();
+                client2.Timeout = TimeSpan.FromDays(1);
+
+                EnrichmentSimilarityGet enrichmentSimilarityGet = new EnrichmentSimilarityGet();
+                enrichmentSimilarityGet.ro_id = pIdDoc;
+                enrichmentSimilarityGet.ro_type_target = "research_paper";
+
+                // Conversión de los datos.
+                string informacion2 = JsonConvert.SerializeObject(enrichmentSimilarityGet, new DecimalFormatConverter());
+                StringContent contentData2 = new StringContent(informacion2, System.Text.Encoding.UTF8, "application/json");
+
+                var responsePost2 = client2.PostAsync("http://herculesapi.elhuyar.eus/similarity/query_similar", contentData2).Result;
+                if (responsePost2.IsSuccessStatusCode)
+                {
+                    EnrichmentSimilarityGetResponse responseGetObject = responsePost2.Content.ReadAsAsync<EnrichmentSimilarityGetResponse>().Result;
+                    Dictionary<string, Dictionary<string, float>> similar = responseGetObject.similar_ros_calculado;
+                }
+                else
+                {
+
+                }
+            }
+
+
+
+
+            //Obtenemos categorias
+
+            /*
+             {
+    "ro_id": "2-s2.0-85032573110",
+    "ro_type": "research_paper",
+    "text": "Analysis of the microstructure and mechanical properties of titanium-based composites reinforced by secondary phases and B In the last decade, titanium metal matrix composites (TMCs) have received considerable attention thanks to their interesting properties as a consequence of the clear interface between the matrix and the reinforcing phases formed. In this work, TMCs with 30 vol % of B",
+    "authors": ["Montealegre-Melendez, Isabel", "Arévalo, Cristina", "Ariza, Enrique", "Pérez-Soriano, Eva M.", "Rubio-Escudero, Cristina", "Kitzmantel, Michael", "Neubauer, Erich"],
+    "thematic_descriptors": [("Physical Sciences", 0.998)],
+    "specific_descriptors": [("tmcs", 0.777), ("titanium-based composites", 0.702), ("secondary phases", 0.664), ("clear interface", 0.564), ("reinforcing phases", 0.534), ("their interesting properties", 0.476), ("titanium metal matrix composites", 0.394), ("consequence", 0.376), ("considerable attention", 0.347), ("thanks", 0.291), ("interesting properties", 0.276), ("analysis", 0.243), ("microstructure and mechanical properties", 0.188), ("decade", 0.187), ("last decade", 0.083), ("work", 0.025)]
+}
+             */
+
+            //// Cliente.
+            //EnrichmentResponseGlobal respuesta = new EnrichmentResponseGlobal();
+            //respuesta.tags = new EnrichmentResponse();
+            //respuesta.tags.topics = new List<EnrichmentResponseItem>();
+            //respuesta.categories = new EnrichmentResponseCategory();
+            //respuesta.categories.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
+            //HttpClient client = new HttpClient();
+            //client.Timeout = TimeSpan.FromDays(1);
+
+            //// Si la descripción llega nula o vacía...
+            //if (string.IsNullOrEmpty(pDesc))
+            //{
+            //    pDesc = string.Empty;
+            //}
+
+            //EnrichmentData enrichmentData = new EnrichmentData() { rotype = "papers", title = pTitulo, abstract_ = pDesc, pdfurl = pUrlPdf };
+
+            //// Conversión de los datos.
+            //string informacion = JsonConvert.SerializeObject(enrichmentData,
+            //                Newtonsoft.Json.Formatting.None,
+            //                new JsonSerializerSettings
+            //                {
+            //                    NullValueHandling = NullValueHandling.Ignore
+            //                });
+            //StringContent contentData = new StringContent(informacion, System.Text.Encoding.UTF8, "application/json");
+
+            //#region --- Tópicos Específicos (Tags)
+            //var responseSpecific = client.PostAsync(pConfig.GetUrlSpecificEnrichment(), contentData).Result;
+
+            //if (responseSpecific.IsSuccessStatusCode)
+            //{
+            //    respuesta.tags = responseSpecific.Content.ReadAsAsync<EnrichmentResponse>().Result;
+            //}
+            //else
+            //{
+            //    return respuesta;
+            //}
+            //#endregion
+
+            //#region --- Tópicos Temáticos (Categorías)            
+            //var responseThematic = client.PostAsync(pConfig.GetUrlThematicEnrichment(), contentData).Result;
+
+            //EnrichmentResponse categoriasObtenidas = null;
+
+            //if (responseThematic.IsSuccessStatusCode)
+            //{
+            //    categoriasObtenidas = responseThematic.Content.ReadAsAsync<EnrichmentResponse>().Result;
+            //    EnrichmentResponseCategory listaCategoria = new EnrichmentResponseCategory();
+            //    listaCategoria.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
+
+            //    foreach (EnrichmentResponseItem cat in categoriasObtenidas.topics)
+            //    {
+            //        List<EnrichmentResponseCategory.EnrichmentResponseItem> listaTesauro = new List<EnrichmentResponseCategory.EnrichmentResponseItem>();
+
+            //        if (tuplaTesauro.Item2.ContainsKey("general " + cat.word.ToLower().Trim()))
+            //        {
+            //            string idTesauro = tuplaTesauro.Item2["general " + cat.word.ToLower().Trim()];
+            //            listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+
+            //            while (!idTesauro.EndsWith(".0.0.0"))
+            //            {
+            //                idTesauro = ObtenerIdTesauro(idTesauro);
+            //                listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+            //            }
+            //        }
+            //        else if (tuplaTesauro.Item2.ContainsKey(cat.word.ToLower().Trim()))
+            //        {
+            //            string idTesauro = tuplaTesauro.Item2[cat.word.ToLower().Trim()];
+            //            listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+
+            //            while (!idTesauro.EndsWith(".0.0.0"))
+            //            {
+            //                idTesauro = ObtenerIdTesauro(idTesauro);
+            //                listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
+            //            }
+            //        }
+
+
+            //        if (listaTesauro.Count > 0)
+            //        {
+            //            listaCategoria.topics.Add(listaTesauro);
+            //        }
+            //    }
+            //    respuesta.categories = listaCategoria;
+            //}
+            //else
+            //{
+            //    return respuesta;
+            //}
+            //#endregion
+
+            //return respuesta;
+        }
+
+        public class DecimalFormatConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return (objectType == typeof(int));
+            }
+
+            public override void WriteJson(JsonWriter writer, object value,
+                                           JsonSerializer serializer)
+            {
+                if (value.GetType() == 1.GetType())
+                {
+                    double x = (int)value;
+                    writer.WriteValue(x);
+                }
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType,
+                                         object existingValue, JsonSerializer serializer)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

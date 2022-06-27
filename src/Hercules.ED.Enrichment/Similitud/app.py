@@ -166,7 +166,7 @@ class SimilarityQueryAPI(MethodResource, Resource):
          tags=['Hercules', 'similarity'])
     @use_kwargs(SimilarityQuerySchema, location='json')
     #@marshal_with(SimilarityQueryResponseSchema, description="")  # marshalling with marshmallow
-    def get(self, **kwargs):
+    def post(self, **kwargs):
         logger.debug(kwargs)
         similar_ro_ids = similarity.get_ro_ranking(kwargs['ro_id'], kwargs['ro_type_target'])            
         logger.debug(f"Similar ROs: {similar_ro_ids}")

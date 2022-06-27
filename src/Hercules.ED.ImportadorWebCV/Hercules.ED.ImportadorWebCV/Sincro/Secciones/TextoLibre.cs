@@ -47,7 +47,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (preimportar)
             {
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
-                listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
+                if (entityBBDD == null)
+                {
+                    listaAux.Add(new SubseccionItem(0, null, entityXML.properties));
+                }
+                else
+                {
+                    listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
+                }
                 return listaAux;
             }
             else
