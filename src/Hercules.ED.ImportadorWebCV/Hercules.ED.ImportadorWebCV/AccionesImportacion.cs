@@ -82,6 +82,13 @@ namespace Hercules.ED.ImportadorWebCV
             if (listadoItems.ElementAt(0).Code.Equals("000.020.000.000"))
             {
                 listadoItems.RemoveAt(0);
+                if (!listadoSubsetionItems.Any(x=>x.propiedades.Any(x=>x.prop.Contains("http://w3id.org/roh/summary"))))
+                {
+                    if (listadoItems.Last().Code.Equals("070.010.000.000"))
+                    {
+                        listadoItems.RemoveAt(listadoItems.Count);
+                    }
+                }
             }
             
 
@@ -148,7 +155,7 @@ namespace Hercules.ED.ImportadorWebCV
                                 listadoSobrescribir.Add(listadoItems.Last());
                             }
 
-                            if (listadoSubsetionItems.Last().idBBDD.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"))
+                            if (listadoSubsetionItems.Last().idBBDD != null && listadoSubsetionItems.Last().idBBDD.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"))
                             {
                                 listadoTextoLibreBBDD.Add(listadoSubsetionItems.Last().idBBDD + "@@@" + contadorTexto);
                             }
