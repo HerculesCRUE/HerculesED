@@ -38,7 +38,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         /// </summary>
         /// <param name="pCVID">ID curriculum</param>
         /// <param name="File">Archivo en formato PDF o XML</param>
-        /// <returns></returns>
+        /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Importar")]
         public ActionResult Importar([FromHeader][Required] string pCVID, [Required] IFormFile File, [FromHeader][Optional] List<string> Secciones)
         {
@@ -120,7 +120,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         /// <param name="filePreimport">Preimport del archivo XML tras tratarlo en Preimportar</param>
         /// <param name="listaId">Listado de identificadores de los recursos a añadir</param>
         /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
-        /// <returns></returns>
+        /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Postimportar")]
         public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
