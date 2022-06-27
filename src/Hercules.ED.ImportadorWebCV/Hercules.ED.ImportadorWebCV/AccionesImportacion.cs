@@ -86,7 +86,7 @@ namespace Hercules.ED.ImportadorWebCV
                 {
                     if (listadoItems.Last().Code.Equals("070.010.000.000"))
                     {
-                        listadoItems.RemoveAt(listadoItems.Count);
+                        listadoItems.RemoveAt(listadoItems.Count-1);
                     }
                 }
             }
