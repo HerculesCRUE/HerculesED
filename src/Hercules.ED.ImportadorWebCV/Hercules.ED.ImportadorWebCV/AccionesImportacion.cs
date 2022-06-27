@@ -82,18 +82,20 @@ namespace Hercules.ED.ImportadorWebCV
             if (listadoItems.ElementAt(0).Code.Equals("000.020.000.000"))
             {
                 listadoItems.RemoveAt(0);
-                if (!listadoSubsetionItems.Any(x=>x.propiedades.Any(x=>x.prop.Contains("http://w3id.org/roh/summary"))))
+            }
+
+            //En el caso de que la seccion de Texto libre no esté en listadoSubsectionItems tambien la elimino.
+            if (!listadoSubsetionItems.Any(x => x.propiedades.Any(x => x.prop.Contains("http://w3id.org/roh/summary"))))
+            {
+                if (listadoItems.Last().Code.Equals("070.010.000.000"))
                 {
-                    if (listadoItems.Last().Code.Equals("070.010.000.000"))
-                    {
-                        listadoItems.RemoveAt(listadoItems.Count-1);
-                    }
+                    listadoItems.RemoveAt(listadoItems.Count - 1);
                 }
             }
-            
+
 
             int contadorEliminados = 1;
-            string opcionSeleccionada = "";            
+            string opcionSeleccionada = "";
 
             List<CvnItemBean> listadoDuplicar = new List<CvnItemBean>();
             List<CvnItemBean> listadoFusionar = new List<CvnItemBean>();
