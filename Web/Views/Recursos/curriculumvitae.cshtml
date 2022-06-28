@@ -116,12 +116,12 @@ $(function() {
                 <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
             </div>
             <div class="modal-body">
-                @*<div class="alert">
+                <div class="alert" style="display: none;">
                     <p class="alert-title">
                         <span class="material-icons">warning</span>
                         @Html.Translate("POSIBLE_DUPLICIDAD")
                     </p>
-                </div>*@
+                </div>
                 <div class="resource-list listView">
                     <div class="resource-list-wrap">
                         <article class="resource">
@@ -132,7 +132,7 @@ $(function() {
                         </article>
                     </div>
                 </div>
-                @*<div class="formulario-edicion formulario-publicacion">
+                <div class="formulario-edicion formulario-publicacion" style="display: none;">
                     <div class="select-resource-list">
                         <p class="title">@Html.Translate("CV_SELECCIONA_PUBLICACION_FUSIONARLA")</p>
                         <div class="resource-list listView list-con-checks">
@@ -144,7 +144,7 @@ $(function() {
                         <a class="btn btn-primary uppercase btn-fusionar">@Html.Translate("CV_FUSIONAR_CONTINUAR")</a>
                         <a class="btn btn-primary uppercase">@Html.Translate("CV_CONTINUAR")</a>
                     </div>
-                </div>*@
+                </div>
                 <div class="formulario-edicion formulario-proyecto" >
                     <div class="alert">
                         <p class="alert-title">
