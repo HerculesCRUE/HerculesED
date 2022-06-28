@@ -1850,7 +1850,7 @@ var edicionCV = {
             var itemsHijo = $.grep(pItems, function(p) { return p.parentId == propiedad.id; });
             var classAux = '';
             var propAux = '';
-            if (values !='' && values.find(x => x == propiedad.id) != null) {
+            if (values != null && values != '' && values.find(x => x == propiedad.id) != null) {
                 classAux = ' selected ';
             }
             if (itemsHijo.length == 0) {
