@@ -29,8 +29,8 @@ def index_ros(data_fpath, ro_id):
         for ndx in range(0, l, n):
             yield iterable[ndx:min(ndx + n, l)]
 
-    URL_add_batch = URL_BASE + '/add_batch'
-    URL_rebuild = URL_BASE + '/rebuild_rankings'
+    URL_add_batch = URL_BASE + '/ro-collection'
+    URL_rebuild = URL_BASE + '/rebuild-rankings'
     
     try:
         for ros in tqdm.tqdm(batch(ros, n=BATCH_SIZE), total=math.ceil(len(ros)/BATCH_SIZE)):
