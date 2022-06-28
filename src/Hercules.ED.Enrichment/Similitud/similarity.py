@@ -50,7 +50,7 @@ class ROStorage(ABC):
         pass
 
     @abstractmethod
-    def get_ro_ids(self) -> list:
+    def get_ro_ids(self, ro_type) -> list:
         pass
 
     @abstractmethod
@@ -382,9 +382,12 @@ class SimilarityService:
             return True
 
 
-    def get_ro_ids(self) -> list:
-
-        return self.db.get_ro_ids()
+    def get_ro_ids(self, ro_type) -> list:
+        
+        if ro_type not in RO_TYPES:
+            raise ROTypeError()
+        
+        return self.db.get_ro_ids(ro_type)
         
         
     def get_ro_ranking(self, ro_id: str, target_ro_type: str) -> list:

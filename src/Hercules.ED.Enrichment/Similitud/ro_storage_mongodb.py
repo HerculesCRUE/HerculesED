@@ -35,8 +35,8 @@ class MongoROStorage(similarity.ROStorage):
             raise similarity.ROIdError()
         return self.json_to_ro(jro)
     
-    def get_ro_ids(self) -> list:
-        ro_cursor = self.db.ro.find({}, {'_id':1})
+    def get_ro_ids(self, ro_type) -> list:
+        ro_cursor = self.db.ro.find({'type': ro_type}, {'_id':1})
         return [ jro['_id'] for jro in ro_cursor ]
     
     def has_ro(self, ro_id) -> bool:

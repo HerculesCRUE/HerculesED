@@ -159,9 +159,9 @@ class ROCollection_API(MethodResource, Resource):
     #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Retrieve all RO ids.',
          tags=['Hercules', 'similarity'])
-    @use_kwargs({}, location='query')
+    @use_kwargs({'ro_type_target': fields.String()}, location='query')
     def get(self, **kwargs):
-        ids = similarity.get_ro_ids()
+        ids = similarity.get_ro_ids(kwargs['ro_type_target'])
         return jsonify(ids)
     
         
