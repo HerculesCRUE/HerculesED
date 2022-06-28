@@ -1,6 +1,6 @@
 ![](../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 4/3/2022                                                   |
+| Fecha         | 28/6/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
 |Título|Servicio de carga de datos de los Sistemas de Gestión de Información(SGI) de Treelogic.| 
 |Descripción|Servicio encargado de la  carga de datos (investigadores, publicaciones, ROs, etc) por parte de los Sistemas de Gestión de Información(SGI) de Treelogic.|
@@ -14,13 +14,13 @@ El servicio de carga de datos por parte del SGI se ocupa de recolectar los datos
 Este servicio automatiza la lectura de los ficheros recividos por medio del servicio de OAI-PMH y la inserción de los datos en BBDD.
 
 ## Tipos de datos recibidos
--AutorizacionProyecto: Autorizacion de proyectos para su posterior envio a validación.
--Grupos: Grupo/Equipo de investigación, desarrollo o innovación
--Invencion: Propiedad industrial e intelectual
--Organizacion: Organizacion
--Persona: Persona
--PRC: Relacion de proyecto validado en producción cientifica
--Proyecto: Proyecto
+- AutorizacionProyecto: Autorizacion de proyectos para su posterior envio a validación.
+- Grupos: Grupo/Equipo de investigación, desarrollo o innovación
+- Invencion: Propiedad industrial e intelectual
+- Organizacion: Organizacion
+- Persona: Persona
+- PRC: Relacion de proyecto validado en producción cientifica
+- Proyecto: Proyecto
 
 ## Funcionamiento
 El servicio empezará por pedir los datos de los archivos a partir de la última fecha de actualización, guardando los datos recibidos en ficheros para su posterior carga, tras ello se actualizará el fichero de última actualización con la fecha de actualización.
