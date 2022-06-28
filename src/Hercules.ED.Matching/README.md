@@ -11,7 +11,7 @@
 
 Introducción
 ============
-El servicio de matching se ocupa de matchear las etiquetas de las publicaciones con términos de MESH y SNOMED para ofrecer más información. 
+El servicio de matching se ocupa de matchear las etiquetas de las publicaciones con términos de MESH y SNOMED para ofrecer más información. En Hércules ED esta función va a ser offline, es decir, se mandará a ejecutar e irá trabajando por detrás. Obtendrá todas las publicaciones de BBDD en las que no se haya hecho el matching e irá consultando a MESH y SNOMED para la recuperación de información. Una vez obtenidos los datos, se mostrarán en las fichas de Hércules MA.
 
 MESH - Búsqueda por "Exact Match"
 ============================
