@@ -11,19 +11,23 @@
 
 Introducción
 ============
-El servicio de matching se ocupa de matchear las etiquetas de las publicaciones con términos de Mesh para ofrecer más información. Mesh es una plataforma de ámbito médico, con lo cual todas las etiquetas que se vayan a enriquecer serán de dicho carácter.
+El servicio de matching se ocupa de matchear las etiquetas de las publicaciones con términos de MESH y SNOMED para ofrecer más información. En Hércules ED esta función va a ser offline, es decir, se mandará a ejecutar e irá trabajando por detrás. Obtendrá todas las publicaciones de BBDD en las que no se haya hecho el matching e irá consultando a MESH y SNOMED para la recuperación de información. Una vez obtenidos los datos, se mostrarán en las fichas de Hércules MA.
 
-Búsqueda por "Exact Match"
+MESH - Búsqueda por "Exact Match"
 ============================
 Este proceso va a consistir en el que la búsqueda se hace por palabras exactas, es decir, el descriptor se busca tal y como esté guardado en la publicación.
 
-Búsqueda por "All fragments"
+MESH - Búsqueda por "All fragments"
 ============================
-En el caso que no se haya detectado la etiqueta en "Exact Match" se procederá a la búsqueda por "All frgments". En este formato se buscará por pares de palabras, obviando las posibles preposiciones en inglés/castellano.
+En el caso que no se haya detectado la etiqueta en "Exact Match" se procederá a la búsqueda por "All fragments". En este formato se buscará por pares de palabras, obviando las posibles preposiciones en inglés/castellano.
+
+SNOMED - Búsqueda mediante el ID de MESH
+============================
+Una vez finalizada la búsqueda en MESH, si se ha obtenido algún dato, se habrá guardado el código SNOMED relacionado. Con este código, se puede obtener la información de SNOMED.
 
 Inserción/Modificación de datos
 ===========================
-Una vez obtenida la información, se procede a insertar o modificar las etiquetas de base de datos con la información obtenida.
+Finalmente, se procede a insertar o modificar las etiquetas de base de datos con la información obtenida. En el caso que no se haya obtenido nada, no se hará nada.
 
 Configuración en el appsettings.json
 ====================================
@@ -42,7 +46,7 @@ Configuración en el appsettings.json
 - UrlTGT: URL para obtener el Ticket-Granting Ticket. 
 - UrlTicket: URL para obtener el Service Ticket. 
 - UrlSNOMED: URL para hacer las peticiones al servicio de SNOMED. 
-- UrlRelaciones: URL para obtener ls reaciones de las etiquetas SNOMED. 
+- UrlRelaciones: URL para obtener las reaciones de las etiquetas SNOMED. 
 
 Dependencias
 ============
