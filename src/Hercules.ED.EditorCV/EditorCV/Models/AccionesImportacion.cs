@@ -354,6 +354,7 @@ namespace EditorCV.Models
 
                         tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
                         tabSectionItem.properties = new List<TabSectionItemProperty>();
+                        
                         tabSectionItem.iseditable = !itemEditSection.blocked;
 
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
