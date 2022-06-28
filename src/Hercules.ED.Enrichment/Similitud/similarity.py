@@ -358,9 +358,7 @@ class SimilarityService:
         self.db.delete_ro(ro_id)
 
 
-    def update_ro(self, ro: RO) -> None:
-
-        old_ro = self.db.get_ro(ro.id)
+    def update_ro(self, ro: RO, old_ro: RO) -> None:
 
         if ro.text == old_ro.text:
             # text unmodified, just update the RO in DB
@@ -369,6 +367,19 @@ class SimilarityService:
             # text modified, delete and add it again
             self.delete_ro(ro.id)
             self.add_ro(ro, update_ranking=True)
+
+
+    def upsert_ro(self, ro: RO) -> bool:
+
+        try:
+            old_ro = self.db.get_ro(ro.id)
+            self.update_ro(ro, old_ro)
+            logger.info(f"RO {ro.id} updated")
+            return False
+        except ROIdError as e:
+            self.add_ro(ro, update_ranking=True)
+            logger.info(f"RO {ro.id} inserted")
+            return True
 
 
     def get_ro_ids(self) -> list:

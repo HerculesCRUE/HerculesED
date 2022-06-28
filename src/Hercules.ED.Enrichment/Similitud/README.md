@@ -35,18 +35,18 @@ Se han observado los requisitos de hardware al procesar una serie de rankings de
 
 | Endpoint | Method | Description |
 |--|--|--|
-|[/ro](#ro-post)|POST|Add a new RO.|
-|[/ro](#ro-put)|PUT|Update an existing RO.|
+|[/ro](#ro-put)|PUT|Create or update a RO.|
 |[/ro](#ro-delete)|DELETE|Delete an existing RO.|
 |[/ro-collection](#ro-collection-get)|GET|Retrieve all RO IDs.|
 |[/ro-collection](#ro-collection-post)|POST|Insert a batch of ROs.|
 |[/similar](#similar-get)|GET|Get the most similar ROs given a RO.|
 |[/rebuild-rankings](#rebuild-rankings-post)|POST|Rebuild all the rankings of similar ROs.|
 
-## /ro [POST]
+## /ro [PUT]
 
-Este método sirve para crear un nuevo RO en la base de datos. Se debe ejecutar cada vez que se quiera añadir un nuevo RO al sistema. En el caso de que se necesite incorporar un gran lote de ROs, como por ejemplo en el caso de una carga masiva inicial, se utilizará el script [`indexar_ros.py`](#carga-de-lotes-de-ro) creado con ese propósito.
-Esta función se ejecuta de forma síncrona. 
+Este método sirve para crear un nuevo RO en la base de datos, o actualizarlo en el caso de que exista un RO con el mismo ID. En el caso de que se necesite incorporar un gran lote de ROs, como por ejemplo en el caso de una carga masiva inicial, se utilizará el script [`indexar_ros.py`](#carga-de-lotes-de-ro) creado con ese propósito.
+
+Si se trata de una actualización, si se cambia el texto se tiene que reindexar el RO por completo. Si se mantiene el texto solo se actualizan los atributos del RO correspondiente en la base de datos.
 
 **Parámetros de entrada (JSON)**
 - ro_id: El identificador del RO.
@@ -66,40 +66,10 @@ Esta función se ejecuta de forma síncrona.
   - En el caso de procesamiento por lotes:
     - GPU: 1.5 s / 1000 RO + tiempo de operaciones BBDD
     - CPU: 23.5 s / 1000 RO + tiempo de operaciones BBDD
-- Habrá un comando para cargas iniciales masivas de RO. El script recibirá un archivo JSON como entrada, siendo este una lista de objetos con el mismo formato de los parámetros de entrada de /ro[POST].
+- Habrá un comando para cargas iniciales masivas de RO. El script recibirá un archivo JSON como entrada, siendo este una lista de objetos con el mismo formato de los parámetros de entrada de /ro[PUT].
 ```
 $ python3 indexar_ros.py lote_ros.json
 ```
-
-**Ejemplo**
-
-Comando curl:
-```
-$ curl -H "Content-Type:application/json" -X POST -d '@query.json' "http://herculesapi.elhuyar.eus/similarity/ro"
-```
-
-Archivo query.json
-```
-{
-    "ro_id": "2-s2.0-85032573110",
-    "ro_type": "research_paper",
-    "text": "Analysis of the microstructure and mechanical properties of titanium-based composites reinforced by secondary phases and B In the last decade, titanium metal matrix composites (TMCs) have received considerable attention thanks to their interesting properties as a consequence of the clear interface between the matrix and the reinforcing phases formed. In this work, TMCs with 30 vol % of B",
-    "authors": ["Montealegre-Melendez, Isabel", "Arévalo, Cristina", "Ariza, Enrique", "Pérez-Soriano, Eva M.", "Rubio-Escudero, Cristina", "Kitzmantel, Michael", "Neubauer, Erich"],
-    "thematic_descriptors": [["Physical Sciences", 0.998]],
-    "specific_descriptors": [["tmcs", 0.777], ["titanium-based composites", 0.702], ["secondary phases", 0.664], ["clear interface", 0.564], ["reinforcing phases", 0.534], ["their interesting properties", 0.476], ["titanium metal matrix composites", 0.394], ["consequence", 0.376], ["considerable attention", 0.347], ["thanks", 0.291], ["interesting properties", 0.276], ["analysis", 0.243], ["microstructure and mechanical properties", 0.188], ["decade", 0.187], ["last decade", 0.083], ["work", 0.025]]
-}
-```
-
-Respuesta:
-```
-{}
-```
-
-## /ro [PUT]
-
-Método para editar un RO existente. Tiene la misma forma que /ro [POST], pero devuelve error 404 si el ID del RO no se encuentra en la base de datos.
-
-Si se cambia el texto, se tiene que reindexar el RO por completo. Si se mantiene el texto solo se actualizan los atributos del RO correspondiente en la base de datos.
 
 **Ejemplo**
 
@@ -119,6 +89,8 @@ Archivo query.json
     "specific_descriptors": [["tmcs", 0.777], ["titanium-based composites", 0.702], ["secondary phases", 0.664], ["clear interface", 0.564], ["reinforcing phases", 0.534], ["their interesting properties", 0.476], ["titanium metal matrix composites", 0.394], ["consequence", 0.376], ["considerable attention", 0.347], ["thanks", 0.291], ["interesting properties", 0.276], ["analysis", 0.243], ["microstructure and mechanical properties", 0.188], ["decade", 0.187], ["last decade", 0.083], ["work", 0.025]]
 }
 ```
+
+Respuesta: status=201 si se ha creado un nuevo RO, o status=200 si se ha actualizado un RO existente
 
 ## /ro [DELETE]
 
@@ -151,10 +123,10 @@ Respuesta:
 
 Inserta un lote de ROs de forma eficiente. Normalmente no hay necesidad de utilizar este método de forma explícita, se recomienda utilizar el script [`indexar_ros.py`](#carga-de-lotes-de-ro).
 
-Se insertan todos los RO sin actualizar los ranking de similares. Después de insertar todos los lotes es necesario llamar al método [/rebuild-rankings](#rebuild-rankings-post) para actualizar los ranking de similares. Es el método utilizado por el script `indexar_ros.py`.
+Se insertan todos los RO sin actualizar los ranking de similares. Después de insertar todos los lotes es necesario llamar al método [/rebuild-rankings](#rebuild-rankings-post) para actualizar los ranking de similares. Es el método utilizado por el script `indexar_ros.py`. Ninguno de los IDs del lote debe existir en la base de datos antes de ejecutar el método.
 
 **Parámetros de entrada (json)**
-- batch: Lista de ROs en el mismo formato que `/ro[POST]`.
+- batch: Lista de ROs en el mismo formato que `/ro[PUT]`.
 
 ## /similar [GET]
 
@@ -216,14 +188,15 @@ Respuesta:
         ["mg-ti composites", 0.178],
         ["titanium additions", 0.075],
         ["titanium volume fraction", 0.072]
-    ]]
+    ]],
+	...
 ]}
 ```
 ## /rebuild-rankings [POST]
 
 Reconstruye los ranking de similares de todos los RO de la base de datos. Normalmente no hay necesidad de utilizar esta función de forma explícita, se recomienda utilizar el script [`indexar_ros.py`](#carga-de-lotes-de-ro) para insertar lotes de RO.
 
-Este método solo es necesario si previamente se ejecuta `/ro-collection[POST]`. El script `indexar_ros.py` se encarga de llamar a este método despues de insertar los lotes. En el caso de insertar ROs uno por uno mediante el método `/ro[POST]` los ranking se actualizan de forma implícita.
+Este método solo es necesario si previamente se ejecuta `/ro-collection[POST]`. El script `indexar_ros.py` se encarga de llamar a este método despues de insertar los lotes. En el caso de insertar ROs uno por uno mediante el método `/ro[PUT]` los ranking se actualizan de forma implícita.
 
 **Ejemplo**
 ```
@@ -232,7 +205,7 @@ $ curl -X POST "http://herculesapi.elhuyar.eus/similarity/rebuild-rankings"
 
 ## Carga de lotes de RO
 
-Se recomienda utilizar el script `utils/indexar_ros.py` para cargar lotes de RO de forma eficiente. Este script inserta todos los RO sin actualizar el índice de rankings después de cada inserción, a diferencia de `/ro[POST]`. Después de cargar todos los RO, el script ejecuta `/rebuild-rankings` para reconstruír los ranking de similares de cada RO de forma eficiente.
+Se recomienda utilizar el script `utils/indexar_ros.py` para cargar lotes de RO de forma eficiente. Este script inserta todos los RO sin actualizar el índice de rankings después de cada inserción, a diferencia de `/ro[PUT]`. Después de cargar todos los RO, el script ejecuta `/rebuild-rankings` para reconstruír los ranking de similares de cada RO de forma eficiente.
 
 **Ejemplo**
 ```

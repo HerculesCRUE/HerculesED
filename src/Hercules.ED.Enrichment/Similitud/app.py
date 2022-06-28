@@ -100,26 +100,6 @@ similarity = SimilarityService(db, cache, conf['model'], conf['device'])
 class RO_API(MethodResource, Resource):
     
     #decorators = [auth.login_required]
-    @doc(description='Hercules similarity API: Add a new research object.',
-         tags=['Hercules', 'similarity'])
-    @use_kwargs(ROSchema, location='json')
-    def post(self, **kwargs):
-        logger.debug(kwargs)
-        try:
-            validate_descriptors(kwargs)
-        except ValueError as e:
-            resp_json = '{"error_msg": "' + str(e) + '"}'
-            return Response(response=resp_json, status=422, mimetype='application/json')
-        ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
-        ro.set_text(kwargs['text'], similarity.model)
-        ro.authors = kwargs['authors']
-        names = [ n for n, p in kwargs['specific_descriptors'] ]
-        probs = [ p for n, p in kwargs['specific_descriptors'] ]
-        ro.set_specific_descriptors(names, probs)
-        similarity.add_ro(ro, update_ranking=True)
-        return jsonify()
-
-    #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Update a research object.',
          tags=['Hercules', 'similarity'])
     @use_kwargs(ROSchema, location='json')
@@ -136,8 +116,9 @@ class RO_API(MethodResource, Resource):
         names = [ n for n, p in kwargs['specific_descriptors'] ]
         probs = [ p for n, p in kwargs['specific_descriptors'] ]
         ro.set_specific_descriptors(names, probs)
-        similarity.update_ro(ro)
-        return jsonify()
+        new_created = similarity.upsert_ro(ro)
+        status_code = 201 if new_created else 200
+        return Response(response="", status=status_code, mimetype='application/json')
     
     #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Delete a research object.',
