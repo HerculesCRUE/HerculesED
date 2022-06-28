@@ -2402,7 +2402,8 @@ var comportamientoPopupOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searcherPersonsOffers=" + paramsCl, null, "rdf:type=person|roh:isActive=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val(), paramsClUrl);
+		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searcherPersonsOffers=" + paramsCl, null, "rdf:type=person|roh:isActive=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val(), paramsClUrl);
+		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", null, null, "rdf:type=person|roh:isActive=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val(), paramsClUrl);
 		
 		// Agregamos los ordenes
 		// $('.searcherResults .h1-container').after(
@@ -2467,10 +2468,10 @@ var comportamientoPopupOferta = {
 
 		let results = null
 		if (ofertaObj && ofertaObj.tags) {
-			results = ofertaObj.tags.map(itm => param + "=" + itm)
+			results = ofertaObj.tags.map(itm => "'" + itm + "'").join(',')
 		}
 
-		return results
+		return [param + "=" + results]
 	},
 	
 	/*
