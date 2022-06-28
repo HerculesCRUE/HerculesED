@@ -357,7 +357,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     foreach (PublicacionScopus pub_scopus in objInicial_Scopus)
                     {
                         Log.Information($@"[Scopus] Publicación {contadoPubScopus}/{objInicial_Scopus.Count}");
-                        if (!string.IsNullOrEmpty(pub_scopus.doi) && !dois_principales.Contains(pub_scopus.doi.ToLower()))
+                        if (pub_scopus != null && !string.IsNullOrEmpty(pub_scopus.doi) && !dois_principales.Contains(pub_scopus.doi.ToLower()))
                         {
                             Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
 
@@ -515,7 +515,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     foreach (Publication pub in objInicial_openAire)
                     {
                         Log.Information($@"[OpenAire] Publicación {contadorPubOpenAire}/{objInicial_openAire.Count}");
-                        if (!string.IsNullOrEmpty(pub.doi) && !dois_principales.Contains(pub.doi.ToLower()))
+                        if (pub != null && !string.IsNullOrEmpty(pub.doi) && !dois_principales.Contains(pub.doi.ToLower()))
                         {
                             this.dois_bibliografia = new List<string>();
                             if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
