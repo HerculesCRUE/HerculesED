@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from sentence_transformers import SentenceTransformer, util
 import heapq
 import logging
-import numpy
+import numpy as np
 import time
 import pdb
 
@@ -96,7 +96,7 @@ MAX_KEYPHRASES = 5
 
 class RO:
 
-    def __init__(self, ro_id, ro_type, model=None):
+    def __init__(self, ro_id, ro_type):
 
         self.id = ro_id
         self.type = ro_type
@@ -106,12 +106,10 @@ class RO:
         self.thematic_descriptors = {
             'names': [],
             'probs': [],
-            'embeddings': []
         }
         self.specific_descriptors = {
             'names': [],
             'probs': [],
-            'embeddings': []
         }
         self.ranking = Ranking(size=RANKING_SIZE)
 
@@ -120,11 +118,6 @@ class RO:
 
         self.text = text
         self._embedding = model.encode(text)
-
-    def set_specific_descriptors(self, names, probs):
-
-        self.specific_descriptors['names'] = names
-        self.specific_descriptors['probs'] = probs
 
     def encode_specific_descriptors(self, model):
 
@@ -140,9 +133,9 @@ class RO:
 
     def distances(self, ros: list) -> list:
 
-        ros_embeddings = numpy.array([ ro._embedding for ro in ros ])
+        ros_embeddings = np.array([ ro._embedding for ro in ros ])
         distances_res = util.cos_sim(self._embedding, ros_embeddings)
-        distances = [ d for d in numpy.array(distances_res)[0] ]
+        distances = [ d for d in np.array(distances_res)[0] ]
         
         return distances
 
@@ -296,11 +289,6 @@ class SimilarityService:
             ro.ranking.update_if_needed(collection_ro, distance)
 
 
-    def create_RO(self, ro_id, text) -> RO:
-        
-        return RO(ro_id, text, self.model)
-
-
     def ro_exists(self, ro) -> bool:
 
         return self.db.has_ro(ro.id)
@@ -312,6 +300,15 @@ class SimilarityService:
         embeddings = self.model.encode(texts)
         for i in range(len(ros)):
             ros[i]._embedding = embeddings[i]
+
+
+    def get_ro(self, ro_id: str) -> dict:
+
+        ro = self.db.get_ro(ro_id)
+        jro = self.ro_to_json(ro)
+        del jro['embedding']
+
+        return jro
         
 
     def add_ro(self, ro: RO, update_ranking: bool) -> None:
@@ -404,3 +401,43 @@ class SimilarityService:
             similarity_keys.append(ro.explain_similarity(sim_ro))
             
         return list(zip(ro_ids, similarity_keys))
+
+
+    @staticmethod
+    def ro_to_json(ro: RO) -> dict:
+
+        thematic_descriptors = zip(ro.thematic_descriptors['names'], ro.thematic_descriptors['probs'])
+        specific_descriptors = zip(ro.specific_descriptors['names'], ro.specific_descriptors['probs'])
+        jro = {
+            'ro_id': ro.id,
+            'ro_type': ro.type,
+            'text': ro.text,
+            'embedding': ro._embedding.tolist(),
+            'authors': ro.authors,
+            'thematic_descriptors': list(thematic_descriptors),
+            'specific_descriptors': list(specific_descriptors),
+        }
+        return jro
+
+
+    @staticmethod
+    def json_to_ro(jro: dict) -> RO:
+        
+        ro = RO(jro['ro_id'], jro['ro_type'])
+        if 'text' in jro:
+            ro.text = jro['text']
+        if 'embedding' in jro:
+            ro._embedding = np.array(jro['embedding'], dtype=np.float32)
+        if 'authors' in jro:
+            ro.authors = jro['authors']
+        if 'thematic_descriptors' in jro:
+            names = [ n for n, p in jro['thematic_descriptors'] ]
+            probs = [ p for n, p in jro['thematic_descriptors'] ]
+            ro.thematic_descriptors['names'] = names
+            ro.thematic_descriptors['probs'] = probs
+        if 'specific_descriptors' in jro:
+            names = [ n for n, p in jro['specific_descriptors'] ]
+            probs = [ p for n, p in jro['specific_descriptors'] ]
+            ro.specific_descriptors['names'] = names
+            ro.specific_descriptors['probs'] = probs
+        return ro

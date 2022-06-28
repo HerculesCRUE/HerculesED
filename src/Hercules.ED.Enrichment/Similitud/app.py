@@ -100,6 +100,15 @@ similarity = SimilarityService(db, cache, conf['model'], conf['device'])
 class RO_API(MethodResource, Resource):
     
     #decorators = [auth.login_required]
+    @doc(description='Hercules similarity API: Get a research object.',
+         tags=['Hercules', 'similarity'])
+    @use_kwargs(ROIdSchema, location='query')
+    def get(self, **kwargs):
+        logger.debug(kwargs)
+        ro = similarity.get_ro(kwargs['ro_id'])
+        return jsonify(ro)
+    
+    #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Update a research object.',
          tags=['Hercules', 'similarity'])
     @use_kwargs(ROSchema, location='json')
@@ -110,12 +119,7 @@ class RO_API(MethodResource, Resource):
         except ValueError as e:
             resp_json = '{"error_msg": "' + str(e) + '"}'
             return Response(response=resp_json, status=422, mimetype='application/json')
-        ro = similarity.create_RO(kwargs['ro_id'], kwargs['ro_type'])
-        ro.set_text(kwargs['text'], similarity.model)
-        ro.authors = kwargs['authors']
-        names = [ n for n, p in kwargs['specific_descriptors'] ]
-        probs = [ p for n, p in kwargs['specific_descriptors'] ]
-        ro.set_specific_descriptors(names, probs)
+        ro = similarity.json_to_ro(kwargs)
         new_created = similarity.upsert_ro(ro)
         status_code = 201 if new_created else 200
         return Response(response="", status=status_code, mimetype='application/json')
@@ -144,12 +148,7 @@ class ROCollection_API(MethodResource, Resource):
             except ValueError as e:
                 resp_json = '{"error_msg": "' + str(e) + '"}'
                 return Response(response=resp_json, status=422, mimetype='application/json')
-            ro = similarity.create_RO(ro_kwargs['ro_id'], ro_kwargs['ro_type'])
-            ro.text = ro_kwargs['text']
-            ro.authors = ro_kwargs['authors']
-            names = [ n for n, p in ro_kwargs['specific_descriptors'] ]
-            probs = [ p for n, p in ro_kwargs['specific_descriptors'] ]
-            ro.set_specific_descriptors(names, probs)
+            ro = similarity.json_to_ro(ro_kwargs)
             batch.append(ro)
         similarity.encode_batch(batch)
         similarity.add_ros(batch, update_ranking=False)

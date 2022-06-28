@@ -35,12 +35,48 @@ Se han observado los requisitos de hardware al procesar una serie de rankings de
 
 | Endpoint | Method | Description |
 |--|--|--|
+|[/ro](#ro-get)|GET|Get RO attributes.|
 |[/ro](#ro-put)|PUT|Create or update a RO.|
 |[/ro](#ro-delete)|DELETE|Delete an existing RO.|
 |[/ro-collection](#ro-collection-get)|GET|Retrieve all RO IDs.|
 |[/ro-collection](#ro-collection-post)|POST|Insert a batch of ROs.|
 |[/similar](#similar-get)|GET|Get the most similar ROs given a RO.|
 |[/rebuild-rankings](#rebuild-rankings-post)|POST|Rebuild all the rankings of similar ROs.|
+
+
+## /ro [GET]
+
+Devuelve los atributos del RO con el ID indicado.
+
+**Parámetros de entrada (query)**
+- ro_id: El identificador del RO.
+
+**Parámetros de salida (JSON)**
+- ro_id: El identificador del RO.
+- ro_type: Tipo de RO.
+- text: El texto del RO resultante de la concatenación entre el título y el abstract.
+- authors: Lista de nombres completos de los autores del RO.
+- thematic_descriptors: Lista de los descriptores temáticos y sus probabilidades obtenidos a través de la API de los descriptores (lista de listas de dos elementos).
+- specific_descriptors: Lista de los descriptores específicos y sus probabilidades obtenidos a través de la API de los descriptores (lista de listas de dos elementos).
+
+**Ejemplo**
+
+Comando curl:
+```
+$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/ro?ro_id=2-s2.0-85032573110"
+```
+
+Respuesta:
+```
+{
+    "ro_id": "2-s2.0-85032573110",
+    "ro_type": "research_paper",
+    "text": "Analysis of the microstructure and mechanical properties of titanium-based composites reinforced by secondary phases and B In the last decade, titanium metal matrix composites (TMCs) have received considerable attention thanks to their interesting properties as a consequence of the clear interface between the matrix and the reinforcing phases formed. In this work, TMCs with 30 vol % of B",
+    "authors": ["Montealegre-Melendez, Isabel", "Arévalo, Cristina", "Ariza, Enrique", "Pérez-Soriano, Eva M.", "Rubio-Escudero, Cristina", "Kitzmantel, Michael", "Neubauer, Erich"],
+    "thematic_descriptors": [["Physical Sciences", 0.998]],
+    "specific_descriptors": [["tmcs", 0.777], ["titanium-based composites", 0.702], ["secondary phases", 0.664], ["clear interface", 0.564], ["reinforcing phases", 0.534], ["their interesting properties", 0.476], ["titanium metal matrix composites", 0.394], ["consequence", 0.376], ["considerable attention", 0.347], ["thanks", 0.291], ["interesting properties", 0.276], ["analysis", 0.243], ["microstructure and mechanical properties", 0.188], ["decade", 0.187], ["last decade", 0.083], ["work", 0.025]]
+}
+```
 
 ## /ro [PUT]
 
