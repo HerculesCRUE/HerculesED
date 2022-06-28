@@ -549,7 +549,7 @@ var metricas = {
                 }
                 //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
 
-                tmp += `<div order="${index}" class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "1"}; position:${index != 0 ? "relative" : "absolute"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div order="${index}" class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0; position:absolute;top:-9999px;left:-9999px;z-index:-1" : "1"};" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
             /*
