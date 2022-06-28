@@ -549,7 +549,7 @@ var metricas = {
                 }
                 //tmp += `<div style="display:${index != 0 ? "none" : ""};" class="${index == 0 ? "show" : "hide"} grafica" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
 
-                tmp += `<div order="${index}" class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "100"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
+                tmp += `<div order="${index}" class="${index == 0 ? "show" : "hide"} grafica" style="opacity:${index != 0 ? "0" : "1"}; position:${index != 0 ? "relative" : "absolute"}" tipoGrafica="${tipoGrafica}" idgrafica='${grafica.id}'></div>`;
             });
             graficasGrupo = tmp;
             /*
@@ -1964,6 +1964,11 @@ var metricas = {
                 // y la ocultamos
                 shown.css('opacity', '0'); // display none causa problemas con redrawChart por que intenta modifica un elemento sin altura
                 shown.css('position', 'absolute');
+                // Muevo el div fuera de la página para que no cree espacios en blanco
+                shown.css('left', '-9999px');
+                shown.css('top', '-9999px');
+                shown.css('z-index', '-1');
+
                 shown.removeClass('show');
                 shown.addClass('hide');
 
@@ -1975,9 +1980,13 @@ var metricas = {
                     selected.css('opacity', '1');
                     selected.css('position', 'relative');
                     selected.css('width', '100%');
+                    // Lo muevo de vuelta
+                    selected.css('left', '0px');
+                    selected.css('top', '0px');
+                    selected.css('z-index', '1');
+                    
                     selected.removeClass('hide');
                     selected.addClass('show');
-
 
                     if (selected.attr('idgrafica').includes('nodes')) {
                         selected.parents('article').find('a#img').addClass('descargarcyto');
