@@ -620,7 +620,7 @@ var metricas = {
         pPageData.listaIdsFacetas.forEach(function (item, index, array) {
             $('#page_' + pPageData.id + ' .containerFacetas').append(`
                     <div class='facetedSearch'>
-                        <div class='box' idfaceta='${item}'></div>
+                        <div class='box' idfaceta="${item}"></div>
                         </div>
                     `);
         });
@@ -1370,10 +1370,11 @@ var metricas = {
                     filtros += filtroActual;
                 }
 
-                history.pushState('', 'New URL: ' + filtros, '?' + filtros);
+                var numPagina = $(".nav-item#" + idPaginaActual).attr("num");
+                history.pushState('', 'New URL: ' + filtros, '?' + filtros + '~~~' + numPagina);
                 e.preventDefault();
 
-                that.pintarPagina(idPaginaActual);
+                location.reload();
             });
 
         $('a.remove.faceta')

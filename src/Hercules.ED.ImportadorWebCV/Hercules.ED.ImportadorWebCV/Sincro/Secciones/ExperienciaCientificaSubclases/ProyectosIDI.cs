@@ -44,9 +44,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?isValidated ";
                 string where = $@"where {{
                                         ?item <{Variables.ExperienciaCientificaTecnologica.proyectosIDINombre}> ?itemTitle . 
+                                        ?item <http://w3id.org/roh/isValidated> ?isValidated .
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
@@ -55,7 +56,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     ProyectosIDI proyectosIDI = new ProyectosIDI
                     {
                         ID = fila["item"].value,
-                        nombre = fila["itemTitle"].value
+                        nombre = fila["itemTitle"].value,
+                        block = fila["isValidated"].value.Equals("true")
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), proyectosIDI);
