@@ -893,9 +893,26 @@
             $('#relacionados-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
+                
+				var urlGetSimilarity = url_servicio_externo+'Similarity/GetSimilaritiesDocument?pIdDocument='+$('h1').attr('about');
+				$.get(urlGetSimilarity, null, function(data) {
+					var filterSearch="searchRelacionadosDocumentoIn=";
+					for (i = 0; i < data.length; i++) 
+					{
+						if(i>0)
+						{
+							filterSearch+=",";
+						}
+						filterSearch+="<http://gnoss/"+data[i].toUpperCase()+">";
+					}
+					
+					buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", filterSearch, "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()",null, function() {
                     $('#panNumResultados').hide();
                 });
+					
+				});
+				
+				
             });
             return;
         }
