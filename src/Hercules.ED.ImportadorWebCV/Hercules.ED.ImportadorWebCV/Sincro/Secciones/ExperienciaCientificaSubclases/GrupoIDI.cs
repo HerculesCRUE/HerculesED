@@ -59,9 +59,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?isValidated";
                 string where = $@"where {{
                                         ?item <{Variables.ExperienciaCientificaTecnologica.grupoIDINombreGrupo}> ?itemTitle . 
+                                        ?item <http://w3id.org/roh/isValidated> ?isValidated . 
                                         OPTIONAL{{?item <{Variables.ExperienciaCientificaTecnologica.grupoIDIFechaInicio}> ?itemDate }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
@@ -73,7 +74,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        block = fila["isValidated"].value.Equals("true")
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), grupoIDI);
