@@ -131,6 +131,10 @@ var importarCVN = {
 		});		
 		return;
     },	
+	finCargaCV: function(){
+		$('.col-contenido.paso1').show();
+		$('.col-contenido.paso2').hide();
+	},
 	importarCV: function(listaId, listaOpcionSeleccionados) {
 		MostrarUpdateProgressTime(0);
 		var that = this;
@@ -150,7 +154,7 @@ var importarCVN = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function ( response ) {
-				
+				importarCVN.finCargaCV();
 				OcultarUpdateProgress();			
 			}
 		});
