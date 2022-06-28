@@ -11,7 +11,7 @@
 
 ## Introducción
 Este documento describe el funcionamiento detallado del proceso de carga/modificación de los datos obtenidos por las fuentes externas.
-El programa va a estar comprobando constantemente si en un directorio le llega un fichero json con nuevos datos. En el caso que haya un json nuevo, va a comprobar de que tipo de datos es y va a hacer el proceso de carga con todo lo que conlleva. Una vez cargados los datos en la BBDD, generará una copia en .rar en otro directorio a modo de backup y borrará el json leido. Finalmente se volverá a quedar a la escucha de detección de nuevos json.
+El programa va a estar comprobando constantemente si en un directorio (files_publications) le llega un fichero json con nuevos datos. En el caso que haya un json nuevo, va a comprobar de que tipo de datos es y va a hacer el proceso de carga con todo lo que conlleva. Una vez cargados los datos en la BBDD, generará una copia en .rar en otro directorio (files_publications_backups) a modo de backup y borrará el json leido. Finalmente se volverá a quedar a la escucha de detección de nuevos json.
 
 ## Funcionamiento
 El programa se va a quedar a la escucha de nuevos ficheros JSON. Estos ficheros se generan en el WorkerServiceRabbitConsume. El tipo de dato del JSON se identifica en el nombre del archivo. El formato del nombre del JSON está formado por {ID_TIPO} + ___ + {ID_AUTOR} + ___ + {FECHA} + .json
