@@ -3589,8 +3589,11 @@ var edicionCV = {
 			processData: false,
             enctype: 'multipart/form-data',
             contentType: false,
-			success: function ( response ) {
-				
+			success: function ( response ) {				
+				mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
+			},
+			error: function(){
+				mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
 			}
 		});
 	},
@@ -6247,7 +6250,6 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 		if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
 			that.formularioProyecto.find('> .alert').hide();
 			$(this).attr('data-dismiss', 'modal');
-			mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
 			
 			if($('input[name="proyecto"]:checked').length)
 			{
@@ -6264,7 +6266,6 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 	
 	this.formularioProyecto.find('.alert-title a').off('click').on('click', function () {
 		$(this).attr('data-dismiss', 'modal');
-		mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
 		var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
 		edicionCV.sendPRC(idrecurso,'');
 	});
