@@ -2023,7 +2023,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Comprobación de la petición.
                     if (!pDic.ContainsKey(pDoi))
                     {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                        string info_publication = httpCall(url.ToString(), "GET", headers).Result.Replace("\"", "");
                         //Log.Information("Respuesta Zenodo --> " + info_publication);
                         if (!string.IsNullOrEmpty(info_publication) && info_publication.EndsWith(".pdf"))
                         {

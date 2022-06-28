@@ -41,7 +41,8 @@ var buscadorPersonalizado = {
 		parametros_adiccionales = parametrosadicionales;
 		mostrarFacetas = true;
 		mostrarCajaBusqueda = true;
-		FiltrarPorFacetas("");
+		// FiltrarPorFacetas("");
+		FiltrarPorFacetas(ObtenerHash2());
 		MontarResultadosScroll.init('footer', 'article', callback());
 		MontarResultadosScroll.CargarResultadosScroll = function (data) {
 			var htmlRespuesta = document.createElement("div");
