@@ -19,7 +19,7 @@ Este proceso va a consistir en el que la búsqueda se hace por palabras exactas,
 
 MESH - Búsqueda por "All fragments"
 ============================
-En el caso que no se haya detectado la etiqueta en "Exact Match" se procederá a la búsqueda por "All frgments". En este formato se buscará por pares de palabras, obviando las posibles preposiciones en inglés/castellano.
+En el caso que no se haya detectado la etiqueta en "Exact Match" se procederá a la búsqueda por "All fragments". En este formato se buscará por pares de palabras, obviando las posibles preposiciones en inglés/castellano.
 
 SNOMED - Búsqueda mediante el ID de MESH
 ============================
