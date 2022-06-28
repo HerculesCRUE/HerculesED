@@ -108,11 +108,14 @@ $ curl -X DELETE -H 'Content-Type: application/json' "http://herculesapi.elhuyar
 
 ## /ro-collection [GET]
 
-Devuelve los ID de todos los RO de la base de datos.
+Devuelve los ID de todos los RO del tipo indicado.
+
+**Parámetros de entrada (query)**
+- ro_type_target: Tipo de los ROs a devolver (research_paper, code_project).
 
 **Ejemplo**
 ```
-$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/ro-collection"
+$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/ro-collection?ro_type_target=research_paper"
 ```
 Respuesta:
 ```
