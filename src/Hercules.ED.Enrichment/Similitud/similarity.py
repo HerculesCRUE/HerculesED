@@ -10,7 +10,7 @@ logger = logging.getLogger('SIMILARITY_API')
 
 DEFAULT_MODEL = 'all-MiniLM-L6-v2'
 DEFAULT_DEVICE = 'cpu'
-RANKING_SIZE = 5
+RANKING_SIZE = 10
 RO_TYPES = ['research_paper', 'code_project', 'protocol']
 
 # Custom exceptions
