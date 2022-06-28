@@ -6309,6 +6309,9 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 
 function pintadoTesauro(elementoActual, edit, mostrarModal){
 	var modalPopUp = elementoActual.closest('.modal-top').attr('id')
+	if(modalPopUp == null){
+		return;
+	}
 	if (modalPopUp == 'modal-editar-entidad') {
 		modalPopUp = 'modal-editar-entidad-0'
 	} else {
