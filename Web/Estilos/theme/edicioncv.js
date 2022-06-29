@@ -1719,8 +1719,8 @@ var edicionCV = {
                             <div class="toolbar">
                                 <div class="line">
                                     <div class="box">
-                                        <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
-                                            <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                        <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+											format_bold
                                         </span>        
                                     </div>   
                                 </div>
@@ -1734,8 +1734,8 @@ var edicionCV = {
                     <div class="toolbar">
                         <div class="line">
                             <div class="box">
-                                <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
-                                    <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+                                   format_bold
                                 </span>        
                             </div>   
                         </div>

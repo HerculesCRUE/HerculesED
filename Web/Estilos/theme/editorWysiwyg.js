@@ -42,7 +42,7 @@ class TextField {
     // Add class inicilized to the element
     editor.classList.add("inicilized")
 
-    this.buttons = toolbar.querySelectorAll('.editor-btn:not(.has-submenu)');
+    this.buttons = toolbar.querySelectorAll('.editor-btn');
     //Evita que el tab salte a otro elemento
     visuellView.removeEventListener('keydown', this.keyEvent);
     visuellView.addEventListener('keydown', this.keyEvent);
@@ -63,10 +63,11 @@ class TextField {
       // button.removeEventListener('click', this.eventListenerFn(button), false);
       // button.addEventListener('click', this.eventListenerFn(button), true);
 
-      $(button).off('click').on('click', function(e) {
+      $(button).off('mousedown').on('mousedown', function(e) {
+        e.preventDefault();
         let action = this.dataset.action;
         _self.execDefaultAction(action);
-        
+
       });
     }
 
