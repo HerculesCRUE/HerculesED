@@ -95,7 +95,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string doi { get; set; }
         public DataIssued dataIssued { get; set; }
         public List<string> url { get; set; }
-        public object pdf { get; set; }
+        public string pdf { get; set; }
         public List<TopicsEnriquecido> topics_enriquecidos { get; set; }
         public List<FreetextKeywordEnriquecida> freetextKeyword_enriquecidas { get; set; }
         public PersonaPub correspondingAuthor { get; set; }

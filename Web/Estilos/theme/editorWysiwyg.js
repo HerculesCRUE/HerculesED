@@ -19,15 +19,19 @@ class TextField {
 
       const textarea = editor.getElementsByTagName('textarea')[0];
       // Oculta el textarea para sustutir la edición por el div
-      textarea.classList.add('d-none')
+      textarea.classList.add('d-none');
       // Oculta el textarea para sustutir la edición por el div
-      toolbar.classList.remove('d-none')
+      toolbar.classList.remove('d-none');
       // Oculta el textarea para sustutir la edición por el div
-      visuellView.classList.remove('d-none')
-      visuellView.focus()
+      visuellView.classList.remove('d-none');
+      visuellView.focus();
 
     }
-
+	
+	editor.addEventListener("dragover", event => {
+	  // prevent default to allow drop
+	  event.preventDefault();
+	});
 
     if (editor.getElementsByTagName('content-area').length > 0) {
       const contentArea = editor.getElementsByClassName('content-area')[0];

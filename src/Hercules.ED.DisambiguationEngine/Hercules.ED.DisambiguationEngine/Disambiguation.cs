@@ -1124,7 +1124,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
         }
 
         /// <summary>
-        /// Raliza comprobaciones con los datos a desambiguar para verificar que la entrada es correcta
+        /// Realiza comprobaciones con los datos a desambiguar para verificar que la entrada es correcta
         /// </summary>
         /// <param name="pItemsDataToLoad">Datos de desambiguación</param>
         /// <param name="pItemsDataBBDD">Datos de desambiguación de BBDD</param>

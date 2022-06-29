@@ -18,6 +18,7 @@ using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 using System.Collections.Concurrent;
 using Hercules.ED.ResearcherObjectLoad.Utils;
 using static Hercules.ED.ResearcherObjectLoad.Program;
+using System.Globalization;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models
 {
@@ -267,7 +268,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
                             listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
                             idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
-                        }                        
+                        }
                     }
                     else
                     {
@@ -807,7 +808,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     File.Delete(fichero.FullName);
                 }
 
-               
+
 
             }
         }
@@ -1416,7 +1417,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     if (!listaSinRepetirEtiquetas.Contains(tag.word.ToLower()))
                     {
-                        etiquetasEnriquecidas.Add(new EnrichedKeyWord() { Roh_title = tag.word, Roh_score = float.Parse(tag.porcentaje.Replace(",", ".")) });
+                        etiquetasEnriquecidas.Add(new EnrichedKeyWord() { Roh_title = tag.word, Roh_score = float.Parse(tag.porcentaje.Replace(",", "."), CultureInfo.InvariantCulture) });
                         listaSinRepetirEtiquetas.Add(tag.word.ToLower());
                     }
                 }
@@ -1427,7 +1428,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     if (!listaSinRepetirEtiquetas.Contains(tag.word.ToLower()))
                     {
-                        etiquetasEnriquecidas.Add(new EnrichedKeyWord() { Roh_title = tag.word, Roh_score = float.Parse(tag.porcentaje.Replace(",", ".")) });
+                        etiquetasEnriquecidas.Add(new EnrichedKeyWord() { Roh_title = tag.word, Roh_score = float.Parse(tag.porcentaje.Replace(",", "."), CultureInfo.InvariantCulture) });
                         listaSinRepetirEtiquetas.Add(tag.word.ToLower());
                     }
                 }
@@ -1464,6 +1465,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             if (urlSinRepetir != null && urlSinRepetir.Any())
             {
                 document.Vcard_url = urlSinRepetir.ToList().First(); // TODO: Mirar el tema de las diversas URLs.
+            }
+
+            // PDF
+            if (!string.IsNullOrEmpty(pPublicacion.pdf))
+            {                
+                document.Roh_hasFile = pPublicacion.pdf;
+
+                if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pdf) && string.IsNullOrEmpty(document.Roh_hasFile))
+                {                    
+                    document.Roh_hasFile = pPublicacionB.pdf;
+                }
             }
 
             // Página de inicio (PageStart)
