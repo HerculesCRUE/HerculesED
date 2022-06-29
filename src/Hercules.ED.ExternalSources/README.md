@@ -1,14 +1,14 @@
 
 ![](../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 18/6/2022                                                   |
+| Fecha         | 29/6/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
 |Título|Librería de conexión con repositorios externos| 
 |Descripción|Servicios de conexión con fuentes externas de información, para publicaciones y otros ROs|
 |Versión|1.1|
 |Módulo|Documentación|
 |Tipo|Especificación|
-|Cambios de la Versión|Uso de OpenAire|
+|Cambios de la Versión|Modificada documentación|
 
 # Hércules ED. Librería de conexión con repositorios externos
 
