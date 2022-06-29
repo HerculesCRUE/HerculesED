@@ -402,15 +402,10 @@ var metricas = {
                         };
                         data.options.plugins.tooltip = {
                             callbacks: {
-
                                 label: function (context) {
-                                    console.log(context);
-                                    console.log(data);
-                                    let label = "Porcentaje: ";
-                                    let sum = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
-                                    label += porcentaje.toFixed(2) + '%';
-                                    return label;
+                                    let label = context.dataset.label.split('|')[context.dataIndex] + ": ";
+                                    let valor = context.dataset.data[context.dataIndex];
+                                    return label + valor;
                                 }
                             }
                         }
