@@ -2,8 +2,8 @@
 
 | Fecha         | 28/6/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
-|Título|Servicio de carga de datos de los Sistemas de Gestión de Información(SGI) de Treelogic.| 
-|Descripción|Servicio encargado de la  carga de datos (investigadores, publicaciones, ROs, etc) por parte de los Sistemas de Gestión de Información(SGI) de Treelogic.|
+|Título|Servicio de carga de datos desde Hércules SGI| 
+|Descripción|Servicio encargado de la  carga de datos (investigadores, publicaciones, ROs, etc) desde Hércules SGI - Sistema de Gestión de la Investigación|
 |Versión|1.0|
 |Módulo|Documentación|
 |Tipo|Especificación|
