@@ -1914,3 +1914,18 @@ function getCacheWithExpiry(key) {
 	}
 	return item.value;
 }
+
+function GetFuentesExternas(pIdUsuario){
+    var url = url_servicio_externo + "FuentesExternas/InsertToQueue";     
+    var arg = {};
+    arg.pUserId = pIdUsuario;    
+    $.get(url, arg, function (data) {        
+    });
+}
+
+function PedirFuentesExternas()
+{
+	GetFuentesExternas($('.inpt_usuarioID').attr('value'));
+	menusLateralesManagement.init();
+	mostrarNotificacion("success", "Obteniendo datos de fuentes externas en proceso. Tardará unos minutos.");
+}

@@ -409,7 +409,7 @@ var metricas = {
                     $('div[idfaceta="' + data.id + '"] .listadoFacetas').append(`
                         <li>
                             <a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
-                                <span class="textoFaceta">${item.nombre}</span>
+                                <span class="textoFaceta">${item.nombre == 'true' ? 'Sí' : (item.nombre == 'false' ? 'No' : item.nombre)}</span>
                                 <span class="num-resultados">(${item.numero})</span>
                             </a>
                         </li>
@@ -620,7 +620,7 @@ var metricas = {
         pPageData.listaIdsFacetas.forEach(function (item, index, array) {
             $('#page_' + pPageData.id + ' .containerFacetas').append(`
                     <div class='facetedSearch'>
-                        <div class='box' idfaceta="${item}"></div>
+                        <div class='box' idfaceta="${item.includes('(((') ? item.split('(((')[0] : item}" reciproca="${item.includes('(((') ? item.split('(((')[1] : ''}"></div>
                         </div>
                     `);
         });
@@ -801,10 +801,11 @@ var metricas = {
             }
             if (filtro.split('=')[1].includes('@')) {
                 nombre = filtro.split('=')[1].split('@')[0].replaceAll("'", "");
+                
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
                 <li class="Categoria" filtro="${filtro}">
-                    <span>${nombre}</span>
+                    <span>${nombre == 'true' ? 'Sí' : (nombre == 'false' ? 'No' : (nombre.includes('(((') ? nombre.split('(((')[0] : nombre))}</span>
                     <a rel="nofollow" class="remove faceta" name="search=Categoria" href="javascript:;">eliminar</a>
                 </li>
                 <li class="borrarFiltros-wrap">
@@ -833,7 +834,7 @@ var metricas = {
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
                 <li class="Categoria" filtro="${filtro}">
-                    <span>${nombre}</span>
+                    <span>${nombre == 'true' ? 'Sí' : (nombre == 'false' ? 'No' : (nombre.includes('(((') ? nombre.split('(((')[0] : nombre))}</span>
                     <a rel="nofollow" class="remove faceta" name="search=Categoria" href="javascript:;">eliminar</a>
                 </li>
                 <li class="borrarFiltros-wrap">
@@ -1241,27 +1242,24 @@ var metricas = {
         // Preparamos el eje inferior o derecho.
         if (secondaryAxis) {
             copyWidth = myChart.boxes[2]?.width; //anchura del eje
-
+1
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
+                var padding = -1*(myChart.boxes[2].width-myChart.boxes[2].left-myChart.boxes[2].right);
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
                 ctx.canvas.style.paddingLeft = myChart.chartArea.left - 5 + "px";
-                copyWidth += 15;
-                targetX = myChart.chartArea.left * scale - 5;
+                copyWidth += padding-1;
+                targetX = (myChart.chartArea.left - 5 )* scale ;
+
             } else {
-
-
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
                 axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
 
-
-
             }
-
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
             ctx.canvas.height = axisHeight;
@@ -1295,7 +1293,7 @@ var metricas = {
                 return `<li>
                             <a rel="nofollow" href="javascript: void(0);" class="faceta filtroMetrica con-subfaceta ocultarSubFaceta ocultarSubFaceta" filtro="${pData.filtro}" title="${pData.nombre}">
                                 <span class="desplegarSubFaceta"><span class="material-icons">add</span></span>
-                                <span class="textoFaceta">${pData.nombre}</span>
+                                <span class="textoFaceta">${pData.nombre == 'true' ? 'Sí' : (pData.nombre == 'false' ? 'No' : pData.nombre)}</span>
                                 <span class="num-resultados">(${pData.numero})</span>                          
                             </a>
                             ${etiqueta}
@@ -1305,7 +1303,7 @@ var metricas = {
 
                 return `<li>
                             <a rel="nofollow" href="javascript: void(0);" class="faceta filtroMetrica ocultarSubFaceta ocultarSubFaceta" filtro="${pData.filtro}" title="${pData.nombre}">
-                                <span class="textoFaceta">${pData.nombre}</span>
+                                <span class="textoFaceta">${pData.nombre == 'true' ? 'Sí' : (pData.nombre == 'false' ? 'No' : pData.nombre)}</span>
                                 <span class="num-resultados">(${pData.numero})</span>                          
                             </a>
                         </li>`;
@@ -1352,6 +1350,9 @@ var metricas = {
             .unbind()
             .click(function (e) {
                 var filtroActual = $(this).attr('filtro');
+                if ($(this).parents('.box').attr('reciproca')) {
+                    filtroActual = filtroActual + '(((' + $(this).parents('.box').attr('reciproca');
+                }
                 var filtros = decodeURIComponent(ObtenerHash2());
                 var filtrosArray = filtros.split('&');
                 filtros = '';
@@ -2443,7 +2444,7 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
             that.arrayTotales[i] = new Array(2);
             that.arrayTotales[i][0] = that.eliminarAcentos(item.nombre.toLowerCase());
             that.arrayTotales[i][1] = $(`<a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
-                                <span class="textoFaceta">${item.nombre}</span>
+                                <span class="textoFaceta">${item.nombre == 'true' ? 'Sí' : (item.nombre == 'false' ? 'No' : item.nombre)}</span>
                                 <span class="num-resultados">(5)</span>
                             </a>`);
             i++;

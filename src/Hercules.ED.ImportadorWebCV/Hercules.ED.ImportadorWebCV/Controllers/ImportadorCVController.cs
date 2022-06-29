@@ -113,7 +113,7 @@ namespace Hercules.ED.ImportadorWebCV.Controllers
         }
 
         /// <summary>
-        /// Servicio de PotImportación del CV
+        /// Servicio de PostImportación del CV
         /// </summary>
         /// <param name="pCVID">Identificador del curriculumvitae</param>
         /// <param name="file">Archivo XML</param>

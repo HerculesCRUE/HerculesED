@@ -77,6 +77,10 @@ namespace EditorCV.Models
             CambioEstadoEnvio(pIdProyecto);
         }
 
+        /// <summary>
+        /// Cambia el estado del proyecto <paramref name="pIdProyecto"/> a enviado o pendiente.
+        /// </summary>
+        /// <param name="pIdProyecto">Identificador del proyecto</param>
         public void CambioEstadoEnvio(string pIdProyecto)
         {
             // Comprobar si está el triple del estado.

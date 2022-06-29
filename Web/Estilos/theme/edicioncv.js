@@ -1719,8 +1719,8 @@ var edicionCV = {
                             <div class="toolbar">
                                 <div class="line">
                                     <div class="box">
-                                        <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
-                                            <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                        <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+											format_bold
                                         </span>        
                                     </div>   
                                 </div>
@@ -1734,8 +1734,8 @@ var edicionCV = {
                     <div class="toolbar">
                         <div class="line">
                             <div class="box">
-                                <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
-                                    <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+                                   format_bold
                                 </span>        
                             </div>   
                         </div>
@@ -3567,7 +3567,7 @@ var edicionCV = {
 			var fechaProy = "";
 			that.GetDataPRC(dataId, that.idPerson);
 		});
-		
+				
 		$('.texto.validacionItem').off('click').on('click', function(e) {
 			var dataId = $(this)[0].dataset.id;
 			
@@ -6247,6 +6247,8 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 	var that = this;
 	that.formularioProyecto.find('> .alert').hide();
 	this.formularioProyecto.find('.btn').off('click').on('click', function () {
+		$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);
+		
 		if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
 			that.formularioProyecto.find('> .alert').hide();
 			$(this).attr('data-dismiss', 'modal');
@@ -6258,7 +6260,8 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
 			edicionCV.sendPRC(idrecurso,idproyecto);
 			
-		} else {
+		} else {			
+			$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);	
 			that.formularioProyecto.find('> .alert').show();
 			$(this).addClass('disabled');
 		}
@@ -6272,6 +6275,7 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 
 	this.resourceList.find('.resource .form-check-inline').on('change', function () {
 		that.formularioProyecto.find('.btn').removeClass('disabled');
+		that.formularioProyecto.find('> .alert').hide();
 	});
 }
 
@@ -6305,6 +6309,9 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 
 function pintadoTesauro(elementoActual, edit, mostrarModal){
 	var modalPopUp = elementoActual.closest('.modal-top').attr('id')
+	if(modalPopUp == null){
+		return;
+	}
 	if (modalPopUp == 'modal-editar-entidad') {
 		modalPopUp = 'modal-editar-entidad-0'
 	} else {

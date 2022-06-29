@@ -36,7 +36,6 @@ namespace EditorCV.Controllers
             {
                 return Ok(e.Message);
             }
-            return Ok();
         }
 
         /// <summary>

@@ -277,7 +277,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
                         else
                         {
-                            jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
+                            jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
+                            // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
+                            //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
                         }
 
                         if (!string.IsNullOrEmpty(jsonData))
