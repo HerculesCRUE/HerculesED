@@ -93,6 +93,14 @@ namespace DesnormalizadorHercules
                 Temporal.EliminarEntidadesCV();
             }
 
+            //TODO insertarDocumentsSimilarity
+            bool insertarDocumentsSimilarity = false;
+            if (insertarDocumentsSimilarity)
+            {
+                Temporal.InsertarDocumentsSimilarity();
+                Temporal.InsertarROsSimilarity();
+            }
+
 
             //TODO eliminar
             bool DesnormalizarTodo = false;
@@ -115,6 +123,19 @@ namespace DesnormalizadorHercules
                     Thread.Sleep(5000);
                 }
             }
+
+            //TODO eliminar
+            bool ActualizarPertenenciaProyectosTemporal = false;
+            if (ActualizarPertenenciaProyectosTemporal)
+            {
+                while (true)
+                {
+                    Temporal.ActualizarPertenenciaProyectosTemporal();
+                    Thread.Sleep(5000);
+                }
+            }
+
+            
 
             ListenToQueue();
 
