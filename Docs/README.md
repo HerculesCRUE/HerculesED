@@ -1,6 +1,6 @@
 ![](./media/CabeceraDocumentosMD.png)
 
-# Herramienta de CV. Hércules ED - Enriquecimiento de Datos
+# Documentación de Herramienta de CV. Hércules ED - Enriquecimiento de Datos
 
 Contiene documentos del proyecto y recursos estáticos, como imágenes, que se usan en los documentos del repositorio.
 
