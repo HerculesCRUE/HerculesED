@@ -120,6 +120,7 @@ class RO_API(MethodResource, Resource):
             resp_json = '{"error_msg": "' + str(e) + '"}'
             return Response(response=resp_json, status=422, mimetype='application/json')
         ro = similarity.json_to_ro(kwargs)
+        similarity.encode_ro(ro)
         new_created = similarity.upsert_ro(ro)
         status_code = 201 if new_created else 200
         return Response(response="", status=status_code, mimetype='application/json')
@@ -158,7 +159,7 @@ class ROCollection_API(MethodResource, Resource):
     #decorators = [auth.login_required]
     @doc(description='Hercules similarity API: Retrieve all RO ids.',
          tags=['Hercules', 'similarity'])
-    @use_kwargs({'ro_type_target': fields.String()}, location='query')
+    @use_kwargs({'ro_type_target': fields.String(required=True)}, location='query')
     def get(self, **kwargs):
         ids = similarity.get_ro_ids(kwargs['ro_type_target'])
         return jsonify(ids)

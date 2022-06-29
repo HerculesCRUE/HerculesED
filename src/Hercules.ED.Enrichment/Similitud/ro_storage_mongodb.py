@@ -51,11 +51,33 @@ class MongoROStorage(similarity.ROStorage):
         jro = similarity.SimilarityService.ro_to_json(ro)
         jro['_id'] = jro.pop('ro_id')
         jro['type'] = jro.pop('ro_type')
+        if 'specific_descriptors' in jro:
+            specific = jro.pop('specific_descriptors')
+            names, probs = [ d[0] for d in specific ], [ d[1] for d in specific ]
+            jro['specific_descriptors'] = {
+                'names': names,
+                'probs': probs,
+                'embeddings': [],
+            }
+        if 'thematic_descriptors' in jro:
+            thematic = jro.pop('thematic_descriptors')
+            names, probs = [ d[0] for d in thematic ], [ d[1] for d in thematic ]
+            jro['thematic_descriptors'] = {
+                'names': names,
+                'probs': probs,
+                'embeddings': [],
+            }
         return jro
 
     @staticmethod
     def bson_to_ro(bro):
         bro['ro_id'] = bro.pop('_id')
         bro['ro_type'] = bro.pop('type')
+        if 'thematic_descriptors' in bro:
+            thematic = bro.pop('thematic_descriptors')
+            bro['thematic_descriptors'] = list(zip(thematic['names'], thematic['probs']))
+        if 'specific_descriptors' in bro:
+            specific = bro.pop('specific_descriptors')
+            bro['specific_descriptors'] = list(zip(specific['names'], specific['probs']))
         return similarity.SimilarityService.json_to_ro(bro)
         

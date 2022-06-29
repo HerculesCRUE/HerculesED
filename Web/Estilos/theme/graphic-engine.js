@@ -324,8 +324,6 @@ var metricas = {
                                     const data = chart.data;
                                     if (data.labels.length && data.datasets.length) {
                                         return data.labels.map(function (label, i) {
-                                            // NOTE: Changed from default v2.9.3 legend handler
-                                            // to use inner colours for legend
                                             var meta = chart.getDatasetMeta(1);
                                             var style = meta.controller.getStyle(i);
                                             console.log(data.datasets[0]);
@@ -346,7 +344,6 @@ var metricas = {
                                                 lineWidth: style.borderWidth,
                                                 hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
-                                                // Extra data used for toggling the correct item
                                                 index: i,
                                                 data: dataBack[i]
                                             };
@@ -357,7 +354,6 @@ var metricas = {
                             },
                             onClick: function (e, legendItem) {
                                 const toggleMeta = (meta, index) => {
-
                                     if (meta.data[index]) {
 
                                         if (meta.data[index].hidden) {
@@ -371,11 +367,9 @@ var metricas = {
 
                                     }
                                 }
-
                                 const innerMeta = this.chart.getDatasetMeta(1);
                                 toggleMeta(innerMeta, legendItem.index);
-                               
-                                //console.log(legendItem);
+
                                 const outerMeta = this.chart.getDatasetMeta(0);
                                 //console.log(outerMeta);
                                 //for (let i = 0; i < outerMeta.data.length; i++) {
@@ -388,14 +382,10 @@ var metricas = {
                         };
                         data.options.plugins.tooltip = {
                             callbacks: {
-
                                 label: function (context) {
-
-                                    let label = "Porcentaje: ";
-                                    let sum = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
-                                    label += porcentaje.toFixed(2) + '%';
-                                    return label;
+                                    let label = context.dataset.label.split('|')[context.dataIndex] + ": ";
+                                    let valor = context.dataset.data[context.dataIndex];
+                                    return label + valor;
                                 }
                             }
                         }
@@ -1641,7 +1631,6 @@ var metricas = {
                 try { // Hay problemas con el gráfico de líneas + grafico de barras stackeado, si falla se repinta el chart.
                     chart.update();
                 } catch (e) {
-                    console.log(e);
                     chart.draw();
                 }
             });
