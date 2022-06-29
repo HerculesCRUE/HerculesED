@@ -1242,27 +1242,24 @@ var metricas = {
         // Preparamos el eje inferior o derecho.
         if (secondaryAxis) {
             copyWidth = myChart.boxes[2]?.width; //anchura del eje
-
+1
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
+                var padding = -1*(myChart.boxes[2].width-myChart.boxes[2].left-myChart.boxes[2].right);
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
                 ctx.canvas.style.paddingLeft = myChart.chartArea.left - 5 + "px";
-                copyWidth += 15;
-                targetX = myChart.chartArea.left * scale - 5;
+                copyWidth += padding-1;
+                targetX = (myChart.chartArea.left - 5 )* scale ;
+
             } else {
-
-
                 ctx.canvas.height = copyHeight;
                 targetX = (myChart.width - copyWidth) * scale;
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
                 axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
 
-
-
             }
-
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
             ctx.canvas.height = axisHeight;
