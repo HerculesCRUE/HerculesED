@@ -57,7 +57,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             Dictionary<string, string> dicDatos = new Dictionary<string, string>();
 
-            string selectOut = "SELECT DISTINCT ?personID ?orcid";
+            string selectOut = "SELECT DISTINCT ?personID ?orcid ?usuarioFigShare ";
             string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
                                     ?personID <http://w3id.org/roh/tokenFigShare> ""{figshareID}"" .
@@ -67,7 +67,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
             {
-                dicDatos.Add(fila["orcid"].value,fila["usuarioFigShare"].value);
+                dicDatos.Add(fila["orcid"].value, fila["usuarioFigShare"].value);
             }
             return dicDatos;
         }
@@ -133,7 +133,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     ro.Roh_idFigShare = pResearchObjectB.id.Value.ToString();
                 }
             }
-            
+
             // DOI
             if (!string.IsNullOrEmpty(pResearchObject.doi))
             {
