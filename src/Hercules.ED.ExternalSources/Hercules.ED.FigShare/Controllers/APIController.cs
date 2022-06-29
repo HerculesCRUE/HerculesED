@@ -36,7 +36,7 @@ namespace FigShareAPI.Controllers
         public List<int> GetIdentifiers(string pToken)
         {
             FigShare figShare = new FigShare(_Configuracion);
-            return figShare.getIdentifiers(pToken);
+            return figShare.getIdentifiers($@"token {pToken}");
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace FigShareAPI.Controllers
         {
             List<int> identificadores = GetIdentifiers(pToken);
             FigShare figShare = new FigShare(_Configuracion);
-            return figShare.getData(identificadores, pToken);
+            return figShare.getData(identificadores, $@"token {pToken}");
         }
 
         /// <summary>
