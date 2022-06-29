@@ -13,6 +13,10 @@ Los módulos de Hércules ED son:
 - **Procesamiento y análisis de Research Objects (HERCULES RO Enrichment)**. Proporciona métodos y algoritmos de Machine Learning que, aplicados sobre los Research Objects recuperados desde fuentes o introducidos por el usuario, proponen descriptores temáticos y específicos que ayudan en la clasificación de los ROs y potencian las posteriores utilidades de búsqueda, tanto para el usuario como en el Portal Nacional de Investigación. Además, otros procesos potenciados por Machine Learning ofrecen al investigador ROs similares (similitud semántica), lo que permite recomendaciones de interés de otros resultados de investigación.
 - **Perfil del investigador (HERCULES Researcher Dashboard)**. Es el núcleo de Hércules ED y proporciona al usuario una herramienta de gestión del CV, compatible con la norma CVN de FECYT, conectada a fuentes externas de información de resultados de investigación y también a sistemas de la universidad.
 
+## Despliegue
+
+La información de despliegue se puede consultar en [Kubernetes Helm Deploy](./Docs/kubernetes-helm-deploy.md)
+
 ## Información de versión y compatibilidad
 
 ![](https://content.gnoss.ws/imagenes/proyectos/personalizacion/7e72bf14-28b9-4beb-82f8-e32a3b49d9d3/cms/logognossazulprincipal.png)
