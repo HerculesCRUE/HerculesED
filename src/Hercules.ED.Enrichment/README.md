@@ -12,4 +12,4 @@ the functional analysis can be consulted at [Extracción de descriptores y simil
 
 **DescriptoresTematicos**: Scripts to train and evaluate the models to extract thematic descriptors from research objects.
 
-**Similitud**: -
+**Similitud**: Hardware requirements and API Specification
