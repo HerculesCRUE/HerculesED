@@ -301,7 +301,6 @@ var metricas = {
                         data.options.responsive = true;
                         data.options.maintainAspectRatio = false;
                     }
-                    console.log(data);
                     if (pIdGrafica != null && pIdGrafica.includes("prc")) { //prefijo que indica porcentaje
                         data.options.plugins.tooltip = {
                             callbacks: {
@@ -316,7 +315,6 @@ var metricas = {
                             }
                         }
                     }
-                    console.log(data);
                     if (data.data.datasets.length > 1) {
                         var dataBack = {};
                         data.options.plugins['legend'] = {
@@ -330,14 +328,14 @@ var metricas = {
                                             // to use inner colours for legend
                                             var meta = chart.getDatasetMeta(1);
                                             var style = meta.controller.getStyle(i);
-
+                                            console.log(data.datasets[0]);
                                             if (!dataBack[i]) {
-                                                dataBack[i] =  {
+                                                dataBack[i] = {
                                                     "inner": data.datasets[1].data[i],
                                                     "outer": {
-                                                        0: data.datasets[0].data[i*2],
-                                                        1: data.datasets[0].data[i*2+1]
-                                                    } 
+                                                        0: data.datasets[0].data[i * 2],
+                                                        1: data.datasets[0].data[i * 2 + 1]
+                                                    }
                                                 };
                                             }
 
@@ -359,12 +357,12 @@ var metricas = {
                             },
                             onClick: function (e, legendItem) {
                                 const toggleMeta = (meta, index) => {
-                                    console.log(meta);
+
                                     if (meta.data[index]) {
-                                        
+
                                         if (meta.data[index].hidden) {
                                             meta.data[index].hidden = false;
-                                            this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 :index] : legendItem.data.inner;
+                                            this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 : index] : legendItem.data.inner;
                                         }
                                         else {
                                             meta.data[index].hidden = true;
@@ -374,33 +372,25 @@ var metricas = {
                                     }
                                 }
 
-                                // only 1 item in the inner dataset to toggle
                                 const innerMeta = this.chart.getDatasetMeta(1);
                                 toggleMeta(innerMeta, legendItem.index);
-
-                                
-                                // We have 2 items per inner, so need to hide 2 items in the outer dataset
+                               
+                                //console.log(legendItem);
                                 const outerMeta = this.chart.getDatasetMeta(0);
-                                toggleMeta(outerMeta, 2 * legendItem.index);
-                                toggleMeta(outerMeta, (2 * legendItem.index) + 1);
-
+                                //console.log(outerMeta);
+                                //for (let i = 0; i < outerMeta.data.length; i++) {
+                                    toggleMeta(outerMeta, 2 * legendItem.index);
+                                    toggleMeta(outerMeta, (2 * legendItem.index) + 1);
+                                //}
                                 this.chart.update();
 
-                                /*var meta = this.chart.getDatasetMeta(0);
-                                meta.data[legendItem.index].hidden = !meta.data[legendItem.index].hidden;
-                                //this.chart.toggleDataVisibility(legendItem.index);
-
-                                //console.log(this.chart.data.datasets[legendItem.datasetIndex].hidden);
-                                //this.chart.data.datasets[legendItem.datasetIndex].hidden = true;
-                                this.chart.update();*/
                             }
                         };
                         data.options.plugins.tooltip = {
                             callbacks: {
 
                                 label: function (context) {
-                                    console.log(context);
-                                    console.log(data);
+
                                     let label = "Porcentaje: ";
                                     let sum = context.dataset.data.reduce((a, b) => a + b, 0);
                                     let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
