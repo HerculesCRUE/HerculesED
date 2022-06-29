@@ -301,7 +301,6 @@ var metricas = {
                         data.options.responsive = true;
                         data.options.maintainAspectRatio = false;
                     }
-                    console.log(data);
                     if (pIdGrafica != null && pIdGrafica.includes("prc")) { //prefijo que indica porcentaje
                         data.options.plugins.tooltip = {
                             callbacks: {
@@ -316,7 +315,6 @@ var metricas = {
                             }
                         }
                     }
-                    console.log(data);
                     if (data.data.datasets.length > 1) {
                         var dataBack = {};
                         data.options.plugins['legend'] = {
@@ -326,8 +324,6 @@ var metricas = {
                                     const data = chart.data;
                                     if (data.labels.length && data.datasets.length) {
                                         return data.labels.map(function (label, i) {
-                                            // NOTE: Changed from default v2.9.3 legend handler
-                                            // to use inner colours for legend
                                             var meta = chart.getDatasetMeta(1);
                                             var style = meta.controller.getStyle(i);
 
@@ -348,7 +344,6 @@ var metricas = {
                                                 lineWidth: style.borderWidth,
                                                 hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
-                                                // Extra data used for toggling the correct item
                                                 index: i,
                                                 data: dataBack[i]
                                             };
@@ -359,7 +354,6 @@ var metricas = {
                             },
                             onClick: function (e, legendItem) {
                                 const toggleMeta = (meta, index) => {
-                                    console.log(meta);
                                     if (meta.data[index]) {
                                         
                                         if (meta.data[index].hidden) {
@@ -373,26 +367,15 @@ var metricas = {
 
                                     }
                                 }
-
-                                // only 1 item in the inner dataset to toggle
                                 const innerMeta = this.chart.getDatasetMeta(1);
                                 toggleMeta(innerMeta, legendItem.index);
 
-                                
-                                // We have 2 items per inner, so need to hide 2 items in the outer dataset
                                 const outerMeta = this.chart.getDatasetMeta(0);
                                 toggleMeta(outerMeta, 2 * legendItem.index);
                                 toggleMeta(outerMeta, (2 * legendItem.index) + 1);
 
                                 this.chart.update();
 
-                                /*var meta = this.chart.getDatasetMeta(0);
-                                meta.data[legendItem.index].hidden = !meta.data[legendItem.index].hidden;
-                                //this.chart.toggleDataVisibility(legendItem.index);
-
-                                //console.log(this.chart.data.datasets[legendItem.datasetIndex].hidden);
-                                //this.chart.data.datasets[legendItem.datasetIndex].hidden = true;
-                                this.chart.update();*/
                             }
                         };
                         data.options.plugins.tooltip = {
@@ -1646,7 +1629,6 @@ var metricas = {
                 try { // Hay problemas con el gráfico de líneas + grafico de barras stackeado, si falla se repinta el chart.
                     chart.update();
                 } catch (e) {
-                    console.log(e);
                     chart.draw();
                 }
             });
