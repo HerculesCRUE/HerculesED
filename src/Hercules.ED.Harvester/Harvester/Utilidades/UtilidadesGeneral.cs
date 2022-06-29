@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Utilidades
 {
-    class Utilidades
+    class UtilidadesGeneral
     {
         public static Dictionary<string, string> dicPaises = new Dictionary<string, string>();
         public static Dictionary<string, string> dicRegiones = new Dictionary<string, string>();
