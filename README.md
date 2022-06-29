@@ -13,6 +13,21 @@ Los módulos de Hércules ED son:
 - **Procesamiento y análisis de Research Objects (HERCULES RO Enrichment)**. Proporciona métodos y algoritmos de Machine Learning que, aplicados sobre los Research Objects recuperados desde fuentes o introducidos por el usuario, proponen descriptores temáticos y específicos que ayudan en la clasificación de los ROs y potencian las posteriores utilidades de búsqueda, tanto para el usuario como en el Portal Nacional de Investigación. Además, otros procesos potenciados por Machine Learning ofrecen al investigador ROs similares (similitud semántica), lo que permite recomendaciones de interés de otros resultados de investigación.
 - **Perfil del investigador (HERCULES Researcher Dashboard)**. Es el núcleo de Hércules ED y proporciona al usuario una herramienta de gestión del CV, compatible con la norma CVN de FECYT, conectada a fuentes externas de información de resultados de investigación y también a sistemas de la universidad.
 
+## Relación con otros repositorios
+
+Existen 2 repositorios relacionados con Hércules ED:
+
+- [Portal Nacional Avanzado de Investigación. Hércules MA - Métodos de Análisis](https://github.com/HerculesCRUE/HerculesMA). Constituye el Portal Nacional Avanzado de Investigación, con una serie de aplicaciones que permitirán la explotación y el análisis de los datos existentes en HERCULES, incluidos los gestionados en Hércules ED.
+- [Commons-ED-MA](https://github.com/HerculesCRUE/Commons-ED-MA). Contiene componentes o diseños compartidos en los proyectos Hércules ED y [Hércules MA](https://github.com/HerculesCRUE/HerculesMA).
+
+## Estructura del repositorio
+
+Las carpetas del repositorio son:
+
+- [Docs](./Docs). Contiene documentos del proyecto y recursos estáticos, como imágenes, que se usan en los documentos del repositorio.
+- [Web](./Web). Contiene la configuración de vistas y estilos que configuran la presentación y funcionamiento propios del proyecto.
+- [src](/.src). Contiene los servicios web y back que proporcionan la funcionalidad propia del proyecto.
+
 ## Despliegue
 
 La información de despliegue se puede consultar en [Kubernetes Helm Deploy](./Docs/kubernetes-helm-deploy.md)
