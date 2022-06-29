@@ -47,11 +47,17 @@ El servicio de exportación limitada, es similar al de exportación, pero filtra
 ## Configuración en el appsetting.json
 ```json{
 	{
+		"Logging": {
+			"LogLevel": {
+				"Default": "",
+				"Microsoft": "",
+				"Microsoft.Hosting.Lifetime": ""
+			}
+		},
 		"AllowedHosts": "*",
 		"Usuario_PDF": "",
 		"PSS_PDF": "",
 		"Version": "",
-		"LogPath": "",
 		"ConnectionStrings": {
 			"RabbitMQ": ""
 		},
@@ -59,8 +65,14 @@ El servicio de exportación limitada, es similar al de exportación, pero filtra
 	}
 }
 ```
-- LastUpdateDateFile: Ruta del fichero dónde se va a almacenar la fecha de la última actualización
-- DirLogCarga: Directorio dónde se van a almacenar los ficheros de pendientes de carga y procesados
+- LogLevel.Default: Nivel de error por defecto.
+- LogLevel.Microsoft: Nivel de error para los errores propios de Microsoft.
+- LogLevel.Microsoft.Hosting.Lifetime: Nivel de error para los errores de host.
+- Usuario_PDF: Usuario de autenticación para la conversión de ficheros en el endpoint de FECYT.
+- PSS_PDF: Contraseña de autenticación para la conversión de ficheros en el endpoint de FECYT.
+- Version: Version del documento PDF.
+- ConnectionStrings.RabbitMQ: Cadena de conexión de Rabbit.
+- DenormalizerQueueRabbit: Nombre de la cola de Rabbit.
 
 ## Dependencias
 - **GnossApiWrapper.NetCore**: v1.0.8
