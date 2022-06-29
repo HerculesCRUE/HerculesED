@@ -29,7 +29,12 @@ Dado un identificador del CV, el fichero de CV en formato PDF o XML asociado a l
 Insertará en BBDD los datos leidos del documento, en caso de que se encuentren duplicidades, se resolverán por medio del [motor de desambiguación](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.DisambiguationEngine).
 
 ## Postimportación de CVN
-Dado un identificador del CV, el fichero de CV en formato XML asociado a la persona como array de bytes, el fichero Preimport en formato XML como array de bytes, el listado de identificadores de los recusos a añadir y opcionalmente el listado de identificadores de los recursos concatenados por "|||" con las opciones seleccionadas (Duplicar - "du", Fusionar - "fu", Sobrescribir - "so", Ignorar - "ig").
+Dado un identificador del CV, el fichero de CV en formato XML asociado a la persona como array de bytes, el fichero Preimport en formato XML como array de bytes, el listado de identificadores de los recusos a añadir y opcionalmente el listado de identificadores de los recursos concatenados por "|||" con las opciones seleccionadas, las cuales pueden ser:
+- Duplicar - "du"
+- Fusionar - "fu"
+- Sobrescribir - "so"
+- Ignorar - "ig".
+
 Insertará en BBDD los datos leidos del documento que formen parte del listado de identificadores y les aplicará la opción seleccionada en cada uno de ellos, en caso de no tener ninguna se duplicará.
 
 ## Exportación de CVN
