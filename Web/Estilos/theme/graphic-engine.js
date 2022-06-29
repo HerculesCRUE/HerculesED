@@ -360,30 +360,25 @@ var metricas = {
                             onClick: function (e, legendItem) {
                                 const toggleMeta = (meta, index) => {
                                     console.log(meta);
-                                    this.chart.hide(0,1);
-                                    /*if (meta.data[index]) {
+                                    if (meta.data[index]) {
                                         
                                         if (meta.data[index].hidden) {
                                             meta.data[index].hidden = false;
-                                            this.chart.data.datasets[1].data[index] = legendItem.data.inner;
-                                            this.chart.data.datasets[0].data[index] = legendItem.data.outer[0];
-                                            this.chart.data.datasets[0].data[index+1] = legendItem.data.outer[1];
+                                            this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 :index] : legendItem.data.inner;
                                         }
                                         else {
                                             meta.data[index].hidden = true;
-                                            this.chart.data.datasets[1].data[index] = 0;
-                                            this.chart.data.datasets[0].data[index] = 0;
-                                            this.chart.data.datasets[0].data[index+1] = 0;
+                                            this.chart.data.datasets[meta.index].data[index] = 0;
                                         }
 
-                                    }*/
+                                    }
                                 }
 
                                 // only 1 item in the inner dataset to toggle
                                 const innerMeta = this.chart.getDatasetMeta(1);
                                 toggleMeta(innerMeta, legendItem.index);
 
-
+                                
                                 // We have 2 items per inner, so need to hide 2 items in the outer dataset
                                 const outerMeta = this.chart.getDatasetMeta(0);
                                 toggleMeta(outerMeta, 2 * legendItem.index);
