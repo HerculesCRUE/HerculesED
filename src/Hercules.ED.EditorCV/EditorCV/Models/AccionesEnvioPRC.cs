@@ -46,7 +46,7 @@ namespace EditorCV.Models
         {
             Dictionary<string, Dictionary<string, string>> listadoProyectos = new Dictionary<string, Dictionary<string, string>>();
             DateTime fechaFinMaximaProyectosEnvioPRC = DateTime.Now;
-            fechaFinMaximaProyectosEnvioPRC=fechaFinMaximaProyectosEnvioPRC.AddMonths(-_Configuracion.GetMaxMonthsValidationProjectsDocument());
+            fechaFinMaximaProyectosEnvioPRC = fechaFinMaximaProyectosEnvioPRC.AddMonths(-_Configuracion.GetMaxMonthsValidationProjectsDocument());
             string fechaFinMaximaProyectosEnvioPRCString = fechaFinMaximaProyectosEnvioPRC.ToString("yyyyMMdd000000");
             string select = $@"select distinct  ?project ?titulo ?fechaInicio ?fechaFin ?organizacion";
             string where = $@"
@@ -305,11 +305,11 @@ where {{
             }
 
             // Consulta sparql (Obtención del ID del proyecto).
-            string selectIdProyecto ="";
-            string whereIdProyecto ="";
+            string selectIdProyecto = "";
+            string whereIdProyecto = "";
 
             selectIdProyecto = mPrefijos;
-            selectIdProyecto +="SELECT DISTINCT ?crisIdentifier ";
+            selectIdProyecto += "SELECT DISTINCT ?crisIdentifier ";
             whereIdProyecto = $@"WHERE {{ 
                                     ?s a vivo:Project .
                                     OPTIONAL{{?s roh:crisIdentifier ?crisIdentifier . }}
@@ -764,7 +764,7 @@ where {{
 
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
-                    throw new Exception(response.StatusCode.ToString()+", "+response.Content);
+                    throw new Exception(response.StatusCode.ToString() + ", " + response.Content);
                 }
             }
             catch (Exception)
@@ -842,10 +842,12 @@ where {{
             dicPropiedadesPublicaciones.Add("isbn", "060.010.010.160");
             dicPropiedadesPublicaciones.Add("issn", "060.010.010.160");
             //060.010.010.100 - Editorial
-            dicPropiedadesPublicaciones.Add("numVol", "060.010.010.080"); // Volume e Issue
-            dicPropiedadesPublicaciones.Add("paginas", "060.010.010.090"); // PageEnd y PageStart
-                                                                           //060.010.010.400 - Identificadores digitales 
-                                                                           //060.010.010.410 - Tipo identificadores digitales
+            // Volume e Issue
+            dicPropiedadesPublicaciones.Add("numVol", "060.010.010.080");
+            // PageEnd y PageStart
+            dicPropiedadesPublicaciones.Add("paginas", "060.010.010.090");
+            //060.010.010.400 - Identificadores digitales 
+            //060.010.010.410 - Tipo identificadores digitales
             dicPropiedadesPublicaciones.Add("openAccess", "TIPO_OPEN_ACCESS");
             dicPropiedadesPublicaciones.Add("doi", "");
             dicPropiedadesPublicaciones.Add("handle", "");
