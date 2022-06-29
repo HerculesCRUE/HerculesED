@@ -301,11 +301,111 @@ var metricas = {
                         data.options.responsive = true;
                         data.options.maintainAspectRatio = false;
                     }
-
+                    console.log(data);
                     if (pIdGrafica != null && pIdGrafica.includes("prc")) { //prefijo que indica porcentaje
                         data.options.plugins.tooltip = {
                             callbacks: {
+
                                 afterLabel: function (context) {
+                                    let label = "Porcentaje: ";
+                                    let sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
+                                    label += porcentaje.toFixed(2) + '%';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                    console.log(data);
+                    if (data.data.datasets.length > 1) {
+                        var dataBack = {};
+                        data.options.plugins['legend'] = {
+                            color: '#FFFFFF',
+                            labels: {
+                                generateLabels(chart) {
+                                    const data = chart.data;
+                                    if (data.labels.length && data.datasets.length) {
+                                        return data.labels.map(function (label, i) {
+                                            // NOTE: Changed from default v2.9.3 legend handler
+                                            // to use inner colours for legend
+                                            var meta = chart.getDatasetMeta(1);
+                                            var style = meta.controller.getStyle(i);
+
+                                            if (!dataBack[i]) {
+                                                dataBack[i] =  {
+                                                    "inner": data.datasets[1].data[i],
+                                                    "outer": {
+                                                        0: data.datasets[0].data[i*2],
+                                                        1: data.datasets[0].data[i*2+1]
+                                                    } 
+                                                };
+                                            }
+
+                                            return {
+                                                text: label,
+                                                fillStyle: style.backgroundColor,
+                                                strokeStyle: style.borderColor,
+                                                lineWidth: style.borderWidth,
+                                                hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+
+                                                // Extra data used for toggling the correct item
+                                                index: i,
+                                                data: dataBack[i]
+                                            };
+                                        });
+                                    }
+                                    return [];
+                                }
+                            },
+                            onClick: function (e, legendItem) {
+                                const toggleMeta = (meta, index) => {
+                                    console.log(meta);
+                                    this.chart.hide(0,1);
+                                    /*if (meta.data[index]) {
+                                        
+                                        if (meta.data[index].hidden) {
+                                            meta.data[index].hidden = false;
+                                            this.chart.data.datasets[1].data[index] = legendItem.data.inner;
+                                            this.chart.data.datasets[0].data[index] = legendItem.data.outer[0];
+                                            this.chart.data.datasets[0].data[index+1] = legendItem.data.outer[1];
+                                        }
+                                        else {
+                                            meta.data[index].hidden = true;
+                                            this.chart.data.datasets[1].data[index] = 0;
+                                            this.chart.data.datasets[0].data[index] = 0;
+                                            this.chart.data.datasets[0].data[index+1] = 0;
+                                        }
+
+                                    }*/
+                                }
+
+                                // only 1 item in the inner dataset to toggle
+                                const innerMeta = this.chart.getDatasetMeta(1);
+                                toggleMeta(innerMeta, legendItem.index);
+
+
+                                // We have 2 items per inner, so need to hide 2 items in the outer dataset
+                                const outerMeta = this.chart.getDatasetMeta(0);
+                                toggleMeta(outerMeta, 2 * legendItem.index);
+                                toggleMeta(outerMeta, (2 * legendItem.index) + 1);
+
+                                this.chart.update();
+
+                                /*var meta = this.chart.getDatasetMeta(0);
+                                meta.data[legendItem.index].hidden = !meta.data[legendItem.index].hidden;
+                                //this.chart.toggleDataVisibility(legendItem.index);
+
+                                //console.log(this.chart.data.datasets[legendItem.datasetIndex].hidden);
+                                //this.chart.data.datasets[legendItem.datasetIndex].hidden = true;
+                                this.chart.update();*/
+                            }
+                        };
+                        data.options.plugins.tooltip = {
+                            callbacks: {
+
+                                label: function (context) {
+                                    console.log(context);
+                                    console.log(data);
                                     let label = "Porcentaje: ";
                                     let sum = context.dataset.data.reduce((a, b) => a + b, 0);
                                     let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
@@ -801,7 +901,7 @@ var metricas = {
             }
             if (filtro.split('=')[1].includes('@')) {
                 nombre = filtro.split('=')[1].split('@')[0].replaceAll("'", "");
-                
+
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
                 <li class="Categoria" filtro="${filtro}">
@@ -1242,15 +1342,15 @@ var metricas = {
         // Preparamos el eje inferior o derecho.
         if (secondaryAxis) {
             copyWidth = myChart.boxes[2]?.width; //anchura del eje
-1
+            1
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
-                var padding = -1*(myChart.boxes[2].width-myChart.boxes[2].left-myChart.boxes[2].right);
+                var padding = -1 * (myChart.boxes[2].width - myChart.boxes[2].left - myChart.boxes[2].right);
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
                 ctx.canvas.style.paddingLeft = myChart.chartArea.left - 5 + "px";
-                copyWidth += padding-1;
-                targetX = (myChart.chartArea.left - 5 )* scale ;
+                copyWidth += padding - 1;
+                targetX = (myChart.chartArea.left - 5) * scale;
 
             } else {
                 ctx.canvas.height = copyHeight;
@@ -1985,7 +2085,7 @@ var metricas = {
                     selected.css('left', '0px');
                     selected.css('top', '0px');
                     selected.css('z-index', '1');
-                    
+
                     selected.removeClass('hide');
                     selected.addClass('show');
 
@@ -2037,15 +2137,15 @@ var metricas = {
                         idPagina = parent.find("div.grafica").attr("idPagina");
                         idGraficaActual = idGrafica;
                         idPaginaActual = idPagina;
-                     
-                    }else{
+
+                    } else {
                         idPagina = idPaginaActual;
                         idGrafica = idGraficaActual;
                     }
                 }
 
-           
-              
+
+
 
                 //plugin para que el color de fondo sea blanco.
                 var plugin = {
@@ -2120,7 +2220,7 @@ var metricas = {
                                     tituloActual = data.titulo;
                                 }
                             });
-    
+
                             that.getGrafica(idPagina, idGrafica, filtro, canvas[0], 50, null, tituloActual)
                         });
                     }
