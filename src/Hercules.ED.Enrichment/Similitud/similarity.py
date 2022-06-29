@@ -113,12 +113,6 @@ class RO:
         }
         self.ranking = Ranking(size=RANKING_SIZE)
 
-
-    def set_text(self, text: str, model) -> None:
-
-        self.text = text
-        self._embedding = model.encode(text)
-
     def encode_specific_descriptors(self, model):
 
         self.specific_descriptors['embeddings'] = model.encode(self.specific_descriptors['names'])
@@ -294,6 +288,11 @@ class SimilarityService:
         return self.db.has_ro(ro.id)
 
 
+    def encode_ro(self, ro) -> None:
+
+        ro._embedding = self.model.encode(ro.text)
+
+
     def encode_batch(self, ros) -> None:
 
         texts = [ ro.text for ro in ros ]
@@ -367,6 +366,9 @@ class SimilarityService:
 
 
     def upsert_ro(self, ro: RO) -> bool:
+        
+        if ro.type not in RO_TYPES:
+            raise ROTypeError()
 
         try:
             old_ro = self.db.get_ro(ro.id)

@@ -42,7 +42,7 @@ class MemoryROCache(similarity.ROCache):
 
     @staticmethod
     def _to_ro(ro_dic):
-        ro = similarity.RO(ro_dic['id'], ro_dic['type'], None)
+        ro = similarity.RO(ro_dic['id'], ro_dic['type'])
         ro._embedding = ro_dic['embedding']
         ro.ranking = ro_dic['ranking']
         return ro
