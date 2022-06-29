@@ -268,7 +268,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     FileLogger.Log($@"{DateTime.Now} - {e}");
                 }
             }
-            else if (message.Count() == 3 & message[0] == "figshare")
+            else if (message.Count() == 2 & message[0] == "figshare")
             {
                 try
                 {
