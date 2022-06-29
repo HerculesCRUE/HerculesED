@@ -1,3 +1,18 @@
+![](../../Docs/media/CabeceraDocumentosMD.png)
+
+| Fecha         | 28/6/2022                                                   |
+| ------------- | ------------------------------------------------------------ |
+|Título|Taxonomía unificada| 
+|Descripción|Taxonomía y mapeos para la clasificación de resultados y actividades de investigación|
+|Versión|1.0|
+|Módulo|Documentación|
+|Tipo|Especificación|
+|Cambios de la Versión|Versión inicial|
+
+## Introducción
+
+La carpeta contiene la taxonomía con sus mapeos en [formato Excel en el documento Hércules-ED_Taxonomías_v1.36.xlsx](./Hércules-ED_Taxonomías_v1.36.xlsx); y también en triples en [Taxonomy_36.ttl](./Taxonomy_36.ttl). Este fichero se genera con el procedimiento descrito a continuación.
+
 # Conversión del Excel de la taxonomía en un fichero .ttl.
 
 La documentación acerca de la taxonomía unificada y sus mapeos se puede conultar en el análisis funcional del proyecto:
