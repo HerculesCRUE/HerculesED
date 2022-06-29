@@ -24,9 +24,9 @@ Existen 2 repositorios relacionados con Hércules ED:
 
 Las carpetas del repositorio son:
 
-- [Docs](./Docs) Contiene documentos del proyecto y recursos estáticos, como imágenes, que se usan en los documentos del repositorio.
-- [Web](./Web) Contiene la configuración de vistas y estilos que configuran la presentación y funcionamiento propios del proyecto.
-- [src](/.src) Contiene los servicios web y back que proporcionan la funcionalidad propia del proyecto.
+- [Docs](./Docs). Contiene documentos del proyecto y recursos estáticos, como imágenes, que se usan en los documentos del repositorio.
+- [Web](./Web). Contiene la configuración de vistas y estilos que configuran la presentación y funcionamiento propios del proyecto.
+- [src](/.src). Contiene los servicios web y back que proporcionan la funcionalidad propia del proyecto.
 
 ## Despliegue
 
