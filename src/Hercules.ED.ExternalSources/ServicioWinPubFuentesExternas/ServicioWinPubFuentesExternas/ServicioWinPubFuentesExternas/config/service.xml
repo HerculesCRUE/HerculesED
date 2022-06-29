@@ -1,8 +1,0 @@
-﻿<servicio-gnoss>
-	<parametros-servicio>
-		<intervalo valor="5" />
-		<debug valor="true" />
-		<urlRestService>http://localhost:5000</urlRestService>
-		<diasLanzarObtencionPublicaciones valor="1"/>
-	</parametros-servicio>
-</servicio-gnoss>
