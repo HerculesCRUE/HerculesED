@@ -9,6 +9,8 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
-# Hércules ED. Configuración del Editor de CV# Web Config
+# Hércules ED. Configuración del Editor de CV
 
-Configuración de vistas y estilos que configuran la presentación y funcionamiento propios del proyecto Hércules ED
+Configuración de vistas y estilos que configuran la presentación y funcionamiento propios del proyecto Hércules ED.
+
+## Web Config
