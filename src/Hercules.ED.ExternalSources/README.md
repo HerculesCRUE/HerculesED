@@ -26,6 +26,10 @@ Todos los servicios principales encargados de obtener datos de fuentes primarias
 
 [OpenAire](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.OpenAireConnect): Servicio encargado de preguntar al API de OpenAire por los datos de un investigador. 
 
+[SemanticScholar](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.SemanticScholar): Servicio encargado de preguntar al API de SemanticScholar. Únicamente se recuperará URL de relevancia y las referencias de la publicación.
+
+[Zenodo](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.Zenodo): Servicio encargado de preguntar al API de Zenodo. Únicamente se recuperará la url del pdf de la publicación en el caso que tenga.
+
 Los microservicios de Scopus, WoS, CrossRef, OpenAire, OpenCitations, Semantic Scholar y Zenodo tienen un funcionamiento similar:  
 - Desde la interfaz swagger de cada microservidor, se ejecuta el archivo APIcontroller del microservicio asociado. Dependiendo de la petición que realicemos en ese programa se ejecutara una función u otra de este programa. 
 - Esta función (petición) llamara al programa RO**servidor_name**Logic, que realizara la petición al microservicio. 
