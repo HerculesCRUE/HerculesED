@@ -1,4 +1,5 @@
-﻿using Es.Riam.Gnoss.Web.MVC.Models.IntegracionContinua;
+﻿using DesnormalizadorHercules.Models.Similarity;
+using Es.Riam.Gnoss.Web.MVC.Models.IntegracionContinua;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
@@ -1308,23 +1309,41 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         //}
 
         /// <summary>
-        /// Método para inserción múltiple de indices de impacto
+        /// Método para el envío al servicio de similitud
         /// </summary>
-        /// <param name="pFilas">Filas con los datos para insertar</param>
-        public void EnvioServicioSimilaridad(string pIdDoc)
+        /// <param name="pId">ID del elemento para enviar</param>
+        /// <param name="pType">Tipo: 'research_paper' o 'code_project'</param>
+        public void EnvioServicioSimilaridad(string pId,string pType)
         {
+            string rdfType = "";
+            string graph = "";
+            switch (pType)
+            {
+                case "research_paper":
+                    rdfType = "http://purl.org/ontology/bibo/Document";
+                    graph = "document";
+                    break;
+                case "code_project":
+                    rdfType = "http://w3id.org/roh/ResearchObject";
+                    graph = "researchobject";
+                    break;
+                default:
+                    throw new Exception("El tipo " + pType + " no está permitido, sólo está permitido 'research_paper' o 'code_project'");
+            }
+
+
             EnrichmentSimilarityPut enrichmentSimilarityPut = null;
 
             //Obtenemos título y descripción
             string select = "select ?doc ?title ?abstract";
             string where = $@"
 where{{
-    ?doc a <http://purl.org/ontology/bibo/Document>.
+    ?doc a <{rdfType}>.
     ?doc <http://w3id.org/roh/title> ?title.
-    FILTER(?doc=<{pIdDoc}>)
+    FILTER(?doc=<{pId}>)
     OPTIONAL{{?doc <http://purl.org/ontology/bibo/abstract> ?abstract}}
 }}";
-            SparqlObject response = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject response = mResourceApi.VirtuosoQuery(select, where,graph);
             foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
             {
                 string text = fila["title"].value.Trim();
@@ -1333,15 +1352,15 @@ where{{
                     text += " " + fila["abstract"].value.Trim();
                 }
                 enrichmentSimilarityPut = new EnrichmentSimilarityPut();
-                enrichmentSimilarityPut.ro_id = pIdDoc;
-                enrichmentSimilarityPut.ro_type = "research_paper";
+                enrichmentSimilarityPut.ro_id = pId;
+                enrichmentSimilarityPut.ro_type = pType;
                 enrichmentSimilarityPut.text = text;
                 enrichmentSimilarityPut.authors = new List<string>();
                 enrichmentSimilarityPut.specific_descriptors = new List<List<object>>();
                 enrichmentSimilarityPut.thematic_descriptors = new List<List<object>>();
             }
 
-
+            //TODO eliminar en función de si no es visible
             if (enrichmentSimilarityPut != null)
             {
                 #region Obtenemos autores
@@ -1349,15 +1368,15 @@ where{{
                 where = $@"
 where
 {{
-	?doc a <http://purl.org/ontology/bibo/Document>.
+	?doc a <{rdfType}>.
 	?doc <http://purl.org/ontology/bibo/authorList> ?author.
-    FILTER(?doc=<{pIdDoc}>)
+    FILTER(?doc=<{pId}>)
 	?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?ordenAux.
     ?author <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
     ?person <http://xmlns.com/foaf/0.1/name> ?authorName
 	BIND(xsd:int(?ordenAux) as ?orden)
 }}order by asc(?orden) ";
-                response = mResourceApi.VirtuosoQuery(select, where, "document");
+                response = mResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
                 {
                     enrichmentSimilarityPut.authors.Add(fila["authorName"].value.Trim());
@@ -1366,32 +1385,57 @@ where
 
                 #region Obtenemos etiquetas
 
-                select = "select ?tag";
-                where = $@"
+                //TODO cambiar
+                switch (pType)
+                {
+                    case "research_paper":
+                        select = "select ?tag";
+                        where = $@"
 where
 {{
-	?doc a <http://purl.org/ontology/bibo/Document>.
+	?doc a <{rdfType}>.
 	?doc <http://vivoweb.org/ontology/core#freeTextKeyword> ?tagAux.
     ?tagAux <http://w3id.org/roh/title> ?tag
-    FILTER(?doc=<{pIdDoc}>)
+    FILTER(?doc=<{pId}>)
 }} ";
-                response = mResourceApi.VirtuosoQuery(select, where, "document");
-                foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
-                {
-                    enrichmentSimilarityPut.specific_descriptors.Add(new List<object>() { fila["tag"].value.Trim(), 1 });
+                        response = mResourceApi.VirtuosoQuery(select, where, graph);
+                        foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
+                        {
+                            enrichmentSimilarityPut.specific_descriptors.Add(new List<object>() { fila["tag"].value.Trim(), 1 });
+                        }
+                        break;
+                    case "code_project":
+                        select = "select ?tag";
+                        where = $@"
+where
+{{
+	?doc a <{rdfType}>.
+	?doc <http://vivoweb.org/ontology/core#freeTextKeyword> ?tag.
+    FILTER(?doc=<{pId}>)
+}} ";
+                        response = mResourceApi.VirtuosoQuery(select, where, graph);
+                        foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
+                        {
+                            enrichmentSimilarityPut.specific_descriptors.Add(new List<object>() { fila["tag"].value.Trim(), 1 });
+                        }
+                        break;
+                    default:
+                        throw new Exception("El tipo " + pType + " no está permitido, sólo está permitido 'research_paper' o 'code_project'");
                 }
+
+                
 
                 select = "select ?tag ?score";
                 where = $@"
 where
 {{
-	?doc a <http://purl.org/ontology/bibo/Document>.
+	?doc a <{graph}>.
 	?doc <http://w3id.org/roh/enrichedKeywords> ?enrichedKeywords.
     ?enrichedKeywords <http://w3id.org/roh/title> ?tag.
     ?enrichedKeywords <http://w3id.org/roh/score> ?score.
-    FILTER(?doc=<{pIdDoc}>)
+    FILTER(?doc=<{pId}>)
 }} ";
-                response = mResourceApi.VirtuosoQuery(select, where, "document");
+                response = mResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
                 {
                     string tag = fila["tag"].value.Trim();
@@ -1413,24 +1457,23 @@ where
                 where = $@"
 where
 {{
-	?doc a <http://purl.org/ontology/bibo/Document>.
+	?doc a <{rdfType}>.
     ?doc  <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeAreaAux.
     ?hasKnowledgeAreaAux <http://w3id.org/roh/categoryNode> ?categoryNode.
     ?categoryNode <http://www.w3.org/2008/05/skos#prefLabel> ?category
     MINUS{{
         ?categoryNode <http://www.w3.org/2008/05/skos#narrower> ?hijo.
     }}
-    FILTER(?doc=<{pIdDoc}>)
+    FILTER(?doc=<{pId}>)
 }} ";
-                response = mResourceApi.VirtuosoQuery(select, where, "document");
+                response = mResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
                 {
                     enrichmentSimilarityPut.thematic_descriptors.Add(new List<object>() { fila["category"].value.Trim(), 1 });
                 }
                 #endregion
 
-                //TODO enriquecidas
-
+                //TODO  categorías enriquecidas
 
                 // Cliente.
                 HttpClient client = new HttpClient();
@@ -1445,147 +1488,7 @@ where
                 {
                     EnrichmentSimilarityPutResponse responsePostObject = responsePost.Content.ReadAsAsync<EnrichmentSimilarityPutResponse>().Result;
                 }
-                else
-                {
-
-                }
-
-
-
-
-
-                // Cliente.
-                HttpClient client2 = new HttpClient();
-                client2.Timeout = TimeSpan.FromDays(1);
-
-                EnrichmentSimilarityGet enrichmentSimilarityGet = new EnrichmentSimilarityGet();
-                enrichmentSimilarityGet.ro_id = pIdDoc;
-                enrichmentSimilarityGet.ro_type_target = "research_paper";
-
-                // Conversión de los datos.
-                string informacion2 = JsonConvert.SerializeObject(enrichmentSimilarityGet, new DecimalFormatConverter());
-                StringContent contentData2 = new StringContent(informacion2, System.Text.Encoding.UTF8, "application/json");
-
-                var responsePost2 = client2.PostAsync("http://herculesapi.elhuyar.eus/similarity/query_similar", contentData2).Result;
-                if (responsePost2.IsSuccessStatusCode)
-                {
-                    EnrichmentSimilarityGetResponse responseGetObject = responsePost2.Content.ReadAsAsync<EnrichmentSimilarityGetResponse>().Result;
-                    Dictionary<string, Dictionary<string, float>> similar = responseGetObject.similar_ros_calculado;
-                }
-                else
-                {
-
-                }
             }
-
-
-
-
-            //Obtenemos categorias
-
-            /*
-             {
-    "ro_id": "2-s2.0-85032573110",
-    "ro_type": "research_paper",
-    "text": "Analysis of the microstructure and mechanical properties of titanium-based composites reinforced by secondary phases and B In the last decade, titanium metal matrix composites (TMCs) have received considerable attention thanks to their interesting properties as a consequence of the clear interface between the matrix and the reinforcing phases formed. In this work, TMCs with 30 vol % of B",
-    "authors": ["Montealegre-Melendez, Isabel", "Arévalo, Cristina", "Ariza, Enrique", "Pérez-Soriano, Eva M.", "Rubio-Escudero, Cristina", "Kitzmantel, Michael", "Neubauer, Erich"],
-    "thematic_descriptors": [("Physical Sciences", 0.998)],
-    "specific_descriptors": [("tmcs", 0.777), ("titanium-based composites", 0.702), ("secondary phases", 0.664), ("clear interface", 0.564), ("reinforcing phases", 0.534), ("their interesting properties", 0.476), ("titanium metal matrix composites", 0.394), ("consequence", 0.376), ("considerable attention", 0.347), ("thanks", 0.291), ("interesting properties", 0.276), ("analysis", 0.243), ("microstructure and mechanical properties", 0.188), ("decade", 0.187), ("last decade", 0.083), ("work", 0.025)]
-}
-             */
-
-            //// Cliente.
-            //EnrichmentResponseGlobal respuesta = new EnrichmentResponseGlobal();
-            //respuesta.tags = new EnrichmentResponse();
-            //respuesta.tags.topics = new List<EnrichmentResponseItem>();
-            //respuesta.categories = new EnrichmentResponseCategory();
-            //respuesta.categories.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
-            //HttpClient client = new HttpClient();
-            //client.Timeout = TimeSpan.FromDays(1);
-
-            //// Si la descripción llega nula o vacía...
-            //if (string.IsNullOrEmpty(pDesc))
-            //{
-            //    pDesc = string.Empty;
-            //}
-
-            //EnrichmentData enrichmentData = new EnrichmentData() { rotype = "papers", title = pTitulo, abstract_ = pDesc, pdfurl = pUrlPdf };
-
-            //// Conversión de los datos.
-            //string informacion = JsonConvert.SerializeObject(enrichmentData,
-            //                Newtonsoft.Json.Formatting.None,
-            //                new JsonSerializerSettings
-            //                {
-            //                    NullValueHandling = NullValueHandling.Ignore
-            //                });
-            //StringContent contentData = new StringContent(informacion, System.Text.Encoding.UTF8, "application/json");
-
-            //#region --- Tópicos Específicos (Tags)
-            //var responseSpecific = client.PostAsync(pConfig.GetUrlSpecificEnrichment(), contentData).Result;
-
-            //if (responseSpecific.IsSuccessStatusCode)
-            //{
-            //    respuesta.tags = responseSpecific.Content.ReadAsAsync<EnrichmentResponse>().Result;
-            //}
-            //else
-            //{
-            //    return respuesta;
-            //}
-            //#endregion
-
-            //#region --- Tópicos Temáticos (Categorías)            
-            //var responseThematic = client.PostAsync(pConfig.GetUrlThematicEnrichment(), contentData).Result;
-
-            //EnrichmentResponse categoriasObtenidas = null;
-
-            //if (responseThematic.IsSuccessStatusCode)
-            //{
-            //    categoriasObtenidas = responseThematic.Content.ReadAsAsync<EnrichmentResponse>().Result;
-            //    EnrichmentResponseCategory listaCategoria = new EnrichmentResponseCategory();
-            //    listaCategoria.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
-
-            //    foreach (EnrichmentResponseItem cat in categoriasObtenidas.topics)
-            //    {
-            //        List<EnrichmentResponseCategory.EnrichmentResponseItem> listaTesauro = new List<EnrichmentResponseCategory.EnrichmentResponseItem>();
-
-            //        if (tuplaTesauro.Item2.ContainsKey("general " + cat.word.ToLower().Trim()))
-            //        {
-            //            string idTesauro = tuplaTesauro.Item2["general " + cat.word.ToLower().Trim()];
-            //            listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
-
-            //            while (!idTesauro.EndsWith(".0.0.0"))
-            //            {
-            //                idTesauro = ObtenerIdTesauro(idTesauro);
-            //                listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
-            //            }
-            //        }
-            //        else if (tuplaTesauro.Item2.ContainsKey(cat.word.ToLower().Trim()))
-            //        {
-            //            string idTesauro = tuplaTesauro.Item2[cat.word.ToLower().Trim()];
-            //            listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
-
-            //            while (!idTesauro.EndsWith(".0.0.0"))
-            //            {
-            //                idTesauro = ObtenerIdTesauro(idTesauro);
-            //                listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
-            //            }
-            //        }
-
-
-            //        if (listaTesauro.Count > 0)
-            //        {
-            //            listaCategoria.topics.Add(listaTesauro);
-            //        }
-            //    }
-            //    respuesta.categories = listaCategoria;
-            //}
-            //else
-            //{
-            //    return respuesta;
-            //}
-            //#endregion
-
-            //return respuesta;
         }
 
         public class DecimalFormatConverter : JsonConverter
