@@ -89,3 +89,10 @@ Para ello usaremos el archivo “pg_dump_backup.sqlc” ubicado en la carpeta Po
 Finalmente todo debería estar correctamente desplegado. Observar que hasta que las bases de datos no estén volcadas 
 en sus contenedores se realizarán varios reinicios de los contenedores ya que necesitan de los datos de ellas.
 
+## Paso 4 Abastecer las imagenes.
+
+Como paso final debemos abastecer de contenido al contenedor "interno".
+
+Para ello usaremos el comando:
+
+  * kubectl cp <local_file_path> <pod_name_interno>:/app/imagenes
