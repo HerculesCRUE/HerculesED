@@ -88,6 +88,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasFacultadEscuela),
                     "060.030.010.170", keyValue.Value);
 
+                //Palabras clave
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.ayudasBecasPalabrasClave),
+                   "060.030.010.050", keyValue.Value);
+
                 listado.Add(itemBean);
             }
 
