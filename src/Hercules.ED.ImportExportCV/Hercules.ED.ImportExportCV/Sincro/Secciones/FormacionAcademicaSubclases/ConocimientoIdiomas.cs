@@ -55,7 +55,7 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
             {
                 string select = $@"SELECT distinct ?item ?itemTitle ";
                 string where = $@"where {{
-                                        ?item <{Variables.FormacionAcademica.conocimientoIdiomasIdioma}> ?itemTitle . 
+                                        ?item <{Variables.FormacionAcademica.conocimientoIdiomasIdioma.Split("@@@").First()}> ?itemTitle . 
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
