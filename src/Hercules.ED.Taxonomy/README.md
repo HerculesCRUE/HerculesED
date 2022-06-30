@@ -9,7 +9,7 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
-## Introducción
+# Introducción
 
 La carpeta contiene la taxonomía con sus mapeos en [formato Excel en el documento Hércules-ED_Taxonomías_v1.36.xlsx](./Hércules-ED_Taxonomías_v1.36.xlsx); y también en triples en [Taxonomy_36.ttl](./Taxonomy_36.ttl). Este fichero se genera con el procedimiento descrito a continuación.
 

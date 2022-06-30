@@ -1,11 +1,15 @@
-# Description
+![](../../Docs/media/CabeceraDocumentosMD.png)
 
-In this section you can find the main service API and the resources to replicate the training of the models to extract descriptors from research objects.
+# Enrichment and Similarity
 
-**ServicioAPI**: The source code of the main service API for enrichment of research objects.
+In this section you can find the main service API and the resources to replicate the training of the models to extract descriptors from research objects; and the similarity information.
 
-**DescriptoresEspecificos**: Scripts to train and evaluate the models to extract specific descriptors from research objects.
+The functional analysis can be consulted at [Extracción de descriptores y similitud](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534608).
 
-**DescriptoresTematicos**: Scripts to train and evaluate the models to extract thematic descriptors from research objects.
+[ServicioAPI](./ServicioAPI): The source code of the main service API for enrichment of research objects.
 
-**Similitud**: -
+[DescriptoresEspecificos](./DescriptoresEspecificos): Scripts to train and evaluate the models to extract specific descriptors from research objects.
+
+[DescriptoresTematicos](./DescriptoresTematicos): Scripts to train and evaluate the models to extract thematic descriptors from research objects.
+
+[Similitud](./Similitud): Hardware requirements and API Specification

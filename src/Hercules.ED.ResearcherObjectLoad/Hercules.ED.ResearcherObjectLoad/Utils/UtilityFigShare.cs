@@ -53,22 +53,23 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// </summary>
         /// <param name="figshareID"></param>
         /// <returns></returns>
-        public static string ObtenerORCIDPorFigShareID(string figshareID)
+        public static Dictionary<string, string> ObtenerORCIDPorTokenFigshare(string figshareID)
         {
-            string orcid = "";
+            Dictionary<string, string> dicDatos = new Dictionary<string, string>();
 
-            string selectOut = "SELECT DISTINCT ?personID ?orcid";
+            string selectOut = "SELECT DISTINCT ?personID ?orcid ?usuarioFigShare ";
             string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
-                                    ?personID <http://w3id.org/roh/usuarioFigShare> ""{figshareID}"" .
+                                    ?personID <http://w3id.org/roh/tokenFigShare> ""{figshareID}"" .
+                                    ?personID <http://w3id.org/roh/usuarioFigShare> ?usuarioFigShare .
                                     ?personID <http://w3id.org/roh/ORCID> ?orcid.
                                     }}";
             SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
             {
-                orcid = fila["orcid"].value;
+                dicDatos.Add(fila["orcid"].value, fila["usuarioFigShare"].value);
             }
-            return orcid;
+            return dicDatos;
         }
 
         /// <summary>
@@ -102,14 +103,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// </summary>
         /// <param name="figshareID"></param>
         /// <returns></returns>
-        public static string ObtenerPersonaPorFigShareID(string figshareID)
+        public static string ObtenerPersonaPorTokenFigShare(string figshareID)
         {
             string personID = "";
 
             string selectOut = "SELECT DISTINCT ?personID";
             string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
-                                    ?personID <http://w3id.org/roh/usuarioFigShare> ""{figshareID}"" .
+                                    ?personID <http://w3id.org/roh/tokenFigShare> ""{figshareID}"" .
                                     }}";
             SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
@@ -132,7 +133,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     ro.Roh_idFigShare = pResearchObjectB.id.Value.ToString();
                 }
             }
-            
+
             // DOI
             if (!string.IsNullOrEmpty(pResearchObject.doi))
             {

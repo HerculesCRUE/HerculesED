@@ -97,16 +97,18 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                     if (fichero.Name.StartsWith("figshare___"))
                     {
-                        string idFigShareAutor = fichero.Name.Split("___")[1];
-                        string orcidAutor = UtilityFigShare.ObtenerORCIDPorFigShareID(idFigShareAutor);
-                        List<string> lista = new List<string>() { UtilityFigShare.ObtenerPersonaPorFigShareID(idFigShareAutor) };
+                        string tokenFigshare = fichero.Name.Split("___")[1].Split(".").First();
+                        Dictionary<string, string> dicDatosPersona = UtilityFigShare.ObtenerORCIDPorTokenFigshare(tokenFigshare);
+                        string orcidAutor = dicDatosPersona.Keys.First();
+                        string idFigShare = dicDatosPersona.Values.First();
+                        List<string> lista = new List<string>() { UtilityFigShare.ObtenerPersonaPorTokenFigShare(tokenFigshare) };
                         DisambiguationPerson personaFigShare = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
                         // Obtención de los datos del JSON.
                         jsonString = File.ReadAllText(fichero.FullName);
                         List<ResearchObjectFigShare> listaFigShareData = JsonConvert.DeserializeObject<List<ResearchObjectFigShare>>(jsonString);
                         HashSet<string> listaFigShare = new HashSet<string>();
-                        if (listaFigShare != null && listaFigShare.Any())
+                        if (listaFigShareData != null && listaFigShareData.Any())
                         {
                             foreach (ResearchObjectFigShare researchObject in listaFigShareData)
                             {
@@ -140,7 +142,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDDRO(orcidAutor, listadoFigShare: listaFigShareData);
                             listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
                             listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-                            idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).figShareId == idFigShareAutor).Key;
+                            idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).figShareId == idFigShare).Key;
                         }
                     }
                     else if (fichero.Name.StartsWith("github___"))
@@ -154,7 +156,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         jsonString = File.ReadAllText(fichero.FullName);
                         List<ResearchObjectGitHub> listaGithubData = JsonConvert.DeserializeObject<List<ResearchObjectGitHub>>(jsonString);
                         HashSet<string> listadoGitHub = new HashSet<string>();
-                        if (listadoGitHub != null && listadoGitHub.Any())
+                        if (listaGithubData != null && listaGithubData.Any())
                         {
                             foreach (ResearchObjectGitHub githubObject in listaGithubData)
                             {
