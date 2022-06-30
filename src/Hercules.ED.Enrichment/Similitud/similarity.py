@@ -146,7 +146,7 @@ class RO:
             if len(keyphrases['names']) == 0:
                 return {}
             cos_sim = util.cos_sim(keyphrases['embeddings'], text_emb)
-            cos_sim = cos_sim.squeeze().tolist()
+            cos_sim = cos_sim.squeeze(dim=1).tolist()
             return [ (k, c) for k, c in zip(keyphrases['names'], cos_sim) ]
 
         def keyphrases_by_sbert():
