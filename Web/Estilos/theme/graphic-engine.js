@@ -1705,7 +1705,7 @@ var metricas = {
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                    url += "&pFiltroFacetas=" + encodeURIComponent(ObtenerHash2());
                     url += "&pLang=" + lang;
                     var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
                     var argAux = {};

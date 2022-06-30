@@ -13,6 +13,8 @@
 El servicio de procesamiento de CV, es el encargado de leer los archivos recibidos por FECYT y tratarlos datos leidos, para posteriormente insertarlos en base de datos (BBDD).
 Tambien es posible extraer los datos almacenados en BBDD, y recibir un CV en formato .pdf acorde a la normativa de FECYT.
 
+El análisis funcional relacionado con el CV se puede consultar en [Edición CV - CVN](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534628).
+
 ## Servicios
 - Preimportación
 - Importación
