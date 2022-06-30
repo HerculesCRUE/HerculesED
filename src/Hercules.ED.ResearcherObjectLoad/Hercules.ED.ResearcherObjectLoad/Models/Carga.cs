@@ -65,11 +65,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             FileLogger.Log($@"{DateTime.Now} - Ruta lectura: {pRutaLectura}");
             FileLogger.Log($@"{DateTime.Now} - Ruta escritura: {pRutaEscritura}");
 
-            try
+            while (true)
             {
-                while (true)
+                foreach (var fichero in directorio.GetFiles("*.json"))
                 {
-                    foreach (var fichero in directorio.GetFiles("*.json"))
+                    try
                     {
                         // Diccionarios para almacenar los vinculos de los recursos a desambiguar con los IDs de los recursos a cargar
                         Dictionary<HashSet<string>, string> dicGnossIdPerson = new Dictionary<HashSet<string>, string>();
@@ -829,15 +829,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         CrearZip(pRutaEscritura, fichero.Name, jsonString);
                         FileLogger.Log($@"{DateTime.Now} - Borrando json...");
                         File.Delete(fichero.FullName);
-
-                        FileLogger.Log($@"{DateTime.Now} - Sleep (1min) ...");
-                        Thread.Sleep(60000);
+                    }
+                    catch (Exception ex)
+                    {
+                        FileLogger.Log($@"ERROR - {ex.Message}");
+                        continue;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                FileLogger.Log($@"ERROR - {ex.Message}");
+                FileLogger.Log($@"{DateTime.Now} - Sleep (1min) ...");
+                Thread.Sleep(60000);
             }
         }
 
