@@ -108,6 +108,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         jsonString = File.ReadAllText(fichero.FullName);
                         List<ResearchObjectFigShare> listaFigShareData = JsonConvert.DeserializeObject<List<ResearchObjectFigShare>>(jsonString);
                         HashSet<string> listaFigShare = new HashSet<string>();
+
+                        FileLogger.Log($@"[FigShare] Procesando fichero de : {orcidAutor}");
+
                         if (listaFigShareData != null && listaFigShareData.Any())
                         {
                             foreach (ResearchObjectFigShare researchObject in listaFigShareData)
@@ -156,6 +159,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         jsonString = File.ReadAllText(fichero.FullName);
                         List<ResearchObjectGitHub> listaGithubData = JsonConvert.DeserializeObject<List<ResearchObjectGitHub>>(jsonString);
                         HashSet<string> listadoGitHub = new HashSet<string>();
+
+                        FileLogger.Log($@"[GitHub] Procesando fichero de : {orcidAutor}");
+
                         if (listaGithubData != null && listaGithubData.Any())
                         {
                             foreach (ResearchObjectGitHub githubObject in listaGithubData)
@@ -219,6 +225,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         jsonString = File.ReadAllText(fichero.FullName);
                         List<ResearchObjectZenodo> listaZenodoData = JsonConvert.DeserializeObject<List<ResearchObjectZenodo>>(jsonString);
                         HashSet<string> listadoZenodo = new HashSet<string>();
+
+                        FileLogger.Log($@"[Zenodo] Procesando fichero de : {idAutor}");
+
                         if (listaZenodoData != null && listaZenodoData.Any())
                         {
                             foreach (ResearchObjectZenodo zenodoObject in listaZenodoData)
@@ -282,6 +291,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         jsonString = File.ReadAllText(fichero.FullName);
                         List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
                         HashSet<string> listadoDOI = new HashSet<string>();
+
+                        FileLogger.Log($@"[Publicaciones] Procesando fichero de : {idAutor}");
+
                         if (listaPublicaciones != null && listaPublicaciones.Any())
                         {
                             foreach (Publication publication in listaPublicaciones)
@@ -706,8 +718,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         #endregion
 
                         // ------------------------------ CARGA
+                        FileLogger.Log($@"Cargando personas...");
                         idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
+                        FileLogger.Log($@"Cargando publicaciones...");
                         idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
+                        FileLogger.Log($@"Cargando ROs...");
                         idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
                         idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
@@ -770,6 +785,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         });
 
                         //Insertamos en la cola del desnormalizador
+                        FileLogger.Log($@"Inserción en la cola Rabbit del desnormalizador...");
                         RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
                         if (idsPersonasActualizar.Count > 0)
                         {
@@ -788,6 +804,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         //Cargamos las notificaciones
                         List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
                         mResourceApi.ChangeOntoly("notification");
+                        FileLogger.Log($@"Creando notificaciones...");
                         Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, notificacion =>
                         {
                             ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
@@ -806,7 +823,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
 
                     // Hace una copia del fichero y elimina el original.
+                    FileLogger.Log($@"Creando ZIP...");
                     CrearZip(pRutaEscritura, fichero.Name, jsonString);
+                    FileLogger.Log($@"Borrando json...");
                     File.Delete(fichero.FullName);
                 }
 
