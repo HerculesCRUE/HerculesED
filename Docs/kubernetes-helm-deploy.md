@@ -55,7 +55,9 @@ Para desplegar RabbitMQ primero clonaremos el contenido del repositorio RabbitMQ
 El despliegue de HERCULES-ED está preparado para ser realizado con HELM. 
 
 * Primero utilizaremos el comando.
-  * helm install <nombre_despligue> oci://docker.gnoss.com/helm-charts/edma-gnoss
+  * helm install <nombre_despligue> oci://docker.gnoss.com/helm-charts/edma-gnoss -f values.yaml
+
+El archivo values.yaml lo puedes encontrar en https://github.com/HerculesCRUE/HerculesED/blob/main/Docs/values.yaml. Modifica todo lo que necesites según tu infraestructura y las caracterísiticas de tu cluster de Kubernetes antes de ejecutar el comando anterior. 
 
 * Segundo. Una vez que PostgreSQL está desplegado debemos volcar la base de datos para que empiece a trabajar con ella.
 Para ello usaremos el archivo “pg_dump_backup.sqlc” ubicado en la carpeta PostgreSQL.
