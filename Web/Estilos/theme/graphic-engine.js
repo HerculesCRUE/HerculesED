@@ -326,15 +326,38 @@ var metricas = {
                                         return data.labels.map(function (label, i) {
                                             var meta = chart.getDatasetMeta(1);
                                             var style = meta.controller.getStyle(i);
-
+                                            console.log(data.datasets[0]);
                                             if (!dataBack[i]) {
-                                                dataBack[i] =  {
+                                                var grupo = data.datasets[0].grupos[i];
+                                                dataBack[i] = {
                                                     "inner": data.datasets[1].data[i],
-                                                    "outer": {
-                                                        0: data.datasets[0].data[i*2],
-                                                        1: data.datasets[0].data[i*2+1]
-                                                    } 
+                                                    "outer": {}
+                                                    /* 0: data.datasets[0].data[i * 2],
+                                                     1: data.datasets[0].grupos[i * 2 + 1] == grupo ? data.datasets[0].data[i * 2 + 1] : 0,*/
+
                                                 };
+
+                                                var itemsGrupo = 0;
+                                                var grupoStart = -1;
+                                                var indexTmp = 0;
+                                                var grupoTmp = 0;
+                                                for (var j = 0; j < data.datasets[0].grupos.length; j++) {
+                                                    if (data.datasets[0].grupos[j] != grupoTmp) {
+                                                        grupoTmp = data.datasets[0].grupos[j];
+                                                        indexTmp++;
+                                                    }
+                                                    if (indexTmp == i) {
+                                                        if (grupoStart == -1) {
+                                                            grupoStart = j;
+                                                        }
+                                                        itemsGrupo++;
+                                                    }
+                                                }
+                                                for (var j = 0; j < itemsGrupo; j++) {
+                                                    //dataBack[i]["outer"][j] = data.datasets[0].data[j]; CANNOT SET PROPRETIES OF UNDEFINED
+                                                    dataBack[i].outer[j] = data.datasets[0].data[grupoStart + j];
+
+                                                }
                                             }
 
                                             return {
@@ -345,6 +368,7 @@ var metricas = {
                                                 hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
                                                 index: i,
+                                                grupos: data.datasets[0].grupos,
                                                 data: dataBack[i]
                                             };
                                         });
@@ -353,12 +377,13 @@ var metricas = {
                                 }
                             },
                             onClick: function (e, legendItem) {
-                                const toggleMeta = (meta, index) => {
+                                const toggleMeta = (meta, index, numGrupo) => {
                                     if (meta.data[index]) {
-                                        
+
                                         if (meta.data[index].hidden) {
                                             meta.data[index].hidden = false;
-                                            this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 :index] : legendItem.data.inner;
+                                            //this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 : index] : legendItem.data.inner;
+                                            this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= numGrupo ? index % numGrupo : index] : legendItem.data.inner;
                                         }
                                         else {
                                             meta.data[index].hidden = true;
@@ -370,12 +395,32 @@ var metricas = {
                                 const innerMeta = this.chart.getDatasetMeta(1);
                                 toggleMeta(innerMeta, legendItem.index);
 
+                                //TOOD implementar grupo
                                 const outerMeta = this.chart.getDatasetMeta(0);
-                                toggleMeta(outerMeta, 2 * legendItem.index);
-                                toggleMeta(outerMeta, (2 * legendItem.index) + 1);
+                                var numItemsGrupo = 0;
+                                var grupoStart = -1;
+                                var indexTmp = 0;
+                                var grupoTmp = 0;
+                                for (var j = 0; j < legendItem.grupos.length; j++) {
+                                    if (grupoTmp != legendItem.grupos[j]) {
+                                        grupoTmp = legendItem.grupos[j];
+                                        indexTmp++;
+                                    }
+
+                                    if (indexTmp == legendItem.index) {
+                                        if (grupoStart == -1) {
+                                            grupoStart = j;
+                                        }
+                                        numItemsGrupo++;
+                                    }
+                                }
+                                for (var j = 0; j < numItemsGrupo; j++) {
+                                    toggleMeta(outerMeta, grupoStart + j, numItemsGrupo);
+                                }
+
+
 
                                 this.chart.update();
-
                             }
                         };
                         data.options.plugins.tooltip = {
@@ -1660,7 +1705,7 @@ var metricas = {
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                    url += "&pFiltroFacetas=" + encodeURIComponent(ObtenerHash2());
                     url += "&pLang=" + lang;
                     var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
                     var argAux = {};
