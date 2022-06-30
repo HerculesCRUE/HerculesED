@@ -2430,16 +2430,14 @@ var metricas = {
                     idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idrecurso");
                     var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
                     var arg = {};
+                    idPaginaActual = $('a.nav-link.active').parent().attr("id");
                     arg.pPageId = idPaginaActual;
-                    idPaginaActual = $(this).closest('article').find("div.show.grafica").attr("idpagina");
-                    idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idgrafica");
                     $.get(url, arg, function (listaData) {
                         listaData.forEach(data => {
                             if (data.idRecurso == idGraficaActual) {
                                 tituloActual = data.titulo;
                             }
                         });
-
                         that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, tituloActual)
                     });
                 }
