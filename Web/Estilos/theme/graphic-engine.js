@@ -764,9 +764,11 @@ var metricas = {
             console.log(listaData);
 
             if (listaData.length == 0) {
-                /*if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                if ($('div.row-content').find('div.sin-graficas').length == 0) {
                     $('div.row-content').append(`<div class="sin-graficas"><h1>Aún no hay gráficas en esta página</h1></div>`); //TODO Cambiar
-                } metricas.engancharComportamientos();*/
+                } metricas.engancharComportamientos();
+            }else{
+                $('div.row-content').find('div.sin-graficas').remove();
             }
             var tmp = [];
             var id = "";
