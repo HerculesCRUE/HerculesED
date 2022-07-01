@@ -1,5 +1,14 @@
 ![](./media/CabeceraDocumentosMD.png)
 
+| Fecha         | 29/6/2022                                                   |
+| ------------- | ------------------------------------------------------------ |
+|Título|Despliegue de Hércules ED con Kubernetes y Helm| 
+|Descripción|Guía de despliegue de Hércules ED mediante Kubernetes y Helm|
+|Versión|1.0|
+|Módulo|Documentación|
+|Tipo|Especificación|
+|Cambios de la Versión|Versión inicial|
+
 # Despliegue de Hércules ED con Kubernetes y Helm
 
 A continuación se describen los pasos para desplegar Hercules ED en un cluster de Kubernetes: 
