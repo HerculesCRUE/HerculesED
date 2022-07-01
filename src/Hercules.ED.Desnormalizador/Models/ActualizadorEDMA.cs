@@ -1,4 +1,6 @@
 ﻿using DesnormalizadorHercules.Models.Actualizadores;
+using DesnormalizadorHercules.Models.Services;
+using DesnormalizadorHercules.Models.Similarity;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
@@ -19,7 +21,7 @@ namespace DesnormalizadorHercules.Models
         /// <summary>
         /// Actualiza todos los elementos desnormalizados
         /// </summary>
-        public static void DesnormalizarTodo()
+        public static void DesnormalizarTodo(ConfigService pConfigService)
         {
             ActualizadorCV actualizadorCV = new(resourceApi);
             ActualizadorPerson actualizadorPersonas = new(resourceApi);
@@ -104,6 +106,15 @@ namespace DesnormalizadorHercules.Models
             actualizadorGrupos.ActualizarNumeroAreasTematicas();
             actualizadorGrupos.ActualizarAreasGrupos();
             actualizadorGrupos.ActualizarNumeroProyectos();
+
+            if (!string.IsNullOrEmpty(pConfigService.GetUrlSimilarity()))
+            {
+                UtilsSimilarity utilsSimilarityDocument = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "research_paper");
+                utilsSimilarityDocument.SincroComplete();
+
+                UtilsSimilarity utilsSimilarityRos = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "code_project");
+                utilsSimilarityRos.SincroComplete();
+            }
         }
 
         /// <summary>
