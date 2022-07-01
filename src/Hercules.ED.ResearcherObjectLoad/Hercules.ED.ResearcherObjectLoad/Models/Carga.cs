@@ -62,756 +62,782 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Obtención de las categorías.
             Tuple<Dictionary<string, string>, Dictionary<string, string>> tupla = ObtenerDatosTesauro();
 
-            FileLogger.Log($@"Ruta lectura: {pRutaLectura}");
-            FileLogger.Log($@"Ruta escritura: {pRutaEscritura}");
+            FileLogger.Log($@"{DateTime.Now} - Ruta lectura: {pRutaLectura}");
+            FileLogger.Log($@"{DateTime.Now} - Ruta escritura: {pRutaEscritura}");
 
             while (true)
             {
                 foreach (var fichero in directorio.GetFiles("*.json"))
                 {
-                    // Diccionarios para almacenar los vinculos de los recursos a desambiguar con los IDs de los recursos a cargar
-                    Dictionary<HashSet<string>, string> dicGnossIdPerson = new Dictionary<HashSet<string>, string>();
-
-                    List<DisambiguableEntity> listaDesambiguarBBDD = new List<DisambiguableEntity>();
-
-                    //Listado con los datos para desambiguar
-                    List<DisambiguableEntity> listaDesambiguar = new List<DisambiguableEntity>();
-
-                    //Diccionarios con los datos iniciales a cargar
-                    Dictionary<string, Person> dicIdPersona = new Dictionary<string, Person>();
-                    Dictionary<string, Document> dicIdPublication = new Dictionary<string, Document>();
-                    Dictionary<string, ResearchobjectOntology.ResearchObject> dicIdRo = new Dictionary<string, ResearchobjectOntology.ResearchObject>();
-
-                    //Diccionarios con los objetos JSON de los datos obtenidos
-                    Dictionary<string, Publication> dicIdDatosPub = new Dictionary<string, Publication>();
-                    Dictionary<string, ResearchObjectFigShare> dicIdDatosRoFigshare = new Dictionary<string, ResearchObjectFigShare>();
-                    Dictionary<string, ResearchObjectGitHub> dicIdDatosRoGitHub = new Dictionary<string, ResearchObjectGitHub>();
-                    Dictionary<string, ResearchObjectZenodo> dicIdDatosRoZenodo = new Dictionary<string, ResearchObjectZenodo>();
-
-                    //Diccionario para almacenar las notificaciones
-                    ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>();
-
-                    string jsonString = String.Empty;
-
-                    string idPersona = null;
-
-                    if (fichero.Name.StartsWith("figshare___"))
+                    try
                     {
-                        string tokenFigshare = fichero.Name.Split("___")[1].Split(".").First();
-                        Dictionary<string, string> dicDatosPersona = UtilityFigShare.ObtenerORCIDPorTokenFigshare(tokenFigshare);
-                        string orcidAutor = dicDatosPersona.Keys.First();
-                        string idFigShare = dicDatosPersona.Values.First();
-                        List<string> lista = new List<string>() { UtilityFigShare.ObtenerPersonaPorTokenFigShare(tokenFigshare) };
-                        DisambiguationPerson personaFigShare = UtilityPersona.ObtenerDatosBasicosPersona(lista);
+                        // Diccionarios para almacenar los vinculos de los recursos a desambiguar con los IDs de los recursos a cargar
+                        Dictionary<HashSet<string>, string> dicGnossIdPerson = new Dictionary<HashSet<string>, string>();
 
-                        // Obtención de los datos del JSON.
-                        jsonString = File.ReadAllText(fichero.FullName);
-                        List<ResearchObjectFigShare> listaFigShareData = JsonConvert.DeserializeObject<List<ResearchObjectFigShare>>(jsonString);
-                        HashSet<string> listaFigShare = new HashSet<string>();
-                        if (listaFigShareData != null && listaFigShareData.Any())
+                        List<DisambiguableEntity> listaDesambiguarBBDD = new List<DisambiguableEntity>();
+
+                        //Listado con los datos para desambiguar
+                        List<DisambiguableEntity> listaDesambiguar = new List<DisambiguableEntity>();
+
+                        //Diccionarios con los datos iniciales a cargar
+                        Dictionary<string, Person> dicIdPersona = new Dictionary<string, Person>();
+                        Dictionary<string, Document> dicIdPublication = new Dictionary<string, Document>();
+                        Dictionary<string, ResearchobjectOntology.ResearchObject> dicIdRo = new Dictionary<string, ResearchobjectOntology.ResearchObject>();
+
+                        //Diccionarios con los objetos JSON de los datos obtenidos
+                        Dictionary<string, Publication> dicIdDatosPub = new Dictionary<string, Publication>();
+                        Dictionary<string, ResearchObjectFigShare> dicIdDatosRoFigshare = new Dictionary<string, ResearchObjectFigShare>();
+                        Dictionary<string, ResearchObjectGitHub> dicIdDatosRoGitHub = new Dictionary<string, ResearchObjectGitHub>();
+                        Dictionary<string, ResearchObjectZenodo> dicIdDatosRoZenodo = new Dictionary<string, ResearchObjectZenodo>();
+
+                        //Diccionario para almacenar las notificaciones
+                        ConcurrentBag<NotificationOntology.Notification> notificaciones = new ConcurrentBag<NotificationOntology.Notification>();
+
+                        string jsonString = String.Empty;
+
+                        string idPersona = null;
+
+                        if (fichero.Name.StartsWith("figshare___"))
                         {
-                            foreach (ResearchObjectFigShare researchObject in listaFigShareData)
-                            {
-                                // --- ROs
-                                DisambiguationRO disambiguationRo = UtilityFigShare.GetDisambiguationRO(researchObject);
-                                string idRo = disambiguationRo.ID;
-                                listaDesambiguar.Add(disambiguationRo);
+                            string tokenFigshare = fichero.Name.Split("___")[1].Split(".").First();
+                            Dictionary<string, string> dicDatosPersona = UtilityFigShare.ObtenerORCIDPorTokenFigshare(tokenFigshare);
+                            string orcidAutor = dicDatosPersona.Keys.First();
+                            string idFigShare = dicDatosPersona.Values.First();
+                            List<string> lista = new List<string>() { UtilityFigShare.ObtenerPersonaPorTokenFigShare(tokenFigshare) };
+                            DisambiguationPerson personaFigShare = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
-                                // --- Autores
-                                if (researchObject.autores != null && researchObject.autores.Any())
+                            // Obtención de los datos del JSON.
+                            jsonString = File.ReadAllText(fichero.FullName);
+                            List<ResearchObjectFigShare> listaFigShareData = JsonConvert.DeserializeObject<List<ResearchObjectFigShare>>(jsonString);
+                            HashSet<string> listaFigShare = new HashSet<string>();
+
+                            FileLogger.Log($@"{DateTime.Now} - [FigShare] Procesando fichero de : {orcidAutor}");
+
+                            if (listaFigShareData != null && listaFigShareData.Any())
+                            {
+                                foreach (ResearchObjectFigShare researchObject in listaFigShareData)
                                 {
-                                    List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
-                                    foreach (Person_JSON autor in researchObject.autores)
+                                    // --- ROs
+                                    DisambiguationRO disambiguationRo = UtilityFigShare.GetDisambiguationRO(researchObject);
+                                    string idRo = disambiguationRo.ID;
+                                    listaDesambiguar.Add(disambiguationRo);
+
+                                    // --- Autores
+                                    if (researchObject.autores != null && researchObject.autores.Any())
                                     {
-                                        DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaRo: autor);
+                                        List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
+                                        foreach (Person_JSON autor in researchObject.autores)
+                                        {
+                                            DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaRo: autor);
+                                            string idPerson = disambiguationPerson.ID;
+                                            coautores.Add(disambiguationPerson);
+                                        }
+                                        foreach (DisambiguationPerson coautor in coautores)
+                                        {
+                                            coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                                        }
+                                        disambiguationRo.autores = new HashSet<string>(coautores.Select(x => x.ID));
+                                        listaDesambiguar.AddRange(coautores);
+                                    }
+
+                                    dicIdRo.Add(idRo, Utility.ConstruirRO("FigShare", researchObject, tupla.Item1, tupla.Item2));
+                                    dicIdDatosRoFigshare.Add(idRo, researchObject);
+                                }
+                                Dictionary<string, DisambiguableEntity> researchobjectsBBDD = ObtenerROPorID(orcidAutor, listaFigShare, "http://w3id.org/roh/idFigShare");
+                                ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDDRO(orcidAutor, listadoFigShare: listaFigShareData);
+                                listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
+                                listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
+                                idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).figShareId == idFigShare).Key;
+                            }
+                        }
+                        else if (fichero.Name.StartsWith("github___"))
+                        {
+                            string idGitHubAutor = fichero.Name.Split("___")[1];
+                            string orcidAutor = UtilityGitHub.ObtenerORCIDPorGitHubID(idGitHubAutor);
+                            List<string> lista = new List<string>() { UtilityGitHub.ObtenerPersonaPorGitHubID(idGitHubAutor) };
+                            DisambiguationPerson personaGitHub = UtilityPersona.ObtenerDatosBasicosPersona(lista);
+
+                            // Obtención de los datos del JSON.
+                            jsonString = File.ReadAllText(fichero.FullName);
+                            List<ResearchObjectGitHub> listaGithubData = JsonConvert.DeserializeObject<List<ResearchObjectGitHub>>(jsonString);
+                            HashSet<string> listadoGitHub = new HashSet<string>();
+
+                            FileLogger.Log($@"{DateTime.Now} - [GitHub] Procesando fichero de : {orcidAutor}");
+
+                            if (listaGithubData != null && listaGithubData.Any())
+                            {
+                                foreach (ResearchObjectGitHub githubObject in listaGithubData)
+                                {
+                                    // --- ROs
+                                    DisambiguationRO disambiguationRoGitHub = UtilityGitHub.GetDisambiguationRoGithub(githubObject);
+                                    string idRo = disambiguationRoGitHub.ID;
+                                    if (githubObject.id != null)
+                                    {
+                                        string githubStringAux = Convert.ToString(githubObject.id);
+                                        listadoGitHub.Add(githubStringAux);
+                                    }
+                                    listaDesambiguar.Add(disambiguationRoGitHub);
+
+                                    List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
+                                    foreach (string nombre in githubObject.listaAutores)
+                                    {
+                                        DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaGit: nombre);
                                         string idPerson = disambiguationPerson.ID;
                                         coautores.Add(disambiguationPerson);
-                                    }
-                                    foreach (DisambiguationPerson coautor in coautores)
-                                    {
-                                        coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
-                                    }
-                                    disambiguationRo.autores = new HashSet<string>(coautores.Select(x => x.ID));
-                                    listaDesambiguar.AddRange(coautores);
-                                }
 
-                                dicIdRo.Add(idRo, Utility.ConstruirRO("FigShare", researchObject, tupla.Item1, tupla.Item2));
-                                dicIdDatosRoFigshare.Add(idRo, researchObject);
-                            }
-                            Dictionary<string, DisambiguableEntity> researchobjectsBBDD = ObtenerROPorID(orcidAutor, listaFigShare, "http://w3id.org/roh/idFigShare");
-                            ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDDRO(orcidAutor, listadoFigShare: listaFigShareData);
-                            listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
-                            listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-                            idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).figShareId == idFigShare).Key;
-                        }
-                    }
-                    else if (fichero.Name.StartsWith("github___"))
-                    {
-                        string idGitHubAutor = fichero.Name.Split("___")[1];
-                        string orcidAutor = UtilityGitHub.ObtenerORCIDPorGitHubID(idGitHubAutor);
-                        List<string> lista = new List<string>() { UtilityGitHub.ObtenerPersonaPorGitHubID(idGitHubAutor) };
-                        DisambiguationPerson personaGitHub = UtilityPersona.ObtenerDatosBasicosPersona(lista);
-
-                        // Obtención de los datos del JSON.
-                        jsonString = File.ReadAllText(fichero.FullName);
-                        List<ResearchObjectGitHub> listaGithubData = JsonConvert.DeserializeObject<List<ResearchObjectGitHub>>(jsonString);
-                        HashSet<string> listadoGitHub = new HashSet<string>();
-                        if (listaGithubData != null && listaGithubData.Any())
-                        {
-                            foreach (ResearchObjectGitHub githubObject in listaGithubData)
-                            {
-                                // --- ROs
-                                DisambiguationRO disambiguationRoGitHub = UtilityGitHub.GetDisambiguationRoGithub(githubObject);
-                                string idRo = disambiguationRoGitHub.ID;
-                                if (githubObject.id != null)
-                                {
-                                    string githubStringAux = Convert.ToString(githubObject.id);
-                                    listadoGitHub.Add(githubStringAux);
-                                }
-                                listaDesambiguar.Add(disambiguationRoGitHub);
-
-                                List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
-                                foreach (string nombre in githubObject.listaAutores)
-                                {
-                                    DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaGit: nombre);
-                                    string idPerson = disambiguationPerson.ID;
-                                    coautores.Add(disambiguationPerson);
-
-                                    if (disambiguationPerson.documentos == null)
-                                    {
-                                        disambiguationPerson.documentos = new HashSet<string>();
-                                    }
-                                    disambiguationPerson.documentos.Add(personaGitHub.ID);
-                                    disambiguationPerson.departamento = personaGitHub.departamento;
-                                    disambiguationPerson.organizacion = personaGitHub.organizacion;
-                                    disambiguationPerson.grupos = personaGitHub.grupos;
-                                    disambiguationPerson.proyectos = personaGitHub.proyectos;
-                                }
-                                foreach (DisambiguationPerson coautor in coautores)
-                                {
-                                    coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
-                                    coautor.distincts = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
-                                    coautor.departamento = personaGitHub.departamento;
-                                    coautor.organizacion = personaGitHub.organizacion;
-                                    coautor.grupos = personaGitHub.grupos;
-                                    coautor.proyectos = personaGitHub.proyectos;
-                                }
-                                disambiguationRoGitHub.autores = new HashSet<string>(coautores.Select(x => x.ID));
-                                listaDesambiguar.AddRange(coautores);
-
-                                dicIdRo.Add(idRo, Utility.ConstruirRO("GitHub", githubObject, tupla.Item1, tupla.Item2));
-                                dicIdDatosRoGitHub.Add(idRo, githubObject);
-                            }
-                            Dictionary<string, DisambiguableEntity> researchobjectsBBDD = ObtenerROPorID(orcidAutor, listadoGitHub, "http://w3id.org/roh/idGit");
-                            ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDDRO(orcidAutor, listadoGitHub: listaGithubData);
-                            listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
-                            listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-                            idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).gitHubId == idGitHubAutor).Key;
-                        }
-                    }
-                    else if (fichero.Name.StartsWith("zenodo___"))
-                    {
-                        string idAutor = fichero.Name.Split("___")[1];
-                        List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
-                        DisambiguationPerson personaZenodo = UtilityPersona.ObtenerDatosBasicosPersona(lista);
-
-                        // Obtención de los datos del JSON.
-                        jsonString = File.ReadAllText(fichero.FullName);
-                        List<ResearchObjectZenodo> listaZenodoData = JsonConvert.DeserializeObject<List<ResearchObjectZenodo>>(jsonString);
-                        HashSet<string> listadoZenodo = new HashSet<string>();
-                        if (listaZenodoData != null && listaZenodoData.Any())
-                        {
-                            foreach (ResearchObjectZenodo zenodoObject in listaZenodoData)
-                            {
-                                // --- ROs
-                                DisambiguationRO disambiguationRoZenodo = UtilityZenodo.GetDisambiguationRoZenodo(zenodoObject);
-                                string idRo = disambiguationRoZenodo.ID;
-                                if (zenodoObject.id != null)
-                                {
-                                    string zenodoStringAux = Convert.ToString(zenodoObject.id);
-                                    listadoZenodo.Add(zenodoStringAux);
-                                }
-                                listaDesambiguar.Add(disambiguationRoZenodo);
-
-                                List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
-                                foreach (Person_JSON persona in zenodoObject.autores)
-                                {
-                                    DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaRo: persona);
-                                    string idPerson = disambiguationPerson.ID;
-                                    coautores.Add(disambiguationPerson);
-
-                                    if (disambiguationPerson.documentos == null)
-                                    {
-                                        disambiguationPerson.documentos = new HashSet<string>();
-                                    }
-                                    disambiguationPerson.documentos.Add(personaZenodo.ID);
-                                    disambiguationPerson.departamento = personaZenodo.departamento;
-                                    disambiguationPerson.organizacion = personaZenodo.organizacion;
-                                    disambiguationPerson.grupos = personaZenodo.grupos;
-                                    disambiguationPerson.proyectos = personaZenodo.proyectos;
-                                }
-                                foreach (DisambiguationPerson coautor in coautores)
-                                {
-                                    coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
-                                    coautor.distincts = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
-                                    coautor.departamento = personaZenodo.departamento;
-                                    coautor.organizacion = personaZenodo.organizacion;
-                                    coautor.grupos = personaZenodo.grupos;
-                                    coautor.proyectos = personaZenodo.proyectos;
-                                }
-                                disambiguationRoZenodo.autores = new HashSet<string>(coautores.Select(x => x.ID));
-                                listaDesambiguar.AddRange(coautores);
-
-                                dicIdRo.Add(idRo, Utility.ConstruirRO("Zenodo", zenodoObject, tupla.Item1, tupla.Item2));
-                                dicIdDatosRoZenodo.Add(idRo, zenodoObject);
-                            }
-                            Dictionary<string, DisambiguableEntity> researchobjectsBBDD = ObtenerROPorID(idAutor, listadoZenodo, "http://w3id.org/roh/idZenodo");
-                            ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDDRO(idAutor, listadoZenodo: listaZenodoData);
-                            listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
-                            listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-                            idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
-                        }
-                    }
-                    else
-                    {
-                        string idAutor = fichero.Name.Split("___")[0];
-                        List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
-                        DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
-
-                        // Obtención de los datos del JSON.
-                        jsonString = File.ReadAllText(fichero.FullName);
-                        List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
-                        HashSet<string> listadoDOI = new HashSet<string>();
-                        if (listaPublicaciones != null && listaPublicaciones.Any())
-                        {
-                            foreach (Publication publication in listaPublicaciones)
-                            {
-                                // --- Publicación
-                                DisambiguationPublication disambiguationPub = GetDisambiguationPublication(publication);
-                                listadoDOI.Add(disambiguationPub.doi);
-
-                                disambiguationPub.autores = new HashSet<string>();
-                                string idPub = disambiguationPub.ID;
-                                listaDesambiguar.Add(disambiguationPub);
-
-                                // --- Autores
-                                if (publication.seqOfAuthors != null && publication.seqOfAuthors.Any())
-                                {
-                                    List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
-                                    foreach (PersonaPub autor in publication.seqOfAuthors)
-                                    {
-                                        DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(autor);
-                                        string idPerson = disambiguationPerson.ID;
-                                        coautores.Add(disambiguationPerson);
-                                        dicIdPersona.Add(idPerson, UtilityPersona.ConstruirPersona(autor));
                                         if (disambiguationPerson.documentos == null)
                                         {
                                             disambiguationPerson.documentos = new HashSet<string>();
                                         }
-                                        disambiguationPerson.documentos.Add(publication.ID);
-                                        disambiguationPerson.departamento = personaDocumento.departamento;
-                                        disambiguationPerson.organizacion = personaDocumento.organizacion;
-                                        disambiguationPerson.grupos = personaDocumento.grupos;
-                                        disambiguationPerson.proyectos = personaDocumento.proyectos;
-                                        disambiguationPerson.distincts = new HashSet<string>(publication.seqOfAuthors.Where(x => x.ID != disambiguationPerson.ID).Select(x => x.ID));
+                                        disambiguationPerson.documentos.Add(personaGitHub.ID);
+                                        disambiguationPerson.departamento = personaGitHub.departamento;
+                                        disambiguationPerson.organizacion = personaGitHub.organizacion;
+                                        disambiguationPerson.grupos = personaGitHub.grupos;
+                                        disambiguationPerson.proyectos = personaGitHub.proyectos;
                                     }
                                     foreach (DisambiguationPerson coautor in coautores)
                                     {
                                         coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
                                         coautor.distincts = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
-                                        coautor.departamento = personaDocumento.departamento;
-                                        coautor.organizacion = personaDocumento.organizacion;
-                                        coautor.grupos = personaDocumento.grupos;
-                                        coautor.proyectos = personaDocumento.proyectos;
+                                        coautor.departamento = personaGitHub.departamento;
+                                        coautor.organizacion = personaGitHub.organizacion;
+                                        coautor.grupos = personaGitHub.grupos;
+                                        coautor.proyectos = personaGitHub.proyectos;
                                     }
+                                    disambiguationRoGitHub.autores = new HashSet<string>(coautores.Select(x => x.ID));
                                     listaDesambiguar.AddRange(coautores);
-                                    disambiguationPub.autores = new HashSet<string>(coautores.Select(x => x.ID));
+
+                                    dicIdRo.Add(idRo, Utility.ConstruirRO("GitHub", githubObject, tupla.Item1, tupla.Item2));
+                                    dicIdDatosRoGitHub.Add(idRo, githubObject);
                                 }
-
-                                dicIdDatosPub.Add(idPub, publication);
-                                dicIdPublication.Add(idPub, ConstruirDocument(publication, tupla.Item1, tupla.Item2));
+                                Dictionary<string, DisambiguableEntity> researchobjectsBBDD = ObtenerROPorID(orcidAutor, listadoGitHub, "http://w3id.org/roh/idGit");
+                                ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDDRO(orcidAutor, listadoGitHub: listaGithubData);
+                                listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
+                                listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
+                                idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).gitHubId == idGitHubAutor).Key;
                             }
-                            // Obtención de los datos cargados de BBDD.                        
-                            Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorOrcid(listadoDOI, idAutor);
-                            ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDD(listaPublicaciones, idAutor);
-                            listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
-                            listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-                            idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
                         }
-                    }
+                        else if (fichero.Name.StartsWith("zenodo___"))
+                        {
+                            string idAutor = fichero.Name.Split("___")[1];
+                            List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
+                            DisambiguationPerson personaZenodo = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
-                    if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
+                            // Obtención de los datos del JSON.
+                            jsonString = File.ReadAllText(fichero.FullName);
+                            List<ResearchObjectZenodo> listaZenodoData = JsonConvert.DeserializeObject<List<ResearchObjectZenodo>>(jsonString);
+                            HashSet<string> listadoZenodo = new HashSet<string>();
+
+                            FileLogger.Log($@"{DateTime.Now} - [Zenodo] Procesando fichero de : {idAutor}");
+
+                            if (listaZenodoData != null && listaZenodoData.Any())
+                            {
+                                foreach (ResearchObjectZenodo zenodoObject in listaZenodoData)
+                                {
+                                    // --- ROs
+                                    DisambiguationRO disambiguationRoZenodo = UtilityZenodo.GetDisambiguationRoZenodo(zenodoObject);
+                                    string idRo = disambiguationRoZenodo.ID;
+                                    if (zenodoObject.id != null)
+                                    {
+                                        string zenodoStringAux = Convert.ToString(zenodoObject.id);
+                                        listadoZenodo.Add(zenodoStringAux);
+                                    }
+                                    listaDesambiguar.Add(disambiguationRoZenodo);
+
+                                    List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
+                                    foreach (Person_JSON persona in zenodoObject.autores)
+                                    {
+                                        DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(pPersonaRo: persona);
+                                        string idPerson = disambiguationPerson.ID;
+                                        coautores.Add(disambiguationPerson);
+
+                                        if (disambiguationPerson.documentos == null)
+                                        {
+                                            disambiguationPerson.documentos = new HashSet<string>();
+                                        }
+                                        disambiguationPerson.documentos.Add(personaZenodo.ID);
+                                        disambiguationPerson.departamento = personaZenodo.departamento;
+                                        disambiguationPerson.organizacion = personaZenodo.organizacion;
+                                        disambiguationPerson.grupos = personaZenodo.grupos;
+                                        disambiguationPerson.proyectos = personaZenodo.proyectos;
+                                    }
+                                    foreach (DisambiguationPerson coautor in coautores)
+                                    {
+                                        coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                                        coautor.distincts = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                                        coautor.departamento = personaZenodo.departamento;
+                                        coautor.organizacion = personaZenodo.organizacion;
+                                        coautor.grupos = personaZenodo.grupos;
+                                        coautor.proyectos = personaZenodo.proyectos;
+                                    }
+                                    disambiguationRoZenodo.autores = new HashSet<string>(coautores.Select(x => x.ID));
+                                    listaDesambiguar.AddRange(coautores);
+
+                                    dicIdRo.Add(idRo, Utility.ConstruirRO("Zenodo", zenodoObject, tupla.Item1, tupla.Item2));
+                                    dicIdDatosRoZenodo.Add(idRo, zenodoObject);
+                                }
+                                Dictionary<string, DisambiguableEntity> researchobjectsBBDD = ObtenerROPorID(idAutor, listadoZenodo, "http://w3id.org/roh/idZenodo");
+                                ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDDRO(idAutor, listadoZenodo: listaZenodoData);
+                                listaDesambiguarBBDD.AddRange(researchobjectsBBDD.Values.ToList());
+                                listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
+                                idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
+                            }
+                        }
+                        else
+                        {
+                            string idAutor = fichero.Name.Split("___")[0];
+                            List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
+                            DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
+
+                            // Obtención de los datos del JSON.
+                            jsonString = File.ReadAllText(fichero.FullName);
+                            List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
+                            HashSet<string> listadoDOI = new HashSet<string>();
+
+                            FileLogger.Log($@"{DateTime.Now} - [Publicaciones] Procesando fichero de : {idAutor}");
+
+                            if (listaPublicaciones != null && listaPublicaciones.Any())
+                            {
+                                foreach (Publication publication in listaPublicaciones)
+                                {
+                                    // --- Publicación
+                                    DisambiguationPublication disambiguationPub = GetDisambiguationPublication(publication);
+                                    listadoDOI.Add(disambiguationPub.doi);
+
+                                    disambiguationPub.autores = new HashSet<string>();
+                                    string idPub = disambiguationPub.ID;
+                                    listaDesambiguar.Add(disambiguationPub);
+
+                                    // --- Autores
+                                    if (publication.seqOfAuthors != null && publication.seqOfAuthors.Any())
+                                    {
+                                        List<DisambiguationPerson> coautores = new List<DisambiguationPerson>();
+                                        foreach (PersonaPub autor in publication.seqOfAuthors)
+                                        {
+                                            DisambiguationPerson disambiguationPerson = UtilityPersona.GetDisambiguationPerson(autor);
+                                            string idPerson = disambiguationPerson.ID;
+                                            coautores.Add(disambiguationPerson);
+                                            dicIdPersona.Add(idPerson, UtilityPersona.ConstruirPersona(autor));
+                                            if (disambiguationPerson.documentos == null)
+                                            {
+                                                disambiguationPerson.documentos = new HashSet<string>();
+                                            }
+                                            disambiguationPerson.documentos.Add(publication.ID);
+                                            disambiguationPerson.departamento = personaDocumento.departamento;
+                                            disambiguationPerson.organizacion = personaDocumento.organizacion;
+                                            disambiguationPerson.grupos = personaDocumento.grupos;
+                                            disambiguationPerson.proyectos = personaDocumento.proyectos;
+                                            disambiguationPerson.distincts = new HashSet<string>(publication.seqOfAuthors.Where(x => x.ID != disambiguationPerson.ID).Select(x => x.ID));
+                                        }
+                                        foreach (DisambiguationPerson coautor in coautores)
+                                        {
+                                            coautor.coautores = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                                            coautor.distincts = new HashSet<string>(coautores.Where(x => x.ID != coautor.ID).Select(x => x.ID));
+                                            coautor.departamento = personaDocumento.departamento;
+                                            coautor.organizacion = personaDocumento.organizacion;
+                                            coautor.grupos = personaDocumento.grupos;
+                                            coautor.proyectos = personaDocumento.proyectos;
+                                        }
+                                        listaDesambiguar.AddRange(coautores);
+                                        disambiguationPub.autores = new HashSet<string>(coautores.Select(x => x.ID));
+                                    }
+
+                                    dicIdDatosPub.Add(idPub, publication);
+                                    dicIdPublication.Add(idPub, ConstruirDocument(publication, tupla.Item1, tupla.Item2));
+                                }
+                                // Obtención de los datos cargados de BBDD.                        
+                                Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorOrcid(listadoDOI, idAutor);
+                                ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDD(listaPublicaciones, idAutor);
+                                listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
+                                listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
+                                idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
+                        {
+                            HashSet<string> idsPersonasActualizar = new HashSet<string>();
+                            HashSet<string> idsDocumentosActualizar = new HashSet<string>();
+                            HashSet<string> idsResearchObjectsActualizar = new HashSet<string>();
+
+
+                            // Obtención de la lista de equivalencias.
+                            Dictionary<string, HashSet<string>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
+
+                            //Listados con los objetos encontrados en la BBDD
+                            HashSet<string> idPersonasBBDD = new HashSet<string>();
+                            HashSet<string> idDocumentosBBDD = new HashSet<string>();
+                            HashSet<string> idROsBBDD = new HashSet<string>();
+                            foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
+                            {
+                                if (!Guid.TryParse(item.Key, out var newGuid))
+                                {
+                                    string tipo = item.Value.First().Split("|")[0];
+                                    if (tipo == DISAMBIGUATION_PERSON)
+                                    {
+                                        idPersonasBBDD.Add(item.Key);
+                                    }
+                                    else if (tipo == DISAMBIGUATION_PUBLICATION)
+                                    {
+                                        idDocumentosBBDD.Add(item.Key);
+                                    }
+                                    else
+                                    {
+                                        idROsBBDD.Add(item.Key);
+                                    }
+                                }
+                            }
+
+                            //Datos de los objetos encontrados en la BBDD
+                            List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);
+
+                            #region 1º PERSONAS Procesamos las personas, actualizando las que corresponda
+                            Dictionary<Person, HashSet<string>> listaPersonasCargarEquivalencias = new Dictionary<Person, HashSet<string>>();
+                            foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
+                            {
+                                if (Guid.TryParse(item.Key, out var newGuid))
+                                {
+                                    // Recurso NO cargado previamente en BBDD.
+                                    string tipo = string.Empty;
+                                    HashSet<string> listaIds = new HashSet<string>();
+                                    foreach (string id in item.Value)
+                                    {
+                                        tipo = id.Split("|")[0];
+                                        listaIds.Add(id.Split("|")[1]);
+                                    }
+                                    string idA = listaIds.FirstOrDefault();
+                                    if (tipo == DISAMBIGUATION_PERSON && listaIds.ToList().Any())
+                                    {
+                                        //Esta variable sólo se carga en los documentos, no en los ROs
+                                        if (dicIdPersona != null && dicIdPersona.Any())
+                                        {
+                                            UtilityPersona.CrearPersonDesambiguada(idA, listaIds, dicIdPersona, listaPersonasCargarEquivalencias);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // Recurso cargado previamente en BBDD. Modificamos datos cuando corresponda
+                                    string idRecursoBBDD = item.Key;
+                                    string tipo = string.Empty;
+                                    HashSet<string> listaIds = new HashSet<string>();
+                                    foreach (string id in item.Value)
+                                    {
+                                        tipo = id.Split("|")[0];
+                                        listaIds.Add(id.Split("|")[1]);
+                                    }
+
+                                    if (tipo == DISAMBIGUATION_PERSON && listaIds.ToList().Any())
+                                    {
+                                        dicGnossIdPerson.Add(new HashSet<string>(listaIds), idRecursoBBDD);
+
+                                        string orcid = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item2;
+                                        string crisIdentifier = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item3;
+                                        string nombre = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item4;
+                                        string apellidos = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item5;
+                                        string nombreCompleto = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item6;
+
+                                        if (string.IsNullOrEmpty(orcid) && dicIdPersona != null && dicIdPersona.Any())
+                                        {
+                                            InsertarOrcid(idRecursoBBDD, listaIds.ToList(), dicIdPersona);
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            // Creación de los ComplexOntologyResources.
+                            List<ComplexOntologyResource> listaPersonasCargar = new List<ComplexOntologyResource>();
+                            mResourceApi.ChangeOntoly("person");
+                            foreach (Person persona in listaPersonasCargarEquivalencias.Keys)
+                            {
+                                ComplexOntologyResource resourcePersona = persona.ToGnossApiResource(mResourceApi, null);
+                                listaPersonasCargar.Add(resourcePersona);
+                                dicGnossIdPerson.Add(listaPersonasCargarEquivalencias[persona], resourcePersona.GnossId);
+                            }
+                            #endregion
+
+                            #region 2º PUBLICACIONES
+                            Dictionary<Document, HashSet<string>> listaDocumentosCargarEquivalencias = new Dictionary<Document, HashSet<string>>();
+                            Dictionary<string, string> listaDocumentosCargados = new Dictionary<string, string>();
+
+                            foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
+                            {
+                                if (Guid.TryParse(item.Key, out var newGuid))
+                                {
+                                    // Recurso NO cargado previamente en BBDD.
+                                    string tipo = string.Empty;
+                                    HashSet<string> listaIds = new HashSet<string>();
+                                    foreach (string id in item.Value)
+                                    {
+                                        tipo = id.Split("|")[0];
+                                        listaIds.Add(id.Split("|")[1]);
+                                    }
+                                    string idA = listaIds.FirstOrDefault();
+
+                                    if (tipo == DISAMBIGUATION_PUBLICATION && listaIds.Any())
+                                    {
+                                        CrearDocumentDesambiguado(idA, listaIds, dicIdDatosPub, listaDocumentosCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                    }
+                                }
+                                else
+                                {
+                                    // Recurso cargado previamente en BBDD.
+                                    string tipo = string.Empty;
+                                    HashSet<string> listaIds = new HashSet<string>();
+                                    foreach (string id in item.Value)
+                                    {
+                                        tipo = id.Split("|")[0];
+                                        listaIds.Add(id.Split("|")[1]);
+                                    }
+                                    string idA = listaIds.FirstOrDefault();
+
+                                    if (tipo == DISAMBIGUATION_PUBLICATION && listaIds.Any())
+                                    {
+                                        listaDocumentosCargados.Add(idA, item.Key);
+                                        CrearDocumentDesambiguado(idA, listaIds, dicIdDatosPub, listaDocumentosCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                    }
+                                }
+                            }
+                            // Creación del vínculo entre los documentos y las personas (Document apunta a Person).
+                            foreach (KeyValuePair<Document, HashSet<string>> item in listaDocumentosCargarEquivalencias)
+                            {
+                                foreach (string id in item.Value)
+                                {
+                                    Publication pubAux = dicIdDatosPub[id];
+                                    // Autores.
+                                    foreach (BFO_0000023 bfo_0000023 in item.Key.Bibo_authorList)
+                                    {
+                                        string idAutor = bfo_0000023.IdRdf_member;
+                                        foreach (KeyValuePair<HashSet<string>, string> item2 in dicGnossIdPerson)
+                                        {
+                                            if (item2.Key.Contains(idAutor))
+                                            {
+                                                bfo_0000023.IdRdf_member = item2.Value;
+                                                break;
+                                            }
+                                        }
+                                        if (Guid.TryParse(bfo_0000023.IdRdf_member, out Guid aux))
+                                        {
+                                            throw new Exception("No existe la persona");
+                                        }
+                                    }
+                                }
+                            }
+
+                            //Creación de los ComplexOntologyResources.
+                            List<ComplexOntologyResource> listaDocumentosCargar = new List<ComplexOntologyResource>();
+                            Dictionary<string, Document> listaDocumentosModificar = new Dictionary<string, Document>();
+                            mResourceApi.ChangeOntoly("document");
+                            foreach (Document documento in listaDocumentosCargarEquivalencias.Keys)
+                            {
+                                if (documento.Bibo_authorList.Exists(x => x.IdRdf_member == idPersona))
+                                {
+                                    string idBBDD = listaDocumentosCargarEquivalencias[documento].Intersect(listaDocumentosCargados.Keys).FirstOrDefault();
+                                    if (string.IsNullOrEmpty(idBBDD))
+                                    {
+                                        ComplexOntologyResource resourceDocumento = documento.ToGnossApiResource(mResourceApi, null);
+
+                                        foreach (BFO_0000023 autor in documento.Bibo_authorList)
+                                        {
+                                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                            notificacion.IdRoh_trigger = null;
+                                            notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                            notificacion.Roh_entity = resourceDocumento.GnossId;
+                                            notificacion.IdRoh_owner = autor.IdRdf_member;
+                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Roh_type = "create";
+                                            notificacion.CvnCode = Utility.IdentificadorFECYT(documento.IdRoh_scientificActivityDocument);
+
+                                            notificaciones.Add(notificacion);
+                                        }
+
+
+                                        listaDocumentosCargar.Add(resourceDocumento);
+                                    }
+                                    else
+                                    {
+                                        foreach (BFO_0000023 autor in documento.Bibo_authorList)
+                                        {
+                                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                            notificacion.IdRoh_trigger = null;
+                                            notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                            notificacion.Roh_entity = listaDocumentosCargados[idBBDD];
+                                            notificacion.IdRoh_owner = autor.IdRdf_member;
+                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Roh_type = "edit";
+                                            notificacion.CvnCode = Utility.IdentificadorFECYT(listaDocumentosCargarEquivalencias.Where(x => x.Value.Contains(idBBDD)).FirstOrDefault().Key.IdRoh_scientificActivityDocument);
+
+                                            notificaciones.Add(notificacion);
+                                        }
+
+                                        idBBDD = listaDocumentosCargados[idBBDD];
+                                        listaDocumentosModificar.Add(idBBDD, documento);
+                                    }
+                                }
+                            }
+                            #endregion
+
+                            #region 3º RESEARCHOBJECT 
+                            Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> listaROsCargarEquivalencias = new Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>>();
+                            Dictionary<string, string> listaROsCargados = new Dictionary<string, string>();
+
+                            foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
+                            {
+                                if (Guid.TryParse(item.Key, out var newGuid))
+                                {
+                                    // Recurso NO cargado previamente en BBDD.
+                                    string tipo = string.Empty;
+                                    HashSet<string> listaIds = new HashSet<string>();
+                                    foreach (string id in item.Value)
+                                    {
+                                        tipo = id.Split("|")[0];
+                                        listaIds.Add(id.Split("|")[1]);
+                                    }
+                                    string idA = listaIds.FirstOrDefault();
+
+                                    if (tipo == DISAMBIGUATION_RO && listaIds.ToList().Any())
+                                    {
+                                        if (dicIdDatosRoFigshare.Count > 0)
+                                        {
+                                            UtilityFigShare.CrearRoFigshareDesambiguado(idA, listaIds, dicIdDatosRoFigshare, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                        }
+                                        if (dicIdDatosRoGitHub.Count > 0)
+                                        {
+                                            UtilityGitHub.CrearRoGitHubDesambiguado(idA, listaIds, dicIdDatosRoGitHub, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                        }
+                                        if (dicIdDatosRoZenodo.Count > 0)
+                                        {
+                                            UtilityZenodo.CrearRoZenodoDesambiguado(idA, listaIds, dicIdDatosRoZenodo, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // Recurso cargado previamente en BBDD.
+                                    string tipo = string.Empty;
+                                    HashSet<string> listaIds = new HashSet<string>();
+                                    foreach (string id in item.Value)
+                                    {
+                                        tipo = id.Split("|")[0];
+                                        listaIds.Add(id.Split("|")[1]);
+                                    }
+                                    string idA = listaIds.FirstOrDefault();
+
+                                    if (tipo == DISAMBIGUATION_RO && listaIds.Any())
+                                    {
+                                        listaROsCargados.Add(idA, item.Key);
+                                        if (dicIdDatosRoFigshare.Count > 0)
+                                        {
+                                            UtilityFigShare.CrearRoFigshareDesambiguado(idA, listaIds, dicIdDatosRoFigshare, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                        }
+                                        if (dicIdDatosRoGitHub.Count > 0)
+                                        {
+                                            UtilityGitHub.CrearRoGitHubDesambiguado(idA, listaIds, dicIdDatosRoGitHub, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                        }
+                                        if (dicIdDatosRoZenodo.Count > 0)
+                                        {
+                                            UtilityZenodo.CrearRoZenodoDesambiguado(idA, listaIds, dicIdDatosRoZenodo, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Creación del vínculo entre los ros y las personas (Research object apunta a Person).
+                            foreach (KeyValuePair<ResearchobjectOntology.ResearchObject, HashSet<string>> item in listaROsCargarEquivalencias)
+                            {
+                                foreach (string id in item.Value)
+                                {
+                                    // Autores.
+                                    foreach (ResearchobjectOntology.BFO_0000023 bfo_0000023 in item.Key.Bibo_authorList)
+                                    {
+                                        string idAutor = bfo_0000023.IdRdf_member;
+                                        foreach (KeyValuePair<HashSet<string>, string> item2 in dicGnossIdPerson)
+                                        {
+                                            if (item2.Key.Contains(idAutor))
+                                            {
+                                                bfo_0000023.IdRdf_member = item2.Value;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    //En los ROs no cargamos las personas que no se reconozcan
+                                    item.Key.Bibo_authorList.RemoveAll(x => Guid.TryParse(x.IdRdf_member, out Guid aux));
+                                }
+                            }
+
+                            //Creación de los ComplexOntologyResources.
+                            List<ComplexOntologyResource> listaROsCargar = new List<ComplexOntologyResource>();
+                            Dictionary<string, ResearchobjectOntology.ResearchObject> listaROsModificar = new Dictionary<string, ResearchobjectOntology.ResearchObject>();
+                            mResourceApi.ChangeOntoly("researchobject");
+                            foreach (ResearchobjectOntology.ResearchObject researchobject in listaROsCargarEquivalencias.Keys)
+                            {
+                                if (researchobject.Bibo_authorList.Exists(x => x.IdRdf_member == idPersona))
+                                {
+                                    string idBBDD = listaROsCargarEquivalencias[researchobject].Intersect(listaROsCargados.Keys).FirstOrDefault();
+                                    if (string.IsNullOrEmpty(idBBDD))
+                                    {
+                                        ComplexOntologyResource resourceResearchObject = researchobject.ToGnossApiResource(mResourceApi, null);
+
+                                        foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
+                                        {
+                                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                            notificacion.IdRoh_trigger = null;
+                                            notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
+                                            notificacion.Roh_entity = resourceResearchObject.GnossId;
+                                            notificacion.IdRoh_owner = autor.IdRdf_member;
+                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Roh_type = "create";
+                                            notificacion.CvnCode = "";
+
+                                            notificaciones.Add(notificacion);
+                                        }
+
+                                        listaROsCargar.Add(resourceResearchObject);
+                                    }
+                                    else
+                                    {
+                                        foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
+                                        {
+                                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                                            notificacion.IdRoh_trigger = null;
+                                            notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
+                                            notificacion.Roh_entity = listaROsCargados[idBBDD];
+                                            notificacion.IdRoh_owner = autor.IdRdf_member;
+                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Roh_type = "edit";
+                                            notificacion.CvnCode = "";
+
+                                            notificaciones.Add(notificacion);
+                                        }
+
+                                        idBBDD = listaROsCargados[idBBDD];
+                                        listaROsModificar.Add(idBBDD, researchobject);
+                                    }
+                                }
+                            }
+
+                            #endregion
+
+                            // ------------------------------ CARGA
+                            FileLogger.Log($@"{DateTime.Now} - Cargando personas...");
+                            idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
+                            FileLogger.Log($@"{DateTime.Now} - Cargando publicaciones...");
+                            idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
+                            FileLogger.Log($@"{DateTime.Now} - Cargando ROs...");
+                            idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
+
+                            idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
+                            idsResearchObjectsActualizar.UnionWith(listaROsModificar.Keys);
+
+                            //Modificación
+                            Parallel.ForEach(listaDocumentosModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
+                            {
+                                string[] idSplit = recursoModificar.Key.Split('_');
+                                Document doc = listaDocumentosModificar[recursoModificar.Key];
+                                ModificarDocumento(doc, recursoModificar.Key);
+                                ComplexOntologyResource complexOntologyResource = doc.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+
+                                int numIntentos = 0;
+                                while (!complexOntologyResource.Modified)
+                                {
+                                    numIntentos++;
+
+                                    if (numIntentos > MAX_INTENTOS)
+                                    {
+                                        break;
+                                    }
+                                    if (listaDocumentosModificar.Last().Key == recursoModificar.Key)
+                                    {
+                                        mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                    }
+                                    else
+                                    {
+                                        mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                    }
+                                }
+                            });
+
+                            //Modificación
+                            Parallel.ForEach(listaROsModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
+                            {
+                                string[] idSplit = recursoModificar.Key.Split('_');
+                                ResearchobjectOntology.ResearchObject ro = listaROsModificar[recursoModificar.Key];
+                                ModificarRO(ro, recursoModificar.Key);
+                                ComplexOntologyResource complexOntologyResource = ro.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+
+                                int numIntentos = 0;
+                                while (!complexOntologyResource.Modified)
+                                {
+                                    numIntentos++;
+
+                                    if (numIntentos > MAX_INTENTOS)
+                                    {
+                                        break;
+                                    }
+                                    if (listaROsModificar.Last().Key == recursoModificar.Key)
+                                    {
+                                        mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                    }
+                                    else
+                                    {
+                                        mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                    }
+                                }
+                            });
+
+                            //Insertamos en la cola del desnormalizador
+                            FileLogger.Log($@"{DateTime.Now} - Inserción en la cola Rabbit del desnormalizador...");
+                            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
+                            if (idsPersonasActualizar.Count > 0)
+                            {
+                                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, idsPersonasActualizar));
+                            }
+                            if (idsDocumentosActualizar.Count > 0)
+                            {
+                                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, idsDocumentosActualizar));
+                            }
+                            if (idsResearchObjectsActualizar.Count > 0)
+                            {
+                                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
+                            }
+
+
+                            //Cargamos las notificaciones
+                            List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
+                            mResourceApi.ChangeOntoly("notification");
+                            FileLogger.Log($@"{DateTime.Now} - Creando notificaciones...");
+                            Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, notificacion =>
+                            {
+                                ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+                                int numIntentos = 0;
+                                while (!recursoCargar.Uploaded)
+                                {
+                                    numIntentos++;
+
+                                    if (numIntentos > 5)
+                                    {
+                                        break;
+                                    }
+                                    mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                                }
+                            });
+                        }
+
+                        // Hace una copia del fichero y elimina el original.
+                        FileLogger.Log($@"{DateTime.Now} - Creando ZIP...");
+                        CrearZip(pRutaEscritura, fichero.Name, jsonString);
+                        FileLogger.Log($@"{DateTime.Now} - Borrando json...");
+                        File.Delete(fichero.FullName);
+                    }
+                    catch (Exception ex)
                     {
-                        HashSet<string> idsPersonasActualizar = new HashSet<string>();
-                        HashSet<string> idsDocumentosActualizar = new HashSet<string>();
-                        HashSet<string> idsResearchObjectsActualizar = new HashSet<string>();
-
-
-                        // Obtención de la lista de equivalencias.
-                        Dictionary<string, HashSet<string>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
-
-                        //Listados con los objetos encontrados en la BBDD
-                        HashSet<string> idPersonasBBDD = new HashSet<string>();
-                        HashSet<string> idDocumentosBBDD = new HashSet<string>();
-                        HashSet<string> idROsBBDD = new HashSet<string>();
-                        foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
-                        {
-                            if (!Guid.TryParse(item.Key, out var newGuid))
-                            {
-                                string tipo = item.Value.First().Split("|")[0];
-                                if (tipo == DISAMBIGUATION_PERSON)
-                                {
-                                    idPersonasBBDD.Add(item.Key);
-                                }
-                                else if (tipo == DISAMBIGUATION_PUBLICATION)
-                                {
-                                    idDocumentosBBDD.Add(item.Key);
-                                }
-                                else
-                                {
-                                    idROsBBDD.Add(item.Key);
-                                }
-                            }
-                        }
-
-                        //Datos de los objetos encontrados en la BBDD
-                        List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);
-
-                        #region 1º PERSONAS Procesamos las personas, actualizando las que corresponda
-                        Dictionary<Person, HashSet<string>> listaPersonasCargarEquivalencias = new Dictionary<Person, HashSet<string>>();
-                        foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
-                        {
-                            if (Guid.TryParse(item.Key, out var newGuid))
-                            {
-                                // Recurso NO cargado previamente en BBDD.
-                                string tipo = string.Empty;
-                                HashSet<string> listaIds = new HashSet<string>();
-                                foreach (string id in item.Value)
-                                {
-                                    tipo = id.Split("|")[0];
-                                    listaIds.Add(id.Split("|")[1]);
-                                }
-                                string idA = listaIds.FirstOrDefault();
-                                if (tipo == DISAMBIGUATION_PERSON && listaIds.ToList().Any())
-                                {
-                                    //Esta variable sólo se carga en los documentos, no en los ROs
-                                    if (dicIdPersona != null && dicIdPersona.Any())
-                                    {
-                                        UtilityPersona.CrearPersonDesambiguada(idA, listaIds, dicIdPersona, listaPersonasCargarEquivalencias);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Recurso cargado previamente en BBDD. Modificamos datos cuando corresponda
-                                string idRecursoBBDD = item.Key;
-                                string tipo = string.Empty;
-                                HashSet<string> listaIds = new HashSet<string>();
-                                foreach (string id in item.Value)
-                                {
-                                    tipo = id.Split("|")[0];
-                                    listaIds.Add(id.Split("|")[1]);
-                                }
-
-                                if (tipo == DISAMBIGUATION_PERSON && listaIds.ToList().Any())
-                                {
-                                    dicGnossIdPerson.Add(new HashSet<string>(listaIds), idRecursoBBDD);
-
-                                    string orcid = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item2;
-                                    string crisIdentifier = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item3;
-                                    string nombre = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item4;
-                                    string apellidos = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item5;
-                                    string nombreCompleto = datosPersonasBBDD.FirstOrDefault(x => x.Item1 == idRecursoBBDD).Item6;
-
-                                    if (string.IsNullOrEmpty(orcid) && dicIdPersona != null && dicIdPersona.Any())
-                                    {
-                                        InsertarOrcid(idRecursoBBDD, listaIds.ToList(), dicIdPersona);
-                                    }
-                                }
-                            }
-                        }
-
-
-                        // Creación de los ComplexOntologyResources.
-                        List<ComplexOntologyResource> listaPersonasCargar = new List<ComplexOntologyResource>();
-                        mResourceApi.ChangeOntoly("person");
-                        foreach (Person persona in listaPersonasCargarEquivalencias.Keys)
-                        {
-                            ComplexOntologyResource resourcePersona = persona.ToGnossApiResource(mResourceApi, null);
-                            listaPersonasCargar.Add(resourcePersona);
-                            dicGnossIdPerson.Add(listaPersonasCargarEquivalencias[persona], resourcePersona.GnossId);
-                        }
-                        #endregion
-
-                        #region 2º PUBLICACIONES
-                        Dictionary<Document, HashSet<string>> listaDocumentosCargarEquivalencias = new Dictionary<Document, HashSet<string>>();
-                        Dictionary<string, string> listaDocumentosCargados = new Dictionary<string, string>();
-
-                        foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
-                        {
-                            if (Guid.TryParse(item.Key, out var newGuid))
-                            {
-                                // Recurso NO cargado previamente en BBDD.
-                                string tipo = string.Empty;
-                                HashSet<string> listaIds = new HashSet<string>();
-                                foreach (string id in item.Value)
-                                {
-                                    tipo = id.Split("|")[0];
-                                    listaIds.Add(id.Split("|")[1]);
-                                }
-                                string idA = listaIds.FirstOrDefault();
-
-                                if (tipo == DISAMBIGUATION_PUBLICATION && listaIds.Any())
-                                {
-                                    CrearDocumentDesambiguado(idA, listaIds, dicIdDatosPub, listaDocumentosCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                }
-                            }
-                            else
-                            {
-                                // Recurso cargado previamente en BBDD.
-                                string tipo = string.Empty;
-                                HashSet<string> listaIds = new HashSet<string>();
-                                foreach (string id in item.Value)
-                                {
-                                    tipo = id.Split("|")[0];
-                                    listaIds.Add(id.Split("|")[1]);
-                                }
-                                string idA = listaIds.FirstOrDefault();
-
-                                if (tipo == DISAMBIGUATION_PUBLICATION && listaIds.Any())
-                                {
-                                    listaDocumentosCargados.Add(idA, item.Key);
-                                    CrearDocumentDesambiguado(idA, listaIds, dicIdDatosPub, listaDocumentosCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                }
-                            }
-                        }
-                        // Creación del vínculo entre los documentos y las personas (Document apunta a Person).
-                        foreach (KeyValuePair<Document, HashSet<string>> item in listaDocumentosCargarEquivalencias)
-                        {
-                            foreach (string id in item.Value)
-                            {
-                                Publication pubAux = dicIdDatosPub[id];
-                                // Autores.
-                                foreach (BFO_0000023 bfo_0000023 in item.Key.Bibo_authorList)
-                                {
-                                    string idAutor = bfo_0000023.IdRdf_member;
-                                    foreach (KeyValuePair<HashSet<string>, string> item2 in dicGnossIdPerson)
-                                    {
-                                        if (item2.Key.Contains(idAutor))
-                                        {
-                                            bfo_0000023.IdRdf_member = item2.Value;
-                                            break;
-                                        }
-                                    }
-                                    if (Guid.TryParse(bfo_0000023.IdRdf_member, out Guid aux))
-                                    {
-                                        throw new Exception("No existe la persona");
-                                    }
-                                }
-                            }
-                        }
-
-                        //Creación de los ComplexOntologyResources.
-                        List<ComplexOntologyResource> listaDocumentosCargar = new List<ComplexOntologyResource>();
-                        Dictionary<string, Document> listaDocumentosModificar = new Dictionary<string, Document>();
-                        mResourceApi.ChangeOntoly("document");
-                        foreach (Document documento in listaDocumentosCargarEquivalencias.Keys)
-                        {
-                            if (documento.Bibo_authorList.Exists(x => x.IdRdf_member == idPersona))
-                            {
-                                string idBBDD = listaDocumentosCargarEquivalencias[documento].Intersect(listaDocumentosCargados.Keys).FirstOrDefault();
-                                if (string.IsNullOrEmpty(idBBDD))
-                                {
-                                    ComplexOntologyResource resourceDocumento = documento.ToGnossApiResource(mResourceApi, null);
-
-                                    foreach (BFO_0000023 autor in documento.Bibo_authorList)
-                                    {
-                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
-                                        notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                                        notificacion.Roh_entity = resourceDocumento.GnossId;
-                                        notificacion.IdRoh_owner = autor.IdRdf_member;
-                                        notificacion.Dct_issued = DateTime.Now;
-                                        notificacion.Roh_type = "create";
-                                        notificacion.CvnCode = Utility.IdentificadorFECYT(documento.IdRoh_scientificActivityDocument);
-
-                                        notificaciones.Add(notificacion);
-                                    }
-
-
-                                    listaDocumentosCargar.Add(resourceDocumento);
-                                }
-                                else
-                                {
-                                    foreach (BFO_0000023 autor in documento.Bibo_authorList)
-                                    {
-                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
-                                        notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                                        notificacion.Roh_entity = listaDocumentosCargados[idBBDD];
-                                        notificacion.IdRoh_owner = autor.IdRdf_member;
-                                        notificacion.Dct_issued = DateTime.Now;
-                                        notificacion.Roh_type = "edit";
-                                        notificacion.CvnCode = Utility.IdentificadorFECYT(listaDocumentosCargarEquivalencias.Where(x => x.Value.Contains(idBBDD)).FirstOrDefault().Key.IdRoh_scientificActivityDocument);
-
-                                        notificaciones.Add(notificacion);
-                                    }
-
-                                    idBBDD = listaDocumentosCargados[idBBDD];
-                                    listaDocumentosModificar.Add(idBBDD, documento);
-                                }
-                            }
-                        }
-                        #endregion
-
-                        #region 3º RESEARCHOBJECT 
-                        Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> listaROsCargarEquivalencias = new Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>>();
-                        Dictionary<string, string> listaROsCargados = new Dictionary<string, string>();
-
-                        foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
-                        {
-                            if (Guid.TryParse(item.Key, out var newGuid))
-                            {
-                                // Recurso NO cargado previamente en BBDD.
-                                string tipo = string.Empty;
-                                HashSet<string> listaIds = new HashSet<string>();
-                                foreach (string id in item.Value)
-                                {
-                                    tipo = id.Split("|")[0];
-                                    listaIds.Add(id.Split("|")[1]);
-                                }
-                                string idA = listaIds.FirstOrDefault();
-
-                                if (tipo == DISAMBIGUATION_RO && listaIds.ToList().Any())
-                                {
-                                    if (dicIdDatosRoFigshare.Count > 0)
-                                    {
-                                        UtilityFigShare.CrearRoFigshareDesambiguado(idA, listaIds, dicIdDatosRoFigshare, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                    }
-                                    if (dicIdDatosRoGitHub.Count > 0)
-                                    {
-                                        UtilityGitHub.CrearRoGitHubDesambiguado(idA, listaIds, dicIdDatosRoGitHub, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                    }
-                                    if (dicIdDatosRoZenodo.Count > 0)
-                                    {
-                                        UtilityZenodo.CrearRoZenodoDesambiguado(idA, listaIds, dicIdDatosRoZenodo, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Recurso cargado previamente en BBDD.
-                                string tipo = string.Empty;
-                                HashSet<string> listaIds = new HashSet<string>();
-                                foreach (string id in item.Value)
-                                {
-                                    tipo = id.Split("|")[0];
-                                    listaIds.Add(id.Split("|")[1]);
-                                }
-                                string idA = listaIds.FirstOrDefault();
-
-                                if (tipo == DISAMBIGUATION_RO && listaIds.Any())
-                                {
-                                    listaROsCargados.Add(idA, item.Key);
-                                    if (dicIdDatosRoFigshare.Count > 0)
-                                    {
-                                        UtilityFigShare.CrearRoFigshareDesambiguado(idA, listaIds, dicIdDatosRoFigshare, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                    }
-                                    if (dicIdDatosRoGitHub.Count > 0)
-                                    {
-                                        UtilityGitHub.CrearRoGitHubDesambiguado(idA, listaIds, dicIdDatosRoGitHub, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                    }
-                                    if (dicIdDatosRoZenodo.Count > 0)
-                                    {
-                                        UtilityZenodo.CrearRoZenodoDesambiguado(idA, listaIds, dicIdDatosRoZenodo, listaROsCargarEquivalencias, tupla.Item1, tupla.Item2);
-                                    }
-                                }
-                            }
-                        }
-
-                        // Creación del vínculo entre los ros y las personas (Research object apunta a Person).
-                        foreach (KeyValuePair<ResearchobjectOntology.ResearchObject, HashSet<string>> item in listaROsCargarEquivalencias)
-                        {
-                            foreach (string id in item.Value)
-                            {
-                                // Autores.
-                                foreach (ResearchobjectOntology.BFO_0000023 bfo_0000023 in item.Key.Bibo_authorList)
-                                {
-                                    string idAutor = bfo_0000023.IdRdf_member;
-                                    foreach (KeyValuePair<HashSet<string>, string> item2 in dicGnossIdPerson)
-                                    {
-                                        if (item2.Key.Contains(idAutor))
-                                        {
-                                            bfo_0000023.IdRdf_member = item2.Value;
-                                            break;
-                                        }
-                                    }
-                                }
-                                //En los ROs no cargamos las personas que no se reconozcan
-                                item.Key.Bibo_authorList.RemoveAll(x => Guid.TryParse(x.IdRdf_member, out Guid aux));
-                            }
-                        }
-
-                        //Creación de los ComplexOntologyResources.
-                        List<ComplexOntologyResource> listaROsCargar = new List<ComplexOntologyResource>();
-                        Dictionary<string, ResearchobjectOntology.ResearchObject> listaROsModificar = new Dictionary<string, ResearchobjectOntology.ResearchObject>();
-                        mResourceApi.ChangeOntoly("researchobject");
-                        foreach (ResearchobjectOntology.ResearchObject researchobject in listaROsCargarEquivalencias.Keys)
-                        {
-                            if (researchobject.Bibo_authorList.Exists(x => x.IdRdf_member == idPersona))
-                            {
-                                string idBBDD = listaROsCargarEquivalencias[researchobject].Intersect(listaROsCargados.Keys).FirstOrDefault();
-                                if (string.IsNullOrEmpty(idBBDD))
-                                {
-                                    ComplexOntologyResource resourceResearchObject = researchobject.ToGnossApiResource(mResourceApi, null);
-
-                                    foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
-                                    {
-                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
-                                        notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
-                                        notificacion.Roh_entity = resourceResearchObject.GnossId;
-                                        notificacion.IdRoh_owner = autor.IdRdf_member;
-                                        notificacion.Dct_issued = DateTime.Now;
-                                        notificacion.Roh_type = "create";
-                                        notificacion.CvnCode = "";
-
-                                        notificaciones.Add(notificacion);
-                                    }
-
-                                    listaROsCargar.Add(resourceResearchObject);
-                                }
-                                else
-                                {
-                                    foreach (ResearchobjectOntology.BFO_0000023 autor in researchobject.Bibo_authorList)
-                                    {
-                                        NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
-                                        notificacion.IdRoh_trigger = null;
-                                        notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
-                                        notificacion.Roh_entity = listaROsCargados[idBBDD];
-                                        notificacion.IdRoh_owner = autor.IdRdf_member;
-                                        notificacion.Dct_issued = DateTime.Now;
-                                        notificacion.Roh_type = "edit";
-                                        notificacion.CvnCode = "";
-
-                                        notificaciones.Add(notificacion);
-                                    }
-
-                                    idBBDD = listaROsCargados[idBBDD];
-                                    listaROsModificar.Add(idBBDD, researchobject);
-                                }
-                            }
-                        }
-
-                        #endregion
-
-                        // ------------------------------ CARGA
-                        idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
-                        idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
-                        idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
-
-                        idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
-                        idsResearchObjectsActualizar.UnionWith(listaROsModificar.Keys);
-
-                        //Modificación
-                        Parallel.ForEach(listaDocumentosModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
-                        {
-                            string[] idSplit = recursoModificar.Key.Split('_');
-                            Document doc = listaDocumentosModificar[recursoModificar.Key];
-                            ModificarDocumento(doc, recursoModificar.Key);
-                            ComplexOntologyResource complexOntologyResource = doc.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-
-                            int numIntentos = 0;
-                            while (!complexOntologyResource.Modified)
-                            {
-                                numIntentos++;
-
-                                if (numIntentos > MAX_INTENTOS)
-                                {
-                                    break;
-                                }
-                                if (listaDocumentosModificar.Last().Key == recursoModificar.Key)
-                                {
-                                    mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
-                                }
-                                else
-                                {
-                                    mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
-                                }
-                            }
-                        });
-
-                        //Modificación
-                        Parallel.ForEach(listaROsModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
-                        {
-                            string[] idSplit = recursoModificar.Key.Split('_');
-                            ResearchobjectOntology.ResearchObject ro = listaROsModificar[recursoModificar.Key];
-                            ModificarRO(ro, recursoModificar.Key);
-                            ComplexOntologyResource complexOntologyResource = ro.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-
-                            int numIntentos = 0;
-                            while (!complexOntologyResource.Modified)
-                            {
-                                numIntentos++;
-
-                                if (numIntentos > MAX_INTENTOS)
-                                {
-                                    break;
-                                }
-                                if (listaROsModificar.Last().Key == recursoModificar.Key)
-                                {
-                                    mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
-                                }
-                                else
-                                {
-                                    mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
-                                }
-                            }
-                        });
-
-                        //Insertamos en la cola del desnormalizador
-                        RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
-                        if (idsPersonasActualizar.Count > 0)
-                        {
-                            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, idsPersonasActualizar));
-                        }
-                        if (idsDocumentosActualizar.Count > 0)
-                        {
-                            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, idsDocumentosActualizar));
-                        }
-                        if (idsResearchObjectsActualizar.Count > 0)
-                        {
-                            rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
-                        }
-
-
-                        //Cargamos las notificaciones
-                        List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
-                        mResourceApi.ChangeOntoly("notification");
-                        Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, notificacion =>
-                        {
-                            ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
-                            int numIntentos = 0;
-                            while (!recursoCargar.Uploaded)
-                            {
-                                numIntentos++;
-
-                                if (numIntentos > 5)
-                                {
-                                    break;
-                                }
-                                mResourceApi.LoadComplexSemanticResource(recursoCargar);
-                            }
-                        });
+                        FileLogger.Log($@"ERROR - {ex.Message}");
+                        continue;
                     }
-
-                    // Hace una copia del fichero y elimina el original.
-                    CrearZip(pRutaEscritura, fichero.Name, jsonString);
-                    File.Delete(fichero.FullName);
                 }
-
-
-
+                FileLogger.Log($@"{DateTime.Now} - Sleep (1min) ...");
+                Thread.Sleep(60000);
             }
         }
 
@@ -1471,11 +1497,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
             // PDF
             if (!string.IsNullOrEmpty(pPublicacion.pdf))
-            {                
+            {
                 document.Roh_hasFile = pPublicacion.pdf;
 
                 if (pPublicacionB != null && !string.IsNullOrEmpty(pPublicacionB.pdf) && string.IsNullOrEmpty(document.Roh_hasFile))
-                {                    
+                {
                     document.Roh_hasFile = pPublicacionB.pdf;
                 }
             }
