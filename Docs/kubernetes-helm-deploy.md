@@ -11,7 +11,7 @@
 
 # Despliegue de Hércules ED con Kubernetes y Helm
 
-La arquitectura de componentes de Hércules ED se puede consultar en [Arquitectura de Hércules ED](https://confluence.um.es/confluence/pages/viewpage.action?pageId=420085932)
+La arquitectura de componentes se puede consultar en [Arquitectura de Hércules ED](https://confluence.um.es/confluence/pages/viewpage.action?pageId=420085932)
 
 A continuación se describen los pasos para desplegar Hercules ED en un cluster de Kubernetes: 
 
