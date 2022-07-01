@@ -354,7 +354,7 @@ namespace EditorCV.Models
 
                         tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
                         tabSectionItem.properties = new List<TabSectionItemProperty>();
-                        
+
                         tabSectionItem.iseditable = !itemEditSection.blocked;
 
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
@@ -416,8 +416,17 @@ namespace EditorCV.Models
             List<string> valor = new List<string>();
             string graph = "";
 
+
+
             //Título
             PropertyDataTemplate configTitulo = tabSectionListItem.propertyTitle;
+
+            //Titulo Tutorias academicas
+            if (subseccionItem.propiedades.Where(x => x.prop.Equals("http://w3id.org/roh/cvnCode")).Select(x => x.values).Any() &&
+               subseccionItem.propiedades.Where(x => x.prop.Equals("http://w3id.org/roh/cvnCode")).Select(x => x.values).First().First().Equals("030.050.000.000"))
+            {
+                configTitulo.property = "http://w3id.org/roh/frequency";
+            }
 
             string propCompleteTitle = UtilityCV.GetPropComplete(configTitulo);
             sectionItem.title = subseccionItem.propiedades.FirstOrDefault(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?.values.FirstOrDefault();
@@ -430,20 +439,23 @@ namespace EditorCV.Models
                     valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle).Split("@@@").First())?
                         .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
                 }
-                graph = tabSectionListItem.propertyTitle.child.graph;
+                if (tabSectionListItem.propertyTitle.child != null)
+                {
+                    graph = tabSectionListItem.propertyTitle.child.graph;
 
-                string select = "select distinct ?w";
-                string where = $@"where{{
+                    string select = "select distinct ?w";
+                    string where = $@"where{{
     <{valor.First()}> <{propCompleteTitle.Split("@@@").Last()}> ?w .
     FILTER( lang(?w) = '{lang}' OR lang(?w) = '')
 }}";
-                SparqlObject sparqlObjectTitle = mResourceApi.VirtuosoQuery(select, where, graph);
+                    SparqlObject sparqlObjectTitle = mResourceApi.VirtuosoQuery(select, where, graph);
 
-                if (sparqlObjectTitle.results.bindings.Count != 0)
-                {
-                    foreach (Dictionary<string, Data> fila in sparqlObjectTitle.results.bindings)
+                    if (sparqlObjectTitle.results.bindings.Count != 0)
                     {
-                        sectionItem.title = fila["w"].value;
+                        foreach (Dictionary<string, Data> fila in sparqlObjectTitle.results.bindings)
+                        {
+                            sectionItem.title = fila["w"].value;
+                        }
                     }
                 }
             }

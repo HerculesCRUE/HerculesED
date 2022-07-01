@@ -293,7 +293,22 @@ var metricas = {
                         chart.ctx.restore();
                     }
                 };
+
                 data.plugins = [plugin];
+                
+                data.options.plugins["legend"] = { //TODO test
+                    onHover: (e) => {
+
+                        e.chart.canvas.style.cursor = 'pointer';
+
+                    },
+                    onLeave: (e) => {
+        
+                        e.chart.canvas.style.cursor = 'default';
+             
+                    }
+                };
+
 
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
                     that.drawChart(ctx, data, pIdGrafica, barSize, titulo);
@@ -319,6 +334,16 @@ var metricas = {
                     if (data.data.datasets.length > 1) {
                         var dataBack = {};
                         data.options.plugins['legend'] = {
+                            onHover: (e) => {
+
+                                e.chart.canvas.style.cursor = 'pointer';
+        
+                            },
+                            onLeave: (e) => {
+                
+                                e.chart.canvas.style.cursor = 'default';
+                     
+                            },
                             color: '#FFFFFF',
                             labels: {
                                 generateLabels(chart) {
@@ -327,7 +352,6 @@ var metricas = {
                                         return data.labels.map(function (label, i) {
                                             var meta = chart.getDatasetMeta(1);
                                             var style = meta.controller.getStyle(i);
-                                            console.log(data.datasets[0]);
                                             if (!dataBack[i]) {
                                                 var grupo = data.datasets[0].grupos[i];
                                                 dataBack[i] = {
@@ -757,17 +781,17 @@ var metricas = {
             //remove _filter 
 
             listaData.forEach(function (item, index, array) {
-                console.log(item);
                 if (item.filtro) {
                     item.filtro = item.filtro.replace('_filter', '');
                 }
             });
-            console.log(listaData);
 
             if (listaData.length == 0) {
-                /*if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                if ($('div.row-content').find('div.sin-graficas').length == 0) {
                     $('div.row-content').append(`<div class="sin-graficas"><h1>Aún no hay gráficas en esta página</h1></div>`); //TODO Cambiar
-                } metricas.engancharComportamientos();*/
+                } metricas.engancharComportamientos();
+            } else {
+                $('div.row-content').find('div.sin-graficas').remove();
             }
             var tmp = [];
             var id = "";
@@ -2530,6 +2554,12 @@ var metricas = {
             comportamientoFacetasPopUp.cargarFaceta($(this).closest('.box').attr('idfaceta'));
             that.engancharComportamientos();
         });
+
+
+
+        //Cambia el cursor a pointer cuando se pasa por encima de la leyenda
+
+
     }
 }
 
@@ -2537,7 +2567,6 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
     var that = this;
     var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
     var arg = {};
-
     arg.pIdPagina = idPaginaActual;
     arg.pIdFaceta = pIdFaceta;
     arg.pFiltroFacetas = ObtenerHash2();
