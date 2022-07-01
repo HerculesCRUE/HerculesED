@@ -430,22 +430,23 @@ namespace EditorCV.Models
                     valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle).Split("@@@").First())?
                         .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
                 }
-                graph = tabSectionListItem.propertyTitle.child.graph;
+                if (tabSectionListItem.propertyTitle.child !=null) {
+                    graph = tabSectionListItem.propertyTitle.child.graph;
 
-                string select = "select distinct ?w";
-                string where = $@"where{{
+                    string select = "select distinct ?w";
+                    string where = $@"where{{
     <{valor.First()}> <{propCompleteTitle.Split("@@@").Last()}> ?w .
     FILTER( lang(?w) = '{lang}' OR lang(?w) = '')
 }}";
-                SparqlObject sparqlObjectTitle = mResourceApi.VirtuosoQuery(select, where, graph);
+                    SparqlObject sparqlObjectTitle = mResourceApi.VirtuosoQuery(select, where, graph);
 
-                if (sparqlObjectTitle.results.bindings.Count != 0)
-                {
-                    foreach (Dictionary<string, Data> fila in sparqlObjectTitle.results.bindings)
+                    if (sparqlObjectTitle.results.bindings.Count != 0)
                     {
-                        sectionItem.title = fila["w"].value;
-                    }
-                }
+                        foreach (Dictionary<string, Data> fila in sparqlObjectTitle.results.bindings)
+                        {
+                            sectionItem.title = fila["w"].value;
+                        }
+                    } }
             }
             sectionItem.properties = new List<TabSectionItemProperty>();
             sectionItem.iseditable = !subseccionItem.isBlocked;
