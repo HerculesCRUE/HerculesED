@@ -14,6 +14,7 @@ var idGraficaActual = "";
 var tituloActual;
 var tamanioActual;
 var ordenActual;
+var escalaActual;
 var TAMANIO_GRAFICA_MIN = 318;
 
 var numPagina = 0;
@@ -1764,6 +1765,9 @@ var metricas = {
                 $("#labelTituloGrafica").val("");
                 $("#idSelectorOrden").empty();
                 $("#idSelectorTamanyo").val("11").change();
+                $("#labelEscalaGrafica").val("");
+                $("#labelEscalaSecundariaGrafica").val("");
+
                 idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idrecurso");
                 // Leer gráficas de esta página
                 var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
@@ -1777,6 +1781,7 @@ var metricas = {
                             tituloActual = data.titulo;
                             tamanioActual = data.anchura;
                             ordenActual = data.orden;
+                            escalaActual = data.escala;
                         }
                         $('#idSelectorOrden').append(`
                             <option value="${orden}">${orden}</option>    
@@ -1787,6 +1792,19 @@ var metricas = {
                     $("#labelTituloGrafica").val(tituloActual);
                     $("#idSelectorTamanyo").val(tamanioActual).change();
                     $("#idSelectorOrden").val(ordenActual).change();
+                    if (!escalaActual) {
+                        $("#escalaPrimaria").hide();
+                        $("#escalaSecundaria").hide();
+                    } else if (escalaActual.includes(',')) {
+                        $("#escalaPrimaria").show();
+                        $("#escalaSecundaria").show();
+                        $("#labelEscalaGrafica").val(escalaActual.split(',')[0]);
+                        $("#labelEscalaSecundariaGrafica").val(escalaActual.split(',')[1]);
+                    } else {
+                        $("#escalaPrimaria").show();
+                        $("#escalaSecundaria").hide();
+                        $("#labelEscalaGrafica").val(escalaActual);
+                    }
                 });
             });
         $('div.edit-page')
