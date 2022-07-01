@@ -93,14 +93,6 @@ namespace DesnormalizadorHercules
                 Temporal.EliminarEntidadesCV();
             }
 
-            //TODO insertarDocumentsSimilarity
-            bool insertarDocumentsSimilarity = false;
-            if (insertarDocumentsSimilarity)
-            {
-                Temporal.InsertarDocumentsSimilarity();
-                Temporal.InsertarROsSimilarity();
-            }
-
 
             //TODO eliminar
             bool DesnormalizarTodo = false;
@@ -108,7 +100,7 @@ namespace DesnormalizadorHercules
             {
                 while (true)
                 {
-                    ActualizadorEDMA.DesnormalizarTodo();
+                    ActualizadorEDMA.DesnormalizarTodo(_configService);
                     Thread.Sleep(5000);
                 }
             }
@@ -190,7 +182,7 @@ namespace DesnormalizadorHercules
                         if (time.HasValue)
                         {
                             Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
-                            ActualizadorEDMA.DesnormalizarTodo();
+                            ActualizadorEDMA.DesnormalizarTodo(_configService);
                         }
                     }
                     catch (Exception ex)
