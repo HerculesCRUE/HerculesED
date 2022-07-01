@@ -107,11 +107,14 @@ namespace DesnormalizadorHercules.Models
             actualizadorGrupos.ActualizarAreasGrupos();
             actualizadorGrupos.ActualizarNumeroProyectos();
 
-            UtilsSimilarity utilsSimilarityDocument = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "research_paper");
-            utilsSimilarityDocument.SincroComplete();
+            if (!string.IsNullOrEmpty(pConfigService.GetUrlSimilarity()))
+            {
+                UtilsSimilarity utilsSimilarityDocument = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "research_paper");
+                utilsSimilarityDocument.SincroComplete();
 
-            UtilsSimilarity utilsSimilarityRos = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "code_project");
-            utilsSimilarityRos.SincroComplete();
+                UtilsSimilarity utilsSimilarityRos = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "code_project");
+                utilsSimilarityRos.SincroComplete();
+            }
         }
 
         /// <summary>
