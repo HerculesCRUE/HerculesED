@@ -371,7 +371,7 @@ var metricas = {
                                                 grupos: data.datasets[0].grupos,
                                                 data: dataBack[i]
                                             };
-                                        });
+                                        }).reverse();
                                     }
                                     return [];
                                 }
@@ -753,10 +753,20 @@ var metricas = {
         arg.pPageId = pPaginaUsuario.idRecurso;
         // Petición para obtener los datos de la página.
         $.get(url, arg, function (listaData) {
+            //remove _filter 
+
+            listaData.forEach(function (item, index, array) {
+                console.log(item);
+                if (item.filtro) {
+                    item.filtro = item.filtro.replace('_filter', '');
+                }
+            });
+            console.log(listaData);
+
             if (listaData.length == 0) {
-                if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                /*if ($('div.row-content').find('div.sin-graficas').length == 0) {
                     $('div.row-content').append(`<div class="sin-graficas"><h1>Aún no hay gráficas en esta página</h1></div>`); //TODO Cambiar
-                } metricas.engancharComportamientos();
+                } metricas.engancharComportamientos();*/
             }
             var tmp = [];
             var id = "";
@@ -1360,7 +1370,7 @@ var metricas = {
         // Preparamos el eje inferior o derecho.
         if (secondaryAxis) {
             copyWidth = myChart.boxes[2]?.width; //anchura del eje
-            1
+
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
                 var padding = -1 * (myChart.boxes[2].width - myChart.boxes[2].left - myChart.boxes[2].right);
@@ -1372,7 +1382,9 @@ var metricas = {
 
             } else {
                 ctx.canvas.height = copyHeight;
+                copyWidth += 12;
                 targetX = (myChart.width - copyWidth) * scale;
+
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
                 axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
@@ -2027,7 +2039,13 @@ var metricas = {
 
                 // Petición para obtener los datos de la página.
                 $.get(url, arg, function (data) {
-                    mostrarNotificacion("success", "Grafica guardada correctamente"); //TODO - asegurarse que se guarda, por que si falla sigue saliendo este mensaje
+
+                    mostrarNotificacion("success", "Grafica guardada correctamente"); //TODO - asegurarse que se guarda, por que si falla sigue saliendo este mensaje (Backend)
+
+                }).fail(function (data) {
+                    console.log(data);
+                    mostrarNotificacion("error", "Error al guardar la grafica");
+                }).always(function () {
                     cerrarModal();
                 });
             });
@@ -2080,7 +2098,7 @@ var metricas = {
 
 
                 // y la ocultamos
-                shown.css('opacity', '0'); // display none causa problemas con redrawChart por que intenta modifica un elemento sin altura
+                shown.css('opacity', '0'); // display none csa problemas con redrawChart por que intenta modifica un elemento sin altura
                 shown.css('position', 'absolute');
                 // Muevo el div fuera de la página para que no cree espacios en blanco
                 shown.css('left', '-9999px');
@@ -2116,7 +2134,7 @@ var metricas = {
                     }
                 }
                 shown = parent.find('div.grafica.show');
-                if (shown.find(".chartAreaWrapper").hasClass("collapsed")) {
+                if (shown.find(".chartScroll").hasClass("collapsed")) {
                     parent.find(".expand span").text("open_in_full");
                     parent.find(".expand").addClass("collapsed");
                 } else {
@@ -2124,13 +2142,7 @@ var metricas = {
                     parent.find(".expand").removeClass("collapsed");
 
                 }
-                /* TODO testear sin esto
-                var canvas = parent.find('canvas#' + $(this).attr("value"));
-                if (canvas.length) {
-                    var chart = Chart.getChart(canvas[0]);
-                    // ejecutamos el redraw para reescalar la grafica en caso que sea necesario.
-                    chart.config._config.options.animation.onProgress(); 
-                }*/
+
             });
 
 
