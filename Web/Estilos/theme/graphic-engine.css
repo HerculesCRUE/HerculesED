@@ -49,6 +49,7 @@
      justify-content: center;
      margin: 5px;
      height: 15px;
+     cursor: pointer;
  }
 
  .dataSetLabels .labelContainer div {
@@ -56,6 +57,7 @@
      width: 45px;
      border: 1px solid lightgrey;
      box-sizing: border-box;
+    
  }
 
  .dataSetLabels .labelContainer .dataSetLabel {
@@ -172,8 +174,9 @@
  div.acciones-mapa.showAcciones select {
      height: 24px;
  }
+
  body.listado div.acciones-mapa div.wrap {
-    padding-bottom: 0px;
+     padding-bottom: 0px;
 
  }
 
@@ -382,6 +385,7 @@
      height: 10px;
      width: 10px;
  }
-.chartScroll.collapsed{
-    overflow: auto !important;
-}
+
+ .chartScroll.collapsed {
+     overflow: auto !important;
+ }
