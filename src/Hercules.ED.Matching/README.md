@@ -2,8 +2,8 @@
 
 | Fecha         | 28/6/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
-|Título|Servicio matching de etiquetas| 
-|Descripción|Servicio encargado de hacer el matching de las etiquetas de las publicaciones.|
+|Título|Servicio matching de descriptores específicos| 
+|Descripción|Servicio encargado de hacer el matching de los descriptores específicos de las publicaciones|
 |Versión|1.0|
 |Módulo|Documentación|
 |Tipo|Especificación|
@@ -11,7 +11,9 @@
 
 Introducción
 ============
-El servicio de matching se ocupa de matchear las etiquetas de las publicaciones con términos de MESH y SNOMED para ofrecer más información. En Hércules ED esta función va a ser offline, es decir, se mandará a ejecutar e irá trabajando por detrás. Obtendrá todas las publicaciones de BBDD en las que no se haya hecho el matching e irá consultando a MESH y SNOMED para la recuperación de información. Una vez obtenidos los datos, se mostrarán en las fichas de Hércules MA.
+El servicio de matching se ocupa de matchear los descriptores específicos de las publicaciones con términos de MESH y SNOMED para ofrecer más información. En Hércules ED esta función va a ser offline, es decir, se mandará a ejecutar e irá trabajando por detrás. Obtendrá todas las publicaciones de BBDD en las que no se haya hecho el matching e irá consultando a MESH y SNOMED para la recuperación de información. Una vez obtenidos los datos, se mostrarán en las fichas de Hércules MA.
+
+El análisis funcional del proceso de matching (enlazado) se puede consultar en [Flujo e interfaces del enriquecimiento. Descriptores y Matching](https://confluence.um.es/confluence/display/HERCULES/Flujo+e+interfaces+del+enriquecimiento.+Descriptores+y+Matching#Flujoeinterfacesdelenriquecimiento.DescriptoresyMatching-Matching).
 
 MESH - Búsqueda por "Exact Match"
 ============================

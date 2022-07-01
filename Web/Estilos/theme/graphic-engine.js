@@ -301,16 +301,134 @@ var metricas = {
                         data.options.responsive = true;
                         data.options.maintainAspectRatio = false;
                     }
-
                     if (pIdGrafica != null && pIdGrafica.includes("prc")) { //prefijo que indica porcentaje
                         data.options.plugins.tooltip = {
                             callbacks: {
+
                                 afterLabel: function (context) {
                                     let label = "Porcentaje: ";
                                     let sum = context.dataset.data.reduce((a, b) => a + b, 0);
                                     let porcentaje = context.dataset.data[context.dataIndex] * 100 / sum;
                                     label += porcentaje.toFixed(2) + '%';
                                     return label;
+                                }
+                            }
+                        }
+                    }
+                    if (data.data.datasets.length > 1) {
+                        var dataBack = {};
+                        data.options.plugins['legend'] = {
+                            color: '#FFFFFF',
+                            labels: {
+                                generateLabels(chart) {
+                                    const data = chart.data;
+                                    if (data.labels.length && data.datasets.length) {
+                                        return data.labels.map(function (label, i) {
+                                            var meta = chart.getDatasetMeta(1);
+                                            var style = meta.controller.getStyle(i);
+                                            console.log(data.datasets[0]);
+                                            if (!dataBack[i]) {
+                                                var grupo = data.datasets[0].grupos[i];
+                                                dataBack[i] = {
+                                                    "inner": data.datasets[1].data[i],
+                                                    "outer": {}
+                                                    /* 0: data.datasets[0].data[i * 2],
+                                                     1: data.datasets[0].grupos[i * 2 + 1] == grupo ? data.datasets[0].data[i * 2 + 1] : 0,*/
+
+                                                };
+
+                                                var itemsGrupo = 0;
+                                                var grupoStart = -1;
+                                                var indexTmp = 0;
+                                                var grupoTmp = 0;
+                                                for (var j = 0; j < data.datasets[0].grupos.length; j++) {
+                                                    if (data.datasets[0].grupos[j] != grupoTmp) {
+                                                        grupoTmp = data.datasets[0].grupos[j];
+                                                        indexTmp++;
+                                                    }
+                                                    if (indexTmp == i) {
+                                                        if (grupoStart == -1) {
+                                                            grupoStart = j;
+                                                        }
+                                                        itemsGrupo++;
+                                                    }
+                                                }
+                                                for (var j = 0; j < itemsGrupo; j++) {
+                                                    //dataBack[i]["outer"][j] = data.datasets[0].data[j]; CANNOT SET PROPRETIES OF UNDEFINED
+                                                    dataBack[i].outer[j] = data.datasets[0].data[grupoStart + j];
+
+                                                }
+                                            }
+
+                                            return {
+                                                text: label,
+                                                fillStyle: style.backgroundColor,
+                                                strokeStyle: style.borderColor,
+                                                lineWidth: style.borderWidth,
+                                                hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+
+                                                index: i,
+                                                grupos: data.datasets[0].grupos,
+                                                data: dataBack[i]
+                                            };
+                                        }).reverse();
+                                    }
+                                    return [];
+                                }
+                            },
+                            onClick: function (e, legendItem) {
+                                const toggleMeta = (meta, index, numGrupo) => {
+                                    if (meta.data[index]) {
+
+                                        if (meta.data[index].hidden) {
+                                            meta.data[index].hidden = false;
+                                            //this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 : index] : legendItem.data.inner;
+                                            this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= numGrupo ? index % numGrupo : index] : legendItem.data.inner;
+                                        }
+                                        else {
+                                            meta.data[index].hidden = true;
+                                            this.chart.data.datasets[meta.index].data[index] = 0;
+                                        }
+
+                                    }
+                                }
+                                const innerMeta = this.chart.getDatasetMeta(1);
+                                toggleMeta(innerMeta, legendItem.index);
+
+                                //TOOD implementar grupo
+                                const outerMeta = this.chart.getDatasetMeta(0);
+                                var numItemsGrupo = 0;
+                                var grupoStart = -1;
+                                var indexTmp = 0;
+                                var grupoTmp = 0;
+                                for (var j = 0; j < legendItem.grupos.length; j++) {
+                                    if (grupoTmp != legendItem.grupos[j]) {
+                                        grupoTmp = legendItem.grupos[j];
+                                        indexTmp++;
+                                    }
+
+                                    if (indexTmp == legendItem.index) {
+                                        if (grupoStart == -1) {
+                                            grupoStart = j;
+                                        }
+                                        numItemsGrupo++;
+                                    }
+                                }
+                                for (var j = 0; j < numItemsGrupo; j++) {
+                                    toggleMeta(outerMeta, grupoStart + j, numItemsGrupo);
+                                }
+
+
+
+                                this.chart.update();
+                            }
+                        };
+                        data.options.plugins.tooltip = {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label.split('|')[context.dataIndex] + ": ";
+                                    let valor = context.dataset.data[context.dataIndex];
+                                    return label + valor;
                                 }
                             }
                         }
@@ -635,10 +753,20 @@ var metricas = {
         arg.pPageId = pPaginaUsuario.idRecurso;
         // Petición para obtener los datos de la página.
         $.get(url, arg, function (listaData) {
+            //remove _filter 
+
+            listaData.forEach(function (item, index, array) {
+                console.log(item);
+                if (item.filtro) {
+                    item.filtro = item.filtro.replace('_filter', '');
+                }
+            });
+            console.log(listaData);
+
             if (listaData.length == 0) {
-                if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                /*if ($('div.row-content').find('div.sin-graficas').length == 0) {
                     $('div.row-content').append(`<div class="sin-graficas"><h1>Aún no hay gráficas en esta página</h1></div>`); //TODO Cambiar
-                } metricas.engancharComportamientos();
+                } metricas.engancharComportamientos();*/
             }
             var tmp = [];
             var id = "";
@@ -801,7 +929,7 @@ var metricas = {
             }
             if (filtro.split('=')[1].includes('@')) {
                 nombre = filtro.split('=')[1].split('@')[0].replaceAll("'", "");
-                
+
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
                 <li class="Categoria" filtro="${filtro}">
@@ -1242,19 +1370,21 @@ var metricas = {
         // Preparamos el eje inferior o derecho.
         if (secondaryAxis) {
             copyWidth = myChart.boxes[2]?.width; //anchura del eje
-1
+
             ctx = secondaryAxis[0].getContext('2d');
             if (horizontal) {
-                var padding = -1*(myChart.boxes[2].width-myChart.boxes[2].left-myChart.boxes[2].right);
+                var padding = -1 * (myChart.boxes[2].width - myChart.boxes[2].left - myChart.boxes[2].right);
                 ctx.canvas.height = axisHeight;
                 targetY = myChart.chartArea.bottom * scale;
                 ctx.canvas.style.paddingLeft = myChart.chartArea.left - 5 + "px";
-                copyWidth += padding-1;
-                targetX = (myChart.chartArea.left - 5 )* scale ;
+                copyWidth += padding - 1;
+                targetX = (myChart.chartArea.left - 5) * scale;
 
             } else {
                 ctx.canvas.height = copyHeight;
+                copyWidth += 12;
                 targetX = (myChart.width - copyWidth) * scale;
+
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
                 axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
@@ -1556,7 +1686,6 @@ var metricas = {
                 try { // Hay problemas con el gráfico de líneas + grafico de barras stackeado, si falla se repinta el chart.
                     chart.update();
                 } catch (e) {
-                    console.log(e);
                     chart.draw();
                 }
             });
@@ -1588,7 +1717,7 @@ var metricas = {
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     url += "?pIdPagina=" + $(this).closest('div.row.containerPage.pageMetrics').attr('id').substring(5);
                     url += "&pIdGrafica=" + $(this).parents('div.wrap').find('div.grafica.show').attr('idgrafica');
-                    url += "&pFiltroFacetas=" + decodeURIComponent(ObtenerHash2());
+                    url += "&pFiltroFacetas=" + encodeURIComponent(ObtenerHash2());
                     url += "&pLang=" + lang;
                     var urlAux = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
                     var argAux = {};
@@ -1910,7 +2039,13 @@ var metricas = {
 
                 // Petición para obtener los datos de la página.
                 $.get(url, arg, function (data) {
-                    mostrarNotificacion("success", "Grafica guardada correctamente"); //TODO - asegurarse que se guarda, por que si falla sigue saliendo este mensaje
+
+                    mostrarNotificacion("success", "Grafica guardada correctamente"); //TODO - asegurarse que se guarda, por que si falla sigue saliendo este mensaje (Backend)
+
+                }).fail(function (data) {
+                    console.log(data);
+                    mostrarNotificacion("error", "Error al guardar la grafica");
+                }).always(function () {
                     cerrarModal();
                 });
             });
@@ -1963,7 +2098,7 @@ var metricas = {
 
 
                 // y la ocultamos
-                shown.css('opacity', '0'); // display none causa problemas con redrawChart por que intenta modifica un elemento sin altura
+                shown.css('opacity', '0'); // display none csa problemas con redrawChart por que intenta modifica un elemento sin altura
                 shown.css('position', 'absolute');
                 // Muevo el div fuera de la página para que no cree espacios en blanco
                 shown.css('left', '-9999px');
@@ -1985,7 +2120,7 @@ var metricas = {
                     selected.css('left', '0px');
                     selected.css('top', '0px');
                     selected.css('z-index', '1');
-                    
+
                     selected.removeClass('hide');
                     selected.addClass('show');
 
@@ -1999,7 +2134,7 @@ var metricas = {
                     }
                 }
                 shown = parent.find('div.grafica.show');
-                if (shown.find(".chartAreaWrapper").hasClass("collapsed")) {
+                if (shown.find(".chartScroll").hasClass("collapsed")) {
                     parent.find(".expand span").text("open_in_full");
                     parent.find(".expand").addClass("collapsed");
                 } else {
@@ -2007,13 +2142,7 @@ var metricas = {
                     parent.find(".expand").removeClass("collapsed");
 
                 }
-                /* TODO testear sin esto
-                var canvas = parent.find('canvas#' + $(this).attr("value"));
-                if (canvas.length) {
-                    var chart = Chart.getChart(canvas[0]);
-                    // ejecutamos el redraw para reescalar la grafica en caso que sea necesario.
-                    chart.config._config.options.animation.onProgress(); 
-                }*/
+
             });
 
 
@@ -2037,15 +2166,15 @@ var metricas = {
                         idPagina = parent.find("div.grafica").attr("idPagina");
                         idGraficaActual = idGrafica;
                         idPaginaActual = idPagina;
-                     
-                    }else{
+
+                    } else {
                         idPagina = idPaginaActual;
                         idGrafica = idGraficaActual;
                     }
                 }
 
-           
-              
+
+
 
                 //plugin para que el color de fondo sea blanco.
                 var plugin = {
@@ -2120,7 +2249,7 @@ var metricas = {
                                     tituloActual = data.titulo;
                                 }
                             });
-    
+
                             that.getGrafica(idPagina, idGrafica, filtro, canvas[0], 50, null, tituloActual)
                         });
                     }
@@ -2313,16 +2442,14 @@ var metricas = {
                     idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idrecurso");
                     var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
                     var arg = {};
+                    idPaginaActual = $('a.nav-link.active').parent().attr("id");
                     arg.pPageId = idPaginaActual;
-                    idPaginaActual = $(this).closest('article').find("div.show.grafica").attr("idpagina");
-                    idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idgrafica");
                     $.get(url, arg, function (listaData) {
                         listaData.forEach(data => {
                             if (data.idRecurso == idGraficaActual) {
                                 tituloActual = data.titulo;
                             }
                         });
-
                         that.getGrafica(idPagina, pIdGrafica, filtro, ctx[0], 50, null, tituloActual)
                     });
                 }

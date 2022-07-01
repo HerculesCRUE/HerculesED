@@ -1,14 +1,14 @@
 
 ![](../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 18/6/2022                                                   |
+| Fecha         | 29/6/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
 |Título|Librería de conexión con repositorios externos| 
 |Descripción|Servicios de conexión con fuentes externas de información, para publicaciones y otros ROs|
 |Versión|1.1|
 |Módulo|Documentación|
 |Tipo|Especificación|
-|Cambios de la Versión|Uso de OpenAire|
+|Cambios de la Versión|Modificada documentación|
 
 # Hércules ED. Librería de conexión con repositorios externos
 
@@ -26,11 +26,11 @@ Todos los servicios principales encargados de obtener datos de fuentes primarias
 
 [OpenAire](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.OpenAireConnect): Servicio encargado de preguntar al API de OpenAire por los datos de un investigador. 
 
-[SemanticScholar](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.SemanticScholar): Servicio encargado de preguntar al API de SemanticScholar. Únicamente se recuperará URL de relevancia y las referencias de la publicación.
+[SemanticScholar](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.SemanticScholar): Servicio encargado de preguntar al API de SemanticScholar. Únicamente se recuperará las referencias de la publicación.
 
-[Zenodo](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.Zenodo): Servicio encargado de preguntar al API de Zenodo. Únicamente se recuperará la url del pdf de la publicación en el caso que tenga.
+[Zenodo](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.Zenodo): Servicio encargado de preguntar al API de Zenodo. Únicamente se recuperará la url del pdf de la publicación.
 
-Los microservicios de Scopus, WoS, CrossRef, OpenAire, OpenCitations, Semantic Scholar y Zenodo tienen un funcionamiento similar:  
+Los microservicios de Scopus, WoS, OpenAire, SemanticScholar y Zenodo tienen un funcionamiento similar:  
 - Desde la interfaz swagger de cada microservidor, se ejecuta el archivo APIcontroller del microservicio asociado. Dependiendo de la petición que realicemos en ese programa se ejecutara una función u otra de este programa. 
 - Esta función (petición) llamara al programa RO**servidor_name**Logic, que realizara la petición al microservicio. 
 - El texto devuelto será convertido a un objeto de C#, para ello el modelo devuelto por cada fuente externa se almacenará en el archivo  ROs/**servicor_name**/Models/ModeloInicial
@@ -58,10 +58,10 @@ Con esta función se combinan todos los metadatos de las publicaciones recibidas
 ## Función principal.
 
 - Primeramente, el investigador ofrece su ORCID y una fecha a partir de la cual quiere obtener sus ROs.  
-- Se llamará a los servicios de WoS, Scopus y OpenAire  para obtener la información de las publicaciones principales de este autor. 
+- Se llamará a los servicios de WoS, Scopus y OpenAire para obtener la información de las publicaciones principales de este autor. 
 - Se recorre cada una de las publicaciones obtenidas en WoS. Por cada una de ellas: 
     - Se almacena el DOI en una lista para saber qué artículos ya hemos completado del investigador en cuestión. 
-    - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional. 
+    - Se llama al servicio de SemanticScholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional. 
     - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato.
     - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
     - Se recorren todos los documentos obtenidos por Scopus y para cada uno de ellos:
@@ -74,13 +74,13 @@ Con esta función se combinan todos los metadatos de las publicaciones recibidas
 - Recorremos la lista de publicaciones de Scopus con el fin de completar aquellas que no se han obtenido de WoS. Por tanto, por cada una de las publicaciones:
     - Si ya ha sido completada y almacenada antes, no hace nada con ella. 
     - En caso contrario: 
-        - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional. 
+        - Se llama al servicio de SemanticScholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional. 
         - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato. 
         - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
 - Recorrimos la lista de publicaciones de OpenAire con el fin de completar aquellas que no se han obtenido de WoS y Scopus. Por tanto, por cada una de las publicaciones:
     - Si ya ha sido completada y almacenada antes, no hace nada con ella. 
     - En caso contrario: 
-        - Se llama al servicio de Semantic Scholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional.        
+        - Se llama al servicio de SemanticScholar y se fusiona la información obtenida por este microservicio y la publicación que estamos examinando (función de combinar dos publicaciones). El resultado de esta unificación será la publicación que estamos observando. Esta fuente externa nos devuelve la información de los documentos referenciados. Estas publicaciones tendrán únicamente unos pocos metadatos básicos que no serán completados con ninguna red externa adicional.        
         - Se llama a la fuente externa Zenodo y en caso de encontrarse un fichero PDF con la publicación se añadirá como metadato.        
         - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
 - Llegados a este punto ya tenemos completas todas las publicaciones de este autor. 
@@ -94,8 +94,6 @@ Configuración del appsettings.json
   "UrlWos": "",
   "UrlScopus": "",
   "UrlOpenAire": "",
-  "UrlCrossRef": "",
-  "UrlOpenCitations": "",
   "UrlSemanticScholar": "",
   "UrlZenodo": "",
   "RutaJsonSalida": "",
@@ -106,8 +104,6 @@ Configuración del appsettings.json
 - UrlWos: URL dónde está el instalado el microservicio de WoS.
 - UrlScopus: URL dónde está el instalado el microservicio de Scopus.
 - UrlOpenAire: URL dónde está el instalado el microservicio de OpenAire.
-- UrlCrossRef: URL dónde está el instalado el microservicio de CrossRef.
-- UrlOpenCitations: URL dónde está el instalado el microservicio de OpenCitations.
 - UrlSemanticScholar: URL dónde está el instalado el microservicio de SemanticScholar.
 - UrlZenodo: URL dónde está el instalado el microservicio de Zenodo.
 - RutaJsonSalida: Ruta dónde se va a guardar el json generado.

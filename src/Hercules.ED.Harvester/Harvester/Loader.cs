@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Utilidades;
 
 namespace Harvester
 {
@@ -53,18 +54,16 @@ namespace Harvester
         /// </summary>
         public void LoadMainEntities()
         {
-            //Dictionary<string, string> dicOrganizaciones = GetEntityBBDD("http://xmlns.com/foaf/0.1/Organization", "organization");
-            //Dictionary<string, string> dicPersonas = GetEntityBBDD("http://xmlns.com/foaf/0.1/Person", "person");
-            //Dictionary<string, string> dicProyectos = GetEntityBBDD("http://vivoweb.org/ontology/core#Project", "project");
             Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicPersonas = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
-            IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones);
-            Utilidades.Utilidades.IniciadorDiccionarioPaises();
-            Utilidades.Utilidades.IniciadorDiccionarioRegion();
+            Dictionary<string, Tuple<string, string>> dicAutorizaciones = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, Tuple<string, string>> dicInvenciones = new Dictionary<string, Tuple<string, string>>();
+            IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
+            UtilidadesGeneral.IniciadorDiccionarioPaises();
+            UtilidadesGeneral.IniciadorDiccionarioRegion();
 
-            //TODO eliminar
-            goto Testing;
 
             //Compruebo que no hay ficheros pendientes de procesar
             mResourceApi.ChangeOntoly("organization");
@@ -73,15 +72,16 @@ namespace Harvester
             ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
-            ProcesarFichero(_Config, "PRC", dicProyectos);
+            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
             mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
+            ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
             mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo");
-        //TODO: Invencion
+            ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
+            mResourceApi.ChangeOntoly("patent");
+            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
-        //TODO eliminar
-        Testing:
+            //TODO eliminar
+
 
             string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
             fecha = "2022-01-01T00:00:00Z";
@@ -92,25 +92,26 @@ namespace Harvester
             GuardarIdentificadores(_Config, "Proyecto", fecha);
             GuardarIdentificadores(_Config, "PRC", fecha, true);
             GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            GuardarIdentificadores(_Config, "Invencion", fecha);
+            //GuardarIdentificadores(_Config, "Invencion", fecha);
             GuardarIdentificadores(_Config, "Grupo", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
 
             //Proceso los ficheros
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
-            ProcesarFichero(_Config, "PRC", dicProyectos);
+            //mResourceApi.ChangeOntoly("organization");
+            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            //mResourceApi.ChangeOntoly("person");
+            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            //mResourceApi.ChangeOntoly("project");
+            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
             mResourceApi.ChangeOntoly("projectauthorization");
             ProcesarFichero(_Config, "AutorizacionProyecto");
             //mResourceApi.ChangeOntoly("group");
             //ProcesarFichero(_Config, "Grupo");
-            //TODO: Invencion
+            //mResourceApi.ChangeOntoly("patent");
+            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
         }
 
         /// <summary>
@@ -140,7 +141,8 @@ namespace Harvester
         /// <param name="dicProyectos"></param>
         /// <param name="dicPersonas"></param>
         public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] Dictionary<string, Tuple<string, string>> dicOrganizaciones,
-            [Optional] Dictionary<string, Tuple<string, string>> dicProyectos, [Optional] Dictionary<string, Tuple<string, string>> dicPersonas)
+            [Optional] Dictionary<string, Tuple<string, string>> dicProyectos, [Optional] Dictionary<string, Tuple<string, string>> dicPersonas,
+            [Optional] Dictionary<string, Tuple<string, string>> dicAutorizaciones, [Optional] Dictionary<string, Tuple<string, string>> dicGrupos)
         {
             string directorioPendientes = $@"{pConfig.GetLogCargas()}\{pSet}\pending\";
             string directorioProcesados = $@"{pConfig.GetLogCargas()}\{pSet}\processed";
@@ -174,6 +176,7 @@ namespace Harvester
                 {
                     switch (pSet)
                     {
+                        #region - Organizacion
                         case "Organizacion":
 
                             // Obtención de datos en bruto.
@@ -219,7 +222,9 @@ namespace Harvester
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                        #endregion
 
+                        #region - Persona
                         case "Persona":
 
                             // Obtención de datos en bruto.
@@ -255,19 +260,21 @@ namespace Harvester
                             if (dicPersonas.ContainsKey(personOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                        #endregion
 
+                        #region - Proyecto
                         case "Proyecto":
 
                             // Obtención de datos en bruto.
@@ -286,7 +293,7 @@ namespace Harvester
                                 proyecto = (Proyecto)xmlSerializer.Deserialize(sr);
                             }
 
-                            CreacionAuxiliaresProyecto(proyecto, dicProyectos, dicPersonas, dicOrganizaciones);
+                            UtilidadesLoader.CreacionAuxiliaresProyecto(proyecto, dicProyectos, dicPersonas, dicOrganizaciones, mResourceApi: mResourceApi);
 
                             //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
                             if (string.IsNullOrEmpty(proyecto.Id) && string.IsNullOrEmpty(proyecto.Titulo))
@@ -309,13 +316,15 @@ namespace Harvester
                             {
                                 // Carga.                   
                                 //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                //    pDicRecursosCargados[projectOntology.Roh_crisIdentifier] = resource.GnossId;
+                                //    dicProyectos[projectOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                        #endregion
 
+                        #region - PRC
                         case "PRC":
                             string idRecurso = id.Split("||")[0];
                             string estado = id.Split("||")[1];
@@ -353,7 +362,9 @@ namespace Harvester
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                        #endregion
 
+                        #region - Autorizacion proyecto
                         case "AutorizacionProyecto":
                             // Obtención de datos en bruto.
                             Autorizacion autorizacion = new Autorizacion();
@@ -378,27 +389,57 @@ namespace Harvester
                                 }
                             }
 
+                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            if (string.IsNullOrEmpty(autorizacion.id.ToString()) && string.IsNullOrEmpty(autorizacion.solicitanteRef)
+                                && string.IsNullOrEmpty(autorizacion.tituloProyecto))
+                            {
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                continue;
+                            }
+
                             // Cambio de modelo.
                             ProjectAuthorization projectAuthOntology = CrearAutorizacion(autorizacion);
 
                             // TODO: Hacer tema del diccionario.
-                            //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
-                            //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
+                            resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
+                            if (dicAutorizaciones.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
+                            {
+                                // Modificación.
+                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                            }
+                            else
+                            {
+                                // Carga.                   
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicAutorizaciones[projectAuthOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                            }
+
+                            ////TODO - revisar 
+                            //if (!string.IsNullOrEmpty(resource.GnossId))
                             //{
-                            //    // Modificación.
-                            //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            //}
-                            //else
-                            //{
-                            //    // Carga.                   
-                            //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                            //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
+                            //    string idProyecto = ObtenerProyecto(projectAuthOntology.Roh_crisIdentifier);
+                            //    Guid guidProyecto = Guid.Empty;
+                            //    if (!string.IsNullOrEmpty(idProyecto))
+                            //    {
+                            //        guidProyecto = mResourceApi.GetShortGuid(idProyecto);
+
+                            //        Dictionary<Guid, List<TriplesToInclude>> insertTriples = new Dictionary<Guid, List<TriplesToInclude>>();
+                            //        insertTriples.Add(guidProyecto, new List<TriplesToInclude>(){ new TriplesToInclude() { Predicate = "http://w3id.org/roh/projectAuthorization", NewValue = resource.GnossId } });
+
+                            //        if (guidProyecto != Guid.Empty)
+                            //        {
+                            //            mResourceApi.InsertPropertiesLoadedResources(insertTriples);
+                            //        }
+                            //    }
                             //}
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                        #endregion
 
+                        #region - Invencion
                         case "Invencion":
                             // Obtención de datos en bruto.
                             Invencion invencion = new Invencion();
@@ -416,6 +457,14 @@ namespace Harvester
                                 invencion = (Invencion)xmlSerializer.Deserialize(sr);
                             }
 
+                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            if (string.IsNullOrEmpty(invencion.id.ToString()))
+                            {
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                continue;
+                            }
+
                             //Cambio de modelo.TODO: Mirar propiedades.
                             //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
 
@@ -429,13 +478,15 @@ namespace Harvester
                             //{
                             //    // Carga.                   
                             //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                            //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
+                            //    dicInvencion[projectAuthOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             //}
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                        #endregion
 
+                        #region - Grupo
                         case "Grupo":
                             // Obtención de datos en bruto.
                             Grupo grupo = new Grupo();
@@ -453,25 +504,35 @@ namespace Harvester
                                 grupo = (Grupo)xmlSerializer.Deserialize(sr);
                             }
 
-                            //Cambio de modelo.TODO: Mirar propiedades.
+                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            if (string.IsNullOrEmpty(grupo.id.ToString()) && string.IsNullOrEmpty(grupo.nombre))
+                            {
+                                // Guardamos el ID cargado.
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                continue;
+                            }
+
+                            //Cambio de modelo.
                             GroupOntology.Group group = CrearGrupo(grupo);
 
                             resource = group.ToGnossApiResource(mResourceApi, null);
-                            //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
-                            //{
-                            //    // Modificación.
-                            //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            //}
-                            //else
-                            //{
-                            //    // Carga.                   
-                            //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                            //    pDicRecursosCargados[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
-                            //}
+                            if (dicGrupos.ContainsKey(group.Roh_crisIdentifier))
+                            {
+                                // Modificación.
+                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                            }
+                            else
+                            {
+                                // Carga.                   
+                                //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //    dicGrupos[group.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                            }
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                            #endregion
+
                     }
 
                     // Borra el fichero.
@@ -480,51 +541,81 @@ namespace Harvester
             }
         }
 
+        /// <summary>
+        /// Inicia los diccionarios y los puebla con los datos leidos de BBDD
+        /// </summary>
+        /// <param name="dicProyectos"></param>
+        /// <param name="dicPersonas"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <param name="dicAutorizaciones"></param>
+        /// <param name="dicGrupos"></param>
         private void IniciacionDiccionarios(ref Dictionary<string, Tuple<string, string>> dicProyectos,
-           ref Dictionary<string, Tuple<string, string>> dicPersonas, ref Dictionary<string, Tuple<string, string>> dicOrganizaciones)
+           ref Dictionary<string, Tuple<string, string>> dicPersonas, ref Dictionary<string, Tuple<string, string>> dicOrganizaciones,
+           ref Dictionary<string, Tuple<string, string>> dicAutorizaciones, ref Dictionary<string, Tuple<string, string>> dicGrupos,
+           ref Dictionary<string, Tuple<string, string>> dicInvenciones)
         {
+            //Proyectos
             dicProyectos = new Dictionary<string, Tuple<string, string>>();
-            Dictionary<string, string> dicProyectosAux = GetEntityBBDD("http://vivoweb.org/ontology/core#Project", "project");
+            Dictionary<string, string> dicProyectosAux = UtilidadesLoader.GetEntityBBDD("http://vivoweb.org/ontology/core#Project", "project", mResourceApi);
             foreach (KeyValuePair<string, string> keyValue in dicProyectosAux)
             {
                 dicProyectos.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
             }
 
+            //Personas
             dicPersonas = new Dictionary<string, Tuple<string, string>>();
-            Dictionary<string, string> dicPersonasAux = GetEntityBBDD("http://xmlns.com/foaf/0.1/Person", "person");
+            Dictionary<string, string> dicPersonasAux = UtilidadesLoader.GetEntityBBDD("http://xmlns.com/foaf/0.1/Person", "person", mResourceApi);
             foreach (KeyValuePair<string, string> keyValue in dicPersonasAux)
             {
                 dicPersonas.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
             }
 
+            //Organizaciones
             dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
-            Dictionary<string, string> dicOrganizacionesAux = GetEntityBBDD("http://xmlns.com/foaf/0.1/Organization", "organization");
+            Dictionary<string, string> dicOrganizacionesAux = UtilidadesLoader.GetEntityBBDD("http://xmlns.com/foaf/0.1/Organization", "organization", mResourceApi);
             foreach (KeyValuePair<string, string> keyValue in dicOrganizacionesAux)
             {
                 dicOrganizaciones.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
             }
+
+            //Autorizaciones
+            dicAutorizaciones = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, string> dicAutorizacionesAux = UtilidadesLoader.GetEntityBBDD("http://w3id.org/roh/ProjectAuthorization", "projectauthorization", mResourceApi);
+            foreach (KeyValuePair<string, string> keyValue in dicAutorizacionesAux)
+            {
+                dicAutorizaciones.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
+            }
+
+            //Grupos
+            dicGrupos = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, string> dicGruposAux = UtilidadesLoader.GetEntityBBDD("http://xmlns.com/foaf/0.1/Group", "group", mResourceApi);
+            foreach (KeyValuePair<string, string> keyValue in dicGruposAux)
+            {
+                dicGrupos.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
+            }
+
+            //TODO - No tiene crisIdentifier
+            ////Invenciones (Propiedad industrial, intelectual)
+            //dicInvenciones = new Dictionary<string, Tuple<string, string>>();
+            //Dictionary<string, string> dicInvencionesAux = GetEntityBBDD("http://purl.org/ontology/bibo/Patent", "patent");
+            //foreach (KeyValuePair<string, string> keyValue in dicInvencionesAux)
+            //{
+            //    dicInvenciones.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
+            //}
         }
 
-        private void CreacionAuxiliaresProyecto(Proyecto proyecto, Dictionary<string, Tuple<string, string>> dicProyectos,
-            Dictionary<string, Tuple<string, string>> dicPersonas, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
-        {
-            List<string> listaOrganizaciones = new List<string>();
-            //TODO
-            //listaOrganizaciones.AddRange(proyecto.EntidadesGestoras.Select(x => x.EntidadRef).ToList());
-            //listaOrganizaciones.AddRange(proyecto.EntidadesConvocantes.Select(x => x.EntidadRef).ToList());
-            listaOrganizaciones.AddRange(proyecto.EntidadesFinanciadoras.Select(x => x.EntidadRef).ToList());
 
-            dicProyectos = GetEntityByCRIS("http://vivoweb.org/ontology/core#Project", "project", new List<string>() { proyecto.Id });
-            dicPersonas = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Person", "person", proyecto.Equipo.Select(x => x.PersonaRef).ToList());
-            dicOrganizaciones = GetEntityByCRIS("http://xmlns.com/foaf/0.1/Organization", "organization", listaOrganizaciones);
-        }
-
+        /// <summary>
+        /// Devuelve un diccionario con los valores de identificador del documento, si esta validado y estado de validacion en PRC
+        /// </summary>
+        /// <param name="pIdRecurso">Identificador del recurso</param>
+        /// <returns></returns>
         private Dictionary<string, string> GetValues(string pIdRecurso)
         {
             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
             dicResultados.Add("projectAux", "");
             dicResultados.Add("isValidated", "");
-            dicResultados.Add("validationStatusPRC", ""); // TODO: Nombre de la propiedad
+            dicResultados.Add("validationStatusPRC", ""); 
 
             string valorEnviado = string.Empty;
             StringBuilder select = new StringBuilder();
@@ -536,7 +627,7 @@ namespace Harvester
             where.Append("?s a bibo:Document. ");
             where.Append("OPTIONAL{?s roh:projectAux ?projectAux. } ");
             where.Append("OPTIONAL{?s roh:isValidated ?isValidated. } ");
-            where.Append("OPTIONAL{?s roh:validationStatusPRC ?validationStatusPRC. } "); // TODO: Nombre de la propiedad
+            where.Append("OPTIONAL{?s roh:validationStatusPRC ?validationStatusPRC. } "); 
             where.Append($@"FILTER(?s = <{pIdRecurso}>) ");
             where.Append("} ");
 
@@ -631,112 +722,13 @@ namespace Harvester
             File.WriteAllText(pConfig.GetLastUpdateDate(), pFecha);
         }
 
-        /// <summary>
-        /// Obtiene el ID del recurso junto a su CrisIdentifier.
-        /// </summary>
-        /// <param name="pOntology"></param>
-        /// <returns></returns>
-        private Dictionary<string, string> GetEntityBBDD(string pRdfType, string pOntology)
-        {
-            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
-
-            int limit = 10000;
-            int offset = 0;
-            while (true)
-            {
-                SparqlObject resultadoQuery = null;
-                StringBuilder select = new StringBuilder(), where = new StringBuilder();
-
-                // Consulta sparql.
-                select.Append("SELECT ?s ?crisIdentifier ");
-                where.Append("WHERE { ");
-                where.Append($@"?s a <{pRdfType}>. ");
-                where.Append("?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier. ");
-                where.Append("} ");
-
-                resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), pOntology);
-
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    offset += limit;
-
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        string id = fila["crisIdentifier"].value;
-                        string nombre = fila["s"].value;
-                        dicResultados.Add(id, nombre);
-                    }
-
-                    if (resultadoQuery.results.bindings.Count < limit)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return dicResultados;
-        }
-
-        private Dictionary<string, Tuple<string, string>> GetEntityByCRIS(string pRdfType, string pOntology, List<string> lista)
-        {
-            Dictionary<string, Tuple<string, string>> dicResultados = new Dictionary<string, Tuple<string, string>>();
-
-            int limit = 10000;
-            int offset = 0;
-            while (true)
-            {
-                string select = "SELECT DISTINCT ?s ?crisIdentifier ?nombrePersona";
-                string filtroProject = $@"strends(?crisIdentifier, '|{string.Join("') OR  strends(?crisIdentifier , '|", lista)}')";//TODO - eliminar por el general
-                string filtroGeneral = $@"?crisIdentifier in ('{string.Join("', '", lista)}') ";
-
-                string filtro = pOntology.Equals("project") ? filtroProject : filtroGeneral;
-                string where = $@"WHERE {{
-    ?s a <{pRdfType}> .
-    ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier . 
-    OPTIONAL{{ ?s <http://xmlns.com/foaf/0.1/name> ?nombrePersona }}
-    FILTER(
-        {filtro}
-    )
-}} ";
-
-                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pOntology);
-
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    offset += limit;
-
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        string crisId = fila["crisIdentifier"].value;
-                        string identificador = fila["s"].value;
-                        string nombrePersona = "";
-                        if (fila.ContainsKey("nombrePersona"))
-                        {
-                            nombrePersona = fila["nombrePersona"].value;
-                        }
-                        dicResultados.Add(crisId, new Tuple<string, string>(identificador, nombrePersona));
-                    }
-
-                    if (resultadoQuery.results.bindings.Count < limit)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-
-            }
-
-            return dicResultados;
-        }
 
         //TODO
+        /// <summary>
+        /// Devuelve una PersonOntology.Person con los datos pasados en <paramref name="pDatos"/>, la cual se ha almacenado en BBDD
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <returns></returns>
         public static PersonOntology.Person CrearPersona(Persona pDatos)
         {
             PersonOntology.Person persona = new PersonOntology.Person();
@@ -798,20 +790,38 @@ namespace Harvester
             }
 
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
-            //insertar en BBDD y asignar gnossid
+            //TODO insertar en BBDD y asignar gnossid
 
             return persona;
         }
 
+        /// <summary>
+        /// Devuelve el identificador del pais con el formato:
+        /// mResourceApi.GraphsUrl + "items/feature_PCLD_" + ID_Pais
+        /// </summary>
+        /// <param name="pais"></param>
+        /// <returns></returns>
         private static string IdentificadorPais(string pais)
         {
-            return mResourceApi.GraphsUrl + "items/feature_PCLD_" + Utilidades.Utilidades.dicPaises[pais];
-        }
-        private static string IdentificadorRegion(string region)
-        {
-            return mResourceApi.GraphsUrl + "items/feature_ADM1_" + Utilidades.Utilidades.dicRegiones[region];
+            return mResourceApi.GraphsUrl + "items/feature_PCLD_" + UtilidadesGeneral.dicPaises[pais];
         }
 
+        /// <summary>
+        /// Devuelve el identificador de la región con el formato:
+        /// mResourceApi.GraphsUrl + "items/feature_ADM1_" + ID_Region
+        /// </summary>
+        /// <param name="region"></param>
+        /// <returns></returns>
+        private static string IdentificadorRegion(string region)
+        {
+            return mResourceApi.GraphsUrl + "items/feature_ADM1_" + UtilidadesGeneral.dicRegiones[region];
+        }
+
+        /// <summary>
+        /// Devuelve el nombre de la empresa
+        /// </summary>
+        /// <param name="id">Identificador de la empresa</param>
+        /// <returns></returns>
         private static string NombreEmpresa(string id)
         {
             // Obtención de datos en bruto.
@@ -831,6 +841,12 @@ namespace Harvester
             return organization.Nombre;
         }
 
+        /// <summary>
+        /// Crea un listado de AcademicdegreeOntology.AcademicDegree, perteneciente a recursos de posgrado
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <returns></returns>
         private static List<AcademicdegreeOntology.AcademicDegree> CrearPosgrado(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
             List<AcademicdegreeOntology.AcademicDegree> listaPosgrado = new List<AcademicdegreeOntology.AcademicDegree>();
@@ -966,6 +982,12 @@ namespace Harvester
             return id;
         }
 
+        /// <summary>
+        /// Crea un listado de AcademicdegreeOntology.AcademicDegree, perteneciente a recursos de ciclos
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <returns></returns>
         private static List<AcademicdegreeOntology.AcademicDegree> CrearCiclos(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
             List<AcademicdegreeOntology.AcademicDegree> listaCiclos = new List<AcademicdegreeOntology.AcademicDegree>();
@@ -1001,6 +1023,13 @@ namespace Harvester
             return listaCiclos;
         }
 
+        /// <summary>
+        /// Crea un listado de AcademicdegreeOntology.AcademicDegree, perteneciente a recursos de doctorados
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <param name="dicPersonas"></param>
+        /// <returns></returns>
         private static List<AcademicdegreeOntology.AcademicDegree> CrearDoctorados(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
             Dictionary<string, Tuple<string, string>> dicPersonas)
         {
@@ -1081,6 +1110,13 @@ namespace Harvester
             return id;
         }
 
+        /// <summary>
+        /// Crea un listado de AcademicdegreeOntology.AcademicDegree, perteneciente a recursos de formación especializada
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <param name="dicPersonas"></param>
+        /// <returns></returns>
         private static List<AcademicdegreeOntology.AcademicDegree> CrearFormacionEspecializada(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
            Dictionary<string, Tuple<string, string>> dicPersonas)
         {
@@ -1140,6 +1176,13 @@ namespace Harvester
             return id;
         }
 
+        /// <summary>
+        /// Crea un listado de ThesissupervisionOntology.ThesisSupervision, perteneciente a recursos de tesis
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <param name="dicPersonas"></param>
+        /// <returns></returns>
         private static List<ThesissupervisionOntology.ThesisSupervision> CrearTesis(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
            Dictionary<string, Tuple<string, string>> dicPersonas)
         {
@@ -1404,6 +1447,13 @@ namespace Harvester
             return id;
         }
 
+        /// <summary>
+        /// Crea un listado de ImpartedacademictrainingOntology.ImpartedAcademicTraining, perteneciente a recursos de formacion academica impartida
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <param name="dicPersonas"></param>
+        /// <returns></returns>
         private static List<ImpartedacademictrainingOntology.ImpartedAcademicTraining> CrearFormacionAcademicaImpartida(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
            Dictionary<string, Tuple<string, string>> dicPersonas)
         {
@@ -1437,7 +1487,7 @@ namespace Harvester
                 //academicTraining.IdRoh_financedByHasRegion = IdentificadorRegion(formacionAcademica.EntidadFinanciadora);
                 //academicTraining.Roh_financedByLocality = formacionAcademica.EntidadFinanciadora.ciudad;
                 //academicTraining.IdRoh_callType = CallType(formacionAcademica.TipoConvocatoria);
-                academicTraining.IdVivo_geographicFocus = GeographicRegion(formacionAcademica.AmbitoGeografico);
+                //academicTraining.IdVivo_geographicFocus = GeographicRegion(formacionAcademica.AmbitoGeografico);
                 //academicTraining.Roh_center = formacionAcademica.facultad;
                 academicTraining.Vivo_start = formacionAcademica.FechaInicio;
                 academicTraining.Vivo_end = formacionAcademica.FechaFinalizacion;
@@ -1462,6 +1512,13 @@ namespace Harvester
             return listaFormacionAcademicaImpartida;
         }
 
+        /// <summary>
+        /// Crea un listado de ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars, perteneciente a recursos de seminarios, cursos
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <param name="dicPersonas"></param>
+        /// <returns></returns>
         private static List<ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars> CrearSeminariosCursos(Persona pDatos, Dictionary<string, Tuple<string, string>> dicOrganizaciones,
            Dictionary<string, Tuple<string, string>> dicPersonas)
         {
@@ -1503,6 +1560,11 @@ namespace Harvester
             return listaSeminariosCursos;
         }
 
+        /// <summary>
+        /// Crea un listado de AccreditationOntology.Accreditation, perteneciente a recursos de sexenios
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <returns></returns>
         private static List<AccreditationOntology.Accreditation> CrearSexenios(Persona pDatos)
         {
             List<AccreditationOntology.Accreditation> listaSexenios = new List<AccreditationOntology.Accreditation>();
@@ -1518,6 +1580,11 @@ namespace Harvester
             return listaSexenios;
         }
 
+        /// <summary>
+        /// Crea un OrganizationOntology.Organization a partir de los datos de <paramref name="pDatos"/>
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <returns></returns>
         public static OrganizationOntology.Organization CrearOrganizacionOntology(Empresa pDatos)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
@@ -1543,7 +1610,7 @@ namespace Harvester
             organization.Roh_title = empresa.Nombre;
             organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
-            //insertar
+            //TODO insertar
 
             return organization;
         }
@@ -1563,7 +1630,7 @@ namespace Harvester
             organization.Roh_title = empresa.Nombre;
             organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
-            //insertar
+            //TODO insertar
 
             ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
             organizationAux.Roh_organization = organization;
@@ -1571,7 +1638,7 @@ namespace Harvester
             //organizationAux.IdRoh_organization = organization.GNOSSID;
             organizationAux.Roh_organizationTitle = empresa.Nombre;
             organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
-            //insertar
+            //TODO insertar
 
             return organizationAux.GNOSSID;//asignar si no se autoasigna
         }
@@ -1591,7 +1658,7 @@ namespace Harvester
             organization.Roh_title = empresa.Nombre;
             organization.Vcard_locality = empresa.DatosContacto?.Direccion;
 
-            //insertar
+            //TODO insertar
 
             ProjectOntology.OrganizationAux organizationAux = new ProjectOntology.OrganizationAux();
             organizationAux.Roh_organization = organization;
@@ -1599,16 +1666,21 @@ namespace Harvester
             //organizationAux.IdRoh_organization = organization.GNOSSID;
             organizationAux.Roh_organizationTitle = empresa.Nombre;
             organizationAux.Vcard_locality = empresa.DatosContacto?.Direccion;
-            //insertar
+            //TODO insertar
 
             return organizationAux.GNOSSID;//TODO asignar si no se autoasigna
         }
 
+        /// <summary>
+        /// Crea un ProjectAuthorization a partir de los datos de <paramref name="pAutorizacionProyecto"/>
+        /// </summary>
+        /// <param name="pAutorizacionProyecto"></param>
+        /// <returns></returns>
         public static ProjectAuthorization CrearAutorizacion(Autorizacion pAutorizacionProyecto)
         {
             ProjectAuthorization autorizacion = new ProjectAuthorization();
             Persona persona = new Persona();
-            autorizacion.Roh_crisIdentifier = pAutorizacionProyecto.id.ToString();
+            autorizacion.Roh_crisIdentifier = pAutorizacionProyecto.entidadRef;
             autorizacion.Roh_title = pAutorizacionProyecto.tituloProyecto;
             autorizacion.IdRoh_owner = GetPersonGnossId(pAutorizacionProyecto.solicitanteRef);
 
@@ -1638,6 +1710,11 @@ namespace Harvester
             }
         }
 
+        /// <summary>
+        /// Crea un GroupOntology.Group a partir de los datos de <paramref name="grupo"/>
+        /// </summary>
+        /// <param name="grupo"></param>
+        /// <returns></returns>
         public static GroupOntology.Group CrearGrupo(Grupo grupo)
         {
             GroupOntology.Group groupOntology = new GroupOntology.Group();
@@ -1653,6 +1730,11 @@ namespace Harvester
             return groupOntology;
         }
 
+        /// <summary>
+        /// Devuelve el gnossId pasado el crisIdentifier de una persona.
+        /// </summary>
+        /// <param name="pCrisIdentifier"></param>
+        /// <returns></returns>
         public static string GetPersonGnossId(string pCrisIdentifier)
         {
             SparqlObject resultadoQuery = null;
@@ -1677,6 +1759,11 @@ namespace Harvester
             return string.Empty;
         }
 
+        /// <summary>
+        /// Obtiene los datos de la persona del SGI 
+        /// </summary>
+        /// <param name="personaRef"></param>
+        /// <returns></returns>
         private static Persona ObtenerPersona(string personaRef)
         {
             Persona persona = new Persona();
@@ -1689,6 +1776,11 @@ namespace Harvester
             return persona;
         }
 
+        /// <summary>
+        /// Devuelve el tipo de proyecto de <paramref name="project"/>
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="pDatos"></param>
         private static void TipoProyecto(ProjectOntology.Project project, Proyecto pDatos)
         {
             if (string.IsNullOrEmpty(project.IdRoh_scientificExperienceProject))
@@ -1725,6 +1817,34 @@ namespace Harvester
             return new Tuple<string, string, string>(anios.ToString(), meses.ToString(), dias.ToString());
         }
 
+        private static string ObtenerProyecto(string crisIdentifier)
+        {
+            string select = "select ?project ";
+            string where = $@"where{{
+                                ?project <http://w3id.org/roh/crisIdentifier> '{crisIdentifier}' .
+                            }}";
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "project");
+            var data = sparqlObject.results.bindings;
+
+            foreach (Dictionary<string, SparqlObject.Data> keyValue in data)
+            {
+                if (keyValue.ContainsKey("project"))
+                {
+                    return keyValue["project"].value;
+                }
+            }
+
+
+            return "";
+        }
+
+        /// <summary>
+        /// Crea un ProjectOntology.Project a partir de los datos de <paramref name="pDatos"/>, <paramref name="dicPersonas"/>, <paramref name="dicOrganizaciones"/>.
+        /// </summary>
+        /// <param name="pDatos"></param>
+        /// <param name="dicPersonas"></param>
+        /// <param name="dicOrganizaciones"></param>
+        /// <returns></returns>
         public static ProjectOntology.Project CrearProyecto(Proyecto pDatos,
             Dictionary<string, Tuple<string, string>> dicPersonas, Dictionary<string, Tuple<string, string>> dicOrganizaciones)
         {
@@ -1797,7 +1917,7 @@ namespace Harvester
                 }
 
                 //Indico el número de investigadores ? TODO
-                project.Roh_researchersNumber = pDatos.Equipo.Select(x=>x.PersonaRef).GroupBy(x=>x).Count();
+                project.Roh_researchersNumber = pDatos.Equipo.Select(x => x.PersonaRef).GroupBy(x => x).Count();
             }
 
             //Añado las entidades financiadoras que no existan en BBDD
@@ -1830,6 +1950,7 @@ namespace Harvester
                 }
                 //project.Roh_participates = organizaciones;
             }
+                project.Roh_researchersNumber = pDatos.Equipo.Select(x => x.PersonaRef).GroupBy(x => x).Count();
 
             //TODO - revisar
             double porcentajeSubvencion = 0;
@@ -1882,7 +2003,8 @@ namespace Harvester
             //Si está informada la FechaFinDefinitiva prevalecerá sobre la FechaFin y será la considerada como fecha de finalización del proyecto,
             //independientemente de que sea mayor o menor que la fecha de fin inicial.
             //Añado la fecha de finalizacion si el proyecto es de tipo competitivo.
-            if (project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1")){
+            if (project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1"))
+            {
                 project.Vivo_end = pDatos.FechaFinDefinitiva != null ? Convert.ToDateTime(pDatos.FechaFinDefinitiva) : Convert.ToDateTime(pDatos.FechaFin);
             }
 

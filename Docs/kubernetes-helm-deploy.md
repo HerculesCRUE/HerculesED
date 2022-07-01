@@ -1,6 +1,17 @@
 ![](./media/CabeceraDocumentosMD.png)
 
+| Fecha         | 29/6/2022                                                   |
+| ------------- | ------------------------------------------------------------ |
+|Título|Despliegue de Hércules ED con Kubernetes y Helm| 
+|Descripción|Guía de despliegue de Hércules ED mediante Kubernetes y Helm|
+|Versión|1.0|
+|Módulo|Documentación|
+|Tipo|Especificación|
+|Cambios de la Versión|Versión inicial|
+
 # Despliegue de Hércules ED con Kubernetes y Helm
+
+La arquitectura de componentes se puede consultar en [Arquitectura de Hércules ED](https://confluence.um.es/confluence/pages/viewpage.action?pageId=420085932)
 
 A continuación se describen los pasos para desplegar Hercules ED en un cluster de Kubernetes: 
 
@@ -55,7 +66,9 @@ Para desplegar RabbitMQ primero clonaremos el contenido del repositorio RabbitMQ
 El despliegue de HERCULES-ED está preparado para ser realizado con HELM. 
 
 * Primero utilizaremos el comando.
-  * helm install <nombre_despligue> oci://docker.gnoss.com/helm-charts/edma-gnoss
+  * helm install <nombre_despligue> oci://docker.gnoss.com/helm-charts/edma-gnoss -f values.yaml
+
+El archivo values.yaml lo puedes encontrar en https://github.com/HerculesCRUE/HerculesED/blob/main/Docs/values.yaml. Modifica todo lo que necesites según tu infraestructura y las caracterísiticas de tu cluster de Kubernetes antes de ejecutar el comando anterior. 
 
 * Segundo. Una vez que PostgreSQL está desplegado debemos volcar la base de datos para que empiece a trabajar con ella.
 Para ello usaremos el archivo “pg_dump_backup.sqlc” ubicado en la carpeta PostgreSQL.
@@ -89,3 +102,10 @@ Para ello usaremos el archivo “pg_dump_backup.sqlc” ubicado en la carpeta Po
 Finalmente todo debería estar correctamente desplegado. Observar que hasta que las bases de datos no estén volcadas 
 en sus contenedores se realizarán varios reinicios de los contenedores ya que necesitan de los datos de ellas.
 
+## Paso 4 Abastecer las imagenes.
+
+Como paso final debemos abastecer de contenido al contenedor "interno".
+
+Para ello usaremos el comando:
+
+  * kubectl cp <local_file_path> <pod_name_interno>:/app/imagenes

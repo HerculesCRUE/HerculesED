@@ -12,7 +12,11 @@ class MemoryROCache(similarity.ROCache):
             'embedding': ro._embedding,
             'ranking': ro.ranking,
         }
-
+        
+    def delete_ro(self, ro_id) -> None:
+        if ro_id in self.ros:
+            del self.ros[ro_id]
+    
     def update_ro_ranking(self, ro: similarity.RO) -> None:
         if ro.id not in self.ros:
             raise similarity.ROIdError()
@@ -38,7 +42,7 @@ class MemoryROCache(similarity.ROCache):
 
     @staticmethod
     def _to_ro(ro_dic):
-        ro = similarity.RO(ro_dic['id'], ro_dic['type'], None)
+        ro = similarity.RO(ro_dic['id'], ro_dic['type'])
         ro._embedding = ro_dic['embedding']
         ro.ranking = ro_dic['ranking']
         return ro

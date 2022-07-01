@@ -14,6 +14,7 @@ $(document).ready(function () {
     }
     var arg = {};
     arg.pIdGnossUser = $('#inpt_usuarioID').val();
+
     var datos = null;
     MostrarUpdateProgress();
     $.get(url, arg, function (data) {
@@ -52,8 +53,8 @@ function GuardarDatos() {
     $("form.formulario-edicion fieldset").children('div').each(function () {
         var div = $(this);
         var valorData = "";
-        if (div.children()[1].value != "") {
-            valorData = div.children()[1].value;
+        if (div.children()[div.children().length - 1].value != "") {
+            valorData = div.children()[div.children().length - 1].value;
         }
         var obj = { nombre: div.children()[0].innerHTML, id: div.children()[0].id, valor: valorData };
         lista.push(obj);
