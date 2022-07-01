@@ -354,7 +354,7 @@ namespace EditorCV.Models
 
                         tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
                         tabSectionItem.properties = new List<TabSectionItemProperty>();
-                        
+
                         tabSectionItem.iseditable = !itemEditSection.blocked;
 
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
@@ -416,8 +416,17 @@ namespace EditorCV.Models
             List<string> valor = new List<string>();
             string graph = "";
 
+
+
             //Título
             PropertyDataTemplate configTitulo = tabSectionListItem.propertyTitle;
+
+            //Titulo Tutorias academicas
+            if (subseccionItem.propiedades.Where(x => x.prop.Equals("http://w3id.org/roh/cvnCode")).Select(x => x.values).Any() &&
+               subseccionItem.propiedades.Where(x => x.prop.Equals("http://w3id.org/roh/cvnCode")).Select(x => x.values).First().First().Equals("030.050.000.000"))
+            {
+                configTitulo.property = "http://w3id.org/roh/frequency";
+            }
 
             string propCompleteTitle = UtilityCV.GetPropComplete(configTitulo);
             sectionItem.title = subseccionItem.propiedades.FirstOrDefault(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?.values.FirstOrDefault();
@@ -430,7 +439,8 @@ namespace EditorCV.Models
                     valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle).Split("@@@").First())?
                         .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
                 }
-                if (tabSectionListItem.propertyTitle.child !=null) {
+                if (tabSectionListItem.propertyTitle.child != null)
+                {
                     graph = tabSectionListItem.propertyTitle.child.graph;
 
                     string select = "select distinct ?w";
@@ -446,7 +456,8 @@ namespace EditorCV.Models
                         {
                             sectionItem.title = fila["w"].value;
                         }
-                    } }
+                    }
+                }
             }
             sectionItem.properties = new List<TabSectionItemProperty>();
             sectionItem.iseditable = !subseccionItem.isBlocked;
