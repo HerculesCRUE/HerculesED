@@ -1,11 +1,13 @@
 ﻿using DesnormalizadorHercules.Models.Actualizadores;
 using DesnormalizadorHercules.Models.Services;
+using DesnormalizadorHercules.Models.Similarity;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,79 +22,21 @@ namespace DesnormalizadorHercules
 
         public static void CrearPersonas()
         {
+            Dictionary<Guid, List<TriplesToInclude>> dic = new Dictionary<Guid, List<TriplesToInclude>>();
+            Guid idOtri = resourceApi.GetShortGuid("http://gnoss.com/items/Person_70582872-7f4f-4a76-a150-c0c4b8db1522_34a05e34-641a-4735-88f4-357cca8aaac6");
+            dic.Add(idOtri,new List<TriplesToInclude>() { new TriplesToInclude() { NewValue = "true", Predicate = "http://w3id.org/roh/isOtriManager" } });
+            var x=resourceApi.InsertPropertiesLoadedResources(dic);
 
-            //Antonio Skaremta-->skarmeta22
-            //Manuel Campos-->manuel-camp2
-            //Francisco Esquembre-->francisco-es
-            //Jose Tomas Palma Mendez-->jose-tomas
-            //Diana Castilla-->diana-castil
-            //Felix Cesareo Gomez de Leon Hijes-->felix-cesare
-            //Fernando Jimenez Barrionuevo-->fernando-jim
-            //Gracia Sanchez Carpena-->gracia-sanch
-            //Jose Manuel Juarez Herrero-->jose-juarez
-            //Maria Antonia Cardenas Viedma-->maria-carden
-
-
-            //http://gnoss.com/items/Person_ad372791-7287-425d-8238-83931a5d9818_b06212ce-8c39-4608-8542-ec97463a6fdb
-            //8310
-            //31248453
-
-            //Dictionary<Guid, List<TriplesToModify>> triples = new Dictionary<Guid, List<TriplesToModify>>();
-            //TriplesToModify t = new TriplesToModify("true", "false", "http://w3id.org/roh/isActive");
-            //triples.Add(new Guid("eb4c7a6c-09af-4f35-b932-84c9881d6daa"), new List<TriplesToModify>() { t });
-            //resourceApi.ModifyPropertiesLoadedResources(triples);
-            ////http://gnoss.com/items/Person_eb4c7a6c-09af-4f35-b932-84c9881d6daa_7abc78ac-8bad-444f-bfeb-450f9fe0c1ba
-
-            /*
-            List<RemoveTriples> triplesRemove = new();
-            
-                triplesRemove.Add(new RemoveTriples()
-                {
-                    Predicate = "http://w3id.org/roh/ORCID",
-                    Value = "0000-0001-5844-4163"
-                });
-            if (triplesRemove.Count > 0)
+            var resultado = resourceApi.VirtuosoQuery("select *", "where{?s <http://w3id.org/roh/generatedPDFFile> ?o}","curriculumvitae");
+            foreach(Dictionary<string,SparqlObject.Data> fila in resultado.results.bindings)
             {
-                var resultadox = resourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { resourceApi.GetShortGuid("http://gnoss.com/items/Person_6b4f5547-1691-48c0-a42e-8b8c59733eda_7ebe180a-d766-461c-8aa9-b1f215eab90d>"), triplesRemove } });
-            }*/
+                Dictionary<Guid, List<RemoveTriples>> dic2 = new Dictionary<Guid, List<RemoveTriples>>();
+                string id = fila["s"].value;
+                string pdf = fila["o"].value;
+                dic2.Add(resourceApi.GetShortGuid(id), new List<RemoveTriples>() { new RemoveTriples() { Predicate = "http://w3id.org/roh/generatedPDFFile", Value = pdf } });
+                resourceApi.DeletePropertiesLoadedResources(dic2);
+            }
 
-            /*List<string> notificaciones = resourceApi.VirtuosoQuery("select *", $@"where
-                                                                                            {{
-                                                                                                ?s a <http://w3id.org/roh/Notification>
-                                                                                            }}", "notification").results.bindings.Select(x=>x["s"].value).ToList();
-
-            foreach(string id in notificaciones)
-            {
-                try
-                {
-                    Guid id2 = resourceApi.GetShortGuid(id);
-                    if (id2 != Guid.Empty)
-                    {
-                        resourceApi.PersistentDelete(id2);
-                    }
-                }catch(Exception)
-                {
-                    List<string> ids = new List<string>() { id };
-                    resourceApi.DeleteSecondaryEntitiesList(ref ids);
-                }
-            }*/
-
-            //string cv = "http://gnoss.com/items/CV_693c2f58-d466-4ff5-841a-34f51499efe2_997709d4-b8d6-49ae-9504-aad506f9bbd9";
-            //List<string> filesPDF = resourceApi.VirtuosoQuery("select *", $@"where
-            //                                                                        {{
-            //                                                                            ?s <http://w3id.org/roh/generatedPDFFile> ?gpdff.
-            //                                                                            FILTER(?s=<{cv}>)
-            //                                                                        }}", "curriculumvitae").results.bindings.Select(x => x["gpdff"].value).ToList();
-            //List<RemoveTriples> triplesRemove = filesPDF.Select(x => new RemoveTriples() { Predicate = "http://w3id.org/roh/generatedPDFFile", Value = x }).ToList();
-            //if (triplesRemove.Count > 0)
-            //{
-            //    var resultadox = resourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { resourceApi.GetShortGuid(cv), triplesRemove } });
-            //}
-
-            string person = "http://gnoss.com/items/Person_6438661e-d3c8-4d7b-a705-e96b590404dd_5da03fdb-d3e7-4d59-9444-6a5af6577fc6";
-            Dictionary<Guid, List<TriplesToInclude>> triples = new Dictionary<Guid, List<TriplesToInclude>>();
-            triples[resourceApi.GetShortGuid(person)] = new List<TriplesToInclude>() { new TriplesToInclude("true", "http://w3id.org/roh/isOtriManager") };
-            resourceApi.InsertPropertiesLoadedResources(triples);
 
 
             //Antonio Skaremta 28710458
@@ -166,16 +110,22 @@ namespace DesnormalizadorHercules
 
             AltaUsuarioGnoss("Aurelia", "Andres", "aurelia.andres@fecyt.es", "aurelia-and1", "579865434363", "", "");
 
-            //bernardo-can
             AltaUsuarioGnoss("Bernardo", "Canovas", "Bernardo.Canovas@pruebagnoss.es", "bernardo-can", "48487426", "", "");
-            //jose-fernand
+            
             AltaUsuarioGnoss("Jose", "Fernandez", "Jose.Fernandez@pruebagnoss.es", "jose-fernand", "29062423", "", "");
-            //rafael-valen
+            
             AltaUsuarioGnoss("Rafael", "Valencia", "Rafael.Valencia@pruebagnoss.es", "rafael-valen", "48392732", "", "");
 
-            /*0000-0002-0777-0441 - Bernardo Canovas Segura - 48487426
-0000-0002-9774-9055 - Jose Fernandez Hernandez - 29062423
-0000-0003-2457-1791 - Rafael Valencia Garcia - 48392732*/
+
+
+            AltaUsuarioGnoss("Felix", "Gomez", "Felix.Gomez@pruebagnoss.es", "felix-gomez", "48507359", "", "");
+
+            AltaUsuarioGnoss("Juan Antonio", "Madrid", "juan.madrid@pruebagnoss.es", "juan-antonio", "22926115", "", "");
+
+            AltaUsuarioGnoss("Juan Antonio", "Botia", "juan.botia@pruebagnoss.es", "juan-antoni1", "52807499", "", "");
+
+            AltaUsuarioGnoss("Antonio", "Morales", "antonio.morales@pruebagnoss.es", "antonio-mora", "48485751", "", "");
+
 
 
         }
@@ -335,23 +285,24 @@ namespace DesnormalizadorHercules
             Dictionary<Guid, List<RemoveTriples>> dicEliminar = new Dictionary<Guid, List<RemoveTriples>>();
             foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
             {
-                eliminar.Add(resourceApi.GetShortGuid( fila["entity"].value));
+                eliminar.Add(resourceApi.GetShortGuid(fila["entity"].value));
                 Guid idCV = resourceApi.GetShortGuid(fila["cv"].value);
-                if(!dicEliminar.ContainsKey(idCV))
+                if (!dicEliminar.ContainsKey(idCV))
                 {
-                    dicEliminar.Add(idCV,new List<RemoveTriples>());
+                    dicEliminar.Add(idCV, new List<RemoveTriples>());
                 }
                 RemoveTriples remove = new RemoveTriples(fila["oLvl1"].value + "|" + fila["oLvl2"].value, fila["pLvl1"].value + "|" + fila["pLvl2"].value);
                 dicEliminar[idCV].Add(remove);
             }
-            Dictionary<Guid,bool> resp=resourceApi.DeletePropertiesLoadedResources(dicEliminar);
+            Dictionary<Guid, bool> resp = resourceApi.DeletePropertiesLoadedResources(dicEliminar);
 
-            foreach(Guid elim in eliminar)
+            foreach (Guid elim in eliminar)
             {
                 try
                 {
                     resourceApi.PersistentDelete(elim);
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
 
                 }
@@ -359,55 +310,6 @@ namespace DesnormalizadorHercules
 
         }
 
-        public static void InsertarDocumentsSimilarity()
-        {
-            ActualizadorDocument actualizadorDocument = new ActualizadorDocument(resourceApi);
-            string select = "select distinct ?doc from <http://gnoss.com/curriculumvitae.owl> ";
-            string where = $@"
-where{{
-    ?doc a <http://purl.org/ontology/bibo/Document>.
-    {{ ?doc <http://w3id.org/roh/isValidated> 'true'.}}
-    UNION
-    {{  
-        ?cv a <http://w3id.org/roh/CV>.
-        ?cv ?p1 ?o1.
-        ?o1 ?p2 ?item.
-        ?item <http://vivoweb.org/ontology/core#relatedBy> ?doc.
-        ?item <http://w3id.org/roh/isPublic> 'true'.
-    }}
-
-}}";
-            var response=resourceApi.VirtuosoQuery(select, where,"document");
-            foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
-            {
-                actualizadorDocument.EnvioServicioSimilaridad(fila["doc"].value, "research_paper");
-            }
-        }
-
-        public static void InsertarROsSimilarity()
-        {
-            ActualizadorDocument actualizadorDocument = new ActualizadorDocument(resourceApi);
-            string select = "select distinct ?doc from <http://gnoss.com/curriculumvitae.owl> ";
-            string where = $@"
-where{{
-    ?doc a <http://w3id.org/roh/ResearchObject>.
-    {{ ?doc <http://w3id.org/roh/isValidated> 'true'.}}
-    UNION
-    {{  
-        ?cv a <http://w3id.org/roh/CV>.
-        ?cv ?p1 ?o1.
-        ?o1 ?p2 ?item.
-        ?item <http://vivoweb.org/ontology/core#relatedBy> ?doc.
-        ?item <http://w3id.org/roh/isPublic> 'true'.
-    }}
-
-}}";
-            var response = resourceApi.VirtuosoQuery(select, where, "researchobject");
-            foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
-            {
-                actualizadorDocument.EnvioServicioSimilaridad(fila["doc"].value, "code_project");
-            }
-        }
 
         public static void InsertarColaDesnormalizador(RabbitServiceWriterDenormalizer rabbitService, string queue)
         {
@@ -494,7 +396,7 @@ where{{
             }
         }
 
-        
+
         public static void ActualizarPertenenciaProyectosTemporal()
         {
             ActualizadorDocument ac = new ActualizadorDocument(resourceApi);
