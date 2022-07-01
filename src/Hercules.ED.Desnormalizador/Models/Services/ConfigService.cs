@@ -15,6 +15,7 @@ namespace DesnormalizadorHercules.Models.Services
         private string DenormalizerQueueRabbit { get; set; }
         private string rutaDirectorioEscritura { get; set; }
         private string denormalizerCronExpression { get; set; }
+        private string UrlSimilarity { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -132,6 +133,31 @@ namespace DesnormalizadorHercules.Models.Services
             }
 
             return denormalizerCronExpression;
+        }
+
+        /// <summary>
+        /// Obtiene la url del servicio de similaridad
+        /// </summary>
+        /// <returns>Ruta de escritura.</returns>
+        public string GetUrlSimilarity()
+        {
+            if (string.IsNullOrEmpty(UrlSimilarity))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("UrlSimilarity"))
+                {
+                    connectionString = environmentVariables["UrlSimilarity"] as string;
+                }
+                else
+                {
+                    connectionString = _configuration["UrlSimilarity"];
+                }
+
+                UrlSimilarity = connectionString;
+            }
+
+            return UrlSimilarity;
         }
     }
 }
