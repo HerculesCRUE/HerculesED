@@ -87,6 +87,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
 
+                sincro.GuardarXMLFiltrado();
+
                 string xmlPreimporta = "";
                 XmlSerializer serializer = new XmlSerializer(typeof(Preimport));
                 using (var sww = new StringWriter())
@@ -101,10 +103,11 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 preimportar.cvn_preimportar = xmlPreimporta;
 
                 //Guardo los datos del fichero XML leido para usarlo despues
-                var ms = new MemoryStream();
-                sincro.CVFileAsXML.CopyTo(ms);
-                byte[] filebytes = ms.ToArray();
-                preimportar.cvn_xml = filebytes;
+                preimportar.cvn_xml = sincro.GuardarXMLFiltrado();
+                //var ms = new MemoryStream();
+                //sincro.CVFileAsXML.CopyTo(ms);
+                //byte[] filebytes = ms.ToArray();
+                //preimportar.cvn_xml = filebytes;
 
                 return Ok(preimportar);
             }

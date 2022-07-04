@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Serialization;
 using Utils;
+using System.Xml;
 
 namespace ImportadorWebCV.Sincro
 {
@@ -131,6 +132,23 @@ namespace ImportadorWebCV.Sincro
                 ContentType = "application/xml"
             };
             return file;
+        }
+
+        public byte[] GuardarXMLFiltrado()
+        {
+            string xml = "";
+            XmlSerializer serializer = new XmlSerializer(typeof(cvnRootResultBean));
+            using (var sww = new StringWriter())
+            {
+                using (XmlWriter writer = XmlWriter.Create(sww))
+                {
+                    serializer.Serialize(writer, cvn);
+                    xml = sww.ToString();
+                }
+            }
+
+            byte[] bytes = Encoding.UTF8.GetBytes(xml);
+            return bytes;
         }
 
         public void ComprobarSecciones()

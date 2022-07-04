@@ -97,7 +97,7 @@ namespace Hercules.ED.ImportExportCV
 
             //El primer item debe ser la sección "000.020.000.000"
             List<CvnItemBean> listadoItems = base.cvn.cvnRootBean.ToList();
-            if (listadoItems.Count == 0 || !listadoItems.ElementAt(0).Code.Equals("000.020.000.000"))
+            if (listadoItems.Count == 0)
             {
                 return;
             }
@@ -144,7 +144,7 @@ namespace Hercules.ED.ImportExportCV
                 if (listadoSubsetionItems.Count == i)
                 {
                     break;
-                }
+                }                
                 if (listadoSubsetionItems.ElementAt(i).propiedades.Count == 0)
                 {
                     if (listadoItems.ElementAt(i).Items.Count == 0)
