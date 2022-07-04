@@ -1828,7 +1828,7 @@ var metricas = {
                             tituloActual = data.titulo;
                             tamanioActual = data.anchura;
                             ordenActual = data.orden;
-                            escalaActual = data.escala;
+                            escalaActual = data.escalas;
                         }
                         $('#idSelectorOrden').append(`
                             <option value="${orden}">${orden}</option>    
@@ -2051,7 +2051,18 @@ var metricas = {
                         argAnch.pOldWidth = tamanioActual;
 
                         $.get(urlAnch, argAnch, function () {
-                            location.reload();
+                            var urlScal = url_servicio_graphicengine + "EditarEscalasGrafica"; //"https://localhost:44352/EditarEscalasGrafica"
+                            var argScal = {};
+                            argScal.pUserId = user;
+                            argScal.pPageID = idPaginaActual;
+                            argScal.pGraphicID = idGraficaActual;
+                            var escalas = $('#labelEscalaGrafica').val() == '' ? "" : $('#labelEscalaSecundariaGrafica').val() == '' ? $('#labelEscalaGrafica').val() : $('#labelEscalaGrafica').val() + "," + $('#labelEscalaSecundariaGrafica').val();
+                            argScal.pNewScales = escalas;
+                            argScal.pOldScales = escalaActual;
+
+                            $.get(urlScal, argScal, function () {
+                                location.reload();
+                            });
                         });
                     });
                 });
