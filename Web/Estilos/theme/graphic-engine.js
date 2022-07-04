@@ -2056,7 +2056,7 @@ var metricas = {
                             argScal.pUserId = user;
                             argScal.pPageID = idPaginaActual;
                             argScal.pGraphicID = idGraficaActual;
-                            var escalas = $('#labelEscalaGrafica').val() == '' ? "" : $('#labelEscalaSecundariaGrafica').val() == '' ? $('#labelEscalaGrafica').val() : $('#labelEscalaGrafica').val() + "," + $('#labelEscalaSecundariaGrafica').val();
+                            var escalas = $('#labelEscalaGrafica').val() == '' ? "" : $('#labelEscalaSecundariaGrafica').val() == '' ? parseInt($('#labelEscalaGrafica').val()) : parseInt($('#labelEscalaGrafica').val()) + "," + parseInt($('#labelEscalaSecundariaGrafica').val());
                             argScal.pNewScales = escalas;
                             argScal.pOldScales = escalaActual;
 
