@@ -16,11 +16,13 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private List<CvnItemBean> listadoSituacionProfesional = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
         public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
             listadoSituacionProfesional = mCvn.GetListadoBloque("010");
+            listadoCvn = mCvn.cvnRootBean.ToList();
         }
 
         /// <summary>
@@ -1437,6 +1439,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1520,6 +1527,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         PublicacionesDocumentosISBN(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -1715,6 +1727,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1900,6 +1917,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -2076,6 +2098,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -2220,6 +2247,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -2316,6 +2348,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -2391,6 +2428,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         GestionIDIPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -2487,6 +2529,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -2570,6 +2617,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -2644,6 +2696,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         EstanciasIDIPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -2789,6 +2846,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -2907,6 +2969,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         OtrosModosColaboracionPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -3094,6 +3161,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -3193,6 +3265,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -3264,6 +3341,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         RedesCooperacionEntidadesParticipantes(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -3381,6 +3463,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -3444,6 +3531,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         OtrasDistincionesEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -3509,6 +3601,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -3573,6 +3670,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -3635,6 +3737,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         OtrosMeritosEntidad(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
