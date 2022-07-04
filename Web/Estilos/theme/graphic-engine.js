@@ -1357,9 +1357,9 @@ var metricas = {
         } else {// -- vertical
             myChart.canvas.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
 
-            copyWidth = myChart.boxes[2]?.width; //anchura del eje
+          
             copyHeight = myChart.chartArea.bottom + 5;
-            targetY = 20; //posicion del eje
+            //targetY = 20; //posicion del eje
             // Le asignamos tamaño a la leyenda.
             axisHeight = myChart.height - 10;
         }
@@ -1407,7 +1407,6 @@ var metricas = {
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
                 ctx.canvas.height = copyHeight;
-
             }
             ctx.scale(scale, scale); // Escala del zoom.
             ctx.canvas.width = copyWidth;
@@ -1430,9 +1429,9 @@ var metricas = {
 
             } else {
                 ctx.canvas.height = copyHeight;
-                copyWidth += 12;
+                //copyWidth += 12;
+                copyWidth = myChart.width - myChart.chartArea.right;
                 targetX = (myChart.width - copyWidth) * scale;
-
                 targetWidth = copyWidth * scale;
                 width = copyWidth;
                 axisHeight -= 7 * scale; //se le quita al eje falso el margen sobrante 
