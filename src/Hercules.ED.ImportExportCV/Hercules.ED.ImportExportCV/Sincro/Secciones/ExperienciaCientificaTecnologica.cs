@@ -15,10 +15,12 @@ namespace ImportadorWebCV.Sincro.Secciones
     class ExperienciaCientificaTecnologica : SeccionBase
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificExperience";
         public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("050");
+            listadoCvn = mCvn.cvnRootBean.ToList();
         }
 
         /// <summary>
@@ -407,6 +409,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -676,6 +683,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -941,6 +953,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1151,6 +1168,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1283,6 +1305,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1376,6 +1403,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ResultadosTecnologicosPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }

@@ -16,12 +16,14 @@ namespace ImportadorWebCV.Sincro.Secciones
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
         private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/TeachingExperience";
 
         public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("030");
-            listadoPremios = mCvn.GetListadoBloque("060.030.080");
+            listadoPremios = mCvn.GetListadoBloque("060.030.080"); 
+            listadoCvn = mCvn.cvnRootBean.ToList();
         }
 
         /// <summary>
@@ -620,6 +622,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -780,6 +787,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -902,6 +914,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -994,6 +1011,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                         CursosSeminariosIDPublicacion(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoDatos.Remove(item);
                     }
                 }
             }
@@ -1118,6 +1139,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1236,6 +1262,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ParticipacionProyectosInnovacionDocenteInvestigadorPrincipal(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -1392,6 +1423,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1497,6 +1533,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -1555,6 +1596,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         OtrasActividadesEntidadOrganizadora(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -1640,6 +1686,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                         AportacionesRelevantesEntidadOrganizadora(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoDatos.Remove(item);
                     }
                 }
             }

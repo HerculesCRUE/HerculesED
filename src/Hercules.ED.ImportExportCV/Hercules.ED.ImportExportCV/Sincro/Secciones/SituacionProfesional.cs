@@ -15,10 +15,12 @@ namespace ImportadorWebCV.Sincro.Secciones
     class SituacionProfesional : SeccionBase
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ProfessionalSituation";
         public SituacionProfesional(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("010");
+            listadoCvn = mCvn.cvnRootBean.ToList();
         }
 
         /// <summary>
@@ -176,6 +178,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         SituacionProfesionalCorreoElectronico(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {                        
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -359,6 +366,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         CargosActividadesCorreoElectronico(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }

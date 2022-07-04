@@ -15,10 +15,12 @@ namespace ImportadorWebCV.Sincro.Secciones
     class FormacionAcademica : SeccionBase
     {
         private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/Qualifications";
         public FormacionAcademica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("020");
+            listadoCvn = mCvn.cvnRootBean.ToList();
         }
 
         /// <summary>
@@ -385,6 +387,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -514,6 +521,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         DoctoradosTituloHomologado(item, entidadAux);
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
@@ -725,6 +737,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -821,6 +838,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -914,6 +936,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         listado.Add(entidadAux);
                     }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    }
                 }
             }
             return listado;
@@ -967,7 +994,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                     CvnItemBeanCvnTitleBean idioma = item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.060.000.010");
 
                     //Si el TitleBean es nulo o no tiene identificador, no hago nada. 
-                    if (idioma == null) { continue; }
+                    if (idioma == null) 
+                    {
+                        listadoDatos.Remove(item);
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                        continue;
+                    }
                     if (!string.IsNullOrEmpty(idioma.GetTraduccion()))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -997,6 +1030,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         }
 
                         listado.Add(entidadAux);
+                    }
+                    else
+                    {
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
                 }
             }
