@@ -286,3 +286,8 @@ input.form-group-date {
     padding: 6px;
 	margin-right: 5px;
 }
+
+.page-cv .panel-group .panel .visibility-wrapper {
+	padding-left: 4px;
+	margin-top: 1px;
+}

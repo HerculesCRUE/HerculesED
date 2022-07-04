@@ -21,6 +21,18 @@ var numPagina = 0;
 // Lista de páginas.
 var listaPaginas;
 const { jsPDF } = window.jspdf;
+String.prototype.width = function (font) {
+    var f = font || '12px arial',
+        o = $('<div></div>')
+            .text(this)
+            .css({ 'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden', 'font': f })
+            .appendTo($('body')),
+        w = o.width();
+
+    o.remove();
+
+    return w;
+}
 var metricas = {
     init: function () {
         // Esto impide que las facetas se apliquen a la primera pagina al recargar desde otra pagina
@@ -319,18 +331,49 @@ var metricas = {
 
                 data.plugins = [plugin];
 
-                data.options.plugins["legend"] = { //TODO test
+                data.options.plugins["legend"] = {
                     onHover: (e) => {
-
                         e.chart.canvas.style.cursor = 'pointer';
 
                     },
                     onLeave: (e) => {
-
                         e.chart.canvas.style.cursor = 'default';
-
                     }
                 };
+
+
+                data.options.plugins.title["onHover"] = function (e) {
+                    console.log(e);
+
+                }
+
+
+                var fontSize = 12;
+                //data.options.plugins.title.text = "AAAA";
+                //	font 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif
+                function getTextWidth(text, font) {
+                    // if given, use cached canvas for better performance
+                    // else, create new canvas
+                    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+                    var context = canvas.getContext("2d");
+                    context.font = font;
+                    var metrics = context.measureText(text);
+                    return metrics.width;
+                };
+                //beforeDraw: function (chart) {
+
+                while (fontSize > 1 && titulo.width("bold "+fontSize+"px Helvetica") > $(ctx).parents("div.grafica").width()-200) {
+                    fontSize--;
+                }
+                console.log(fontSize);
+   
+
+
+                data.options.plugins.title.font = {
+                    size: fontSize,
+                    style: 'bold',
+                    //family: 'Comic Sans MS, cursive, sans-serif',
+                }
 
 
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
@@ -354,6 +397,9 @@ var metricas = {
                             }
                         }
                     }
+
+
+
                     if (data.data.datasets.length > 1) {
                         var dataBack = {};
                         data.options.plugins['legend'] = {
@@ -1357,7 +1403,7 @@ var metricas = {
         } else {// -- vertical
             myChart.canvas.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
 
-          
+
             copyHeight = myChart.chartArea.bottom + 5;
             //targetY = 20; //posicion del eje
             // Le asignamos tamaño a la leyenda.
