@@ -77,6 +77,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
                 Preimport preimportar = new Preimport();
 
+                sincro.ComprobarSecciones();
+
                 preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
                 preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true));
                 preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true));

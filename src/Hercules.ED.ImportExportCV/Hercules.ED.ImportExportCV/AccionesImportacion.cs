@@ -23,6 +23,28 @@ namespace Hercules.ED.ImportExportCV
 
         }
 
+        private List<string> listadoSecciones = new List<string>()
+        {
+            //Datos identificacion
+            "000.010.000.000", "000.020.000.000",
+            //Situación profesional
+            "010.010.000.000","010.020.000.000",
+            //Formacion academica
+            "020.010.010.000","020.010.020.000","020.010.030.000","020.020.000.000","020.050.000.000","020.060.000.000",
+            //Actividad docente
+            "030.040.000.000","030.010.000.000","030.050.000.000","030.060.000.000","030.070.000.000","030.080.000.000",
+            "030.090.000.000","060.030.080.000","030.100.000.000","030.110.000.000",
+            //Experiencia cientifica tecnologica
+            "050.020.010.000","050.020.020.000","050.030.010.000","050.010.000.000","050.020.030.000","050.030.020.000",
+            //Actividad cientifica tecnologica
+            "060.010.000.000", "060.010.060.000", "060.010.060.010","060.010.010.000","060.010.020.000", "060.010.030.000", "060.010.040.000", "060.020.010.000",
+            "060.020.030.000", "060.020.040.000", "060.020.050.000", "060.020.060.000", "060.010.050.000", "060.030.010.000", "060.020.020.000",
+            "060.030.020.000", "060.030.030.000", "060.030.040.000", "060.030.050.000", "060.030.060.000", "060.030.070.000", "060.030.090.000",
+            "060.030.100.000",
+            //Texto libre
+            "070.010.000.000"
+        };
+
         /// <summary>
         /// Importa los datos de <paramref name="filePreimport"/>, filtrando los items y eliminando los que no sean pertenecientes a <paramref name="listaId"/>
         /// y tratandolos dependiendo de la opciones marcadas en <paramref name="listaOpciones"/>.
@@ -47,6 +69,7 @@ namespace Hercules.ED.ImportExportCV
                 preimport = (Preimport)serializer.Deserialize(reader);
             }
 
+            //Fichero preimport
             List<SubseccionItem> listadoSubsetionItems = new List<SubseccionItem>();
             foreach (Subseccion subseccion in preimport.secciones)
             {
@@ -84,6 +107,15 @@ namespace Hercules.ED.ImportExportCV
                 listadoItems.RemoveAt(0);
             }
 
+            //Elimino las secciones no deseadas
+            foreach (CvnItemBean itemBean in new List<CvnItemBean>(listadoItems))
+            {
+                if (!listadoSecciones.Contains(itemBean.Code))
+                {
+                    listadoItems.Remove(itemBean);
+                }
+            }
+
             //En el caso de que la seccion de Texto libre no esté en listadoSubsectionItems tambien la elimino.
             if (!listadoSubsetionItems.Any(x => x.propiedades.Any(x => x.prop.Contains("http://w3id.org/roh/summary"))))
             {
@@ -105,9 +137,14 @@ namespace Hercules.ED.ImportExportCV
             List<string> listadoSobrescribirBBDD = new List<string>();
             List<string> listadoTextoLibreBBDD = new List<string>();
 
+
             for (int i = 0; i < listadoItems.Count; i++)
             {
                 //Si el elemento no trae propiedades, no lo inserto y continuo con el siguiente del listado.
+                if (listadoSubsetionItems.Count == i)
+                {
+                    break;
+                }
                 if (listadoSubsetionItems.ElementAt(i).propiedades.Count == 0)
                 {
                     if (listadoItems.ElementAt(i).Items.Count == 0)

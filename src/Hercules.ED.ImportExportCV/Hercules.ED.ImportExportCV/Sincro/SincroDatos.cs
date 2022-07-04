@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Models;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -22,6 +23,28 @@ namespace ImportadorWebCV.Sincro
         private string cvID;
         private string personID;
         public FormFile CVFileAsXML;
+
+        private List<string> listadoSecciones = new List<string>()
+        {
+            //Datos identificacion
+            "000.010.000.000",
+            //Situación profesional
+            "010.010.000.000","010.020.000.000",
+            //Formacion academica
+            "020.010.010.000","020.010.020.000","020.010.030.000","020.020.000.000","020.050.000.000","020.060.000.000",
+            //Actividad docente
+            "030.040.000.000","030.010.000.000","030.050.000.000","030.060.000.000","030.070.000.000","030.080.000.000",
+            "030.090.000.000","060.030.080.000","030.100.000.000","030.110.000.000",
+            //Experiencia cientifica tecnologica
+            "050.020.010.000","050.020.020.000","050.030.010.000","050.010.000.000","050.020.030.000","050.030.020.000",
+            //Actividad cientifica tecnologica
+            "060.010.000.000", "060.010.060.000", "060.010.060.010","060.010.010.000","060.010.020.000", "060.010.030.000", "060.010.040.000", "060.020.010.000",
+            "060.020.030.000", "060.020.040.000", "060.020.050.000", "060.020.060.000", "060.010.050.000", "060.030.010.000", "060.020.020.000",
+            "060.030.020.000", "060.030.030.000", "060.030.040.000", "060.030.050.000", "060.030.060.000", "060.030.070.000", "060.030.090.000",
+            "060.030.100.000",
+            //Texto libre
+            "070.010.000.000"
+        };
 
         /// <summary>
         /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
@@ -110,6 +133,18 @@ namespace ImportadorWebCV.Sincro
             return file;
         }
 
+        public void ComprobarSecciones()
+        {
+            List<CvnItemBean> listCvnRootBean = cvn.cvnRootBean.ToList();
+            foreach (CvnItemBean itemBean in new List<CvnItemBean>(listCvnRootBean))
+            {
+                if (!listadoSecciones.Contains(itemBean.Code))
+                {
+                    listCvnRootBean.Remove(itemBean);
+                }
+            }
+            cvn.cvnRootBean = listCvnRootBean.ToArray();
+        }
 
         /// <summary>
         /// Metodo para sincronizar los datos pertenecientes al 
