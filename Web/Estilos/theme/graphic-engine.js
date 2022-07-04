@@ -95,7 +95,7 @@ var metricas = {
             });
         }
     },
-    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null) {
+    getGrafica: function (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null, maxScales = null) {
         var that = this;
         var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
         var arg = {};
@@ -106,6 +106,7 @@ var metricas = {
 
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
+            console.log(data);
 
 
             if (!ctx) {
@@ -248,6 +249,16 @@ var metricas = {
                         });
                     });
             } else {
+                if (maxScales) {
+                    var horizontal = data.options.indexAxis == "y";
+                    if (horizontal) {
+                        data.options.scales.x1['max']= maxScales.split(",")[0];
+                        data.options.scales.x2['max']= maxScales.split(",")[1];
+                    } else {
+                        data.options.scales.y1['max']= maxScales.split(",")[0];
+                        data.options.scales.y2['max']= maxScales.split(",")[1];
+                    }
+                }
 
                 var titulo = data.options.plugins.title.text;
                 if (pTitulo) {
@@ -295,7 +306,7 @@ var metricas = {
                 };
 
                 data.plugins = [plugin];
-                
+
                 data.options.plugins["legend"] = { //TODO test
                     onHover: (e) => {
 
@@ -303,9 +314,9 @@ var metricas = {
 
                     },
                     onLeave: (e) => {
-        
+
                         e.chart.canvas.style.cursor = 'default';
-             
+
                     }
                 };
 
@@ -337,12 +348,12 @@ var metricas = {
                             onHover: (e) => {
 
                                 e.chart.canvas.style.cursor = 'pointer';
-        
+
                             },
                             onLeave: (e) => {
-                
+
                                 e.chart.canvas.style.cursor = 'default';
-                     
+
                             },
                             color: '#FFFFFF',
                             labels: {
@@ -1064,7 +1075,7 @@ var metricas = {
                         `);
             }
 
-            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 50, pPageData[index].idRecurso, pPageData[index].titulo);
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 50, pPageData[index].idRecurso, pPageData[index].titulo,pPageData[index].escalas);
             index++;
         });
     },
@@ -2055,7 +2066,30 @@ var metricas = {
                     }
                 }
 
+                var grafica = $("#grafica_" + idPaginaActual + "_" + idGraficaActual);
+                var chart = Chart.getChart(grafica);
+                var scales = chart.scales;
+                var isHorizontal = grafica.parents('div.grafica').hasClass('horizontal');
+                var max = [];
+                /*scales.each(function (scale) {
+                    if (scale.axis == 'y' && !isHorizontal) {
+                        max.push(scale.max);
+                    } else if (scale.axis == 'x' && isHorizontal) {
+                        max.push(scale.max);
+                    }
+                });*/
 
+                for (scale in scales) {
+                    if (scales[scale].axis == 'y' && !isHorizontal) {
+                        max.push(scales[scale].max);
+                    } else if (scales[scale].axis == 'x' && isHorizontal) {
+                        max.push(scales[scale].max);
+                    }
+                }
+                var escalas = max[0];
+                if (max.length > 1) {
+                    escalas = max[0] + "," + max[1];
+                }
 
 
                 var url = url_servicio_graphicengine + "GuardarGrafica"; //"https://localhost:44352/GuardarGrafica"
@@ -2066,6 +2100,8 @@ var metricas = {
                 arg.pIdGrafica = idGraficaActual;
                 arg.pFiltros = ObtenerHash2();
                 arg.pUserId = $('.inpt_usuarioID').attr('value');
+                arg.pEscalas = escalas;
+                console.log(escalas);
 
                 if ($("#selectPage").is(":visible")) {
                     arg.pIdRecursoPagina = $('#idSelectorPagina option:selected').attr("idPagina");
