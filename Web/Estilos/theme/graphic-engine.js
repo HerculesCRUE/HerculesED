@@ -123,6 +123,7 @@ var metricas = {
 
 
             // Controla si el objeto es de ChartJS o Cytoscape.
+            console.log(maxScales);
             if ("container" in data) {
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
@@ -249,14 +250,25 @@ var metricas = {
                         });
                     });
             } else {
+                var horizontal = data.options.indexAxis == "y";
                 if (maxScales) {
-                    var horizontal = data.options.indexAxis == "y";
+
                     if (horizontal) {
-                        data.options.scales.x1['max']= maxScales.split(",")[0];
-                        data.options.scales.x2['max']= maxScales.split(",")[1];
+                        //if contains ","
+                        if (maxScales.indexOf(",") > -1) {
+                            //parse maxScales to int
+                            data.options.scales.x1['max'] = parseInt(maxScales.split(",")[0]);
+                            data.options.scales.x2['max'] = parseInt(maxScales.split(",")[1]);
+                        } else {
+                            data.options.scales.x1['max'] = parseInt(maxScales);
+                        }
                     } else {
-                        data.options.scales.y1['max']= maxScales.split(",")[0];
-                        data.options.scales.y2['max']= maxScales.split(",")[1];
+                        if (maxScales.indexOf(",") > -1) {
+                            data.options.scales.y1['max'] = parseInt(maxScales.split(",")[0]);
+                            data.options.scales.y2['max'] = parseInt(maxScales.split(",")[1]);
+                        } else {
+                            data.options.scales.y1['max'] = parseInt(maxScales);
+                        }
                     }
                 }
 
@@ -1075,7 +1087,7 @@ var metricas = {
                         `);
             }
 
-            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 50, pPageData[index].idRecurso, pPageData[index].titulo,pPageData[index].escalas);
+            that.getGrafica(pPageData[index].idPagina, pPageData[index].idGrafica, pPageData[index].filtro, null, 50, pPageData[index].idRecurso, pPageData[index].titulo, pPageData[index].escalas);
             index++;
         });
     },
