@@ -20,7 +20,7 @@ var TAMANIO_GRAFICA_MIN = 318;
 var numPagina = 0;
 // Lista de páginas.
 var listaPaginas;
-
+const { jsPDF } = window.jspdf;
 var metricas = {
     init: function () {
         // Esto impide que las facetas se apliquen a la primera pagina al recargar desde otra pagina
@@ -1882,7 +1882,28 @@ var metricas = {
                     $("#idSelectorOrdenPg").val(ordenPaginaActual).change();
                 });
             });
+        $(`div.download-page`)
+            .unbind()
+            .click(function (e) {
 
+                MostrarUpdateProgress();
+                $(".acciones-mapa").hide();
+                $(".Categoria a").hide();
+                $(".borrarFiltros-wrap").hide();
+                var htmlsource = $("div.col-contenido ")[0] || $("div.resource-list-wrap")[0];
+                html2canvas(htmlsource, { scale: 2, scrolly: -window.scrolly }).then(function (canvas) {
+                    var img = canvas.toDataURL();
+                    var orientation = canvas.height > canvas.width ? 'portrait' : 'landscape';
+                    var doc = new jsPDF(orientation, "mm", [(canvas.height + 200) / 4, (canvas.width + 200) / 4]);
+                    doc.addImage(img, 'jpeg', 25, 25, canvas.width / 4, canvas.height / 4);
+                    doc.save('Indicadores.pdf');
+                    OcultarUpdateProgress();
+                    $(".acciones-mapa").show();
+                    $(".Categoria a").show();
+                    $(".borrarFiltros-wrap").show();
+                });
+
+            });
         $('a.eliminargrafica')
             .unbind()
             .click(function (e) {
