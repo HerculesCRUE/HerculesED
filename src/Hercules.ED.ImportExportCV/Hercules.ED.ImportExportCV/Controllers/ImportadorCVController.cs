@@ -104,10 +104,6 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 //Guardo los datos del fichero XML leido para usarlo despues
                 preimportar.cvn_xml = sincro.GuardarXMLFiltrado();
-                //var ms = new MemoryStream();
-                //sincro.CVFileAsXML.CopyTo(ms);
-                //byte[] filebytes = ms.ToArray();
-                //preimportar.cvn_xml = filebytes;
 
                 return Ok(preimportar);
             }
