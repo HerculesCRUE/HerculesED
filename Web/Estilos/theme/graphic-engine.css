@@ -57,7 +57,7 @@
      width: 45px;
      border: 1px solid lightgrey;
      box-sizing: border-box;
-    
+
  }
 
  .dataSetLabels .labelContainer .dataSetLabel {
@@ -202,6 +202,7 @@
      padding-right: 5px;
      right: 0px;
      justify-content: space-between;
+     color: #999;
 
  }
 
@@ -210,7 +211,7 @@
  }
 
  .pageOptions div {
-    flex-shrink: 0;
+     flex-shrink: 0;
      cursor: pointer;
      display: flex;
      flex-direction: row;
@@ -251,9 +252,15 @@
      color: #af1a2e;
  }
 
+ .delete-page {
+
+    margin-right: 80px;
+
+ }
+
  .delete-page:hover {
 
-    color: white !important;
+     color: white !important;
      background-color: #af1a2e;
 
  }
