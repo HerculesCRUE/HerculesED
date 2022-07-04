@@ -560,12 +560,12 @@ var edicionCV = {
 	printHtmlListItemValidacion: function(data){
 		if(data.validationStatus=='pendiente'){
 			return `<div class="manage-history-wrapper">
-						<span class="material-icons">manage_history</span>
+						<span class="con-icono-before material-icons">manage_history</span>
 					</div>`;
 		}
 		if(data.validationStatus=='validado'){
 			return `<div class="verified-wrapper">
-						<span class="material-icons-outlined">verified_user</span>
+						<span class="con-icono-before material-icons-outlined">verified_user</span>
 					</div>`;
 		}
 		return ``;
@@ -573,7 +573,7 @@ var edicionCV = {
     printHtmlListItemEditable: function(data) {
         if (!data.iseditable) {
 			return `<div class="block-wrapper">
-						<span class="material-icons">block</span>
+						<span class="con-icono-before material-icons">block</span>
 					</div>`;
         }
 		return '';
@@ -6126,7 +6126,9 @@ function getParam(param)
 tooltipsAccionesRecursos.lanzar= function () {
 	montarTooltip.lanzar(this.block, GetText('CV_BLOQUEADO'), 'background-gris-oscuro');
 	montarTooltip.lanzar(this.visible, GetText('CV_VISIBLE'), 'background-gris-oscuro');
-	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');	
+	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');
+	montarTooltip.lanzar(this.body.find('.manage-history-wrapper'), GetText('CV_PENDIENTE'), 'background-gris-oscuro');
+	montarTooltip.lanzar(this.body.find('.verified-wrapper'), GetText('CV_VALIDADO'), 'background-gris-oscuro');	
 };
 
 montarTooltip.lanzar= function (elem, title, classes) {
