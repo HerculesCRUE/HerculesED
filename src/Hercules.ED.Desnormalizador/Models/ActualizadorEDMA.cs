@@ -133,6 +133,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarGrupos();
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
+            actualizadorCV.EliminarDuplicados();
         }
 
 
