@@ -22,6 +22,8 @@ namespace WoSConnect.ROs.WoS.Models
         public List<PublicationMetric> hasMetric { get; set; }
         public bool? openAccess { get; set; }
         public string volume { get; set; }
+        
+        public string dataOrigin { get; set; }
     }
     public class FreetextKeywords
     {

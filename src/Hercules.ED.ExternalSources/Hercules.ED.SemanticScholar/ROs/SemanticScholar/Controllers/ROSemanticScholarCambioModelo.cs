@@ -124,6 +124,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
                 publicacion.seqOfAuthors = getAuthors(objInicial);
                 publicacion.hasPublicationVenue = getJournal(objInicial);
                 publicacion.hasMetric = getPublicationMetric(objInicial);
+                publicacion.dataOrigin = "SemanticScholar";
 
                 return publicacion;
             }
