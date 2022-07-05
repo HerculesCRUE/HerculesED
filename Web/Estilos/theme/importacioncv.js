@@ -212,7 +212,9 @@ function printCientificProduction(id, data){
 				datos = true;
 			}
 		}
+		contador=0;
 		for(const seccion in data.items){
+			
 			if(datos){
 				//TODO texto ver items
 				var htmlSection = `
@@ -306,7 +308,8 @@ function printFreeText(id, data){
 										<div class="resource-list listView">
 									<div class="resource-list-wrap">`;
 		var secciones = data.sections[0].items;
-		for (const seccion in secciones){			
+		contador=0;
+		for (const seccion in secciones){
 			//Si no hay datos no pinto esa sección
 			if(secciones[seccion].properties[0].values.length > 0 && secciones[seccion].properties[0].values[0].length > 0){
 				var id = 'x' + RandomGuid();
@@ -408,7 +411,8 @@ edicionCV.printPersonalData=function(id, data) {
 			//No desplegado	
 			expanded = "false";
 		}
-		var nombre = '';
+		var nombre = '';		
+		contador=0;	
 		for (const seccion in data.sections[0].items)
 		{
 			for(var i =0; i<data.sections[0].items[seccion].properties.length; i++){
@@ -429,7 +433,6 @@ edicionCV.printPersonalData=function(id, data) {
 										</a>
 									</p>
 								</div>`;
-								
 							if(data.sections[0].items[seccion].properties[0].values.length!=0)
 							{
 							html+=`
@@ -481,6 +484,7 @@ edicionCV.printTabSection= function(data) {
 	var expanded = "";
 	var show = "";
 	if (data.items != null) {
+		contador=0;
 		if (Object.keys(data.items).length > 0) {
 			//Desplegado
 			expanded = "true";
