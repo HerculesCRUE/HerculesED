@@ -81,6 +81,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarGrupos();
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
+            actualizadorCV.EliminarDuplicados();
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas();
@@ -132,6 +133,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarGrupos();
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
+            actualizadorCV.EliminarDuplicados();
         }
 
 

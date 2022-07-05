@@ -79,10 +79,6 @@
      z-index: 200;
  }
 
- li.zoomout-control {
-     margin-top: 5px;
- }
-
  div.graph-controls span {
      user-select: none;
  }
