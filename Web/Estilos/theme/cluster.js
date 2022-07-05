@@ -2,6 +2,7 @@ const uriLoadTaxonomies = "Cluster/GetThesaurus"
 const uriSaveCluster = "Cluster/SaveCluster"
 const uriSearchTags = "Cluster/searchTags"
 const uriLoadProfiles = "Cluster/loadProfiles"
+const uriLoadSavedProfiles = "Cluster/LoadSavedProfiles"
 const uriLoadClst = "Cluster/LoadCluster"
 
 var urlLT = "";
@@ -16,6 +17,7 @@ $(document).ready(function () {
 	urlSTAGS = new URL(url_servicio_externo +  uriSearchTags);
 	urlLoadClst = new URL(url_servicio_externo +  uriLoadClst);
 	urlCargarPerfiles = new URL(url_servicio_externo +  uriLoadProfiles);
+	urlCargarPerfilesGuardados = new URL(url_servicio_externo +  uriLoadSavedProfiles);
 });
 
 
@@ -53,6 +55,8 @@ class StepsCluster {
 		// Añadir perfil
 		this.modalPerfil = this.body.find("#modal-anadir-perfil-cluster")
 		this.inputPerfil = this.modalPerfil.find("#input-anadir-perfil")
+		this.listadoPerfilesGuardados = this.modalPerfil.find(".modal-apc-listado-saved")
+		this.prevSavedCluster = undefined
 
 		// Editar perfil
 		this.modalPerfilEditar = this.body.find("#modal-editar-perfil-cluster")
@@ -81,6 +85,7 @@ class StepsCluster {
 
 		// Textos obtenido de los 'data-'
 		this.eliminarText = this.modalCrearCluster.data("eliminartext")
+		this.clusterTxt = this.modalCrearCluster.data("clustertxt")
 		this.editarClusterText = this.modalCrearCluster.data("editarcluster")
 		this.AnadirOtroPerfilText = this.modalCrearCluster.data("addotherprofile")
 		this.AnadirNuevoPerfilText = this.modalCrearCluster.data("addnewprofile")
@@ -113,6 +118,17 @@ class StepsCluster {
 				// Load the cluster
 				_self.loadCluster()
 			}
+
+			// Carga el listado de perfiles guardados previamente
+			_self.getDataListClustersSaved().then(res => {
+				// Genera el shortId de los cluster y de los perfiles
+				res.forEach(e => {e.shortEntityID = e.entityID.substring(37); e.profiles.forEach(p => p.shortEntityID = p.entityID.substring(37))})
+
+				_self.prevSavedCluster = res
+				_self.setClustersListOptions(res)
+			})
+
+
 		})
 
 
@@ -140,41 +156,57 @@ class StepsCluster {
 
 			// Fill section 2
 			this.data.profiles.forEach(profile => {
-				profile.shortEntityID = profile.entityID.split('_')[2]
-
-				// Crea el perfil
-				this.addPerfilSearch(profile).then(nameId => {
-
-					// Carga las áreas temáticas
-					let selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
-
-					let timer = setTimeout(function () {
-						if (selectTerms.length !== 0)
-						{
-							_self.saveAreasTematicasEvent(selectTerms, profile.terms)
-							clearTimeout(timer)
-						}
-					}, 100);
-
-					// carga los tags
-					let selectTags = $('#modal-seleccionar-tags-' + nameId)
-					let timerTerms = setTimeout(function () {
-						if (selectTerms.length !== 0)
-						{
-							_self.saveTAGS(selectTags, profile.tags)
-							clearTimeout(timerTerms)
-						}
-					}, 100);
-				})
-
-				// Editamos los IDs de los usuarios
-				profile.users.forEach(user => {
-					user.shortUserID = user.userID.split('_')[1]
-				})
+				_self.fillProfile(profile);
 			})
 		});
 	}
 
+	/**
+	 * Método que rellena un perfil con los datos dados
+	 * @param profile, perfil de un cluster
+	 */
+	fillProfile(profile) {
+
+		let _self = this
+
+		// Fill section 2
+		profile.shortEntityID = profile.entityID.split('_')[2]
+
+		// Crea el perfil
+		this.addPerfilSearch(profile).then(nameId => {
+
+			// Carga las áreas temáticas
+			let selectTerms = $('#modal-seleccionar-area-tematica-' + nameId)
+
+			let timer = setTimeout(function () {
+				if (selectTerms.length !== 0)
+				{
+					_self.saveAreasTematicasEvent(selectTerms, profile.terms)
+					clearTimeout(timer)
+				}
+			}, 100);
+
+			// carga los tags
+			let selectTags = $('#modal-seleccionar-tags-' + nameId)
+			let timerTerms = setTimeout(function () {
+				if (selectTerms.length !== 0)
+				{
+					_self.saveTAGS(selectTags, profile.tags)
+					clearTimeout(timerTerms)
+				}
+			}, 100);
+		})
+
+		// Editamos los IDs de los usuarios
+		profile.users.forEach(user => {
+			user.shortUserID = user.userID.split('_')[1]
+		})
+	}
+
+	/**
+	 * Método para llamar al servicio externo y cargar los clusters
+	 * @return Promise, devuelve una promesa con el resultado de la consulta
+	 */
 	callLoadCluster() {
 		MostrarUpdateProgress();
 		urlLoadClst.searchParams.set('pIdClusterId', this.clusterId);
@@ -185,6 +217,54 @@ class StepsCluster {
 				OcultarUpdateProgress();
 			});
 		})
+	}
+
+
+	/**
+	 * Método para llamar al servicio externo y cargar los clusters guardados previamente en otros clusters
+	 * @return Promise, devuelve una promesa con el resultado de la consulta
+	 */
+	getDataListClustersSaved() {
+		MostrarUpdateProgress();
+		// Pasamos el id del usuario para que los clusters sean del propio usuario
+		urlCargarPerfilesGuardados.searchParams.set('pIdUser', this.userId);
+		return new Promise((resolve, reject) => {
+			
+			$.get(urlCargarPerfilesGuardados.toString(), function (res) {
+				resolve(res);
+				OcultarUpdateProgress();
+			});
+		})
+	}
+
+	/**
+	 * Método que crea un listado de opciones con los perfiles guardados previamente
+	 * @return Promise, devuelve una promesa con el resultado de la consulta
+	 */
+	setClustersListOptions(data) {
+
+		let _self = this
+
+		data.forEach(cluster => {
+			cluster.profiles.forEach(prof => {
+				let htmlProfileList = `
+					<div class="categoria-wrap">
+					<div class="categoria ${prof.entityID}">
+					<div class="custom-control custom-checkbox themed little primary">
+					<input type="checkbox" class="custom-control-input at-input" id="${prof.entityID}" data-id="${prof.entityID}" data-clid="${cluster.entityID}" data-name="${prof.name}">
+					<label class="custom-control-label" for="${prof.entityID}">${prof.name} <span class="cluster">${_self.clusterTxt}: ${cluster.name}</span></label>
+					</div>
+					</div>
+					</div>
+				`
+				_self.listadoPerfilesGuardados.append(htmlProfileList)
+			})
+		})
+
+		_self.listadoPerfilesGuardados.mCustomScrollbar({theme:"minimal-dark"});
+
+		// ... cuando se clique en añadir el perfil
+		// fillProfile(profile) 
 	}
 	
 	/**
@@ -247,6 +327,9 @@ class StepsCluster {
 		}
 	}
 
+	/**
+	 * Método que obtiene y pinta el número de perfiles en el 'step' de búsquedas de investigadores
+	 */
 	checkNumberProfiles() {
 
 		let panel = this.clusterAccordionPerfil.find('.panel .panel-heading')
@@ -964,8 +1047,55 @@ class StepsCluster {
 		})
 	}
 
+	/**
+	 * Método que obtiene un perfil por su nombre
+	 * @param name, Obtiene un perfil por el nombre
+	 */
 	perfilExist(name) {
 		return this.data && this.data.profiles && this.data.profiles.find(e => e.name == name)
+	}
+
+
+	/**
+	 * Método que añade un perfil o varios dependiendo desde dónde se cargue
+	 */
+	addPerfilSearchBtnEvent() {
+
+		let _self = this
+
+		// Get the name
+		name = this.inputPerfil.val()
+
+		if (name == "" && this.prevSavedCluster != undefined) {
+			_self.listadoPerfilesGuardados.find("input[selected]")
+
+
+			let htmlRes = ''
+			let arrayItems = [] // Array para guardar los items que se van a usar
+			this.listadoPerfilesGuardados.find('input.at-input').each((i, e) => {
+				if (e.checked) {
+					// deshabilito y coloco y lo pongo como no seleccionado
+					e.disabled = true
+					e.checked = false
+
+					// Obtengo los ids de los datas para obtener el perfil seleccionado
+					let clusterId = e.dataset["clid"]
+					let perfilId = e.dataset["id"]
+					// Llamo a "fillProfile" para pintar los perfiles seleccionados
+					try {
+						_self.fillProfile(_self.prevSavedCluster.find(cl => cl.entityID == clusterId).profiles.find(pr => pr.entityID == perfilId))
+					} catch (e) { }
+					arrayItems.push(perfilId)
+				}
+			})
+
+
+		} else {
+			this.addPerfilSearch()
+		}
+
+
+
 	}
 
 	/**
@@ -974,6 +1104,7 @@ class StepsCluster {
 	 * @return string, devuelve un string con el id del profile generado
 	 */
 	addPerfilSearch(profileObj = null) {
+
 
 		return new Promise((resolve, reject) => {
 
