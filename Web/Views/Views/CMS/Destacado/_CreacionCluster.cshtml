@@ -36,7 +36,7 @@
 
 		<div class="col col-12">
 			
-			<div id="wrapper-crear-cluster" class="edicionRecurso edicionCluster" tabindex="-1" data-eliminartext="@Html.Translate("ELIMINAR")" data-areastematicastext="@Html.Translate("AREAS_TEMATICAS")" data-descriptoresespecificostext="@Html.Translate("DESCRIPTORES_ESPECIFICOS")" data-comurl="@Comunidad.Url" data-comkey="@Comunidad.Key.ToString()" data-cshortname="@Comunidad.ShortName" data-urlrecurso="@Html.GetText("URLSEM", "RECURSO")" data-editarcluster="@Html.Translate("EDITAR_CLUSTER")" data-addotherprofile="@Html.Translate("ANADIR_OTRO_PERFIL")" data-addnewprofile="@Html.Translate("ANADIR_UN_PERFIL")" data-imguser="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png">
+			<div id="wrapper-crear-cluster" class="edicionRecurso edicionCluster" tabindex="-1" data-eliminartext="@Html.Translate("ELIMINAR")" data-areastematicastext="@Html.Translate("AREAS_TEMATICAS")" data-descriptoresespecificostext="@Html.Translate("DESCRIPTORES_ESPECIFICOS")" data-comurl="@Comunidad.Url" data-comkey="@Comunidad.Key.ToString()" data-cshortname="@Comunidad.ShortName" data-urlrecurso="@Html.GetText("URLSEM", "RECURSO")" data-editarcluster="@Html.Translate("EDITAR_CLUSTER")" data-addotherprofile="@Html.Translate("ANADIR_OTRO_PERFIL")" data-clustertxt="@Html.Translate("CLUSTER")" data-addnewprofile="@Html.Translate("ANADIR_UN_PERFIL")" data-imguser="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()/theme/resources/iconos/person-gris.png">
 				<div class="formulario-edicion background-blanco">
 					<h1>@Model.Title</h1>
 				    <div class="d-flex flex-wrap mb-2">
@@ -396,8 +396,15 @@
 		                            <input placeholder="@Html.Translate("INTRODUCE_NOMBRE_NUEVO_PERFIL")" type="text" name="perfilname" id="input-anadir-perfil" class="form-control not-outline">
 		                        </div>
 		                    </div>
+
+		                    <div class="custom-form-row">
+		                        <div class="form-group full-group">
+		                            <label class="control-label d-block">@Html.Translate("ANADIR_PERFIL_GUARDADO")</label>
+		                            <div class="modal-apc-listado-saved divTesArbol divCategorias clearfix"></div>
+		                        </div>
+		                    </div>
 		                    <div class="form-actions">
-		                        <a href="javascript: stepsCls.addPerfilSearch()" class="btn btn-primary uppercase">@Html.Translate("GUARDAR")</a>
+		                        <a href="javascript: stepsCls.addPerfilSearchBtnEvent()" class="btn btn-primary uppercase">@Html.Translate("GUARDAR")</a>
 		                    </div>
 		                </div>
 		            </div>
