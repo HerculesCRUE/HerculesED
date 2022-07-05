@@ -1528,6 +1528,24 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
             }
 
+            // Origen de fuentes
+            HashSet<string> origenesSinRepetir = new HashSet<string>();
+            if (pPublicacion.dataOriginList != null && pPublicacion.dataOriginList.Any())
+            {
+                foreach (string origen in pPublicacion.dataOriginList)
+                {
+                    origenesSinRepetir.Add(origen);
+                }
+            }
+            if (pPublicacionB != null && pPublicacionB.dataOriginList != null && pPublicacion.dataOriginList.Any())
+            {
+                foreach (string origen in pPublicacionB.dataOriginList)
+                {
+                    origenesSinRepetir.Add(origen);
+                }
+            }
+            document.Roh_dataOrigin = origenesSinRepetir.ToList();
+
             // Áreas de conocimiento externas (ExternalKnowledgeArea)
             HashSet<string> listaIDs = new HashSet<string>();
             if (pPublicacion.hasKnowledgeAreas != null && pPublicacion.hasKnowledgeAreas.Count > 0)
