@@ -1260,6 +1260,63 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
         }
 
+        
+        public void EliminarDuplicados(List<string> pCVs = null)
+        {
+            HashSet<string> filters = new HashSet<string>();            
+            if (pCVs != null && pCVs.Count > 0)
+            {
+                filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+            
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @$"select * where{{ select ?cv ?item count(?o2) as ?numItems  ";
+                    String where = @$"  where{{
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv ?p1 ?o1.
+                                            ?o1 ?p2 ?o2.
+                                            ?o2 <http://vivoweb.org/ontology/core#relatedBy> ?item.
+                                            {filter}
+                                        }}
+                                    }}group by ?cv ?item HAVING (?numItems > 1)  order by desc(?cv) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string cv = fila["cv"].value;
+                        string item = fila["item"].value;
+
+                        String selectIn = @$"select * ";
+                        String whereIn = @$"  where{{
+                                            <{cv}> ?p1 ?o1.
+                                            ?o1 ?p2 ?o2.
+                                            ?o2 <http://vivoweb.org/ontology/core#relatedBy> <{item}>.
+                                        }}limit 10000 offset 1";
+                        SparqlObject resultadoIn = mResourceApi.VirtuosoQuery(selectIn, whereIn, "curriculumvitae");
+                        foreach(Dictionary<string,SparqlObject.Data> filain in resultadoIn.results.bindings)
+                        {
+                            string predicado = filain["p1"].value + "|" + filain["p2"].value;
+                            string valorAntiguo = filain["o1"].value + "|" + filain["o2"].value;
+                            ActualizadorTriple(cv, predicado, valorAntiguo, "");
+                        }
+                        
+                    });
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Métodos privados

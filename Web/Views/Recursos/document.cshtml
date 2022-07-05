@@ -880,6 +880,7 @@
 
 
     // Comportamiento página proyecto
+	var similitaryDocs=null;
     var comportamientoPaginaDocumento = {
         tabActive: null,
         init: function () {
@@ -893,13 +894,50 @@
             $('#relacionados-tab').unbind().click(function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
-                buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", "searchRelacionadosDocumento=@pDocument.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()", function() {
+                
+				var urlGetSimilarity = url_servicio_externo+'Similarity/GetSimilaritiesDocument?pIdDocument='+$('h1').attr('about');
+				$.get(urlGetSimilarity, null, function(data) {
+					similitaryDocs=data;
+					var filterSearch="searchRelacionadosDocumentoIn=<x>@@@@@@1000";
+					var num=1000;
+					for (let i = 0; i < data.length; i++) {	
+						filterSearch+="@@@@@@@@<http://gnoss/"+data[i].key.toUpperCase()+">@@@@@@"+num;
+						num--;
+					}
+					
+					
+					buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", filterSearch, "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()",null, function() {
                     $('#panNumResultados').hide();
                 });
+					
+				});
+				
+				
             });
             return;
         }
     };
+	
+	function CompletadaCargaRecursosSimilitud() {
+		if(similitaryDocs!=null)
+		{
+			for (let i = 0; i < similitaryDocs.length; i++) {	
+				var article=$('#resource_'+similitaryDocs[i].key.toLowerCase());
+				if(article.length)
+				{
+					article.find('div.list-wrap.tags ul li a span').each(function() {
+						var item = $(this);
+						var itemText = item.text();
+						if(similitaryDocs[i].value[itemText]!=undefined)
+						{
+							$(this).attr('style','color:var(--c-primario');
+						}
+					});	
+				}
+			}
+		}
+		
+	}
 
 
     $(function () {

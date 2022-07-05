@@ -560,12 +560,12 @@ var edicionCV = {
 	printHtmlListItemValidacion: function(data){
 		if(data.validationStatus=='pendiente'){
 			return `<div class="manage-history-wrapper">
-						<span class="material-icons">manage_history</span>
+						<span class="con-icono-before material-icons">manage_history</span>
 					</div>`;
 		}
 		if(data.validationStatus=='validado'){
 			return `<div class="verified-wrapper">
-						<span class="material-icons-outlined">verified_user</span>
+						<span class="con-icono-before material-icons-outlined">verified_user</span>
 					</div>`;
 		}
 		return ``;
@@ -573,7 +573,7 @@ var edicionCV = {
     printHtmlListItemEditable: function(data) {
         if (!data.iseditable) {
 			return `<div class="block-wrapper">
-						<span class="material-icons">block</span>
+						<span class="con-icono-before material-icons">block</span>
 					</div>`;
         }
 		return '';
@@ -1719,8 +1719,8 @@ var edicionCV = {
                             <div class="toolbar">
                                 <div class="line">
                                     <div class="box">
-                                        <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
-                                            <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                        <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+											format_bold
                                         </span>        
                                     </div>   
                                 </div>
@@ -1734,8 +1734,8 @@ var edicionCV = {
                     <div class="toolbar">
                         <div class="line">
                             <div class="box">
-                                <span class="editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
-                                    <img src="https://img.icons8.com/fluency-systems-filled/48/000000/bold.png"/>
+                                <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
+                                   format_bold
                                 </span>        
                             </div>   
                         </div>
@@ -1850,7 +1850,19 @@ var edicionCV = {
             var itemsHijo = $.grep(pItems, function(p) { return p.parentId == propiedad.id; });
             var classAux = '';
             var propAux = '';
-            if (values != null && values != '' && values.find(x => x == propiedad.id) != null) {
+			if(Array.isArray(values)){
+				for(var contador = 0; contador<values.length; contador++){
+					if(values[contador].endsWith('|||')){
+						values[contador] = values[contador].substring(0,values[contador].length-3);
+					}
+				}
+			}else{
+				if(values.EndsWith('|||')){
+					values = values.substring(0,values.length-3);
+					values = values.split();
+				}
+			}
+            if (values != '' && values.find(x => x == propiedad.id) != null) {
                 classAux = ' selected ';
             }
             if (itemsHijo.length == 0) {
@@ -2057,6 +2069,11 @@ var edicionCV = {
         var IdItems = $.map(item.find('.item.added input'), function(input) { return $(input).val() }).sort()
         var idItem = IdItems[IdItems.length - 1];
 
+		if(valoresTesauro.length==0)
+		{
+			return;
+		}
+		
         var title = valoresTesauro.find(x => x.key == idItem).value;
 
         //var listado = item.parent().find('.item.aux.entityaux').find('ul.listadoTesauro');
@@ -2665,123 +2682,11 @@ var edicionCV = {
 
         MostrarUpdateProgress();
 		
-		//TODO
-		var ul = $('#modal-editar-entidad-0').find('.formulario-edicion');
-		conseguirTesauro('researcharea', lang, '', ul, false, false);
+		//Pintado tesauro y asignacion de etiquetas asociadas al mismo
+		var ul = $('ul.listadoTesauro.partial');
+		conseguirTesauro('researcharea', lang, '', ul, false, false, true, that, data);
 
-        $.post(urlEdicionCV + 'EnrichmentTopics', data, function(data) {
-            // Borrar TAGS y ETIQUETAS enriquecidas precargadas.
-            $('div[propertyrdf="http://w3id.org/roh/enrichedKnowledgeArea"].added').remove();
-            $('div[propertyrdf="http://w3id.org/roh/enrichedKeywords"].added').remove();
-
-            that.repintarListadoEntity();
-
-            // Lista para comprobar repeticiones.
-            var listaEtiquetasCargadas = [];
-            var listaCategoriasCargadas = [];
-
-            // Listas para los TAGS
-            $('.form-group.full-group.topic.multiple .list-wrap.tags li a span.texto').each(function() {
-                listaEtiquetasCargadas.push($(this).text().trim());
-            });
-
-            // Lista para las CATEGORIAS 
-            var listaNombreCat = ["userKnowledgeArea", "enrichedKnowledgeArea", "externalKnowledgeArea"]
-            listaNombreCat.forEach(function(item, index) {
-                $("#modal-editar-entidad  div.item.entityaux.added[propertyrdf='http://w3id.org/roh/" + item + "']").each(function() {
-                    var dicNumDesordenado = [];
-
-                    $(this).find("input[propertyrdf='http://w3id.org/roh/categoryNode']").each(function() {
-                        var valActual = $(this).val();
-                        if (valActual != "") {
-                            dicNumDesordenado.push({ key: parseInt(valActual.split('_')[1].replaceAll('.', '')), value: valActual });
-                        }
-                    });
-
-                    // Ordenación
-                    var idUltimoNivel = "";
-                    var idInt = 0;
-                    for (const [key, value] of Object.entries(dicNumDesordenado)) {
-                        if (value.key > idInt) {
-                            idInt = value.key;
-                            idUltimoNivel = value.value;
-                        }
-                    }
-
-                    listaCategoriasCargadas.push(idUltimoNivel);
-                });
-            });
-
-            // TAGS
-            data.tags.topics.forEach(function(element) {
-                if (!listaEtiquetasCargadas.includes(element.word.trim())) {
-					var auxKeyword=$('div.entityaux.aux[propertyrdf="http://w3id.org/roh/enrichedKeywords"]');
-					var clon=auxKeyword.clone();
-					$(clon).removeClass('aux');
-					$(clon).addClass('added');                    
-					$(clon).attr('about',RandomGuid());        
-					$(clon).find('input[propertyrdf="http://w3id.org/roh/title"]').val(element.word.trim());
-                    $(clon).find('input[propertyrdf="http://w3id.org/roh/score"]').val(element.porcentaje);
-					auxKeyword.parent().append(clon);
-                    listaEtiquetasCargadas.push(element.word);
-                }
-            });
-
-            // CATEGORIAS
-            data.categories.topics.forEach(function(element) {
-
-                var dicNumDesordenado = [];
-
-                element.forEach(function(val) {
-                    dicNumDesordenado.push({ key: parseInt(val.id.split('_')[1].replaceAll('.', '')), value: val });
-                });
-
-                // Ordenación
-                var idUltimoNivel = "";
-                var idInt = 0;
-                for (const [key, value] of Object.entries(dicNumDesordenado)) {
-                    if (value.key > idInt) {
-                        idInt = value.key;
-                        idUltimoNivel = value.value;
-                    }
-                }
-
-                if (!listaCategoriasCargadas.includes(idUltimoNivel.id)) {
-                    var parentPanel = $('div.item.aux.entityaux[propertyrdf="http://w3id.org/roh/enrichedKnowledgeArea"]').clone();
-                    var rngId = RandomGuid();
-
-                    parentPanel.attr('about', rngId);
-                    parentPanel.removeClass('aux');
-                    parentPanel.addClass('added');
-                    parentPanel.remove('.buscador-coleccion');
-                    parentPanel.remove('.action-buttons-resultados');
-                    parentPanel.remove('.listadoTesauro');
-
-                    $('div.item.aux.entityaux[propertyrdf="http://w3id.org/roh/enrichedKnowledgeArea"]').parent().append(parentPanel);
-                    element.forEach(function(id) {
-
-                        var idTesauro = id.id;
-
-                        var panelTesauro = parentPanel.find('div.custom-form-row div.item.aux').clone();
-                        $(panelTesauro).removeClass('aux');
-                        $(panelTesauro).addClass('added');
-                        $(panelTesauro).find('input').val(idTesauro);
-                        $(panelTesauro).find('a').removeClass('add');
-                        $(panelTesauro).find('a').addClass('delete');
-
-                        parentPanel.find('div.custom-form-row div.item.aux').parent().append(panelTesauro);
-
-                    });
-
-                    listaCategoriasCargadas.push(idUltimoNivel);
-                }
-
-            });
-
-            that.repintarListadoEntity();
-            OcultarUpdateProgress();
-        });
-    },
+        },
 	cambiarIdiomaEdicion: function(lang,contenedor) {
         if(lang=='es')
 		{
@@ -2987,7 +2892,7 @@ var edicionCV = {
 				var tesauro = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('ul.listadoTesauro.partial')[0].getAttribute('thesaurusID');
 			}
 			if(ul.length != 0 && tesauro.length != 0){
-				conseguirTesauro(tesauro, lang, listadoValoresSeleccionados, ul, edit, true);
+				conseguirTesauro(tesauro, lang, listadoValoresSeleccionados, ul, edit, true, false, null, null);
 			}
 			
 			
@@ -3519,7 +3424,9 @@ var edicionCV = {
         $('form[rdftype="http://purl.org/ontology/bibo/Document"] div.visuell-view[propertyrdf="http://purl.org/ontology/bibo/abstract"]').off('focusout').on('focusout', function(e) {
             //TODO: Revisar tema del documento PDF. De momento, siempre se le pasa NULL.
             edicionCV.cargarAreasEtiquetasEnriquecidas($('form[rdftype="http://purl.org/ontology/bibo/Document"] input[propertyrdf="http://w3id.org/roh/title"]').val(), $('form[rdftype="http://purl.org/ontology/bibo/Document"] div.visuell-view[propertyrdf="http://purl.org/ontology/bibo/abstract"]').html(), null);
-        });
+        
+			
+		});
 		
 		//campos de texto dependientes
         $('input.hasdependency[type=text],input.hasdependency[type=hidden],input.hasdependency[type=number]').each(function() {
@@ -3615,14 +3522,14 @@ var edicionCV = {
         });
 
 
-		//CAmbiamos de idioma en la edición de item
+		//Cambiamos de idioma en la edición de item
         $('.formulario-edicion ul.nav-tabs li a').off('click').on('click', function(e) {
 			$(this).closest('ul').find('a').removeClass('active');
 			$(this).addClass('active');
 			that.cambiarIdiomaEdicion($(this).attr('lang'),$(this).closest('.formulario-edicion'));
         });
 		
-		//CAmbiamos de idioma en la edición de cv
+		//Cambiamos de idioma en la edición de cv
         $('.row.cvTab ul.nav-tabs li a').off('click').on('click', function(e) {
 			$(this).closest('ul').find('a').removeClass('active');
 			$(this).addClass('active');
@@ -3657,10 +3564,12 @@ var edicionCV = {
 			
 			var dataId = $(this)[0].dataset.id;
 			var nombreProy = $(this).closest("resource-success");
+			var section = $(this).closest(".resource.success").closest(".panel-group.pmd-accordion").attr("section");
+			var rdfTypeTab = $(this).closest(".resource.success").closest(".row.cvTab").attr("rdftype");
 			var fechaProy = "";
-			that.GetDataPRC(dataId, that.idPerson);
+			that.GetDataPRC(dataId, that.idPerson, section,rdfTypeTab);
 		});
-		
+				
 		$('.texto.validacionItem').off('click').on('click', function(e) {
 			var dataId = $(this)[0].dataset.id;
 			
@@ -3669,11 +3578,12 @@ var edicionCV = {
 		
         return;
     },
-	sendPRC: function(idrecurso, idproyecto){
+	sendPRC: function(idrecurso, idproyecto, section, rdfTypeTab){
+		var that=this;
 		var formData = new FormData();
 		formData.append('pIdRecurso', idrecurso);
 		formData.append('pIdProyecto', idproyecto);
-		
+		MostrarUpdateProgress();
 		$.ajax({
 			url: urlEnvioValidacionCV + 'EnvioPRC',
 			type: 'POST',
@@ -3682,12 +3592,23 @@ var edicionCV = {
 			processData: false,
             enctype: 'multipart/form-data',
             contentType: false,
-			success: function ( response ) {
-				
+			success: function ( response ) {				
+				mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));				
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + section + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + idrecurso + "&pLang=" + lang, null, function(data) {
+					$('a[data-id="' + idrecurso + '"]').closest('article').replaceWith(that.printHtmlListItem(idrecurso, data));
+					that.repintarListadoTab(section);
+					OcultarUpdateProgress();
+				});
+			},
+			error: function(){
+				mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
 			}
 		});
 	},
-	GetDataPRC: function(dataId, idPerson){		
+	GetDataPRC: function(dataId, idPerson, section, rdfTypeTab){
+		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
+		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .form-actions .btn.btn-primary.uppercase.btnEnvioPRC').removeClass("disabled");
+
 		$.ajax({
 			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
 			type: 'GET',
@@ -3743,7 +3664,8 @@ var edicionCV = {
 				}
 				
 				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
-				operativaFormularioProduccionCientifica.formProyecto();
+				operativaFormularioProduccionCientifica.formProyecto(section,rdfTypeTab);
+				
 			}
 		});
 	},
@@ -6204,7 +6126,9 @@ function getParam(param)
 tooltipsAccionesRecursos.lanzar= function () {
 	montarTooltip.lanzar(this.block, GetText('CV_BLOQUEADO'), 'background-gris-oscuro');
 	montarTooltip.lanzar(this.visible, GetText('CV_VISIBLE'), 'background-gris-oscuro');
-	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');	
+	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');
+	montarTooltip.lanzar(this.body.find('.manage-history-wrapper'), GetText('CV_PENDIENTE'), 'background-gris-oscuro');
+	montarTooltip.lanzar(this.body.find('.verified-wrapper'), GetText('CV_VALIDADO'), 'background-gris-oscuro');	
 };
 
 montarTooltip.lanzar= function (elem, title, classes) {
@@ -6333,23 +6257,25 @@ operativaFormularioProduccionCientifica.modal= function () {
 	});
 }
 
-operativaFormularioProduccionCientifica.formProyecto= function () {
+operativaFormularioProduccionCientifica.formProyecto = function (section,rdfTypeTab) {
 	var that = this;
 	that.formularioProyecto.find('> .alert').hide();
 	this.formularioProyecto.find('.btn').off('click').on('click', function () {
+		$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);
+		
 		if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
 			that.formularioProyecto.find('> .alert').hide();
 			$(this).attr('data-dismiss', 'modal');
-			mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
 			
 			if($('input[name="proyecto"]:checked').length)
 			{
 				idproyecto = $('input[name="proyecto"]:checked').attr('projectId');
 			}
 			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
-			edicionCV.sendPRC(idrecurso,idproyecto);
+			edicionCV.sendPRC(idrecurso,idproyecto, section,rdfTypeTab);
 			
-		} else {
+		} else {			
+			$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);	
 			that.formularioProyecto.find('> .alert').show();
 			$(this).addClass('disabled');
 		}
@@ -6357,17 +6283,20 @@ operativaFormularioProduccionCientifica.formProyecto= function () {
 	
 	this.formularioProyecto.find('.alert-title a').off('click').on('click', function () {
 		$(this).attr('data-dismiss', 'modal');
-		mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
 		var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
-		edicionCV.sendPRC(idrecurso,'');
+		edicionCV.sendPRC(idrecurso,'', section,rdfTypeTab);
 	});
 
 	this.resourceList.find('.resource .form-check-inline').on('change', function () {
 		that.formularioProyecto.find('.btn').removeClass('disabled');
+		that.formularioProyecto.find('> .alert').hide();
 	});
 }
 
-function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit, mostrarModal){
+function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit, mostrarModal, etiquetas, that, data){
+	if(ul.length==0 && data != null){
+		pintadoEtiquetas(that, data);
+	}
 	$.ajax({
 		url: urlEdicionCV + "GetTesaurus",
 		data:{
@@ -6382,6 +6311,9 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 			ul.append(edicionCV.printThesaurusItemsByParent(listadoValoresSeleccionados, response[0], itemsHijo, 0));
 			pintadoTesauro(ul, edit, mostrarModal);
 			edicionCV.engancharComportamientosCV();
+			if(data != null){
+				pintadoEtiquetas(that, data);
+			}
 		}, 
 		error: function(response){
 			
@@ -6391,6 +6323,9 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 
 function pintadoTesauro(elementoActual, edit, mostrarModal){
 	var modalPopUp = elementoActual.closest('.modal-top').attr('id')
+	if(modalPopUp == null){
+		return;
+	}
 	if (modalPopUp == 'modal-editar-entidad') {
 		modalPopUp = 'modal-editar-entidad-0'
 	} else {
@@ -6450,4 +6385,119 @@ function pintadoTesauro(elementoActual, edit, mostrarModal){
 		$(modalPopUp).removeClass('modal-con-buscador');
 		$(modalPopUp).removeClass('modal-tesauro');
 	}
+}
+
+function pintadoEtiquetas(that, data){
+	$.post(urlEdicionCV + 'EnrichmentTopics', data, function(data) {
+		// Borrar TAGS y ETIQUETAS enriquecidas precargadas.
+		$('div[propertyrdf="http://w3id.org/roh/enrichedKnowledgeArea"].added').remove();
+		$('div[propertyrdf="http://w3id.org/roh/enrichedKeywords"].added').remove();
+
+		that.repintarListadoEntity();
+
+		// Lista para comprobar repeticiones.
+		var listaEtiquetasCargadas = [];
+		var listaCategoriasCargadas = [];
+
+		// Listas para los TAGS
+		$('.form-group.full-group.topic.multiple .list-wrap.tags li a span.texto').each(function() {
+			listaEtiquetasCargadas.push($(this).text().trim());
+		});
+
+		// Lista para las CATEGORIAS 
+		var listaNombreCat = ["userKnowledgeArea", "enrichedKnowledgeArea", "externalKnowledgeArea"]
+		listaNombreCat.forEach(function(item, index) {
+			$("#modal-editar-entidad  div.item.entityaux.added[propertyrdf='http://w3id.org/roh/" + item + "']").each(function() {
+				var dicNumDesordenado = [];
+
+				$(this).find("input[propertyrdf='http://w3id.org/roh/categoryNode']").each(function() {
+					var valActual = $(this).val();
+					if (valActual != "") {
+						dicNumDesordenado.push({ key: parseInt(valActual.split('_')[1].replaceAll('.', '')), value: valActual });
+					}
+				});
+
+				// Ordenación
+				var idUltimoNivel = "";
+				var idInt = 0;
+				for (const [key, value] of Object.entries(dicNumDesordenado)) {
+					if (value.key > idInt) {
+						idInt = value.key;
+						idUltimoNivel = value.value;
+					}
+				}
+
+				listaCategoriasCargadas.push(idUltimoNivel);
+			});
+		});
+
+		// TAGS
+		data.tags.topics.forEach(function(element) {
+			if (!listaEtiquetasCargadas.includes(element.word.trim())) {
+				var auxKeyword=$('div.entityaux.aux[propertyrdf="http://w3id.org/roh/enrichedKeywords"]');
+				var clon=auxKeyword.clone();
+				$(clon).removeClass('aux');
+				$(clon).addClass('added');                    
+				$(clon).attr('about',RandomGuid());        
+				$(clon).find('input[propertyrdf="http://w3id.org/roh/title"]').val(element.word.trim());
+				$(clon).find('input[propertyrdf="http://w3id.org/roh/score"]').val(element.porcentaje);
+				auxKeyword.parent().append(clon);
+				listaEtiquetasCargadas.push(element.word);
+			}
+		});
+
+		// CATEGORIAS
+		data.categories.topics.forEach(function(element) {
+
+			var dicNumDesordenado = [];
+
+			element.forEach(function(val) {
+				dicNumDesordenado.push({ key: parseInt(val.id.split('_')[1].replaceAll('.', '')), value: val });
+			});
+
+			// Ordenación
+			var idUltimoNivel = "";
+			var idInt = 0;
+			for (const [key, value] of Object.entries(dicNumDesordenado)) {
+				if (value.key > idInt) {
+					idInt = value.key;
+					idUltimoNivel = value.value;
+				}
+			}
+
+			if (!listaCategoriasCargadas.includes(idUltimoNivel.id)) {
+				var parentPanel = $('div.item.aux.entityaux[propertyrdf="http://w3id.org/roh/enrichedKnowledgeArea"]').clone();
+				var rngId = RandomGuid();
+
+				parentPanel.attr('about', rngId);
+				parentPanel.removeClass('aux');
+				parentPanel.addClass('added');
+				parentPanel.remove('.buscador-coleccion');
+				parentPanel.remove('.action-buttons-resultados');
+				parentPanel.remove('.listadoTesauro');
+
+				$('div.item.aux.entityaux[propertyrdf="http://w3id.org/roh/enrichedKnowledgeArea"]').parent().append(parentPanel);
+				element.forEach(function(id) {
+
+					var idTesauro = id.id;
+
+					var panelTesauro = parentPanel.find('div.custom-form-row div.item.aux').clone();
+					$(panelTesauro).removeClass('aux');
+					$(panelTesauro).addClass('added');
+					$(panelTesauro).find('input').val(idTesauro);
+					$(panelTesauro).find('a').removeClass('add');
+					$(panelTesauro).find('a').addClass('delete');
+
+					parentPanel.find('div.custom-form-row div.item.aux').parent().append(panelTesauro);
+
+				});
+
+				listaCategoriasCargadas.push(idUltimoNivel);
+			}
+
+		});
+
+		that.repintarListadoEntity();
+		OcultarUpdateProgress();
+	});
 }

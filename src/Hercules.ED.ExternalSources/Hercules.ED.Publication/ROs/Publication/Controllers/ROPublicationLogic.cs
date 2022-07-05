@@ -277,7 +277,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
                         else
                         {
-                            jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
+                            jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
+                            // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
+                            //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
                         }
 
                         if (!string.IsNullOrEmpty(jsonData))
@@ -415,7 +417,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             }
                             else
                             {
-                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
+                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
+                                // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
+                                //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
                             }
 
                             if (!string.IsNullOrEmpty(jsonData))
@@ -571,7 +575,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             }
                             else
                             {
-                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
+                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
+                                // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
+                                //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
                             }
 
                             if (!string.IsNullOrEmpty(jsonData))
@@ -2023,7 +2029,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Comprobación de la petición.
                     if (!pDic.ContainsKey(pDoi))
                     {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                        string info_publication = httpCall(url.ToString(), "GET", headers).Result.Replace("\"", "");
                         //Log.Information("Respuesta Zenodo --> " + info_publication);
                         if (!string.IsNullOrEmpty(info_publication) && info_publication.EndsWith(".pdf"))
                         {

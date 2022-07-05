@@ -1,0 +1,19 @@
+@*[security|||error/error404.cshtml|||hercules]*@
+@using Es.Riam.Gnoss.Web.MVC.Models
+@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
+@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
+@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
+@using Es.Riam.Gnoss.AD.ServiciosGenerales
+@using Es.Riam.Gnoss.Web.MVC.Controllers
+@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
+@using Es.Riam.Gnoss.Web.Controles
+@using Newtonsoft.Json
+@using System.Reflection;
+<div class="row">
+    <div class="col">
+        <div class="form panel-centrado">
+            <h1>@Html.Translate("TITULO_PAGINA_NO_ENCONTRADA")</h1>
+            @Html.Raw(Html.Translate("DESCRIPCION_PAGINA_NO_ENCONTRADA"))
+        </div>
+    </div>
+</div>
