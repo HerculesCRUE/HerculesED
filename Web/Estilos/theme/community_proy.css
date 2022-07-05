@@ -228,8 +228,29 @@ a.faceta.applied{
 }
 
 .edicionCluster .modal-apc-listado-saved {
-    max-height: 500px;
+    max-height: 250px;
 }
+
+.edicionCluster .modal-apc-listado-saved input.at-input:disabled + label{
+    text-decoration:line-through
+}
+
+.edicionCluster .modal-apc-listado-saved label .cluster{
+    font-style: italic;
+    padding-left: 20px;
+}
+
+.edicionCluster .modal-apc-listado-saved label .cluster::before {
+    content: "-";
+    display: inline;
+    width: 6px;
+    height: 6px;
+    left: -4px;
+    padding-right: 21px;
+}
+
+
+/* Fin edición cluster */
 
 /* Estilos para la cabecera */
 .user-miniatura .imagen-usuario-wrap .imagen span{
