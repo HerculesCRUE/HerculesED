@@ -126,6 +126,7 @@ var importarCVN = {
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
 				checkAllConflict();
+				checkAllNew();
 				OcultarUpdateProgress();				
 			}
 		});		
@@ -164,6 +165,21 @@ var importarCVN = {
 
 function checkAllConflict(){
 	$('.checkAllConflict input[type="checkbox"]').off('click').on('click', function(e) {
+		var allConflict = $(this).prop('checked');
+		if(allConflict){
+			$(this).closest('.wrap').find('.checkAllNew input').prop('checked', !allConflict);
+		}
+		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
+		edicionCV.buscarListado(seccion);
+	});
+}
+
+function checkAllNew(){
+	$('.checkAllNew input[type="checkbox"]').off('click').on('click', function(e) {
+		var allNew = $(this).prop('checked');
+		if(allNew){
+			$(this).closest('.wrap').find('.checkAllConflict input').prop('checked', !allNew);
+		}
 		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
 		edicionCV.buscarListado(seccion);
 	});
@@ -237,7 +253,7 @@ function printCientificProduction(id, data){
 										<div class="resource-list-wrap">
 											<article class="resource success" >
 												<div class="custom-control custom-checkbox">
-													<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].identifier}"  value="${data.items[seccion].identifier}_${contador}">
+													<input type="checkbox" class="custom-control-input" id="check_resource_${data.items[seccion].identifier}"  value="${data.items[seccion].identifier}_${contador}" checked>
 													<label class="custom-control-label" for="check_resource_${data.items[seccion].identifier}"></label>
 												</div>
 												<div class="wrap">
@@ -319,7 +335,7 @@ function printFreeText(id, data){
 				}
 				var html2 = `<article class="resource success">
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${secciones[seccion].identifier}_${contador}"  value="${secciones[seccion].identifier}_${contador}">
+									<input type="checkbox" class="custom-control-input" id="check_resource_${secciones[seccion].identifier}_${contador}"  value="${secciones[seccion].identifier}_${contador}" checked>
 									<label class="custom-control-label" for="check_resource_${secciones[seccion].identifier}_${contador}"></label>
 								</div>
 								<div class="wrap">
@@ -524,6 +540,12 @@ edicionCV.printTabSection= function(data) {
 											<label class="custom-control-label" for="checkAllConflict_${id2}">${GetText('CV_MOSTRAR_CONFLICTOS')}</label>
 										</div>
 									</div>
+									<div class="checkAllNew" id="checkAllNew">
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="checkAllNew_${id2}">
+											<label class="custom-control-label" for="checkAllNew_${id2}">${GetText('CV_MOSTRAR_NUEVOS')}</label>
+										</div>
+									</div>
 								</div>
 								<div class="wrap">
 									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
@@ -576,14 +598,26 @@ edicionCV.printTabSection= function(data) {
 
 edicionCV.printHtmlListItem= function(id, data) {
 	let openAccess="";
+	let isCheck ="";
+	let isConflict = false;
 	if (data.isopenaccess) {
 		openAccess = "open-access";
 	}
+	if(data.idBBDD == null || data.idBBDD == ''){
+		isCheck = "checked";
+	}
+	if(data.idBBDD != ""){
+		isConflict = true;
+	}
+	else
+	{
+		isConflict = false;
+	}
 	var htmlListItem = ``;
 	if(data.title!= null){
-		htmlListItem = `<article class="resource success ${openAccess} conflict-${data.idBBDD != ""}" >
+		htmlListItem = `<article class="resource success ${openAccess} conflict-${isConflict}" >
 							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}">
+								<input type="checkbox" class="custom-control-input" id="check_resource_${id}" value="${id}_${contador}" ${isCheck}>
 								<label class="custom-control-label" for="check_resource_${id}"></label>
 							</div>
 							<div class="wrap">
@@ -597,7 +631,11 @@ edicionCV.printHtmlListItem= function(id, data) {
 			}else{
 				htmlListItem += selectorConflictoBloqueado;
 			}	
-		}							
+		}
+		else
+		{
+			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
+		}			
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>
 									<div class="content-wrap">
