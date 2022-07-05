@@ -32,6 +32,7 @@ namespace OfferstateOntology
 			this.Dc_title.Add(idiomaUsuario , GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/title")));
 			
 			this.Dc_identifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/elements/1.1/identifier"));
+			this.Schema_color = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/color"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/OfferState"; } }
@@ -41,6 +42,9 @@ namespace OfferstateOntology
 
 		[RDFProperty("http://purl.org/dc/elements/1.1/identifier")]
 		public  string Dc_identifier { get; set;}
+
+		[RDFProperty("http://www.schema.org/color")]
+		public  string Schema_color { get; set;}
 
 
 		internal override void GetProperties()
@@ -58,6 +62,7 @@ namespace OfferstateOntology
 				throw new GnossAPIException($"La propiedad dc:title debe tener al menos un valor en el recurso: {resourceID}");
 			}
 			propList.Add(new StringOntologyProperty("dc:identifier", this.Dc_identifier));
+			propList.Add(new StringOntologyProperty("schema:color", this.Schema_color));
 		}
 
 		internal override void GetEntities()
@@ -93,6 +98,10 @@ namespace OfferstateOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/OfferState_{ResourceID}_{ArticleID}",  "http://purl.org/dc/elements/1.1/identifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_identifier)}\"", list, " . ");
 				}
+				if(this.Schema_color != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/OfferState_{ResourceID}_{ArticleID}",  "http://www.schema.org/color", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_color)}\"", list, " . ");
+				}
 			return list;
 		}
 
@@ -111,6 +120,10 @@ namespace OfferstateOntology
 				if(this.Dc_identifier != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/dc/elements/1.1/identifier", $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_identifier).ToLower()}\"", list, " . ");
+				}
+				if(this.Schema_color != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://www.schema.org/color", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_color).ToLower()}\"", list, " . ");
 				}
 			if (listaSearch != null && listaSearch.Count > 0)
 			{

@@ -21,6 +21,7 @@ namespace ScopusConnect.ROs.Scopus.Models
         public bool? openAccess { get; set; }
         public Source hasPublicationVenue { get; set; }
         public List<PublicationMetric> hasMetric { get; set; }
+        public string dataOrigin { get; set; }
     }
     public class PublicationMetric
     {

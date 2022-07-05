@@ -209,6 +209,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         Log.Information("[WoS] Comparación (SemanticScholar)...");
                         Publication pub_completa = pub;
+                        pub_completa.dataOriginList = new List<string>();
                         if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                         {
                             pub_completa = compatacion(pub, dataSemanticScholar.Item1);
@@ -221,6 +222,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         if (pub_completa.pdf == "")
                         {
                             pub_completa.pdf = null;
+                        }
+                        else
+                        {
+                            pub_completa.dataOriginList.Add("Zenodo");
                         }
 
                         // Completar información faltante con las publicaciones de Scopus.
@@ -389,6 +394,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             Log.Information("[Scopus] Comparación (SemanticScholar)...");
                             Publication pub_completa = pubScopus;
+                            pub_completa.dataOriginList = new List<string>();
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
                                 pub_completa = compatacion(pubScopus, dataSemanticScholar.Item1);
@@ -401,6 +407,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (pub_completa.pdf == "")
                             {
                                 pub_completa.pdf = null;
+                            }
+                            else
+                            {
+                                pub_completa.dataOriginList.Add("Zenodo");
                             }
 
                             // Enriquecimiento
@@ -482,6 +492,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             // Unificar Autores
                             pub_completa = CompararAutoresCitasReferencias(pub_completa);
+
                             if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any())
                             {
                                 bool encontrado = false;
@@ -547,6 +558,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             Log.Information("[OpenAire] Comparación (SemanticScholar)...");
                             Publication pub_completa = pub;
+                            pub_completa.dataOriginList = new List<string>();
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
                                 pub_completa = compatacion(pub, dataSemanticScholar.Item1);
@@ -559,6 +571,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (pub_completa.pdf == "")
                             {
                                 pub_completa.pdf = null;
+                            }
+                            else
+                            {
+                                pub_completa.dataOriginList.Add("Zenodo");
                             }
 
                             // Enriquecimiento
@@ -622,6 +638,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             // Unificar Autores
                             pub_completa = CompararAutoresCitasReferencias(pub_completa);
+
                             if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any())
                             {
                                 bool encontrado = false;
@@ -1057,6 +1074,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public Publication compatacion(Publication pub_1, Publication pub_2)
         {
             Publication pub = new Publication();
+            pub.dataOriginList = pub_1.dataOriginList;
             if (pub_1 == null)
             {
                 if (pub_2 == null)
@@ -1073,53 +1091,67 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
                 else
                 {
+                    bool pub1 = false;
+                    bool pub2 = false;
                     if (!string.IsNullOrEmpty(pub_1.typeOfPublication))
                     {
                         pub.typeOfPublication = pub_1.typeOfPublication;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.typeOfPublication = pub_2.typeOfPublication;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.title))
                     {
                         pub.title = pub_1.title;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.title = pub_2.title;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.Abstract))
                     {
                         pub.Abstract = pub_1.Abstract;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.Abstract = pub_2.Abstract;
+                        pub2 = true;
                     }
 
                     if (pub_1.freetextKeywords != null && pub_1.freetextKeywords.Any())
                     {
                         pub.freetextKeywords = pub_1.freetextKeywords;
+                        pub1 = true;
                         if (pub_2.freetextKeywords != null)
                         {
                             pub.freetextKeywords.AddRange(pub_2.freetextKeywords);
+                            pub2 = true;
                         }
                     }
                     else
                     {
                         pub.freetextKeywords = pub_2.freetextKeywords;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.language))
                     {
                         pub.language = pub_1.language;
+                        pub1 = true;
                     }
                     else
                     {
+
                         pub.language = pub_2.language;
+                        pub2 = true;
                     }
 
                     // Si es un capitulo de libro, no necesita DOI. (Da problemas en el motor de desambiguación.)
@@ -1128,137 +1160,166 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         if (pub_1.doi != null)
                         {
                             pub.doi = pub_1.doi;
+                            pub1 = true;
                         }
                         else
                         {
                             pub.doi = pub_2.doi;
+                            pub2 = true;
                         }
                     }
 
                     if (pub_1.dataIssued != null)
                     {
                         pub.dataIssued = pub_1.dataIssued;
+                        pub1 = true;
                     }
                     else
                     {
                         if (pub_2.dataIssued != null)
                         {
                             pub.dataIssued = pub_2.dataIssued;
+                            pub2 = true;
                         }
                         else { pub.dataIssued = null; }
                     }
                     if (pub_1.url != null && pub_1.url.Any())
                     {
                         pub.url = pub_1.url;
+                        pub1 = true;
                         if (pub_2.url != null)
                         {
                             foreach (string item in pub_2.url)
                             {
                                 pub.url.Add(item);
+                                pub2 = true;
                             }
                         }
                     }
                     else
                     {
                         pub.url = pub_2.url;
+                        pub2 = true;
                     }
                     if (pub_1.correspondingAuthor != null)
                     {
                         pub.correspondingAuthor = pub_1.correspondingAuthor;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.correspondingAuthor = pub_2.correspondingAuthor;
+                        pub2 = true;
                     }
 
                     pub.seqOfAuthors = new List<Models.Person>();
                     if (pub_1.seqOfAuthors != null && pub_1.seqOfAuthors.Count > 0)
                     {
                         pub.seqOfAuthors.AddRange(pub_1.seqOfAuthors);
+                        pub1 = true;
                     }
                     if (pub_2.seqOfAuthors != null && pub_2.seqOfAuthors.Count > 0)
                     {
                         pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
+                        pub2 = true;
                     }
 
                     if (pub_1.hasKnowledgeAreas != null && pub_1.hasKnowledgeAreas.Any())
                     {
                         pub.hasKnowledgeAreas = pub_1.hasKnowledgeAreas;
+                        pub1 = true;
                         if (pub_2.hasKnowledgeAreas != null)
                         {
                             pub.hasKnowledgeAreas.AddRange(pub_2.hasKnowledgeAreas);
+                            pub2 = true;
                         }
                     }
                     else
                     {
                         pub.hasKnowledgeAreas = pub_2.hasKnowledgeAreas;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.pageEnd))
                     {
                         pub.pageEnd = pub_1.pageEnd;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.pageEnd = pub_2.pageEnd;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.pageStart))
                     {
                         pub.pageStart = pub_1.pageStart;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.pageStart = pub_2.pageStart;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.volume))
                     {
                         pub.volume = pub_1.volume;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.volume = pub_2.volume;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.articleNumber))
                     {
                         pub.articleNumber = pub_1.articleNumber;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.articleNumber = pub_2.articleNumber;
+                        pub2 = true;
                     }
 
                     if (pub_1.openAccess != null)
                     {
                         pub.openAccess = pub_1.openAccess;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.openAccess = pub_2.openAccess;
+                        pub2 = true;
                     }
 
                     if (pub_1.IDs != null && pub_1.IDs.Any())
                     {
                         pub.IDs = pub_1.IDs;
+                        pub1 = true;
                         if (pub_2.IDs != null)
                         {
                             pub.IDs.AddRange(pub_2.IDs);
+                            pub2 = true;
                         }
                     }
                     else
                     {
                         pub.IDs = pub_2.IDs;
+                        pub2 = true;
                     }
 
                     if (!string.IsNullOrEmpty(pub_1.presentedAt))
                     {
                         pub.presentedAt = pub_1.presentedAt;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.presentedAt = pub_2.presentedAt;
+                        pub2 = true;
                     }
 
                     Dictionary<string, Models.PublicationMetric> dicMetricas = new Dictionary<string, Models.PublicationMetric>();
@@ -1270,6 +1331,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (!dicMetricas.ContainsKey(metrica.metricName))
                             {
                                 dicMetricas.Add(metrica.metricName, metrica);
+                                pub1 = true;
                             }
                         }
                     }
@@ -1280,6 +1342,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (!dicMetricas.ContainsKey(metrica.metricName))
                             {
                                 dicMetricas.Add(metrica.metricName, metrica);
+                                pub2 = true;
                             }
                         }
                     }
@@ -1296,28 +1359,34 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.type))
                     {
                         pub.hasPublicationVenue.type = pub_1.hasPublicationVenue.type;
+                        pub1 = true;
                     }
                     else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.type))
                     {
                         pub.hasPublicationVenue.type = pub_2.hasPublicationVenue.type;
+                        pub2 = true;
                     }
 
                     if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.eissn))
                     {
                         pub.hasPublicationVenue.eissn = pub_1.hasPublicationVenue.eissn;
+                        pub1 = true;
                     }
                     else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.eissn))
                     {
                         pub.hasPublicationVenue.eissn = pub_2.hasPublicationVenue.eissn;
+                        pub2 = true;
                     }
 
                     if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.name))
                     {
                         pub.hasPublicationVenue.name = pub_1.hasPublicationVenue.name;
+                        pub1 = true;
                     }
                     else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.name))
                     {
                         pub.hasPublicationVenue.name = pub_2.hasPublicationVenue.name;
+                        pub2 = true;
                     }
 
                     if (pub_1.hasPublicationVenue != null && pub_1.hasPublicationVenue.issn != null && pub_1.hasPublicationVenue.issn.Count > 0)
@@ -1327,6 +1396,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (item != pub.hasPublicationVenue.eissn)
                             {
                                 listaIssn.Add(item);
+                                pub1 = true;
                             }
                         }
                     }
@@ -1338,6 +1408,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             if (item != pub.hasPublicationVenue.eissn)
                             {
                                 listaIssn.Add(item);
+                                pub2 = true;
                             }
                         }
                     }
@@ -1347,38 +1418,46 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     if (!string.IsNullOrEmpty(pub_1.pdf))
                     {
                         pub.pdf = pub_1.pdf;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.pdf = pub_2.pdf;
+                        pub2 = true;
                     }
 
                     if (pub_1.topics_enriquecidos != null && pub_1.topics_enriquecidos.Any())
                     {
                         pub.topics_enriquecidos = pub_1.topics_enriquecidos;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.topics_enriquecidos = pub_2.topics_enriquecidos;
+                        pub2 = true;
                     }
 
 
                     if (pub_1.freetextKeyword_enriquecidas != null && pub_1.freetextKeyword_enriquecidas.Any())
                     {
                         pub.freetextKeyword_enriquecidas = pub_1.freetextKeyword_enriquecidas;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.freetextKeyword_enriquecidas = pub_2.freetextKeyword_enriquecidas;
+                        pub2 = true;
                     }
 
                     if (pub_1.bibliografia != null && pub_1.bibliografia.Any())
                     {
                         pub.bibliografia = pub_1.bibliografia;
+                        pub1 = true;
                     }
                     else
                     {
                         pub.bibliografia = pub_2.bibliografia;
+                        pub2 = true;
                     }
 
                     //if (pub_1.citas != null)
@@ -1402,6 +1481,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // {
                     //     pub.hasPublicationVenue = metrica_journal(pub.hasPublicationVenue, pub.dataIssued.datimeTime, pub.topics_enriquecidos);
                     // }
+                    if (pub1 && pub_1.dataOrigin != null)
+                    {
+                        pub.dataOriginList.Add(pub_1.dataOrigin);
+                    }
+                    if (pub2)
+                    {
+                        pub.dataOriginList.Add(pub_2.dataOrigin);
+                    }
+
                     return pub;
                 }
             }
@@ -2987,6 +3075,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             publicacion.openAccess = pPublicacionScopus.openAccess;
             publicacion.IDs = new List<string>();
             publicacion.IDs.Add(pPublicacionScopus.scopusID);
+            publicacion.dataOrigin = "Scopus";
             if (pPublicacionScopus.hasPublicationVenue != null)
             {
                 publicacion.hasPublicationVenue = new Models.Source();

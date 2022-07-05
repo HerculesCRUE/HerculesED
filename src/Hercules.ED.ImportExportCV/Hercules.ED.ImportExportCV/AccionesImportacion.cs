@@ -79,7 +79,6 @@ namespace Hercules.ED.ImportExportCV
                 }
             }
 
-
             string idOpcion;
             string valueOpcion;
             string guidOpcion;
@@ -206,7 +205,7 @@ namespace Hercules.ED.ImportExportCV
                     }
                     continue;
                 }
-
+                //Si el identificador no está contenido en preimport.secciones paso a la siguiente
                 if (!preimport.secciones.Any(x => x.id.Equals(seccionAgrupada.Key)))
                 {
                     continue;
@@ -229,16 +228,19 @@ namespace Hercules.ED.ImportExportCV
                     {
                         opcionSeleccionada = dicOpciones[subseccionItem.guid].Values.First();
                     }
+                    //Duplicar
                     if (opcionSeleccionada.Equals("du"))
                     {
                         listadoDuplicar.Add(listaItemsAux[int.Parse(ordenOpcion)]);
                         listadoDuplicarBBDD.Add(subseccionItem.guid + "@@@du");
                     }
+                    //Fusion
                     if (opcionSeleccionada.Equals("fu"))
                     {
                         listadoFusionar.Add(listaItemsAux[int.Parse(ordenOpcion)]);
                         listadoFusionarBBDD.Add(subseccionItem.guid + "@@@fu");
                     }
+                    //Sobrescribir
                     if (opcionSeleccionada.Equals("so"))
                     {
                         listadoSobrescribir.Add(listaItemsAux[int.Parse(ordenOpcion)]);

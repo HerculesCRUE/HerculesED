@@ -69,6 +69,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                     publicacion.hasPublicationVenue = getJournal(objInicial);
                     publicacion.hasMetric = getPublicationMetric(objInicial);
+                    publicacion.dataOrigin = "Scopus";
                     return publicacion;
                 }
                 else { return null; }

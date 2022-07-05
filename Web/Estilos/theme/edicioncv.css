@@ -287,6 +287,19 @@ input.form-group-date {
 	margin-right: 5px;
 }
 
+.importar-exportar-cv .acciones-listado-cv .checkAllNew {
+    border: 1px solid var(--c-gris-borde);
+    display: flex;
+    align-items: center;
+    padding: 6px;
+	margin-right: 5px;
+}
+
+.importar-exportar-cv .material-icons-outlined.new{
+	color: #dc3545;
+	font-size: 28px;
+}
+
 .page-cv .panel-group .panel .visibility-wrapper {
 	padding-left: 4px;
 	margin-top: 1px;
