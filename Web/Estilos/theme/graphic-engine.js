@@ -362,12 +362,11 @@ var metricas = {
                 };
                 //beforeDraw: function (chart) {
 
-                while (fontSize > 1 && titulo.width("bold "+fontSize+"px Helvetica") > $(ctx).parents("div.grafica").width()-200) {
-                    fontSize--;
+                if ($(ctx).parents("div.grafica").length > 0) {
+                    while (fontSize > 1 && titulo.width("bold " + fontSize + "px Helvetica") > $(ctx).parents("div.grafica").width() - 200) {
+                        fontSize--;
+                    }
                 }
-                console.log(fontSize);
-   
-
 
                 data.options.plugins.title.font = {
                     size: fontSize,
