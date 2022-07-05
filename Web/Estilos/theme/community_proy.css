@@ -207,7 +207,7 @@ a.faceta.applied{
 	font-weight: 700!important;
 }
 
-
+/* Cluster */
 .edicionCluster .formulario-edicion .panel-heading .conteditborrbtn {
     display: inline-flex;
     font-size: 15px;
@@ -225,6 +225,10 @@ a.faceta.applied{
     top: initial !important;
     right: initial !important;
     margin-left: 5px;
+}
+
+.edicionCluster .modal-apc-listado-saved {
+    max-height: 500px;
 }
 
 /* Estilos para la cabecera */
