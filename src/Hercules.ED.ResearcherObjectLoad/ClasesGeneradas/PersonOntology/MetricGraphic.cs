@@ -28,6 +28,7 @@ namespace PersonOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			this.Roh_scales = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/scales"));
 			this.Roh_filters = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/filters"));
 			this.Roh_width = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/width"));
 			this.Roh_pageId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/pageId"));
@@ -39,6 +40,9 @@ namespace PersonOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/MetricGraphic"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/MetricGraphic"; } }
 		public OntologyEntity Entity { get; set; }
+
+		[RDFProperty("http://w3id.org/roh/scales")]
+		public  string Roh_scales { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/filters")]
 		public  string Roh_filters { get; set;}
@@ -62,6 +66,7 @@ namespace PersonOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
+			propList.Add(new StringOntologyProperty("roh:scales", this.Roh_scales));
 			propList.Add(new StringOntologyProperty("roh:filters", this.Roh_filters));
 			propList.Add(new StringOntologyProperty("roh:width", this.Roh_width));
 			propList.Add(new StringOntologyProperty("roh:pageId", this.Roh_pageId));
