@@ -710,20 +710,20 @@ var edicionCV = {
 					${htmlProp}
 				</div>`;
     },
-    repintarListadoTab: function(id,noEngancharComportamientosCV) {		
+    repintarListadoTab: function(id,noEngancharComportamientosCV, mostrarSoloConflictos, mostrarSoloNuevos) {		
 		var sectionItem=$('.panel-group[section="' + id + '"]');
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
-		var mostrarSoloConflictos = false;
-		if(sectionItem.find('.checkAllConflict input[type="checkbox"]').is(':checked'))
-		{
-			mostrarSoloConflictos = true;
-		}
-		var mostrarSoloNuevos = false;
-		if(sectionItem.find('.checkAllNew input[type="checkbox"]').is(':checked'))
-		{
-			mostrarSoloNuevos = true;
-		}
+		//var mostrarSoloConflictos = false;
+		//if(sectionItem.find('.checkAllConflict input[type="checkbox"]').is(':checked'))
+		//{
+		//	mostrarSoloConflictos = true;
+		//}
+		//var mostrarSoloNuevos = false;
+		//if(sectionItem.find('.checkAllNew input[type="checkbox"]').is(':checked'))
+		//{
+		//	mostrarSoloNuevos = true;
+		//}
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
 		var ordenItem=sectionItem.find(' .ordenar.dropdown.orders .texto');
         var ordenProperty = ordenItem.attr('property');
@@ -812,20 +812,17 @@ var edicionCV = {
 			var existe=texto=='';
             var existeEnTitulo = existe || EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
             var existeEnPropiedad = existe || EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
-            
-			var filtroConflicto = mostrarSoloConflictos;// || (mostrarSoloConflictos && $(this).hasClass('conflict-true'));
-			var filtroNuevo = mostrarSoloNuevos;// || (mostrarSoloNuevos && $(this).hasClass('conflict-false'));
-			
+            			
 			if(existe ||existeEnTitulo || existeEnPropiedad)
 			{
-				if (filtroConflicto) {
+				if (mostrarSoloConflictos) {
 					numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
 					if (numPaginas == paginaActual && $(this).hasClass('conflict-true')) {
 						$(this).show();
 						numTotal++;
 					}
 				}
-				else if(filtroNuevo){
+				else if(mostrarSoloNuevos){
 					numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
 					if (numPaginas == paginaActual && $(this).hasClass('conflict-false')) {
 						$(this).show();
@@ -969,10 +966,10 @@ var edicionCV = {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers li a[page="1"]').parent().addClass('actual');
         this.repintarListadoTab(sectionID);
     },
-    buscarListado: function(sectionID) {
+    buscarListado: function(sectionID, mostrarSoloConflictos, mostrarSoloNuevos) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers li a[page="1"]').parent().addClass('actual');
-        this.repintarListadoTab(sectionID);
+        this.repintarListadoTab(sectionID, false, mostrarSoloConflictos, mostrarSoloNuevos);
     },
     ordenarListado: function(sectionID, text, property, asc, dropdown) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
