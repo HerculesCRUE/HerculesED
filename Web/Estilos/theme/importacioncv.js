@@ -185,6 +185,24 @@ var importarCVN = {
 function checkAllConflict(){
 	$('.ordenar.dropdown.dropdown-select a.item-dropdown').off('click').on('click', function(e) {
 		var texto = $(this).find('.texto').text();
+		var drop = $(this).closest('.ordenar.dropdown.dropdown-select').find('a.dropdown-toggle span.texto');		
+		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
+		
+		if(texto=='Mostrar todos')
+		{
+			drop.text(texto);
+			edicionCV.buscarListado(seccion, false, false);
+		}
+		else if(texto=='Mostrar similitudes')
+		{
+			drop.text(texto);
+			edicionCV.buscarListado(seccion, true, false);
+		}
+		else if(texto=='Mostrar nuevos')
+		{
+			drop.text(texto);
+			edicionCV.buscarListado(seccion, false, true);
+		}
 	});
 	
 	$('.checkAllConflict input[type="checkbox"]').off('click').on('click', function(e) {
