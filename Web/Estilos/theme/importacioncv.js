@@ -97,11 +97,36 @@ var importarCVN = {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
 		MostrarUpdateProgressTime(0);
+		
+		if($('#textoMascaraBlanca').length == 0){
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
+		}
+	
 		var that=this;
 		var formData = new FormData();
+		var petition = RandomGuid();
 		formData.append('userID', that.idUsuario);
+		formData.append('petitionID', petition);
 		formData.append('File', $('#file_cvn')[0].files[0]);
-				 
+		
+		var intervalStatus = setInterval(function() {
+			$.ajax({
+				url: urlImportacionCV + '/PreimportarCVStatus?petitionID='+petition,
+				type: 'GET',
+				success: function ( response ) {
+					if(response != null && response != ''){
+						$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
+						//Si no hay pasos maximos no muestro la lista
+						if(response.totalWorks != 0){
+							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+						}
+					}
+				}
+			});	
+		}, 500);
+		
+
 		$.ajax({
 			url: urlImportacionCV + '/PreimportarCV',
 			type: 'POST',
@@ -111,6 +136,9 @@ var importarCVN = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function ( response ) {
+				clearInterval(intervalStatus);
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
 				for(var i=0;i<7;i++){
 					var id = 'x' + RandomGuid();
 					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
@@ -153,8 +181,31 @@ var importarCVN = {
 				checkAllConflict();
 				checkAllNew();
 				OcultarUpdateProgress();				
+			},
+			error: function(jqXHR, exception){
+				clearInterval(intervalStatus);				
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
+				var msg = '';
+				if (jqXHR.status === 0) {
+					msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+					msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+					msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+					msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+					msg = 'Time out error.';
+				} else if (exception === 'abort') {
+					msg = 'Ajax request aborted.';
+				} else {
+					msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				alert(msg);
 			}
 		});		
+				
 		return;
     },	
 	finCargaCV: function(){
@@ -182,6 +233,25 @@ var importarCVN = {
 			success: function ( response ) {
 				importarCVN.finCargaCV();
 				OcultarUpdateProgress();			
+			},
+			error: function(jqXHR, exception){
+				var msg = '';
+				if (jqXHR.status === 0) {
+					msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+					msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+					msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+					msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+					msg = 'Time out error.';
+				} else if (exception === 'abort') {
+					msg = 'Ajax request aborted.';
+				} else {
+					msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				alert(msg);
 			}
 		});
 		
