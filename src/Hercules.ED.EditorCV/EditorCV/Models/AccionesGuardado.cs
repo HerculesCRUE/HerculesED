@@ -17,6 +17,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
@@ -133,7 +134,9 @@ namespace EditorCV.Models
                             }
                         }
                     }
-                    ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion);
+
+                    Thread thread = new Thread(() => ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion));
+                    thread.Start();                    
                 }
             }
 
@@ -596,7 +599,8 @@ namespace EditorCV.Models
                     pEntity.id = entityID;
                     ProcesLoadPropertyValues(itemEditConfig, pEntity);
                     Entity entityBBDD = GetLoadedEntity(entityID, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
-                    ModificacionNotificacion(entityBBDD, template, templateSection, personaCV, accion);
+                    Thread thread = new Thread(() => ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion));
+                    thread.Start();
                 }
 
                 //Insertamos en la cola del desnormalizador
@@ -636,7 +640,7 @@ namespace EditorCV.Models
 
                 ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
 
-                //Añadimos
+                //Añadimos un nuevo item
                 while (true)
                 {
                     int limit = 500;
@@ -723,7 +727,7 @@ namespace EditorCV.Models
                     }
                 }
 
-                //Modificamos
+                //Modificamos un item
                 while (true)
                 {
                     int limit = 500;
@@ -810,7 +814,7 @@ namespace EditorCV.Models
                     }
                 }
 
-                //Eliminamos
+                //Eliminamos un item
                 while (true)
                 {
                     int limit = 500;

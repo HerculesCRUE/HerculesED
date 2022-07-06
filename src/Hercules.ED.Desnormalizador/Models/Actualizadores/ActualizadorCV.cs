@@ -1260,7 +1260,10 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
         }
 
-        
+        /// <summary>
+        /// Elimina elementos duplicados de los CVs
+        /// </summary>
+        /// <param name="pCVs">IDs de cvs</param>
         public void EliminarDuplicados(List<string> pCVs = null)
         {
             HashSet<string> filters = new HashSet<string>();            
