@@ -60,7 +60,7 @@ var metricas = {
         var url = url_servicio_graphicengine + "GetPaginasGraficas"; //"https://localhost:44352/GetPaginaGrafica";        
         var arg = {};
         arg.pLang = lang;
-
+        arg.userId = $('.inpt_usuarioID').attr('value');
         // Petición para obtener los datos de la página.
         $.get(url, arg, function (listaData) {
             for (let i = 0; i < listaData.length; i++) {
@@ -536,6 +536,7 @@ var metricas = {
         var url = url_servicio_graphicengine + "GetFaceta"; //"https://localhost:44352/GetFaceta"
         var arg = {};
 
+
         arg.pIdPagina = pIdPagina;
         arg.pIdFaceta = pIdFaceta;
         arg.pFiltroFacetas = pFiltroFacetas;
@@ -546,7 +547,13 @@ var metricas = {
         maxYear = 0;
 
         // Petición para obtener los datos de las gráficas.
+
         $.get(url, arg, function (data) {
+
+            if ($("div[idFaceta='" + pIdFaceta + "']").find("*").length > 0) {
+                return;
+             }
+
 
             var numItemsPintados = 0;
             if (data.isDate) {
@@ -826,15 +833,17 @@ var metricas = {
         });
 
 
-        // Crear estructura para el apartado de facetas.
-        pPageData.listaIdsFacetas.forEach(function (item, index, array) {
-            $('#page_' + pPageData.id + ' .containerFacetas').append(`
+        if ($("div.facetedSearch").length == 0) {
+            pPageData.listaIdsFacetas.forEach(function (item, index, array) {
+
+                    $('#page_' + pPageData.id + ' .containerFacetas').append(`
                     <div class='facetedSearch'>
                         <div class='box' idfaceta="${item.includes('(((') ? item.split('(((')[0] : item}" reciproca="${item.includes('(((') ? item.split('(((')[1] : ''}"></div>
                         </div>
                     `);
-        });
-
+  
+            });
+        }
         that.pintarPagina(pPageData.id)
     },
     fillPagePersonalized: function (pPaginaUsuario) {
