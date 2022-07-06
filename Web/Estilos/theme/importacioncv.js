@@ -88,6 +88,12 @@ var importarCVN = {
     },
 	//Carga los datos del CV para la exportacion
     cargarCV: function() {
+		if($('#file_cvn')[0].files[0]==null){
+			OcultarUpdateProgress();
+			alert("No hay un fichero adjuntado");
+			return;
+		}
+		
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
 		MostrarUpdateProgressTime(0);
