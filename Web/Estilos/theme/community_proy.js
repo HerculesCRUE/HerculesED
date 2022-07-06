@@ -1919,17 +1919,33 @@ function getCacheWithExpiry(key) {
 	return item.value;
 }
 
-function GetFuentesExternas(pIdUsuario){
-    var url = url_servicio_externo + "FuentesExternas/InsertToQueue";     
+function GetFuentesExternas(pIdUsuario) {
+    var url = url_servicio_externo + "FuentesExternas/InsertToQueue";
     var arg = {};
-    arg.pUserId = pIdUsuario;    
-    $.get(url, arg, function (data) {        
-    });
+    arg.pUserId = pIdUsuario;
+    $.get(url, arg, function (data) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log("Error al obtener las fuentes externas");
+        var fecha = jqXHR.responseText.split("-");
+        if (fecha.length == 3) {
+            var horas_restantes = (24 - (new Date().getHours()));
+
+            mostrarNotificacion("error", "Ya has solicitado la actualización de fuentes externas hoy. Por favor, espera " + horas_restantes + " horas para volver a solicitarla.");
+
+        } else {
+            console.log(jqXHR);
+            mostrarNotificacion("error", "Error al obtener las fuentes externas");
+        }
+
+    }).success(function (data) {
+        console.log("Fuentes externas obtenidas");
+        mostrarNotificacion("info", "Obteniendo datos de fuentes externas en proceso. Tardará unos minutos.");
+    }
+    );
 }
 
-function PedirFuentesExternas()
-{
-	GetFuentesExternas($('.inpt_usuarioID').attr('value'));
-	menusLateralesManagement.init();
-	mostrarNotificacion("success", "Obteniendo datos de fuentes externas en proceso. Tardará unos minutos.");
+function PedirFuentesExternas() {
+    GetFuentesExternas($('.inpt_usuarioID').attr('value'));
+    menusLateralesManagement.init();
+    //mostrarNotificacion("success", "Obteniendo datos de fuentes externas en proceso. Tardará unos minutos.");
 }
