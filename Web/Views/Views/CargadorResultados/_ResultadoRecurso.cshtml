@@ -191,7 +191,10 @@
                                         @if (!string.IsNullOrEmpty(urlCV))
                                         {
                                             <li>
-                                                <a href="@urlCV" target="_blank" class="item-dropdown">@Html.GetText("COMMON", "EDITAR")</a>
+                                                <a href="@urlCV" target="_blank" class="item-dropdown">
+                                                    <span class="material-icons">edit</span>
+                                                    <span class="texto">@Html.GetText("COMMON", "EDITAR")</span>
+                                                </a>
                                             </li>
                                         }
                                         <li>
