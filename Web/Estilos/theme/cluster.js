@@ -1503,9 +1503,9 @@ var comportamientoPopupCluster = {
 						<span class="texto">${that.text_mixto}</span>
 					</a>
 					<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown">${that.text_mixto}</a>
-						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown">${that.text_volumen}</a>
-						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown">${that.text_ajuste}</a>
+						<a href="javascript: void(0)" filter="searchClusterMixto" class="item-dropdown" data-toggle="tooltip" data-placement="top" title="${that.text_mixto_tooltip}">${that.text_mixto}</a>
+						<a href="javascript: void(0)" filter="searchClusterVolumen" class="item-dropdown" data-toggle="tooltip" data-placement="top" title="${that.text_volumen_tooltip}">${that.text_volumen}</a>
+						<a href="javascript: void(0)" filter="searchClusterAjuste" class="item-dropdown" data-toggle="tooltip" data-placement="top" title="${that.text_ajuste_tooltip}">${that.text_ajuste}</a>
 					</div>
 				</div>
 			</div>
@@ -1531,6 +1531,9 @@ var comportamientoPopupCluster = {
 			newGrafProjClust.CargarGraficaSeleccionados(stepsCls.data, 'selectedgraphCluster', true);
 		});
 
+		// Load the tooltips
+		$('.searcherResults [data-toggle="tooltip"]').tooltip()
+
 		return;
 	},
 	config: function () {
@@ -1538,8 +1541,11 @@ var comportamientoPopupCluster = {
 
 		this.printitem = $('#clusterListUsers')
 		this.text_volumen = this.printitem.data('volumen')
+		this.text_volumen_tooltip = this.printitem.data('volumentooltip')
 		this.text_ajuste = this.printitem.data('ajuste')
+		this.text_ajuste_tooltip = this.printitem.data('ajustetooltip')
 		this.text_mixto = this.printitem.data('mixto')
+		this.text_mixto_tooltip = this.printitem.data('mixtotooltip')
 
 		return;
 	},
