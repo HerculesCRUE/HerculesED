@@ -376,7 +376,7 @@ var edicionCV = {
 											</a>
 										</li>
 									</ul>
-									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
+									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
 											<div class="textoBusquedaPrincipalInput">
@@ -710,22 +710,22 @@ var edicionCV = {
 					${htmlProp}
 				</div>`;
     },
-    repintarListadoTab: function(id,noEngancharComportamientosCV) {		
+    repintarListadoTab: function(id,noEngancharComportamientosCV, mostrarSoloConflictos, mostrarSoloNuevos) {		
 		var sectionItem=$('.panel-group[section="' + id + '"]');
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
-		var mostrarSoloConflictos = false;
-		if(sectionItem.find('.checkAllConflict input[type="checkbox"]').is(':checked'))
-		{
-			mostrarSoloConflictos = true;
-		}
-		var mostrarSoloNuevos = false;
-		if(sectionItem.find('.checkAllNew input[type="checkbox"]').is(':checked'))
-		{
-			mostrarSoloNuevos = true;
-		}
+		//var mostrarSoloConflictos = false;
+		//if(sectionItem.find('.checkAllConflict input[type="checkbox"]').is(':checked'))
+		//{
+		//	mostrarSoloConflictos = true;
+		//}
+		//var mostrarSoloNuevos = false;
+		//if(sectionItem.find('.checkAllNew input[type="checkbox"]').is(':checked'))
+		//{
+		//	mostrarSoloNuevos = true;
+		//}
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
-		var ordenItem=sectionItem.find(' .ordenar.dropdown .texto');
+		var ordenItem=sectionItem.find(' .ordenar.dropdown.orders .texto');
         var ordenProperty = ordenItem.attr('property');
         var ordenAsc = ordenItem.attr('asc');
 		
@@ -812,32 +812,31 @@ var edicionCV = {
 			var existe=texto=='';
             var existeEnTitulo = existe || EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
             var existeEnPropiedad = existe || EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
-            
-			var filtroConflicto = mostrarSoloConflictos;// || (mostrarSoloConflictos && $(this).hasClass('conflict-true'));
-			var filtroNuevo = mostrarSoloNuevos;// || (mostrarSoloNuevos && $(this).hasClass('conflict-false'));
+            			
+			if(existe ||existeEnTitulo || existeEnPropiedad)
+			{
+				if (mostrarSoloConflictos) {
+					numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
+					if (numPaginas == paginaActual && $(this).hasClass('conflict-true')) {
+						$(this).show();
+						numTotal++;
+					}
+				}
+				else if(mostrarSoloNuevos){
+					numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
+					if (numPaginas == paginaActual && $(this).hasClass('conflict-false')) {
+						$(this).show();
+						numTotal++;
+					}
+				}else{
+					numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
+					if (numPaginas == paginaActual) {
+						$(this).show();					
+					}
+					numTotal++;
+				}
+			}
 
-			if ((existe ||existeEnTitulo || existeEnPropiedad) && filtroConflicto) {
-				numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
-				if (numPaginas == paginaActual && $(this).hasClass('conflict-true')) {
-					$(this).show();
-					numTotal++;
-				}
-            }
-			else if((existe ||existeEnTitulo || existeEnPropiedad) && filtroNuevo){
-				numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
-				if (numPaginas == paginaActual && $(this).hasClass('conflict-false')) {
-					$(this).show();
-					numTotal++;
-				}
-			}
-			else{
-				numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
-                if (numPaginas == paginaActual) {
-                    $(this).show();					
-                }
-				numTotal++;
-			}
-			
         });
         $('div[section="' + id + '"] .pagination.numbers').empty();
         $('div[section="' + id + '"] .pagination.arrows').empty();
@@ -967,17 +966,26 @@ var edicionCV = {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers li a[page="1"]').parent().addClass('actual');
         this.repintarListadoTab(sectionID);
     },
-    buscarListado: function(sectionID) {
+    buscarListado: function(sectionID, mostrarSoloConflictos, mostrarSoloNuevos) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers li a[page="1"]').parent().addClass('actual');
-        this.repintarListadoTab(sectionID);
+        this.repintarListadoTab(sectionID, false, mostrarSoloConflictos, mostrarSoloNuevos);
     },
-    ordenarListado: function(sectionID, text, property, asc) {
+    ordenarListado: function(sectionID, text, property, asc, dropdown) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers li a[page="1"]').parent().addClass('actual');
-        $('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').text(text);
-        $('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').attr('property', property);
-        $('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').attr('asc', asc);
+		if(dropdown==null){
+			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').text(text);
+			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').attr('property', property);
+			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').attr('asc', asc);
+		}
+		else{			
+			dropdown.text(text);
+			if(property!=null){			
+				dropdown.attr('property', property);
+				dropdown.attr('asc', asc);
+			}
+		}
         this.repintarListadoTab(sectionID);
     },
     cambiarPrivacidadItem: function(sectionID, rdfTypeTab, entityID, isPublic, element) {
@@ -1033,9 +1041,9 @@ var edicionCV = {
 		if(multiidioma)
 		{
 			let htmlLangs='<ul class="nav nav-tabs grey" id="" role="tablist">';
-			htmlLangs+=`	<li class="nav-item">
-				<a href="javascript: void(0);" lang="es" class="nav-link active">${GetText('ESPAGNOL')}</a>
-			</li>`;
+			htmlLangs+=`<li class="nav-item">
+							<a href="javascript: void(0);" lang="es" class="nav-link active">${GetText('ESPAGNOL')}</a>
+						</li>`;
 			languages.forEach(function(language, index) {
 				var nombreIdioma="";
 				switch (language) {
@@ -2799,9 +2807,10 @@ var edicionCV = {
             that.buscarListado(sectionID);
         });
         //Ordenar
-        $('.panel-group .ordenar.dropdown .dropdown-menu a').off('click').on('click', function(e) {
+        $('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
             var sectionID = $(this).closest('.panel-group').attr('section');
-            that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'));
+			var dropdown = $(this).closest('.ordenar.dropdown').find('.dropdown-toggle .texto');
+            that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'), dropdown);
         });
         //Publicar/despublicar
         $('.panel-group .resource-list .publicaritem,.panel-group .resource-list .despublicaritem').off('click').on('click', function(e) {

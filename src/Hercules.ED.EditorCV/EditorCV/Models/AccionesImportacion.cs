@@ -354,7 +354,7 @@ namespace EditorCV.Models
 
                         tabSectionItem.title = UtilityCV.GetTextLang(lang, itemEditSection.title);
                         tabSectionItem.properties = new List<TabSectionItemProperty>();
-
+                        tabSectionItem.orderProperties = new List<TabSectionItemOrderProperty>();
                         tabSectionItem.iseditable = !itemEditSection.blocked;
 
                         TabSectionItemProperty tsip = new TabSectionItemProperty();
@@ -463,9 +463,40 @@ namespace EditorCV.Models
             sectionItem.iseditable = !subseccionItem.isBlocked;
             sectionItem.idBBDD = subseccionItem.idBBDD;
             sectionItem.identifier = subseccionItem.guid;
+            sectionItem.orderProperties = new List<TabSectionItemOrderProperty>();
 
             //TODO title or
             //sectionItem.title = property.values.First();
+
+            if (tabSectionListItem.orders != null)
+            {
+                foreach (TabSectionListItemOrder order in tabSectionListItem.orders)
+                {
+                    if (order.properties != null)
+                    {
+                        foreach (TabSectionListItemOrderProperty data in order.properties)
+                        {
+
+                            TabSectionItemOrderProperty itemOrderProperty = new TabSectionItemOrderProperty()
+                            {
+                                //Si es 
+                                property = UtilityCV.GetPropComplete(data),
+                                values = subseccionItem.propiedades.Where(x => x.prop.StartsWith( GetPropCompleteWithoutRelatedBy(UtilityCV.GetPropComplete(data))))?
+                                    .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList()
+                            };
+                            if (sectionItem.orderProperties.Any(x => x.property.Contains(itemOrderProperty.property)))
+                            {
+                                int indice = sectionItem.orderProperties.FindIndex(x => x.property.Equals(itemOrderProperty.property));
+                                sectionItem.orderProperties[indice].values.AddRange(itemOrderProperty.values);
+                            }
+                            else
+                            {
+                                sectionItem.orderProperties.Add(itemOrderProperty);
+                            }
+                        }
+                    }
+                }
+            }
 
             if (tabSectionListItem.properties != null && tabSectionListItem.properties.Count > 0)
             {
