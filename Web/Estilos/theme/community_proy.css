@@ -207,7 +207,7 @@ a.faceta.applied{
 	font-weight: 700!important;
 }
 
-
+/* Cluster */
 .edicionCluster .formulario-edicion .panel-heading .conteditborrbtn {
     display: inline-flex;
     font-size: 15px;
@@ -226,6 +226,31 @@ a.faceta.applied{
     right: initial !important;
     margin-left: 5px;
 }
+
+.edicionCluster .modal-apc-listado-saved {
+    max-height: 250px;
+}
+
+.edicionCluster .modal-apc-listado-saved input.at-input:disabled + label{
+    text-decoration:line-through
+}
+
+.edicionCluster .modal-apc-listado-saved label .cluster{
+    font-style: italic;
+    padding-left: 20px;
+}
+
+.edicionCluster .modal-apc-listado-saved label .cluster::before {
+    content: "-";
+    display: inline;
+    width: 6px;
+    height: 6px;
+    left: -4px;
+    padding-right: 21px;
+}
+
+
+/* Fin edición cluster */
 
 /* Estilos para la cabecera */
 .user-miniatura .imagen-usuario-wrap .imagen span{

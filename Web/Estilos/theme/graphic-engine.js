@@ -4,12 +4,11 @@ $(document).ready(function () {
 // Año máximo y mínimo para las facetas de años
 var minYear;
 var maxYear;
-// Lista de páginas
-// ID de la página actual.
+// Página actual.
 var idPaginaActual = "";
 var tituloPaginaActual;
 var ordenPaginaActual;
-// ID de la gráfica seleccionada.
+// Gráfica seleccionada.
 var idGraficaActual = "";
 var tituloActual;
 var tamanioActual;
@@ -17,9 +16,9 @@ var ordenActual;
 var escalaActual;
 var TAMANIO_GRAFICA_MIN = 318;
 
-var numPagina = 0;
 // Lista de páginas.
 var listaPaginas;
+var numPagina = 0;
 const { jsPDF } = window.jspdf;
 String.prototype.width = function (font) {
     var f = font || '12px arial',
@@ -362,12 +361,11 @@ var metricas = {
                 };
                 //beforeDraw: function (chart) {
 
-                while (fontSize > 1 && titulo.width("bold "+fontSize+"px Helvetica") > $(ctx).parents("div.grafica").width()-200) {
-                    fontSize--;
+                if ($(ctx).parents("div.grafica").length > 0) {
+                    while (fontSize > 1 && titulo.width("bold " + fontSize + "px Helvetica") > $(ctx).parents("div.grafica").width() - 200) {
+                        fontSize--;
+                    }
                 }
-                console.log(fontSize);
-   
-
 
                 data.options.plugins.title.font = {
                     size: fontSize,

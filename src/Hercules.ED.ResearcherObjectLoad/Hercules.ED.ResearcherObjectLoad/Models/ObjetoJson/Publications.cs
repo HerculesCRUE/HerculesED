@@ -112,6 +112,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public List<HasMetric> hasMetric { get; set; }
         public List<Bibliografia> bibliografia { get; set; }
         public List<Publication> citas { get; set; }
+        public List<string> dataOriginList { get; set; }
     }
 
     public class Bibliografia

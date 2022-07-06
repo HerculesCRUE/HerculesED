@@ -39,9 +39,9 @@ public class Publication
     public Source hasPublicationVenue { get; set; }
     public List<PublicationMetric> hasMetric { get; set; }
     public List<Publication> bibliografia { get; set; }
-    public List<Publication> citas {get;set;}    
-
-}
+    public List<Publication> citas { get; set; }
+    public string dataOrigin { get; set; }
+    }
 public class FreetextKeywords {
     public string source {get;set;}
     public List<string> freetextKeyword {get;set;}

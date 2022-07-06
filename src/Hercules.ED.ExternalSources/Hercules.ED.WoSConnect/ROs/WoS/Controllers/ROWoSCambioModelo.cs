@@ -54,7 +54,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacionFinal.hasPublicationVenue = getJournal(pPublicacionIn);
             publicacionFinal.hasMetric = getPublicationMetric(pPublicacionIn);
             publicacionFinal.openAccess = getOpenAccess(pPublicacionIn);
-            publicacionFinal.volume = getVolume(pPublicacionIn);
+            publicacionFinal.volume = getVolume(pPublicacionIn);            
 
             return publicacionFinal;
         }
@@ -124,6 +124,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacion.hasMetric = getPublicationMetric(objInicial);
             publicacion.openAccess = getOpenAccess(objInicial);
             publicacion.volume = getVolume(objInicial);
+            publicacion.dataOrigin = "WoS";
             if (publicacion.typeOfPublication == CHAPTER)
             {
                 publicacion.doi = null;

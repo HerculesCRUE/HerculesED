@@ -116,6 +116,7 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             {
                 publicacion.doi = null;
             }
+            publicacion.dataOrigin = "OpenAire";
             return publicacion;
         }
 
@@ -399,7 +400,13 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
                 foreach (Subject sub in pPublicacionIn.metadata.OafEntity.OafResult.subject)
                 {
-                    if (sub.Classid == "keyword" && !string.IsNullOrEmpty(sub.Text))
+                    if (sub.Text.Contains(";")) {
+                        foreach (string key in sub.Text.Split(";"))
+                        {
+                            lista_keyword.Add(key.Trim());
+                        }
+                    }
+                    else if (sub.Classid == "keyword" && !string.IsNullOrEmpty(sub.Text))
                     {
                         lista_keyword.Add(sub.Text);
                     }
