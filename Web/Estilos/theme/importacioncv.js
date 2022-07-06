@@ -2,8 +2,15 @@ var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
 var selectorConflictoNoBloqueado = '';
 var selectorConflictoBloqueado = '';
 var selectorCamposTexto = '';
+var dropdownSimilitudes = '';
 var contador = 1;
 
+//window.addEventListener('beforeunload', (event) => {
+//  // Cancel the event as stated by the standard.
+//  event.preventDefault();
+//  // Chrome requires returnValue to be set.
+//  event.returnValue = '';
+//});
 
 var importarCVN = {
 	idUsuario:  null,
@@ -12,6 +19,18 @@ var importarCVN = {
 		this.idUsuario = $('#inpt_usuarioID').val();
 		this.fileData = '';
 		this.filePreimport = '';
+
+		dropdownSimilitudes = `<div class="ordenar dropdown selectsimilarity dropdown-select">
+									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+										<span class="material-icons">swap_vert</span>
+										<span class="texto">Mostrar todos</span>
+									</a>
+									<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar todos</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
+									</div>
+								</div>`;
 
 		selectorConflictoNoBloqueado = `<select name="itemConflict" >
 											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
@@ -164,6 +183,10 @@ var importarCVN = {
 };
 
 function checkAllConflict(){
+	$('.ordenar.dropdown.dropdown-select a.item-dropdown').off('click').on('click', function(e) {
+		var texto = $(this).find('.texto').text();
+	});
+	
 	$('.checkAllConflict input[type="checkbox"]').off('click').on('click', function(e) {
 		var allConflict = $(this).prop('checked');
 		if(allConflict){
@@ -534,21 +557,10 @@ edicionCV.printTabSection= function(data) {
 											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
 										</div>
 									</div>
-									<div class="checkAllConflict" id="checkAllConflict">
-										<div class="custom-control custom-checkbox">
-											<input type="checkbox" class="custom-control-input" id="checkAllConflict_${id2}">
-											<label class="custom-control-label" for="checkAllConflict_${id2}">${GetText('CV_MOSTRAR_CONFLICTOS')}</label>
-										</div>
-									</div>
-									<div class="checkAllNew" id="checkAllNew">
-										<div class="custom-control custom-checkbox">
-											<input type="checkbox" class="custom-control-input" id="checkAllNew_${id2}">
-											<label class="custom-control-label" for="checkAllNew_${id2}">${GetText('CV_MOSTRAR_NUEVOS')}</label>
-										</div>
-									</div>
 								</div>
 								<div class="wrap">
-									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
+									${dropdownSimilitudes}
+									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
 											<div class="textoBusquedaPrincipalInput">
