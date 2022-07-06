@@ -26,6 +26,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
         private readonly ILogger<ImportadorCVController> _logger;
         readonly ConfigService _Configuracion;
 
+        private static Dictionary<string, PetitionStatus> petitionStatus = new Dictionary<string, PetitionStatus>();
+        public const int elementosTratados = 0;
+
         public ImportadorCVController(ILogger<ImportadorCVController> logger, ConfigService pConfig)
         {
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -62,6 +65,27 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
         }
 
+        [HttpGet("PetitionCVStatus")]
+        public IActionResult PetitionCVStatus([Required] string petitionID)
+        {
+            try
+            {
+                if (petitionStatus.ContainsKey(petitionID))
+                {
+                    return Ok(petitionStatus[petitionID]);
+                }
+                else
+                {
+                    petitionStatus.TryAdd(petitionID, new PetitionStatus());
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         /// <summary>
         /// Devuelve los datos del <paramref name="File"/> , que corresponden a <paramref name="pCVID"/>,
         /// para elegir cuales importar.
@@ -70,22 +94,41 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="File">Archivo en formato PDF o XML</param>
         /// <returns>Json con los datos a preimportar</returns>
         [HttpPost("Preimportar")]
-        public ActionResult Preimportar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Optional] List<string> Secciones)
+        public ActionResult Preimportar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Required] string petitionID, [FromForm][Optional] List<string> Secciones)
         {
             try
             {
+                //Estado de la peticion
+                PetitionStatus estadoPreimport = new PetitionStatus(0, 0, "ESTADO_PREIMPORTAR_LECTURA");
+                petitionStatus[petitionID] = estadoPreimport;
+
                 SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
                 Preimport preimportar = new Preimport();
 
                 sincro.ComprobarSecciones();
+                petitionStatus[petitionID].totalWorks = sincro.GetNumItems();
 
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Count();
                 preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+
                 preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true));
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+
                 preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true));
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+
                 preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true));
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+
                 preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true));
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+
                 preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
+                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
 
                 sincro.GuardarXMLFiltrado();
 
