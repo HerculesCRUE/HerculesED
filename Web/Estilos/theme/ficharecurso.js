@@ -121,6 +121,7 @@ var buscadorPersonalizado = {
 							</div>
 							<div class="col col-12 col-xl-9 col-contenido derecha searcherResults">
 								<div class="wrapCol">
+
 									<div class="header-contenido">
 										<!-- Número de resultados -->
 										<div class="h1-container">
@@ -136,7 +137,26 @@ var buscadorPersonalizado = {
 											</ul>
 										</div>
 									</div>
-
+									<div class="col-buscador">
+										<form method="post" id="buscadorPersonalizadoSearchForm" action="javascript:filtrarSearch()">
+											<fieldset style="display: block">
+												<legend class="nota">facetas</legend>
+												<div class="finderUtils" id="divCajaBusqueda">
+													<div class="group finderSection">
+														<label for="finderSection" class="">Encontrar</label>
+														<input type="text" class="not-outline finderSectionText autocompletar ac_input" autocomplete="off" placeholder="Buscar en sección">
+														<input title="Encontrar" type="button" class="findAction" id="inputLupa">
+														<input type="hidden" value="" class="inpt_urlPaginaActual">
+														<input type="hidden" value="sioc_t:Tag|foaf:firstName" class="inpt_facetasBusqPag">
+														<input type="hidden" class="inpt_parametros">
+														<a href="javascript: void(0);" class="btn-filtrar-movil">
+															<span class="material-icons">filter_list</span>
+														</a>
+													</div>
+												</div>
+											</fieldset>
+										</form>
+									</div>
 									<!-- Resultados -->
 									<div class="resource-list listView resource-list-buscador">
 										<div id="panResultados" class="resource-list-wrap">
@@ -845,6 +865,34 @@ function PintarGraficaAreasTematicas(data,idContenedor) {
 	var myChart = new Chart(ctx, data);
 }
 
+/** Creamos la función filtrar search para que funcione el filtro de los buscadores
+* 
+* @param callback, función opcional para cuando se realice la función
+*/
+function filtrarSearch(callback = () => {}) {
+
+	let input = document.getElementById('buscadorPersonalizadoSearchForm').getElementsByClassName('finderSectionText');
+
+	let parameterVal = input[0].value
+	let filtro = "search="+parameterVal
+	input[0].value = ""
+
+	var url = new URL(location.href)
+	let params = url.searchParams
+	params.delete('search');
+	params.append('search', parameterVal); 
+
+	let resultsParamsArr = []
+	params.forEach(function(value, key) {
+		resultsParamsArr.push(key + '=' +  value)
+	});
+	// console.log("params.toString()", params.toString())
+
+	history.pushState('','','?' + (resultsParamsArr.join('&')))
+	FiltrarPorFacetas(ObtenerHash2(), () => {
+		callback()
+	});
+}
 
 //Sobreescribimos FiltrarPorFacetas para que coja el filtro por defecto (y el orden)
 function FiltrarPorFacetas(filtro, callback = () => {}) {
@@ -857,6 +905,7 @@ function FiltrarPorFacetas(filtro, callback = () => {}) {
 	if (typeof (accionFiltrado) != 'undefined') {
 		accionFiltrado(ObtenerHash2());
 	}
+	callback()
 	return FiltrarPorFacetasGenerico(filtro);
 }
 
