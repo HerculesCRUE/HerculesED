@@ -479,8 +479,9 @@ namespace EditorCV.Models
 
                             TabSectionItemOrderProperty itemOrderProperty = new TabSectionItemOrderProperty()
                             {
+                                //Si es 
                                 property = UtilityCV.GetPropComplete(data),
-                                values = subseccionItem.propiedades.Where(x => x.prop == GetPropCompleteWithoutRelatedBy(UtilityCV.GetPropComplete(data)))?
+                                values = subseccionItem.propiedades.Where(x => x.prop.StartsWith( GetPropCompleteWithoutRelatedBy(UtilityCV.GetPropComplete(data))))?
                                     .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList()
                             };
                             if (sectionItem.orderProperties.Any(x => x.property.Contains(itemOrderProperty.property)))
