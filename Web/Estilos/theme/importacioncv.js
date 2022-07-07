@@ -632,17 +632,6 @@ edicionCV.printTabSection= function(data) {
 						</a>
 					</p>
 				</div>
-				<div class="acciones-listado acciones-listado-cv">
-					<div class="wrap">
-						<div class="checkAllCVWrapper" id="checkAllCVWrapper">
-							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-								<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
-							</div>
-						</div>
-						${dropdownSimilitudes}
-					</div>
-				</div>
 				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 						<div class="panel-body">
