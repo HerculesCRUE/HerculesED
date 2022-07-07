@@ -390,6 +390,12 @@
                                     }
                                     <a href="@urlCrearOfertaTecnologica">@Html.Translate("NUEVA_OFERTA_TECNOLOGICA")</a>
                                 </li>
+                                <li class="liInicio">
+                                    @{
+                                        string urlMisOfertasTecnologicas = Comunidad.Url + "/" + Html.Translate("OFERTA_URL");
+                                    }
+                                    <a href="@urlMisOfertasTecnologicas">@Html.Translate("MIS_OFERTAS_TECNOLOGICAS")</a>
+                                </li>
                             </ul>
                         </div>
                     </div>

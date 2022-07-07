@@ -326,6 +326,27 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
     font-size: 3rem;
 }
 
+.resource.offer .desc div, .fichaRecurso-ofertas-tecnologicas .desc div {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.47;
+    /*color: var(--c-texto-claro);*/
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.resource.offer .desc li, .fichaRecurso-ofertas-tecnologicas .desc li {
+    color: #444;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.47;
+}
+
+.fichaRecurso-ofertas-tecnologicas .desc li {
+    color: var(--c-texto-claro);
+    margin-bottom: 0;
+}
+
 
 /* Fin Estilos para la ficha de oferta tecnológica */
 

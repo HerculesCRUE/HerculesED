@@ -289,25 +289,6 @@ function checkAllConflict(){
 		}
 	});
 	
-	$('.checkAllConflict input[type="checkbox"]').off('click').on('click', function(e) {
-		var allConflict = $(this).prop('checked');
-		if(allConflict){
-			$(this).closest('.wrap').find('.checkAllNew input').prop('checked', !allConflict);
-		}
-		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
-		edicionCV.buscarListado(seccion);
-	});
-}
-
-function checkAllNew(){
-	$('.checkAllNew input[type="checkbox"]').off('click').on('click', function(e) {
-		var allNew = $(this).prop('checked');
-		if(allNew){
-			$(this).closest('.wrap').find('.checkAllConflict input').prop('checked', !allNew);
-		}
-		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
-		edicionCV.buscarListado(seccion);
-	});
 }
 
 function checkAllCVWrapper(){
