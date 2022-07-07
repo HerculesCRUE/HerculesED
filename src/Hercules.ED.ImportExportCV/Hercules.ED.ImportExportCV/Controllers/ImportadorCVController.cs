@@ -156,10 +156,14 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm][Required] string petitionID, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
+                //Estado de la peticion
+                PetitionStatus estadoPostimport = new PetitionStatus(0, 0, "ESTADO_POSTIMPORTAR_LECTURA");
+                petitionStatus[petitionID] = estadoPostimport;
+
                 string stringFile;
                 using (var ms = new MemoryStream(file))
                 {
@@ -170,7 +174,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 }
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
-                accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones);
+                accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones, petitionStatus[petitionID]);
 
                 return Ok();
             }

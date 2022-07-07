@@ -36,7 +36,7 @@ namespace EditorCV.Models
         /// <param name="File"></param>
         /// <param name="petitionID">ID de la petición</param>
         /// <returns></returns>
-        public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus)
+        public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File, string petitionID)
         {
             try
             {
@@ -83,7 +83,8 @@ namespace EditorCV.Models
         /// <param name="filePreimport"></param>
         /// <param name="listaId"></param>
         /// <param name="dicOpciones"></param>
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus,
+            byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
             foreach (KeyValuePair<string, string> valuePair in dicOpciones)
@@ -95,10 +96,14 @@ namespace EditorCV.Models
                 }
             }
 
+            petitionStatus[petitionID].subTotalWorks = listaId.Count();
+
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
             //Identificador del curriculumvitae
             multipartFormData.Add(new StringContent(pCVID), "pCVID");
+            //Identificador de la peticion
+            multipartFormData.Add(new StringContent(petitionID), "petitionID");
             //Archivo XML leido
             multipartFormData.Add(new ByteArrayContent(file), "file");
             //Objeto Preimport
