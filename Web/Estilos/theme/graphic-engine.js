@@ -43,10 +43,9 @@ var metricas = {
         } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, se eliminan estos para que no se apliquen a la 2a pagina por error
             history.pushState('', 'New URL: ', '?'); //TODO quitar esto haciendo que obtenga la pagina en la que se esta
         }
-
-
         if (!$('div').hasClass('indicadoresPersonalizados')) {
             this.getPages();
+            this.addAdminPage();
         } else {
             this.getPagesPersonalized();
         }
@@ -74,6 +73,28 @@ var metricas = {
             that.fillPage(listaData[numPagina]);
             listaPaginas = listaData;
         });
+    },
+    addAdminPage: function () {
+        var url = url_servicio_graphicengine + "IsAdmin"; //"https://localhost:44352/IsAdmin";
+        var arg = {};
+        arg.pLang = lang;
+        arg.pUserId = $('.inpt_usuarioID').attr('value');
+        
+        var isAdmin;
+        $.get(url, arg, function (data) {
+            isAdmin = data;
+        }).done(
+            function () {
+                if (isAdmin) {
+                    $('.pageOptions').append(`
+                        <div class="admin-page">
+                            <span class="material-icons btn-download-page">manage_accounts</span>
+                            <p>${metricas.GetText("ADMINISTRAR_GRAFICAS")}</p>
+                        </div>
+                    `);
+                }
+            }
+        );
     },
     getPagesPersonalized: function () {
         var that = this;
@@ -1056,9 +1077,9 @@ var metricas = {
             } else {
                 nombre = filtro.split('=')[1].replaceAll("'", "");
                 if (nombre === "lastyear") {
-                    nombre = GetText("ULTIMO_ANIO");
+                    nombre = metricas.GetText("ULTIMO_ANIO");
                 } else if (nombre === "fiveyears") {
-                    nombre = GetText("ULTIMOS_CINCO_ANIOS");
+                    nombre = metricas.GetText("ULTIMOS_CINCO_ANIOS");
                 }
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
@@ -1072,25 +1093,25 @@ var metricas = {
                 `);
             }
         }
-        function GetText(id, param1, param2, param3, param4) {
-            if ($('#' + id).length) {
-                var txt = $('#' + id).val();
-                if (param1 != null) {
-                    txt = txt.replace("PARAM1", param1);
-                }
-                if (param2 != null) {
-                    txt = txt.replace("PARAM2", param1);
-                }
-                if (param3 != null) {
-                    txt = txt.replace("PARAM3", param1);
-                }
-                if (param4 != null) {
-                    txt = txt.replace("PARAM4", param1);
-                }
-                return txt;
-            } else {
-                return id;
+    },
+    GetText: function (id, param1, param2, param3, param4) {
+        if ($('#' + id).length) {
+            var txt = $('#' + id).val();
+            if (param1 != null) {
+                txt = txt.replace("PARAM1", param1);
             }
+            if (param2 != null) {
+                txt = txt.replace("PARAM2", param1);
+            }
+            if (param3 != null) {
+                txt = txt.replace("PARAM3", param1);
+            }
+            if (param4 != null) {
+                txt = txt.replace("PARAM4", param1);
+            }
+            return txt;
+        } else {
+            return id;
         }
     },
     pintarPaginaPersonalized: function (pIdRecurso, pPageData) {
