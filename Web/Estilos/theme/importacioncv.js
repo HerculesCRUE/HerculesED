@@ -23,12 +23,12 @@ var importarCVN = {
 		dropdownSimilitudes = `<div class="ordenar dropdown selectsimilarity dropdown-select">
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 										<span class="material-icons">swap_vert</span>
-										<span class="texto">Mostrar todos</span>
+										<span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span>
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar todos</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 									</div>
 								</div>`;
 
@@ -635,6 +635,17 @@ edicionCV.printTabSection= function(data) {
 							<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 						</a>
 					</p>
+				</div>
+				<div class="acciones-listado acciones-listado-cv">
+					<div class="wrap">
+						<div class="checkAllCVWrapper" id="checkAllCVWrapper">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
+								<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
+							</div>
+						</div>
+						${dropdownSimilitudes}
+					</div>
 				</div>
 				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
