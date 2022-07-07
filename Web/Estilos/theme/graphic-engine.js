@@ -122,13 +122,13 @@ var metricas = {
 
                 </tbody>
             </table>
-
-    `);
+        `);
             $.get(url, arg, function (data) {
                 data.forEach(function (jsonName, index) {
-                    var link = url_servicio_graphicengine + "DescagarConfig";
-                    link += "&pLang=" + lang;
-                    link += "&pConfig=" + jsonName.substring(1);
+                    jsonName = jsonName.substring(1);
+                    var link = url_servicio_graphicengine + "DescargarConfig";
+                    link += "?pLang=" + lang;
+                    link += "&pConfig=" + jsonName;
                     link += "&pUserId=" + $('.inpt_usuarioID').attr('value');
                     $("table.tablaAdmin tbody").append(`
                 <tr id="${index}">
