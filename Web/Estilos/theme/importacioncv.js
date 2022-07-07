@@ -101,6 +101,7 @@ var importarCVN = {
 		if($('#textoMascaraBlanca').length == 0){
 			$('#mascaraBlanca').find('.wrap.popup').append('<div id="titleMascaraBlanca"></div>');
 			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="subWorkMascaraBlanca"></div>');
 		}
 	
 		var that=this;
@@ -120,6 +121,9 @@ var importarCVN = {
 						//Si no hay pasos maximos no muestro la lista
 						if(response.totalWorks != 0){
 							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+						}
+						if(response.subTotalWorks != 0){
+							$('#subWorkMascaraBlanca').text(response.subActualWork + '/' + response.subTotalWorks);
 						}
 					}
 				}
