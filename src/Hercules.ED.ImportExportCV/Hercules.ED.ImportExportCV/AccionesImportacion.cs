@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -53,7 +54,7 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="filePreimport"></param>
         /// <param name="listaId"></param>
         /// <param name="listaOpciones"></param>
-        public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones)
+        public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones, [Optional] PetitionStatus petitionStatus)
         {
             Dictionary<string, Dictionary<string, string>> dicOpciones = new Dictionary<string, Dictionary<string, string>>();
             List<Tuple<string, string>> filtrador = new List<Tuple<string, string>>();
@@ -165,6 +166,9 @@ namespace Hercules.ED.ImportExportCV
                     {
                         listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().guid + "@@@so");
                     }
+
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
                     continue;
                 }
                 //Seccion Indicadores generales
@@ -181,6 +185,9 @@ namespace Hercules.ED.ImportExportCV
                     {
                         listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().guid + "@@@so");
                     }
+
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
                     continue;
                 }
                 //Seccion texto libre
@@ -203,11 +210,16 @@ namespace Hercules.ED.ImportExportCV
                             listadoTextoLibreBBDD.Add(listaIndicadoresAux.First().guid + "@@@" + contadorTexto);
                         }
                     }
+
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
                     continue;
                 }
                 //Si el identificador no está contenido en preimport.secciones paso a la siguiente
                 if (!preimport.secciones.Any(x => x.id.Equals(seccionAgrupada.Key)))
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
                     continue;
                 }
 
@@ -217,6 +229,8 @@ namespace Hercules.ED.ImportExportCV
                 {
                     if (!filtrador.Select(x => x.Item1).Contains(subseccionItem.guid))
                     {
+                        //Actualizo el estado de los recursos tratados
+                        petitionStatus.actualWork++;
                         continue;
                     }
                     string ordenOpcion = filtrador.Where(x => x.Item1.Equals(subseccionItem.guid)).Select(x => x.Item2).FirstOrDefault();
@@ -246,6 +260,9 @@ namespace Hercules.ED.ImportExportCV
                         listadoSobrescribir.Add(listaItemsAux[int.Parse(ordenOpcion)]);
                         listadoSobrescribirBBDD.Add(subseccionItem.guid + "@@@so");
                     }
+
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
                 }
             }
 
@@ -256,29 +273,45 @@ namespace Hercules.ED.ImportExportCV
 
 
             //Duplicar
+
             base.cvn = duplicadosResultBean;
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD);
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
+            petitionStatus.totalWorks = cvn.numElementos;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus:petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
 
             //Fusionar
             base.cvn = fusionResultBean;
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD);
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_FUSIONAR";
+            petitionStatus.totalWorks = cvn.numElementos;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
 
             //Sobrescribir
             base.cvn = sobrescribirResultBean;
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_SOBRESCRIBIR";
+            petitionStatus.totalWorks = cvn.numElementos;
+            petitionStatus.actualWork = 0;
+
             base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
         }
     }

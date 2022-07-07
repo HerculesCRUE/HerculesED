@@ -98,7 +98,7 @@ var importarCVN = {
 		$('.col-contenido.paso2').show();
 		MostrarUpdateProgressTime(0);
 		
-		if($('#textoMascaraBlanca').length == 0){
+		if($('#titleMascaraBlanca').length == 0){
 			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
 			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
 		}
@@ -113,7 +113,7 @@ var importarCVN = {
 		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
-				url: urlImportacionCV + '/PreimportarCVStatus?petitionID='+petition,
+				url: urlImportacionCV + '/ImportarCVStatus?petitionID='+petition+'&accion=PREIMPORTAR',
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
@@ -217,11 +217,40 @@ var importarCVN = {
 		MostrarUpdateProgressTime(0);
 		var that = this;
 		var formData = new FormData();
+		var petition = RandomGuid();
 		formData.append('userID', that.idUsuario);
+		formData.append('petitionID', petition);
 		formData.append('fileData', that.fileData);
 		formData.append('filePreimport', that.filePreimport);
 		formData.append('listaId', listaId);
 		formData.append('listaOpcionSeleccionados', listaOpcionSeleccionados);
+		
+		if($('#titleMascaraBlanca').length == 0){
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
+		}
+		
+		//Actualizo el estado cada 500 milisegundos
+		var intervalStatus = setInterval(function() {
+			$.ajax({
+				url: urlImportacionCV + '/ImportarCVStatus?petitionID='+petition+'&accion=POSTIMPORTAR',
+				type: 'GET',
+				success: function ( response ) {
+					if(response != null && response != ''){
+						if(response.subTotalWorks == null || response.subTotalWorks == 0 || response.subActualWork==response.subTotalWorks){
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
+						}
+						else{
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}` + " (" +  response.subActualWork + '/' + response.subTotalWorks + ")");
+						}
+						//Si no hay pasos maximos no muestro la lista
+						if(response.totalWorks != 0){
+							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+						}
+					}
+				}
+			});	
+		}, 500);
 		
 		$.ajax({
 			url: urlImportacionCV + '/PostimportarCV',
@@ -231,12 +260,21 @@ var importarCVN = {
 			processData: false,
             enctype: 'multipart/form-data',
             contentType: false,
-			success: function ( response ) {
+			success: function ( response ) {				
+				clearInterval(intervalStatus);
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
+				
 				OcultarUpdateProgress();
 				//TODO
-				window.location.href = "http://edma.gnoss.com/comunidad/hercules";//response.form;
+				//url_servicio_editorcv+"EdicionCV/GetCVUrl?userID= &lang= "
+				window.location.href = "http://edma.gnoss.com/comunidad/hercules";
 			},
-			error: function(jqXHR, exception){
+			error: function(jqXHR, exception){				
+				clearInterval(intervalStatus);
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
+				
 				var msg = '';
 				if (jqXHR.status === 0) {
 					msg = 'Not connect.\n Verify Network.';
