@@ -250,7 +250,7 @@
 
  .delete-page {
 
-    margin-right: 80px;
+     margin-right: 80px;
 
  }
 
@@ -394,4 +394,54 @@
 
  .chartScroll.collapsed {
      overflow: auto !important;
+ }
+
+ table.tablaAdmin {
+     width: 70%;
+     margin:auto;
+     border-collapse: collapse;
+     border-spacing: 0;
+     border: 1px solid #d5d5d5;
+     margin-bottom: 20px;
+     font-size: 12px;
+     font-family: 'Roboto', sans-serif;
+     color: #666;
+     text-align: left;
+     background-color: #fff;
+     border-radius: 5px;
+     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+     margin-top: 20px;
+ }
+
+ table.tablaAdmin tbody {
+     background-color: #fff;
+     color: #666;
+     font-size: 12px;
+     font-family: 'Roboto', sans-serif;
+     text-align: left;
+     border-bottom: 1px solid #d5d5d5;
+     padding: 5px;
+ }
+
+
+ table.tablaAdmin tbody tr:nth-child(even) {
+     background-color: #f3f3f3;
+ }
+ table.tablaAdmin tbody tr:hover {
+
+    background-color: #e7e6e6;
+}
+table.tablaAdmin tbody tr {
+    border-bottom: 1px solid #d5d5d5;
+}
+ table.tablaAdmin tbody tr td {
+     padding: 5px;
+
+     width: 50%;
+ }
+ table.tablaAdmin td.subir{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
  }
