@@ -99,7 +99,7 @@ var importarCVN = {
 		MostrarUpdateProgressTime(0);
 		
 		if($('#textoMascaraBlanca').length == 0){
-			$('#mascaraBlanca').find('.wrap.popup').append('<div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
 			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
 		}
 	
