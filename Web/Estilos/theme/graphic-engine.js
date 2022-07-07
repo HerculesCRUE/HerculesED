@@ -75,12 +75,13 @@ var metricas = {
         });
     },
     addAdminPage: function () {
+        var that = this;
         var url = url_servicio_graphicengine + "IsAdmin"; //"https://localhost:44352/IsAdmin";
         var arg = {};
         arg.pLang = lang;
         arg.pUserId = $('.inpt_usuarioID').attr('value');
         
-        var isAdmin;
+        var isAdmin = false;
         $.get(url, arg, function (data) {
             isAdmin = data;
         }).done(
@@ -89,12 +90,29 @@ var metricas = {
                     $('.pageOptions').append(`
                         <div class="admin-page">
                             <span class="material-icons btn-download-page">manage_accounts</span>
-                            <p>${metricas.GetText("ADMINISTRAR_GRAFICAS")}</p>
+                            <p>${that.GetText("ADMINISTRAR_GRAFICAS")}</p>
                         </div>
                     `);
+                    $('div.admin-page')
+                    .unbind()
+                    .click(function (e) {
+                        that.clearPage();
+                        that.createAdminPage();
+                    });
                 }
             }
         );
+    },
+    createAdminPage: function () {
+        var that = this;
+        var url = url_servicio_graphicengine + "ObtenerConfigs"; //"https://localhost:44352/ObtenerConfigs";
+        var arg = {};
+        arg.pLang = lang;
+        arg.pUserId = $('.inpt_usuarioID').attr('value');
+        
+        $.get(url, arg, function (data) {
+            // data es una lista de strings con los nombres de los json (por ahora)
+        });
     },
     getPagesPersonalized: function () {
         var that = this;
@@ -1077,9 +1095,9 @@ var metricas = {
             } else {
                 nombre = filtro.split('=')[1].replaceAll("'", "");
                 if (nombre === "lastyear") {
-                    nombre = metricas.GetText("ULTIMO_ANIO");
+                    nombre = that.GetText("ULTIMO_ANIO");
                 } else if (nombre === "fiveyears") {
-                    nombre = metricas.GetText("ULTIMOS_CINCO_ANIOS");
+                    nombre = that.GetText("ULTIMOS_CINCO_ANIOS");
                 }
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
@@ -2450,7 +2468,6 @@ var metricas = {
                     }
                 }
             });
-
         //boton del pop-up con la grafica escalada
         $("div.zoom")
             .unbind()
