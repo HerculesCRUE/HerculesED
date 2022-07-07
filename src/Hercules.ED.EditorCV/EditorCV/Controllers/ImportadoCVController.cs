@@ -66,7 +66,7 @@ namespace EditorCV.Controllers
                 Preimport preimport = accionesImportacion.PreimportarCV(_Configuracion, pCVId, File, petitionID);
 
                 //Cambio el estado de la petición
-                petitionStatus[petitionID].actualWork = 3;
+                petitionStatus[petitionID].actualWork = 4;
                 petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_FINLECTURA";
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
@@ -113,55 +113,53 @@ namespace EditorCV.Controllers
                             HttpClient httpClientEstado = new HttpClient();
                             HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
                             PetitionStatus estadoRespuesta = JsonConvert.DeserializeObject<PetitionStatus>(responseEstado.Content.ReadAsStringAsync().Result);
-                            if (estadoRespuesta != null)
+                            if (estadoRespuesta != null && accion == "PREIMPORTAR")
                             {
-                                if (accion == "PREIMPORTAR")
+                                if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_LECTURA")
                                 {
-                                    if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_LECTURA")
-                                    {
-                                        petitionStatus[petitionID].actualWork = 2;
-                                        petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_LECTURA";
-                                    }
-                                    else if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_PROCESARDATOS")
-                                    {
-                                        petitionStatus[petitionID].actualWork = 3;
-                                        petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                        petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                        petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
-                                    }
+                                    petitionStatus[petitionID].actualWork = 2;
+                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_LECTURA";
                                 }
-                                else if (accion == "POSTIMPORTAR")
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_PROCESARDATOS")
                                 {
-                                    if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_LECTURA")
-                                    {
-                                        petitionStatus[petitionID].actualWork = 2;
-                                        petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                        petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                        petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    }
-                                    else if(estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_DUPLICAR")
-                                    {
-                                        petitionStatus[petitionID].actualWork = 3;
-                                        petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                        petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                        petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    }
-                                    else if(estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_FUSIONAR")
-                                    {
-                                        petitionStatus[petitionID].actualWork = 4;
-                                        petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                        petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                        petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    }
-                                    else if(estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_SOBRESCRIBIR")
-                                    {
-                                        petitionStatus[petitionID].actualWork = 5;
-                                        petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                        petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                        petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    }
+                                    petitionStatus[petitionID].actualWork = 3;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
                                 }
                             }
+                            else if (estadoRespuesta != null && accion == "POSTIMPORTAR")
+                            {
+                                if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_LECTURA")
+                                {
+                                    petitionStatus[petitionID].actualWork = 2;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_DUPLICAR")
+                                {
+                                    petitionStatus[petitionID].actualWork = 3;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_FUSIONAR")
+                                {
+                                    petitionStatus[petitionID].actualWork = 4;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_SOBRESCRIBIR")
+                                {
+                                    petitionStatus[petitionID].actualWork = 5;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                            }
+
                         }
                         catch (Exception ex)
                         {
@@ -194,7 +192,7 @@ namespace EditorCV.Controllers
             try
             {
                 //Estado de la petición
-                PetitionStatus estadoPostimport = new PetitionStatus(1, 2, "ESTADO_POSTIMPORTAR_INICIO");
+                PetitionStatus estadoPostimport = new PetitionStatus(1, 5, "ESTADO_POSTIMPORTAR_INICIO");
                 petitionStatus[petitionID] = estadoPostimport;
 
                 List<string> listadoId = new List<string>();
