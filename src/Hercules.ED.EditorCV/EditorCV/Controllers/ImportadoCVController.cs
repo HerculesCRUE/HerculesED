@@ -67,6 +67,8 @@ namespace EditorCV.Controllers
 
                 //Cambio el estado de la petición
                 petitionStatus[petitionID].actualWork = 4;
+                petitionStatus[petitionID].subActualWork = 0;
+                petitionStatus[petitionID].subTotalWorks = 0;
                 petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_FINLECTURA";
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
