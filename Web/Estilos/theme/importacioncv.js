@@ -110,17 +110,18 @@ var importarCVN = {
 		formData.append('petitionID', petition);
 		formData.append('File', $('#file_cvn')[0].files[0]);
 		
+		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
 				url: urlImportacionCV + '/PreimportarCVStatus?petitionID='+petition,
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
-						if(response.subTotalWorks == null || response.subTotalWorks == 0){
+						if(response.subTotalWorks == null || response.subTotalWorks == 0 || response.subActualWork==response.subTotalWorks){
 							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
 						}
 						else{
-							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}` + "(" +  response.subActualWork + '/' + response.subTotalWorks + ")");
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}` + " (" +  response.subActualWork + '/' + response.subTotalWorks + ")");
 						}
 						//Si no hay pasos maximos no muestro la lista
 						if(response.totalWorks != 0){
@@ -211,11 +212,7 @@ var importarCVN = {
 		});		
 				
 		return;
-    },	
-	finCargaCV: function(){
-		$('.col-contenido.paso1').show();
-		$('.col-contenido.paso2').hide();
-	},
+    },
 	importarCV: function(listaId, listaOpcionSeleccionados) {
 		MostrarUpdateProgressTime(0);
 		var that = this;
@@ -235,8 +232,9 @@ var importarCVN = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function ( response ) {
-				importarCVN.finCargaCV();
-				OcultarUpdateProgress();			
+				OcultarUpdateProgress();
+				//TODO
+				window.location.href = "http://edma.gnoss.com/comunidad/hercules";//response.form;
 			},
 			error: function(jqXHR, exception){
 				var msg = '';
