@@ -92,13 +92,13 @@ namespace EditorCV.Controllers
             }
         }
 
+
         /// <summary>
-        /// Servicio de Preimportación del CV
+        /// Devuelve el estado actual de la peticion con identificador <paramref name="petitionID"/>
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="File"></param>
-        /// <param name="petitionID">ID de la petición</param>
-        /// <returns></returns>
+        /// <param name="petitionID">Identificador de la petición</param>
+        /// <param name="accion">Accion desde donde se lanza la petición</param>
+        /// <returns>Estado de la petición</returns>
         [HttpGet("ImportarCVStatus")]
         public IActionResult ImportarCVStatus([Required] string petitionID, [Required] string accion)
         {
