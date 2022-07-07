@@ -30,7 +30,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Producción cientifica".
         /// Con el codigo identificativo 060.010.000.000
         /// </summary>
-        public List<SubseccionItem> SincroProduccionCientifica(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroProduccionCientifica(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -84,7 +84,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Indicadores generales de calidad de la producción científica".
         /// Con el codigo identificativo 060.010.060.010
         /// </summary>
-        public List<SubseccionItem> SincroIndicadoresGenerales(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroIndicadoresGenerales(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -144,7 +144,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Publicaciones, documentos científicos y técnicos".
         /// Con el codigo identificativo 060.010.010.000
         /// </summary>
-        public List<SubseccionItem> SincroPublicacionesDocumentos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroPublicacionesDocumentos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -247,7 +247,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Trabajos presentados en congresos nacionales o internacionales".
         /// Con el codigo identificativo 060.010.020.000
         /// </summary>
-        public List<SubseccionItem> SincroTrabajosCongresos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroTrabajosCongresos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -351,7 +351,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// talleres de trabajo y/o cursos nacionales o internacionales".
         /// Con el codigo identificativo 060.010.030.000
         /// </summary>
-        public List<SubseccionItem> SincroTrabajosJornadasSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroTrabajosJornadasSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -455,7 +455,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Otras actividades de divulgación".
         /// Con el codigo identificativo 060.010.040.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrasActividadesDivulgacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroOtrasActividadesDivulgacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -509,7 +509,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Comités científicos, técnicos y/o asesores".
         /// Con el codigo identificativo 060.020.010.000
         /// </summary>
-        public List<SubseccionItem> SincroComitesCTA(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroComitesCTA(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -563,7 +563,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Organización de actividades de I+D+i".
         /// Con el codigo identificativo 060.020.030.000
         /// </summary>
-        public List<SubseccionItem> SincroOrganizacionIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroOrganizacionIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -618,7 +618,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Gestión de I+D+i".
         /// Con el codigo identificativo 060.020.040.000
         /// </summary>
-        public List<SubseccionItem> SincroGestionIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroGestionIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -673,7 +673,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Foros y comités nacionales e internacionales".
         /// Con el codigo identificativo 060.020.050.000
         /// </summary>
-        public List<SubseccionItem> SincroForosComites(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroForosComites(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -726,7 +726,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Evaluación y revisión de proyectos y artículos de I+D+i".
         /// Con el codigo identificativo 060.020.060.000
         /// </summary>
-        public List<SubseccionItem> SincroEvalRevIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroEvalRevIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -781,7 +781,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Estancias en centros de I+D+i públicos o privados".
         /// Con el codigo identificativo 060.010.050.000
         /// </summary>
-        public List<SubseccionItem> SincroEstanciasIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroEstanciasIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -835,7 +835,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Ayudas y becas obtenidas".
         /// Con el codigo identificativo 060.030.010.000
         /// </summary>
-        public List<SubseccionItem> SincroAyudasBecas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroAyudasBecas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -889,7 +889,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Otros modos de colaboración con investigadores/as o tecnólogos/as".
         /// Con el codigo identificativo 060.020.020.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrosModosColaboracion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroOtrosModosColaboracion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -942,7 +942,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Sociedades científicas y asociaciones profesionales".
         /// Con el codigo identificativo 060.030.020.000
         /// </summary>
-        public List<SubseccionItem> SincroSociedadesAsociaciones(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroSociedadesAsociaciones(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -996,7 +996,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Consejos editoriales".
         /// Con el codigo identificativo 060.030.030.000
         /// </summary>
-        public List<SubseccionItem> SincroConsejos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroConsejos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -1049,7 +1049,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Redes de cooperación".
         /// Con el codigo identificativo 060.030.040.000
         /// </summary>
-        public List<SubseccionItem> SincroRedesCooperacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroRedesCooperacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -1102,7 +1102,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Premios, menciones y distinciones".
         /// Con el codigo identificativo 060.030.050.000
         /// </summary>
-        public List<SubseccionItem> SincroPremiosMenciones(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroPremiosMenciones(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -1155,7 +1155,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Otras distinciones (carrera profesional y/o empresarial)".
         /// Con codigo identificativo 060.030.060.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrasDistinciones(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroOtrasDistinciones(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -1208,7 +1208,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Períodos de actividad investigadora".
         /// Con codigo identificativo 060.030.070.000
         /// </summary>
-        public List<SubseccionItem> SincroPeriodosActividad(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroPeriodosActividad(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -1262,7 +1262,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Acreditaciones/reconocimientos obtenidos".
         /// Con codigo identificativo 060.030.090.000
         /// </summary>
-        public List<SubseccionItem> SincroAcreditacionesObtenidas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroAcreditacionesObtenidas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -1315,7 +1315,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Resumen de otros méritos".
         /// Con codigo identificativo 060.030.100.000
         /// </summary>
-        public List<SubseccionItem> SincroResumenOtrosMeritos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroResumenOtrosMeritos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
