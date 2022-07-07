@@ -263,19 +263,27 @@ function checkAllConflict(){
 		var texto = $(this).find('.texto').text();
 		var drop = $(this).closest('.ordenar.dropdown.dropdown-select').find('a.dropdown-toggle span.texto');		
 		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
+		var seleccionar = $(this).closest('.acciones-listado').find('.checkAllCVWrapper input[type="checkbox"]');
+		var currentText = texto.split(' ')[1].toUpperCase();
+		// Cambio el texto del checkbox de seleccionar en función de los datos mostrados
+		$(seleccionar).prop('checked', false);
+		$(seleccionar).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + currentText)}`);
 		
-		if(texto=='Mostrar todos')
+		if(texto==GetText('CV_MOSTRAR_TODOS'))
 		{
+			seleccionar.attr('conflict', '');
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, false, false);
 		}
-		else if(texto=='Mostrar similitudes')
+		else if(texto==GetText('CV_MOSTRAR_CONFLICTOS'))
 		{
+			seleccionar.attr('conflict', 'true');
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, true, false);
 		}
-		else if(texto=='Mostrar nuevos')
+		else if(texto==GetText('CV_MOSTRAR_NUEVOS'))
 		{
+			seleccionar.attr('conflict', 'false');
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, false, true);
 		}
@@ -304,15 +312,19 @@ function checkAllNew(){
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
+		var currentText = 'TODOS';
+		var conflictType = $(this).attr('conflict') ? '.conflict-' + $(this).attr('conflict') : '';
+
+		currentText = $(this).closest('.acciones-listado').find('.ordenar.dropdown.dropdown-select a.dropdown-toggle span.texto').text().split(' ')[1].toUpperCase();
 		if(!$(this)[0].checked)
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_TODOS')}`);
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + currentText)}`);
 		}
 		else
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_TODOS')}`);
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_' + currentText)}`);
 		}
-		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
+		$(this).closest('.panel-body').find('article' + conflictType + ' div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
 	
 	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
