@@ -26,24 +26,7 @@ namespace EditorCV.Models
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
         public byte[] filebytes;
-
-        public static void DoWork(ConfigService _Configuracion, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus)
-        {
-            string dataString = (string)petitionID;
-            while (true)
-            {
-                //Petición de estado
-                string urlEstado = _Configuracion.GetUrlImportador() + "/PetitionCVStatus?petitionID=" + petitionID;
-                HttpClient httpClientEstado = new HttpClient();
-                HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
-                PetitionStatus estadoRespuesta = JsonConvert.DeserializeObject<PetitionStatus>(responseEstado.Content.ReadAsStringAsync().Result);
-                petitionStatus[petitionID] = estadoRespuesta;
-                if (estadoRespuesta != null && estadoRespuesta.totalWorks != 0 && estadoRespuesta.actualWork == estadoRespuesta.totalWorks)
-                {
-                    break;
-                }
-            }
-        }
+                
 
         /// <summary>
         /// Lectura del archivo <paramref name="File"/> y creación del objeto Preimport
@@ -57,11 +40,6 @@ namespace EditorCV.Models
         {
             try
             {
-                Thread statusThread = new Thread(
-                    unused => DoWork(_Configuracion, petitionID, petitionStatus)
-                  );
-                statusThread.Start();
-
                 //Petición al exportador
                 MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
                 multipartFormData.Add(new StringContent(pCVID), "pCVID");

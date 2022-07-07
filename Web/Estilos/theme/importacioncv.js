@@ -179,7 +179,6 @@ var importarCVN = {
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
 				checkAllConflict();
-				checkAllNew();
 				OcultarUpdateProgress();				
 			},
 			error: function(jqXHR, exception){
