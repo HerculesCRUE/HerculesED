@@ -4,6 +4,7 @@ var selectorConflictoBloqueado = '';
 var selectorCamposTexto = '';
 var dropdownSimilitudes = '';
 var contador = 1;
+var urlUserCV = '';
 
 //window.addEventListener('beforeunload', (event) => {
 //  // Cancel the event as stated by the standard.
@@ -19,6 +20,16 @@ var importarCVN = {
 		this.idUsuario = $('#inpt_usuarioID').val();
 		this.fileData = '';
 		this.filePreimport = '';
+
+		var userID = $('#inpt_usuarioID').val();
+		var lang = $('#inpt_Idioma').val();
+		$.ajax({
+			url: url_servicio_editorcv+"EdicionCV/GetCVUrl?userID=" + userID + "&lang=" + lang,
+			type: 'GET',
+			success: function ( response ) {				
+				urlUserCV = response;
+			}
+		});
 
 		dropdownSimilitudes = `<div class="ordenar dropdown selectsimilarity dropdown-select">
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -266,9 +277,10 @@ var importarCVN = {
 				$('#workMascaraBlanca').remove();
 				
 				OcultarUpdateProgress();
-				//TODO
-				//url_servicio_editorcv+"EdicionCV/GetCVUrl?userID= &lang= "
-				window.location.href = "http://edma.gnoss.com/comunidad/hercules";
+				if(urlUserCV != null && urlUserCV != '')
+				{
+					window.location.href = urlUserCV;
+				}
 			},
 			error: function(jqXHR, exception){				
 				clearInterval(intervalStatus);
