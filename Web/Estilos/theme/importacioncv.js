@@ -98,7 +98,7 @@ var importarCVN = {
 		$('.col-contenido.paso2').show();
 		MostrarUpdateProgressTime(0);
 		
-		if($('#textoMascaraBlanca').length == 0){
+		if($('#titleMascaraBlanca').length == 0){
 			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
 			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
 		}
@@ -224,7 +224,12 @@ var importarCVN = {
 		formData.append('filePreimport', that.filePreimport);
 		formData.append('listaId', listaId);
 		formData.append('listaOpcionSeleccionados', listaOpcionSeleccionados);
-				
+		
+		if($('#titleMascaraBlanca').length == 0){
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
+		}
+		
 		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
