@@ -52,7 +52,7 @@ namespace EditorCV.Controllers
             try
             {
                 //Estado de la petición
-                PetitionStatus estadoPreimport = new PetitionStatus(1, 3, "ESTADO_PREIMPORTCV_INICIO");
+                PetitionStatus estadoPreimport = new PetitionStatus(1, 3, "ESTADO_PREIMPORTAR_INICIO");
                 petitionStatus[petitionID] = estadoPreimport;
 
                 string pCVId = UtilityCV.GetCVFromUser(userID);
