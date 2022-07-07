@@ -67,7 +67,7 @@ namespace EditorCV.Controllers
 
                 //Cambio el estado de la petición
                 petitionStatus[petitionID].actualWork = 3;
-                petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTCV_FINLECTURA";
+                petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_FINLECTURA";
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
                 ConcurrentDictionary<int, Models.API.Response.Tab> respuesta = accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
@@ -122,7 +122,9 @@ namespace EditorCV.Controllers
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_PROCESARDATOS")
                                 {
                                     petitionStatus[petitionID].actualWork = 2;
-                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS" + estadoRespuesta.actualWork + "/" + estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
                                 }
                             }
                         }
