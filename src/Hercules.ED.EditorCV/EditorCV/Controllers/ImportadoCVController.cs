@@ -19,6 +19,7 @@ using System.Text.Json;
 using System.Xml.Serialization;
 using System.IO;
 using System.Text;
+using Models;
 
 namespace EditorCV.Controllers
 {
@@ -28,6 +29,9 @@ namespace EditorCV.Controllers
     public class ImportadoCVController : Controller
     {
         readonly ConfigService _Configuracion;
+
+        private static ConcurrentDictionary<string, PetitionStatus> petitionStatus = new ConcurrentDictionary<string, PetitionStatus>();
+
 
         public ImportadoCVController(ConfigService pConfig)
         {
@@ -39,12 +43,17 @@ namespace EditorCV.Controllers
         /// </summary>
         /// <param name="userID"></param>
         /// <param name="File"></param>
+        /// <param name="petitionID">ID de la petición</param>
         /// <returns></returns>
         [HttpPost("PreimportarCV")]
-        public IActionResult PreimportarCV([Required][FromForm] string userID, [Required] IFormFile File)
+        public IActionResult PreimportarCV([Required][FromForm] string userID, [Required][FromForm] string petitionID, [Required] IFormFile File)
         {
             try
             {
+                //Estado de la petición
+                PetitionStatus estadoPreimport = new PetitionStatus(1, 2, "ESTADO_PREIMPORTCV_INICIO");
+                petitionStatus[petitionID] = estadoPreimport;
+
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
@@ -52,10 +61,14 @@ namespace EditorCV.Controllers
                 }
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion();
-                Preimport preimport = accionesImportacion.PreimportarCV(_Configuracion, pCVId, File);
+                Preimport preimport = accionesImportacion.PreimportarCV(_Configuracion, pCVId, File, petitionID, petitionStatus);
+
+                //Cambio el estado de la petición
+                petitionStatus[petitionID].actualWork = 2;
+                petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTCV_FINLECTURA";
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
-                ConcurrentDictionary<int, Models.API.Response.Tab> respuesta =  accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
+                ConcurrentDictionary<int, Models.API.Response.Tab> respuesta = accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
 
                 //Añado el archivoXML en la posicion 99 de la respuesta.
                 Models.API.Response.Tab tab = new Models.API.Response.Tab();
@@ -68,6 +81,30 @@ namespace EditorCV.Controllers
                 respuesta.TryAdd(100, tabPreimportar);
 
                 return Ok(respuesta);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        /// <summary>
+        /// Servicio de Preimportación del CV
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="File"></param>
+        /// <param name="petitionID">ID de la petición</param>
+        /// <returns></returns>
+        [HttpGet("PreimportarCVStatus")]
+        public IActionResult PreimportarCVStatus([Required] string petitionID)
+        {
+            try
+            {
+                if (petitionStatus.ContainsKey(petitionID))
+                {
+                    return Ok(petitionStatus[petitionID]);
+                }
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -119,7 +156,7 @@ namespace EditorCV.Controllers
 
                 byte[] file = Encoding.UTF8.GetBytes(fileData);
 
-                AccionesImportacion accionesImportacion = new AccionesImportacion();                
+                AccionesImportacion accionesImportacion = new AccionesImportacion();
                 accionesImportacion.PostimportarCV(_Configuracion, pCVId, file, filePreimport, listadoId, dicOpciones);
 
                 return Ok();

@@ -5,6 +5,7 @@ using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Microsoft.AspNetCore.Http;
+using Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -25,20 +27,45 @@ namespace EditorCV.Models
         private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
         public byte[] filebytes;
 
+        public static void DoWork(ConfigService _Configuracion, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus)
+        {
+            string dataString = (string)petitionID;
+            while (true)
+            {
+                //Petición de estado
+                string urlEstado = _Configuracion.GetUrlImportador() + "/PetitionCVStatus?petitionID=" + petitionID;
+                HttpClient httpClientEstado = new HttpClient();
+                HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+                PetitionStatus estadoRespuesta = JsonConvert.DeserializeObject<PetitionStatus>(responseEstado.Content.ReadAsStringAsync().Result);
+                petitionStatus[petitionID] = estadoRespuesta;
+                if (estadoRespuesta != null && estadoRespuesta.totalWorks != 0 && estadoRespuesta.actualWork == estadoRespuesta.totalWorks)
+                {
+                    break;
+                }
+            }
+        }
+
         /// <summary>
         /// Lectura del archivo <paramref name="File"/> y creación del objeto Preimport
         /// </summary>
         /// <param name="_Configuracion"></param>
         /// <param name="pCVID"></param>
         /// <param name="File"></param>
+        /// <param name="petitionID">ID de la petición</param>
         /// <returns></returns>
-        public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File)
+        public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus)
         {
             try
             {
+                Thread statusThread = new Thread(
+                    unused => DoWork(_Configuracion, petitionID, petitionStatus)
+                  );
+                statusThread.Start();
+
                 //Petición al exportador
                 MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
                 multipartFormData.Add(new StringContent(pCVID), "pCVID");
+                multipartFormData.Add(new StringContent(petitionID), "petitionID");
 
                 var ms = new MemoryStream();
                 File.CopyTo(ms);
@@ -58,7 +85,6 @@ namespace EditorCV.Models
                 {
                     throw new Exception(response.StatusCode.ToString() + " " + response.Content);
                 }
-
                 Preimport preimport = JsonConvert.DeserializeObject<Preimport>(response.Content.ReadAsStringAsync().Result);
 
                 return preimport;
@@ -481,7 +507,7 @@ namespace EditorCV.Models
                             {
                                 //Si es 
                                 property = UtilityCV.GetPropComplete(data),
-                                values = subseccionItem.propiedades.Where(x => x.prop.StartsWith( GetPropCompleteWithoutRelatedBy(UtilityCV.GetPropComplete(data))))?
+                                values = subseccionItem.propiedades.Where(x => x.prop.StartsWith(GetPropCompleteWithoutRelatedBy(UtilityCV.GetPropComplete(data))))?
                                     .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList()
                             };
                             if (sectionItem.orderProperties.Any(x => x.property.Contains(itemOrderProperty.property)))

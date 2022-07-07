@@ -25,6 +25,11 @@ namespace ImportadorWebCV.Sincro
         private string personID;
         public FormFile CVFileAsXML;
 
+        public int GetNumItems()
+        {
+            return cvn.cvnRootBean.Length;
+        }
+
         private List<string> listadoSecciones = new List<string>()
         {
             //Datos identificacion
@@ -172,7 +177,7 @@ namespace ImportadorWebCV.Sincro
         public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID, mConfiguracion);
-
+            
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar, listadoIdBBDD)));
 
