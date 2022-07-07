@@ -99,7 +99,7 @@ var importarCVN = {
 		MostrarUpdateProgressTime(0);
 		
 		if($('#textoMascaraBlanca').length == 0){
-			$('#mascaraBlanca').find('.wrap.popup').append('<div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
 			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
 		}
 	
@@ -116,7 +116,7 @@ var importarCVN = {
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
-						if(response.subTotalWorks == 0){
+						if(response.subTotalWorks == null || response.subTotalWorks == 0){
 							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
 						}
 						else{
