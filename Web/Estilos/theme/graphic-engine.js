@@ -80,7 +80,7 @@ var metricas = {
         var arg = {};
         arg.pLang = lang;
         arg.pUserId = $('.inpt_usuarioID').attr('value');
-        
+
         var isAdmin = false;
         $.get(url, arg, function (data) {
             isAdmin = data;
@@ -94,11 +94,11 @@ var metricas = {
                         </div>
                     `);
                     $('div.admin-page')
-                    .unbind()
-                    .click(function (e) {
-                        that.clearPage();
-                        that.createAdminPage();
-                    });
+                        .unbind()
+                        .click(function (e) {
+                            that.clearPage();
+                            that.createAdminPage();
+                        });
                 }
             }
         );
@@ -109,10 +109,46 @@ var metricas = {
         var arg = {};
         arg.pLang = lang;
         arg.pUserId = $('.inpt_usuarioID').attr('value');
-        
-        $.get(url, arg, function (data) {
-            // data es una lista de strings con los nombres de los json (por ahora)
-        });
+        if ($("div.pageMetrics table.tablaAdmin").length == 0) {
+            $("main div.row-content div.pageMetrics").append(`
+            <table class="tablaAdmin">
+                <tbody>
+                    <tr>
+                        <th>Fichero</th>
+                        <th>Subir</th>
+                    </tr>
+
+
+
+                </tbody>
+            </table>
+
+    `);
+            $.get(url, arg, function (data) {
+                data.forEach(function (jsonName, index) {
+                    var link = url_servicio_graphicengine + "DescagarConfig";
+                    link += "&pLang=" + lang;
+                    link += "&pConfig=" + jsonName.substring(1);
+                    link += "&pUserId=" + $('.inpt_usuarioID').attr('value');
+                    $("table.tablaAdmin tbody").append(`
+                <tr id="${index}">
+                    <td><a href="${link}" >${jsonName}</a></td>
+                    <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a href="#" class="btn btn-primary">Subir</a></td>
+                </tr>
+            `);
+                }
+                );
+
+            });
+        }
+        /*     
+            <tr>
+                <td><a href="#">page1.json</a></td>
+                <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a href="#" class="btn btn-primary">subir</a></td>
+            </tr>
+         */
+
+
     },
     getPagesPersonalized: function () {
         var that = this;
@@ -591,7 +627,7 @@ var metricas = {
 
             if ($("div[idFaceta='" + pIdFaceta + "']").find("*").length > 0) {
                 return;
-             }
+            }
 
 
             var numItemsPintados = 0;
@@ -875,12 +911,12 @@ var metricas = {
         if ($("div.facetedSearch").length == 0) {
             pPageData.listaIdsFacetas.forEach(function (item, index, array) {
 
-                    $('#page_' + pPageData.id + ' .containerFacetas').append(`
+                $('#page_' + pPageData.id + ' .containerFacetas').append(`
                     <div class='facetedSearch'>
                         <div class='box' idfaceta="${item.includes('(((') ? item.split('(((')[0] : item}" reciproca="${item.includes('(((') ? item.split('(((')[1] : ''}"></div>
                         </div>
                     `);
-  
+
             });
         }
         that.pintarPagina(pPageData.id)
