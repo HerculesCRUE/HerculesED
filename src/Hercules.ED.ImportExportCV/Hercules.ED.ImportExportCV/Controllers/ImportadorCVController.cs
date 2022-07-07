@@ -107,28 +107,29 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 sincro.ComprobarSecciones();
                 petitionStatus[petitionID].totalWorks = sincro.GetNumItems();
+                petitionStatus[petitionID].actualWork = 0;
+                petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
 
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Count();
                 preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
                 petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
 
-                preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+                preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true, petitionStatus:petitionStatus[petitionID]));
+                //petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
 
-                preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+                preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                //petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
 
-                preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+                preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                //petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
 
-                preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+                preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                //petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
 
-                preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+                preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                //petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
 
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+                petitionStatus[petitionID].actualWork = petitionStatus[petitionID].totalWorks;
 
                 sincro.GuardarXMLFiltrado();
 
