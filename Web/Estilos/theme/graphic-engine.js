@@ -133,12 +133,12 @@ var metricas = {
                     $("table.tablaAdmin tbody").append(`
                 <tr id="${index}">
                     <td><a href="${link}" >${jsonName}</a></td>
-                    <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a href="#" class="btn btn-primary">Subir</a></td>
+                    <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a  class="btn btn-primary">Subir</a></td>
                 </tr>
             `);
                 }
                 );
-
+                metricas.engancharComportamientos();
             });
         }
         /*     
@@ -147,6 +147,7 @@ var metricas = {
                 <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a href="#" class="btn btn-primary">subir</a></td>
             </tr>
          */
+
 
 
     },
@@ -741,6 +742,7 @@ var metricas = {
 
             $('#panFacetas').empty()
             $('.resource-list-wrap').empty();
+            $('table.tablaAdmin').remove();
             history.pushState('', 'New URL: ', '?');
         } else {
             $('canvas').each(function () {
@@ -749,7 +751,9 @@ var metricas = {
             $(window).unbind('resize');
 
             $('.resource-list-wrap').empty();
+
         }
+
     },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -1885,6 +1889,28 @@ var metricas = {
             a.download = chart.config._config.options.plugins.title.text + '.jpg';
             a.click();
         });
+        $('table.tablaAdmin td.subir a.btn')
+        .unbind()
+        .click(function (e) {
+            var url = url_servicio_graphicengine + "SubirConfig";
+            var file = $(this).parent().find('input[type=file]');
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file[0].files[0]);
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var args = {
+                    pLang: lang,
+                    pConfigName: file[0].files[0].name,
+                    pConfigFile: data,
+                    pUserId: $('.inpt_usuarioID').attr('value')
+                }
+                console.log(args);
+                $.get(url, args, function (data) {
+                    console.log(data);
+                });
+            }
+        });
+
         $('a.csv')
             .unbind()
             .click(function (e) {
