@@ -49,7 +49,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetProduccionCientifica(listadoDatos);
+            List<Entity> listadoAux = GetProduccionCientifica(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -76,7 +76,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
 
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD:listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
         }
 
         /// <summary>
@@ -91,6 +91,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 return null;
             }
+            //Actualizo el estado de los recursos tratados
+            petitionStatus.actualWork++;
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/generalQualityIndicators", "http://w3id.org/roh/generalQualityIndicatorCV" };
             List<string> rdfTypeItem = new List<string>() { "http://w3id.org/roh/GeneralQualityIndicator", "http://w3id.org/roh/GeneralQualityIndicatorCV" };
@@ -134,7 +136,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     //4º Actualizamos la entidad
                     UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
                 }
-                
+
                 return null;
             }
         }
@@ -159,7 +161,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(listadoDatos, listadoSituacionProfesional);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(listadoDatos, listadoSituacionProfesional, petitionStatus);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -262,7 +264,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedConferences";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosCongresos(listadoDatos);
+            List<Entity> listadoAux = GetTrabajosCongresos(listadoDatos, petitionStatus);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -358,7 +360,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 return null;
             }
-            
+
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", "http://w3id.org/roh/worksSubmittedSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "document";
             string propTitle = "http://w3id.org/roh/title";
@@ -366,7 +368,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedSeminars";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(listadoDatos);
+            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(listadoDatos, petitionStatus);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -474,7 +476,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetOtrasActividadesDivulgacion(listadoDatos);
+            List<Entity> listadoAux = GetOtrasActividadesDivulgacion(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -528,7 +530,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetComitesCTA(listadoDatos);
+            List<Entity> listadoAux = GetComitesCTA(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -582,7 +584,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetOrganizacionIDI(listadoDatos);
+            List<Entity> listadoAux = GetOrganizacionIDI(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -637,7 +639,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetGestionIDI(listadoDatos);
+            List<Entity> listadoAux = GetGestionIDI(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -692,7 +694,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetForosComites(listadoDatos);
+            List<Entity> listadoAux = GetForosComites(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -745,7 +747,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetEvalRevIDI(listadoDatos);
+            List<Entity> listadoAux = GetEvalRevIDI(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -800,7 +802,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetEstanciasIDI(listadoDatos);
+            List<Entity> listadoAux = GetEstanciasIDI(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -854,7 +856,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetAyudasBecas(listadoDatos);
+            List<Entity> listadoAux = GetAyudasBecas(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -908,7 +910,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetOtrosModosColaboracion(listadoDatos);
+            List<Entity> listadoAux = GetOtrosModosColaboracion(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -961,7 +963,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetSociedadesAsociaciones(listadoDatos);
+            List<Entity> listadoAux = GetSociedadesAsociaciones(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1015,7 +1017,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetConsejos(listadoDatos);
+            List<Entity> listadoAux = GetConsejos(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1068,7 +1070,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetRedesCooperacion(listadoDatos);
+            List<Entity> listadoAux = GetRedesCooperacion(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1121,7 +1123,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPremiosMenciones(listadoDatos);
+            List<Entity> listadoAux = GetPremiosMenciones(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1174,7 +1176,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetOtrasDistinciones(listadoDatos);
+            List<Entity> listadoAux = GetOtrasDistinciones(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1227,7 +1229,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad de los datos del XML.
-            List<Entity> listadoAux = GetPeriodosActividadInvestigadora(listadoDatos);
+            List<Entity> listadoAux = GetPeriodosActividadInvestigadora(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1281,7 +1283,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetAcreditacionesObtenidas(listadoDatos);
+            List<Entity> listadoAux = GetAcreditacionesObtenidas(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1334,7 +1336,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetOtrosMeritos(listadoDatos);
+            List<Entity> listadoAux = GetOtrosMeritos(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -1412,7 +1414,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetProduccionCientifica(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetProduccionCientifica(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1421,6 +1423,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoPublicacionesDocumentos)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
 
@@ -1479,7 +1484,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetPublicacionesDocumentos(List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional)
+        public List<Entity> GetPublicacionesDocumentos(List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1488,6 +1493,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoPublicacionesDocumentos)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
@@ -1667,7 +1675,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetTrabajosCongresos(List<CvnItemBean> listadoDatos)
+        public List<Entity> GetTrabajosCongresos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1676,6 +1684,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoTrabajosCongresos)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
@@ -1859,7 +1870,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetTrabajosJornadasSeminarios(List<CvnItemBean> listadoDatos)
+        public List<Entity> GetTrabajosJornadasSeminarios(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1868,6 +1879,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoComitesTrabajosJornadasSeminarios)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
@@ -2050,7 +2064,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetOtrasActividadesDivulgacion(List<CvnItemBean> listadoDatos)
+        public List<Entity> GetOtrasActividadesDivulgacion(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2059,6 +2073,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoOtrasActividadesDivulgacion)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.040.010")))
@@ -2212,7 +2229,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetComitesCTA(List<CvnItemBean> listadoDatos)
+        public List<Entity> GetComitesCTA(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2221,6 +2238,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoComitesCTA)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.010.010")))
@@ -2307,7 +2327,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetOrganizacionIDI(List<CvnItemBean> listadoDatos)
+        public List<Entity> GetOrganizacionIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2316,6 +2336,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoOrganizacionIDI)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.030.010")))
@@ -2385,7 +2408,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetGestionIDI(List<CvnItemBean> listadoDatos)
+        public List<Entity> GetGestionIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2394,6 +2417,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoGestionIDI)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.040.060")))
@@ -2493,7 +2519,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetForosComites(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetForosComites(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2502,6 +2528,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoForosComites)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.050.010")))
@@ -2580,7 +2609,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetEvalRevIDI(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetEvalRevIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2589,6 +2618,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoEvalRevIDI)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.060.010")))
@@ -2655,7 +2687,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetEstanciasIDI(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetEstanciasIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2664,6 +2696,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoEstanciasIDI)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.050.210")))
@@ -2809,7 +2844,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetAyudasBecas(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetAyudasBecas(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2818,6 +2853,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoAyudasBecas)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.010.010")))
@@ -2934,7 +2972,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.020.020.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetOtrosModosColaboracion(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetOtrosModosColaboracion(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2943,6 +2981,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoOtrosModosColaboracion)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.020.020.140")))
@@ -3126,7 +3167,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.020.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetSociedadesAsociaciones(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetSociedadesAsociaciones(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3135,6 +3176,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoSociedadesAsociaciones)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.020.010")))
@@ -3226,7 +3270,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.030.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetConsejos(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetConsejos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3235,6 +3279,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoConsejos)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.030.010")))
@@ -3304,7 +3351,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.040.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetRedesCooperacion(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetRedesCooperacion(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3313,6 +3360,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoRedesCooperacion)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.040.010")))
@@ -3434,7 +3484,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.050.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetPremiosMenciones(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetPremiosMenciones(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3443,6 +3493,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoPremios)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.050.010")))
@@ -3502,7 +3555,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.060.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetOtrasDistinciones(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetOtrasDistinciones(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3511,6 +3564,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoDistinciones)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.060.010")))
@@ -3571,7 +3627,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.070.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetPeriodosActividadInvestigadora(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetPeriodosActividadInvestigadora(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3580,6 +3636,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoAcreditaciones)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringDoublePorIDCampo("060.030.070.010")))
@@ -3640,7 +3699,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.090.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetAcreditacionesObtenidas(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetAcreditacionesObtenidas(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3649,6 +3708,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoAcreditaciones)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.090.010")))
@@ -3709,7 +3771,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// 060.030.100.000
         /// </summary>
         /// <param name="listadoDatos"></param>
-        private List<Entity> GetOtrosMeritos(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetOtrosMeritos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -3718,6 +3780,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoOtros)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
 
