@@ -43,10 +43,9 @@ var metricas = {
         } else if (performance.navigation.type == performance.navigation.TYPE_RELOAD && ObtenerHash2()) {// si se recarga la pagina con filtos, se eliminan estos para que no se apliquen a la 2a pagina por error
             history.pushState('', 'New URL: ', '?'); //TODO quitar esto haciendo que obtenga la pagina en la que se esta
         }
-
-
         if (!$('div').hasClass('indicadoresPersonalizados')) {
             this.getPages();
+            this.addAdminPage();
         } else {
             this.getPagesPersonalized();
         }
@@ -74,6 +73,83 @@ var metricas = {
             that.fillPage(listaData[numPagina]);
             listaPaginas = listaData;
         });
+    },
+    addAdminPage: function () {
+        var that = this;
+        var url = url_servicio_graphicengine + "IsAdmin"; //"https://localhost:44352/IsAdmin";
+        var arg = {};
+        arg.pLang = lang;
+        arg.pUserId = $('.inpt_usuarioID').attr('value');
+
+        var isAdmin = false;
+        $.get(url, arg, function (data) {
+            isAdmin = data;
+        }).done(
+            function () {
+                if (isAdmin) {
+                    $('.pageOptions').append(`
+                        <div class="admin-page">
+                            <span class="material-icons btn-download-page">manage_accounts</span>
+                            <p>${that.GetText("ADMINISTRAR_GRAFICAS")}</p>
+                        </div>
+                    `);
+                    $('div.admin-page')
+                        .unbind()
+                        .click(function (e) {
+                            that.clearPage();
+                            that.createAdminPage();
+                        });
+                }
+            }
+        );
+    },
+    createAdminPage: function () {
+        var that = this;
+        var url = url_servicio_graphicengine + "ObtenerConfigs"; //"https://localhost:44352/ObtenerConfigs";
+        var arg = {};
+        arg.pLang = lang;
+        arg.pUserId = $('.inpt_usuarioID').attr('value');
+        if ($("div.pageMetrics table.tablaAdmin").length == 0) {
+            $("main div.row-content div.pageMetrics").append(`
+            <table class="tablaAdmin">
+                <tbody>
+                    <tr>
+                        <th>Fichero</th>
+                        <th>Subir</th>
+                    </tr>
+
+
+
+                </tbody>
+            </table>
+        `);
+            $.get(url, arg, function (data) {
+                data.forEach(function (jsonName, index) {
+                    jsonName = jsonName.substring(1);
+                    var link = url_servicio_graphicengine + "DescargarConfig";
+                    link += "?pLang=" + lang;
+                    link += "&pConfig=" + jsonName;
+                    link += "&pUserId=" + $('.inpt_usuarioID').attr('value');
+                    $("table.tablaAdmin tbody").append(`
+                <tr id="${index}">
+                    <td><a href="${link}" >${jsonName}</a></td>
+                    <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a  class="btn btn-primary">Subir</a></td>
+                </tr>
+            `);
+                }
+                );
+                metricas.engancharComportamientos();
+            });
+        }
+        /*     
+            <tr>
+                <td><a href="#">page1.json</a></td>
+                <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a href="#" class="btn btn-primary">subir</a></td>
+            </tr>
+         */
+
+
+
     },
     getPagesPersonalized: function () {
         var that = this;
@@ -552,7 +628,7 @@ var metricas = {
 
             if ($("div[idFaceta='" + pIdFaceta + "']").find("*").length > 0) {
                 return;
-             }
+            }
 
 
             var numItemsPintados = 0;
@@ -666,6 +742,7 @@ var metricas = {
 
             $('#panFacetas').empty()
             $('.resource-list-wrap').empty();
+            $('table.tablaAdmin').remove();
             history.pushState('', 'New URL: ', '?');
         } else {
             $('canvas').each(function () {
@@ -674,7 +751,9 @@ var metricas = {
             $(window).unbind('resize');
 
             $('.resource-list-wrap').empty();
+
         }
+
     },
     createEmptyPage: function (pIdPagina) {
         $('.containerPage').attr('id', 'page_' + pIdPagina);
@@ -836,12 +915,12 @@ var metricas = {
         if ($("div.facetedSearch").length == 0) {
             pPageData.listaIdsFacetas.forEach(function (item, index, array) {
 
-                    $('#page_' + pPageData.id + ' .containerFacetas').append(`
+                $('#page_' + pPageData.id + ' .containerFacetas').append(`
                     <div class='facetedSearch'>
                         <div class='box' idfaceta="${item.includes('(((') ? item.split('(((')[0] : item}" reciproca="${item.includes('(((') ? item.split('(((')[1] : ''}"></div>
                         </div>
                     `);
-  
+
             });
         }
         that.pintarPagina(pPageData.id)
@@ -1056,9 +1135,9 @@ var metricas = {
             } else {
                 nombre = filtro.split('=')[1].replaceAll("'", "");
                 if (nombre === "lastyear") {
-                    nombre = GetText("ULTIMO_ANIO");
+                    nombre = that.GetText("ULTIMO_ANIO");
                 } else if (nombre === "fiveyears") {
-                    nombre = GetText("ULTIMOS_CINCO_ANIOS");
+                    nombre = that.GetText("ULTIMOS_CINCO_ANIOS");
                 }
                 $(".borrarFiltros-wrap").remove();
                 $("#panListadoFiltros").append(`
@@ -1072,25 +1151,25 @@ var metricas = {
                 `);
             }
         }
-        function GetText(id, param1, param2, param3, param4) {
-            if ($('#' + id).length) {
-                var txt = $('#' + id).val();
-                if (param1 != null) {
-                    txt = txt.replace("PARAM1", param1);
-                }
-                if (param2 != null) {
-                    txt = txt.replace("PARAM2", param1);
-                }
-                if (param3 != null) {
-                    txt = txt.replace("PARAM3", param1);
-                }
-                if (param4 != null) {
-                    txt = txt.replace("PARAM4", param1);
-                }
-                return txt;
-            } else {
-                return id;
+    },
+    GetText: function (id, param1, param2, param3, param4) {
+        if ($('#' + id).length) {
+            var txt = $('#' + id).val();
+            if (param1 != null) {
+                txt = txt.replace("PARAM1", param1);
             }
+            if (param2 != null) {
+                txt = txt.replace("PARAM2", param1);
+            }
+            if (param3 != null) {
+                txt = txt.replace("PARAM3", param1);
+            }
+            if (param4 != null) {
+                txt = txt.replace("PARAM4", param1);
+            }
+            return txt;
+        } else {
+            return id;
         }
     },
     pintarPaginaPersonalized: function (pIdRecurso, pPageData) {
@@ -1810,6 +1889,28 @@ var metricas = {
             a.download = chart.config._config.options.plugins.title.text + '.jpg';
             a.click();
         });
+        $('table.tablaAdmin td.subir a.btn')
+        .unbind()
+        .click(function (e) {
+            var url = url_servicio_graphicengine + "SubirConfig";
+            var file = $(this).parent().find('input[type=file]');
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file[0].files[0]);
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var args = {
+                    pLang: lang,
+                    pConfigName: file[0].files[0].name,
+                    pConfigFile: data,
+                    pUserId: $('.inpt_usuarioID').attr('value')
+                }
+                console.log(args);
+                $.get(url, args, function (data) {
+                    console.log(data);
+                });
+            }
+        });
+
         $('a.csv')
             .unbind()
             .click(function (e) {
@@ -2429,7 +2530,6 @@ var metricas = {
                     }
                 }
             });
-
         //boton del pop-up con la grafica escalada
         $("div.zoom")
             .unbind()

@@ -26,24 +26,7 @@ namespace EditorCV.Models
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
         public byte[] filebytes;
-
-        public static void DoWork(ConfigService _Configuracion, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus)
-        {
-            string dataString = (string)petitionID;
-            while (true)
-            {
-                //Petición de estado
-                string urlEstado = _Configuracion.GetUrlImportador() + "/PetitionCVStatus?petitionID=" + petitionID;
-                HttpClient httpClientEstado = new HttpClient();
-                HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
-                PetitionStatus estadoRespuesta = JsonConvert.DeserializeObject<PetitionStatus>(responseEstado.Content.ReadAsStringAsync().Result);
-                petitionStatus[petitionID] = estadoRespuesta;
-                if (estadoRespuesta != null && estadoRespuesta.totalWorks != 0 && estadoRespuesta.actualWork == estadoRespuesta.totalWorks)
-                {
-                    break;
-                }
-            }
-        }
+                
 
         /// <summary>
         /// Lectura del archivo <paramref name="File"/> y creación del objeto Preimport
@@ -53,15 +36,10 @@ namespace EditorCV.Models
         /// <param name="File"></param>
         /// <param name="petitionID">ID de la petición</param>
         /// <returns></returns>
-        public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus)
+        public Preimport PreimportarCV(ConfigService _Configuracion, string pCVID, IFormFile File, string petitionID)
         {
             try
             {
-                Thread statusThread = new Thread(
-                    unused => DoWork(_Configuracion, petitionID, petitionStatus)
-                  );
-                statusThread.Start();
-
                 //Petición al exportador
                 MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
                 multipartFormData.Add(new StringContent(pCVID), "pCVID");
@@ -105,7 +83,8 @@ namespace EditorCV.Models
         /// <param name="filePreimport"></param>
         /// <param name="listaId"></param>
         /// <param name="dicOpciones"></param>
-        public void PostimportarCV(ConfigService _Configuracion, string pCVID, byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
+        public void PostimportarCV(ConfigService _Configuracion, string pCVID, string petitionID, ConcurrentDictionary<string, PetitionStatus> petitionStatus,
+            byte[] file, string filePreimport, List<string> listaId, Dictionary<string, string> dicOpciones)
         {
             //Si la opcion es "ig"-"ignorar" elimino ese Identificador de los listados
             foreach (KeyValuePair<string, string> valuePair in dicOpciones)
@@ -117,10 +96,14 @@ namespace EditorCV.Models
                 }
             }
 
+            petitionStatus[petitionID].subTotalWorks = listaId.Count();
+
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
             //Identificador del curriculumvitae
             multipartFormData.Add(new StringContent(pCVID), "pCVID");
+            //Identificador de la peticion
+            multipartFormData.Add(new StringContent(petitionID), "petitionID");
             //Archivo XML leido
             multipartFormData.Add(new ByteArrayContent(file), "file");
             //Objeto Preimport

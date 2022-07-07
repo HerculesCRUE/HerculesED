@@ -2,39 +2,48 @@ init:
   name: "edma-01"
   ##############################
   # storageClassName DE UNIVERISDAD DE MURCIA
-  #storageClassName: "nfs-client"
+  storageClassName: "nfs-client"
+  #storageClassName: "ionos-enterprise-ssd"
   ##############################
   # DIFERENTES NAMESPACES
-  #namespace: "edma-hercules"
-  namespace: "test-rabbitmq"
+  namespace: "edma-hercules"
   ##############################
   # DIFERENTES POLITICAS DE PULL
-  pullpolicy: Always
-  #pullpolicy: IfNotPresent
+  #pullpolicy: Always
+  pullpolicy: IfNotPresent
   ##############################
-  secret: "regcred"
-  volNameState: "voledma"
-  replicaCount: 1
+  conecctionType: "2"
   idiomas: "es|Español,en|English"
   mulIdiomas: "es|Español,en|English,ca|Català,eu|Euskara,gl|Galego,fr|Français"
-  volumeClaimStorage01: "30Gi"
-  volumeClaimStorage02: "5Gi"
-  urlBase: "http://serviciosedma.gnoss.com"
-  conecctionType: "2"
+  replicaCount: 1
+  secret: "regcred"
   serviceaccount: test-edma-hercules
+  urlBase: "http://serviciosedma.gnoss.com"
+  volumeClaimStorage02: "5Gi"
+  volumeClaimStorage01: "30Gi"
+  volNameState: "voledma"
 
 servicios:
   nombreClusterIp: "servicios-gnoss"
 
 ingress:
-  services: 80
-  web: 80
+  class: "nginx"
   hostService: "serviciosedma.gnoss.com"
   hostWeb: "edma.gnoss.com"
+  services: 80
+  web: 80
 
 serviciosWin:
   intervalo: "100"
   restartPolicy: Always
+
+pvc:
+  cargafuentesexternas1: "carfuente1-pvc"
+  cargafuentesexternas2: "carfuente2-pvc"
+  desnormalizador: "desnor-pvc"
+  oauth: "compartido-pvc"
+  rabbitconsume: "rabcons-pvc" 
+  storage: "1Gi"
 
 ###########################
 #                         #
@@ -60,12 +69,12 @@ nginx:
 postgres:
   image: "postgres"
   tag: "11.15"
-  password: "ApHSTCRBwX"
   portSql: 5432
   targetPortSql: 5432
   cadenaConexionAcid: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=ApHSTCRBwX;Persist Security Info = true"
   cadenaConexionBase: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=ApHSTCRBwX;Persist Security Info = true"
   cadenaConexionOauth: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=ApHSTCRBwX;Persist Security Info = true"
+  password: "ApHSTCRBwX"
 
 virtuoso:
   image: "openlink/virtuoso-opensource-7"
@@ -97,11 +106,39 @@ redis:
   liveusuariosTimeout: "60"
 
 rabbitmq:
-  #cadenaConexion: "amqp://gnoss:gnoss1234@rabbitmq:5672/"
-  cadenaConexion: "amqp://gnoss:gnoss1234@rabbitmq-headless:5672/"
+  cadenaConexion: "amqp://gnoss:gnoss1234@rabbitmq:5672/"
 #  replicaCount: 1
 #  volNameState: volrabbitmq
 #  volumeClaimStorage: "5Gi"
+
+oauthv3:
+  ruta: "/app/Config/ConfigOAuth/"
+
+###########################
+#                         #
+#     VALUES COMUNES      #
+#                         #
+###########################
+
+valuesComunes:
+  autoCompletar: "http://serviciosedma.gnoss.com/autocompletar/autocompletar"
+  denormalizerQueueRabbit: "denormalizerEdmaQueue"
+  dominio: "edma.gnoss.com"
+  logPath: "/app/logs"
+  urlArchivos: "http://archivo/"
+  urlBaseEnriquecimiento: "http://herculesapi.elhuyar.eus"
+  urlContent: "http://serviciosedma.gnoss.com/content"
+  urlDocuments: "http://documents/GestorDocumental"
+  urlEnriquecimiento: "http://herculesapi.elhuyar.eus"
+  urlFacetas: "http://facetas/CargadorFacetas"
+  urlFacetasExterno: "http://serviciosedma.gnoss.com/facetas/CargadorFacetas"
+  urlInterno: "http://interno"
+  urlLogin: "http://serviciosedma.gnoss.com/login"
+  urlOauth: "http://oauth/"
+  urlPublicacion: "http://publicationapi/"
+  urlResultados: "http://resultados/CargadorResultados"
+  urlResultadosExterno: "http://serviciosedma.gnoss.com/resultadosCargadorResultados"
+  urlServiceInDomain: "login/"
 
 ######################################
 #                                    #
@@ -122,29 +159,16 @@ web:
   tag: "latest"
   port: 80
   puertoSocketsOffline: "8245"
-  urlLogin: "http://serviciosedma.gnoss.com/login"
-  urlFacetas: "http://facetas/CargadorFacetas"
-  urlResultados: "http://resultados/CargadorResultados"
-  urlFacetasExterno: "http://serviciosedma.gnoss.com/facetas/CargadorFacetas"
-  urlResultadosExterno: "http://serviciosedma.gnoss.com/resultadosCargadorResultados"
-  autoCompletar: "http://serviciosedma.gnoss.com/autocompletar/autocompletar"
-  urlInterno: "http://interno"
-  urlArchivos: "http://archivo/"
-  urlDocuments: "http://documents/GestorDocumental"
-  urlContent: "http://serviciosedma.gnoss.com/content"
-  dominio: "edma.gnoss.com"
   connectionType: "2"
   https: "false"
   desplegadoDocker: "true"
   restartPolicy: Always
-
 
 login:
   replicas: 1
   image: "gnoss/login"
   tag: "latest"
   port: 80
-  urlServiceInDomain: "login/"
   restartPolicy: Always
 
 resultados:
@@ -152,7 +176,6 @@ resultados:
   image: "gnoss/results"
   tag: "latest"
   port: 80
-  urlServiceInDomain: "login/"
   restartPolicy: Always
 
 interno:
@@ -191,11 +214,6 @@ despliegues:
   tag: "latest"
   port: 80
   puertoSocketsOffline: "1745"
-  urlFacetas: "http://facetas/CargadorFacetas"
-  urlResultados: "http://resultados/CargadorResultados"
-  urlFacetasExterno: "http://serviciosedma.gnoss.com/facetas/CargadorFacetas"
-  urlResultadosExterno: "http://serviciosedma.gnoss.com/resultadosCargadorResultados"
-  dominio: "edma.gnoss.com"
   connectionType: "2"  
   restartPolicy: Always
 
@@ -205,17 +223,6 @@ api:
   tag: "latest"
   port: 80
   puertoSocketsOffline: "1745"
-  urlLogin: "http://serviciosedma.gnoss.com/login"
-  urlFacetas: "http://facetas/CargadorFacetas"
-  urlResultados: "http://resultados/CargadorResultados"
-  urlFacetasExterno: "http://serviciosedma.gnoss.com/facetas/CargadorFacetas"
-  urlResultadosExterno: "http://serviciosedma.gnoss.com/resultadosCargadorResultados"
-  autoCompletar: "http://serviciosedma.gnoss.com/autocompletar/autocompletar"
-  urlInterno: "http://interno"
-  urlArchivos: "http://archivo/"
-  urlDocuments: "http://documents/GestorDocumental"
-  urlContent: "http://serviciosedma.gnoss.com/content"
-  urlOauth: "http://oauth/"
   connectionType: "2"
   hilosAplicacion: "200"
   restartPolicy: Always
@@ -226,17 +233,6 @@ oauth:
   tag: "latest"
   port: 80
   puertoSocketsOffline: "1745"
-  urlLogin: "http://serviciosedma.gnoss.com/login"
-  urlFacetas: "http://facetas/CargadorFacetas"
-  urlResultados: "http://resultados/CargadorResultados"  
-  urlFacetasExterno: "http://serviciosedma.gnoss.com/facetas/CargadorFacetas"
-  urlResultadosExterno: "http://serviciosedma.gnoss.com/resultadosCargadorResultados"
-  autoCompletar: "http://serviciosedma.gnoss.com/autocompletar/autocompletar"
-  urlInterno: "http://interno"
-  urlArchivos: "http://archivo/"
-  urlDocuments: "http://documents/GestorDocumental"
-  urlContent: "http://serviciosedma.gnoss.com/content"
-  urlOauth: "http://oauth/"
   connectionType: "2"
   hilosAplicacion: "200"
   restartPolicy: Always
@@ -247,11 +243,8 @@ editorcv:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  urlEnriquecimiento: "http://herculesapi.elhuyar.eus"
   urlImportadorExportador: "http://importadorcv"
   urlSgi: "https://sgi.demo.treelogic.com"
-  denormalizerQueueRabbit: "denormalizerEdmaQueue"
-  logPath: "/app/logs"
   usernameEsbCsp: "gestor-csp"
   passwordEsbCsp: "gestor-csp-2021"
   usernameEsbPrc: "gestor-prc"
@@ -265,7 +258,6 @@ servicioexterno:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
   queueRabbit: "fuentesExternasQueue"
   urlSimilarity: "http://herculesapi.elhuyar.eus/similarity/query_similar"
   
@@ -275,7 +267,6 @@ wosapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
   
 crossrefapi:
   replicas: 1
@@ -283,7 +274,6 @@ crossrefapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
 
 opencitationsapi:
   replicas: 1
@@ -291,7 +281,6 @@ opencitationsapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
 
 scopusapi:
   replicas: 1
@@ -299,7 +288,6 @@ scopusapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
 
 semanticscholarapi:
   replicas: 1
@@ -307,7 +295,6 @@ semanticscholarapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
 
 zenodoapi:
   replicas: 1
@@ -315,9 +302,7 @@ zenodoapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
   urlZenodo: "https://zenodo.org/api/records/"
-  urlBaseEnriquecimiento: "http://herculesapi.elhuyar.eus"
 
 publicationapi:
   replicas: 1
@@ -325,8 +310,6 @@ publicationapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
-  urlPublicacion: "http://publicationapi/"
   urlZenodo: "http://zenodoapi/"
   urlSemanticScholar: "http://semanticscholarapi/"
   urlScopus: "http://scopusapi/"
@@ -334,7 +317,6 @@ publicationapi:
   urlCrossRef: "http://crossrefapi/"
   urlWos: "http://wosapi/"
   urlOpenAire: "http://openaireapi/"
-  urlEnriquecimiento: "http://herculesapi.elhuyar.eus"
 
 figshareapi:
   replicas: 1
@@ -342,9 +324,7 @@ figshareapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
   urlBase: "https://api.figshare.com/v2"
-  urlBaseEnriquecimiento: "http://herculesapi.elhuyar.eus"
   token: ""
 
 githubapi:
@@ -353,9 +333,7 @@ githubapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
   urlBase: "https://api.github.com"
-  urlBaseEnriquecimiento: "http://herculesapi.elhuyar.eus"
 
 openaireapi:
   replicas: 1
@@ -363,7 +341,6 @@ openaireapi:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
   urlOpenAire: "https://api.openaire.eu"
 
 importadorcv:
@@ -372,10 +349,8 @@ importadorcv:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
   usuario_PDF: "um01"
   PSS_PDF: "dcgp017SU8rq"
-  denormalizerQueueRabbit: "denormalizerEdmaQueue"
 
 graphicengine:
   replicas: 1
@@ -383,7 +358,6 @@ graphicengine:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  logPath: "/app/logs"
 
 #######################################
 #                                     #
@@ -400,10 +374,7 @@ mail:
 cacherefresh:
   image: gnoss/gnoss.backgroundtask.cacherefresh.opencore
   tag: 0.0.1_beta
-  urlFacetas: "https://serviciosedma.gnoss.com/facetas/CargadorFacetas"
-  urlResultados: "https://serviciosedma.gnoss.com/resultados/CargadorResultados"
   conecctionType: "2"
-
 
 # OLD_DEPLOYMENT_LIVE_USUARIOS #
 communitywall:
@@ -429,8 +400,6 @@ socialsearchgraphgeneration:
 socialcacherefresh:
   image: gnoss/gnoss.backgroundtask.socialcacherefresh.opencore
   tag: 0.0.1_beta
-  urlFacetas: "https://serviciosedma.gnoss.com/facetas/CargadorFacetas"
-  urlResultados: "https://serviciosedma.gnoss.com/resultados/CargadorResultados"
 
 # OLD_LIVE_USUARIOS_ESPECIFICOS #
 userwall:
@@ -455,13 +424,12 @@ rabbitconsume:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  LogPath: "/app/logs"
-  QueueRabbit: "fuentesExternasQueue"
-  UrlPublicacion: "http://publicationapi/"
-  UrlZenodo: "http://zenodoapi/"
-  UrlFigShare: "http://figshareapi/"
-  UrlGitHub: "http://githubapi/"
-  DirectorioEscritura: "/app/logs/FileDatosOut/"
+  queueRabbit: "fuentesExternasQueue"
+  urlZenodo: "http://zenodoapi/"
+  urlFigShare: "http://figshareapi/"
+  urlGitHub: "http://githubapi/"
+  directorioEscritura: "/app/logs/FileDatosOut/"
+  path1: "/app/logs/FileDatosOut/"
   
 desnormalizador:
   replicas: 1
@@ -469,10 +437,9 @@ desnormalizador:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  LogPath: "/app/logs"
-  DenormalizerQueueRabbit: "denormalizerEdmaQueue"
-  DirectorioEscritura: "/app/desnormalizador/"
-  DenormalizerCronExpression: "0 0 2 ? * *"
+  directorioEscritura: "/app/desnormalizador/"
+  denormalizerCronExpression: "0 0 2 ? * *"
+  path1: "/app/desnormalizador"
 
 cargafuentesexternas:
   replicas: 1
@@ -480,7 +447,7 @@ cargafuentesexternas:
   tag: "latest"
   port: 80
   restartPolicy: Always
-  LogPath: "/app/logs"
-  DenormalizerQueueRabbit: "denormalizerEdmaQueue"
-  DirectorioEscritura: "/app/logs/write/"
-  DirectorioLectura: "/app/logs/read/"
+  directorioEscritura: "/app/logs/write/"
+  directorioLectura: "/app/logs/read/"
+  path1: "/app/logs/write/"
+  path2: "/app/logs/read/"

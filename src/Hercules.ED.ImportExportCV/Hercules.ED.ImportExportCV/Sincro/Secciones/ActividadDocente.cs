@@ -31,7 +31,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Formación académica impartida".
         /// Con el codigo identificativo 030.010.000.000
         /// </summary>
-        public List<SubseccionItem> SincroFormacionAcademica(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroFormacionAcademica(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -50,7 +50,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetFormacionAcademica(listadoDatos);
+            List<Entity> listadoAux = GetFormacionAcademica(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -87,7 +87,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Dirección de tesis doctorales y/o proyectos fin de carrera".
         /// Con el codigo identificativo 030.040.000.000
         /// </summary>
-        public List<SubseccionItem> SincroDireccionTesis(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroDireccionTesis(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -106,7 +106,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetDireccionTesis(listadoDatos);
+            List<Entity> listadoAux = GetDireccionTesis(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -142,7 +142,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Tutorías académicas de estudiantes".
         /// Con el codigo identificativo 030.050.000.000
         /// </summary>
-        public List<SubseccionItem> SincroTutoriasAcademicas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroTutoriasAcademicas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -161,7 +161,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTutoriasAcademicas(listadoDatos);
+            List<Entity> listadoAux = GetTutoriasAcademicas(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -197,7 +197,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Cursos y seminarios impartidos orientados a la formación docente universitaria".
         /// Con el codigo identificativo 030.060.000.000
         /// </summary>
-        public List<SubseccionItem> SincroCursosSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroCursosSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -216,7 +216,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetCursosSeminarios(listadoDatos);
+            List<Entity> listadoAux = GetCursosSeminarios(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -252,7 +252,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc.".
         /// Con el codigo identificativo 030.070.000.000
         /// </summary>
-        public List<SubseccionItem> SincroPublicacionDocentes(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroPublicacionDocentes(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -271,7 +271,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionDocentes(listadoDatos);
+            List<Entity> listadoAux = GetPublicacionDocentes(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -307,7 +307,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Participación en proyectos de innovación docente".
         /// Con el codigo identificativo 030.080.000.000
         /// </summary>
-        public List<SubseccionItem> SincroParticipacionProyectosInnovacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroParticipacionProyectosInnovacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -326,7 +326,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetParticipacionProyectosInnovacionDocente(listadoDatos);
+            List<Entity> listadoAux = GetParticipacionProyectosInnovacionDocente(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -362,7 +362,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Participación en congresos con ponencias orientadas a la formación docente".
         /// Con el codigo identificativo 030.090.000.000
         /// </summary>
-        public List<SubseccionItem> SincroParticipacionCongresosFormacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroParticipacionCongresosFormacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -381,7 +381,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetParticipacionCongresosFormacionDocente(listadoDatos);
+            List<Entity> listadoAux = GetParticipacionCongresosFormacionDocente(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -417,7 +417,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Premios de innovación docente recibidos".
         /// Con el codigo identificativo 060.030.080.000
         /// </summary>
-        public List<SubseccionItem> SincroPremiosInovacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroPremiosInovacionDocente(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -436,7 +436,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPremiosInovacionDocente(listadoPremios);
+            List<Entity> listadoAux = GetPremiosInovacionDocente(listadoPremios, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -472,7 +472,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Otras actividades/méritos no incluidos en la relación anterior".
         /// Con el codigo identificativo 030.100.000.000
         /// </summary>
-        public List<SubseccionItem> SincroOtrasActividades(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroOtrasActividades(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -491,7 +491,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetOtrasActividades(listadoDatos);
+            List<Entity> listadoAux = GetOtrasActividades(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -527,7 +527,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Aportaciones más relevantes de su CV de docencia".
         /// Con el codigo identificativo 030.110.000.000
         /// </summary>
-        public List<SubseccionItem> SincroAportacionesRelevantes(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroAportacionesRelevantes(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -546,7 +546,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetAportacionesRelevantes(listadoDatos);
+            List<Entity> listadoAux = GetAportacionesRelevantes(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -584,7 +584,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.040.000.000
         /// </summary>
-        private List<Entity> GetDireccionTesis(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetDireccionTesis(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -593,6 +593,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoDireccionTesis)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.040.000.030")))
@@ -725,7 +728,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.010.000.000
         /// </summary>
-        private List<Entity> GetFormacionAcademica(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetFormacionAcademica(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -734,6 +737,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoFormacionAcademica)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetNameTitleBeanPorIDCampo("030.010.000.020")))
@@ -884,7 +890,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.050.000.000
         /// </summary>
-        private List<Entity> GetTutoriasAcademicas(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetTutoriasAcademicas(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -893,6 +899,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoTutoriasAcademicas)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.050.000.010")))
@@ -972,7 +981,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.060.000.000
         /// </summary>
-        private List<Entity> GetCursosSeminarios(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetCursosSeminarios(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -981,6 +990,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoCursosSeminarios)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.060.000.030")))
@@ -1092,7 +1104,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.070.000.000
         /// </summary>
-        private List<Entity> GetPublicacionDocentes(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetPublicacionDocentes(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1101,6 +1113,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoPublicacionDocentes)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.070.000.010")))
@@ -1218,7 +1233,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.080.000.000
         /// </summary>
-        private List<Entity> GetParticipacionProyectosInnovacionDocente(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetParticipacionProyectosInnovacionDocente(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1227,6 +1242,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoParticipacionProyectosInnovacionDocente)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.010")))
@@ -1365,7 +1383,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.090.000.000
         /// </summary>
-        private List<Entity> GetParticipacionCongresosFormacionDocente(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetParticipacionCongresosFormacionDocente(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1374,6 +1392,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoParticipacionCongresosFormacionDocente)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.030")))
@@ -1504,7 +1525,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 060.030.080.000
         /// </summary>
-        private List<Entity> GetPremiosInovacionDocente(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetPremiosInovacionDocente(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1513,6 +1534,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoPremiosInovacionDocente)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.080.010")))
@@ -1568,7 +1592,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.100.000.000
         /// </summary>
-        private List<Entity> GetOtrasActividades(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetOtrasActividades(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1577,6 +1601,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoOtrasActividades)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.100.000.010")))
@@ -1658,7 +1685,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <summary>
         /// 030.110.000.000
         /// </summary>
-        private List<Entity> GetAportacionesRelevantes(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetAportacionesRelevantes(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1667,6 +1694,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoAportacionesRelevantes)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.110.000.010")))

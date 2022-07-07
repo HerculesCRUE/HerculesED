@@ -4,6 +4,7 @@ var selectorConflictoBloqueado = '';
 var selectorCamposTexto = '';
 var dropdownSimilitudes = '';
 var contador = 1;
+var urlUserCV = '';
 
 //window.addEventListener('beforeunload', (event) => {
 //  // Cancel the event as stated by the standard.
@@ -20,15 +21,25 @@ var importarCVN = {
 		this.fileData = '';
 		this.filePreimport = '';
 
+		var userID = $('#inpt_usuarioID').val();
+		var lang = $('#inpt_Idioma').val();
+		$.ajax({
+			url: url_servicio_editorcv+"EdicionCV/GetCVUrl?userID=" + userID + "&lang=" + lang,
+			type: 'GET',
+			success: function ( response ) {				
+				urlUserCV = response;
+			}
+		});
+
 		dropdownSimilitudes = `<div class="ordenar dropdown selectsimilarity dropdown-select">
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 										<span class="material-icons">swap_vert</span>
-										<span class="texto">Mostrar todos</span>
+										<span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span>
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar todos</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 									</div>
 								</div>`;
 
@@ -98,8 +109,8 @@ var importarCVN = {
 		$('.col-contenido.paso2').show();
 		MostrarUpdateProgressTime(0);
 		
-		if($('#textoMascaraBlanca').length == 0){
-			$('#mascaraBlanca').find('.wrap.popup').append('<div id="titleMascaraBlanca"></div>');
+		if($('#titleMascaraBlanca').length == 0){
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
 			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
 		}
 	
@@ -110,13 +121,19 @@ var importarCVN = {
 		formData.append('petitionID', petition);
 		formData.append('File', $('#file_cvn')[0].files[0]);
 		
+		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
-				url: urlImportacionCV + '/PreimportarCVStatus?petitionID='+petition,
+				url: urlImportacionCV + '/ImportarCVStatus?petitionID='+petition+'&accion=PREIMPORTAR',
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
-						$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
+						if(response.subTotalWorks == null || response.subTotalWorks == 0 || response.subActualWork==response.subTotalWorks){
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
+						}
+						else{
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}` + " (" +  response.subActualWork + '/' + response.subTotalWorks + ")");
+						}
 						//Si no hay pasos maximos no muestro la lista
 						if(response.totalWorks != 0){
 							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
@@ -179,7 +196,6 @@ var importarCVN = {
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
 				checkAllConflict();
-				checkAllNew();
 				OcultarUpdateProgress();				
 			},
 			error: function(jqXHR, exception){
@@ -207,20 +223,45 @@ var importarCVN = {
 		});		
 				
 		return;
-    },	
-	finCargaCV: function(){
-		$('.col-contenido.paso1').show();
-		$('.col-contenido.paso2').hide();
-	},
+    },
 	importarCV: function(listaId, listaOpcionSeleccionados) {
 		MostrarUpdateProgressTime(0);
 		var that = this;
 		var formData = new FormData();
+		var petition = RandomGuid();
 		formData.append('userID', that.idUsuario);
+		formData.append('petitionID', petition);
 		formData.append('fileData', that.fileData);
 		formData.append('filePreimport', that.filePreimport);
 		formData.append('listaId', listaId);
 		formData.append('listaOpcionSeleccionados', listaOpcionSeleccionados);
+		
+		if($('#titleMascaraBlanca').length == 0){
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
+		}
+		
+		//Actualizo el estado cada 500 milisegundos
+		var intervalStatus = setInterval(function() {
+			$.ajax({
+				url: urlImportacionCV + '/ImportarCVStatus?petitionID='+petition+'&accion=POSTIMPORTAR',
+				type: 'GET',
+				success: function ( response ) {
+					if(response != null && response != ''){
+						if(response.subTotalWorks == null || response.subTotalWorks == 0 || response.subActualWork==response.subTotalWorks){
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
+						}
+						else{
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}` + " (" +  response.subActualWork + '/' + response.subTotalWorks + ")");
+						}
+						//Si no hay pasos maximos no muestro la lista
+						if(response.totalWorks != 0){
+							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+						}
+					}
+				}
+			});	
+		}, 500);
 		
 		$.ajax({
 			url: urlImportacionCV + '/PostimportarCV',
@@ -230,11 +271,22 @@ var importarCVN = {
 			processData: false,
             enctype: 'multipart/form-data',
             contentType: false,
-			success: function ( response ) {
-				importarCVN.finCargaCV();
-				OcultarUpdateProgress();			
+			success: function ( response ) {				
+				clearInterval(intervalStatus);
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
+				
+				OcultarUpdateProgress();
+				if(urlUserCV != null && urlUserCV != '')
+				{
+					window.location.href = urlUserCV;
+				}
 			},
-			error: function(jqXHR, exception){
+			error: function(jqXHR, exception){				
+				clearInterval(intervalStatus);
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
+				
 				var msg = '';
 				if (jqXHR.status === 0) {
 					msg = 'Not connect.\n Verify Network.';
@@ -263,19 +315,27 @@ function checkAllConflict(){
 		var texto = $(this).find('.texto').text();
 		var drop = $(this).closest('.ordenar.dropdown.dropdown-select').find('a.dropdown-toggle span.texto');		
 		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
+		var seleccionar = $(this).closest('.acciones-listado').find('.checkAllCVWrapper input[type="checkbox"]');
+		var currentText = texto.split(' ')[1].toUpperCase();
+		// Cambio el texto del checkbox de seleccionar en función de los datos mostrados
+		$(seleccionar).prop('checked', false);
+		$(seleccionar).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + currentText)}`);
 		
-		if(texto=='Mostrar todos')
+		if(texto==GetText('CV_MOSTRAR_TODOS'))
 		{
+			seleccionar.attr('conflict', '');
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, false, false);
 		}
-		else if(texto=='Mostrar similitudes')
+		else if(texto==GetText('CV_MOSTRAR_CONFLICTOS'))
 		{
+			seleccionar.attr('conflict', 'true');
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, true, false);
 		}
-		else if(texto=='Mostrar nuevos')
+		else if(texto==GetText('CV_MOSTRAR_NUEVOS'))
 		{
+			seleccionar.attr('conflict', 'false');
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, false, true);
 		}
@@ -285,15 +345,19 @@ function checkAllConflict(){
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
+		var currentText = 'TODOS';
+		var conflictType = $(this).attr('conflict') ? '.conflict-' + $(this).attr('conflict') : '';
+
+		currentText = $(this).closest('.acciones-listado').find('.ordenar.dropdown.dropdown-select a.dropdown-toggle span.texto').text().split(' ')[1].toUpperCase();
 		if(!$(this)[0].checked)
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_TODOS')}`);
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + currentText)}`);
 		}
 		else
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_TODOS')}`);
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_' + currentText)}`);
 		}
-		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
+		$(this).closest('.panel-body').find('article' + conflictType + ' div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
 	
 	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
@@ -407,18 +471,7 @@ function printFreeText(id, data){
 							</div>
 							<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 								<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
-									<div class="panel-body">
-										<div class="acciones-listado acciones-listado-cv">
-											<div class="wrap">
-												<div class="checkAllCVWrapper" id="checkAllCVWrapper">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-														<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo
-														</label>
-													</div>
-												</div>
-											</div>
-										</div>
+									<div class="panel-body">										
 										<div class="resource-list listView">
 									<div class="resource-list-wrap">`;
 		var secciones = data.sections[0].items;

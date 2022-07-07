@@ -20,6 +20,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Text;
 using Models;
+using Newtonsoft.Json;
 
 namespace EditorCV.Controllers
 {
@@ -51,7 +52,7 @@ namespace EditorCV.Controllers
             try
             {
                 //Estado de la petición
-                PetitionStatus estadoPreimport = new PetitionStatus(1, 2, "ESTADO_PREIMPORTCV_INICIO");
+                PetitionStatus estadoPreimport = new PetitionStatus(1, 4, "ESTADO_PREIMPORTAR_INICIO");
                 petitionStatus[petitionID] = estadoPreimport;
 
                 string pCVId = UtilityCV.GetCVFromUser(userID);
@@ -60,12 +61,15 @@ namespace EditorCV.Controllers
                     throw new Exception("Usuario no encontrado " + userID);
                 }
 
+
                 AccionesImportacion accionesImportacion = new AccionesImportacion();
-                Preimport preimport = accionesImportacion.PreimportarCV(_Configuracion, pCVId, File, petitionID, petitionStatus);
+                Preimport preimport = accionesImportacion.PreimportarCV(_Configuracion, pCVId, File, petitionID);
 
                 //Cambio el estado de la petición
-                petitionStatus[petitionID].actualWork = 2;
-                petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTCV_FINLECTURA";
+                petitionStatus[petitionID].actualWork = 4;
+                petitionStatus[petitionID].subActualWork = 0;
+                petitionStatus[petitionID].subTotalWorks = 0;
+                petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_FINLECTURA";
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
                 ConcurrentDictionary<int, Models.API.Response.Tab> respuesta = accionesImportacion.GetListTabs(tabTemplatesAux, preimport);
@@ -88,20 +92,82 @@ namespace EditorCV.Controllers
             }
         }
 
+
         /// <summary>
-        /// Servicio de Preimportación del CV
+        /// Devuelve el estado actual de la peticion con identificador <paramref name="petitionID"/>
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="File"></param>
-        /// <param name="petitionID">ID de la petición</param>
-        /// <returns></returns>
-        [HttpGet("PreimportarCVStatus")]
-        public IActionResult PreimportarCVStatus([Required] string petitionID)
+        /// <param name="petitionID">Identificador de la petición</param>
+        /// <param name="accion">Accion desde donde se lanza la petición</param>
+        /// <returns>Estado de la petición</returns>
+        [HttpGet("ImportarCVStatus")]
+        public IActionResult ImportarCVStatus([Required] string petitionID, [Required] string accion)
         {
             try
             {
                 if (petitionStatus.ContainsKey(petitionID))
                 {
+                    if (petitionStatus[petitionID].actualWorkTitle != "ESTADO_PREIMPORTAR_FINLECTURA")
+                    {
+                        //Petición de estado
+                        try
+                        {
+                            string urlEstado = _Configuracion.GetUrlImportador() + "/PetitionCVStatus?petitionID=" + petitionID;
+                            HttpClient httpClientEstado = new HttpClient();
+                            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+                            PetitionStatus estadoRespuesta = JsonConvert.DeserializeObject<PetitionStatus>(responseEstado.Content.ReadAsStringAsync().Result);
+                            if (estadoRespuesta != null && accion == "PREIMPORTAR")
+                            {
+                                if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_LECTURA")
+                                {
+                                    petitionStatus[petitionID].actualWork = 2;
+                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_LECTURA";
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_PROCESARDATOS")
+                                {
+                                    petitionStatus[petitionID].actualWork = 3;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
+                                }
+                            }
+                            else if (estadoRespuesta != null && accion == "POSTIMPORTAR")
+                            {
+                                if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_LECTURA")
+                                {
+                                    petitionStatus[petitionID].actualWork = 2;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_DUPLICAR")
+                                {
+                                    petitionStatus[petitionID].actualWork = 3;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_FUSIONAR")
+                                {
+                                    petitionStatus[petitionID].actualWork = 4;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_SOBRESCRIBIR")
+                                {
+                                    petitionStatus[petitionID].actualWork = 5;
+                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
+                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
                     return Ok(petitionStatus[petitionID]);
                 }
                 return Ok();
@@ -122,10 +188,15 @@ namespace EditorCV.Controllers
         /// <param name="listaOpcionSeleccionados"></param>
         /// <returns></returns>
         [HttpPost("PostimportarCV")]
-        public IActionResult PostimportarCV([Required][FromForm] string userID, [FromForm] string fileData, [FromForm] string filePreimport, [FromForm] string listaId, [FromForm] string listaOpcionSeleccionados)
+        public IActionResult PostimportarCV([Required][FromForm] string userID, [Required][FromForm] string petitionID,
+            [FromForm] string fileData, [FromForm] string filePreimport, [FromForm] string listaId, [FromForm] string listaOpcionSeleccionados)
         {
             try
             {
+                //Estado de la petición
+                PetitionStatus estadoPostimport = new PetitionStatus(1, 5, "ESTADO_POSTIMPORTAR_INICIO");
+                petitionStatus[petitionID] = estadoPostimport;
+
                 List<string> listadoId = new List<string>();
                 List<string> listadoOpciones = new List<string>();
                 Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
@@ -157,7 +228,7 @@ namespace EditorCV.Controllers
                 byte[] file = Encoding.UTF8.GetBytes(fileData);
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion();
-                accionesImportacion.PostimportarCV(_Configuracion, pCVId, file, filePreimport, listadoId, dicOpciones);
+                accionesImportacion.PostimportarCV(_Configuracion, pCVId, petitionID, petitionStatus, file, filePreimport, listadoId, dicOpciones);
 
                 return Ok();
             }

@@ -65,6 +65,11 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Devuelve el estado actual de la peticion con identificador <paramref name="petitionID"/>
+        /// </summary>
+        /// <param name="petitionID">Identificador de la petición</param>
+        /// <returns>Estado de la petición</returns>
         [HttpGet("PetitionCVStatus")]
         public IActionResult PetitionCVStatus([Required] string petitionID)
         {
@@ -107,28 +112,18 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 sincro.ComprobarSecciones();
                 petitionStatus[petitionID].totalWorks = sincro.GetNumItems();
+                petitionStatus[petitionID].actualWork = 0;
+                petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
 
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Count();
                 preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
-
-                preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
-
-                preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
-
-                preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
-
-                preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
-
-                preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
-
+                petitionStatus[petitionID].actualWork++;
+                preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true, petitionStatus:petitionStatus[petitionID]));
+                preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
-                petitionStatus[petitionID].actualWork = preimportar.secciones.Select(x => x.subsecciones.Count()).Sum();
+                petitionStatus[petitionID].actualWork = petitionStatus[petitionID].totalWorks;
 
                 sincro.GuardarXMLFiltrado();
 
@@ -166,10 +161,14 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm][Required] string petitionID, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {
+                //Estado de la peticion
+                PetitionStatus estadoPostimport = new PetitionStatus(0, 0, "ESTADO_POSTIMPORTAR_LECTURA");
+                petitionStatus[petitionID] = estadoPostimport;
+
                 string stringFile;
                 using (var ms = new MemoryStream(file))
                 {
@@ -180,7 +179,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 }
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
-                accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones);
+                accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones, petitionStatus[petitionID]);
 
                 return Ok();
             }

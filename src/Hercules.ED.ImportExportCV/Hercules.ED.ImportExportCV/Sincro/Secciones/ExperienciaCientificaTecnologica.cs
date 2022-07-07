@@ -28,7 +28,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas".
         /// Con el codigo identificativo 050.020.010.000
         /// </summary>
-        public List<SubseccionItem> SincroProyectosIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroProyectosIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -49,7 +49,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetProyectosIDI(listadoDatos);
+            List<Entity> listadoAux = GetProyectosIDI(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -83,7 +83,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas".
         /// Con el codigo identificativo 050.020.020.000
         /// </summary>
-        public List<SubseccionItem> SincroContratos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroContratos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -104,7 +104,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetContratos(listadoDatos);
+            List<Entity> listadoAux = GetContratos(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -138,7 +138,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Propiedad industrial e intelectual".
         /// Con el codigo identificativo 050.030.010.000
         /// </summary>
-        public List<SubseccionItem> SincroPropiedadIndustrialIntelectual(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroPropiedadIndustrialIntelectual(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -157,7 +157,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPropiedadIndustrialIntelectual(listadoDatos);
+            List<Entity> listadoAux = GetPropiedadIndustrialIntelectual(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -193,7 +193,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Grupos/equipos de investigación, desarrollo o innovación".
         /// Con el codigo identificativo 050.010.000.000
         /// </summary>
-        public List<SubseccionItem> SincroGrupoIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroGrupoIDI(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -214,7 +214,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetGrupoIDI(listadoDatos);
+            List<Entity> listadoAux = GetGrupoIDI(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -249,7 +249,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Obras artísticas dirigidas".
         /// Con el codigo identificativo 050.020.030.000
         /// </summary>
-        public List<SubseccionItem> SincroObrasArtisticas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroObrasArtisticas(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -268,7 +268,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetObrasArtisticas(listadoDatos);
+            List<Entity> listadoAux = GetObrasArtisticas(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -304,7 +304,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Resultados tecnológicos derivados de actividades especializadas y de transferencia no incluidos en apartados anteriores".
         /// Con el codigo identificativo 050.030.020.000
         /// </summary>
-        public List<SubseccionItem> SincroResultadosTecnologicos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroResultadosTecnologicos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -323,7 +323,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetResultadosTecnologicos(listadoDatos);
+            List<Entity> listadoAux = GetResultadosTecnologicos(listadoDatos, petitionStatus);
             if (listadoIdBBDD == null)
             {
                 foreach (Entity entityXML in listadoAux)
@@ -357,7 +357,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetProyectosIDI(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetProyectosIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -366,6 +366,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoProyectosIDI)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
@@ -635,7 +638,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetContratos(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetContratos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -644,6 +647,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoContratos)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
@@ -901,7 +907,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetPropiedadIndustrialIntelectual(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetPropiedadIndustrialIntelectual(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -910,6 +916,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoPropiedadIndustrialIntelectual)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.010.020")))
@@ -1128,7 +1137,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetGrupoIDI(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetGrupoIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1137,6 +1146,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoGrupoIDI)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
@@ -1268,7 +1280,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetObrasArtisticas(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetObrasArtisticas(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1277,6 +1289,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoObrasArtisticas)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.030.010")))
@@ -1361,7 +1376,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetResultadosTecnologicos(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetResultadosTecnologicos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1370,6 +1385,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoResultadosTecnologicos)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.020.010")))

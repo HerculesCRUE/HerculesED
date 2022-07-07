@@ -28,7 +28,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Situación profesional actual", con codigo identificativo 
         /// "010.010.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroSituacionProfesionalActual(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroSituacionProfesionalActual(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -47,7 +47,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetSituacionProfesionalActual(listadoDatos);
+            List<Entity> listadoAux = GetSituacionProfesionalActual(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -81,7 +81,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// "Cargos y actividades desempeñados con anterioridad", con codigo identificativo 
         /// "010.020.000.000".
         /// </summary>
-        public List<SubseccionItem> SincroCargosActividades(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroCargosActividades(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -100,7 +100,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<bool> listadoBloqueados = new List<bool>();
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetCargosActividades(listadoDatos);
+            List<Entity> listadoAux = GetCargosActividades(listadoDatos, petitionStatus);
 
             if (listadoIdBBDD == null)
             {
@@ -136,7 +136,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetSituacionProfesionalActual(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetSituacionProfesionalActual(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -145,6 +145,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoSituacionProfesionalActual)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")) && !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.010.000.170")))
@@ -320,7 +323,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private List<Entity> GetCargosActividades(List<CvnItemBean> listadoDatos)
+        private List<Entity> GetCargosActividades(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -329,6 +332,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoCargosActividades)
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020")) && !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.020.000.170")))
