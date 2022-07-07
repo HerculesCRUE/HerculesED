@@ -116,7 +116,7 @@ var importarCVN = {
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
-						if(response.subTotalWorks == 0){
+						if(response.subTotalWorks == null || response.subTotalWorks == 0){
 							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
 						}
 						else{
