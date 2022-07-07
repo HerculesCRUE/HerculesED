@@ -107,7 +107,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 sincro.ComprobarSecciones();
                 petitionStatus[petitionID].totalWorks = sincro.GetNumItems();
-                petitionStatus[petitionID].actualWork = 1;
+                petitionStatus[petitionID].actualWork = 0;
                 petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
 
                 preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
