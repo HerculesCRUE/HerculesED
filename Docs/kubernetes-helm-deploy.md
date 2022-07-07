@@ -4,7 +4,7 @@
 | ------------- | ------------------------------------------------------------ |
 |Título|Despliegue de Hércules ED con Kubernetes y Helm| 
 |Descripción|Guía de despliegue de Hércules ED mediante Kubernetes y Helm|
-|Versión|1.0|
+|Versión|1.1|
 |Módulo|Documentación|
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
@@ -30,7 +30,9 @@ Manual: https://kubernetes.github.io/ingress-nginx/deploy/
 
 ## Paso 2: Desplegar RabbitMQ
 
-Para desplegar RabbitMQ primero clonaremos el contenido del repositorio RabbitMQ.
+Para desplegar RabbitMQ primero nos descargamos todos los archivos del directorio https://github.com/HerculesCRUE/HerculesED/tree/main/Deploy/RabbitMQ.
+
+
 
 * Primero crearemos el namespace donde realizaremos el despliegue de nuestra plataforma. **¡¡IMPORTANTE!!** Éste generará un namespace con nombre **"edma-hercules"**.
   * kubectl apply -f ./namespace.yaml 
@@ -38,25 +40,22 @@ Para desplegar RabbitMQ primero clonaremos el contenido del repositorio RabbitMQ
 * Segundo, aplicamos las reglas RBAC:
   * kubectl apply -f rbac.yaml 
 
-* Tercero, crearemos el servicio para RabbitMQ. Este servicio será de tipo ClusterIP y preparará los puertos 4369, 25672, 5672 y 15672 para la administración y gestión de RabbitMQ:
-  *  kubectl apply -f ./service_rabbit.yaml
+* Tercero, aplicaremos el archivo configmap.yaml para aplicar una configuración básica en el nodo para nuestro RabbitMQ:
+  *  kubectl apply -f configmap.yaml
 
 * Cuarto, crearemos los secretos para poder dar nombre de usuario y contraseña al administrador de RabbitMQ y a sus Erlang Cookie:
   - Nos aseguramos que estamos trabajando en nuestro namespace:
     - kubectl config set-context --current --namespace=edma-hercules
-  - Para crear el secreto de la Cookie:
-    - echo "this secret value is JUST AN EXAMPLE. Replace it!" > cookie
-    - kubectl create secret generic erlang-cookie --from-file=./cookie
-  - Para crear el secreto de administrador:
-    - echo "gnoss" > user
-    - echo "gnoss1234" > pass
-    - kubectl create secret generic rabbitmq-admin --from-file=./user --from-file=./pass
+  - Para aplicar los secretos usaremos:
+    - kubectl apply -f .\mysecret.yaml
+    - **!!IMPORTANTE!!** Será necesario establecer los valores de usuario y password en el archivo mysecret.yaml antes de ejecutar ese comando (codificados en base64) y debermos establecer esos mismos valores en la cadena de conexión a Rabbit del despliege Edma-Hercules dentro del archivo values.yaml usado en el paso 3.
 
-* Quinto, aplicaremos el archivo configmap.yaml para aplicar una configuración básica en el nodo para nuestro RabbitMQ:
-  - kubectl apply -f configmap.yaml
+* Quinto, crearemos el servicio para RabbitMQ. Este servicio será de tipo ClusterIP y preparará los puertos 4369, 25672, 5672 y 15672 para la administración y gestión de RabbitMQ. **¡¡IMPORTANTE!!** Este servicio debe ser creado antes de aplicar el statefulset de RabbitMQ:
+  - kubectl apply -f ./service_rabbit.yaml
 
 * Sexto, desplegamos RabbitMQ utilizando un statefulset para mantener la persistencia de datos:
   - kubectl apply -f statefulset.yaml
+  - **!!IMPORTANTE!!** Antes de ejecutar este comando, es necesario establecer el valor del parámetro storageClassName. 
 
 * Septimo, creamos si lo necesitamos un ingress para poder acceder a la administración de RabbitMQ. Por defecto la URL es rabbit.hercules.com
   - kubectl apply -f ingress.yaml
@@ -68,7 +67,7 @@ El despliegue de HERCULES-ED está preparado para ser realizado con HELM.
 * Primero utilizaremos el comando.
   * helm install <nombre_despligue> oci://docker.gnoss.com/helm-charts/edma-gnoss -f values.yaml
 
-El archivo values.yaml lo puedes encontrar en https://github.com/HerculesCRUE/HerculesED/blob/main/Docs/values.yaml. Modifica todo lo que necesites según tu infraestructura y las caracterísiticas de tu cluster de Kubernetes antes de ejecutar el comando anterior. 
+El archivo values.yaml lo puedes encontrar en https://github.com/HerculesCRUE/HerculesED/blob/main/Deploy/EDMA/values.yaml. Modifica todo lo que necesites según tu infraestructura y las caracterísiticas de tu cluster de Kubernetes antes de ejecutar el comando anterior. 
 
 * Segundo. Una vez que PostgreSQL está desplegado debemos volcar la base de datos para que empiece a trabajar con ella.
 Para ello usaremos el archivo “pg_dump_backup.sqlc” ubicado en la carpeta PostgreSQL.
@@ -104,8 +103,33 @@ en sus contenedores se realizarán varios reinicios de los contenedores ya que n
 
 ## Paso 4 Abastecer las imagenes.
 
-Como paso final debemos abastecer de contenido al contenedor "interno".
+En este paso debemos abastecer de contenido al contenedor "interno".
 
 Para ello usaremos el comando:
 
   * kubectl cp <local_file_path> <pod_name_interno>:/app/imagenes
+
+## Paso 5 Abastecer archivo OAuthV3.
+
+En este paso debemos colocar el archivo OAuthV3.config. Para ello utilizaremos el Pod con el contenedor "editorcv" el cual usa un PVC compartido con los diferentes Pods que necesitan de este archivo.
+
+  * kubectl cp <local_file_path> <pod_name_editorcv>:/app/Config/ConfigOAuth/
+ 
+## Paso 6 Abastecer el contenido del Pod con Documents.
+ 
+ En este paso debemos colocar el contenido de la carpeta "documentacion" dentro del Statefulset de Documents.
+ 
+ Para ello usaremos el comando:
+   * kubectl cp <local_file_path> <pod_name_documents>:/app/Documentacion
+ 
+## Paso 7 Abastecer el contenido del Pod con Archivo.
+ 
+  En este paso debemos colocar el contenido de la carpeta "ontologias" dentro del Statefulset de Archivos.
+ 
+ Para ello usaremos el comando:
+   * kubectl cp <local_file_path> <pod_name_archivos>:/app/Ontologias
+
+## Verificación
+
+Una vez ejecutados todos los pasos, se puede verificar que EDMA está funcionando correctamente accediendo a la url edma.gnoss.com (o la dirección configurada en el archivo values.yaml). 
+
