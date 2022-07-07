@@ -120,6 +120,7 @@ namespace Hercules.ED.ImportExportCV
             }
 
             List<IGrouping<string, CvnItemBean>> listadoItemsAgrupados = listadoItems.GroupBy(x => x.Code).ToList();
+            petitionStatus.totalWorks = listadoItems.Count();
 
             //Elimino las secciones no deseadas
             foreach (var item in listadoItemsAgrupados)
@@ -273,11 +274,10 @@ namespace Hercules.ED.ImportExportCV
 
 
             //Duplicar
-
             base.cvn = duplicadosResultBean;
 
             petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
-            petitionStatus.totalWorks = cvn.numElementos;
+            petitionStatus.totalWorks = listadoDuplicar.Count();
             petitionStatus.actualWork = 0;
 
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus:petitionStatus);
@@ -290,7 +290,7 @@ namespace Hercules.ED.ImportExportCV
             base.cvn = fusionResultBean;
 
             petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_FUSIONAR";
-            petitionStatus.totalWorks = cvn.numElementos;
+            petitionStatus.totalWorks = listadoFusionar.Count();
             petitionStatus.actualWork = 0;
 
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
@@ -303,7 +303,7 @@ namespace Hercules.ED.ImportExportCV
             base.cvn = sobrescribirResultBean;
 
             petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_SOBRESCRIBIR";
-            petitionStatus.totalWorks = cvn.numElementos;
+            petitionStatus.totalWorks = listadoSobrescribir.Count();
             petitionStatus.actualWork = 0;
 
             base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);

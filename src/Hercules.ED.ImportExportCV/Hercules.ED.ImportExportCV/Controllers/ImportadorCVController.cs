@@ -65,6 +65,11 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Devuelve el estado actual de la peticion con identificador <paramref name="petitionID"/>
+        /// </summary>
+        /// <param name="petitionID">Identificador de la petición</param>
+        /// <returns>Estado de la petición</returns>
         [HttpGet("PetitionCVStatus")]
         public IActionResult PetitionCVStatus([Required] string petitionID)
         {
