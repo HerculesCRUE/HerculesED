@@ -20,6 +20,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Text;
 using Models;
+using Newtonsoft.Json;
 
 namespace EditorCV.Controllers
 {
@@ -51,7 +52,7 @@ namespace EditorCV.Controllers
             try
             {
                 //Estado de la petición
-                PetitionStatus estadoPreimport = new PetitionStatus(1, 2, "ESTADO_PREIMPORTCV_INICIO");
+                PetitionStatus estadoPreimport = new PetitionStatus(1, 3, "ESTADO_PREIMPORTCV_INICIO");
                 petitionStatus[petitionID] = estadoPreimport;
 
                 string pCVId = UtilityCV.GetCVFromUser(userID);
@@ -60,11 +61,12 @@ namespace EditorCV.Controllers
                     throw new Exception("Usuario no encontrado " + userID);
                 }
 
+
                 AccionesImportacion accionesImportacion = new AccionesImportacion();
                 Preimport preimport = accionesImportacion.PreimportarCV(_Configuracion, pCVId, File, petitionID, petitionStatus);
 
                 //Cambio el estado de la petición
-                petitionStatus[petitionID].actualWork = 2;
+                petitionStatus[petitionID].actualWork = 3;
                 petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTCV_FINLECTURA";
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
@@ -102,6 +104,33 @@ namespace EditorCV.Controllers
             {
                 if (petitionStatus.ContainsKey(petitionID))
                 {
+                    if (petitionStatus[petitionID].actualWork < 3)
+                    {
+                        //Petición de estado
+                        try
+                        {
+                            string urlEstado = _Configuracion.GetUrlImportador() + "/PetitionCVStatus?petitionID=" + petitionID;
+                            HttpClient httpClientEstado = new HttpClient();
+                            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+                            PetitionStatus estadoRespuesta = JsonConvert.DeserializeObject<PetitionStatus>(responseEstado.Content.ReadAsStringAsync().Result);
+                            if (estadoRespuesta != null)
+                            {
+                                if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_LECTURA")
+                                {
+                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_LECTURA";
+                                }
+                                else if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_PROCESARDATOS")
+                                {
+                                    petitionStatus[petitionID].actualWork = 2;
+                                    petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS" + estadoRespuesta.actualWork + "/" + estadoRespuesta.totalWorks;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
                     return Ok(petitionStatus[petitionID]);
                 }
                 return Ok();
