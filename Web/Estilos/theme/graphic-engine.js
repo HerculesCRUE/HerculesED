@@ -1890,26 +1890,52 @@ var metricas = {
             a.click();
         });
         $('table.tablaAdmin td.subir a.btn')
-        .unbind()
-        .click(function (e) {
-            var url = url_servicio_graphicengine + "SubirConfig";
-            var file = $(this).parent().find('input[type=file]');
-            var reader = new FileReader();
-            reader.readAsArrayBuffer(file[0].files[0]);
-            reader.onload = function (e) {
-                var data = e.target.result;
-                var args = {
-                    pLang: lang,
-                    pConfigName: file[0].files[0].name,
-                    pConfigFile: data,
-                    pUserId: $('.inpt_usuarioID').attr('value')
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "SubirConfig";
+                var file = $(this).parent().find('input[type=file]');
+                var reader = new FileReader();
+                reader.readAsText(file[0].files[0]);
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var args = {
+                        pLang: lang,
+                        //pConfigName: file[0].files[0].name,
+                        pConfigFile: data,
+                        pUserId: $('.inpt_usuarioID').attr('value')
+                    }
+                    console.log(args);
+                    $.post(url, args, function (data) {
+                        if (data) {
+                            mostrarNotificacion('success', 'Configuración subida correctamente');
+                        } else {
+                            mostrarNotificacion('error', 'Error al subir la configuración');
+                        }
+                    }).fail(function (data) {
+                        mostrarNotificacion('error', 'Error interno al subir la configuración');
+                    });
+                    /*$.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: args,
+                        //contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data) {
+                                mostrarNotificacion('success', 'Configuración subida correctamente');
+                            } else {
+                                mostrarNotificacion('error', 'Error al subir la configuración');
+                            }
+                        }
+                    }).fail(function (data) {
+                        mostrarNotificacion('error', 'Error interno al subir la configuración');
+                    });*/
+
+
+
+
+
                 }
-                console.log(args);
-                $.get(url, args, function (data) {
-                    console.log(data);
-                });
-            }
-        });
+            });
 
         $('a.csv')
             .unbind()
