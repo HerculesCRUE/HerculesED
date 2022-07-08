@@ -30,7 +30,7 @@ var importarCVN = {
 				urlUserCV = response;
 			}
 		});
-
+		
 		dropdownSimilitudes = `<div class="ordenar dropdown selectsimilarity dropdown-select">
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 										<span class="material-icons">swap_vert</span>
