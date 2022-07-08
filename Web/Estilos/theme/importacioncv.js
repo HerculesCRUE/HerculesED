@@ -207,6 +207,7 @@ var importarCVN = {
 												</div>
 												<div id="${id}" class="collapse show">
 													<div class="row cvTab">
+														${dropdowns}
 														<div class="col-12 col-contenido">
 														</div>
 													</div>
