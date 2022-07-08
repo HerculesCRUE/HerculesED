@@ -6,12 +6,14 @@ var dropdownSimilitudes = '';
 var contador = 1;
 var urlUserCV = '';
 
-//window.addEventListener('beforeunload', (event) => {
-//  // Cancel the event as stated by the standard.
-//  event.preventDefault();
-//  // Chrome requires returnValue to be set.
-//  event.returnValue = '';
-//});
+window.addEventListener('beforeunload', event => preventBeforeUnload(event), false);
+
+function preventBeforeUnload(event){
+	// Cancel the event as stated by the standard.
+	event.preventDefault();
+	// Chrome requires returnValue to be set.
+	event.returnValue = '';
+}
 
 var dropdownSelectorSeccion = ''; 
 var dropdownMostrarSeccion = '';
@@ -34,16 +36,16 @@ var importarCVN = {
 				urlUserCV = response;
 			}
 		});
-		
+
 		dropdownSimilitudes = `<div class="ordenar dropdown selectsimilarity dropdown-select">
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 										<span class="material-icons">swap_vert</span>
 										<span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span>
 									</a>
-									<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
+									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+										<a class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
+										<a class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
+										<a class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 									</div>
 								</div>`;
 
@@ -53,13 +55,13 @@ var importarCVN = {
 											<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
-											
+
 		selectorConflictoBloqueado = `<select name="itemConflict" >
 										<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 										<option value="fu">${GetText('CV_FUSIONAR')}</option>
 										<option value="du">${GetText('CV_DUPLICAR')}</option>
 									</select>`;
-										
+
 		selectorCamposTexto = `<select hidden name="itemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 								</select>`;
@@ -83,7 +85,7 @@ var importarCVN = {
             e.preventDefault();
 			that.cargarCV();
 		});
-		
+
 		$('.btImportarCV').off('click').on('click', function(e) {
 			e.preventDefault();
 			var listaId = "";
@@ -111,6 +113,18 @@ var importarCVN = {
 		
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
+		
+				
+		$('#CV_select_all').off('click').on('click', function(e) {
+			e.preventDefault();
+            checkAllWrappersCV(true);
+		});
+		
+		$('#CV_unselect_all').off('click').on('click', function(e) {
+			e.preventDefault();
+            checkAllWrappersCV(false);
+		});		
+		
 		MostrarUpdateProgressTime(0);
 		
 		if($('#titleMascaraBlanca').length == 0){
@@ -165,34 +179,28 @@ var importarCVN = {
 					var dropdowns = '';
 					if(i!=0 && i!=7){
 						dropdownSelectorSeccion = `
-						<div id="dropdown_seccion_`+i+`" class="seleccionar dropdown dropdown-select" style="margin-left: 30px;">
-							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="
-								user-select: none;cursor: pointer;display: flex;align-items: center;height: 32px;
-								line-height: 32px;border: 1px solid var(--c-gris-borde);padding: 0 10px;color: var(--c-texto-claro);
-								text-decoration: none;font-size: .875rem;font-weight: 400;">
+						<div class="seleccionar dropdown dropdown-select seccion">
+							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 										<span class="material-icons">done_all</span>
-										<span class="texto" style="margin-left: 5px;">Seleccionar todo</span>
+										<span class="texto">Seleccionar todo</span>
 									</a>
-									<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Seleccionar todo</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Deseleccionar todo</span></a>
+									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+										<a class="item-dropdown seleccionar"><span class="material-icons">done_all</span><span class="texto">Seleccionar todos</span></a>
+										<a class="item-dropdown deseleccionar"><span class="material-icons">remove_done</span><span class="texto">Deseleccionar todos</span></a>
 									</div>
 								</div>`;
 
-							dropdownMostrarSeccion = `
-							<div id="dropdown_seccion_`+i+`" class="seleccionar dropdown dropdown-select" style="margin-left: 10px;">
-								<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="
-								user-select: none;cursor: pointer;display: flex;align-items: center;height: 32px;
-								line-height: 32px;border: 1px solid var(--c-gris-borde);padding: 0 10px;color: var(--c-texto-claro);
-								text-decoration: none;font-size: .875rem;font-weight: 400;">
-									<span class="texto" style="margin-left: 5px;">Mostrar todos</span>
-								</a>
-								<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-									<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar todos</span></a>
-									<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
-									<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
-								</div>
-							</div>`;
+						dropdownMostrarSeccion = `
+						<div class="seleccionar dropdown dropdown-select seccion">
+							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" >
+								<span class="texto">Mostrar todos</span>
+							</a>
+							<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+								<a  class="item-dropdown"><span class="texto">Mostrar todos</span></a>
+								<a  class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
+								<a  class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
+							</div>
+						</div>`;
 						dropdowns = `${dropdownSelectorSeccion} ${dropdownMostrarSeccion}`;
 					}
 					else
@@ -238,12 +246,17 @@ var importarCVN = {
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
 				checkAllConflict();
-				OcultarUpdateProgress();				
+				aniadirComportamientoWrapperSeccion();
+				window.removeEventListener('beforeunload', preventBeforeUnload, false);
+				
+				OcultarUpdateProgress();
 			},
 			error: function(jqXHR, exception){
 				clearInterval(intervalStatus);				
 				$('#titleMascaraBlanca').remove();
 				$('#workMascaraBlanca').remove();
+				window.removeEventListener('beforeunload', preventBeforeUnload, false);
+				
 				var msg = '';
 				if (jqXHR.status === 0) {
 					msg = 'Not connect.\n Verify Network.';
@@ -352,6 +365,52 @@ var importarCVN = {
 	}
 };
 
+function checkAllWrappersCV(check){
+	var wrappersChecked = $('.checkAllCVWrapper input[type="checkbox"]:checked');
+	var wrappersUnchecked = $('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
+	if(!check){
+		for(var i = 0; i< wrappersChecked.length; i++)
+		{		
+			wrappersChecked[i].click();
+		}
+	}
+	else{
+		for(var i = 0; i< wrappersUnchecked.length; i++)
+		{
+			wrappersUnchecked[i].click();
+		}
+	}
+}
+
+function aniadirComportamientoWrapperSeccion(){	
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .seleccionar').off('click').on('click', function(e) {
+		e.preventDefault();
+		checkAllWrappersSection(true, $(this).closest('.row.cvTab'));
+	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .deseleccionar').off('click').on('click', function(e) {
+		e.preventDefault();
+		checkAllWrappersSection(false, $(this).closest('.row.cvTab'));
+	});
+};
+
+function checkAllWrappersSection(check, section){
+	var wrappersChecked = section.find('.checkAllCVWrapper input[type="checkbox"]:checked');
+	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
+	if(!check){
+		for(var i = 0; i< wrappersChecked.length; i++)
+		{		
+			wrappersChecked[i].click();
+		}
+	}
+	else{
+		for(var i = 0; i< wrappersUnchecked.length; i++)
+		{
+			wrappersUnchecked[i].click();
+		}
+	}
+	
+};
+
 function checkAllConflict(){
 	$('.ordenar.dropdown.dropdown-select a.item-dropdown').off('click').on('click', function(e) {
 		var texto = $(this).find('.texto').text();
@@ -381,9 +440,8 @@ function checkAllConflict(){
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, false, true);
 		}
-	});
-	
-}
+	});	
+};
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
@@ -515,7 +573,7 @@ function printFreeText(id, data){
 								<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 									<div class="panel-body">										
 										<div class="resource-list listView">
-									<div class="resource-list-wrap">`;
+											<div id="freeTextListArticle" class="resource-list-wrap">`;
 		var secciones = data.sections[0].items;
 		contador=0;
 		for (const seccion in secciones){
@@ -754,18 +812,18 @@ edicionCV.printTabSection= function(data) {
 												<span class="texto" items="5">Ver 5 items</span>
 											</a>
 											<div class="dropdown-menu basic-dropdown dropdown-menu-right" x-placement="bottom-end">
-												<a href="javascript: void(0)" class="item-dropdown" items="5">Ver 5 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="10">Ver 10 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="20">Ver 20 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="50">Ver 50 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="100">Ver 100 items</a>
+												<a  class="item-dropdown" items="5">Ver 5 items</a>
+												<a  class="item-dropdown" items="10">Ver 10 items</a>
+												<a  class="item-dropdown" items="20">Ver 20 items</a>
+												<a  class="item-dropdown" items="50">Ver 50 items</a>
+												<a  class="item-dropdown" items="100">Ver 100 items</a>
 											</div>
 										</div>
 										<nav>
 											<ul class="pagination arrows">
 											</ul>
 											<ul class="pagination numbers">	
-												<li class="actual"><a href="javascript: void(0)" page="1">1</a></li>
+												<li class="actual"><a  page="1">1</a></li>
 											</ul>
 										</nav>
 									</div>
