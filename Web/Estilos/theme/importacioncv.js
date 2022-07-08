@@ -6,12 +6,18 @@ var dropdownSimilitudes = '';
 var contador = 1;
 var urlUserCV = '';
 
-//window.addEventListener('beforeunload', (event) => {
-//  // Cancel the event as stated by the standard.
-//  event.preventDefault();
-//  // Chrome requires returnValue to be set.
-//  event.returnValue = '';
-//});
+window.addEventListener('beforeunload', event => preventBeforeUnload(event), false);
+
+function preventBeforeUnload(event){
+	// Cancel the event as stated by the standard.
+	event.preventDefault();
+	// Chrome requires returnValue to be set.
+	event.returnValue = '';
+}
+
+var dropdownSelectorSeccion = ''; 
+var dropdownMostrarSeccion = '';
+
 
 var importarCVN = {
 	idUsuario:  null,
@@ -36,10 +42,10 @@ var importarCVN = {
 										<span class="material-icons">swap_vert</span>
 										<span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span>
 									</a>
-									<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
-										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
+									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+										<a class="item-dropdown mostrarTodos"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
+										<a class="item-dropdown mostrarSimilitudes"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
+										<a class="item-dropdown mostrarNuevos"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 									</div>
 								</div>`;
 
@@ -49,13 +55,13 @@ var importarCVN = {
 											<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
-											
+
 		selectorConflictoBloqueado = `<select name="itemConflict" >
 										<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 										<option value="fu">${GetText('CV_FUSIONAR')}</option>
 										<option value="du">${GetText('CV_DUPLICAR')}</option>
 									</select>`;
-										
+
 		selectorCamposTexto = `<select hidden name="itemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 								</select>`;
@@ -79,7 +85,7 @@ var importarCVN = {
             e.preventDefault();
 			that.cargarCV();
 		});
-		
+
 		$('.btImportarCV').off('click').on('click', function(e) {
 			e.preventDefault();
 			var listaId = "";
@@ -107,6 +113,18 @@ var importarCVN = {
 		
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
+		
+				
+		$('#CV_select_all').off('click').on('click', function(e) {
+			e.preventDefault();
+            checkAllWrappersCV(true);
+		});
+		
+		$('#CV_unselect_all').off('click').on('click', function(e) {
+			e.preventDefault();
+            checkAllWrappersCV(false);
+		});		
+		
 		MostrarUpdateProgressTime(0);
 		
 		if($('#titleMascaraBlanca').length == 0){
@@ -158,6 +176,36 @@ var importarCVN = {
 				$('#workMascaraBlanca').remove();
 				for(var i=0;i<7;i++){
 					var id = 'x' + RandomGuid();
+					var dropdowns = '';
+					if(i!=0 && i!=7){
+						dropdownSelectorSeccion = `
+						<div class="seleccionar dropdown dropdown-select seccion">
+							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+										<span class="material-icons">done_all</span>										
+									</a>
+									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+										<a class="item-dropdown seleccionar"><span class="texto">Seleccionar todos</span></a>
+										<a class="item-dropdown deseleccionar"><span class="texto">Deseleccionar todos</span></a>
+									</div>
+								</div>`;
+
+						dropdownMostrarSeccion = `
+						<div class="seleccionar dropdown dropdown-select seccion">
+							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" >
+								<span class="material-icons">preview</span>	
+							</a>
+							<div class="dropdown-menu basic-dropdown dropdown-menu-right">
+								<a class="item-dropdown mostrarTodos"><span class="texto">Mostrar todos</span></a>
+								<a class="item-dropdown mostrarSimilitudes"><span class="texto">Mostrar similitudes</span></a>
+								<a class="item-dropdown mostrarNuevos"><span class="texto">Mostrar nuevos</span></a>
+							</div>
+						</div>`;
+						dropdowns = `${dropdownSelectorSeccion} ${dropdownMostrarSeccion}`;
+					}
+					else
+					{
+						dropdowns = ``;
+					}
 					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
 											<div class="panel">
 												<div class="panel-heading" role="tab" id="datos-tab">
@@ -170,6 +218,7 @@ var importarCVN = {
 												</div>
 												<div id="${id}" class="collapse show">
 													<div class="row cvTab">
+														${dropdowns}
 														<div class="col-12 col-contenido">
 														</div>
 													</div>
@@ -196,12 +245,17 @@ var importarCVN = {
 				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
 				checkAllConflict();
-				OcultarUpdateProgress();				
+				aniadirComportamientoWrapperSeccion();
+				window.removeEventListener('beforeunload', preventBeforeUnload, false);
+				
+				OcultarUpdateProgress();
 			},
 			error: function(jqXHR, exception){
 				clearInterval(intervalStatus);				
 				$('#titleMascaraBlanca').remove();
 				$('#workMascaraBlanca').remove();
+				window.removeEventListener('beforeunload', preventBeforeUnload, false);
+				
 				var msg = '';
 				if (jqXHR.status === 0) {
 					msg = 'Not connect.\n Verify Network.';
@@ -310,6 +364,72 @@ var importarCVN = {
 	}
 };
 
+function checkAllWrappersCV(check){
+	var wrappersChecked = $('.checkAllCVWrapper input[type="checkbox"]:checked');
+	var wrappersUnchecked = $('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
+	if(!check){
+		for(var i = 0; i< wrappersChecked.length; i++)
+		{		
+			wrappersChecked[i].click();
+		}
+	}
+	else{
+		for(var i = 0; i< wrappersUnchecked.length; i++)
+		{
+			wrappersUnchecked[i].click();
+		}
+	}
+}
+
+function aniadirComportamientoWrapperSeccion(){	
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .seleccionar').off('click').on('click', function(e) {
+		e.preventDefault();
+		checkAllWrappersSection(true, $(this).closest('.row.cvTab'));
+	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .deseleccionar').off('click').on('click', function(e) {
+		e.preventDefault();
+		checkAllWrappersSection(false, $(this).closest('.row.cvTab'));
+	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .mostrarTodos').off('click').on('click', function(e) {
+		e.preventDefault();
+		wrapperVisibilitySection("mostrarTodos", $(this).closest('.row.cvTab'));
+	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .mostrarSimilitudes').off('click').on('click', function(e) {
+		e.preventDefault();
+		wrapperVisibilitySection("mostrarSimilitudes", $(this).closest('.row.cvTab'));
+	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .mostrarNuevos').off('click').on('click', function(e) {
+		e.preventDefault();
+		wrapperVisibilitySection("mostrarNuevos", $(this).closest('.row.cvTab'));
+	});
+	
+};
+
+function wrapperVisibilitySection(opcion, section){
+	var items = section.find('.panel-collapse.collapse .ordenar.dropdown.dropdown-select .'+opcion);
+	for(var i = 0; i < items.length ; i++){
+		items[i].click();
+	}
+}
+
+function checkAllWrappersSection(check, section){
+	var wrappersChecked = section.find('.checkAllCVWrapper input[type="checkbox"]:checked');
+	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
+	if(!check){
+		for(var i = 0; i< wrappersChecked.length; i++)
+		{		
+			wrappersChecked[i].click();
+		}
+	}
+	else{
+		for(var i = 0; i< wrappersUnchecked.length; i++)
+		{
+			wrappersUnchecked[i].click();
+		}
+	}
+	
+};
+
 function checkAllConflict(){
 	$('.ordenar.dropdown.dropdown-select a.item-dropdown').off('click').on('click', function(e) {
 		var texto = $(this).find('.texto').text();
@@ -339,9 +459,8 @@ function checkAllConflict(){
 			drop.text(texto);
 			edicionCV.buscarListado(seccion, false, true);
 		}
-	});
-	
-}
+	});	
+};
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
@@ -473,7 +592,7 @@ function printFreeText(id, data){
 								<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 									<div class="panel-body">										
 										<div class="resource-list listView">
-									<div class="resource-list-wrap">`;
+											<div id="freeTextListArticle" class="resource-list-wrap">`;
 		var secciones = data.sections[0].items;
 		contador=0;
 		for (const seccion in secciones){
@@ -523,14 +642,15 @@ function printFreeText(id, data){
 }	
 	
 edicionCV.printTab= function(entityID, data) {
-	var that=this;	
+	var that=this;
+	
 	for (var i = 0; i < data.sections.length; i++) {	
 		if(data.sections[i].title=="Indicadores generales de calidad de la producción científica")
 		{
 			$('div[id="' + entityID + '"] .col-12.col-contenido').append(printCientificProduction(entityID, data.sections[i]));
 		}
 		else
-		{
+		{			
 			$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
 			if (data.sections[i].items != null) {
 				this.repintarListadoTab(data.sections[i].identifier,true);
@@ -660,6 +780,7 @@ edicionCV.printTabSection= function(data) {
 			//No desplegado	
 			expanded = "false";
 		}
+				
 		//TODO texto ver items
 		var htmlSection = `
 		<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
@@ -710,18 +831,18 @@ edicionCV.printTabSection= function(data) {
 												<span class="texto" items="5">Ver 5 items</span>
 											</a>
 											<div class="dropdown-menu basic-dropdown dropdown-menu-right" x-placement="bottom-end">
-												<a href="javascript: void(0)" class="item-dropdown" items="5">Ver 5 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="10">Ver 10 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="20">Ver 20 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="50">Ver 50 items</a>
-												<a href="javascript: void(0)" class="item-dropdown" items="100">Ver 100 items</a>
+												<a  class="item-dropdown" items="5">Ver 5 items</a>
+												<a  class="item-dropdown" items="10">Ver 10 items</a>
+												<a  class="item-dropdown" items="20">Ver 20 items</a>
+												<a  class="item-dropdown" items="50">Ver 50 items</a>
+												<a  class="item-dropdown" items="100">Ver 100 items</a>
 											</div>
 										</div>
 										<nav>
 											<ul class="pagination arrows">
 											</ul>
 											<ul class="pagination numbers">	
-												<li class="actual"><a href="javascript: void(0)" page="1">1</a></li>
+												<li class="actual"><a  page="1">1</a></li>
 											</ul>
 										</nav>
 									</div>
