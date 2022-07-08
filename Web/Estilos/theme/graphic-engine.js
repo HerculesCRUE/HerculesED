@@ -1902,8 +1902,12 @@ var metricas = {
                 enctype: 'multipart/form-data',
                 contentType: false,
                 success: function ( response ) {
-
+                    mostrarNotificacion('success', 'Configuración subida correctamente');
+                },
+                error: function ( response ) {
+                    mostrarNotificacion('error', 'Error al subir la configuración');
                 }
+
             });  
         });
 
