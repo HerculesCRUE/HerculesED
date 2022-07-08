@@ -398,7 +398,7 @@
 
  table.tablaAdmin {
      width: 70%;
-     margin:auto;
+     margin: auto;
      border-collapse: collapse;
      border-spacing: 0;
      border: 1px solid #d5d5d5;
@@ -427,21 +427,32 @@
  table.tablaAdmin tbody tr:nth-child(even) {
      background-color: #f3f3f3;
  }
+
  table.tablaAdmin tbody tr:hover {
 
-    background-color: #e7e6e6;
-}
-table.tablaAdmin tbody tr {
-    border-bottom: 1px solid #d5d5d5;
-}
+     background-color: #e7e6e6;
+ }
+
+ table.tablaAdmin tbody tr {
+     border-bottom: 1px solid #d5d5d5;
+ }
+
  table.tablaAdmin tbody tr td {
      padding: 5px;
 
      width: 50%;
  }
- table.tablaAdmin td.subir{
-    width:100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+
+ table.tablaAdmin td.subir {
+     width: 100%;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
  }
+ /*
+ .topbar-container,
+ .listado.vista-grafico .row.containerPage.pageMetrics {
+     border: 0 !important;
+     padding: 0 !important;
+     margin-bottom: 0 !important;
+ }*/
