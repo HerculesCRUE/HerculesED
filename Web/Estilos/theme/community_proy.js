@@ -1443,7 +1443,8 @@ var metabuscador = {
     config: function () {
         this.body = body;
         this.header = this.body.find('#header');
-        this.metabuscadorTrigger = this.header.find('.col-buscador');
+        // this.metabuscadorTrigger = this.header.find('.col-buscador');
+        this.metabuscadorTrigger = this.body.find('.col-buscador');
         this.metabuscador = this.body.find('#menuLateralMetabuscador');
         this.input = this.metabuscadorTrigger.find('#txtBusquedaPrincipal');
         this.resultadosMetabuscador = this.body.find('#resultadosMetabuscador');

@@ -75,6 +75,11 @@
     </div>
 
     <script type="text/javascript">
+
+        let metabuscadorTrigger = document.querySelector('#header .col-buscador');
+        $(metabuscadorTrigger).remove()
+
+
         // Constantes necesarias
         const localUrlBase = "https://localhost:44321/"
         const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/"
