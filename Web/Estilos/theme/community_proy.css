@@ -335,6 +335,10 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
     color: #444;
 }
 
+.fichaRecurso-ofertas-tecnologicas .desc div {
+    color: var(--c-texto-claro);
+}
+
 .resource.offer .desc li, .fichaRecurso-ofertas-tecnologicas .desc li {
     color: #444;
     font-size: 1rem;
