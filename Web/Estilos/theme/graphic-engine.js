@@ -132,8 +132,11 @@ var metricas = {
                     link += "&pUserId=" + $('.inpt_usuarioID').attr('value');
                     $("table.tablaAdmin tbody").append(`
                 <tr id="${index}">
-                    <td><a href="${link}" >${jsonName}</a></td>
-                    <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a  class="btn btn-primary">Subir</a></td>
+                    <td><a href="${link}" id="jsonName">${jsonName}</a></td>
+                    <td class="subir">
+                        <input type="file">
+                        <a class="btn btn-primary subir">Subir</a>
+                    </td>
                 </tr>
             `);
                 }
@@ -141,15 +144,6 @@ var metricas = {
                 metricas.engancharComportamientos();
             });
         }
-        /*     
-            <tr>
-                <td><a href="#">page1.json</a></td>
-                <td class="subir" ><input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"><a href="#" class="btn btn-primary">subir</a></td>
-            </tr>
-         */
-
-
-
     },
     getPagesPersonalized: function () {
         var that = this;
@@ -1893,22 +1887,24 @@ var metricas = {
         .unbind()
         .click(function (e) {
             var url = url_servicio_graphicengine + "SubirConfig";
-            var file = $(this).parent().find('input[type=file]');
-            var reader = new FileReader();
-            reader.readAsArrayBuffer(file[0].files[0]);
-            reader.onload = function (e) {
-                var data = e.target.result;
-                var args = {
-                    pLang: lang,
-                    pConfigName: file[0].files[0].name,
-                    pConfigFile: data,
-                    pUserId: $('.inpt_usuarioID').attr('value')
+            var formData = new FormData();
+            formData.append('pConfigName', $(this).closest('tr').find('a#jsonName').text());
+            formData.append('pUserID', $('.inpt_usuarioID').attr('value'));
+            formData.append('pLang', lang);
+            formData.append('pConfigFile',  $(this).parent().find('input[type=file]')[0].files[0]);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,    
+                cache: false,
+                processData: false,
+                enctype: 'multipart/form-data',
+                contentType: false,
+                success: function ( response ) {
+
                 }
-                console.log(args);
-                $.get(url, args, function (data) {
-                    console.log(data);
-                });
-            }
+            });  
         });
 
         $('a.csv')
