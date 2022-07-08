@@ -158,6 +158,43 @@ var importarCVN = {
 				$('#workMascaraBlanca').remove();
 				for(var i=0;i<7;i++){
 					var id = 'x' + RandomGuid();
+					var dropdowns = '';
+					if(i!=0 && i!=7){
+						dropdownSelectorSeccion = `
+						<div id="dropdown_seccion_`+i+`" class="seleccionar dropdown dropdown-select" style="margin-left: 30px;">
+							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="
+								user-select: none;cursor: pointer;display: flex;align-items: center;height: 32px;
+								line-height: 32px;border: 1px solid var(--c-gris-borde);padding: 0 10px;color: var(--c-texto-claro);
+								text-decoration: none;font-size: .875rem;font-weight: 400;">
+										<span class="material-icons">done_all</span>
+										<span class="texto" style="margin-left: 5px;">Seleccionar todo</span>
+									</a>
+									<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Seleccionar todo</span></a>
+										<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Deseleccionar todo</span></a>
+									</div>
+								</div>`;
+
+							dropdownMostrarSeccion = `
+							<div id="dropdown_seccion_`+i+`" class="seleccionar dropdown dropdown-select" style="margin-left: 10px;">
+								<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="
+								user-select: none;cursor: pointer;display: flex;align-items: center;height: 32px;
+								line-height: 32px;border: 1px solid var(--c-gris-borde);padding: 0 10px;color: var(--c-texto-claro);
+								text-decoration: none;font-size: .875rem;font-weight: 400;">
+									<span class="texto" style="margin-left: 5px;">Mostrar todos</span>
+								</a>
+								<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
+									<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar todos</span></a>
+									<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
+									<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
+								</div>
+							</div>`;
+						dropdowns = `${dropdownSelectorSeccion} ${dropdownMostrarSeccion}`;
+					}
+					else
+					{
+						dropdowns = ``;
+					}
 					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
 											<div class="panel">
 												<div class="panel-heading" role="tab" id="datos-tab">
@@ -523,7 +560,8 @@ function printFreeText(id, data){
 }	
 	
 edicionCV.printTab= function(entityID, data) {
-	var that=this;	
+	var that=this;
+	
 	for (var i = 0; i < data.sections.length; i++) {	
 		if(data.sections[i].title=="Indicadores generales de calidad de la producción científica")
 		{
