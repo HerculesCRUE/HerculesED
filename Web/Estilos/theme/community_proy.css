@@ -316,6 +316,11 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
     margin-top: 15px;
 }
 
+/* Ocultar faceta "estado de la oferta" en el listado */
+body.comunidad.listado.buscador-ofertas-tecnologicas #in_schema_availability---dc_title {
+    display: none;
+}
+
 
 /* Fin Estilos para los usuarios de oferta tecnológica */
 
@@ -349,6 +354,14 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
 .fichaRecurso-ofertas-tecnologicas .desc li {
     color: var(--c-texto-claro);
     margin-bottom: 0;
+}
+
+/**
+ * Home MA
+ */
+
+.home-ma .buscador-container .info-recursos .item {
+    transition: opacity ease 0.3s;
 }
 
 

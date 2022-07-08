@@ -1922,20 +1922,25 @@ var metricas = {
                 formData.append('pLang', lang);
                 formData.append('pConfigFile', $(this).parent().find('input[type=file]')[0].files[0]);
 
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: formData,
-                    cache: false,
-                    processData: false,
-                    enctype: 'multipart/form-data',
-                    contentType: false,
-                    success: function (response) {
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,    
+                cache: false,
+                processData: false,
+                enctype: 'multipart/form-data',
+                contentType: false,
+                success: function ( response ) {
+                    if (response) {
                         mostrarNotificacion('success', 'Configuración subida correctamente');
-                    },
-                    error: function (response) {
+                        location.reload();
+                    } else {
                         mostrarNotificacion('error', 'Error al subir la configuración');
                     }
+                },
+                error: function ( response ) {
+                    mostrarNotificacion('error', 'Error al subir la configuración');
+                }
 
                 });
             });
