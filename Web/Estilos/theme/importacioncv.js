@@ -43,9 +43,9 @@ var importarCVN = {
 										<span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span>
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-										<a class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
-										<a class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
-										<a class="item-dropdown"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
+										<a class="item-dropdown mostrarTodos"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
+										<a class="item-dropdown mostrarSimilitudes"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
+										<a class="item-dropdown mostrarNuevos"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 									</div>
 								</div>`;
 
@@ -181,24 +181,23 @@ var importarCVN = {
 						dropdownSelectorSeccion = `
 						<div class="seleccionar dropdown dropdown-select seccion">
 							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-										<span class="material-icons">done_all</span>
-										<span class="texto">Seleccionar todo</span>
+										<span class="material-icons">done_all</span>										
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-										<a class="item-dropdown seleccionar"><span class="material-icons">done_all</span><span class="texto">Seleccionar todos</span></a>
-										<a class="item-dropdown deseleccionar"><span class="material-icons">remove_done</span><span class="texto">Deseleccionar todos</span></a>
+										<a class="item-dropdown seleccionar"><span class="texto">Seleccionar todos</span></a>
+										<a class="item-dropdown deseleccionar"><span class="texto">Deseleccionar todos</span></a>
 									</div>
 								</div>`;
 
 						dropdownMostrarSeccion = `
 						<div class="seleccionar dropdown dropdown-select seccion">
 							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" >
-								<span class="texto">Mostrar todos</span>
+								<span class="material-icons">preview</span>	
 							</a>
 							<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-								<a  class="item-dropdown"><span class="texto">Mostrar todos</span></a>
-								<a  class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
-								<a  class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
+								<a class="item-dropdown mostrarTodos"><span class="texto">Mostrar todos</span></a>
+								<a class="item-dropdown mostrarSimilitudes"><span class="texto">Mostrar similitudes</span></a>
+								<a class="item-dropdown mostrarNuevos"><span class="texto">Mostrar nuevos</span></a>
 							</div>
 						</div>`;
 						dropdowns = `${dropdownSelectorSeccion} ${dropdownMostrarSeccion}`;
@@ -391,7 +390,27 @@ function aniadirComportamientoWrapperSeccion(){
 		e.preventDefault();
 		checkAllWrappersSection(false, $(this).closest('.row.cvTab'));
 	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .mostrarTodos').off('click').on('click', function(e) {
+		e.preventDefault();
+		wrapperVisibilitySection("mostrarTodos", $(this).closest('.row.cvTab'));
+	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .mostrarSimilitudes').off('click').on('click', function(e) {
+		e.preventDefault();
+		wrapperVisibilitySection("mostrarSimilitudes", $(this).closest('.row.cvTab'));
+	});
+	$('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .mostrarNuevos').off('click').on('click', function(e) {
+		e.preventDefault();
+		wrapperVisibilitySection("mostrarNuevos", $(this).closest('.row.cvTab'));
+	});
+	
 };
+
+function wrapperVisibilitySection(opcion, section){
+	var items = section.find('.panel-collapse.collapse .ordenar.dropdown.dropdown-select .'+opcion);
+	for(var i = 0; i < items.length ; i++){
+		items[i].click();
+	}
+}
 
 function checkAllWrappersSection(check, section){
 	var wrappersChecked = section.find('.checkAllCVWrapper input[type="checkbox"]:checked');
