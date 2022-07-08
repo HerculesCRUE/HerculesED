@@ -142,6 +142,10 @@ var metricas = {
                 }
                 );
                 metricas.engancharComportamientos();
+                $(`div.download-page`).unbind();
+                // change color
+                $('.admin-page').css("color", "var(--c-primario)");
+                $('a.nav-link.active').removeClass('active');
             });
         }
     },
@@ -1884,37 +1888,37 @@ var metricas = {
             a.click();
         });
         $('table.tablaAdmin td.subir a.btn')
-        .unbind()
-        .click(function (e) {
-            var url = url_servicio_graphicengine + "SubirConfig";
-            var formData = new FormData();
-            formData.append('pConfigName', $(this).closest('tr').find('a#jsonName').text());
-            formData.append('pUserID', $('.inpt_usuarioID').attr('value'));
-            formData.append('pLang', lang);
-            formData.append('pConfigFile',  $(this).parent().find('input[type=file]')[0].files[0]);
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "SubirConfig";
+                var formData = new FormData();
+                formData.append('pConfigName', $(this).closest('tr').find('a#jsonName').text());
+                formData.append('pUserID', $('.inpt_usuarioID').attr('value'));
+                formData.append('pLang', lang);
+                formData.append('pConfigFile', $(this).parent().find('input[type=file]')[0].files[0]);
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: formData,    
-                cache: false,
-                processData: false,
-                enctype: 'multipart/form-data',
-                contentType: false,
-                success: function ( response ) {
-                    if (response) {
-                        mostrarNotificacion('success', 'Configuración subida correctamente');
-                        location.reload();
-                    } else {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    enctype: 'multipart/form-data',
+                    contentType: false,
+                    success: function (response) {
+                        if (response) {
+                            mostrarNotificacion('success', 'Configuración subida correctamente');
+                            location.reload();
+                        } else {
+                            mostrarNotificacion('error', 'Error al subir la configuración');
+                        }
+                    },
+                    error: function (response) {
                         mostrarNotificacion('error', 'Error al subir la configuración');
                     }
-                },
-                error: function ( response ) {
-                    mostrarNotificacion('error', 'Error al subir la configuración');
-                }
 
-            });  
-        });
+                });
+            });
 
         $('a.csv')
             .unbind()
@@ -2757,6 +2761,7 @@ var metricas = {
         $(".listadoMenuPaginas li.nav-item")
             .unbind()
             .click(function (e) {
+                $('.admin-page').removeAttr('style');
                 var numero = $(this).attr("num");
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     $(this).parents('ul').find('a.active').removeClass('active');
