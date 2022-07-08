@@ -300,12 +300,36 @@ input.form-group-date {
 	font-size: 28px;
 }
 
+.importar-exportar-cv .seleccionar.dropdown.dropdown-select.show .dropdown-toggle .texto{
+	color: var(--c-blanco);
+	background-color: var(--c-primario);
+}
+
+.importar-exportar-cv .seleccionar.dropdown.dropdown-select .dropdown-toggle{
+	user-select: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	height: 32px;
+	line-height: 32px;
+	border: 1px solid var(--c-gris-borde);
+	padding: 0 10px;
+	color: var(--c-texto-claro);
+	text-decoration: none;
+	font-size: .875rem;
+	font-weight: 400;
+}
+
 .importar-exportar-cv #titleMascaraBlanca{
 	font-size: x-large;
 }
 
 .importar-exportar-cv #workMascaraBlanca{
 	font-size: large;
+}
+
+.importar-exportar-cv #dropdown_seleccion_cv .material-icons{
+	padding-right: 10px;
 }
 
 .page-cv .panel-group .panel .visibility-wrapper {
