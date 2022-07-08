@@ -1902,7 +1902,12 @@ var metricas = {
                 enctype: 'multipart/form-data',
                 contentType: false,
                 success: function ( response ) {
-                    mostrarNotificacion('success', 'Configuración subida correctamente');
+                    if (response) {
+                        mostrarNotificacion('success', 'Configuración subida correctamente');
+                        location.reload();
+                    } else {
+                        mostrarNotificacion('error', 'Error al subir la configuración');
+                    }
                 },
                 error: function ( response ) {
                     mostrarNotificacion('error', 'Error al subir la configuración');
