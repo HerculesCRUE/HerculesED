@@ -95,6 +95,28 @@
 					<div class="h1-container">
 						<h1>@Html.Translate("IMPORTA_TU_CVN")</h1>
 					</div>
+					
+					<div id="dropdown_seleccion_cv" class="seleccionar dropdown dropdown-select">
+						<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+							<span class="material-icons">done_all</span>
+							<span class="texto" style="margin-left: 5px;">Seleccionar todos</span>
+						</a>
+						<div class="dropdown-menu basic-dropdown dropdown-menu-right" x-placement="bottom-end">
+							<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Seleccionar todos</span></a>
+							<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Deseleccionar todos</span></a>
+						</div>
+					</div>					
+					<div id="dropdown_mostrar_cv" class="seleccionar dropdown dropdown-select">
+						<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+							<span class="texto" style="margin-left: 5px;">Mostrar todos</span>
+						</a>
+						<div class="dropdown-menu basic-dropdown dropdown-menu-right" style="will-change: transform;">
+							<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar todos</span></a>
+							<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar similitudes</span></a>
+							<a href="javascript: void(0)" class="item-dropdown"><span class="texto">Mostrar nuevos</span></a>
+						</div>
+					</div>
+					
 				</div>
 				<p>@Html.Translate("IMPORTA_TU_CVN_CON_UN_CLICK")</p>
 				<input type="file" name="" id="file_cvn" accept="application/pdf" data-title-text="@Html.Translate("SUBE_PDF_CV")" data-size-text="@Html.Translate("MAXIMO_PESO_CV")" data-format-text="@Html.Translate("FORMATOS_ADMITIDOS_CV")" data-format-error="@Html.Translate("FORMATO_ERROR_CV")" data-size-error="@Html.Translate("TAMANIO_ERROR_CV")">
