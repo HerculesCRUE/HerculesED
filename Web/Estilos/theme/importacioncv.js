@@ -13,6 +13,10 @@ var urlUserCV = '';
 //  event.returnValue = '';
 //});
 
+var dropdownSelectorSeccion = ''; 
+var dropdownMostrarSeccion = '';
+
+
 var importarCVN = {
 	idUsuario:  null,
     init: function (){		
