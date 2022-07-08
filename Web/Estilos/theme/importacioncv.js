@@ -568,7 +568,7 @@ edicionCV.printTab= function(entityID, data) {
 			$('div[id="' + entityID + '"] .col-12.col-contenido').append(printCientificProduction(entityID, data.sections[i]));
 		}
 		else
-		{
+		{			
 			$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
 			if (data.sections[i].items != null) {
 				this.repintarListadoTab(data.sections[i].identifier,true);
@@ -698,6 +698,7 @@ edicionCV.printTabSection= function(data) {
 			//No desplegado	
 			expanded = "false";
 		}
+				
 		//TODO texto ver items
 		var htmlSection = `
 		<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
