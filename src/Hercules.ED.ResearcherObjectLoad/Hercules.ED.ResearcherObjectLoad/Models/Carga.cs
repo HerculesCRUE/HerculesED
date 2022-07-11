@@ -824,6 +824,29 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             });
                         }
 
+                        // Notificación de fin de la carga
+                        if (!string.IsNullOrEmpty(idPersona))
+                        {
+                            mResourceApi.ChangeOntoly("notification");
+                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            notificacion.IdRoh_owner = idPersona;
+                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Roh_type = "loadExternalSource";
+
+                            ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+                            int numIntentos = 0;
+                            while (!recursoCargar.Uploaded)
+                            {
+                                numIntentos++;
+
+                                if (numIntentos > 5)
+                                {
+                                    break;
+                                }
+                                mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                            }
+                        }
+
                         // Hace una copia del fichero y elimina el original.
                         FileLogger.Log($@"{DateTime.Now} - Creando ZIP...");
                         CrearZip(pRutaEscritura, fichero.Name, jsonString);
