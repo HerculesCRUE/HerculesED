@@ -192,7 +192,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}
                                 }}order by desc(?group) limit {limit}";
                         SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
-                        ActualizarPropiedadMiembrosProyectoGrupo(resultado.results.bindings, "group");
+                        ActualizarPropiedadMiembrosProyectoGrupoPatente(resultado.results.bindings, "group");
                         if (resultado.results.bindings.Count != limit)
                         {
                             break;
