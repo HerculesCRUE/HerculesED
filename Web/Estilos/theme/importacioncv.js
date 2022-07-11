@@ -21,7 +21,8 @@ var dropdownMostrarSeccion = '';
 
 var importarCVN = {
 	idUsuario:  null,
-    init: function (){		
+    init: function (){	
+		$('#containerCV').closest('.block').addClass('no-cms-style');	
 		this.config(),
 		this.idUsuario = $('#inpt_usuarioID').val();
 		this.fileData = '';
