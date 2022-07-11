@@ -254,6 +254,9 @@ namespace DesnormalizadorHercules
                                         case DenormalizerItemQueue.ItemType.researchobject:
                                             ActualizadorEDMA.DesnormalizarDatosCVResearchObject(pROs: listIn);
                                             break;
+                                        case DenormalizerItemQueue.ItemType.patent:
+                                            ActualizadorEDMA.DesnormalizarDatosCVPatentes(pPatents: listIn);
+                                            break;
 
                                     }
                                 }
@@ -336,6 +339,9 @@ namespace DesnormalizadorHercules
                                         case DenormalizerItemQueue.ItemType.researchobject:
                                             ActualizadorEDMA.DesnormalizarDatosResearchObject(pROs: listIn);
                                             break;
+                                        case DenormalizerItemQueue.ItemType.patent:
+                                            ActualizadorEDMA.DesnormalizarDatosPatentes(pPatents: listIn);
+                                            break;
 
                                     }
                                 }
@@ -404,6 +410,9 @@ namespace DesnormalizadorHercules
                                                 break;
                                             case DenormalizerItemQueue.ItemType.researchobject:
                                                 ActualizadorEDMA.DesnormalizarDatosResearchObject(pROs: listIn);
+                                                break;
+                                            case DenormalizerItemQueue.ItemType.patent:
+                                                ActualizadorEDMA.DesnormalizarDatosPatentes(pPatents: listIn);
                                                 break;
 
                                         }

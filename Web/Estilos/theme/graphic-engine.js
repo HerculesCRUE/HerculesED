@@ -142,6 +142,10 @@ var metricas = {
                 }
                 );
                 metricas.engancharComportamientos();
+                $(`div.download-page`).unbind();
+                // change color
+                $('.admin-page').css("color", "var(--c-primario)");
+                $('a.nav-link.active').removeClass('active');
             });
         }
     },
@@ -486,18 +490,39 @@ var metricas = {
                                 generateLabels(chart) {
                                     const data = chart.data;
                                     if (data.labels.length && data.datasets.length) {
+
+                                        console.log(data);
+                                        var outer = data.datasets[1].label.split("~~~")[1].split("---");
+                                        var outerLabels = []
+                                        var outerColors = []
+                                        outer.forEach(function (item, index) {
+
+                                            outerLabels.push(item.split("|")[0]);
+                                            outerColors.push(item.split("|")[1]);
+
+                                        });
+
+
+
+                                        data.labels = data.labels.filter(function (el) {
+                                            return !outerLabels.includes(el);
+                                        });
+                                        data.labels = data.labels.concat(outerLabels);
+
                                         return data.labels.map(function (label, i) {
                                             var meta = chart.getDatasetMeta(1);
                                             var style = meta.controller.getStyle(i);
-                                            if (!dataBack[i]) {
+                                            var isOuter = outerLabels.indexOf(label) != -1;
+
+                                            if (!isOuter && !dataBack[i]) {
                                                 var grupo = data.datasets[0].grupos[i];
                                                 dataBack[i] = {
                                                     "inner": data.datasets[1].data[i],
                                                     "outer": {}
                                                     /* 0: data.datasets[0].data[i * 2],
                                                      1: data.datasets[0].grupos[i * 2 + 1] == grupo ? data.datasets[0].data[i * 2 + 1] : 0,*/
-
                                                 };
+                                                console.log(outer);
 
                                                 var itemsGrupo = 0;
                                                 var grupoStart = -1;
@@ -521,19 +546,27 @@ var metricas = {
 
                                                 }
                                             }
+                                            var hidden;
+                                            var color = style.backgroundColor;
+                                            if (isOuter) {
+                                                hidden = false;
+                                                color = outerColors[outerLabels.indexOf(label)];
+                                            } else {
+                                                hidden = isNaN(data.datasets[0].data[i]) || meta.data[i].hidden;
+                                            }
 
                                             return {
                                                 text: label,
-                                                fillStyle: style.backgroundColor,
-                                                strokeStyle: style.borderColor,
+                                                fillStyle: color,
+                                                strokeStyle: color == "#FFFFFF"? "#666666" : style.borderColor,
                                                 lineWidth: style.borderWidth,
-                                                hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+                                                hidden: hidden,
 
                                                 index: i,
                                                 grupos: data.datasets[0].grupos,
                                                 data: dataBack[i]
                                             };
-                                        }).reverse();
+                                        });//.reverse();
                                     }
                                     return [];
                                 }
@@ -1884,37 +1917,37 @@ var metricas = {
             a.click();
         });
         $('table.tablaAdmin td.subir a.btn')
-        .unbind()
-        .click(function (e) {
-            var url = url_servicio_graphicengine + "SubirConfig";
-            var formData = new FormData();
-            formData.append('pConfigName', $(this).closest('tr').find('a#jsonName').text());
-            formData.append('pUserID', $('.inpt_usuarioID').attr('value'));
-            formData.append('pLang', lang);
-            formData.append('pConfigFile',  $(this).parent().find('input[type=file]')[0].files[0]);
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "SubirConfig";
+                var formData = new FormData();
+                formData.append('pConfigName', $(this).closest('tr').find('a#jsonName').text());
+                formData.append('pUserID', $('.inpt_usuarioID').attr('value'));
+                formData.append('pLang', lang);
+                formData.append('pConfigFile', $(this).parent().find('input[type=file]')[0].files[0]);
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: formData,    
-                cache: false,
-                processData: false,
-                enctype: 'multipart/form-data',
-                contentType: false,
-                success: function ( response ) {
-                    if (response) {
-                        mostrarNotificacion('success', 'Configuración subida correctamente');
-                        location.reload();
-                    } else {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    enctype: 'multipart/form-data',
+                    contentType: false,
+                    success: function (response) {
+                        if (response) {
+                            mostrarNotificacion('success', 'Configuración subida correctamente');
+                            location.reload();
+                        } else {
+                            mostrarNotificacion('error', 'Error al subir la configuración');
+                        }
+                    },
+                    error: function (response) {
                         mostrarNotificacion('error', 'Error al subir la configuración');
                     }
-                },
-                error: function ( response ) {
-                    mostrarNotificacion('error', 'Error al subir la configuración');
-                }
 
-            });  
-        });
+                });
+            });
 
         $('a.csv')
             .unbind()
@@ -2757,6 +2790,7 @@ var metricas = {
         $(".listadoMenuPaginas li.nav-item")
             .unbind()
             .click(function (e) {
+                $('.admin-page').removeAttr('style');
                 var numero = $(this).attr("num");
                 if (!$('div').hasClass('indicadoresPersonalizados')) {
                     $(this).parents('ul').find('a.active').removeClass('active');

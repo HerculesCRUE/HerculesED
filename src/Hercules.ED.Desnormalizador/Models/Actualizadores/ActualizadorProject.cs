@@ -35,7 +35,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         public void ActualizarProyectosValidados(List<string> pProjects = null)
         {
             //Eliminamos los duplicados
-            EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/isPublic");
+            EliminarDuplicados("project", "http://vivoweb.org/ontology/core#Project", "http://w3id.org/roh/isValidated");
 
             HashSet<string> filters = new HashSet<string>();
             if (pProjects != null && pProjects.Count > 0)
@@ -281,7 +281,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}
                                 }}order by desc(?project) limit {limit}";
                         SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "project");
-                        ActualizarPropiedadMiembrosProyectoGrupo(resultado.results.bindings, "project");
+                        ActualizarPropiedadMiembrosProyectoGrupoPatente(resultado.results.bindings, "project");
                         if (resultado.results.bindings.Count != limit)
                         {
                             break;

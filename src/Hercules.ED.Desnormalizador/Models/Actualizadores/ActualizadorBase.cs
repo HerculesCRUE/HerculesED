@@ -410,7 +410,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         }
 
         //TODO comenrtario
-        protected void ActualizarPropiedadMiembrosProyectoGrupo(List<Dictionary<string, Data>> pFilas, string pTipo)
+        protected void ActualizarPropiedadMiembrosProyectoGrupoPatente(List<Dictionary<string, Data>> pFilas, string pTipo)
         {
             List<string> ids = pFilas.Select(x => x[pTipo].value).Distinct().ToList();
             Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
