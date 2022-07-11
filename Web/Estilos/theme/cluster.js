@@ -1867,13 +1867,13 @@ function CompletadaCargaRecursosCluster()
 								                </a>
 								                <div class="dropdown-menu basic-dropdown check-actions" id="checkActions" x-placement="bottom-start">
 								                    <div class="barras-progreso-wrapper">
-								                        <div class="progreso-wrapper">
+								                        <div class="progreso-wrapper" data-toggle="tooltip" data-placement="top" title="${comportamientoPopupCluster.text_ajuste_tooltip}">
 								                            <div class="progress">
 								                                <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 								                            </div>
 								                            <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
 								                        </div>
-								                        <div class="progreso-wrapper">
+								                        <div class="progreso-wrapper" data-toggle="tooltip" data-placement="top" title="${comportamientoPopupCluster.text_volumen_tooltip}">
 								                            <div class="progress">
 								                                <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 								                            </div>
@@ -1905,13 +1905,13 @@ function CompletadaCargaRecursosCluster()
 								            </div>
 								        </div>
 								        <div class="barras-progreso-wrap">
-								            <div class="progreso-wrapper">
+								            <div class="progreso-wrapper" data-toggle="tooltip" data-placement="top" title="${comportamientoPopupCluster.text_ajuste_tooltip}">
 								                <div class="progress">
 								                    <div class="progress-bar background-success" role="progressbar" style="width: ${score.ajuste * 100}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 								                </div>
 								                <span class="progress-text"><span class="font-weight-bold">${Math.round(score.ajuste * 10000)/100}%</span></span>
 								            </div>
-								            <div class="progreso-wrapper">
+								            <div class="progreso-wrapper" data-toggle="tooltip" data-placement="top" title="${comportamientoPopupCluster.text_volumen_tooltip}">
 								                <div class="progress">
 								                    <div class="progress-bar" role="progressbar" style="width: ${publicationsPercent}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 								                </div>
@@ -1919,7 +1919,6 @@ function CompletadaCargaRecursosCluster()
 								            </div>
 								        </div>
 								    </div>`;
-
 
 					}
 				}
@@ -1986,6 +1985,9 @@ function CompletadaCargaRecursosCluster()
 				stepsCls.PrintPerfilesstp3();
 				newGrafProjClust.CargarGraficaColaboradores(stepsCls.data, 'colaboratorsgraphCluster', true);
 			});	
+
+			// Habilitamos los tooltips
+			$('.searcherResults [data-toggle="tooltip"]').tooltip()
 			
 		});
 	}
