@@ -1957,9 +1957,14 @@ menusLateralesManagement.montarMenuLateralMetabuscador= function () {
 
 	if (!$('#menuLateralMetabuscador').length > 0) return;
 	var isHome=$('body').hasClass('homeComunidad');
+	var width=740;
+	if(isHome)
+	{
+		width=$('.home-ma .buscador-container').width();
+	}
 	$('#menuLateralMetabuscador').slideReveal({
 		trigger: $('#txtBusquedaPrincipal'),
-		width: 740,
+		width: width,
 		overlay: true,
 		position: 'left',
 		push: false,
@@ -1978,7 +1983,7 @@ menusLateralesManagement.montarMenuLateralMetabuscador= function () {
 				that.timerId = setInterval(() => {						
 					var position=$('#txtBusquedaPrincipal').offset().left;
 					slider.css('left', position);
-					$('.home-ma .buscador-container').css('z-index', 1049);
+					$('.home-ma .buscador-container').css('z-index', 1049);$('#txtBusquedaPrincipal').width()
 					slider.css('cssText', slider.attr("style") + ";top:"+($('#txtBusquedaPrincipal').offset().top-$(window).scrollTop()+50)+"px !important");	
 				},100);
 			}else
