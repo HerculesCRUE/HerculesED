@@ -44,7 +44,7 @@ var importarCVN = {
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
 										<a class="item-dropdown mostrarTodos"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
-										<a class="item-dropdown mostrarSimilitudes"><span class="texto">${GetText('CV_MOSTRAR_CONFLICTOS')}</span></a>
+										<a class="item-dropdown mostrarSimilitudes"><span class="texto">${GetText('CV_MOSTRAR_SIMILITUDES')}</span></a>
 										<a class="item-dropdown mostrarNuevos"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 									</div>
 								</div>`;
@@ -114,17 +114,28 @@ var importarCVN = {
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
 		
-				
+
 		$('#CV_select_all').off('click').on('click', function(e) {
 			e.preventDefault();
             checkAllWrappersCV(true);
 		});
-		
 		$('#CV_unselect_all').off('click').on('click', function(e) {
 			e.preventDefault();
             checkAllWrappersCV(false);
-		});		
-		
+		});
+		$('.h1-container .mostrarTodos').off('click').on('click', function(e) {
+			e.preventDefault();
+            dropdownVisibilityCV('mostrarTodos');
+		});
+		$('.h1-container .mostrarSimilitudes').off('click').on('click', function(e) {
+			e.preventDefault();
+            dropdownVisibilityCV('mostrarSimilitudes');
+		});
+		$('.h1-container .mostrarNuevos').off('click').on('click', function(e) {
+			e.preventDefault();
+            dropdownVisibilityCV('mostrarNuevos');
+		});
+
 		MostrarUpdateProgressTime(0);
 		
 		if($('#titleMascaraBlanca').length == 0){
@@ -364,6 +375,11 @@ var importarCVN = {
 	}
 };
 
+function dropdownVisibilityCV(tipo){
+	var dropdownVisibility = $('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .'+tipo);
+	dropdownVisibility.click();
+}
+
 function checkAllWrappersCV(check){
 	var wrappersChecked = $('.checkAllCVWrapper input[type="checkbox"]:checked');
 	var wrappersUnchecked = $('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
@@ -432,31 +448,51 @@ function checkAllWrappersSection(check, section){
 
 function checkAllConflict(){
 	$('.ordenar.dropdown.dropdown-select a.item-dropdown').off('click').on('click', function(e) {
-		var texto = $(this).find('.texto').text();
-		var drop = $(this).closest('.ordenar.dropdown.dropdown-select').find('a.dropdown-toggle span.texto');		
+		//Indico el tipo de elección
+		var tipo = "";
+		if($(this).hasClass('mostrarTodos')){
+			tipo = "TODOS";
+		}
+		else if($(this).hasClass('mostrarSimilitudes')){
+			tipo = "SIMILITUDES";
+		}
+		else if($(this).hasClass('mostrarNuevos')){
+			tipo = "NUEVOS";
+		}		
+		
+		var dropdownText = $(this).closest('.ordenar.dropdown.dropdown-select').find('a.dropdown-toggle span.texto');		
 		var seccion = $(this).closest('.panel-group.pmd-accordion').attr("section");
 		var seleccionar = $(this).closest('.acciones-listado').find('.checkAllCVWrapper input[type="checkbox"]');
-		var currentText = texto.split(' ')[1].toUpperCase();
+		
 		// Cambio el texto del checkbox de seleccionar en función de los datos mostrados
 		$(seleccionar).prop('checked', false);
-		$(seleccionar).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + currentText)}`);
+		//Edito el nombre mostrado
+		$(seleccionar).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + tipo)}`);
 		
-		if(texto==GetText('CV_MOSTRAR_TODOS'))
+		//Elimino las posibles clases de seleccion
+		seleccionar.removeClass('mostrarTodos');
+		seleccionar.removeClass('mostrarSimilitudes');
+		seleccionar.removeClass('mostrarNuevos');
+		
+		if(tipo=='TODOS')
 		{
 			seleccionar.attr('conflict', '');
-			drop.text(texto);
+			seleccionar.addClass('mostrarTodos');
+			dropdownText.text(GetText('CV_MOSTRAR_TODOS'));
 			edicionCV.buscarListado(seccion, false, false);
 		}
-		else if(texto==GetText('CV_MOSTRAR_CONFLICTOS'))
+		else if(tipo=='SIMILITUDES')
 		{
 			seleccionar.attr('conflict', 'true');
-			drop.text(texto);
+			seleccionar.addClass('mostrarSimilitudes');
+			dropdownText.text(GetText('CV_MOSTRAR_SIMILITUDES'));
 			edicionCV.buscarListado(seccion, true, false);
 		}
-		else if(texto==GetText('CV_MOSTRAR_NUEVOS'))
+		else if(tipo=='NUEVOS')
 		{
 			seleccionar.attr('conflict', 'false');
-			drop.text(texto);
+			seleccionar.addClass('mostrarNuevos');
+			dropdownText.text(GetText('CV_MOSTRAR_NUEVOS'));
 			edicionCV.buscarListado(seccion, false, true);
 		}
 	});	
@@ -464,17 +500,26 @@ function checkAllConflict(){
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
-		var currentText = 'TODOS';
 		var conflictType = $(this).attr('conflict') ? '.conflict-' + $(this).attr('conflict') : '';
-
-		currentText = $(this).closest('.acciones-listado').find('.ordenar.dropdown.dropdown-select a.dropdown-toggle span.texto').text().split(' ')[1].toUpperCase();
+		var tipo = "";
+		if($(this).hasClass('mostrarTodos'))
+		{
+			tipo = "TODOS";
+		}
+		else if($(this).hasClass('mostrarSimilitudes')){
+			tipo = "SIMILITUDES";
+		}
+		else if($(this).hasClass('mostrarNuevos')){
+			tipo = "NUEVOS";
+		}
+				
 		if(!$(this)[0].checked)
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + currentText)}`);
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_SELECCIONAR_' + tipo)}`);
 		}
 		else
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_' + currentText)}`);
+			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_' + tipo)}`);
 		}
 		$(this).closest('.panel-body').find('article' + conflictType + ' div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
