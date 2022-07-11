@@ -1765,13 +1765,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
 
-                // Comprobar EISSN
-                if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.eissn))
-                {
-                    idRevista = ComprobarRevistaEISSN(pPublicacion.hasPublicationVenue.eissn);
-                }
-
-                // Comprobar Título
+                // Comprobar Título 
                 if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name))
                 {
                     idRevista = ComprobarRevistaTitulo(pPublicacion.hasPublicationVenue.name);
@@ -2325,7 +2319,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }} ORDER BY DESC(?revista) }} LIMIT {limit} OFFSET {offset}";
 
                     SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "maindocument");
-                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count == 1)
                     {
                         offset += limit;
                         foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
