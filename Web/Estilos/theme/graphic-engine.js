@@ -170,12 +170,43 @@ var metricas = {
         var arg = {};
         arg.pUserId = $('.inpt_usuarioID').attr('value');
         if (arg.pUserId == "ffffffff-ffff-ffff-ffff-ffffffffffff") { // Sin usuario
-            $('div.row-content').append(`<div><h1>Login Required</h1></div>`);
+            $('div.row-content').append(`
+            <main role="main" style="padding-top: 60px;">
+                <div class="container">
+                    <div class="row-content">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form panel-centrado">
+                                    <h1>No has iniciado sesión</h1>
+                                    <p>Para mostrar tus indicadores personales es necesario iniciar sesión.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            `);
         } else {
             // Petición para obtener los datos de la página.
             $.get(url, arg, function (listaData) {
                 if (listaData.length == 0) {
-                    $('div.row-content').append(`<div><h1>No tienes paginas</h1></div>`);
+                    $('div.row-content').append(`
+                    <main role="main" style="padding-top: 60px;">
+                        <div class="container">
+                            <div class="row-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form panel-centrado">
+                                            <h1>No tienes indicadores personales</h1>
+                                            <p>No hemos encontrado ninguna página de indicadores personales.</p>
+                                            <p>Puedes guardar gráficas en tu panel de indicadores <a href="http://edma.gnoss.com/comunidad/hercules/indicadores">en la página de indicadores</a>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    `);
                 } else {
                     for (let i = 0; i < listaData.length; i++) {
                         $(".listadoMenuPaginas").append(`
