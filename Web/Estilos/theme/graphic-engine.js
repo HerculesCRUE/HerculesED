@@ -73,7 +73,7 @@ var metricas = {
             }
             that.createEmptyPage(listaData[numPagina].id);
             that.fillPage(listaData[numPagina]);
-           
+
             listaPaginas = listaData;
         });
     },
@@ -128,7 +128,7 @@ var metricas = {
                 <tbody>
                     <tr>
                         <th>Fichero</th>
-                        <th>Editar</th>
+                     
                         <th>Subir</th>
                     </tr>
                 </tbody>
@@ -143,10 +143,7 @@ var metricas = {
                     link += "&pUserId=" + $('.inpt_usuarioID').attr('value');
                     $("table.tablaAdmin tbody").append(`
                 <tr id="${index}">
-                    <td><a href="${link}" id="jsonName">${jsonName}</a></td>
-                    <td>
-                        <a class="btn btn-primary editar">Editar</a>
-                    </td>     
+                    <td><a href="${link}" id="jsonName">${jsonName}</a></td> 
                     <td class="subir">
                         <input type="file">
                         <a class="btn btn-primary subir">Subir</a>   
@@ -2300,24 +2297,26 @@ var metricas = {
             $('#modal-admin-config').addClass('show');
 
             var url = url_servicio_graphicengine + "ObtenerGraficaConfig"; //"https://localhost:44352/GetConfiguracion"
+            idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idgrafica");
             var args = {}
             args.pLang = lang;
             args.pUserId = $('.inpt_usuarioID').attr('value');
-            args.pGraphicId = $(this).closest('article').find("div.show.grafica").attr("idgrafica");
+            args.pGraphicId = idGraficaActual;
             args.pPageID = idPaginaActual;
             var numGraficas = $(this).closest('article').parent().find('article').length;
+            $("#modal-admin-config #idSelectorOrden").empty();
             for (var i = 0; i < numGraficas; i++) {
-               $("#modal-admin-config #idSelectorOrden").append(`
-                    <option value="${i+1}">${i+1}</option>
+                $("#modal-admin-config #idSelectorOrden").append(`
+                    <option value="${i + 1}">${i + 1}</option>
                 `)
             }
-            var parent =$(this).parents('article');
+            var parent = $(this).parents('article');
             var index = parent.index();
-            $("#idSelectorOrden").val(index+1).change();
+            $("#idSelectorOrden").val(index + 1).change();
             $.get(url, args, function (listaData) {
                 $("#modal-admin-config #labelTituloGraficaConfig").val(listaData.nombre[lang]);
                 $("#modal-admin-config #idSelectorTamanyoConfig").val(listaData.anchura).change();
-    
+
             });
 
         });
@@ -2492,6 +2491,33 @@ var metricas = {
                     cerrarModal();
                 });
             });
+        $("#btnGuardarGraficaConfig")
+            .unbind()
+            .click(function (e) {
+                var url = url_servicio_graphicengine + "EditarConfig"; //"https://localhost:44352/GuardarGraficaConfig"
+                var arg = {};
+                arg.pUserId = $('.inpt_usuarioID').attr('value');
+                arg.pPageId = idPaginaActual;
+                arg.pGraphicId = idGraficaActual;
+                arg.pLang = lang
+                arg.pGraphicName = $('#labelTituloGraficaConfig').val();
+                arg.pGraphicWidth = $('#idSelectorTamanyoConfig option:selected').val();
+                arg.pGraphicOrder = $('#idSelectorOrden').val();
+                $.get(url, arg, function (data) {
+                    if (data) {
+                        mostrarNotificacion("success", "Grafica guardada correctamente");
+                    } else {
+                        mostrarNotificacion("error", "Error al guardar la grafica");
+                    }
+                    location.reload();
+   
+                }).fail(function (data) {
+                    console.log(data);
+                    mostrarNotificacion("error", "Error de servidor al guardar la grafica");
+                });
+            });
+
+
 
         $('#createPageRadio')
             .unbind()
