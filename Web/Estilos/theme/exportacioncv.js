@@ -151,7 +151,7 @@ var exportacionCV = {
 		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
-				url: urlImportacionCV + '/ExportarCVStatus?petitionID=' + petition,
+				url: urlExportacionCV + '/ExportarCVStatus?petitionID=' + petition,
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
