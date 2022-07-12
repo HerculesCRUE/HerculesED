@@ -14,7 +14,6 @@ var tituloActual;
 var tamanioActual;
 var ordenActual;
 var escalaActual;
-var TAMANIO_GRAFICA_MIN = 318;
 
 // Lista de páginas.
 var listaPaginas;
@@ -230,9 +229,6 @@ var metricas = {
 
         // Petición para obtener los datos de las gráficas.
         $.get(url, arg, function (data) {
-            console.log(data);
-
-
             if (!ctx) {
                 if (!pIdRecurso) {
                     ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
@@ -244,10 +240,8 @@ var metricas = {
             var combo = $(ctx).parents("article").find(".toggleGraficas ul.no-list-style");
             var graficaContenedor = $(ctx).parent();
 
-
-
             // Controla si el objeto es de ChartJS o Cytoscape.
-            console.log(maxScales);
+
             if ("container" in data) {
                 var controls = $(ctx).parent().find(".graph-controls");
                 var download = $(ctx).parents("div.wrap").find('a.descargar');
@@ -489,7 +483,7 @@ var metricas = {
 
                 if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
                     that.drawChart(ctx, data, pIdGrafica, barSize, titulo);
-                } else {
+                } else { //Graficas circulares
                     if (!graficaContenedor[0].classList.contains("chartAreaWrapper")) {
                         data.options.responsive = true;
                         data.options.maintainAspectRatio = false;
@@ -1105,6 +1099,47 @@ var metricas = {
             that.pintarPaginaPersonalized(pPaginaUsuario.idRecurso, listaData)
         });
     },
+    pintarGraficaIndividual: function (pContenedor, pIdPagina) {
+
+        this.pintarContenedoresGraficas(pContenedor, pIdPagina);
+        this.getGrafica(pIdPagina, $(pContenedor).attr("idgrafica"),"");
+
+
+    },
+    pintarContenedoresGraficas: function (pContenedor, pIdPagina = "") {
+        if ($(pContenedor).attr("tipografica").includes("nodes")) {
+            $(pContenedor).append(`
+                    <p id="titulo_grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
+                    <div class="graph-controls">
+                        <ul class="no-list-style align-items-center">
+                            <li class="control zoomin-control" id="zoomIn">
+                                <span  class="material-icons" >add</span>
+                            </li>
+                            <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
+                                <span class="material-icons" >remove</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="graficoNodos" id="grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}" style="height: 500px;"></div>
+                `);
+        } else if ($(pContenedor).attr("tipografica").includes("circular")) {
+            $(pContenedor).css("height", "300px");
+            $(pContenedor).append(`
+                <canvas id = "grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}" width = "600" height = "250" ></canvas>
+                    `);
+        } else {
+
+            $(pContenedor).append(`
+            <div class="chartWrapper" >
+                <div class="chartScroll custom-css-scroll">
+                    <div class="chartAreaWrapper">
+                        <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}"></canvas>
+                    </div>
+                </div>
+            </div>
+            `);
+        }
+    },
     pintarPagina: function (pIdPagina) {
         var that = this;
 
@@ -1126,37 +1161,7 @@ var metricas = {
 
         // Recorremos el div de las gráficas.
         $('#page_' + pIdPagina + ' .grafica').each(function () {
-            if ($(this).attr("tipografica").includes("nodes")) {
-                $(this).append(`
-                        <p id="titulo_grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
-                        <div class="graph-controls">
-                            <ul class="no-list-style align-items-center">
-                                <li class="control zoomin-control" id="zoomIn">
-                                    <span  class="material-icons" >add</span>
-                                </li>
-                                <li class="control zoomout-control" style="margin-top:5px" id="zoomOut">
-                                    <span class="material-icons" >remove</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="graficoNodos" id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}" style="height: 500px;"></div>
-                    `);
-            } else if (!$(this).attr("tipografica").includes("circular")) {
-                $(this).append(`
-                <div class="chartWrapper" >
-                    <div class="chartScroll custom-css-scroll">
-                        <div class="chartAreaWrapper">
-                            <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(this).attr("idgrafica")}"></canvas>
-                        </div>
-                    </div>
-                </div>
-                `);
-            } else {
-                $(this).css("height", "300px");
-                $(this).append(`
-                    <canvas id = "grafica_${pIdPagina}_${$(this).attr("idgrafica")}" width = "600" height = "250" ></canvas>
-                        `);
-            }
+            that.pintarContenedoresGraficas(this, pIdPagina);
             that.getGrafica(pIdPagina, $(this).attr("idgrafica"), ObtenerHash2());
         });
 
@@ -1274,7 +1279,7 @@ var metricas = {
             } else if (!$(this).attr("idgrafica").includes("circular")) {
                 $(this).append(`
                 <div class="chartWrapper" >
-                    <div class="chartScroll custom-css-scroll " style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:${TAMANIO_GRAFICA_MIN}px;">
+                    <div class="chartScroll custom-css-scroll " style="overflow-${pPageData[index].idGrafica.includes("isHorizontal") ? "y" : "x"}: scroll;height:${318}px;">
                         <div class="chartAreaWrapper">
                             <canvas width = "600" height = "250" id="${pPageData[index].idRecurso}"></canvas>
                         </div>
@@ -1366,7 +1371,6 @@ var metricas = {
             }
         }
         //Abrebiacion de los labels del eje
-        // TODO echar un vistazo para ver como queda el tema de la abreviación
         if (pIdGrafica != null && pIdGrafica.includes("abr")) {
             // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
             if (horizontal) {
@@ -1404,13 +1408,13 @@ var metricas = {
 
         var modalBody = $(graficaContainer).parents(".modal-body");
         //si la grafica es horizontal y su altura es menor a (310 si no esta en zoom, tamaño de ventana - 270 si esta en zoom ) o si es vertical y su ancho es menor a (su contenedor si no tiene zoom, 1110 si tiene zoom) no necesita scroll 
-        if ((canvasSize < (modalBody.length != 0 ? $(window).height() - 230 : TAMANIO_GRAFICA_MIN) && horizontal) || (canvasSize < (modalBody.length != 0 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
+        if ((canvasSize < (modalBody.length != 0 ? $(window).height() - 230 : 318) && horizontal) || (canvasSize < (modalBody.length != 0 ? 1110 : $(graficaContainer).width()) && !horizontal)) {
             if (barSize < 100) {
                 $(ctx).parents(".modal-content").css("display", "block");
             }
             graficaContainer.classList.add("small");
             if (modalBody.length == 0) {
-                chartAreaWrapper.style.height = TAMANIO_GRAFICA_MIN + "px";
+                chartAreaWrapper.style.height = 318 + "px";
             } else {
                 chartAreaWrapper.style.height = "100%";
             }
@@ -2537,7 +2541,7 @@ var metricas = {
                         mostrarNotificacion("error", "Error al guardar la grafica");
                     }
                     location.reload();
-   
+
                 }).fail(function (data) {
                     console.log(data);
                     mostrarNotificacion("error", "Error de servidor al guardar la grafica");
