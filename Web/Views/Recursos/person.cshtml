@@ -686,7 +686,7 @@
                                                 </div> -->
                                             </div>
 
-                                            <div class="vista-red dropdown dropdown-select show">
+                                            @* <div class="vista-red dropdown dropdown-select show">
                                                 <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                     @Html.Translate("RELACIONES"):
                                                     <span class="texto">@Html.Translate("TODOS")</span>
@@ -713,7 +713,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                            </div>
+                                            </div> *@
 
 
                                             <div class="vista-red dropdown dropdown-select show">
@@ -758,19 +758,27 @@
                                                                     </li>
                                                                 </ul>
                                                                 <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
-                                                                    <li onclick="zoomCyOut()" class="control zoomout-control" id="zoomOut">
-                                                                        <span class="material-icons">remove</span>
+                                                                    <li onclick="zoomCyOut()" class="control zoomout-control zoomOut" id="zoomOut">
+                                                                        <span class="material-icons">zoom_out</span>
                                                                     </li>
-                                                                    <li class="control text-control">
-                                                                        <span class="material-icons">search</span>
-                                                                    </li>
-                                                                    <li onclick="zoomCyIn()" class="control zoomin-control" id="zoomIn">
-                                                                        <span class="material-icons">add</spanonclick="zoomCyIn()">
+                                                                    <li onclick="zoomCyIn()" class="control zoomin-control zoomIn" id="zoomIn">
+                                                                        <span class="material-icons">zoom_in</span>
                                                                     </li>
                                                                 </ul>
                                                             </div>
                                                         </div>
-
+                                                        <div class="chartLegend">
+                                                            <div class="dataSetLabels">
+                                                                <div id="actualizarTypesOcultar_relation_document" class="labelContainer" onclick="actualizarTypesOcultar('relation_document', 'actualizarTypesOcultar_relation_document')">
+                                                                    <div style="background-color: #f8abab;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("DOCUMENTOS")</p>
+                                                                </div>
+                                                                <div id="actualizarTypesOcultar_relation_project" class="labelContainer" onclick="actualizarTypesOcultar('relation_project', 'actualizarTypesOcultar_relation_project')">
+                                                                    <div style="background-color: #b2cff7;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("PROYECTOS")</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <input type="hidden" id="numColaboradores" value="10" />
                                                         <div class="wrapCol" id="colaboratorsgraph" style="width: 100%; height: 500px;"></div>
                                                     </div>
@@ -840,7 +848,7 @@
     class CargarGraficaProjectoObj {
         dataCB = {};
         idContenedorCB = "";
-        typesOcultar = [];
+        typesOcultar = ["relation_project", "relation_document"];
         showRelation = true;
 
         actualizarGraficaColaboradores = () => {
@@ -878,18 +886,15 @@
 
     var newGrafProj = new CargarGraficaProjectoObj();
 
-    function actualizarTypesOcultar(type) {
-        //var idx = newGrafProj.typesOcultar.indexOf(type);
-        //if (idx !== -1) {
-        //    newGrafProj.typesOcultar.splice(idx, 1);
-        //} else {
-        //    newGrafProj.typesOcultar.push(type);
-        //}
+    // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
+    function actualizarTypesOcultar(type, id) {
 
-        if (type == "relation_todas") {
-            newGrafProj.typesOcultar = [];
+        if (newGrafProj.typesOcultar.includes(type)) {
+            newGrafProj.typesOcultar.splice(newGrafProj.typesOcultar.indexOf(type), 1);
+            document.getElementById(id).classList.add('tachado')
         } else {
-            newGrafProj.typesOcultar = [type];
+            newGrafProj.typesOcultar.push(type)
+            document.getElementById(id).classList.remove('tachado')
         }
         newGrafProj.actualizarGraficaColaboradores();
     }
