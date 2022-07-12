@@ -28,8 +28,8 @@ namespace Hercules.ED.UpdateKeywords
         readonly ConfigService _Configuracion;
 
         // Lista Preposiciones
-        public List<string> preposicionesEng = new List<string>() { "above", "across", "along", "around", "against", "at", "behind", "beside", "below", "beneath", "between", "by", "close to", "in", "in front of", "inside", "near", "on", "opposite", "outside", "over", "under", "underneath", "upon", "about", "after", "around", "before", "beyond", "by", "during", "for", "past", "since", "throughout", "until", "across", "along", "around", "away from", "down", "from", "into", "off", "onto", "out of", "over", "past", "to", "towards", "under", "up", "in", "at", "on", "ago", "circa", "per", "about", "at", "from", "for", "in", "of", "to", "with" };
-        public List<string> preposicionesEsp = new List<string>() { "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", "según", "sin", "so", "sobre", "tras", "versus", "via" };
+        public List<string> preposicionesEng = new List<string>() { "above", "across", "along", "around", "against", "at", "behind", "beside", "below", "beneath", "between", "by", "close to", "in", "in front of", "inside", "near", "on", "opposite", "outside", "over", "under", "underneath", "upon", "about", "after", "around", "before", "beyond", "by", "during", "for", "past", "since", "throughout", "until", "across", "along", "around", "away from", "down", "from", "into", "off", "onto", "out of", "over", "past", "to", "towards", "under", "up", "in", "at", "on", "ago", "circa", "per", "about", "at", "from", "for", "in", "of", "to", "with", "its","and" };
+        public List<string> preposicionesEsp = new List<string>() { "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", "según", "sin", "so", "sobre", "tras", "versus", "via","y","el","un","una" };
 
         public UtilKeywords(ResourceApi pResourceApi, CommunityApi pCommunityApi)
         {

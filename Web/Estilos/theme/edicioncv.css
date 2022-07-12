@@ -328,6 +328,10 @@ input.form-group-date {
 	font-size: large;
 }
 
+.importar-exportar-cv .misPerfiles>span{
+	width: 71%;
+}
+
 .page-cv .panel-group .panel .visibility-wrapper {
 	padding-left: 4px;
 	margin-top: 1px;
