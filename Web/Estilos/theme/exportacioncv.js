@@ -29,6 +29,7 @@ var exportacionCV = {
 					
 					$.post(urlExportacionCV + 'GetCV', data, function(data) {
 						OcultarUpdateProgress();
+						mostrarNotificacion('success', GetText('CV_EXPORTAR_COMPLETADO'));
 						that.cargarListadoCV();
 					});
 				}
@@ -64,6 +65,7 @@ var exportacionCV = {
 			MostrarUpdateProgress();
 			$.post(urlExportacionCV + 'GetCV', data, function(data) {
 				OcultarUpdateProgress();
+				mostrarNotificacion('success', GetText('CV_EXPORTAR_COMPLETADO'));
 				that.cargarListadoCV();
 			});
         });
@@ -180,7 +182,6 @@ var exportacionCV = {
 			}			
 			
             OcultarUpdateProgress();
-			
 			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
 			checkAllCVWrapper();
         });
