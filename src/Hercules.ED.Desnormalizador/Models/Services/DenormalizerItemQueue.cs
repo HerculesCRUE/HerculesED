@@ -14,7 +14,8 @@ namespace DesnormalizadorHercules.Models.Services
             group,
             project,
             document,
-            researchobject
+            researchobject,
+            patent
         }
 
         public ItemType _itemType { get; set; }

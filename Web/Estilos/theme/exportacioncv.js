@@ -4,6 +4,7 @@ var perfilesExportacion;
 var exportacionCV = {
     idUsuario: null,
     init: function() {
+		$('#containerCV').closest('.block').addClass('no-cms-style');
         this.config();
         this.idUsuario = $('#inpt_usuarioID').val();
 		

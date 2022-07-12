@@ -29,6 +29,7 @@ namespace DesnormalizadorHercules.Models
             ActualizadorDocument actualizadorDocument = new(resourceApi);
             ActualizadorProject actualizadorProject = new(resourceApi);
             ActualizadorRO actualizadorRO = new(resourceApi);
+            ActualizadorPatent actualizadorPatent = new(resourceApi);
 
             //Ejecuciones ordenadas en función de sus dependencias
 
@@ -71,6 +72,10 @@ namespace DesnormalizadorHercules.Models
             actualizadorRO.ActualizarAreasRO();
             actualizadorRO.ActualizarTagsRO();
 
+            //Patentes sin dependencias
+            actualizadorPatent.ActualizarPatentesValidadas();
+            actualizadorPatent.ActualizarMiembros();
+
 
             //CV con dependencias 
             actualizadorCV.ModificarDocumentos();
@@ -79,6 +84,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.CambiarPrivacidadResearchObjects();
             actualizadorCV.ModificarProyectos();
             actualizadorCV.ModificarGrupos();
+            actualizadorCV.ModificarPatentes();
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
             actualizadorCV.EliminarDuplicados();
@@ -131,6 +137,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.CambiarPrivacidadResearchObjects();
             actualizadorCV.ModificarProyectos();
             actualizadorCV.ModificarGrupos();
+            actualizadorCV.ModificarPatentes();
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
             actualizadorCV.EliminarDuplicados();
@@ -340,6 +347,22 @@ namespace DesnormalizadorHercules.Models
         }
 
         /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican patentes
+        /// </summary>
+        /// <param name="pPatents">ID de las patentes</param>
+        public static void DesnormalizarDatosPatentes(List<string> pPatents)
+        {
+            ActualizadorPatent actualizadorPatent = new(resourceApi);
+
+            //Ejecuciones ordenadas en función de sus dependencias
+
+            //Patentes sin dependencias
+            actualizadorPatent.ActualizarPatentesValidadas(pPatents: pPatents);
+            actualizadorPatent.ActualizarMiembros(pPatents: pPatents);
+        }
+
+
+        /// <summary>
         /// Actualiza elementos desnormalizados cuando se crean/modifican personas relacionados con el CV
         /// </summary>
         /// <param name="pPersons">ID de las personas</param>
@@ -353,6 +376,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.CambiarPrivacidadResearchObjects(pPersons: pPersons);
             actualizadorCV.ModificarProyectos(pPersons: pPersons);
             actualizadorCV.ModificarGrupos(pPersons: pPersons);
+            actualizadorCV.ModificarPatentes(pPersons: pPersons);
             actualizadorCV.ModificarElementosCV(pPersons: pPersons);
         }
 
@@ -401,6 +425,18 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarResearchObjects(pROs: pROs);
             actualizadorCV.CambiarPrivacidadResearchObjects(pROs: pROs);
         }
+
+        /// <summary>
+        /// Actualiza elementos desnormalizados cuando se crean/modifican patentes relacionados con el CV
+        /// </summary>
+        /// <param name="pPatents">ID de las patentes</param>
+        public static void DesnormalizarDatosCVPatentes(List<string> pPatents)
+        {
+            ActualizadorCV actualizadorCV = new(resourceApi);
+            actualizadorCV.CrearCVs(pPatents: pPatents);
+            actualizadorCV.ModificarPatentes(pPatents: pPatents);
+        }
+
 
 
         /// <summary>
