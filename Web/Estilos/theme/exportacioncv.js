@@ -30,7 +30,7 @@ var exportacionCV = {
 					
 					$.post(urlExportacionCV + 'GetCV', data, function(data) {
 						OcultarUpdateProgress();
-						mostrarNotificacion('success', GetText('CV_EXPORTAR_COMPLETADO'));
+						mostrarNotificacion('success', GetText('CV_EXPORTAR_COMPLETO_COMPLETADO'));
 						that.cargarListadoCV();
 					});
 				}
@@ -77,7 +77,8 @@ var exportacionCV = {
 	//Carga los CV exportados
     cargarListadoCV: function() {
 		$('.resource-list-wrap.listadoCV article').remove();
-
+		$('.exportacion').hide();
+		
         var that = this;
 		that.idUsuario = $('#inpt_usuarioID').val();
 		$('.col-contenido.listadoExportacion').show();
@@ -146,56 +147,88 @@ var exportacionCV = {
         var that = this;
 		MostrarUpdateProgressTime(0);
 		$('.panel-group.pmd-accordion').remove();
-        $.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
-        
-            //recorrer items y por cada uno			
-			for(var i=0;i<data.length;i++){
-				var id = 'x' + RandomGuid();
-				var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
-										<div class="panel">
-											<div class="panel-heading" role="tab" id="datos-tab">
-												<p class="panel-title">
-													<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
-														<span class="texto">${data[i].title}</span>
-														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
-													</a>
-												</p>
-											</div>
-											<div id="${id}" class="collapse show">
-												<div class="row cvTab">
-													<div class="col-12 col-contenido">
+		
+		//Actualizo el estado cada 500 milisegundos
+		var intervalStatus = setInterval(function() {
+			$.ajax({
+				url: urlExportacionCV + '/ExportarCVStatus?petitionID=' + petition,
+				type: 'GET',
+				success: function ( response ) {
+					if(response != null && response != ''){
+						if(response.subTotalWorks == null || response.subTotalWorks == 0 || response.subActualWork==response.subTotalWorks){
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
+						}
+						else{
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}` + " (" +  response.subActualWork + '/' + response.subTotalWorks + ")");
+						}
+						//Si no hay pasos maximos no muestro la lista
+						if(response.totalWorks != 0){
+							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+						}
+					}
+				}
+			});	
+		}, 500);		
+		
+		
+        $.ajax({
+			url: urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&petitionID=" + 'x' + RandomGuid() + "&pLang=" + lang,
+			type: 'GET',
+			success: function(data) {	
+				clearInterval(intervalStatus);
+				//recorrer items y por cada uno			
+				for(var i=0;i<data.length;i++){
+					var id = 'x' + RandomGuid();
+					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
+											<div class="panel">
+												<div class="panel-heading" role="tab" id="datos-tab">
+													<p class="panel-title">
+														<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
+															<span class="texto">${data[i].title}</span>
+															<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
+														</a>
+													</p>
+												</div>
+												<div id="${id}" class="collapse show">
+													<div class="row cvTab">
+														<div class="col-12 col-contenido">
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</div>`
-				if(i==0){
-					$('.contenido-cv').append( $(contenedorTab));
-					var html = edicionCV.printPersonalData(id, data[i]);					
-					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
-					$('#'+id+' input[type="checkbox"]').prop('checked',true);
-				}else if(i == 6){
-					$('.contenido-cv').append( $(contenedorTab));		
-					var html = printFreeText(id, data[i]);
-					$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
-				}else{
-					$('.contenido-cv').append( $(contenedorTab));		
-					edicionCV.printTab(id, data[i]);
-				}				
-			}			
-			
-			asignarAccionesBotonesPerfil(that.idUsuario);
-			var perfiles = getExportationProfile(that.idUsuario);
-			if($('#ddlProfile option').length==1){
-				$('.misPerfiles').hide();
+										</div>`
+					if(i==0){
+						$('.contenido-cv').append( $(contenedorTab));
+						var html = edicionCV.printPersonalData(id, data[i]);					
+						$('div[id="' + id + '"] .col-12.col-contenido').append(html);
+						$('#'+id+' input[type="checkbox"]').prop('checked',true);
+					}else if(i == 6){
+						$('.contenido-cv').append( $(contenedorTab));		
+						var html = printFreeText(id, data[i]);
+						$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
+					}else{
+						$('.contenido-cv').append( $(contenedorTab));		
+						edicionCV.printTab(id, data[i]);
+					}				
+				}			
+				
+				asignarAccionesBotonesPerfil(that.idUsuario);
+				var perfiles = getExportationProfile(that.idUsuario);
+				if($('#ddlProfile option').length < 1){
+					$('.misPerfiles').hide();
+				}
+				
+				$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
+				checkAllCVWrapper();
+				
+				$('.exportacion').show();
+				$('.col-contenido.exportacion').show();
+				OcultarUpdateProgress();
+			},
+			error: function(jqXHR, exception){
+				clearInterval(intervalStatus);
 			}
-			
-			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
-			checkAllCVWrapper();
-			
-			$('.col-contenido.exportacion').show();
-            OcultarUpdateProgress();
-        });
+		});
         return;
     }
 };
@@ -250,7 +283,7 @@ function getExportationProfile(userID){
 				selector.append(new Option(opcion, contador));	
 				contador++;
 			}
-			if($('#ddlProfile option').length==1){
+			if($('#ddlProfile option').length < 1){
 				$('.misPerfiles').hide();
 			}else{
 				$('.misPerfiles').show();

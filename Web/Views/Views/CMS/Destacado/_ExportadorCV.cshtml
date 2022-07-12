@@ -64,6 +64,7 @@
 <input type="hidden" id="CV_ERROR_ANIADIR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ERROR_ANIADIR_PERFIL_EXPORTACION")"/>
 <input type="hidden" id="CV_ELIMINAR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ELIMINAR_PERFIL_EXPORTACION")"/>
 <input type="hidden" id="CV_ERROR_ELIMINAR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ERROR_ELIMINAR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_EXPORTAR_COMPLETO_COMPLETADO" value="@Html.Translate("CV_EXPORTAR_COMPLETO_COMPLETADO")"/>
 <input type="hidden" id="CV_EXPORTAR_COMPLETADO" value="@Html.Translate("CV_EXPORTAR_COMPLETADO")"/>
 
 <div id="containerCV">
@@ -141,31 +142,28 @@
 							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
 						</div>
 					</div>
-				</div>
-				
+				</div>				
 				<div class="selector-cv">
 					<div class="page-section">
 						<div class="page-section-title">
 							<span class="material-icons">fact_check</span>
-							<h2>Perfil de exportación</h2>
+							<h2>@Html.Translate("PERFIL_DE_EXPORTACION")</h2>
 						</div>
 						<div class="form-group mb-3">
-							<label class="control-label d-block">Nombre de perfil</label>
-							<input placeholder="Asigne un nombre de perfil y almacene la selección actual para futuras exportaciones" type="text" class="form-control not-outline nombrePerfilExportacion">
+							<label class="control-label d-block">@Html.Translate("NOMBRE_DEL_PERFIL")</label>
+							<input placeholder="@Html.Translate("ASIGNE_UN_NOMBRE")" type="text" class="form-control not-outline nombrePerfilExportacion">
 							<br>
-							<a class="btn btn-primary uppercase btGuardarCV">Guardar</a>
+							<a class="btn btn-primary uppercase btGuardarCV">@Html.Translate("GUARDAR")</a>
 						</div>
 						<div class="form-group mb-3 misPerfiles">
-							<label class="control-label d-block">Mis perfiles:</label>
-							<select id="ddlProfile" name="ddlProfile" class="js-select2" data-select-search="true">
-								<option value="-1 selected">Selecciona el formato de descarga</option>
+							<label class="control-label d-block">@Html.Translate("MIS_PERFILES"):</label>
+							<select id="ddlProfile" name="ddlProfile" class="js-select2" data-select-search="true">								
 							</select>
-							<a class="btn btn-primary uppercase btCargarCV">Cargar</a>
-							<a class="btn btn-primary uppercase btBorrarCV">Borrar</a>
+							<a class="btn btn-primary uppercase btCargarCV">@Html.Translate("CARGAR")</a>
+							<a class="btn btn-primary uppercase btBorrarCV">@Html.Translate("BORRAR")</a>
 						</div>
 					</div>
-				</div>
-				
+				</div>				
 				<div class="contenido-cv">
 				</div>
 				<a class="btn btn-primary uppercase btExportarCV" >@Html.Translate("EXPORTAR")</a>
