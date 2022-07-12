@@ -33,6 +33,9 @@ var exportacionCV = {
 						that.cargarListadoCV();
 					});
 				}
+				else if($('#ultimosCinco:checked').length){
+					
+				}
 				else if($('#seleccionar:checked').length){
 					//Exportacion parcial
 					that.cargarCV();
