@@ -172,7 +172,7 @@ var exportacionCV = {
 		
 		
         $.ajax({
-			url: urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang,
+			url: urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&petitionID=" + 'x' + RandomGuid() + "&pLang=" + lang,
 			type: 'GET',
 			success: function(data) {	
 				clearInterval(intervalStatus);
