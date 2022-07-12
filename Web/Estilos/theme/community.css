@@ -6,6 +6,12 @@
     --c-success: #2be100;
 }
 
+
+.row.row-full-width { padding-left: 0; padding-right: 0; width: 100vw; position: relative; margin-left: -50vw; left: 50%; }
+.row.row-full-width > * { padding-left: 0; padding-right: 0; }
+.row.row-full-width .container { padding-left: 12px; padding-right: 12px; }
+
+
 /* COLORES */
 .texto-amarillo { color: var(--c-amarillo); }
 
@@ -2006,11 +2012,7 @@ body:not(.listado) header .row.community-row { display: none; }
 
 
 /* HOME MA */
-.home-ma { }
-.home-ma main > .container { max-width: none; padding: 0; }
-.home-ma #col01 > .container > .row > .col { padding: 0 16px; }
-.home-ma #col01 > .row { margin: 0;}
-.home-ma #col01 > .row > .col { padding: 0; }
+.home-ma { overflow-x: hidden; }
 
 .home-ma h2 { font-size: 21px; font-weight: 700; letter-spacing: .21px; margin-bottom: 30px; }
 .home-ma h3 { font-size: 17px; font-weight: 500; letter-spacing: .34px; margin-bottom: 10px; }
@@ -2193,7 +2195,7 @@ clase no-cms-style en el campo "Estilos" del componente */
 .block:not(.no-cms-style) .owl-carousel .item { padding: 0 45px; }
 /**/
 
-/* PÃ¡gina Home del CMS -> Espacio superior */
+/* Página Home del CMS -> Espacio superior */
 body.homeComunidad #col01{margin-top: 15px;}
 
 @media (max-width: 767px) {

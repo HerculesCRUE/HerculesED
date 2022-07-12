@@ -323,6 +323,7 @@ where {{
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
+                PRC.proyectos = new List<float>();
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
                     string crisIdentifier = UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
@@ -332,7 +333,7 @@ where {{
                         {
                             crisIdentifier = crisIdentifier.Split("|").Last();
                         }
-                        PRC.proyectos = new List<float>() { float.Parse(crisIdentifier) };
+                        PRC.proyectos.Add(float.Parse(crisIdentifier));
                     }
                 }
             }
