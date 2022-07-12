@@ -356,16 +356,34 @@ body.comunidad.listado.buscador-ofertas-tecnologicas #in_schema_availability---d
     margin-bottom: 0;
 }
 
+/* Fin Estilos para la ficha de oferta tecnológica */
+
+
 /**
  * Home MA
  */
 
+/* Ficha grupos y personas - grafica */
 .home-ma .buscador-container .info-recursos .item {
     transition: opacity ease 0.3s;
 }
 
 
-/* Fin Estilos para la ficha de oferta tecnológica */
+body.homeComunidad #col01 {
+    margin-top: 0;
+}
+
+
+.dataSetLabels .labelContainer.tachado {
+    text-decoration: line-through;
+    opacity: 0.5;
+    transition: all ease 0.3s;
+}
+
+.grafico-wrap .chartLegend {
+    top: 10px;
+}
+
 
 
 
