@@ -51,6 +51,10 @@ namespace ImportadorWebCV.Exporta.Secciones
                     SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, pGraph);
                     foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                     {
+                        if (!fila.ContainsKey("s"))
+                        {
+                            continue;
+                        }
                         if (!listResult.ContainsKey(fila["s"].value))
                         {
                             listResult.Add(fila["s"].value, new List<Dictionary<string, Data>>());
