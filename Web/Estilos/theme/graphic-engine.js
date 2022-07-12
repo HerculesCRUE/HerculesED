@@ -185,6 +185,10 @@ var metricas = {
             // Petición para obtener los datos de la página.
             $.get(url, arg, function (listaData) {
                 if (listaData.length == 0) {
+                    // TODO: Probablemente haya que cambiar la url de indicadores.
+                    var urlIndicadores = window.location.href;
+                    var finalUrl = urlIndicadores.split('/')[urlIndicadores.split('/').length - 1];
+                    urlIndicadores = urlIndicadores.split(finalUrl)[0] + "indicadores";
                     $('div.row-content').append(`
                         <div class="container">
                             <div class="row-content">
@@ -193,7 +197,7 @@ var metricas = {
                                         <div class="form panel-centrado">
                                             <h1>No tienes indicadores personales</h1>
                                             <p>No hemos encontrado ninguna página de indicadores personales.</p>
-                                            <p>Puedes guardar gráficas desde <a href="http://edma.gnoss.com/comunidad/hercules/indicadores">la página de indicadores</a>.</p>
+                                            <p>Puedes guardar gráficas desde <a href="${urlIndicadores}">la página de indicadores</a>.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1012,7 +1016,26 @@ var metricas = {
 
             if (listaData.length == 0) {
                 if ($('div.row-content').find('div.sin-graficas').length == 0) {
-                    $('div.row-content').append(`<div class="sin-graficas"><h1>Aún no hay gráficas en esta página</h1></div>`); //TODO Cambiar
+                    // TODO: Probablemente haya que cambiar la url de indicadores.
+                    var urlIndicadores = window.location.href;
+                    var finalUrl = urlIndicadores.split('/')[urlIndicadores.split('/').length - 1];
+                    urlIndicadores = urlIndicadores.split(finalUrl)[0] + "indicadores";
+                    $('div.row-content').append(`
+                    <div class="sin-graficas">
+                        <div class="container">
+                            <div class="row-content">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form panel-centrado">
+                                            <h1>No hay gráficas en esta página</h1>
+                                            <p>Puedes <a href="#" onclick="$('.delete-page').click()">borrar la página</a> o <a href="${urlIndicadores}">añadir nuevas gráficas</a>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `);
                 } metricas.engancharComportamientos();
             } else {
                 $('div.row-content').find('div.sin-graficas').remove();
