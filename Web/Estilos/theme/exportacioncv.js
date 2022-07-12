@@ -181,6 +181,9 @@ var exportacionCV = {
 			
 			asignarAccionesBotonesPerfil(that.idUsuario);
 			var perfiles = getExportationProfile(that.idUsuario);
+			if($('#ddlProfile').length==1){
+				$('.misPerfiles').hide();
+			}
 			
 			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
 			checkAllCVWrapper();
@@ -241,6 +244,11 @@ function getExportationProfile(userID){
 			for(var opcion in response){				
 				selector.append(new Option(opcion, contador));	
 				contador++;
+			}
+			if($('#ddlProfile option').length==1){
+				$('.misPerfiles').hide();
+			}else{
+				$('.misPerfiles').show();
 			}
 			
 			return response;
