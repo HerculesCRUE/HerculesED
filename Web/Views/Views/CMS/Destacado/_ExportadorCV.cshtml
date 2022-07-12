@@ -59,6 +59,11 @@
 <input type="hidden" id="CV_EXPORTAR_PROCESADO" value="@Html.Translate("CV_EXPORTAR_PROCESADO")"/>
 <input type="hidden" id="CV_EXPORTAR_PENDIENTE" value="@Html.Translate("CV_EXPORTAR_PENDIENTE")"/>
 <input type="hidden" id="CV_EXPORTAR_ERROR" value="@Html.Translate("CV_EXPORTAR_ERROR")"/>
+<input type="hidden" id="SELECCIONA_UNA_OPCION" value="@Html.Translate("SELECCIONA_UNA_OPCION")"/>
+<input type="hidden" id="CV_ANIADIR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ANIADIR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_ERROR_ANIADIR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ERROR_ANIADIR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_ELIMINAR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ELIMINAR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_ERROR_ELIMINAR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ERROR_ELIMINAR_PERFIL_EXPORTACION")"/>
 
 <div id="containerCV">
 	<div class="row">
@@ -132,6 +137,30 @@
 						</div>
 					</div>
 				</div>
+				
+				<div class="selector-cv">
+					<div class="page-section">
+						<div class="page-section-title">
+							<span class="material-icons">fact_check</span>
+							<h2>Perfil de exportación</h2>
+						</div>
+						<div class="form-group mb-3">
+							<label class="control-label d-block">Nombre de perfil</label>
+							<input placeholder="Asigne un nombre de perfil y almacene la selección actual para futuras exportaciones" type="text" class="form-control not-outline nombrePerfilExportacion">
+							<br>
+							<a class="btn btn-primary uppercase btGuardarCV">Guardar</a>
+						</div>
+						<div class="form-group mb-3 misPerfiles">
+							<label class="control-label d-block">Mis perfiles:</label>
+							<select id="ddlProfile" name="ddlProfile" class="js-select2" data-select-search="true">
+								<option value="-1 selected">Selecciona el formato de descarga</option>
+							</select>
+							<a class="btn btn-primary uppercase btCargarCV">Cargar</a>
+							<a class="btn btn-primary uppercase btBorrarCV">Borrar</a>
+						</div>
+					</div>
+				</div>
+				
 				<div class="contenido-cv">
 				</div>
 				<a class="btn btn-primary uppercase btExportarCV" >@Html.Translate("EXPORTAR")</a>
