@@ -393,7 +393,7 @@
  }
 
  .chartScroll.collapsed {
-     overflow: auto !important;
+     overflow-x: auto !important;
  }
 
  table.tablaAdmin {
@@ -456,3 +456,9 @@
      padding: 0 !important;
      margin-bottom: 0 !important;
  }*/
+ 
+.chartLegend {position: absolute;top: 10px; left: 0;  transform: none; z-index: 200;}
+.dataSetLabels {border: none;}
+.labelContainer { height: 15px;display: flex; align-items: center; margin-right: 15px; }
+.labelContainer .dataSetLabel { margin-left: 10px; margin-bottom: 0; color: var(--c-texto-medio); font-size: 0.9em; }
+.labelContainer div { height: 14px; width: 42px; border: 1px solid var(--c-gris-borde); box-sizing: border-box; }

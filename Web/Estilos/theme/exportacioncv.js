@@ -1,4 +1,5 @@
 var urlExportacionCV = url_servicio_editorcv+"ExportadoCV/";
+var perfilesExportacion;
 
 var exportacionCV = {
     idUsuario: null,
@@ -137,7 +138,6 @@ var exportacionCV = {
 	//Carga los datos del CV para la exportacion
     cargarCV: function() {
 		$('.col-contenido.listadoExportacion').hide();
-		$('.col-contenido.exportacion').show();
         var that = this;
 		MostrarUpdateProgressTime(0);
 		$('.panel-group.pmd-accordion').remove();
@@ -179,14 +179,154 @@ var exportacionCV = {
 				}				
 			}			
 			
-            OcultarUpdateProgress();
+			asignarAccionesBotonesPerfil(that.idUsuario);
+			var perfiles = getExportationProfile(that.idUsuario);
+			if($('#ddlProfile option').length==1){
+				$('.misPerfiles').hide();
+			}
 			
 			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
 			checkAllCVWrapper();
+			
+			$('.col-contenido.exportacion').show();
+            OcultarUpdateProgress();
         });
         return;
     }
 };
+
+function asignarAccionesBotonesPerfil(userID){
+	$('.btn.btn-primary.uppercase.btGuardarCV').off('click').on('click', function(e) {
+		var title = $(".nombrePerfilExportacion").val();
+		if(title != null && title != ""){
+			var checkList = $("input[type='checkbox']:checked");
+			var checkValues = [];
+			for(var i = 0; i < checkList.length; i++){
+				checkValues.push(checkList[i].value);
+			}
+			addExportationProfile(userID, title, checkValues);
+		}else{
+			window.alert("Debes añadir un nombre");
+		}
+	});
+	$('.btn.btn-primary.uppercase.btCargarCV').off('click').on('click', function(e) {
+		var selectedOption = $("#ddlProfile").find("option:selected").val();
+		if(selectedOption == GetText('SELECCIONA_UNA_OPCION')){
+			window.alert('No hay un perfil seleccionado');
+			return;
+		}
+		var title = $("#ddlProfile").find("option:selected").text();
+		loadExportationProfile(title);
+	});
+	
+	$('.btn.btn-primary.uppercase.btBorrarCV').off('click').on('click', function(e) {
+		var selectedOption = $("#ddlProfile").find("option:selected").val();		
+		if(selectedOption == GetText('SELECCIONA_UNA_OPCION')){
+			window.alert('No hay un perfil seleccionado');
+			return;
+		}
+		var title = $("#ddlProfile").find("option:selected").text();
+		deleteExportationProfile(userID, title);
+	});
+}
+
+function getExportationProfile(userID){	
+	$.ajax({
+		url: url_servicio_editorcv+"ExportadoCV/GetPerfilExportacion?userID=" + userID,
+		type: 'GET',
+		success: function ( response ) {
+			perfilesExportacion = response;
+			var contador = 0;
+			var selector = $('#ddlProfile');
+			selector.empty();
+			var initialOpcion = '<option selected="selected" disabled="disabled">' + GetText('SELECCIONA_UNA_OPCION') + "</option>";
+			selector.append(initialOpcion);
+			for(var opcion in response){				
+				selector.append(new Option(opcion, contador));	
+				contador++;
+			}
+			if($('#ddlProfile option').length==1){
+				$('.misPerfiles').hide();
+			}else{
+				$('.misPerfiles').show();
+			}
+			
+			return response;
+		}
+	});
+}
+
+function loadExportationProfile(title){
+	if(title == GetText('SELECCIONA_UNA_OPCION')){
+		window.alert('No hay un perfil seleccionado');
+		return;
+	}
+	for(var opcion in perfilesExportacion){
+		if(opcion == title){
+			for(var check in perfilesExportacion[opcion]){
+				var elementoSeleccionar = $('input[value="' + perfilesExportacion[opcion][check] + '"');
+				elementoSeleccionar.prop('checked', true);
+			}
+		}
+	}
+}
+
+function deleteExportationProfile(userID, title){	
+	var formData = new FormData();
+	formData.append('userID', userID);
+	formData.append('title', title);
+	
+	$.ajax({
+		url: url_servicio_editorcv+"ExportadoCV/DeletePerfilExportacion?userID=" + userID + "&title=" + title,
+		type: 'DELETE',
+		data: formData,	
+		cache: false,
+		processData: false,
+		enctype: 'multipart/form-data',
+		contentType: false,
+		success: function ( response ) {
+			urlExportationProfilesCV = response;
+			mostrarNotificacion('success', GetText('CV_ELIMINAR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();
+		},
+		error: function(jqXHR, exception){
+			mostrarNotificacion('error', GetText('CV_ERROR_ELIMINAR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();		
+		}
+	});
+}
+
+function addExportationProfile(userID, title, checks){
+	var formData = new FormData();
+	formData.append('userID', userID);
+	formData.append('title', title);
+	for(var i=0; i < checks.length; i++){
+		formData.append('checks', checks[i]);
+	}
+	
+	MostrarUpdateProgress();
+	$.ajax({
+		url: url_servicio_editorcv+"ExportadoCV/AddPerfilExportacion",
+		type: 'POST',
+		data: formData,	
+		cache: false,
+		processData: false,
+		enctype: 'multipart/form-data',
+		contentType: false,
+		success: function ( response ) {			
+			mostrarNotificacion('success', GetText('CV_ANIADIR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();
+		},
+		error: function(jqXHR, exception){
+			mostrarNotificacion('error', GetText('CV_ERROR_ANIADIR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();
+		}
+	});
+}
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {

@@ -27,12 +27,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pIsPublic">TRUE si es público</param>
         /// <returns></returns>
         [HttpPost("ChangePrivacityItem")]
-        public IActionResult ChangePrivacityItem([FromForm]string pIdSection, [FromForm] string pRdfTypeTab, [FromForm] string pEntity, [FromForm] bool pIsPublic)
+        public IActionResult ChangePrivacityItem([FromForm] string pIdSection, [FromForm] string pRdfTypeTab, [FromForm] string pEntity, [FromForm] bool pIsPublic)
         {
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ChangePrivacityItem(_Configuracion,pIdSection, pRdfTypeTab, pEntity, pIsPublic));
+                return Ok(accionesGuardado.ChangePrivacityItem(_Configuracion, pIdSection, pRdfTypeTab, pEntity, pIsPublic));
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ActualizarEntidad(_Configuracion, entity, cvID, sectionID, rdfTypeTab,pLang));
+                return Ok(accionesGuardado.ActualizarEntidad(_Configuracion, entity, cvID, sectionID, rdfTypeTab, pLang));
             }
             catch (Exception ex)
             {

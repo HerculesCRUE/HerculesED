@@ -121,5 +121,64 @@ namespace EditorCV.Controllers
             }
         }
 
+        [HttpGet("GetPerfilExportacion")]
+        public IActionResult GetPerfilExportacion([Required] string userID)
+        {
+            try
+            {
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                Dictionary<string, List<string>> resultado = accionesExportacion.GetPerfilExportacion(pCVId);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        [HttpPost("AddPerfilExportacion")]
+        public IActionResult AddPerfilExportacion([Required][FromForm] string userID, [Required][FromForm] string title, [Required][FromForm] List<string> checks)
+        {
+            try
+            {
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                bool resultado = accionesExportacion.AddPerfilExportacion(_Configuracion, pCVId, title, checks);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        [HttpDelete("DeletePerfilExportacion")]
+        public IActionResult DeletePerfilExportacion([Required][FromForm] string userID, [Required][FromForm] string title)
+        {
+            try
+            {
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
     }
 }
