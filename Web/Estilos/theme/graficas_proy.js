@@ -13,12 +13,12 @@ String.prototype.width = function (font) {
 
 function pintarGraficaIndividual (pContenedor, pIdPagina) {
     pintarContenedoresGraficas(pContenedor, pIdPagina);
-    getGrafica(pIdPagina, $(pContenedor).attr("idgrafica"),"");
+    getGrafica(pIdPagina, $(pContenedor).data("idgrafica"),"");
 }
 function pintarContenedoresGraficas(pContenedor, pIdPagina = "") {
-    if ($(pContenedor).attr("tipografica").includes("nodes")) {
+    if ($(pContenedor).data("tipografica").includes("nodes")) {
         $(pContenedor).append(`
-                <p id="titulo_grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
+                <p id="titulo_grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                 <div class="graph-controls">
                     <ul class="no-list-style align-items-center">
                         <li class="control zoomin-control" id="zoomIn">
@@ -29,12 +29,12 @@ function pintarContenedoresGraficas(pContenedor, pIdPagina = "") {
                         </li>
                     </ul>
                 </div>
-                <div class="graficoNodos" id="grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}" style="height: 500px;"></div>
+                <div class="graficoNodos" id="grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}" style="height: 500px;"></div>
             `);
-    } else if ($(pContenedor).attr("tipografica").includes("circular")) {
+    } else if ($(pContenedor).data("tipografica").includes("circular")) {
         $(pContenedor).css("height", "300px");
         $(pContenedor).append(`
-            <canvas id = "grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}" width = "600" height = "250" ></canvas>
+            <canvas id = "grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}" width = "600" height = "250" ></canvas>
                 `);
     } else {
 
@@ -42,7 +42,7 @@ function pintarContenedoresGraficas(pContenedor, pIdPagina = "") {
         <div class="chartWrapper" >
             <div class="chartScroll custom-css-scroll">
                 <div class="chartAreaWrapper">
-                    <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(pContenedor).attr("idgrafica")}"></canvas>
+                    <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}"></canvas>
                 </div>
             </div>
         </div>
