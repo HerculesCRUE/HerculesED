@@ -45,7 +45,7 @@ namespace EditorCV.Controllers
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
         /// <returns></returns>
         [HttpPost("EnvioPRC")]
-        public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm] string pIdProyecto)
+        public IActionResult EnvioPRC([FromForm][Required] string pIdRecurso, [FromForm] List<string> pIdProyecto)
         {
             try
             {

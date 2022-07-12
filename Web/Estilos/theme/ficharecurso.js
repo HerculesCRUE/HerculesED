@@ -407,7 +407,7 @@ function PintarGraficaArania(data,idContenedor) {
 				"font-size": "12px",
 				"font-family": 'Roboto',
 				"font-color": "#999999",
-				"background-color": "#6cafd3",
+				"background-color": "#b2cff7",
 				"text-outline-width": "0px",
 				"overlay-padding": "6px",
 				"z-index": "10"
@@ -420,7 +420,7 @@ function PintarGraficaArania(data,idContenedor) {
 				"font-size": "24px",
 				"font-family": 'Roboto',
 				"font-color": "#999999",
-				"background-color": "#6cafd3",
+				"background-color": "#b2cff7",
 				"haystack-radius": "0.5",
 				"opacity": "0.5",
 				"line-color": "#E1E1E1",
@@ -445,29 +445,29 @@ function PintarGraficaArania(data,idContenedor) {
 		switch (nodos[i]._private.data.type) {
 			case 'icon_ip':
 				cy.nodes()[i].style({
-					'background-color': '#6cafd3',
+					'background-color': '#b2cff7',
 					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1912184-1617653.png',
 					'background-fit': 'cover',
 					'border-width': '0px',
-					'border-color': '#6cafd3',
+					'border-color': '#b2cff7',
 					'shape': 'circle'
 				})                        
 				break;
 			case 'icon_member':
 				cy.nodes()[i].style({
-					'background-color': '#6cafd3',
+					'background-color': '#b2cff7',
 					// 'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
 					'background-fit': 'cover',
 					'border-width': '0px',
-					'border-color': '#6cafd3',
+					'border-color': '#b2cff7',
 					'shape': 'circle'
 				})
 				break;
 			default:
 				nodos[i].style({
 					'border-width': '0px',
-					'border-color': '#6cafd3',
-					'background-color': '#6cafd3',
+					'border-color': '#b2cff7',
+					'background-color': '#b2cff7',
 					'shape': 'circle'
 				});
 				break;
@@ -484,12 +484,12 @@ function PintarGraficaArania(data,idContenedor) {
 		switch (edges[i]._private.data.type) {
 			case 'relation_document':
 				edges[i].style({
-					"line-color": "#FF0000"
+					"line-color": "#f8abab"
 				})
 				break;
 			case 'relation_project':
 				edges[i].style({
-					"line-color": "#0000FF"
+					"line-color": "#b2cff7"
 				})
 				break;
 			default:
@@ -598,7 +598,7 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 				"font-size": "12px",
 				"font-family": 'Roboto',
 				"font-color": "#999999",
-				"background-color": "#6cafd3",
+				"background-color": "#b2cff7",
 				"text-outline-width": "0px",
 				"overlay-padding": "6px",
 				"z-index": "10"
@@ -611,7 +611,7 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 				"font-size": "24px",
 				"font-family": 'Roboto',
 				"font-color": "#999999",
-				"background-color": "#6cafd3",
+				"background-color": "#b2cff7",
 				"haystack-radius": "0.5",
 				"opacity": "0.5",
 				"line-color": "#E1E1E1",
@@ -632,29 +632,29 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 		switch (nodos[i]._private.data.type) {
 			case 'icon_ip':
 				cy.nodes()[i].style({
-					'background-color': '#6cafd3',
+					'background-color': '#b2cff7',
 					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1912184-1617653.png',
 					'background-fit': 'cover',
 					'border-width': '0px',
-					'border-color': '#6cafd3',
+					'border-color': '#b2cff7',
 					'shape': 'circle'
 				})                        
 				break;
 			case 'icon_member':
 				cy.nodes()[i].style({
-					'background-color': '#6cafd3',
+					'background-color': '#b2cff7',
 					// 'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
 					'background-fit': 'cover',
 					'border-width': '0px',
-					'border-color': '#6cafd3',
+					'border-color': '#b2cff7',
 					'shape': 'circle'
 				})
 				break;
 			default:
 				nodos[i].style({
 					'border-width': '0px',
-					'border-color': '#6cafd3',
-					'background-color': '#6cafd3',
+					'border-color': '#b2cff7',
+					'background-color': '#b2cff7',
 					'shape': 'circle'
 				});
 				break;
@@ -671,12 +671,12 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 		switch (edges[i]._private.data.type) {
 			case 'relation_document':
 				edges[i].style({
-					"line-color": "#FF0000"
+					"line-color": "#f8abab"
 				})
 				break;
 			case 'relation_project':
 				edges[i].style({
-					"line-color": "#0000FF"
+					"line-color": "#b2cff7"
 				})
 				break;
 			default:

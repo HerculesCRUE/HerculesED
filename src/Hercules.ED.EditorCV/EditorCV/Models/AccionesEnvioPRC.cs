@@ -118,7 +118,7 @@ where {{
         /// <param name="pConfig">Configuración.</param>
         /// <param name="pIdRecurso">ID del recurso que apunta al documento.</param>
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
-        public void EnvioPRC(ConfigService pConfig, string pIdRecurso, string pIdProyecto)
+        public void EnvioPRC(ConfigService pConfig, string pIdRecurso, List<string> pIdProyecto)
         {
             string pIdDocumento = "";
             string selectProyecto = "select distinct ?documento";
@@ -268,7 +268,7 @@ where {{
 
             #region --- Inserción y obtención del Proyecto asociado.
             // Comprobar si está el triple.
-            string idProyectoAux = string.Empty;
+            List<string> idProyectoAux = new List<string>();
             string selectProyectoAsociado = "";
             string whereProyectoAsociado = "";
 
@@ -286,14 +286,17 @@ where {{
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
-                    idProyectoAux = UtilidadesAPI.GetValorFilaSparqlObject(fila, "proyecto");
+                    if (fila.Any())
+                    {
+                        idProyectoAux.Add(UtilidadesAPI.GetValorFilaSparqlObject(fila, "proyecto"));
+                    }
                 }
             }
 
             mResourceApi.ChangeOntoly("document");
             Guid guid = mResourceApi.GetShortGuid(pIdDocumento);
 
-            if (string.IsNullOrEmpty(idProyectoAux))
+            if (!idProyectoAux.Any())
             {
                 // Inserción.
                 Insercion(guid, "http://w3id.org/roh/projectAux", pIdProyecto);
@@ -313,7 +316,7 @@ where {{
             whereIdProyecto = $@"WHERE {{ 
                                     ?s a vivo:Project .
                                     OPTIONAL{{?s roh:crisIdentifier ?crisIdentifier . }}
-                                    FILTER(?s = <{pIdProyecto}>)
+                                    FILTER(?s in (<{string.Join(">,<", pIdProyecto)}>) )
                                 }} ";
 
             resultadoQuery = mResourceApi.VirtuosoQuery(selectIdProyecto, whereIdProyecto, "project");
@@ -809,6 +812,27 @@ where {{
         }
 
         /// <summary>
+        /// Inserta un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        private void Insercion(Guid pGuid, string pPropiedad, List<string> pValorNuevo)
+        {
+            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
+            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
+            foreach (string item in pValorNuevo)
+            {
+                TriplesToInclude triple = new TriplesToInclude();
+                triple.Predicate = pPropiedad;
+                triple.NewValue = item;
+                listaTriplesInsercion.Add(triple);
+            }
+            dicInsercion.Add(pGuid, listaTriplesInsercion);
+            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
+        }
+
+        /// <summary>
         /// Modifica un triple.
         /// </summary>
         /// <param name="pGuid"></param>
@@ -824,6 +848,29 @@ where {{
             triple.NewValue = pValorNuevo;
             triple.OldValue = pValorAntiguo;
             listaTriplesModificacion.Add(triple);
+            dicModificacion.Add(pGuid, listaTriplesModificacion);
+            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+        }
+
+        /// <summary>
+        /// Modifica un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        /// <param name="pValorAntiguo"></param>
+        private void Modificacion(Guid pGuid, string pPropiedad, List<string> pValorNuevo, List<string> pValorAntiguo)
+        {
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            for (int i = 0; i < pValorNuevo.Count; i++)
+            {
+                TriplesToModify triple = new TriplesToModify();
+                triple.Predicate = pPropiedad;
+                triple.NewValue = pValorNuevo[i];
+                triple.OldValue = pValorAntiguo[i];
+                listaTriplesModificacion.Add(triple);
+            }
             dicModificacion.Add(pGuid, listaTriplesModificacion);
             mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
         }

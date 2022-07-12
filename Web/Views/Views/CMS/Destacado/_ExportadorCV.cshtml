@@ -59,6 +59,13 @@
 <input type="hidden" id="CV_EXPORTAR_PROCESADO" value="@Html.Translate("CV_EXPORTAR_PROCESADO")"/>
 <input type="hidden" id="CV_EXPORTAR_PENDIENTE" value="@Html.Translate("CV_EXPORTAR_PENDIENTE")"/>
 <input type="hidden" id="CV_EXPORTAR_ERROR" value="@Html.Translate("CV_EXPORTAR_ERROR")"/>
+<input type="hidden" id="SELECCIONA_UNA_OPCION" value="@Html.Translate("SELECCIONA_UNA_OPCION")"/>
+<input type="hidden" id="CV_ANIADIR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ANIADIR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_ERROR_ANIADIR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ERROR_ANIADIR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_ELIMINAR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ELIMINAR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_ERROR_ELIMINAR_PERFIL_EXPORTACION" value="@Html.Translate("CV_ERROR_ELIMINAR_PERFIL_EXPORTACION")"/>
+<input type="hidden" id="CV_EXPORTAR_COMPLETO_COMPLETADO" value="@Html.Translate("CV_EXPORTAR_COMPLETO_COMPLETADO")"/>
+<input type="hidden" id="CV_EXPORTAR_COMPLETADO" value="@Html.Translate("CV_EXPORTAR_COMPLETADO")"/>
 
 <div id="containerCV">
 	<div class="row">
@@ -105,6 +112,10 @@
 							<label class="custom-control-label" for="todas">@Html.Translate("TODAS")</label>
 						</div>
 						<div class="custom-control themed little custom-radio">
+							<input type="radio" id="ultimosCinco" name="secciones" class="custom-control-input">
+							<label class="custom-control-label" for="ultimosCinco">@Html.Translate("ULTIMOS_CINCO_ANIOS")</label>
+						</div>
+						<div class="custom-control themed little custom-radio">
 							<input type="radio" id="seleccionar" name="secciones" class="custom-control-input">
 							<label class="custom-control-label" for="seleccionar">@Html.Translate("SELECCIONAR")</label>
 						</div>
@@ -131,7 +142,28 @@
 							<h1>@Html.Translate("EXPORTA_TU_CVN")</h1>
 						</div>
 					</div>
-				</div>
+				</div>				
+				<div class="selector-cv">
+					<div class="page-section">
+						<div class="page-section-title">
+							<span class="material-icons">fact_check</span>
+							<h2>@Html.Translate("PERFIL_DE_EXPORTACION")</h2>
+						</div>
+						<div class="form-group mb-3">
+							<label class="control-label d-block">@Html.Translate("NOMBRE_DEL_PERFIL")</label>
+							<input placeholder="@Html.Translate("ASIGNE_UN_NOMBRE")" type="text" class="form-control not-outline nombrePerfilExportacion">
+							<br>
+							<a class="btn btn-primary uppercase btGuardarCV">@Html.Translate("GUARDAR")</a>
+						</div>
+						<div class="form-group mb-3 misPerfiles">
+							<label class="control-label d-block">@Html.Translate("MIS_PERFILES"):</label>
+							<select id="ddlProfile" name="ddlProfile" class="js-select2" data-select-search="true">								
+							</select>
+							<a class="btn btn-primary uppercase btCargarCV">@Html.Translate("CARGAR")</a>
+							<a class="btn btn-primary uppercase btBorrarCV">@Html.Translate("BORRAR")</a>
+						</div>
+					</div>
+				</div>				
 				<div class="contenido-cv">
 				</div>
 				<a class="btn btn-primary uppercase btExportarCV" >@Html.Translate("EXPORTAR")</a>

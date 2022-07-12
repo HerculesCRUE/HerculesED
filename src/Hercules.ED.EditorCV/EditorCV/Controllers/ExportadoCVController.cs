@@ -13,6 +13,8 @@ using EditorCV.Models.API.Response;
 using System.Net.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using Models;
+using Newtonsoft.Json;
 
 namespace EditorCV.Controllers
 {
@@ -22,6 +24,8 @@ namespace EditorCV.Controllers
     public class ExportadoCVController : ControllerBase
     {
         readonly ConfigService _Configuracion;
+
+        private static ConcurrentDictionary<string, PetitionStatus> petitionStatus = new ConcurrentDictionary<string, PetitionStatus>();
 
         public ExportadoCVController(ConfigService pConfig)
         {
@@ -65,13 +69,37 @@ namespace EditorCV.Controllers
         }
 
         /// <summary>
+        /// Devuelve el estado actual de la peticion con identificador <paramref name="petitionID"/>
+        /// </summary>
+        /// <param name="petitionID">Identificador de la petición</param>
+        /// <param name="accion">Accion desde donde se lanza la petición</param>
+        /// <returns>Estado de la petición</returns>
+        [HttpGet("ExportarCVStatus")]
+        public IActionResult ExportarCVStatus([Required] string petitionID)
+        {
+            try
+            {
+                if (petitionStatus.ContainsKey(petitionID))
+                {
+                    return Ok(petitionStatus[petitionID]);
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+
+        /// <summary>
         /// Obtiene los datos de todas las pestaña dentro del editor
         /// </summary>
         /// <param name="userID">Identificador del usuario</param>
         /// <param name="pLang">lenguaje </param>
         /// <returns></returns>
         [HttpGet("GetAllTabs")]
-        public IActionResult GetAllTabs([Required] string userID, [Required] string pLang)
+        public IActionResult GetAllTabs([Required] string userID, [Required] string petitionID, [Required] string pLang)
         {
             try
             {
@@ -80,6 +108,8 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
+
+                petitionStatus.TryAdd(petitionID, new PetitionStatus(1, 3, "LEYENDO_DATOS_CV"));
                 AccionesExportacion accionesExportacion = new AccionesExportacion();
                 ConcurrentDictionary<string, string> pListId = accionesExportacion.GetAllTabs(pCVId);
 
@@ -88,11 +118,17 @@ namespace EditorCV.Controllers
 
                 ConcurrentBag<Models.API.Templates.Tab> tabTemplatesAux = UtilityCV.TabTemplates;
 
+                PetitionStatus peticionCarga = new PetitionStatus(2, 3, "CARGANDO_DATOS_CV");
+                peticionCarga.subActualWork = 0;
+                peticionCarga.subTotalWorks = tabTemplatesAux.Count();
+                petitionStatus[petitionID] = peticionCarga;
                 Parallel.ForEach(pListId, new ParallelOptions { MaxDegreeOfParallelism = 6 }, keyValue =>
                 {
                     int index = tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
                     listTabs.TryAdd(index, accionesEdicion.GetTab(_Configuracion, pCVId, keyValue.Value, keyValue.Key, pLang));
+                    petitionStatus[petitionID].subActualWork++;
                 });
+                petitionStatus[petitionID] = new PetitionStatus(3, 3, "PINTANDO_DATOS_CV");
 
                 return Ok(listTabs.OrderBy(x => x.Key).Select(x => (object)x.Value));
             }
@@ -114,6 +150,67 @@ namespace EditorCV.Controllers
                 }
                 List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId, baseUrl, timezoneOffset);
                 return Ok(pListId);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        [HttpGet("GetPerfilExportacion")]
+        public IActionResult GetPerfilExportacion([Required] string userID)
+        {
+            try
+            {
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                Dictionary<string, List<string>> resultado = accionesExportacion.GetPerfilExportacion(pCVId);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        [HttpPost("AddPerfilExportacion")]
+        public IActionResult AddPerfilExportacion([Required][FromForm] string userID, [Required][FromForm] string title, [Required][FromForm] List<string> checks)
+        {
+            try
+            {
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                bool resultado = accionesExportacion.AddPerfilExportacion(pCVId, title, checks);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        [HttpDelete("DeletePerfilExportacion")]
+        public IActionResult DeletePerfilExportacion([Required][FromForm] string userID, [Required][FromForm] string title)
+        {
+            try
+            {
+                string pCVId = UtilityCV.GetCVFromUser(userID);
+                if (string.IsNullOrEmpty(pCVId))
+                {
+                    throw new Exception("Usuario no encontrado " + userID);
+                }
+                AccionesExportacion accionesExportacion = new AccionesExportacion();
+                bool resultado = accionesExportacion.DeletePerfilExportacion(pCVId, title);
+                return Ok(resultado);
             }
             catch (Exception ex)
             {

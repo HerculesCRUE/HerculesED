@@ -45,7 +45,8 @@
             <div class="col">
                 <div class="form panel-centrado">
                     <h1>@Html.Translate("TITULO_PAGINA_NO_ENCONTRADA")</h1>
-                    @Html.Raw(Html.Translate("DESCRIPCION_PAGINA_NO_ENCONTRADA"))
+                    <p>@Html.Translate("DESCRIPCION_PAGINA_NO_ENCONTRADA")</p>
+                    <p>@Html.Translate("SI_LO_DESEAS_PUEDES") <a href="@Comunidad.Url">@Html.Translate("VOLVER_A_HOME")</a>.</p>
                 </div>
             </div>
         </div>
