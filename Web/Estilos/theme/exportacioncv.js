@@ -181,7 +181,7 @@ var exportacionCV = {
 			
 			asignarAccionesBotonesPerfil(that.idUsuario);
 			var perfiles = getExportationProfile(that.idUsuario);
-			if($('#ddlProfile').length==1){
+			if($('#ddlProfile option').length==1){
 				$('.misPerfiles').hide();
 			}
 			
