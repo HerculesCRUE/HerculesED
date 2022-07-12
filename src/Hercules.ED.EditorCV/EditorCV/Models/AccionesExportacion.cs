@@ -195,7 +195,11 @@ namespace EditorCV.Models
             return listadoArchivos;
         }
 
-
+        /// <summary>
+        /// Devuleve un diccionario con todos los perfiles de exportación del usuario
+        /// </summary>
+        /// <param name="pCVId">Identificador del curriculum vitae</param>
+        /// <returns>Diccionario cib kis perfiles de exportación</returns>
         public Dictionary<string, List<string>> GetPerfilExportacion(string pCVId)
         {
             Dictionary<string, List<string>> dicIds = new Dictionary<string, List<string>>();
@@ -224,7 +228,14 @@ namespace EditorCV.Models
             return dicIds;
         }
 
-        public bool AddPerfilExportacion(ConfigService _Configuration, string pCVId, string nombrePerfil, List<string> checks)
+        /// <summary>
+        /// Añade un perfil de exportacion al usuario, con los identificadores de los elementos que ha checkeado
+        /// </summary>
+        /// <param name="pCVId">Identificador del curriculum vitae</param>
+        /// <param name="nombrePerfil">Nombre del perfil de exportación</param>
+        /// <param name="checks">Listado con los checks</param>
+        /// <returns>True si se añade en BBDD</returns>
+        public bool AddPerfilExportacion(string pCVId, string nombrePerfil, List<string> checks)
         {
             Dictionary<string, List<string>> dicIds = new Dictionary<string, List<string>>();
             string select = "SELECT distinct ?exportProfile ?titulo ?checkedItems";
@@ -248,6 +259,8 @@ namespace EditorCV.Models
                     }
                 }
             }
+
+            //Añadir
             if (!dicIds.ContainsKey(nombrePerfil))
             {
                 mResourceApi.ChangeOntoly("curriculumvitae");
@@ -272,8 +285,9 @@ namespace EditorCV.Models
 
                 entity.properties.Add(propertyChecks);
                 entity.properties.Add(propertyTitle);
-                IncludeTriples(pCVId, "ExportProfile", propertyTitle, propertyChecks);
+                IncludeTriples(pCVId, propertyTitle, propertyChecks);
             }
+            //Modificar el recurso
             else
             {
                 mResourceApi.ChangeOntoly("curriculumvitae");
@@ -298,6 +312,12 @@ namespace EditorCV.Models
             return false;
         }
 
+        /// <summary>
+        /// Elimina un perfil de exportación.
+        /// </summary>
+        /// <param name="pCVId">Identificador del curriculum vitae</param>
+        /// <param name="title">titulo del perfil de exportación</param>
+        /// <returns></returns>
         public bool DeletePerfilExportacion(string pCVId, string title)
         {
             string idRecurso = "";
@@ -432,10 +452,16 @@ namespace EditorCV.Models
             return uri + upper + substring;
         }
 
-        private bool IncludeTriples(string pCvID, string rdfTypePrefix, Entity.Property propertyTitle, Entity.Property propertyCheck)
+        /// <summary>
+        /// Inserta en BBDD los triples de ExportProfile, indicando el titulo en <paramref name="propertyTitle"/> y los checks en <paramref name="propertyCheck"/>.
+        /// </summary>
+        /// <param name="pCvID">Identificador del curriculum vitae</param>
+        /// <param name="propertyTitle">Property del titulo</param>
+        /// <param name="propertyCheck">Property de los checks marcados</param>
+        /// <returns>True si se inserta</returns>
+        private bool IncludeTriples(string pCvID, Entity.Property propertyTitle, Entity.Property propertyCheck)
         {
-            rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
-            string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
+            string idNewAux = $"{mResourceApi.GraphsUrl}items/ExportProfile_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
 
             List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
 
