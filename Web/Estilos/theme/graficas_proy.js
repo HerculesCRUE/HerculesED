@@ -11,12 +11,12 @@ String.prototype.width = function (font) {
     return w;
 }
 
-function pintarGraficaIndividual (pContenedor, pIdPagina) {
-    pintarContenedoresGraficas(pContenedor, pIdPagina);
-    getGrafica(pIdPagina, $(pContenedor).data("idgrafica"),"");
+function pintarGraficaIndividual(pContenedor, pIdPagina, idGrafica = "") {
+    //pintarContenedoresGraficas(pContenedor, pIdPagina);
+    getGrafica(pIdPagina, idGrafica, "", pContenedor);
 }
-function pintarContenedoresGraficas(pContenedor, pIdPagina = "") {
-    if ($(pContenedor).data("tipografica").includes("nodes")) {
+function pintarContenedoresGraficas(pContenedor, pIdPagina = "", tipografica = "", idgrafica = "") {
+    if (tipografica.includes("nodes")) {
         $(pContenedor).append(`
                 <p id="titulo_grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
                 <div class="graph-controls">
@@ -29,12 +29,12 @@ function pintarContenedoresGraficas(pContenedor, pIdPagina = "") {
                         </li>
                     </ul>
                 </div>
-                <div class="graficoNodos" id="grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}" style="height: 500px;"></div>
+                <div class="graficoNodos" id="grafica_${pIdPagina}_${idgrafica}" style="height: 500px;"></div>
             `);
-    } else if ($(pContenedor).data("tipografica").includes("circular")) {
+    } else if (tipografica.includes("circular")) {
         $(pContenedor).css("height", "300px");
         $(pContenedor).append(`
-            <canvas id = "grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}" width = "600" height = "250" ></canvas>
+            <canvas id = "grafica_${pIdPagina}_${idgrafica}" width = "600" height = "250" ></canvas>
                 `);
     } else {
 
@@ -42,14 +42,14 @@ function pintarContenedoresGraficas(pContenedor, pIdPagina = "") {
         <div class="chartWrapper" >
             <div class="chartScroll custom-css-scroll">
                 <div class="chartAreaWrapper">
-                    <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}"></canvas>
+                    <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${idgrafica}"></canvas>
                 </div>
             </div>
         </div>
         `);
     }
 }
-function getGrafica (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null, maxScales = null) {
+function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null, maxScales = null) {
     var that = this;
     var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
     var arg = {};
@@ -60,6 +60,25 @@ function getGrafica (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize 
 
     // Petición para obtener los datos de las gráficas.
     $.get(url, arg, function (data) {
+
+        var tipoGrafica = "";
+        if (data.isNodes) {
+            tipoGrafica = "nodes";
+        } else if (data.isVertical) {
+            tipoGrafica = "vertical";
+        } else if (data.isHorizontal) {
+            tipoGrafica = "horizontal";
+        } else {
+            tipoGrafica = "circular";
+        }
+        //if ctx is a canvasElement
+        if (ctx.tagName == "DIV") { //igual es mejor comprobar si la id es de
+            pintarContenedoresGraficas(ctx, pIdPagina, tipoGrafica, pIdGrafica);
+            ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+        }
+
+
+
         if (!ctx) {
             if (!pIdRecurso) {
                 ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
@@ -307,7 +326,8 @@ function getGrafica (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize 
 
 
             if (pIdGrafica.indexOf("circular") == -1) { //si no es circular
-                that.drawChart(ctx, data, pIdGrafica, barSize, titulo);
+
+                drawChart(ctx, data, pIdGrafica, barSize, titulo);
             } else { //Graficas circulares
                 if (!graficaContenedor[0].classList.contains("chartAreaWrapper")) {
                     data.options.responsive = true;
@@ -490,6 +510,7 @@ function getGrafica (pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize 
             }
         }
         //that.engancharComportamientos();
+        comportamientos();
     });
 }
 
@@ -506,6 +527,7 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
     var graficaContainer = chartContainer.parentNode;
     var horizontal = data.options.indexAxis == "y";
     var titulo = data.options.plugins.title.text;
+    console.log(data);
 
     var barCount = 0;
     var stacks = []
@@ -683,7 +705,7 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
 
         // Cuando se actualiza el canvas.
         if (!pIdGrafica.includes("circular")) {
-            data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
+            data.options.animation.onProgress = () => reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
             $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
                 myChart.update();
             });
@@ -829,3 +851,30 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
     }
 
 }
+function comportamientos() {
+    $('div.labelContainer')
+        .unbind()
+        .click(function (e) {
+            // Se obtiene el chart desde el canvas.
+            var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
+            var chart = Chart.getChart(canvas);
+            // El ID del dataset está en el ID del contenedor del label.
+            var id = $(this).attr('id').split('-')[1];
+            var label = $(this).find('p.dataSetLabel');
+
+            // Si el label no está tachado se tacha y oculta el dataset.
+            if (label.css('text-decoration').indexOf("line-through") == -1) {
+                label.css("text-decoration", "line-through");
+                chart.setDatasetVisibility(id, false);
+            } else {
+                label.css("text-decoration", "none");
+                chart.setDatasetVisibility(id, true);
+            }
+
+            try { // Hay problemas con el gráfico de líneas + grafico de barras stackeado, si falla se repinta el chart.
+                chart.update();
+            } catch (e) {
+                chart.draw();
+            }
+        });
+} 
