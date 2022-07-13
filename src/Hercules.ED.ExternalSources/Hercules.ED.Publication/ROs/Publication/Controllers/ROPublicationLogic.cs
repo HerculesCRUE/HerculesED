@@ -209,7 +209,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         Log.Information("[WoS] Comparación (SemanticScholar)...");
                         Publication pub_completa = pub;
-                        pub_completa.dataOriginList = new List<string>();
+                        pub_completa.dataOriginList = new HashSet<string>() { "WoS" };
                         if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                         {
                             pub_completa = compatacion(pub, dataSemanticScholar.Item1);
@@ -394,7 +394,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             Log.Information("[Scopus] Comparación (SemanticScholar)...");
                             Publication pub_completa = pubScopus;
-                            pub_completa.dataOriginList = new List<string>();
+                            pub_completa.dataOriginList = new HashSet<string>() { "Scopus" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
                                 pub_completa = compatacion(pubScopus, dataSemanticScholar.Item1);
@@ -558,7 +558,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             Log.Information("[OpenAire] Comparación (SemanticScholar)...");
                             Publication pub_completa = pub;
-                            pub_completa.dataOriginList = new List<string>();
+                            pub_completa.dataOriginList = new HashSet<string>() { "OpenAire" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
                                 pub_completa = compatacion(pub, dataSemanticScholar.Item1);
@@ -670,7 +670,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
             //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}___FECHA___NOMBRE.json", info);
+            //File.WriteAllText($@"Files/{name}___{date}.json", info);
             return resultado;
         }
         //public List<Knowledge_enriquecidos> enriquedicmiento_pal(Publication pub)
@@ -3164,7 +3164,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                     else
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(intentos * 1000);
                     }
                 }
             }

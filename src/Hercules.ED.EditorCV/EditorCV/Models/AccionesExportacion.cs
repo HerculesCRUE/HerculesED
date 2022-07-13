@@ -335,8 +335,12 @@ namespace EditorCV.Models
                 }
             }
 
-            Guid guidRecurso = mResourceApi.GetShortGuid(idRecurso);
-            return mResourceApi.PersistentDelete(guidRecurso);
+            Dictionary<Guid, List<RemoveTriples>> triplesToRemove = new Dictionary<Guid, List<RemoveTriples>>();
+            List<RemoveTriples> listadoTriplesEliminar = new List<RemoveTriples>();
+            listadoTriplesEliminar.Add(new RemoveTriples(idRecurso, "http://w3id.org/roh/exportProfile"));
+
+            triplesToRemove.Add(mResourceApi.GetShortGuid(pCVId), listadoTriplesEliminar);
+            return mResourceApi.DeletePropertiesLoadedResources(triplesToRemove).First().Value;
         }
 
         /// <summary>

@@ -194,8 +194,8 @@ var importarCVN = {
 										<span class="material-icons">done_all</span>										
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-										<a class="item-dropdown seleccionar"><span class="texto">Seleccionar todos</span></a>
-										<a class="item-dropdown deseleccionar"><span class="texto">Deseleccionar todos</span></a>
+										<a class="item-dropdown seleccionar"><span class="texto">@{GetText("CV_SELECCIONAR_TODOS")}</span></a>
+										<a class="item-dropdown deseleccionar"><span class="texto">@{GetText("CV_DESELECCIONAR_TODOS")}</span></a>
 									</div>
 								</div>`;
 
@@ -205,9 +205,9 @@ var importarCVN = {
 								<span class="material-icons">preview</span>	
 							</a>
 							<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-								<a class="item-dropdown mostrarTodos"><span class="texto">Mostrar todos</span></a>
-								<a class="item-dropdown mostrarSimilitudes"><span class="texto">Mostrar similitudes</span></a>
-								<a class="item-dropdown mostrarNuevos"><span class="texto">Mostrar nuevos</span></a>
+								<a class="item-dropdown mostrarTodos"><span class="texto">@{GetText("CV_MOSTRAR_TODOS")}</span></a>
+								<a class="item-dropdown mostrarSimilitudes"><span class="texto">@{GetText("CV_MOSTRAR_SIMILITUDES")}</span></a>
+								<a class="item-dropdown mostrarNuevos"><span class="texto">@{GetText("CV_MOSTRAR_NUEVOS")}</span></a>
 							</div>
 						</div>`;
 						dropdowns = `${dropdownSelectorSeccion} ${dropdownMostrarSeccion}`;
@@ -847,7 +847,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
+											<label class="custom-control-label" for="checkAllResources_${id2}">@{GetText("CV_SELECCIONAR_TODOS")}</label>
 										</div>
 									</div>
 								</div>

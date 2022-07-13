@@ -145,7 +145,13 @@ var exportacionCV = {
     cargarCV: function() {
 		$('.col-contenido.listadoExportacion').hide();
         var that = this;
+		var petition = 'x' + RandomGuid();
 		MostrarUpdateProgressTime(0);
+		
+		if($('#titleMascaraBlanca').length == 0){
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
+		}
 		$('.panel-group.pmd-accordion').remove();
 		
 		//Actualizo el estado cada 500 milisegundos
@@ -172,10 +178,12 @@ var exportacionCV = {
 		
 		
         $.ajax({
-			url: urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&petitionID=" + 'x' + RandomGuid() + "&pLang=" + lang,
+			url: urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&petitionID=" + petition + "&pLang=" + lang,
 			type: 'GET',
 			success: function(data) {	
-				clearInterval(intervalStatus);
+				clearInterval(intervalStatus);			
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
 				//recorrer items y por cada uno			
 				for(var i=0;i<data.length;i++){
 					var id = 'x' + RandomGuid();
@@ -226,7 +234,9 @@ var exportacionCV = {
 				OcultarUpdateProgress();
 			},
 			error: function(jqXHR, exception){
-				clearInterval(intervalStatus);
+				clearInterval(intervalStatus);			
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
 			}
 		});
         return;
@@ -283,7 +293,7 @@ function getExportationProfile(userID){
 				selector.append(new Option(opcion, contador));	
 				contador++;
 			}
-			if($('#ddlProfile option').length < 1){
+			if(contador==0){
 				$('.misPerfiles').hide();
 			}else{
 				$('.misPerfiles').show();

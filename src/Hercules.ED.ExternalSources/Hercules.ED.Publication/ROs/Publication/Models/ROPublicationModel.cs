@@ -46,7 +46,7 @@ namespace PublicationConnect.ROs.Publications.Models
         public List<PubReferencias> bibliografia { get; set; }
         //public List<Publication> citas {get;set;}
         
-        public List<string> dataOriginList { get; set; }
+        public HashSet<string> dataOriginList { get; set; }
 
         public string dataOrigin { get; set; }
 
