@@ -457,7 +457,7 @@
      margin-bottom: 0 !important;
  }*/
  
-.chartLegend {position: absolute;top: 10px; left: 0;  transform: none; z-index: 200;}
+.chartLegend {position: absolute; top: 0; left: 0;  transform: none; z-index: 200;}
 .dataSetLabels {border: none;}
 .labelContainer { height: 15px;display: flex; align-items: center; margin-right: 15px; }
 .labelContainer .dataSetLabel { margin-left: 10px; margin-bottom: 0; color: var(--c-texto-medio); font-size: 0.9em; }
