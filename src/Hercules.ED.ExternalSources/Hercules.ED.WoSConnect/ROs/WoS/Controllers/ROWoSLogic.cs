@@ -22,6 +22,8 @@ using System.Text;
 using ExcelDataReader;
 using System.IO;
 using System.Threading;
+using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
@@ -32,14 +34,20 @@ namespace WoSConnect.ROs.WoS.Controllers
 
         public Dictionary<string, string> ds;
 
+        Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
-        public ROWoSLogic(string baseUri, string bareer, Dictionary<string, string> ds)
+
+        //Resource API.
+        private static ResourceApi mResourceApi;
+
+        public ROWoSLogic(string baseUri, string bareer, Dictionary<string, string> ds, ResourceApi pResourceApi)
         {
             this.baseUri = baseUri;
             this.bareer = bareer;
             this.ds = ds;
-
+            mResourceApi = pResourceApi;
+            tuplaTesauro = ObtenerDatosTesauro();            
         }
 
         /// <summary>
@@ -131,7 +139,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 try
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                    List<Publication> nuevas = info.getListPublicatio(objInicial);
+                    List<Publication> nuevas = info.getListPublicatio(objInicial, tuplaTesauro.Item2, mResourceApi);
                     sol.AddRange(nuevas);
                     if (nuevas.Count == 0)
                     {
@@ -178,7 +186,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(result);
                     PublicacionInicial publicacionInicial = objInicial.Data.Records.records.REC[0];
-                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
+                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true, tuplaTesauro.Item2, mResourceApi);
                 }
             }
             catch (Exception error)
@@ -188,6 +196,43 @@ namespace WoSConnect.ROs.WoS.Controllers
 
             return publicacionFinal;
         }
+
+        /// <summary>
+        /// Obtiene los datos del tesauro.
+        /// </summary>
+        /// <returns>Tupla con los dos diccionarios.</returns>
+        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> ObtenerDatosTesauro()
+        {
+            Dictionary<string, string> dicAreasBroader = new Dictionary<string, string>();
+            Dictionary<string, string> dicAreasNombre = new Dictionary<string, string>();
+
+            string select = @"SELECT DISTINCT * ";
+            string where = @$"WHERE {{
+                ?concept a <http://www.w3.org/2008/05/skos#Concept>.
+                ?concept <http://www.w3.org/2008/05/skos#prefLabel> ?nombre.
+                ?concept <http://purl.org/dc/elements/1.1/source> 'researcharea'.
+                OPTIONAL{{?concept <http://www.w3.org/2008/05/skos#broader> ?broader}}
+                }}";
+            SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
+
+            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
+            {
+                string concept = fila["concept"].value;
+                string nombre = fila["nombre"].value;
+                string broader = "";
+                if (fila.ContainsKey("broader"))
+                {
+                    broader = fila["broader"].value;
+                }
+                dicAreasBroader.Add(concept, broader);
+                if (!dicAreasNombre.ContainsKey(nombre.ToLower()))
+                {
+                    dicAreasNombre.Add(nombre.ToLower(), concept);
+                }
+            }
+
+            return new Tuple<Dictionary<string, string>, Dictionary<string, string>>(dicAreasBroader, dicAreasNombre);
+        }       
 
         /// <summary>
         /// Obtiene una publicación mediante el DOI.
@@ -213,7 +258,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(result);
                     PublicacionInicial publicacionInicial = objInicial.Data.Records.records.REC[0];
-                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
+                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true, tuplaTesauro.Item2, mResourceApi);
                 }
             }
             catch (Exception error)
@@ -268,7 +313,7 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                         foreach (PublicacionInicial item in objInicial.Data.Records.records.REC)
                         {
-                            Publication publicacion = info.getPublicacionCita(item);
+                            Publication publicacion = info.getPublicacionCita(item, tuplaTesauro.Item2, mResourceApi);
                             listaPublicaciones.Add(publicacion);
                         }
                     }
