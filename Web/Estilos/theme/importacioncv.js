@@ -847,7 +847,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todo</label>
+											<label class="custom-control-label" for="checkAllResources_${id2}">@{GetText("CV_SELECCIONAR_TODOS")}</label>
 										</div>
 									</div>
 								</div>
