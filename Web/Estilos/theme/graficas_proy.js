@@ -19,11 +19,11 @@ function pintarGraficaIndividual(pContenedor, pIdPagina, idGrafica = "") {
     }
     //pintarContenedoresGraficas(pContenedor, pIdPagina);
     getGrafica(pIdPagina, idGrafica, "", pContenedor);
-    callbacks[idGrafica+"_"+pIdPagina] = {
+    callbacks[idGrafica + "_" + pIdPagina] = {
         ctx: pContenedor,
-        zoom: addZoomButton.bind(null,pContenedor),
-        downloadcv: addDownloadCvButton.bind(null,pContenedor),
-        downloadjpg: addDownloadJpgButton.bind(null,pContenedor),
+        zoom: addZoomButton.bind(null, pContenedor),
+        downloadcv: addDownloadCvButton.bind(null, pContenedor),
+        downloadjpg: addDownloadJpgButton.bind(null, pContenedor),
     };
 
 }
@@ -131,7 +131,7 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                 if (pPageData) {
                     ctx = pintarContenedoresPersonalizados(ctx, pPageData, tipoGrafica)
                 } else {
-                     
+
 
                     ctx = pintarContenedoresGraficas(ctx, pIdPagina, tipoGrafica, pIdGrafica);
                     //addZoomButton(tmp);
@@ -810,8 +810,6 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
         axisHeight = myChart.boxes[2]?.height;
     } else {// -- vertical
         myChart.canvas.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
-
-
         copyHeight = myChart.chartArea.bottom + 5;
         //targetY = 20; //posicion del eje
         // Le asignamos tamaño a la leyenda.
@@ -1256,7 +1254,28 @@ function addZoomButton(pContenedor) {
             //metricas.engancharComportamientos();
         });
 }
+function addDownloadCvButton(pContenedor) {
+    var accionesMapa = $(pContenedor).parent().find("div.acciones-mapa");
+    if (accionesMapa.length == 0) {
+        accionesMapa = pintarAccionesMapa(pContenedor);
+    }
+}
+function addDownloadJpgButton(pContenedor) {
+    var accionesMapa = $(pContenedor).parent().find("div.acciones-mapa");
+    if (accionesMapa.length == 0) {
+        accionesMapa = pintarAccionesMapa(pContenedor);
+    }
+
+}
+function pintarAccionesMapa(pContenedor) {
+
+
+    var accionesMapa = (`<div class="acciones-mapa"><div class="wrap"></div></div>`);
+    $(pContenedor).parent().append(accionesMapa);
+    return accionesMapa;
+}
 function addExpandButton(pContenedor) {
+
     var accionesMapa = pContenedor.parent().find('.acciones-mapa');
     if (accionesMapa.length > 0) {
         accionesMapa.append(`<div class="expand-button">
