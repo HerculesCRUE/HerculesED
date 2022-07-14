@@ -950,7 +950,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                             }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-
+                    
                     InsercionIndicesImpacto(resultado.results.bindings);
 
                     if (resultado.results.bindings.Count != limit)
@@ -999,6 +999,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         string document = fila["document"].value;
                         string indiceImpactoAEliminar = fila["impactIndexDoc"].value;
                         ActualizadorTriple(document, "http://w3id.org/roh/impactIndex", indiceImpactoAEliminar, "");
+                        //TODO agrupar docs
                     });
 
                     if (resultado.results.bindings.Count != limit)
@@ -1070,6 +1071,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             publicationPositonCargado = impactIndexDoc + "|" + fila["publicationPositonCargado"].value;
                         }
                         ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/publicationPosition", publicationPositonCargado, publicationPositonCargar);
+                        //TODO agrupar docs
                     });
 
                     if (resultado.results.bindings.Count != limit)
@@ -1130,6 +1132,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             impactIndexCategoryCargado = impactIndexDoc + "|" + fila["impactIndexCategoryCargado"].value;
                         }
                         ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategory", impactIndexCategoryCargado, impactIndexCategoryCargar);
+                        //TODO agrupar docs
                     });
 
                     if (resultado.results.bindings.Count != limit)
@@ -1170,7 +1173,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 		                            OPTIONAL{{
 			                            ?impactIndexDoc <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargado. 
 		                            }}  
-                                    FILTER(?impactIndexCategoryCargado!= ?impactIndexCategoryCargar OR (!BOUND(?impactIndexCategoryCargado) AND BOUND(?impactIndexCategoryCargar)) OR (!BOUND(?impactIndexCategoryCargar) AND BOUND(?impactIndexCategoryCargado)))
+                                    FILTER(?journalNumberInCatCargado!= ?journalNumberInCatCargar OR (!BOUND(?journalNumberInCatCargado) AND BOUND(?journalNumberInCatCargar)) OR (!BOUND(?journalNumberInCatCargar) AND BOUND(?journalNumberInCatCargado)))
                                 }} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
@@ -1190,6 +1193,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             journalNumberInCatCargado = impactIndexDoc + "|" + fila["impactIndexCategoryCargado"].value;
                         }
                         ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/journalNumberInCat", journalNumberInCatCargado, journalNumberInCatCargar);
+                        //TODO agrupar docs
                     });
 
                     if (resultado.results.bindings.Count != limit)
@@ -1230,7 +1234,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 		                            OPTIONAL{{
 			                            ?impactIndexDoc <http://w3id.org/roh/quartile> ?quartileCargado. 
 		                            }}  
-                                    FILTER(?impactIndexCategoryCargado!= ?impactIndexCategoryCargar OR (!BOUND(?impactIndexCategoryCargado) AND BOUND(?impactIndexCategoryCargar)) OR (!BOUND(?impactIndexCategoryCargar) AND BOUND(?impactIndexCategoryCargado)))
+                                    FILTER(?quartileCargado!= ?quartileCargar OR (!BOUND(?quartileCargado) AND BOUND(?quartileCargar)) OR (!BOUND(?quartileCargar) AND BOUND(?quartileCargado)))
                                 }} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
@@ -1250,6 +1254,58 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             quartileCargado = impactIndexDoc + "|" + fila["quartileCargado"].value;
                         }
                         ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/quartile", quartileCargado, quartileCargar);
+                        //TODO agrupar docs
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //Eliminamos los duplicados
+                EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/quartile");
+
+                //Actualizamos los datos
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO Eliminar from
+                    String select = @"select ?document ?quartileCargado ?quartileCargar ";
+                    String where = @$"where{{
+                                    ?document a <http://purl.org/ontology/bibo/Document>.
+                                    {filter}
+                                    OPTIONAL
+                                    {{
+                                      ?document <http://w3id.org/roh/quartile> ?quartileCargado. 
+                                    }}
+                                    OPTIONAL
+                                    {{
+                                      select ?document min(xsd:int(?quartile)) as ?quartileCargar
+                                      Where{{
+                                        ?document a <http://purl.org/ontology/bibo/Document>.
+                                        ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
+                                        ?impactIndexDoc <http://w3id.org/roh/quartile> ?quartile.
+                                      }}
+                                    }}
+                                    FILTER(?quartileCargado!= ?quartileCargar OR (!BOUND(?quartileCargado) AND BOUND(?quartileCargar)) OR (!BOUND(?quartileCargar) AND BOUND(?quartileCargado)))
+                                    }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string document = fila["document"].value;
+                        string quartileCargar = "";
+                        if (fila.ContainsKey("quartileCargar"))
+                        {
+                            quartileCargar = fila["quartileCargar"].value;
+                        }
+                        string quartileCargado = "";
+                        if (fila.ContainsKey("quartileCargado"))
+                        {
+                            quartileCargado = fila["quartileCargado"].value;
+                        }
+                        ActualizadorTriple(document, "http://w3id.org/roh/quartile", quartileCargado, quartileCargar);
                     });
 
                     if (resultado.results.bindings.Count != limit)
