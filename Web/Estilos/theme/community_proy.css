@@ -363,6 +363,10 @@ body.comunidad.listado.buscador-ofertas-tecnologicas #in_schema_availability---d
  * Home MA
  */
 
+.pchild-0 > * {
+    padding: 0 !important;
+}
+
 /* Ficha grupos y personas - grafica */
 .home-ma .buscador-container .info-recursos .item {
     transition: opacity ease 0.3s;
@@ -384,6 +388,9 @@ body.homeComunidad #col01 {
     top: 10px;
 }
 
+/**
+ * End Home MA
+ */
 
 
 
