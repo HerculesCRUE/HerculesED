@@ -14,6 +14,10 @@
           "es": "Producción científica"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.010.000.000",
           "listItem": {
@@ -202,6 +206,9 @@
           "es": "Indicadores generales de calidad de la producción científica"
         },
         "itemPresentation": {
+          "last5Years": {
+            "always": true
+          },
           "property": "http://w3id.org/roh/generalQualityIndicatorCV",
           "itemEdit": {
             "rdftype": "http://w3id.org/roh/GeneralQualityIndicatorCV",
@@ -242,6 +249,10 @@
           "es": "Publicaciones, documentos científicos y técnicos"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedScientificPublicationCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedScientificPublicationCV",
@@ -1239,6 +1250,10 @@
           "es": "Trabajos presentados en congresos nacionales o internacionales"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedWorkSubmittedConferencesCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV",
@@ -2357,6 +2372,10 @@
           "es": "Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o internacionales"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV",
@@ -3440,6 +3459,10 @@
           "es": "Otras actividades de divulgación"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.010.040.000",
           "listItem": {
@@ -4446,6 +4469,11 @@
           "es": "Comités científicos, técnicos y/o asesores"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.010.000",
           "listItem": {
@@ -4990,6 +5018,11 @@
           "es": "Organización de actividades de I+D+i"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.030.000",
           "listItem": {
@@ -5655,6 +5688,10 @@
           "es": "Gestión de actividades de I+D+i"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.040.000",
           "listItem": {
@@ -6381,6 +6418,11 @@
           "es": "Foros y comités nacionales e internacionales"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.050.000",
           "listItem": {
@@ -7018,6 +7060,11 @@
           "es": "Evaluación y revisión de proyectos y artículos de I+D+i"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.060.000",
           "listItem": {
@@ -7577,6 +7624,11 @@
           "es": "Estancias en centros de I+D+i públicos o privados"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.010.050.000",
           "listItem": {
@@ -8371,6 +8423,11 @@
           "es": "Ayudas y becas obtenidas"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.010.000",
           "listItem": {
@@ -8931,6 +8988,10 @@
           "es": "Otros modos de colaboración con investigadores/as o tecnólogos/as"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.020.000",
           "listItem": {
@@ -9627,6 +9688,11 @@
           "es": "Sociedades científicas y asociaciones profesionales"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.020.000",
           "listItem": {
@@ -10129,6 +10195,10 @@
           "es": "Consejos editoriales"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.030.000",
           "listItem": {
@@ -10733,6 +10803,10 @@
           "es": "Redes de cooperación"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.040.000",
           "listItem": {
@@ -11393,6 +11467,10 @@
           "es": "Premios, menciones y distinciones"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/dateIssued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.050.000",
           "listItem": {
@@ -11741,6 +11819,10 @@
           "es": "Otras distinciones (carrera profesional y/o empresarial)"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/dateIssued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.060.000",
           "listItem": {
@@ -12120,6 +12202,10 @@
           "es": "Períodos de actividad investigadora"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/dateIssued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.070.000",
           "listItem": {
@@ -12496,6 +12582,10 @@
           "es": "Acreditaciones/reconocimientos obtenidos"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.090.000",
           "listItem": {
@@ -12853,6 +12943,10 @@
           "es": "Resumen de otros méritos"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/dateIssued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.100.000",
           "listItem": {

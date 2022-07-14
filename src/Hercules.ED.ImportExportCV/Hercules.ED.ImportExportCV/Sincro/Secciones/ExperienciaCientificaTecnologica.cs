@@ -922,11 +922,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.010.020")))
-                    {
-                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.Generico.codigoCVN, "050.030.010.000"),
-                            new Property(Variables.Generico.personaCVN, mPersonID)
-                        ));
+                    {                        
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.propIIDescripcion, item.GetStringPorIDCampo("050.030.010.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.propIITituloPropIndus, item.GetStringPorIDCampo("050.030.010.020")),
