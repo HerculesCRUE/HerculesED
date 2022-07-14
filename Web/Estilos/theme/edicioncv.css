@@ -306,6 +306,7 @@ input.form-group-date {
 }
 
 .importar-exportar-cv .seleccionar.dropdown.dropdown-select .dropdown-toggle{
+	margin-left: 25px;
 	user-select: none;
 	cursor: pointer;
 	display: flex;
@@ -319,6 +320,14 @@ input.form-group-date {
 	font-size: .875rem;
 	font-weight: 400;
 	background-color: var(--c-blanco)!important;
+}
+
+.importar-exportar-cv .cabecera-cv .dropdown{
+	margin-left: 0px;
+}
+
+.importar-exportar-cv .cabecera-cv .dropdown{
+	margin-right: 0px;
 }
 
 .importar-exportar-cv #titleMascaraBlanca{
