@@ -256,6 +256,7 @@ var importarCVN = {
 				checkAllCVWrapper();
 				checkAllConflict();
 				aniadirComportamientoWrapperSeccion();
+				aniadirTooltipsConflict();
 				window.removeEventListener('beforeunload', preventBeforeUnload, false);
 				
 				OcultarUpdateProgress();
@@ -418,6 +419,29 @@ function aniadirComportamientoWrapperSeccion(){
 		wrapperVisibilitySection("mostrarNuevos", $(this).closest('.row.cvTab'));
 	});
 	
+};
+function aniadirTooltipsConflict(){
+	$('select[name="itemConflict"]').tooltip({
+		html: true,
+		placement: 'left',
+		template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+		title: GetText('IGNORAR_TOOLTIP')
+	});
+	$('select[name="itemConflict"]').off('change.toolt').on('change.toolt', function(e) {
+		e.preventDefault();
+		// Cambio el tooltip en función del valor seleccionado
+		var valorSeleccionado = $(this).find('option:selected').val();
+		if (valorSeleccionado == 'ig') {
+			$(this).attr('data-original-title', GetText('IGNORAR_TOOLTIP'));
+		} else if (valorSeleccionado == 'fu') {
+			$(this).attr('data-original-title', GetText('FUSIONAR_TOOLTIP'));
+		} else if (valorSeleccionado == 'so') {
+			$(this).attr('data-original-title', GetText('SOBREESCRIBIR_TOOLTIP'));
+		} else if (valorSeleccionado == 'du') {
+			$(this).attr('data-original-title', GetText('DUPLICAR_TOOLTIP'));
+		}
+		$(this).tooltip('hide');
+	});
 };
 
 function wrapperVisibilitySection(opcion, section){
