@@ -1929,7 +1929,6 @@
         },
         "listItemsPresentation": {
           "property": "http://vivoweb.org/ontology/core#relatedBy",
-          "cvnsection": "050.030.010.000",
           "listItem": {
             "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",
@@ -2325,8 +2324,6 @@
             "graph": "patent",
             "proptitle": "http://w3id.org/roh/title",
             "rdftype": "http://purl.org/ontology/bibo/Patent",
-            "cvnsection": "050.030.010.000",
-            "propertyowner": "http://w3id.org/roh/owner",
             "sections": [
               {
                 "title": {
