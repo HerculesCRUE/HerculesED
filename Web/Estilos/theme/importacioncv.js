@@ -72,7 +72,8 @@ var importarCVN = {
 	config: function (){
 		var that=this;
 		$('#file_cvn').GnossDragAndDrop({
-            acceptedFiles: ["pdf"],
+			//TODO
+            acceptedFiles: ["pdf", "xml"],
 			maxSize: 5000,
             onFileAdded: function (plugin, files) {
                 $('.col-contenido .botonera').css('display', 'block');
@@ -194,8 +195,8 @@ var importarCVN = {
 										<span class="material-icons">done_all</span>										
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-										<a class="item-dropdown seleccionar"><span class="texto">@{GetText("CV_SELECCIONAR_TODOS")}</span></a>
-										<a class="item-dropdown deseleccionar"><span class="texto">@{GetText("CV_DESELECCIONAR_TODOS")}</span></a>
+										<a class="item-dropdown seleccionar"><span class="texto">@{GetText('CV_SELECCIONAR_TODOS')}</span></a>
+										<a class="item-dropdown deseleccionar"><span class="texto">@{GetText('CV_DESELECCIONAR_TODOS')}</span></a>
 									</div>
 								</div>`;
 
@@ -205,9 +206,9 @@ var importarCVN = {
 								<span class="material-icons">preview</span>	
 							</a>
 							<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-								<a class="item-dropdown mostrarTodos"><span class="texto">@{GetText("CV_MOSTRAR_TODOS")}</span></a>
-								<a class="item-dropdown mostrarSimilitudes"><span class="texto">@{GetText("CV_MOSTRAR_SIMILITUDES")}</span></a>
-								<a class="item-dropdown mostrarNuevos"><span class="texto">@{GetText("CV_MOSTRAR_NUEVOS")}</span></a>
+								<a class="item-dropdown mostrarTodos"><span class="texto">@{GetText('CV_MOSTRAR_TODOS')}</span></a>
+								<a class="item-dropdown mostrarSimilitudes"><span class="texto">@{GetText('CV_MOSTRAR_SIMILITUDES')}</span></a>
+								<a class="item-dropdown mostrarNuevos"><span class="texto">@{GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 							</div>
 						</div>`;
 						dropdowns = `${dropdownSelectorSeccion} ${dropdownMostrarSeccion}`;
@@ -252,7 +253,6 @@ var importarCVN = {
 				that.fileData = response[99].title;
 				that.filePreimport = response[100].title;
 				
-				$('.resource-list.listView .resource .wrap').css("margin-left", "70px");
 				checkAllCVWrapper();
 				checkAllConflict();
 				aniadirComportamientoWrapperSeccion();
@@ -846,8 +846,8 @@ edicionCV.printTabSection= function(data) {
 								<div class="wrap">
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
-											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">@{GetText("CV_SELECCIONAR_TODOS")}</label>
+											<input type="checkbox" class="custom-control-input mostrarTodos" id="checkAllResources_${id2}">
+											<label class="custom-control-label" for="checkAllResources_${id2}">` + GetText("CV_SELECCIONAR_TODOS") + `</label>
 										</div>
 									</div>
 								</div>
@@ -857,7 +857,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
 											<div class="textoBusquedaPrincipalInput">
-												<input type="text" class="not-outline txtBusqueda" placeholder="${GetText('CV_ESCRIBE_ALGO')}" autocomplete="off">
+												<input type="text" class="not-outline txtBusqueda" placeholder="` + GetText('CV_ESCRIBE_ALGO') + `" autocomplete="off">
 												<span class="botonSearch">
 													<span class="material-icons">search</span>
 												</span>
