@@ -331,6 +331,9 @@ input.form-group-date {
 .importar-exportar-cv .misPerfiles>span{
 	width: 71%;
 }
+.importar-exportar-cv .resource-list.listView .resource .wrap{
+	margin-left: 70px;
+}
 
 .page-cv .panel-group .panel .visibility-wrapper {
 	padding-left: 4px;
