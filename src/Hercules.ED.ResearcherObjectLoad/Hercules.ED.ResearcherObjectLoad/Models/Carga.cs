@@ -57,8 +57,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public static void ProcesarFichero(string pRutaLectura, string pRutaEscritura)
         {
             DirectoryInfo directorio = new DirectoryInfo(pRutaLectura);
-            // TODO: Dejar hasta que lo arregle CORE.
-            mResourceApi.GraphsUrl = "http://gnoss.com/";
             Disambiguation.mResourceApi = mResourceApi;
 
             // Obtención de las categorías.
