@@ -14,6 +14,10 @@
           "es": "Situación profesional actual"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "010.010.000.000",
           "listItem": {
@@ -958,6 +962,11 @@
           "es": "Cargos y actividades desempeñados con anterioridad"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "010.020.000.000",
           "listItem": {
