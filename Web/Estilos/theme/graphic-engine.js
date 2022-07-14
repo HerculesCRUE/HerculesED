@@ -1771,6 +1771,7 @@ var metricas = {
                 arg.pGraphicID = idGrafica;
 
                 // Petición para eliminar la gráfica.
+                MostrarUpdateProgress();
                 $.get(url, arg, function (listaData) {
                     location.reload();
                 });
@@ -1787,6 +1788,7 @@ var metricas = {
                 arg.pUserId = idUsuario;
                 arg.pPageID = idPagina;
 
+                MostrarUpdateProgress();
                 // Petición para eliminar la página.
                 $.get(url, arg, function (listaData) {
                     location.reload();
@@ -2037,14 +2039,17 @@ var metricas = {
                 }
 
                 // Petición para obtener los datos de la página.
+                MostrarUpdateProgress();
                 $.get(url, arg, function (data) {
-
-                    mostrarNotificacion("success", "Grafica guardada correctamente"); //TODO - asegurarse que se guarda, por que si falla sigue saliendo este mensaje (Backend)
-
-                }).fail(function (data) {
-                    mostrarNotificacion("error", "Error al guardar la grafica");
+                    if (data) {
+                        mostrarNotificacion("success", "Grafica guardada correctamente");
+                    } else {
+                        mostrarNotificacion("error", "Error al guardar la grafica");
+                    }
+                }).done(function () {
+                    OcultarUpdateProgress();
+                    cerrarModal();
                 });
-                cerrarModal();
             });
         $("#btnGuardarGraficaConfig")
             .unbind()

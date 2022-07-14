@@ -903,15 +903,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// <param name="pDocuments">IDs de documentos</param>
         public void ActualizarIndicesImpacto(List<string> pDocuments = null)
         {
-            //http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactSource *
-            //http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactSourceOther *
-            //http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategory
-            //http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexInYear *
-            //http://w3id.org/roh/impactIndex|http://w3id.org/roh/publicationPosition
-            //http://w3id.org/roh/impactIndex|http://w3id.org/roh/journalNumberInCat
-            //http://w3id.org/roh/impactIndex|http://w3id.org/roh/quartile
-
-
             HashSet<string> filters = new HashSet<string>();
             if (pDocuments != null && pDocuments.Count > 0)
             {

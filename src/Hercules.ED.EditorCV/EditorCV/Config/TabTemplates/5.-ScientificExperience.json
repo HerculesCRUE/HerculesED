@@ -1937,6 +1937,10 @@
           "es": "Propiedad industrial e intelectual"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/dateFiled"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "listItem": {
             "propertyTitle": {
