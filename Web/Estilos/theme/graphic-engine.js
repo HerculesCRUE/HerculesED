@@ -2298,12 +2298,14 @@ var metricas = {
                                         <span class="material-icons cerrar cerrar-grafica" aria-label="Close">close</span>
                                     </div>
                                         <div class="modal-body">
-                                        <div class="graph-container" style="width:100%;"></div>
+                                        <div class="graph-container grafica" style="width:100%;"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `)
+                }else{
+                    $("#modal-ampliar-mapa").find(".graph-container").addClass("grafica");
                 }
 
                 // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
@@ -2361,7 +2363,7 @@ var metricas = {
                          </div>
                      </div>
                  </div> `)
-                } else {
+                } else {/*
                     parent.append(`<div class="acciones-mapa">
                     <div class="wrap">
                         <div class="dropdown">
@@ -2399,7 +2401,7 @@ var metricas = {
                             </div>
                         </div>
                     </div>
-                </div>`)
+                </div>`)*/
 
                 }
                 // Preparo la imagen a descargar

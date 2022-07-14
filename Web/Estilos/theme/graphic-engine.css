@@ -110,16 +110,7 @@
      overflow-y: hidden;
  }
 
- .zoom.vertical .chartScroll{
-    height: 75vh;
-    overflow-x: scroll;
-    overflow-y: hidden;
- }
- .zoom.horizontal .chartScroll{
-    height: 75vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
- }
+
  .small.grafica.vertical .chartScroll {
      overflow-x: hidden;
  }
@@ -134,7 +125,7 @@
  }
 
  .grafica:not(.small) .chartScroll {
-     height: 318px;
+     height: 100%;
      /*height: 273px*/
  }
 
@@ -276,7 +267,8 @@
      transition: all .2s ease-in-out;
  }
 
- .resource-list.graphView .resource>.wrap {
+ .resource-list.graphView .resource>.wrap,
+ :not(.zoom):not(.resource .wrap .grafica) > .chartWrapper {
      height: 335px;
  }
 
@@ -467,7 +459,14 @@
      padding: 0 !important;
      margin-bottom: 0 !important;
  }*/
- 
+ .vertical .chartScroll{
+    overflow-x:scroll;
+    overflow-y:hidden;
+ }
+ .horizontal .chartScroll{
+    overflow-y:scroll;
+    overflow-x:hidden;
+ }
 .chartLegend {position: absolute; top: 0; left: 0;  transform: none; z-index: 200;}
 .dataSetLabels {border: none;}
 .labelContainer { height: 15px;display: flex; align-items: center; margin-right: 15px; }
