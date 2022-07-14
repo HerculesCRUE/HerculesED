@@ -195,8 +195,8 @@ var importarCVN = {
 										<span class="material-icons">done_all</span>										
 									</a>
 									<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-										<a class="item-dropdown seleccionar"><span class="texto">@{GetText('CV_SELECCIONAR_TODOS')}</span></a>
-										<a class="item-dropdown deseleccionar"><span class="texto">@{GetText('CV_DESELECCIONAR_TODOS')}</span></a>
+										<a class="item-dropdown seleccionar"><span class="texto">${GetText('CV_SELECCIONAR_TODOS')}</span></a>
+										<a class="item-dropdown deseleccionar"><span class="texto">${GetText('CV_DESELECCIONAR_TODOS')}</span></a>
 									</div>
 								</div>`;
 
@@ -206,9 +206,9 @@ var importarCVN = {
 								<span class="material-icons">preview</span>	
 							</a>
 							<div class="dropdown-menu basic-dropdown dropdown-menu-right">
-								<a class="item-dropdown mostrarTodos"><span class="texto">@{GetText('CV_MOSTRAR_TODOS')}</span></a>
-								<a class="item-dropdown mostrarSimilitudes"><span class="texto">@{GetText('CV_MOSTRAR_SIMILITUDES')}</span></a>
-								<a class="item-dropdown mostrarNuevos"><span class="texto">@{GetText('CV_MOSTRAR_NUEVOS')}</span></a>
+								<a class="item-dropdown mostrarTodos"><span class="texto">${GetText('CV_MOSTRAR_TODOS')}</span></a>
+								<a class="item-dropdown mostrarSimilitudes"><span class="texto">${GetText('CV_MOSTRAR_SIMILITUDES')}</span></a>
+								<a class="item-dropdown mostrarNuevos"><span class="texto">${GetText('CV_MOSTRAR_NUEVOS')}</span></a>
 							</div>
 						</div>`;
 						dropdowns = `${dropdownSelectorSeccion} ${dropdownMostrarSeccion}`;
