@@ -14,6 +14,10 @@
           "es": "Dirección de tesis doctorales y/o proyectos fin de carrera"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.040.000.000",
           "listItem": {
@@ -717,6 +721,11 @@
           "es": "Formación académica impartida"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.010.000.000",
           "listItem": {
@@ -2096,6 +2105,9 @@
           "es": "Tutorías académicas de estudiantes"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": true
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.050.000.000",
           "listItem": {
@@ -2441,6 +2453,10 @@
           "es": "Cursos y seminarios impartidos orientados a la formación docente universitaria"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.060.000.000",
           "listItem": {
@@ -3168,6 +3184,10 @@
           "es": "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc."
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.070.000.000",
           "listItem": {
@@ -4108,6 +4128,11 @@
           "es": "Participación en proyectos de innovación docente"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.080.000.000",
           "listItem": {
@@ -5023,6 +5048,10 @@
           "es": "Participación en congresos con ponencias orientadas a la formación docente"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.090.000.000",
           "listItem": {
@@ -6261,6 +6290,10 @@
           "es": "Premios de innovación docente recibidos"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/receptionDate"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.080.000",
           "listItem": {
@@ -6582,6 +6615,10 @@
           "es": "Otras actividades/méritos no incluidos en la relación anterior"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.100.000.000",
           "listItem": {
@@ -6905,6 +6942,10 @@
           "es": "Aportaciones más relevantes de su CV de docencia"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.110.000.000",
           "listItem": {

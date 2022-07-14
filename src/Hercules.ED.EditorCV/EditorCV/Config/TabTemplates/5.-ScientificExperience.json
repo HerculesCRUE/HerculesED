@@ -14,6 +14,11 @@
           "es": "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedCompetitiveProjectCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedCompetitiveProjectCV",
@@ -1014,6 +1019,10 @@
           "es": "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedNonCompetitiveProjectCV",
@@ -2934,6 +2943,10 @@
           "es": "Grupos/equipos de investigación, desarrollo o innovación"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/foundationDate"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedGroupCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedGroupCV",
@@ -3640,6 +3653,10 @@
           "es": "Obras artísticas dirigidas"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "050.020.030.000",
           "listItem": {
@@ -4183,6 +4200,10 @@
           "es": "Resultados tecnológicos derivados de actividades especializadas y de transferencia no incluidos en apartados anteriores"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "050.030.020.000",
           "listItem": {
