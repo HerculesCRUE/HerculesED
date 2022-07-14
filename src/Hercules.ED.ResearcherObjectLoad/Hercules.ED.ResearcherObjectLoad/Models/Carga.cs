@@ -60,6 +60,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             Disambiguation.mResourceApi = mResourceApi;
 
             // Obtención de las categorías.
+            // TODO: Falta la asignación por ID y no por nombre. A la espera que elhuyar nos envíe los IDs, en lugar de los nombres.
             Tuple<Dictionary<string, string>, Dictionary<string, string>> tupla = ObtenerDatosTesauro();
 
             FileLogger.Log($@"{DateTime.Now} - Ruta lectura: {pRutaLectura}");
@@ -822,6 +823,29 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     mResourceApi.LoadComplexSemanticResource(recursoCargar);
                                 }
                             });
+                        }
+
+                        // Notificación de fin de la carga
+                        if (!string.IsNullOrEmpty(idPersona))
+                        {
+                            mResourceApi.ChangeOntoly("notification");
+                            NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
+                            notificacion.IdRoh_owner = idPersona;
+                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Roh_type = "loadExternalSource";
+
+                            ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+                            int numIntentos = 0;
+                            while (!recursoCargar.Uploaded)
+                            {
+                                numIntentos++;
+
+                                if (numIntentos > 5)
+                                {
+                                    break;
+                                }
+                                mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                            }
                         }
 
                         // Hace una copia del fichero y elimina el original.
@@ -1742,13 +1766,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
 
-                // Comprobar EISSN
-                if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.eissn))
-                {
-                    idRevista = ComprobarRevistaEISSN(pPublicacion.hasPublicationVenue.eissn);
-                }
-
-                // Comprobar Título
+                // Comprobar Título 
                 if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name))
                 {
                     idRevista = ComprobarRevistaTitulo(pPublicacion.hasPublicationVenue.name);
@@ -2302,7 +2320,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }} ORDER BY DESC(?revista) }} LIMIT {limit} OFFSET {offset}";
 
                     SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "maindocument");
-                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count == 1)
                     {
                         offset += limit;
                         foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -2356,6 +2374,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             Dictionary<string, string> dicAreasBroader = new Dictionary<string, string>();
             Dictionary<string, string> dicAreasNombre = new Dictionary<string, string>();
+
+            // ?concept <http://purl.org/dc/elements/1.1/identifier> ?id.
 
             string select = @"SELECT DISTINCT * ";
             string where = @$"WHERE {{

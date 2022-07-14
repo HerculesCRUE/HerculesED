@@ -56,7 +56,6 @@ namespace EditorCV.Models
             }
 
             NotificacionProyecto proyecto = CrearProyecto(pIdProyecto, pIdPersona, pIdAutorizacion);
-
             try
             {
                 RestClient client = new(pConfig.GetUrlEnvioProyecto());
@@ -85,25 +84,21 @@ namespace EditorCV.Models
         {
             // Comprobar si está el triple del estado.
             string valorEnviado = string.Empty;
-            StringBuilder select = new StringBuilder();
-            StringBuilder where = new StringBuilder();
+            string select = "";
+            string where = "";
 
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?enviado ");
-            where.Append("WHERE { ");
-            where.Append("?s a vivo:Project. ");
-            where.Append("OPTIONAL{?s roh:validationStatusProject ?enviado. } "); // TODO: Falta meter propiedad en el modelo.
-            where.Append($@"FILTER(?s = <{pIdProyecto}>) ");
-            where.Append("} ");
+            select += mPrefijos;
+            select += "SELECT DISTINCT ?enviado ";
+            where = @$"WHERE {{ 
+                        ?s a vivo:Project .
+                        OPTIONAL{{?s roh:validationStatusProject ?enviado. }}
+                        FILTER(?s = <{pIdProyecto}>)
+                    }}";
 
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "project");
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
-                }
+                valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
             }
 
             mResourceApi.ChangeOntoly("document");

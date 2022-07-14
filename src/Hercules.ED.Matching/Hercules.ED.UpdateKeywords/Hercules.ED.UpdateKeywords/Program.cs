@@ -42,9 +42,12 @@ namespace Hercules.ED.UpdateKeywords
 
                         // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
                         // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
-                        //if (partes.Count() <= 3)
+                        if (partes.Count() >5) {
+                            string s = "";
+
+                        }
                         //{
-                            dicResultados = ConsultarDatos(utilKeywords, partes);
+                        dicResultados = ConsultarDatos(utilKeywords, partes);
                         //}
 
                         // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
@@ -111,7 +114,7 @@ namespace Hercules.ED.UpdateKeywords
                     {
                         foreach (DataConcept tag in listaSnomedConcepts)
                         {
-                            utilKeywords.CargarDataConceptCompleto(tag, dicIds);
+                            //utilKeywords.CargarDataConceptCompleto(tag, dicIds);
                         }
                     }
 
@@ -119,19 +122,19 @@ namespace Hercules.ED.UpdateKeywords
                     List<DataConcept> listaMesh = new List<DataConcept>();
                     foreach (KeyValuePair<string, string> itemAux in dicResultados)
                     {
-                        utilKeywords.InsertDataMesh(itemAux.Key, itemAux.Value, listaMesh);
+                        //utilKeywords.InsertDataMesh(itemAux.Key, itemAux.Value, listaMesh);
                     }
 
                     // Carga de etiquetas.
                     foreach (DataConcept tag in listaMesh)
                     {
                         string idRecursoMesh = utilKeywords.CargarDataConceptCompleto(tag, dicIds);
-                        utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
+                        //utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
                     }
                 }
 
                 // Borrar triple de obtención de etiquetas.
-                utilKeywords.ModificarGetKeywordDocument(id);
+                //utilKeywords.ModificarGetKeywordDocument(id);
             }
         }
 

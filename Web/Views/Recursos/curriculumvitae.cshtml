@@ -45,7 +45,8 @@
             <div class="col">
                 <div class="form panel-centrado">
                     <h1>@Html.Translate("TITULO_PAGINA_NO_ENCONTRADA")</h1>
-                    @Html.Raw(Html.Translate("DESCRIPCION_PAGINA_NO_ENCONTRADA"))
+                    <p>@Html.Translate("DESCRIPCION_PAGINA_NO_ENCONTRADA")</p>
+                    <p>@Html.Translate("SI_LO_DESEAS_PUEDES") <a href="@Comunidad.Url">@Html.Translate("VOLVER_A_HOME")</a>.</p>
                 </div>
             </div>
         </div>
@@ -184,7 +185,8 @@ $(function() {
                 <div class="upper-wrap">
                     <div class="h1-container">
                         <h1>@Html.Translate("CV_EDITARCV")</h1>
-                        <div class="cambiar-seccion dropdown">
+                        <!--
+						<div class="cambiar-seccion dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown">
                                 <span class="texto">@Html.Translate("CV_CAMBIARSECCION")</span>
                             </a>
@@ -199,6 +201,7 @@ $(function() {
 								<a class="item-dropdown" href="#researchobject-tab" data-toggle="tab" role="tab" aria-controls="researchobject-panel" aria-selected="true">@Html.Translate("CV_RESEARCHOBJECTS")</a>
                             </div>
                         </div>
+						-->
                     </div>
                     <div class="acciones-listado acciones-curriculum">
                         <div class="wrap">

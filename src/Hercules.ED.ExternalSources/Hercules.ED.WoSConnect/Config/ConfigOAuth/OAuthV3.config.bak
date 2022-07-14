@@ -1,4 +1,4 @@
-<config>
+﻿<config>
 	<apiEndpoint>http://apiedma.gnoss.com</apiEndpoint>
 	<communityShortName>hercules</communityShortName>
 	<ontologyName>Organization</ontologyName>

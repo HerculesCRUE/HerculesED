@@ -1,4 +1,5 @@
 var urlExportacionCV = url_servicio_editorcv+"ExportadoCV/";
+var perfilesExportacion;
 
 var exportacionCV = {
     idUsuario: null,
@@ -29,8 +30,12 @@ var exportacionCV = {
 					
 					$.post(urlExportacionCV + 'GetCV', data, function(data) {
 						OcultarUpdateProgress();
+						mostrarNotificacion('success', GetText('CV_EXPORTAR_COMPLETO_COMPLETADO'));
 						that.cargarListadoCV();
 					});
+				}
+				else if($('#ultimosCinco:checked').length){
+					
 				}
 				else if($('#seleccionar:checked').length){
 					//Exportacion parcial
@@ -64,6 +69,7 @@ var exportacionCV = {
 			MostrarUpdateProgress();
 			$.post(urlExportacionCV + 'GetCV', data, function(data) {
 				OcultarUpdateProgress();
+				mostrarNotificacion('success', GetText('CV_EXPORTAR_COMPLETADO'));
 				that.cargarListadoCV();
 			});
         });
@@ -71,7 +77,8 @@ var exportacionCV = {
 	//Carga los CV exportados
     cargarListadoCV: function() {
 		$('.resource-list-wrap.listadoCV article').remove();
-
+		$('.exportacion').hide();
+		
         var that = this;
 		that.idUsuario = $('#inpt_usuarioID').val();
 		$('.col-contenido.listadoExportacion').show();
@@ -137,56 +144,237 @@ var exportacionCV = {
 	//Carga los datos del CV para la exportacion
     cargarCV: function() {
 		$('.col-contenido.listadoExportacion').hide();
-		$('.col-contenido.exportacion').show();
         var that = this;
+		var petition = 'x' + RandomGuid();
 		MostrarUpdateProgressTime(0);
+		
+		if($('#titleMascaraBlanca').length == 0){
+			$('#mascaraBlanca').find('.wrap.popup').append('<br><div id="titleMascaraBlanca"></div>');
+			$('#mascaraBlanca').find('.wrap.popup').append('<div id="workMascaraBlanca"></div>');
+		}
 		$('.panel-group.pmd-accordion').remove();
-        $.get(urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&pLang=" + lang, null, function(data) {
-        
-            //recorrer items y por cada uno			
-			for(var i=0;i<data.length;i++){
-				var id = 'x' + RandomGuid();
-				var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
-										<div class="panel">
-											<div class="panel-heading" role="tab" id="datos-tab">
-												<p class="panel-title">
-													<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
-														<span class="texto">${data[i].title}</span>
-														<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
-													</a>
-												</p>
-											</div>
-											<div id="${id}" class="collapse show">
-												<div class="row cvTab">
-													<div class="col-12 col-contenido">
+		
+		//Actualizo el estado cada 500 milisegundos
+		var intervalStatus = setInterval(function() {
+			$.ajax({
+				url: urlExportacionCV + '/ExportarCVStatus?petitionID=' + petition,
+				type: 'GET',
+				success: function ( response ) {
+					if(response != null && response != ''){
+						if(response.subTotalWorks == null || response.subTotalWorks == 0 || response.subActualWork==response.subTotalWorks){
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}`);
+						}
+						else{
+							$('#titleMascaraBlanca').text(`${GetText(response.actualWorkTitle)}` + " (" +  response.subActualWork + '/' + response.subTotalWorks + ")");
+						}
+						//Si no hay pasos maximos no muestro la lista
+						if(response.totalWorks != 0){
+							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+						}
+					}
+				}
+			});	
+		}, 500);		
+		
+		
+        $.ajax({
+			url: urlExportacionCV + 'GetAllTabs?userID=' + that.idUsuario + "&petitionID=" + petition + "&pLang=" + lang,
+			type: 'GET',
+			success: function(data) {	
+				clearInterval(intervalStatus);			
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
+				//recorrer items y por cada uno			
+				for(var i=0;i<data.length;i++){
+					var id = 'x' + RandomGuid();
+					var contenedorTab=`<div class="panel-group pmd-accordion" id="datos-accordion${i}" role="tablist" aria-multiselectable="true">
+											<div class="panel">
+												<div class="panel-heading" role="tab" id="datos-tab">
+													<p class="panel-title">
+														<a data-toggle="collapse" data-parent="#datos-accordion${i}" href="#${id}" aria-expanded="true" aria-controls="datos-tab" data-expandable="false" class="">
+															<span class="texto">${data[i].title}</span>
+															<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
+														</a>
+													</p>
+												</div>
+												<div id="${id}" class="collapse show">
+													<div class="row cvTab">
+														<div class="col-12 col-contenido">
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</div>`
-				if(i==0){
-					$('.contenido-cv').append( $(contenedorTab));
-					var html = edicionCV.printPersonalData(id, data[i]);					
-					$('div[id="' + id + '"] .col-12.col-contenido').append(html);
-					$('#'+id+' input[type="checkbox"]').prop('checked',true);
-				}else if(i == 6){
-					$('.contenido-cv').append( $(contenedorTab));		
-					var html = printFreeText(id, data[i]);
-					$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
-				}else{
-					$('.contenido-cv').append( $(contenedorTab));		
-					edicionCV.printTab(id, data[i]);
-				}				
-			}			
-			
-            OcultarUpdateProgress();
-			
-			$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
-			checkAllCVWrapper();
-        });
+										</div>`
+					if(i==0){
+						$('.contenido-cv').append( $(contenedorTab));
+						var html = edicionCV.printPersonalData(id, data[i]);					
+						$('div[id="' + id + '"] .col-12.col-contenido').append(html);
+						$('#'+id+' input[type="checkbox"]').prop('checked',true);
+					}else if(i == 6){
+						$('.contenido-cv').append( $(contenedorTab));		
+						var html = printFreeText(id, data[i]);
+						$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
+					}else{
+						$('.contenido-cv').append( $(contenedorTab));		
+						edicionCV.printTab(id, data[i]);
+					}				
+				}			
+				
+				asignarAccionesBotonesPerfil(that.idUsuario);
+				var perfiles = getExportationProfile(that.idUsuario);
+				if($('#ddlProfile option').length < 1){
+					$('.misPerfiles').hide();
+				}
+				
+				$('.resource-list.listView .resource .wrap').css("margin-left", "70px")
+				checkAllCVWrapper();
+				
+				$('.exportacion').show();
+				$('.col-contenido.exportacion').show();
+				OcultarUpdateProgress();
+			},
+			error: function(jqXHR, exception){
+				clearInterval(intervalStatus);			
+				$('#titleMascaraBlanca').remove();
+				$('#workMascaraBlanca').remove();
+			}
+		});
         return;
     }
 };
+
+function asignarAccionesBotonesPerfil(userID){
+	$('.btn.btn-primary.uppercase.btGuardarCV').off('click').on('click', function(e) {
+		var title = $(".nombrePerfilExportacion").val();
+		if(title != null && title != ""){
+			var checkList = $("input[type='checkbox']:checked");
+			var checkValues = [];
+			for(var i = 0; i < checkList.length; i++){
+				checkValues.push(checkList[i].value);
+			}
+			addExportationProfile(userID, title, checkValues);
+		}else{
+			window.alert("Debes añadir un nombre");
+		}
+	});
+	$('.btn.btn-primary.uppercase.btCargarCV').off('click').on('click', function(e) {
+		var selectedOption = $("#ddlProfile").find("option:selected").val();
+		if(selectedOption == GetText('SELECCIONA_UNA_OPCION')){
+			window.alert('No hay un perfil seleccionado');
+			return;
+		}
+		var title = $("#ddlProfile").find("option:selected").text();
+		loadExportationProfile(title);
+	});
+	
+	$('.btn.btn-primary.uppercase.btBorrarCV').off('click').on('click', function(e) {
+		var selectedOption = $("#ddlProfile").find("option:selected").val();		
+		if(selectedOption == GetText('SELECCIONA_UNA_OPCION')){
+			window.alert('No hay un perfil seleccionado');
+			return;
+		}
+		var title = $("#ddlProfile").find("option:selected").text();
+		deleteExportationProfile(userID, title);
+	});
+}
+
+function getExportationProfile(userID){	
+	$.ajax({
+		url: url_servicio_editorcv+"ExportadoCV/GetPerfilExportacion?userID=" + userID,
+		type: 'GET',
+		success: function ( response ) {
+			perfilesExportacion = response;
+			var contador = 0;
+			var selector = $('#ddlProfile');
+			selector.empty();
+			var initialOpcion = '<option selected="selected" disabled="disabled">' + GetText('SELECCIONA_UNA_OPCION') + "</option>";
+			selector.append(initialOpcion);
+			for(var opcion in response){				
+				selector.append(new Option(opcion, contador));	
+				contador++;
+			}
+			if(contador==0){
+				$('.misPerfiles').hide();
+			}else{
+				$('.misPerfiles').show();
+			}
+			
+			return response;
+		}
+	});
+}
+
+function loadExportationProfile(title){
+	if(title == GetText('SELECCIONA_UNA_OPCION')){
+		window.alert('No hay un perfil seleccionado');
+		return;
+	}
+	for(var opcion in perfilesExportacion){
+		if(opcion == title){
+			for(var check in perfilesExportacion[opcion]){
+				var elementoSeleccionar = $('input[value="' + perfilesExportacion[opcion][check] + '"');
+				elementoSeleccionar.prop('checked', true);
+			}
+		}
+	}
+}
+
+function deleteExportationProfile(userID, title){	
+	var formData = new FormData();
+	formData.append('userID', userID);
+	formData.append('title', title);
+	
+	$.ajax({
+		url: url_servicio_editorcv+"ExportadoCV/DeletePerfilExportacion?userID=" + userID + "&title=" + title,
+		type: 'DELETE',
+		data: formData,	
+		cache: false,
+		processData: false,
+		enctype: 'multipart/form-data',
+		contentType: false,
+		success: function ( response ) {
+			urlExportationProfilesCV = response;
+			mostrarNotificacion('success', GetText('CV_ELIMINAR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();
+		},
+		error: function(jqXHR, exception){
+			mostrarNotificacion('error', GetText('CV_ERROR_ELIMINAR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();		
+		}
+	});
+}
+
+function addExportationProfile(userID, title, checks){
+	var formData = new FormData();
+	formData.append('userID', userID);
+	formData.append('title', title);
+	for(var i=0; i < checks.length; i++){
+		formData.append('checks', checks[i]);
+	}
+	
+	MostrarUpdateProgress();
+	$.ajax({
+		url: url_servicio_editorcv+"ExportadoCV/AddPerfilExportacion",
+		type: 'POST',
+		data: formData,	
+		cache: false,
+		processData: false,
+		enctype: 'multipart/form-data',
+		contentType: false,
+		success: function ( response ) {			
+			mostrarNotificacion('success', GetText('CV_ANIADIR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();
+		},
+		error: function(jqXHR, exception){
+			mostrarNotificacion('error', GetText('CV_ERROR_ANIADIR_PERFIL_EXPORTACION'));
+			getExportationProfile(userID);
+			OcultarUpdateProgress();
+		}
+	});
+}
 
 function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {

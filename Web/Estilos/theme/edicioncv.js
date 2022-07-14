@@ -3614,7 +3614,9 @@ var edicionCV = {
 		var that=this;
 		var formData = new FormData();
 		formData.append('pIdRecurso', idrecurso);
-		formData.append('pIdProyecto', idproyecto);
+		for (var indice in idproyecto){
+			formData.append('pIdProyecto', idproyecto[indice]);
+		}
 		MostrarUpdateProgress();
 		$.ajax({
 			url: urlEnvioValidacionCV + 'EnvioPRC',
@@ -3625,7 +3627,7 @@ var edicionCV = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function ( response ) {				
-				mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));				
+				mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + section + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + idrecurso + "&pLang=" + lang, null, function(data) {
 					$('a[data-id="' + idrecurso + '"]').closest('article').replaceWith(that.printHtmlListItem(idrecurso, data));
 					that.repintarListadoTab(section);
@@ -3654,7 +3656,7 @@ var edicionCV = {
 					html += `<article class="resource folder">
 								<div class="form-group">
 									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
+										<input class="form-check-input" type="checkbox" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
 										<label class="form-check-label" for="proyecto-${contador}"></label>
 									</div>
 								</div>
@@ -6301,7 +6303,10 @@ operativaFormularioProduccionCientifica.formProyecto = function (section,rdfType
 			
 			if($('input[name="proyecto"]:checked').length)
 			{
-				idproyecto = $('input[name="proyecto"]:checked').attr('projectId');
+				var idproyecto = [];
+				$('input[name="proyecto"]:checked').each(function() {
+					idproyecto.push($(this).attr('projectId'));
+				});
 			}
 			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
 			edicionCV.sendPRC(idrecurso,idproyecto, section,rdfTypeTab);
