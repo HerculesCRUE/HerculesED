@@ -172,8 +172,8 @@ var metricas = {
                         <div class="row">
                             <div class="col">
                                 <div class="form panel-centrado">
-                                    <h1>No has iniciado sesión</h1>
-                                    <p>Para mostrar tus indicadores personales es necesario iniciar sesión.</p>
+                                    <h1>${metricas.GetText("NO_HAS_INICIADO_SESION")}</h1>
+                                    <p>${metricas.GetText("DESCRIPCION_NO_HAS_INICIADO_SESION")}</p>
                                 </div>
                             </div>
                         </div>
@@ -184,19 +184,15 @@ var metricas = {
             // Petición para obtener los datos de la página.
             $.get(url, arg, function (listaData) {
                 if (listaData.length == 0) {
-                    // TODO: Probablemente haya que cambiar la url de indicadores.
-                    var urlIndicadores = window.location.href;
-                    var finalUrl = urlIndicadores.split('/')[urlIndicadores.split('/').length - 1];
-                    urlIndicadores = urlIndicadores.split(finalUrl)[0] + "indicadores";
                     $('div.row-content').append(`
                         <div class="container">
                             <div class="row-content">
                                 <div class="row">
                                     <div class="col">
                                         <div class="form panel-centrado">
-                                            <h1>No tienes indicadores personales</h1>
-                                            <p>No hemos encontrado ninguna página de indicadores personales.</p>
-                                            <p>Puedes guardar gráficas desde <a href="${urlIndicadores}">la página de indicadores</a>.</p>
+                                            <h1>${metricas.GetText("NO_TIENES_INDICADORES")}</h1>
+                                            <p>${metricas.GetText("COMIENZA_A_CREAR_INDICADORES")}</p>
+                                            <p><a href="${metricas.GetText("URL_INDICADORES")}">${metricas.GetText("LA_PAGINA_DE_INDICADORES")}</a>.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1011,10 +1007,6 @@ var metricas = {
 
             if (listaData.length == 0) {
                 if ($('div.row-content').find('div.sin-graficas').length == 0) {
-                    // TODO: Probablemente haya que cambiar la url de indicadores.
-                    var urlIndicadores = window.location.href;
-                    var finalUrl = urlIndicadores.split('/')[urlIndicadores.split('/').length - 1];
-                    urlIndicadores = urlIndicadores.split(finalUrl)[0] + "indicadores";
                     $('div.row-content').append(`
                     <div class="sin-graficas">
                         <div class="container">
@@ -1022,8 +1014,8 @@ var metricas = {
                                 <div class="row">
                                     <div class="col">
                                         <div class="form panel-centrado">
-                                            <h1>No hay gráficas en esta página</h1>
-                                            <p>Puedes <a href="#" onclick="$('.delete-page').click()">borrar la página</a> o <a href="${urlIndicadores}">añadir nuevas gráficas</a>.</p>
+                                            <h1>${metricas.GetText("NO_HAY_GRAFICAS")}</h1>
+                                            <p>${metricas.GetText("PUEDES")} <a href="#" onclick="$('.delete-page').click()">${metricas.GetText("BORRAR_LA_PAGINA")}</a> ${metricas.GetText("O")} <a href="${metricas.GetText("URL_INDICADORES")}">${metricas.GetText("ANIADIR_NUEVAS_GRAFICAS")}</a>.</p>
                                         </div>
                                     </div>
                                 </div>

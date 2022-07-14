@@ -34,26 +34,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     mTitle = value;
                 }
             }
-        }
-        public string mFecha { get; set; }
-        public string fecha
-        {
-            get
-            {
-                return mFecha;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    mFecha = string.Empty;
-                }
-                else
-                {
-                    mFecha = value;
-                }
-            }
-        }
+        }       
         private HashSet<string> mAutores { get; set; }
         public HashSet<string> autores
         {
@@ -80,12 +61,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             score = 0.8f
         };
 
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f
-        };
-
         private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
@@ -102,13 +77,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     property = "descripcion",
                     config = configTitulo,
                     value = title
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
                 },
 
                 new DisambiguationData()
@@ -141,11 +109,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate group_concat(?autor;separator=""|"") as ?autores ";
+                string select = $@"SELECT distinct ?item ?itemTitle group_concat(?autor;separator=""|"") as ?autores ";
                 string where = $@"where {{
                                         ?item a <http://purl.org/ontology/bibo/Document>. 
                                         ?item <{Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo}> ?itemTitle . 
-                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha}> ?itemDate }}
                                         OPTIONAL{{ 
                                             ?item <http://purl.org/ontology/bibo/authorList> ?authorList . 
                                             ?authorList <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor
@@ -159,8 +126,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos
                     {
                         ID = fila["item"].value,
-                        title = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        title = fila["itemTitle"].value
                     };
 
                     publicacionesDocumentos.autores = new HashSet<string>();

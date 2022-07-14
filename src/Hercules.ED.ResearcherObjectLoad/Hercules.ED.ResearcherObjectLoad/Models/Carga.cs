@@ -60,6 +60,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             Disambiguation.mResourceApi = mResourceApi;
 
             // Obtención de las categorías.
+            // TODO: Falta la asignación por ID y no por nombre. A la espera que elhuyar nos envíe los IDs, en lugar de los nombres.
             Tuple<Dictionary<string, string>, Dictionary<string, string>> tupla = ObtenerDatosTesauro();
 
             FileLogger.Log($@"{DateTime.Now} - Ruta lectura: {pRutaLectura}");
@@ -2373,6 +2374,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             Dictionary<string, string> dicAreasBroader = new Dictionary<string, string>();
             Dictionary<string, string> dicAreasNombre = new Dictionary<string, string>();
+
+            // ?concept <http://purl.org/dc/elements/1.1/identifier> ?id.
 
             string select = @"SELECT DISTINCT * ";
             string where = @$"WHERE {{

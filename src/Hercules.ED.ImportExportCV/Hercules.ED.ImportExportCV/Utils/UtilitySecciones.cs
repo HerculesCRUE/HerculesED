@@ -125,7 +125,7 @@ namespace Utils
                              }} ORDER BY ?nombreRevista
                         }} LIMIT {limit} OFFSET {offsetInt} ";
                     SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "maindocument");
-                    
+
                     for (int i = 0; i < resultData.results.bindings.Count; i++)
                     {
                         listaRevistasAux[resultData.results.bindings.Select(x => x["nombreRevista"].value).ElementAt(i).ToLower()] = resultData.results.bindings.Select(x => x["identificador"].value).ElementAt(i);
@@ -158,7 +158,7 @@ namespace Utils
         public static string GetOrganizacionPorNombre(ResourceApi pResourceApi, string nombreOrganizacion)
         {
             //Recalculamos cada 60 minutos
-            if(mDateOrgsNombreIds.AddMinutes(60) <DateTime.Now)
+            if (mDateOrgsNombreIds.AddMinutes(60) < DateTime.Now)
             {
                 Dictionary<string, string> aux = new Dictionary<string, string>();
                 int offset = 0;
@@ -186,7 +186,7 @@ namespace Utils
                     }
                 }
 
-                
+
                 mOrgsNombreIds = aux;
                 mDateOrgsNombreIds = DateTime.Now;
             }
@@ -408,6 +408,14 @@ namespace Utils
         public static void InsertaAutorProperties(List<CvnItemBeanCvnAuthorBean> listaAutores, Entity entidadAux, string propiedadAutorFirma, string propiedadAutorOrden,
             string propiedadAutorNombre, string propiedadAutorPrimerApellido, string propiedadAutorSegundoApellido)
         {
+            // En caso de no tener firma, la creo con la concatenación del nombre y los apellidos
+            if (string.IsNullOrEmpty(propiedadAutorFirma) && !string.IsNullOrEmpty(propiedadAutorNombre) &&
+                !string.IsNullOrEmpty(propiedadAutorPrimerApellido) || !string.IsNullOrEmpty(propiedadAutorSegundoApellido))
+            {
+                propiedadAutorFirma = propiedadAutorNombre + " " + propiedadAutorPrimerApellido;
+                propiedadAutorFirma = propiedadAutorFirma.Trim() + " " + propiedadAutorSegundoApellido;
+            }
+
             //No hago nada si no se pasa la propiedad.
             if (string.IsNullOrEmpty(propiedadAutorFirma) || string.IsNullOrEmpty(propiedadAutorOrden) ||
                 string.IsNullOrEmpty(propiedadAutorNombre) || string.IsNullOrEmpty(propiedadAutorPrimerApellido) ||

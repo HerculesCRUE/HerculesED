@@ -166,8 +166,7 @@ namespace DesnormalizadorHercules
         /// </summary>
         private void ProcessComplete()
         {
-            string denormalizerCronExpression = "0 0 0 ? * *";
-            denormalizerCronExpression = _configService.GetDenormalizerCronExpression();
+            string denormalizerCronExpression = _configService.GetDenormalizerCronExpression();
 
             new Thread(() =>
             {

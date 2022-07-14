@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
@@ -38,7 +40,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// </summary>
         /// <param name="pPublicacionIn">Publicación de entrada.</param>
         /// <returns></returns>
-        public Publication getPublicacionCita(PublicacionInicial pPublicacionIn)
+        public Publication getPublicacionCita(PublicacionInicial pPublicacionIn, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
             Publication publicacionFinal = new Publication();
             publicacionFinal.typeOfPublication = getType(pPublicacionIn);
@@ -47,20 +49,20 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacionFinal.Abstract = getAbstract(pPublicacionIn);
             publicacionFinal.doi = getDoi(pPublicacionIn);
             publicacionFinal.dataIssued = getDate(pPublicacionIn);
-            publicacionFinal.hasKnowledgeAreas = getKnowledgeAreas(pPublicacionIn);
+            publicacionFinal.hasKnowledgeAreas = getKnowledgeAreas(pPublicacionIn, pTuplaTesauro, pResourceApi);
             publicacionFinal.freetextKeywords = getFreetextKeyword(pPublicacionIn);
             publicacionFinal.seqOfAuthors = getAuthors(pPublicacionIn);
             publicacionFinal.correspondingAuthor = publicacionFinal.seqOfAuthors[0];
             publicacionFinal.hasPublicationVenue = getJournal(pPublicacionIn);
             publicacionFinal.hasMetric = getPublicationMetric(pPublicacionIn);
             publicacionFinal.openAccess = getOpenAccess(pPublicacionIn);
-            publicacionFinal.volume = getVolume(pPublicacionIn);            
+            publicacionFinal.volume = getVolume(pPublicacionIn);
 
             return publicacionFinal;
         }
 
 
-        public List<Publication> getListPublicatio(Root objInicial)
+        public List<Publication> getListPublicatio(Root objInicial, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
             List<Publication> sol = new List<Publication>();
             if (objInicial != null)
@@ -78,7 +80,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 {
                                     try
                                     {
-                                        Publication publicacion = cambioDeModeloPublicacion(rec, true);
+                                        Publication publicacion = cambioDeModeloPublicacion(rec, true, pTuplaTesauro, pResourceApi);
 
                                         if (publicacion != null)
                                         {
@@ -104,7 +106,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             return sol;
         }
 
-        public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, Boolean publicacion_principal)
+        public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, Boolean publicacion_principal, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
             Publication publicacion = new Publication();
             publicacion.typeOfPublication = getType(objInicial);
@@ -116,7 +118,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacion.dataIssued = getDate(objInicial);
             publicacion.pageStart = getPageStart(objInicial);
             publicacion.pageEnd = getPageEnd(objInicial);
-            publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
+            publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial, pTuplaTesauro, pResourceApi);
             publicacion.freetextKeywords = getFreetextKeyword(objInicial);
             publicacion.seqOfAuthors = getAuthors(objInicial);
             publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
@@ -306,7 +308,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// </summary>
         /// <param name="pPublicacionIn">Publicación a obtener las areas.</param>
         /// <returns>Areas.</returns>
-        public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial pPublicacionIn)
+        public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial pPublicacionIn, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
             if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.category_info != null && pPublicacionIn.static_data.fullrecord_metadata.category_info.subjects != null && pPublicacionIn.static_data.fullrecord_metadata.category_info.subjects.subject != null && pPublicacionIn.static_data.fullrecord_metadata.category_info.subjects.subject.Any())
             {
@@ -327,10 +329,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                         area.knowledgeArea.Add(areaCompleta);
                     }
                 }
-                listaAreas.Add(area);
+                //listaAreas.Add(area);
 
                 // TODO: Comprobar funcionamiento correcto.
-                KnowledgeAreas taxonomia = recuperar_taxonomia(area);
+                KnowledgeAreas taxonomia = recuperar_taxonomia(area, pTuplaTesauro, pResourceApi);
                 if (taxonomia != null)
                 {
                     listaAreas.Add(taxonomia);
@@ -342,7 +344,29 @@ namespace WoSConnect.ROs.WoS.Controllers
             return null;
         }
 
-        public KnowledgeAreas recuperar_taxonomia(KnowledgeAreas areas_wos)
+        private static Tuple<string, string> ObtenerEquivalencias(string pNombre, ResourceApi pResourceApi)
+        {
+            string select = @"SELECT DISTINCT ?id ?concept ?nombre FROM <http://gnoss.com/referencesource.owl> ";
+            string where = @$"WHERE {{
+                        ?concept <http://purl.org/dc/elements/1.1/identifier> ?id.
+                        ?concept <http://w3id.org/roh/sourceDescriptor> ?descriptor.
+                        ?concept <http://www.w3.org/2008/05/skos#prefLabel> ?nombre.
+                        ?descriptor <http://w3id.org/roh/impactSourceCategory> ?nombreAux.
+                        FILTER (lcase(str(?nombreAux)) = '{pNombre}').
+                        ?descriptor <http://w3id.org/roh/impactSource> <http://gnoss.com/items/referencesource_000>. 
+                }}";
+            SparqlObject resultadoQuery = pResourceApi.VirtuosoQuery(select, where, "taxonomy");
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count == 1)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    return new Tuple<string, string>(fila["id"].value, fila["nombre"].value);
+                }
+            }
+            return null;
+        }
+
+        public KnowledgeAreas recuperar_taxonomia(KnowledgeAreas areas_wos, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
             KnowledgeAreas taxonomia_hercules = new KnowledgeAreas();
             List<KnowledgeArea> listado = new List<KnowledgeArea>();
@@ -351,24 +375,13 @@ namespace WoSConnect.ROs.WoS.Controllers
             List<KnowledgeArea> wos = areas_wos.knowledgeArea;
             foreach (KnowledgeArea area_wos_obtenida in wos)
             {
-                KnowledgeArea area_taxonomia = new KnowledgeArea();
                 try
                 {
-                    //en Scopus tambien habra una extepcion de este tipo. 
-                    if (area_wos_obtenida.name == "Physics, Fluids & Plasmas")
-                    {
-                        area_taxonomia.name = "Fluid Dynamics";
-                        listado.Add(area_taxonomia);
-                        KnowledgeArea area_taxonomia_2 = new KnowledgeArea();
-                        area_taxonomia_2.name = "Plasma Physics";
-                        listado.Add(area_taxonomia_2);
-                    }
-                    else
-                    {
-                        area_taxonomia.name = this.WoSLogic.ds[area_wos_obtenida.name];
-
-                        listado.Add(area_taxonomia);
-                    }
+                    Tuple<string, string> equivalencia = ObtenerEquivalencias(area_wos_obtenida.name.ToLower(), pResourceApi);
+                    KnowledgeArea area_taxonomia = new KnowledgeArea();
+                    area_taxonomia.hasCode = equivalencia.Item1;
+                    area_taxonomia.name = equivalencia.Item2;
+                    listado.Add(area_taxonomia);
                 }
                 catch
                 {
@@ -654,7 +667,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         {
             if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null & pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold))
             {
-                if(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold == "S")
+                if (pPublicacionIn.static_data.summary.pub_info.journal_oas_gold == "S")
                 {
                     return true;
                 }
