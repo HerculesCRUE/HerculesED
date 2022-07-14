@@ -413,7 +413,7 @@ namespace Utils
                 !string.IsNullOrEmpty(propiedadAutorPrimerApellido) || !string.IsNullOrEmpty(propiedadAutorSegundoApellido))
             {
                 propiedadAutorFirma = propiedadAutorNombre + " " + propiedadAutorPrimerApellido;
-                propiedadAutorFirma = propiedadAutorFirma.Trim() + " " + propiedadAutorSegundoApellido;
+                propiedadAutorFirma = propiedadAutorFirma.Trim() + " " + propiedadAutorSegundoApellido.Trim();
             }
 
             //No hago nada si no se pasa la propiedad.
