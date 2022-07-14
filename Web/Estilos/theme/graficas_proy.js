@@ -14,16 +14,16 @@ var callbacks = {}
 
 
 function pintarGraficaIndividual(pContenedor, pIdPagina, idGrafica = "") {
-    if (!pContenedor.hasClass("grafica")) {
-        pContenedor.addClass("grafica");
+    if (!$(pContenedor).hasClass("grafica")) {
+        $(pContenedor).addClass("grafica");
     }
     //pintarContenedoresGraficas(pContenedor, pIdPagina);
     getGrafica(pIdPagina, idGrafica, "", pContenedor);
     callbacks[idGrafica + "_" + pIdPagina] = {
         ctx: pContenedor,
-        zoom: addZoomButton.bind(null, pContenedor),
-        downloadcv: addDownloadCvButton.bind(null, pContenedor),
-        downloadjpg: addDownloadJpgButton.bind(null, pContenedor),
+        //zoom: addZoomButton.bind(null, pContenedor),
+        //downloadcv: addDownloadCvButton.bind(null, pContenedor),
+        //downloadjpg: addDownloadJpgButton.bind(null, pContenedor),
     };
 
 }
@@ -683,7 +683,7 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
         if (horizontal) {
             ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
         } else {// -- vertical
-            var parent = $(ctx).parents(".wrap")[0] || $(ctx).parents(".modal-content")[0];
+            /*var parent = $(ctx).parents(".wrap")[0] || $(ctx).parents(".modal-content")[0];
             if ($(parent).find(".acciones-mapa .").length == 0) {
                 $(parent).find(".acciones-mapa .wrap").prepend(`
                 <div class="expand">
@@ -692,7 +692,7 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
                     </a>
                 </div>
             `)
-            }
+            }*/
             //myChart.canvas.parentNode.style.width = canvasSize + 'px';
             ctx.parentNode.style.height = 100 + '%'; //se escala la altura //css done
             ctx.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
