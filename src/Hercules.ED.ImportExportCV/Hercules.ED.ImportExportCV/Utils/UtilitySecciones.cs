@@ -121,14 +121,19 @@ namespace Utils
                     //Si tengo más de 10.000 resultados repito la consulta, sino salgo del bucle
                     string select = $@"SELECT distinct ?identificador ?nombreRevista {{ select *";
                     string where = $@"where {{
+                                ?identificador a <http://w3id.org/roh/MainDocument> .
                                 ?identificador <http://w3id.org/roh/title> ?nombreRevista .
                              }} ORDER BY ?nombreRevista
                         }} LIMIT {limit} OFFSET {offsetInt} ";
                     SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "maindocument");
 
+                    string nombreRevistaConsulta = "";
+                    string identificadorRevistaConsulta = "";
                     for (int i = 0; i < resultData.results.bindings.Count; i++)
                     {
-                        listaRevistasAux[resultData.results.bindings.Select(x => x["nombreRevista"].value).ElementAt(i).ToLower()] = resultData.results.bindings.Select(x => x["identificador"].value).ElementAt(i);
+                        nombreRevistaConsulta = resultData.results.bindings.Select(x => x["nombreRevista"].value).ElementAt(i).ToLower();
+                        identificadorRevistaConsulta = resultData.results.bindings.Select(x => x["identificador"].value).ElementAt(i);
+                        listaRevistasAux[nombreRevistaConsulta] = identificadorRevistaConsulta;
                     }
                     offsetInt += limit;
                     if (resultData.results.bindings.Count < limit)

@@ -302,7 +302,7 @@ namespace EditorCV.Models
                     preimport.secciones.Exists(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection)) ||
                     string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.020.010.000")) ||
                     string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.020.020.000")) ||
-                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.010.000.000"))
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.010.000.000")) 
                 )
                 {
 
