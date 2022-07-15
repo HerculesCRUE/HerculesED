@@ -29,14 +29,14 @@ namespace Hercules.ED.UpdateKeywords
             {
                 Console.WriteLine($@"{DateTime.Now} ---------- Publicación {contadorPub}/{listaIds.Count}");
                 Dictionary<string, string> dicEtiquetas = utilKeywords.GetKeywords(id);
-                
+
                 foreach (KeyValuePair<string, string> etiquetaTag in dicEtiquetas)
                 {
                     Console.WriteLine($@"{DateTime.Now} ---------- Procesando etiqueta: {etiquetaTag.Value}");
                     string idEtiquetaAux = etiquetaTag.Key;
 
                     // 1.- Probamos con el término en "Exact Match".
-                    List<string> listaAux = new List<string>() { etiquetaTag.Value };
+                    List<string> listaAux = new List<string>() { etiquetaTag.Value.Replace(")", "").Replace("(", "") };
                     Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
                     if (!utilKeywords.ComprobarCaracteres(etiquetaTag.Value))

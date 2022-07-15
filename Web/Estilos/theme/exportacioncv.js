@@ -35,7 +35,7 @@ var exportacionCV = {
 					});
 				}
 				else if($('#ultimosCinco:checked').length){
-					
+					that.cargarCV(true);
 				}
 				else if($('#seleccionar:checked').length){
 					//Exportacion parcial
@@ -142,7 +142,7 @@ var exportacionCV = {
 		});
 	},
 	//Carga los datos del CV para la exportacion
-    cargarCV: function() {
+    cargarCV: function(isLast5Years) {
 		$('.col-contenido.listadoExportacion').hide();
         var that = this;
 		var petition = 'x' + RandomGuid();
@@ -157,7 +157,7 @@ var exportacionCV = {
 		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
-				url: urlExportacionCV + '/ExportarCVStatus?petitionID=' + petition,
+				url: urlExportacionCV + 'ExportarCVStatus?petitionID=' + petition,
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
@@ -212,11 +212,11 @@ var exportacionCV = {
 						$('#'+id+' input[type="checkbox"]').prop('checked',true);
 					}else if(i == 6){
 						$('.contenido-cv').append( $(contenedorTab));		
-						var html = printFreeText(id, data[i]);
+						var html = printFreeText(id, data[i], isLast5Years);
 						$('div[id="' + id + '"] .col-12.col-contenido').append(html);				
 					}else{
 						$('.contenido-cv').append( $(contenedorTab));		
-						edicionCV.printTab(id, data[i]);
+						edicionCV.printTab(id, data[i], isLast5Years);
 					}				
 				}			
 				
@@ -380,11 +380,11 @@ function checkAllCVWrapper(){
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
 		if(!$(this)[0].checked)
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text('Seleccionar todos');
+			$(this).closest('.custom-control').find('.custom-control-label').text(GetText('CV_SELECCIONAR_TODOS'));
 		}
 		else
 		{
-			$(this).closest('.custom-control').find('.custom-control-label').text('Deseleccionar todos');
+			$(this).closest('.custom-control').find('.custom-control-label').text(GetText('CV_DESELECCIONAR_TODOS'));
 		}
 		$(this).closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
@@ -396,12 +396,12 @@ function checkAllCVWrapper(){
 	});
 }
 
-function printCientificProduction(id, data){
+function printCientificProduction(id, data, isLast5Years){
 	//Pintado sección listado
 	//css mas generico
 	var id = 'x' + RandomGuid();
 	var id2 = 'x' + RandomGuid();
-
+	var isChecked = "";
 	var expanded = "";
 	var show = "";
 	if (data.item != null) {
@@ -412,8 +412,11 @@ function printCientificProduction(id, data){
 		} else {
 			//No desplegado	
 			expanded = "false";
+		}		
+		if(isLast5Years){
+			isChecked = "checked";
 		}
-		//TODO texto ver items
+		
 		var htmlSection = `
 		<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
 			<div class="panel">
@@ -432,7 +435,7 @@ function printCientificProduction(id, data){
 								<div class="resource-list-wrap">
 									<article class="resource success" >
 										<div class="custom-control custom-checkbox">
-											<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.item.entityID}">
+											<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.item.entityID}" ${isChecked}>
 											<label class="custom-control-label" for="check_resource_${id}"></label>
 										</div>
 										<div class="wrap">
@@ -459,10 +462,11 @@ function printCientificProduction(id, data){
 	return '';
 }
 	
-function printFreeText(id, data){
+function printFreeText(id, data, isLast5Years){
 	var id2 = 'x' + RandomGuid();
 	var expanded = "";
 	var show = "";
+	var isChecked = "";
 	if (data.sections != null) {
 		if (Object.keys(data.sections).length > 0) {
 			//Desplegado
@@ -471,6 +475,9 @@ function printFreeText(id, data){
 		} else {
 			//No desplegado	
 			expanded = "false";
+		}
+		if(isLast5Years){
+			isChecked = "checked";
 		}
 		var html = `<div class="panel-group pmd-accordion collapse show" section="${data.sections[0].title}" id="${id}" role="tablist" aria-multiselectable="true">
 						<div class="panel">
@@ -491,7 +498,7 @@ function printFreeText(id, data){
 												<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-														<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todos
+														<label class="custom-control-label" for="checkAllResources_${id2}">${GetText('CV_SELECCIONAR_TODOS')}
 														</label>
 													</div>
 												</div>
@@ -507,7 +514,7 @@ function printFreeText(id, data){
 				var id = 'x' + RandomGuid();
 				var html2 = `<article class="resource success" >
 								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.sections[0].item.entityID + "|||" + secciones[i].properties[0].property}">
+									<input type="checkbox" class="custom-control-input" id="check_resource_${id}"  value="${data.sections[0].item.entityID + "|||" + secciones[i].properties[0].property}"  ${isChecked}>
 									<label class="custom-control-label" for="check_resource_${id}"></label>
 								</div>
 								<div class="wrap">
@@ -537,7 +544,7 @@ function printFreeText(id, data){
 	}
 }	
 	
-edicionCV.printTab= function(entityID, data) {
+edicionCV.printTab = function(entityID, data, isLast5Years) {
 	var that=this;	
 	if (data.entityID != null) {
 		$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
@@ -545,11 +552,11 @@ edicionCV.printTab= function(entityID, data) {
 		for (var i = 0; i < data.sections.length; i++) {	
 			if(data.sections[i].identifier=="http://w3id.org/roh/generalQualityIndicators")
 			{
-				$('div[id="' + entityID + '"] .col-12.col-contenido').append(printCientificProduction(entityID, data.sections[i]));
+				$('div[id="' + entityID + '"] .col-12.col-contenido').append(printCientificProduction(entityID, data.sections[i], isLast5Years));
 			}
 			else
 			{			
-				$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
+				$('div[id="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i], isLast5Years));
 				if (data.sections[i].items != null) {
 					this.repintarListadoTab(data.sections[i].identifier,true);
 				} else if (data.sections[i].item != null) {
@@ -650,12 +657,11 @@ edicionCV.printPersonalData=function(id, data) {
 	}
 };
 
-edicionCV.printTabSection= function(data) {
+edicionCV.printTabSection= function(data, isLast5Years) {
 	//Pintado sección listado
 	//css mas generico
 	var id = 'x' + RandomGuid();
 	var id2 = 'x' + RandomGuid();
-
 	var expanded = "";
 	var show = "";
 	if (data.items != null) {
@@ -667,6 +673,7 @@ edicionCV.printTabSection= function(data) {
 			//No desplegado	
 			expanded = "false";
 		}
+				
 		//TODO texto ver items
 		var htmlSection = `
 		<div class="panel-group pmd-accordion" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
@@ -681,7 +688,7 @@ edicionCV.printTabSection= function(data) {
 						</a>
 					</p>
 				</div>
-				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">				
+				<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 					<div id="situacion-panel" class="panel-collapse collapse show" role="tab-panel" aria-labelledby="situacion-tab" style="">
 						<div class="panel-body">
 							<div class="acciones-listado acciones-listado-cv">
@@ -689,8 +696,7 @@ edicionCV.printTabSection= function(data) {
 									<div class="checkAllCVWrapper" id="checkAllCVWrapper">
 										<div class="custom-control custom-checkbox">
 											<input type="checkbox" class="custom-control-input" id="checkAllResources_${id2}">
-											<label class="custom-control-label" for="checkAllResources_${id2}">Seleccionar todos
-											</label>
+											<label class="custom-control-label" for="checkAllResources_${id2}">${GetText('CV_SELECCIONAR_TODOS')}
 										</div>
 									</div>
 								</div>
@@ -710,7 +716,7 @@ edicionCV.printTabSection= function(data) {
 							</div>
 							<div class="resource-list listView">
 								<div class="resource-list-wrap">
-									${this.printHtmlListItems(data.items)}
+									${this.printHtmlListItems(data.items, isLast5Years)}
 									<div class="panNavegador">
 										<div class="items dropdown">
 											<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
@@ -743,14 +749,28 @@ edicionCV.printTabSection= function(data) {
 	}
 };
 
-edicionCV.printHtmlListItem= function(id, data) {
-	let openAccess="";
+edicionCV.printHtmlListItems = function(items, isLast5Years) {
+	var html = "";
+	for (var item in items) {
+		html += this.printHtmlListItem(item, items[item], isLast5Years);
+	}
+	return html;
+}
+
+edicionCV.printHtmlListItem = function(id, data, isLast5Years) {
+	let openAccess = "";
+	let isChecked = "";
 	if (data.isopenaccess) {
 		openAccess = "open-access";
 	}
+	
+	if(isLast5Years && data.isChecked){ 
+		isChecked = "checked";
+	}
+	
 	var htmlListItem = `<article class="resource success ${openAccess}" >
 							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="check_resource_${data.identifier}"  value="${id}">
+								<input type="checkbox" class="custom-control-input" id="check_resource_${data.identifier}"  value="${id}" ${isChecked}>
 								<label class="custom-control-label" for="check_resource_${data.identifier}"></label>
 							</div>
 							<div class="wrap">
