@@ -21,20 +21,30 @@ namespace Hercules.ED.UpdateKeywords
             // Lista de los IDs de los recursos a hacer Matching.
             List<string> listaIds = utilKeywords.GetDocument();
 
+            // Contador de publicaciones
+            int contadorPub = 1;
+
             // Obtención del ID de MESH.
             foreach (string id in listaIds)
             {
+                Console.WriteLine($@"{DateTime.Now} ---------- Publicación {contadorPub}/{listaIds.Count}");
                 Dictionary<string, string> dicEtiquetas = utilKeywords.GetKeywords(id);
-
+                
                 foreach (KeyValuePair<string, string> etiquetaTag in dicEtiquetas)
                 {
+                    Console.WriteLine($@"{DateTime.Now} ---------- Procesando etiqueta: {etiquetaTag.Value}");
                     string idEtiquetaAux = etiquetaTag.Key;
 
                     // 1.- Probamos con el término en "Exact Match".
-                    List<string> listaAux = new List<string>() { etiquetaTag.Value };                    
-                    Dictionary<string, string> dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
+                    List<string> listaAux = new List<string>() { etiquetaTag.Value };
+                    Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
-                    //2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
+                    if (!utilKeywords.ComprobarCaracteres(etiquetaTag.Value))
+                    {
+                        dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
+                    }
+
+                    // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
                     if (dicResultados.Count() == 0 && etiquetaTag.Value.Contains(" "))
                     {
                         // 2.1.- Buscamos por el término en "All fragments".
@@ -42,13 +52,10 @@ namespace Hercules.ED.UpdateKeywords
 
                         // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
                         // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
-                        if (partes.Count() >5) {
-                            string s = "";
-
+                        if (partes.Count() <= 3)
+                        {
+                            dicResultados = ConsultarDatos(utilKeywords, partes);
                         }
-                        //{
-                        dicResultados = ConsultarDatos(utilKeywords, partes);
-                        //}
 
                         // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
                         if (dicResultados.Count() != 1 && partes.Count() >= 2)
@@ -56,7 +63,7 @@ namespace Hercules.ED.UpdateKeywords
                             for (int i = 0; i < partes.Length; i++)
                             {
                                 string parte1 = partes[i];
-                                if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1))
+                                if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
                                 {
                                     continue;
                                 }
@@ -64,7 +71,7 @@ namespace Hercules.ED.UpdateKeywords
                                 for (int x = i + 1; x < partes.Length; x++)
                                 {
                                     string parte2 = partes[x];
-                                    if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2))
+                                    if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
                                     {
                                         continue;
                                     }
@@ -114,7 +121,7 @@ namespace Hercules.ED.UpdateKeywords
                     {
                         foreach (DataConcept tag in listaSnomedConcepts)
                         {
-                            //utilKeywords.CargarDataConceptCompleto(tag, dicIds);
+                            utilKeywords.CargarDataConceptCompleto(tag, dicIds);
                         }
                     }
 
@@ -122,19 +129,21 @@ namespace Hercules.ED.UpdateKeywords
                     List<DataConcept> listaMesh = new List<DataConcept>();
                     foreach (KeyValuePair<string, string> itemAux in dicResultados)
                     {
-                        //utilKeywords.InsertDataMesh(itemAux.Key, itemAux.Value, listaMesh);
+                        utilKeywords.InsertDataMesh(itemAux.Key, itemAux.Value, listaMesh);
                     }
 
                     // Carga de etiquetas.
                     foreach (DataConcept tag in listaMesh)
                     {
                         string idRecursoMesh = utilKeywords.CargarDataConceptCompleto(tag, dicIds);
-                        //utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
+                        utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
                     }
                 }
 
                 // Borrar triple de obtención de etiquetas.
-                //utilKeywords.ModificarGetKeywordDocument(id);
+                utilKeywords.ModificarGetKeywordDocument(id);
+
+                contadorPub++;
             }
         }
 
