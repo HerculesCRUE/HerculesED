@@ -1059,12 +1059,42 @@
                       }
                     ]
                   },
-                  //TODO indice impacto
+                  //TODO Índice de impacto
+                  {
+                    "properties": [
+                      {
+                        "property": "http://w3id.org/roh/impactIndex",
+                        "type": "auxEntity",
+                        "title": {
+                          "es": "Índice de impacto"
+                        },
+                        "multiple": true,
+                        "blocked": true,
+                        "width": 3,
+                        "auxEntityData": {
+                          "rdftype": "http://w3id.org/roh/ImpactIndex",
+                          "propertyTitle": {
+                            "property": "http://w3id.org/roh/impactSource"
+                          },
+                          "properties": [
+                            {
+                              "name": {
+                                "es": "Índice de impacto"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/impactIndexInYear"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
                   {
                     "properties": [
                       {
                         "title": {
-                          "es": "TODO citas inrecs"
+                          "es": "Nº citas inrecs"
                         },
                         "property": "http://w3id.org/roh/inrecsCitationCount",
                         "blocked": true,
@@ -1077,7 +1107,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "TODO citas scopus"
+                          "es": "Nº citas scopus"
                         },
                         "property": "http://w3id.org/roh/scopusCitationCount",
                         "blocked": true,
@@ -1090,7 +1120,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "TODO citas wos"
+                          "es": "Nº citas wos"
                         },
                         "property": "http://w3id.org/roh/wosCitationCount",
                         "blocked": true,
@@ -1103,7 +1133,7 @@
                     "properties": [
                       {
                         "title": {
-                          "es": "TODO citas semantic scholar"
+                          "es": "Nº citas semantic scholar"
                         },
                         "property": "http://w3id.org/roh/semanticScholarCitationCount",
                         "blocked": true,
@@ -1118,7 +1148,7 @@
                         "property": "http://w3id.org/roh/hasMetric",
                         "type": "auxEntity",
                         "title": {
-                          "es": "TODO Otras fuentes de citas"
+                          "es": "Otras fuentes de citas"
                         },
                         "multiple": true,
                         "blocked": true,
