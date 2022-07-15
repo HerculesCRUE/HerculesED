@@ -128,6 +128,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public bool isopenaccess { get; set; }
         /// <summary>
+        /// Indica si debe estar checkeado por defecto
+        /// </summary>
+        public bool isChecked { get; set; }
+        /// <summary>
         /// Indica si se ha de mostrar el botón de envío a producción cientifica
         /// </summary>
         public bool sendPRC { get; set; }
