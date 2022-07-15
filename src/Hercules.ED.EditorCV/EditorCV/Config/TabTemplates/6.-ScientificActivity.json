@@ -1088,12 +1088,43 @@
                               "child": {
                                 "property": "http://w3id.org/roh/impactIndexInYear"
                               }
+                            },
+                            {
+                              "name": {
+                                "es": "Categoría"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/impactIndexCategory"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Posición de publicación"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/publicationPosition"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Num. revistas en cat."
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/journalNumberInCat"
+                              }
+                            },
+                            {
+                              "name": {
+                                "es": "Cuartil"
+                              },
+                              "child": {
+                                "property": "http://w3id.org/roh/quartile"
+                              }
                             }
                           ],
                           "rows": [
                             {
                               "properties": [
-
                                 {
                                   "title": {
                                     "es": "Índice de impacto"
@@ -1101,6 +1132,58 @@
                                   "type": "text",
                                   "blocked": true,
                                   "property": "http://w3id.org/roh/impactIndexInYear",
+                                  "width": 1
+                                }
+                              ]
+                            },
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Categoría"
+                                  },
+                                  "type": "text",
+                                  "blocked": true,
+                                  "property": "http://w3id.org/roh/impactIndexCategory",
+                                  "width": 1
+                                }
+                              ]
+                            },
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Posición de publicación"
+                                  },
+                                  "type": "text",
+                                  "blocked": true,
+                                  "property": "http://w3id.org/roh/publicationPosition",
+                                  "width": 1
+                                }
+                              ]
+                            },
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Num. revistas en cat."
+                                  },
+                                  "type": "text",
+                                  "blocked": true,
+                                  "property": "http://w3id.org/roh/journalNumberInCat",
+                                  "width": 1
+                                }
+                              ]
+                            },
+                            {
+                              "properties": [
+                                {
+                                  "title": {
+                                    "es": "Cuartil"
+                                  },
+                                  "type": "text",
+                                  "blocked": true,
+                                  "property": "http://w3id.org/roh/quartile",
                                   "width": 1
                                 }
                               ]
