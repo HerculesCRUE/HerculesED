@@ -8,6 +8,10 @@ namespace Hercules.ED.Synchronization
     {
         private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
+        /// <summary>
+        /// Main.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             Synchro synchro = new Synchro();
