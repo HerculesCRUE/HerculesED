@@ -634,28 +634,51 @@
             <div class="body custom-css-scroll">
                 <div class="resultados" id="resultadosMetabuscador" data-url="Search/DoMetaSearch">
                     <ul>
-                        <li class="bloque documents" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("6073a387-5e95-47b3-a4d1-09a95bb7c6e5")).Select(e => e.Url).First()">
+						@{
+							string urlTab=Comunidad.Url+"/"+Html.Translate("PUBLICACIONES_URL");
+						}
+                        <li class="bloque documents" data-urlcomunidad="@urlTab">
                             <p class="title">@Html.Translate("PUBLICACIONES")</p>
                             <ul>
                             </ul>
                         </li>
-                        <li class="bloque persons" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("f0ba215c-1629-456a-a7ac-69b63f4e986f")).Select(e => e.Url).First()">
+						@{
+							urlTab=Comunidad.Url+"/"+Html.Translate("INVESTIGADORES_URL");
+						}
+                        <li class="bloque persons" data-urlcomunidad="@urlTab">
                             <p class="title">@Html.Translate("INVESTIGADORES")</p>
                             <ul>
                             </ul>
                         </li>
-                        <li class="bloque groups" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("167b0af9-2299-4dd4-a889-8c36d6d2e43b")).Select(e => e.Url).First()">
+						@{
+							urlTab=Comunidad.Url+"/"+Html.Translate("GRUPOS_URL");
+						}
+                        <li class="bloque groups" data-urlcomunidad="@urlTab">
                             <p class="title">@Html.Translate("GRUPOS")</p>
                             <ul>
                             </ul>
                         </li>
-                        <li class="bloque projects" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("51182dfb-d5b2-4d13-8595-a3949028837b")).Select(e => e.Url).First()">
+						@{
+							urlTab=Comunidad.Url+"/"+Html.Translate("PROJECTS_URL");
+						}
+                        <li class="bloque projects" data-urlcomunidad="@urlTab">
                             <p class="title">@Html.Translate("PROYECTOS")</p>
                             <ul>
                             </ul>
                         </li>
-                        <li class="bloque researchObjects" data-urlcomunidad="@Comunidad.Tabs.Where(item => item.Key == new Guid("fbf49f72-46a4-46f4-ba4f-00088599f717")).Select(e => e.Url).First()">
+						@{
+							urlTab=Comunidad.Url+"/"+Html.Translate("ROS_URL");
+						}
+                        <li class="bloque researchObjects" data-urlcomunidad="@urlTab">
                             <p class="title">@Html.Translate("RESEARCHOBJECTS")</p>
+                            <ul>
+                            </ul>
+                        </li>
+						@{
+							urlTab=Comunidad.Url+"/"+Html.Translate("OFFER_URL");
+						}
+						<li class="bloque offers" data-urlcomunidad="@urlTab">
+                            <p class="title">@Html.Translate("OFFERS")</p>
                             <ul>
                             </ul>
                         </li>
