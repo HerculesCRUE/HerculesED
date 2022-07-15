@@ -29,14 +29,14 @@ namespace Hercules.ED.UpdateKeywords
             {
                 Console.WriteLine($@"{DateTime.Now} ---------- Publicación {contadorPub}/{listaIds.Count}");
                 Dictionary<string, string> dicEtiquetas = utilKeywords.GetKeywords(id);
-                
+
                 foreach (KeyValuePair<string, string> etiquetaTag in dicEtiquetas)
                 {
                     Console.WriteLine($@"{DateTime.Now} ---------- Procesando etiqueta: {etiquetaTag.Value}");
                     string idEtiquetaAux = etiquetaTag.Key;
 
                     // 1.- Probamos con el término en "Exact Match".
-                    List<string> listaAux = new List<string>() { etiquetaTag.Value };
+                    List<string> listaAux = new List<string>() { etiquetaTag.Value.Replace(")", "").Replace("(", "") };
                     Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
                     if (!utilKeywords.ComprobarCaracteres(etiquetaTag.Value))
@@ -50,50 +50,46 @@ namespace Hercules.ED.UpdateKeywords
                         // 2.1.- Buscamos por el término en "All fragments".
                         string[] partes = etiquetaTag.Value.Split(" ");
 
-                        // Si la etiqueta contiene 5 o más palabras, no es válida.
-                        if (partes.Count() < 5)
+                        // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
+                        // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
+                        if (partes.Count() <= 3)
                         {
-                            // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
-                            // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
-                            if (partes.Count() <= 3)
-                            {
-                                dicResultados = ConsultarDatos(utilKeywords, partes);
-                            }
+                            dicResultados = ConsultarDatos(utilKeywords, partes);
+                        }
 
-                            // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
-                            if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                        // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
+                        if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                        {
+                            for (int i = 0; i < partes.Length; i++)
                             {
-                                for (int i = 0; i < partes.Length; i++)
+                                string parte1 = partes[i];
+                                if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
                                 {
-                                    string parte1 = partes[i];
-                                    if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
+                                    continue;
+                                }
+
+                                for (int x = i + 1; x < partes.Length; x++)
+                                {
+                                    string parte2 = partes[x];
+                                    if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
                                     {
                                         continue;
                                     }
 
-                                    for (int x = i + 1; x < partes.Length; x++)
-                                    {
-                                        string parte2 = partes[x];
-                                        if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
-                                        {
-                                            continue;
-                                        }
+                                    List<string> lista = new List<string>() { parte1, parte2 };
+                                    string[] arrayParte = lista.ToArray();
 
-                                        List<string> lista = new List<string>() { parte1, parte2 };
-                                        string[] arrayParte = lista.ToArray();
-
-                                        dicResultados = ConsultarDatos(utilKeywords, arrayParte);
-
-                                        if (dicResultados.Count() == 1)
-                                        {
-                                            break;
-                                        }
-                                    }
+                                    dicResultados = ConsultarDatos(utilKeywords, arrayParte);
 
                                     if (dicResultados.Count() == 1)
                                     {
                                         break;
                                     }
+                                }
+
+                                if (dicResultados.Count() == 1)
+                                {
+                                    break;
                                 }
                             }
                         }
