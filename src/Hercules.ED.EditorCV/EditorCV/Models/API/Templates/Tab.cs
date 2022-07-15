@@ -177,6 +177,10 @@ namespace EditorCV.Models.API.Templates
     public class TabSectionPresentationListItems
     {
         /// <summary>
+        /// Propiedad para indicar los valores indicando si el recurso está dentro de los ultimos 5 años.
+        /// </summary>
+        public Last5Years last5Years;
+        /// <summary>
         /// Propiedad para acceder a la entidad desde la minificha
         /// </summary>
         public string property;
@@ -200,6 +204,25 @@ namespace EditorCV.Models.API.Templates
         /// Propiedad con el ID de la sección de CVN
         /// </summary>
         public string cvnsection;
+    }
+
+    /// <summary>
+    /// Configuración para indicar si el recurso está dentro de los últimos cinco años.
+    /// </summary>
+    public class Last5Years
+    {
+        /// <summary>
+        /// Booleano indicando si debe añadirse siempre independientemente de las fechas de inicio y fin.
+        /// </summary>
+        public bool always;
+        /// <summary>
+        /// Propiedad indicadora del fin temporal del atributo.
+        /// </summary>
+        public string end;
+        /// <summary>
+        /// Propiedad indicadora del inicio temporal del atributo.
+        /// </summary>
+        public string start;
     }
 
     /// <summary>
