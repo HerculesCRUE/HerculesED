@@ -1074,7 +1074,11 @@
                         "auxEntityData": {
                           "rdftype": "http://w3id.org/roh/ImpactIndex",
                           "propertyTitle": {
-                            "property": "http://w3id.org/roh/impactSource"
+                            "property": "http://w3id.org/roh/impactSource",
+                            "graph": "impactsource",
+                            "child": {
+                              "property": "http://purl.org/dc/elements/1.1/title"
+                            }
                           },
                           "properties": [
                             {
