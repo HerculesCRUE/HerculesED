@@ -17,6 +17,7 @@ using EditorCV.Controllers;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
 using Hercules.ED.DisambiguationEngine.Models;
 using System.Collections.Concurrent;
+using System.Runtime.InteropServices;
 
 namespace EditorCV.Models
 {
@@ -971,6 +972,7 @@ namespace EditorCV.Models
                                         tabSection.orders.Add(presentationOrderTabSection);
                                     }
                                 }
+
                                 tabSection.items = new Dictionary<string, TabSectionItem>();
                                 string propiedadIdentificador = templateSection.property;
                                 if (pData.ContainsKey(pId))
@@ -994,7 +996,7 @@ namespace EditorCV.Models
                                         }
                                         else
                                         {
-                                            tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas));
+                                            tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years));
                                         }
                                     }
                                 }
@@ -1045,7 +1047,9 @@ namespace EditorCV.Models
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
         /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidoima configurado</param>
         /// <returns></returns>
-        private TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas, List<ItemEditSectionRowProperty> pListaPropiedadesMultiidiomaConfiguradas)
+        private TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData,
+            TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas,
+            List<ItemEditSectionRowProperty> pListaPropiedadesMultiidiomaConfiguradas, [Optional] Last5Years last5Years)
         {
             TabSectionItem item = new TabSectionItem();
             string propertyInTitle = "";
@@ -1122,6 +1126,95 @@ namespace EditorCV.Models
             if (!string.IsNullOrEmpty(valorVisibilidad) && valorVisibilidad == "true")
             {
                 item.ispublic = true;
+            }
+
+            //Ultimos 5 años
+            item.isChecked = false;
+            if (last5Years.always)
+            {
+                item.isChecked = true;
+            }
+
+            List<string> listadoPropiedades = new List<string>();
+            foreach (TabSectionListItemProperty property in pListItemConfig.listItem.properties)
+            {
+                if (property.childOR != null && property.childOR.Count > 0)
+                {
+                    string aux = "";
+                    string propertyIn = "";
+                    foreach (PropertyDataTemplate propertyData in property.childOR)
+                    {
+                        propertyIn += aux + UtilityCV.GetPropComplete(propertyData);
+                        aux = "||";
+                        listadoPropiedades.Add(propertyIn);
+                    }
+                }
+                else
+                {
+                    listadoPropiedades.Add(UtilityCV.GetPropComplete(property.child));
+
+                }
+            }
+
+            foreach (string propertyIn in listadoPropiedades)
+            {
+                string propEnd = "";
+                if (item.isChecked)
+                {
+                    break;
+                }
+                if (listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.end))
+                {
+                    propEnd = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.end)).First();
+                    if (!string.IsNullOrEmpty(propEnd))
+                    {
+                        List<string> value = GetPropValues(pId, propEnd, pData);
+
+                        if (value.Count > 0)
+                        {
+                            string fecha = value.First();
+                            int anio = int.Parse(fecha.Substring(0, 4));
+                            int mes = int.Parse(fecha.Substring(4, 2));
+                            int dia = int.Parse(fecha.Substring(6, 2));
+                            int horas = int.Parse(fecha.Substring(8, 2));
+                            int minutos = int.Parse(fecha.Substring(10, 2));
+                            int segundos = int.Parse(fecha.Substring(12, 2));
+                            DateTime dateTime = new DateTime(anio, mes, dia);
+                            DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
+
+                            if (dateTime > dateMenos5Anio)
+                            {
+                                item.isChecked = true;
+                            }
+                        }
+                    }
+                }
+                else if(propEnd == null && listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.start))
+                {
+                    string propStart = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.start)).First();
+                    if (!string.IsNullOrEmpty(propStart))
+                    {
+                        List<string> value = GetPropValues(pId, propStart, pData);
+
+                        if (value.Count > 0)
+                        {
+                            string fecha = value.First();
+                            int anio = int.Parse(fecha.Substring(0, 4));
+                            int mes = int.Parse(fecha.Substring(4, 2));
+                            int dia = int.Parse(fecha.Substring(6, 2));
+                            int horas = int.Parse(fecha.Substring(8, 2));
+                            int minutos = int.Parse(fecha.Substring(10, 2));
+                            int segundos = int.Parse(fecha.Substring(12, 2));
+                            DateTime dateTime = new DateTime(anio, mes, dia);
+                            DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
+
+                            if (dateTime > dateMenos5Anio)
+                            {
+                                item.isChecked = true;
+                            }
+                        }
+                    }
+                }
             }
 
             item.properties = new List<TabSectionItemProperty>();
@@ -1214,6 +1307,7 @@ namespace EditorCV.Models
                     }
                 }
             }
+
 
             //Multiidiomas cargados
             item.multilang = new Dictionary<string, bool>();
@@ -1337,10 +1431,10 @@ namespace EditorCV.Models
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusPRC", pData).FirstOrDefault();
             }
             //Estado de validación para los proyectos
-            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) &&(
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && (
                 pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV")))
             {
-                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();                
+                valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationStatusProject", pData).FirstOrDefault();
             }
 
             // Si el estado de validación es "pendiente".
@@ -1355,7 +1449,7 @@ namespace EditorCV.Models
             }
 
             //Boton de envío a validación de proyectos
-            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) && 
+            if (!string.IsNullOrEmpty(pListItemConfig.rdftype_cv) &&
                 (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV") || pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV")))
             {
                 valorPropiedad = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/projectAuthorization", pData).FirstOrDefault();
@@ -1927,7 +2021,7 @@ namespace EditorCV.Models
 
                 if (pItemEditSectionRowProperty.type == DataTypeEdit.thesaurus)
                 {
-                    entityEditSectionRowProperty.thesaurus = new List<ThesaurusItem>( pTesauros[pItemEditSectionRowProperty.thesaurus]);
+                    entityEditSectionRowProperty.thesaurus = new List<ThesaurusItem>(pTesauros[pItemEditSectionRowProperty.thesaurus]);
                     entityEditSectionRowProperty.entityAuxData = new EntityEditAuxEntity()
                     {
                         childsOrder = new Dictionary<string, int>(),
@@ -1964,9 +2058,9 @@ namespace EditorCV.Models
                     List<string> cat = new List<string>();
                     foreach (var value in entityEditSectionRowProperty.entityAuxData.entities.Values)
                     {
-                        foreach(var propertiesValue in value.Select(x => x.properties))
+                        foreach (var propertiesValue in value.Select(x => x.properties))
                         {
-                            foreach(var selectionValues in propertiesValue.Select(x => x.values))
+                            foreach (var selectionValues in propertiesValue.Select(x => x.values))
                             {
                                 cat.AddRange(selectionValues);
                             }
