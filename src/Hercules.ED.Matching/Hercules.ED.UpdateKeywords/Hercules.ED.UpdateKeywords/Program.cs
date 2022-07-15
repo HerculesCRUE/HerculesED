@@ -50,46 +50,50 @@ namespace Hercules.ED.UpdateKeywords
                         // 2.1.- Buscamos por el término en "All fragments".
                         string[] partes = etiquetaTag.Value.Split(" ");
 
-                        // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
-                        // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
-                        if (partes.Count() <= 3)
+                        // Si la etiqueta contiene 5 o más palabras, no es válida.
+                        if (partes.Count() < 5)
                         {
-                            dicResultados = ConsultarDatos(utilKeywords, partes);
-                        }
-
-                        // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
-                        if (dicResultados.Count() != 1 && partes.Count() >= 2)
-                        {
-                            for (int i = 0; i < partes.Length; i++)
+                            // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
+                            // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
+                            if (partes.Count() <= 3)
                             {
-                                string parte1 = partes[i];
-                                if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
-                                {
-                                    continue;
-                                }
+                                dicResultados = ConsultarDatos(utilKeywords, partes);
+                            }
 
-                                for (int x = i + 1; x < partes.Length; x++)
+                            // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
+                            if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                            {
+                                for (int i = 0; i < partes.Length; i++)
                                 {
-                                    string parte2 = partes[x];
-                                    if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
+                                    string parte1 = partes[i];
+                                    if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
                                     {
                                         continue;
                                     }
 
-                                    List<string> lista = new List<string>() { parte1, parte2 };
-                                    string[] arrayParte = lista.ToArray();
+                                    for (int x = i + 1; x < partes.Length; x++)
+                                    {
+                                        string parte2 = partes[x];
+                                        if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
+                                        {
+                                            continue;
+                                        }
 
-                                    dicResultados = ConsultarDatos(utilKeywords, arrayParte);
+                                        List<string> lista = new List<string>() { parte1, parte2 };
+                                        string[] arrayParte = lista.ToArray();
+
+                                        dicResultados = ConsultarDatos(utilKeywords, arrayParte);
+
+                                        if (dicResultados.Count() == 1)
+                                        {
+                                            break;
+                                        }
+                                    }
 
                                     if (dicResultados.Count() == 1)
                                     {
                                         break;
                                     }
-                                }
-
-                                if (dicResultados.Count() == 1)
-                                {
-                                    break;
                                 }
                             }
                         }
