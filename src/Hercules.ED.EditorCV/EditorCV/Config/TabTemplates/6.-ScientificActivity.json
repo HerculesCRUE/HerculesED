@@ -1085,7 +1085,8 @@
                                 "property": "http://w3id.org/roh/impactIndexInYear"
                               }
                             }
-                          ]
+                          ],
+                          "rows": []
                         }
                       }
                     ]
