@@ -1026,7 +1026,7 @@ namespace Hercules.ED.UpdateKeywords
             {
                 result = httpCall(url.ToString(), "GET").Result;
             }
-            catch (Exception e)
+            catch
             {
                 return;
             }
@@ -1066,9 +1066,9 @@ namespace Hercules.ED.UpdateKeywords
                     }
                 }
             }
-            catch (Exception error)
+            catch
             {
-                throw error;
+                return;
             }
         }
 
