@@ -162,6 +162,10 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public Dictionary<string, string> title;
         /// <summary>
+        /// Información de la sección
+        /// </summary>
+        public Dictionary<string, string> information;
+        /// <summary>
         /// Configuración de la presentación para los listados de items
         /// </summary>
         public TabSectionPresentationListItems listItemsPresentation;
