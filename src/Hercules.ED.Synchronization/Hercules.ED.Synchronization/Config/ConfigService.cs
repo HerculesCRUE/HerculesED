@@ -13,13 +13,13 @@ namespace Hercules.ED.Synchronization.Config
         // Archivo de configuración.
         public static IConfigurationRoot configuracion;
 
-        // LogPath
+        // LogPath.
         public string logPath { get; set; }
 
-        // Cron Expression
+        // Cron Expression.
         public string cronExternalSource { get; set; }
 
-        // RabbitMQ
+        // RabbitMQ.
         public string rabbitConnectionString { get; set; }
         public string queueRabbit { get; set; }
 

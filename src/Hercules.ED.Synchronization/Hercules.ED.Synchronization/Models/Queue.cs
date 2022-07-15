@@ -15,6 +15,10 @@ namespace Hercules.ED.Synchronization.Models
         private readonly ConnectionFactory connectionFactory;
         private readonly IConnection connection;
 
+        /// <summary>
+        /// Main queue.
+        /// </summary>
+        /// <param name="pConfigService">Configuración.</param>
         public Queue(ConfigService pConfigService)
         {
             configService = pConfigService;
@@ -30,19 +34,39 @@ namespace Hercules.ED.Synchronization.Models
         /// Inserta en la cola de las fuentes externas.
         /// </summary>
         /// <param name="pOrcid">ORCID del usuario.</param>
-        /// <param name="pSyncro">Objeto de la sincronización.</param>
-        public void InsertToQueueFuentesExternas(string pOrcid, Queue pRabbitMQService, string pUltimaFechaMod)
-        {           
+        /// <param name="pRabbitMQService">Cola de Rabbit.</param>
+        /// <param name="pUltimaFechaMod">Última fecha de modificación.</param>
+        /// <param name="pDicIDs">Diccionario con los IDs necesarios de FigShare y GitHub.</param>
+        public void InsertToQueueFuentesExternas(string pOrcid, Queue pRabbitMQService, string pUltimaFechaMod, Dictionary<string, string> pDicIDs)
+        {
             // Publicaciones.
             List<string> listaDatos = new List<string>() { "investigador", pOrcid, pUltimaFechaMod };
             pRabbitMQService.PublishMessage(listaDatos, configService.GetQueueRabbit());
+
+            // Zenodo.
+            List<string> listaDatosZenodo = new List<string>() { "zenodo", pOrcid };
+            pRabbitMQService.PublishMessage(listaDatosZenodo, pUltimaFechaMod);
+
+            // FigShare.
+            if (pDicIDs.ContainsKey("usuarioFigshare") && pDicIDs.ContainsKey("tokenFigshare"))
+            {
+                List<string> listaDatosFigShare = new List<string>() { "figshare", pDicIDs["tokenFigshare"] };
+                pRabbitMQService.PublishMessage(listaDatosFigShare, configService.GetQueueRabbit());
+            }
+
+            // GitHub.
+            if (pDicIDs.ContainsKey("usuarioGitHub") && pDicIDs.ContainsKey("tokenGitHub"))
+            {
+                List<string> listaDatosGitHub = new List<string>() { "github", pDicIDs["usuarioGitHub"], pDicIDs["tokenGitHub"] };
+                pRabbitMQService.PublishMessage(listaDatosGitHub, configService.GetQueueRabbit());
+            }
         }
 
         /// <summary>
-        /// Encola un objeto en Rabbit
+        /// Encola un objeto en Rabbit.
         /// </summary>
-        /// <param name="message">Objeto a encolar</param>
-        /// <param name="queue">Cola</param>
+        /// <param name="message">Objeto a encolar.</param>
+        /// <param name="queue">Cola.</param>
         public void PublishMessage(object message, string queue)
         {
             using (var conn = connectionFactory.CreateConnection())

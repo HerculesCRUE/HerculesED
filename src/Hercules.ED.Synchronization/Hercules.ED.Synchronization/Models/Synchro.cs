@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using static Hercules.ED.Synchronization.Program;
 
 namespace Hercules.ED.Synchronization.Models
-{   
+{
     public class Synchro
     {
         public ResourceApi mResourceApi;
@@ -102,7 +102,54 @@ namespace Hercules.ED.Synchronization.Models
                 }
             }
 
-            return "1500-01-01";
+            return "1900-01-01";
+        }
+
+        /// <summary>
+        /// Obtiene los IDs y Token del usuario para FigShare y GitHub.
+        /// </summary>
+        /// <param name="pOrcid">ORCID del usuario.</param>
+        /// <returns></returns>
+        public Dictionary<string, string> GetUsersIDs(string pOrcid)
+        {
+            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+
+            // Consulta sparql.
+            select.Append("SELECT ?usuarioFigshare ?tokenFigshare ?usuarioGitHub ?tokenGitHub ");
+            where.Append("WHERE { ");
+            where.Append($@"?s <http://w3id.org/roh/ORCID> '{pOrcid}'. ");
+            where.Append("OPTIONAL{?s <http://w3id.org/roh/usuarioFigShare> ?usuarioFigshare. } ");
+            where.Append("OPTIONAL{?s <http://w3id.org/roh/tokenFigShare> ?tokenFigshare. } ");
+            where.Append("OPTIONAL{?s <http://w3id.org/roh/usuarioGitHub> ?usuarioGitHub. } ");
+            where.Append("OPTIONAL{?s <http://w3id.org/roh/tokenGitHub> ?tokenGitHub. } ");
+            where.Append("} ");
+
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "person");
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    if (fila.ContainsKey("usuarioFigshare") && !string.IsNullOrEmpty(fila["usuarioFigshare"].value))
+                    {
+                        dicResultados.Add("usuarioFigshare", fila["usuarioFigshare"].value);
+                    }
+                    if (fila.ContainsKey("tokenFigshare") && !string.IsNullOrEmpty(fila["tokenFigshare"].value))
+                    {
+                        dicResultados.Add("tokenFigshare", fila["tokenFigshare"].value);
+                    }
+                    if (fila.ContainsKey("usuarioGitHub") && !string.IsNullOrEmpty(fila["usuarioGitHub"].value))
+                    {
+                        dicResultados.Add("usuarioGitHub", fila["usuarioGitHub"].value);
+                    }
+                    if (fila.ContainsKey("tokenGitHub") && !string.IsNullOrEmpty(fila["tokenGitHub"].value))
+                    {
+                        dicResultados.Add("tokenGitHub", fila["tokenGitHub"].value);
+                    }
+                }
+            }
+
+            return dicResultados;
         }
 
         /// <summary>
@@ -129,11 +176,17 @@ namespace Hercules.ED.Synchronization.Models
                             // Obtención de los ORCID de las personas.
                             List<string> listaOrcids = GetPersons();
 
-                            foreach(string orcid in listaOrcids)
+                            foreach (string orcid in listaOrcids)
                             {
+                                // Obtención de la última fecha de modificación.
                                 string ultimaFechaMod = GetLastUpdatedDate(orcid);
-                                colaRabbit.InsertToQueueFuentesExternas(orcid, colaRabbit, ultimaFechaMod);
-                            }                            
+
+                                // Obtención de los datos necesarios de FigShare y GitHub.
+                                Dictionary<string, string> dicIDs = GetUsersIDs(orcid);
+
+                                // Inserción a la cola de Rabbit.
+                                colaRabbit.InsertToQueueFuentesExternas(orcid, colaRabbit, ultimaFechaMod, dicIDs);
+                            }
                         }
                     }
                     catch (Exception ex)

@@ -11,7 +11,7 @@ namespace Hercules.ED.Synchronization
         /// <summary>
         /// Main.
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">Argumentos.</param>
         static void Main(string[] args)
         {
             Synchro synchro = new Synchro();
