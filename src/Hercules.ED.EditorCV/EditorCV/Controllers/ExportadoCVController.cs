@@ -138,6 +138,13 @@ namespace EditorCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Devuelve el listado de ficheros PDF guardados
+        /// </summary>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <param name="baseUrl"></param>
+        /// <param name="timezoneOffset"></param>
+        /// <returns>Listado de PDF guardados</returns>
         [HttpGet("GetListadoCV")]
         public IActionResult GetListadoCV([Required] string userID, [Required] string baseUrl, [Required] int timezoneOffset)
         {
@@ -157,6 +164,11 @@ namespace EditorCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Devuelve un diccionario con todos los perfiles de informacion del usuario con identificador <paramref name="userID"/>
+        /// </summary>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <returns>Diccionario con los perfiles de exportación</returns>
         [HttpGet("GetPerfilExportacion")]
         public IActionResult GetPerfilExportacion([Required] string userID)
         {
@@ -177,6 +189,13 @@ namespace EditorCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Añade el perfil de exportación con titulo <paramref name="title"/> y valores checkeados <paramref name="checks"/> al usuario <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <param name="title">Titulo del perfil de exportación</param>
+        /// <param name="checks">Listado de elementos marcados</param>
+        /// <returns>True si es añadido en base de datos</returns>
         [HttpPost("AddPerfilExportacion")]
         public IActionResult AddPerfilExportacion([Required][FromForm] string userID, [Required][FromForm] string title, [Required][FromForm] List<string> checks)
         {
@@ -198,6 +217,12 @@ namespace EditorCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina el perfil de exportación con titulo <paramref name="title"/> del usuario <paramref name="userID"/>
+        /// </summary>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <param name="title">Titulo del perfil de exportación</param>
+        /// <returns>True si se elimina de base de datos</returns>
         [HttpDelete("DeletePerfilExportacion")]
         public IActionResult DeletePerfilExportacion([Required][FromForm] string userID, [Required][FromForm] string title)
         {
