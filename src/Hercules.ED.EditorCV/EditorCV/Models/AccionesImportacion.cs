@@ -26,7 +26,7 @@ namespace EditorCV.Models
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
         public byte[] filebytes;
-                
+
 
         /// <summary>
         /// Lectura del archivo <paramref name="File"/> y creación del objeto Preimport
@@ -211,6 +211,11 @@ namespace EditorCV.Models
             tabSection.items = new Dictionary<string, TabSectionItem>();
             tabSection.identifier = section.proptitle;
 
+            // Últimos 5 años
+            TabSectionLast5Years last5Years = new TabSectionLast5Years();
+            last5Years.always = true;
+            tabSection.last5Years = last5Years;
+
             foreach (ItemEditSection itemEditSection in section.sections)
             {
                 TabSectionItem tabSectionItem = new TabSectionItem();
@@ -265,6 +270,16 @@ namespace EditorCV.Models
             tabSection.title = UtilityCV.GetTextLang(lang, section.presentation.title);
             tabSection.identifier = section.property;
 
+            //Últimos 5 años
+            if (section.presentation != null && section.presentation.listItemsPresentation != null && section.presentation.listItemsPresentation.last5Years != null)
+            {
+                TabSectionLast5Years last5Years = new TabSectionLast5Years();
+                last5Years.always = section.presentation.listItemsPresentation.last5Years.always;
+                last5Years.end = section.presentation.listItemsPresentation.last5Years.end;
+                last5Years.start = section.presentation.listItemsPresentation.last5Years.start;
+
+                tabSection.last5Years = last5Years;
+            }
 
             //Órdenes sección
             tabSection.orders = new List<TabSectionPresentationOrder>();
@@ -302,7 +317,7 @@ namespace EditorCV.Models
                     preimport.secciones.Exists(x => x.id.Equals(section.presentation.listItemsPresentation.cvnsection)) ||
                     string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.020.010.000")) ||
                     string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.020.020.000")) ||
-                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.010.000.000")) 
+                    string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection) && preimport.secciones.Exists(x => x.id.Equals("050.010.000.000"))
                 )
                 {
 
