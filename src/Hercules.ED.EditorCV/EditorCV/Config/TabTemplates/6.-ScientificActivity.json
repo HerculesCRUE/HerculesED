@@ -1086,7 +1086,22 @@
                               }
                             }
                           ],
-                          "rows": []
+                          "rows": [
+                            {
+                              "properties": [
+
+                                {
+                                  "title": {
+                                    "es": "Índice de impacto"
+                                  },
+                                  "type": "text",
+                                  "blocked": true,
+                                  "property": "http://w3id.org/roh/impactIndexInYear",
+                                  "width": 1
+                                }
+                              ]
+                            }
+                          ]
                         }
                       }
                     ]
