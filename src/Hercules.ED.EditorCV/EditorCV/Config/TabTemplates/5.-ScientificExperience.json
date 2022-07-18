@@ -10,6 +10,9 @@
       "property": "http://w3id.org/roh/competitiveProjects",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán los datos relativos a los proyectos en lo que ha participado, y que han sido desarrollados con financiación externa a su institución por administraciones y organismos públicos o privados de investigación mediante convocatorias competitivas (estas son la que cuya concesión definitiva se otorga a aquel grupo o investigador que reúna una mayor 'puntuación'). Se incluyen por ejemplo proyectos del Plan Nacional de I+D, Programa Marco de la Unión Europea, entre otras convocatorias."
+        },
         "title": {
           "es": "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas"
         },
@@ -188,6 +191,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Autorización asignada al proyecto para enviar a validación como proyecto externo."
+                        },
                         "title": {
                           "es": "Autorización del proyecto"
                         },
@@ -201,6 +207,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del proyecto de I+D+i en el que ha participado."
+                        },
                         "title": {
                           "es": "Nombre del proyecto"
                         },
@@ -214,6 +223,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Número total de investigadores que han participado en el proyecto de I+D+i."
+                        },
                         "title": {
                           "es": "Nº de investigadores/as"
                         },
@@ -226,6 +238,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "TODO"
+                        },
                         "title": {
                           "es": "Descripción"
                         },
@@ -244,6 +259,9 @@
                       {
                         "property": "http://w3id.org/roh/mainResearchers",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Nombre del investigador/es responsable/s y/o principal/es del proyecto I+D+i competitivo con los que ha colaborado (IP, Co-IP, etc.) incluso en el caso de que alguno de ellos coincida con el titular del CVN (no se pide nombrar nominalmente a los demás miembros del grupo). En el campo 'Firma' debe consignarse la forma normalizada con que cada investigador firma sus trabajos, en tanto que en las casillas de nombre y apellidos se especificará el nombre completo de éste. Por ejemplo: Firma: Arenas-Busto, M.; Nombre: Miguel; Primer Apellido: Arenas; Segundo Apellido: Busto."
+                        },
                         "title": {
                           "es": "Nombres investigadores principales (IP, Co-IP,...)"
                         },
@@ -339,6 +357,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad en la que se desarrolla el proyecto I+D+i. En el caso de que se trate de una entidad extranjera, el nombre de éste deberá consignarse en la lengua del país de origen."
+                        },
                         "title": {
                           "es": "Entidad de realización"
                         },
@@ -359,6 +380,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de entidad en la que se desarrolla el proyecto I+D+i dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -379,6 +403,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad en la que se desarrolla el proyecto I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -396,6 +423,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad donde se localiza la entidad en la que se desarrolla el proyecto I+D+i"
+                        },
                         "title": {
                           "es": "Ciudad entidad realización"
                         },
@@ -407,6 +437,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País donde se localiza la entidad en la que se desarrolla el proyecto de I+D+i."
+                        },
                         "title": {
                           "es": "País entidad realización"
                         },
@@ -427,6 +460,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad Autónoma /Región dónde se localiza la entidad en la que se desarrolla el proyecto de I+D+i"
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
                         },
@@ -517,6 +553,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Nombre oficial de la entidad que financia el proyecto I+D+i."
+                                  },
                                   "title": {
                                     "es": "Entidad financiadora"
                                   },
@@ -538,6 +577,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad que financia el proyecto I+D+i dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                                  },
                                   "title": {
                                     "es": "Tipo de entidad"
                                   },
@@ -558,6 +600,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad que financia el proyecto I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                                  },
                                   "title": {
                                     "es": "Otros"
                                   },
@@ -575,6 +620,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Ciudad donde se localiza la entidad que financia el proyecto I+D+i"
+                                  },
                                   "title": {
                                     "es": "Ciudad entidad financiadora"
                                   },
@@ -586,6 +634,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "País donde se localiza la entidad que financia el proyecto I+D+i"
+                                  },
                                   "title": {
                                     "es": "País entidad financiadora"
                                   },
@@ -606,6 +657,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Comunidad Autónoma/Región donde se localiza la entidad que financia el proyecto I+D+i"
+                                  },
                                   "title": {
                                     "es": "C. Autón./Reg. entidad financiadora"
                                   },
@@ -639,6 +693,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Fecha del comienzo del proyecto de I+D+i . Si no recuerda el día del mes, consigne 01."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -647,6 +704,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha de la finalización del proyecto de I+D+i . Si no recuerda el día del mes, consigne 01."
+                        },
                         "title": {
                           "es": "Fecha de finalización"
                         },
@@ -655,6 +715,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Importe total, en euros, de la financiación asignada al proyecto de I+D+i. Consigne la cifra sin puntos ni comas"
+                        },
                         "title": {
                           "es": "Cuantía total"
                         },
@@ -705,6 +768,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "TODO"
+                        },
                         "title": {
                           "es": "Áreas temáticas"
                         },
@@ -719,6 +785,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique la naturaleza del proyecto de I+D+i en el que ha participado"
+                        },
                         "title": {
                           "es": "Modalidad de proyecto"
                         },
@@ -739,6 +808,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Cobertura geográfica (según convocatoria) del proyecto de I+D+i en el que ha participado dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Ámbito del proyecto, otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Ámbito geográfico"
                         },
@@ -755,6 +827,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Cobertura geográfica (según convocatoria) del proyecto de I+D+i en el que ha participado. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -768,6 +843,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Número total de personas que forman parte del proyecto de I+D+i en promedio anual. En este campo se puede introducir un valor numérico."
+                        },
                         "title": {
                           "es": "Nº de personas/año"
                         },
@@ -780,6 +858,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Tipo de participación desarrollada en el proyecto de I+D+i. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Grado de contribución"
                         },
@@ -797,6 +878,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de participación desarrollada en el proyecto I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -815,6 +899,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Categorice su modalidad de participación en el proyecto dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia"
+                        },
                         "title": {
                           "es": "Tipo de participación"
                         },
@@ -832,6 +919,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Modalidad de participación en el proyecto . Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -850,6 +940,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del programa que financia el proyecto I+D+i."
+                        },
                         "title": {
                           "es": "Nombre del programa"
                         },
@@ -859,6 +952,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Código del proyecto asignado por la entidad financiadora si lo tuviera."
+                        },
                         "title": {
                           "es": "Cód. según financiadora"
                         },
@@ -871,6 +967,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Importe , en euros, de la financiación asignada al subproyecto de I+D+i. Consigne la cifra sin puntos ni comas"
+                        },
                         "title": {
                           "es": "Cuantía subproyecto (€)"
                         },
@@ -883,6 +982,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Consigne el porcentaje del importe total financiado expresado en euros."
+                        },
                         "title": {
                           "es": "Porcentaje en subvención"
                         },
@@ -891,6 +993,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Consigne el porcentaje de subvención recibida respecto al total del proyecto expresado en euros."
+                        },
                         "title": {
                           "es": "Porcentaje en crédito"
                         },
@@ -899,6 +1004,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Consigne el porcentaje de subvención recibida más crédito respecto al total del proyecto expresado en euros."
+                        },
                         "title": {
                           "es": "Porcentaje mixto"
                         },
@@ -911,6 +1019,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Descripción en texto libre de los resultados más relevantes del proyecto I+D+i, con un máximo de 100 palabras."
+                        },
                         "title": {
                           "es": "Resultados relevantes"
                         },
@@ -924,6 +1035,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Se entiende por dedicación completa aquella en la que media un contrato laboral de obligación dedicada y exclusiva. Dedicación parcial corresponde a la que depende de un contrato por horas/tiempo/proyecto."
+                        },
                         "title": {
                           "es": "Régimen de dedicación"
                         },
@@ -947,6 +1061,9 @@
                       {
                         "property": "http://w3id.org/roh/participates",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Indique el nombre oficial de la entidad en la que se desarrolla el proyecto I+D+i. En el caso de que se trate de una entidad extranjera, el nombre de éste deberá consignarse en la lengua del país de origen."
+                        },
                         "title": {
                           "es": "Entidad/es participante/s"
                         },
@@ -992,6 +1109,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En este campo se escribe la aportación al proyecto. Se trata de un campo de texto libre sin formato que será mostrado en el PDF sin saltos de línea y que puede ser cumplimentado en cualquier idioma. Al mostrarse en el PDF el cambio de idioma no afecta al campo. El campo de texto puede ser bastante extenso ya que CVN no restringe el tamaño de los campos. No obstante el sentido común indica que este campo debería tener un tamaño razonable para que pueda ser manejado por los evaluadores y resto de personal interesado en la lectura del currículum vítae. En los documentos generados de tipo CVA, solo se mostrarán los 200 primeros caracteres de este campo."
+                        },
                         "title": {
                           "es": "Aportación del solicitante"
                         },
@@ -1015,6 +1135,9 @@
       "property": "http://w3id.org/roh/nonCompetitiveProjects",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán los datos relativos a la participación en proyectos de I+D+i, tanto de empresas y/o Administración, que no correspondan a convocatorias competitivas. Se consideran en este apartado aquellos proyectos cuya investigación ha sido contratada, por ejemplo proyectos financiados a través de convenios Art.83 LOU"
+        },
         "title": {
           "es": "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas"
         },
@@ -1178,6 +1301,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique el nombre del proyecto de I+D+i en el que ha participado"
+                        },
                         "title": {
                           "es": "Nombre del proyecto"
                         },
@@ -1191,6 +1317,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Número total de investigadores que han participado en el proyecto de I+D+i."
+                        },
                         "title": {
                           "es": "Nº de investigadores/as"
                         },
@@ -1203,6 +1332,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "TODO"
+                        },
                         "title": {
                           "es": "Descripción"
                         },
@@ -1221,6 +1353,9 @@
                       {
                         "property": "http://w3id.org/roh/mainResearchers",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Nombre del investigador/es responsable/s y/o principal/es del proyecto I+D+i no competitivo con los que ha colaborado (IP, Co-IP, etc.) incluso en el caso de que alguno de ellos coincida con el titular del CVN (no se pide nombrar nominalmente a los demás miembros del grupo). En el campo 'Firma' debe consignarse la forma normalizada con que cada investigador firma sus trabajos, en tanto que en las casillas de nombre y apellidos se especificará el nombre completo de éste. Por ejemplo: Firma: Arenas-Busto, M.; Nombre: Miguel; Primer Apellido: Arenas; Segundo Apellido: Busto."
+                        },
                         "title": {
                           "es": "Nombres investigadores principales (IP, Co-IP,...)"
                         },
@@ -1316,6 +1451,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique el nombre oficial de la entidad en la que se desarrolla el proyecto I+D+i. En el caso de que se trate de una entidad extranjera, el nombre de éste deberá consignarse en la lengua del país de origen."
+                        },
                         "title": {
                           "es": "Entidad de realización"
                         },
@@ -1336,6 +1474,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad en la que se desarrolla el proyecto I+D+i dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -1356,6 +1497,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que financia el proyecto I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1373,6 +1517,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad donde se localiza la entidad en la que se desarrolla el proyecto I+D+i"
+                        },
                         "title": {
                           "es": "Ciudad entidad realización"
                         },
@@ -1384,6 +1531,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País donde se localiza la entidad en la que se desarrolla el proyecto de I+D+i."
+                        },
                         "title": {
                           "es": "País entidad realización"
                         },
@@ -1404,6 +1554,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/Región dónde se localiza la entidad en la que se desarrolla el proyecto de I+D+i"
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
                         },
@@ -1434,6 +1587,9 @@
                       {
                         "property": "http://w3id.org/roh/grantedBy",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Indique el nombre oficial de la entidad en la que se desarrolla el proyecto I+D+i. En el caso de que se trate de una entidad extranjera, el nombre de éste deberá consignarse en la lengua del país de origen."
+                        },
                         "title": {
                           "es": "Entidad/es financiadora/s"
                         },
@@ -1494,6 +1650,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Indique el nombre oficial de la entidad en la que se desarrolla el proyecto I+D+i. En el caso de que se trate de una entidad extranjera, el nombre de éste deberá consignarse en la lengua del país de origen."
+                                  },
                                   "title": {
                                     "es": "Entidad financiadora"
                                   },
@@ -1515,6 +1674,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad en la que se desarrolla el proyecto I+D+i dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                                  },
                                   "title": {
                                     "es": "Tipo de entidad"
                                   },
@@ -1535,6 +1697,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad en la que se desarrolla el proyecto I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                                  },
                                   "title": {
                                     "es": "Otros"
                                   },
@@ -1552,6 +1717,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Ciudad donde se localiza la entidad que financia el proyecto I+D+i"
+                                  },
                                   "title": {
                                     "es": "Ciudad entidad financiadora"
                                   },
@@ -1563,6 +1731,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "País donde se localiza la entidad que financia el proyecto I+D+i"
+                                  },
                                   "title": {
                                     "es": "País entidad financiadora"
                                   },
@@ -1583,6 +1754,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Comunidad autónoma/Región donde se localiza la entidad que financia el proyecto I+D+i"
+                                  },
                                   "title": {
                                     "es": "C. Autón./Reg. entidad financiadora"
                                   },
@@ -1616,6 +1790,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Fecha del comienzo del proyecto de I+D+i . Si no recuerda el día del mes, consigne 01."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -1624,6 +1801,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Importe total , en euros, de la financiación asignada al proyecto de I+D+i. Consigne la cifra sin puntos ni comas"
+                        },
                         "title": {
                           "es": "Cuantía total"
                         },
@@ -1646,6 +1826,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "TODO"
+                        },
                         "title": {
                           "es": "Tipo de proyecto"
                         },
@@ -1694,6 +1877,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "TODO"
+                        },
                         "title": {
                           "es": "Áreas temáticas"
                         },
@@ -1708,6 +1894,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique la naturaleza del proyecto de I+D+i en el que ha participado"
+                        },
                         "title": {
                           "es": "Modalidad de proyecto"
                         },
@@ -1728,6 +1917,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Cobertura geográfica del proyecto de I+D+i en el que ha participado dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Ámbito del proyecto, otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Ámbito geográfico"
                         },
@@ -1744,6 +1936,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Cobertura geográfica del proyecto de I+D+i en el que ha participado. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1757,6 +1952,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Número total de personas que forman parte del proyecto de I+D+i en promedio anual. En este campo se puede introducir un valor numérico."
+                        },
                         "title": {
                           "es": "Nº de personas/año"
                         },
@@ -1769,6 +1967,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Tipo de participación desarrollada en el proyecto de I+D+i. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Grado de contribución"
                         },
@@ -1786,6 +1987,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de participación desarrollada en el proyecto I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1804,6 +2008,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Consigne el nombre del programa al que está asociado el proyecto."
+                        },
                         "title": {
                           "es": "Nombre del programa"
                         },
@@ -1812,6 +2019,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Código del proyecto asignado por la entidad financiadora si lo tuviera."
+                        },
                         "title": {
                           "es": "Cód. según financiadora"
                         },
@@ -1824,6 +2034,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Importe , en euros, de la financiación asignada al subproyecto de I+D+i. Consigne la cifra sin puntos ni comas"
+                        },
                         "title": {
                           "es": "Cuantía subproyecto (€)"
                         },
@@ -1836,6 +2049,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Consigne el porcentaje del importe total financiado expresado en euros."
+                        },
                         "title": {
                           "es": "Porcentaje en subvención"
                         },
@@ -1844,6 +2060,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Consigne el porcentaje de subvención recibida respecto al total del proyecto expresado en euros."
+                        },
                         "title": {
                           "es": "Porcentaje en crédito"
                         },
@@ -1852,6 +2071,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Consigne el porcentaje de subvención recibida más crédito respecto al total del proyecto expresado en euros."
+                        },
                         "title": {
                           "es": "Porcentaje mixto"
                         },
@@ -1864,6 +2086,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Descripción en texto libre de los resultados más relevantes del proyecto I+D+i, con un máximo de 100 palabras."
+                        },
                         "title": {
                           "es": "Resultados relevantes"
                         },
@@ -1879,6 +2104,9 @@
                       {
                         "property": "http://w3id.org/roh/participates",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Indique el nombre oficial de la entidad en la que se desarrolla el proyecto I+D+i. En el caso de que se trate de una entidad extranjera, el nombre de éste deberá consignarse en la lengua del país de origen."
+                        },
                         "title": {
                           "es": "Entidad/es participante/s"
                         },
@@ -1894,6 +2122,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Indique el nombre oficial de la entidad en la que se desarrolla el proyecto I+D+i. En el caso de que se trate de una entidad extranjera, el nombre de éste deberá consignarse en la lengua del país de origen."
+                                  },
                                   "title": {
                                     "es": "Entidad participante"
                                   },
@@ -1933,6 +2164,9 @@
       "property": "http://w3id.org/roh/patents",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "Consigne en este apartado los resultados registrados como marca intelectual en sus distintos formatos de registro. La expresión 'propiedad intelectual' engloba tanto los derechos de propiedad industrial (marcas, patentes, diseño industrial, modelos de utilidad, variedades vegetales, denominaciones de origen) como los derechos de derechos de autor (derechos morales y de explotación)"
+        },
         "title": {
           "es": "Propiedad industrial e intelectual"
         },
@@ -2346,6 +2580,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Consigne el nombre con el que ha quedado registrada la propiedad industrial en el BOPI (Boletín Oficial de la Propiedad Industrial)."
+                        },
                         "title": {
                           "es": "Título propiedad industrial registrada"
                         },
@@ -2358,6 +2595,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que se registró de la patente. Si no recuerda el día del mes, consigne 01."
+                        },
                         "title": {
                           "es": "Fecha de registro"
                         },
@@ -2366,6 +2606,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique la fecha de concesión de la patente.Si no recuerda el día del mes, consigne 01."
+                        },
                         "title": {
                           "es": "Fecha de concesión"
                         },
@@ -2378,6 +2621,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique el número de solicitud de registro/ identificación de la propiedad industrial en el BOPI (Boletín Oficial de la Propiedad Industrial)."
+                        },
                         "title": {
                           "es": "Nº de solicitud"
                         },
@@ -2389,6 +2635,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se inscribe la patente"
+                        },
                         "title": {
                           "es": "País de inscripción"
                         },
@@ -2412,6 +2661,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/Región en la que se inscribe la patente"
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de inscripción"
                         },
@@ -2445,6 +2697,9 @@
                       {
                         "property": "http://purl.org/ontology/bibo/authorList",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Consigne la firma, el nombre y los apellidos de los inventores-as/autores-as/obtentores-as. (Definiciones Diccionario de la Real Academia Española: Inventor: que inventa -Inventar: hallar o descubrir algo nuevo o no conocido; dicho de un poeta o de un artista: hallar, imaginar, crear su obra-. Autor: persona que es causa de algo; persona que inventa algo; persona que ha hecho alguna obra científica, literaria o artística. Obtentor: que obtiene o ha obtenido algo, especialmente, una nueva variedad vegetal). Para mayor información, consultar UPOV: http://www.upov.int/edocs/infdocs/es/0_c_extr_19_2_rev.pdf"
+                        },
                         "title": {
                           "es": "Inventores/autores/obtentores"
                         },
@@ -2542,6 +2797,9 @@
                       {
                         "property": "http://w3id.org/roh/operatingCountries",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Indique los países donde se ha extendido/formalizado la explotación. Separe los distintos países por /."
+                        },
                         "title": {
                           "es": "País de explotación"
                         },
@@ -2561,6 +2819,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Indique los países donde se ha extendido/formalizado la explotación. Separe los distintos países por /."
+                                  },
                                   "title": {
                                     "es": "País de celebración"
                                   },
@@ -2584,6 +2845,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Indique las Comunidades autónomas/Regiones donde se ha extendido/formalizado la explotación. Separe las distintas CCAA/Regiones por /."
+                                  },
                                   "title": {
                                     "es": "C. Autón./Reg. de publicación"
                                   },
@@ -2620,6 +2884,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad titular de la patente o modelo de utilidad."
+                        },
                         "title": {
                           "es": "Entidad titular de derechos"
                         },
@@ -2662,6 +2929,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Indique las empresas o entidades que están explotando la licencia."
+                                  },
                                   "title": {
                                     "es": "Entidad participante"
                                   },
@@ -2699,6 +2969,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Consigne el tipo de propiedad industrial según sus características. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de propiedad industrial"
                         },
@@ -2715,6 +2988,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Consigne el tipo de propiedad industrial según sus características. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2733,6 +3009,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique en el desplegable si dispone de derechos de autor o no dentro de la modalidad de la propiedad intelectual."
+                        },
                         "title": {
                           "es": "Derechos de autor"
                         },
@@ -2741,6 +3020,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique en el desplegable si dispone de derechos conexos o no dentro de la modalidad de propiedad intelectual."
+                        },
                         "title": {
                           "es": "Derechos conexos"
                         },
@@ -2749,6 +3031,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique el número de la patente"
+                        },
                         "title": {
                           "es": "Nº de patente"
                         },
@@ -2764,6 +3049,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique en el desplegable si dispone de secreto empresarial (industrial), dentro de la modalidad de Know how."
+                        },
                         "title": {
                           "es": "Secreto empresarial"
                         },
@@ -2772,6 +3060,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique en el desplegable si dispone de modalidad de Know HOW (acuerdo por el cual un contratista comunica a otro contratista los conocimientos dirigidos a la solución de problemas técnicos y que no se hallan cubiertos por patentes)"
+                        },
                         "title": {
                           "es": "Modalidad de know-how"
                         },
@@ -2780,6 +3071,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique el número de registro /Identificación de la propiedad Industrial en el BOPI (Boletín Oficial de la Propiedad Industrial)."
+                        },
                         "title": {
                           "es": "Cód. de referencia/registro"
                         },
@@ -2795,6 +3089,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique si la delimitación del ámbito geográfico en el que la propiedad industrial registrada queda protegida, es España"
+                        },
                         "title": {
                           "es": "Patente española"
                         },
@@ -2803,6 +3100,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique si la delimitación del ámbito geográfico en el que la propiedad industrial registrada queda protegida, es la Unión Europea."
+                        },
                         "title": {
                           "es": "Patente UE"
                         },
@@ -2811,6 +3111,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique si la delimitación del ámbito geográfico en el que la propiedad industrial registrada queda protegida, es internacional fuera de la Unión Europea"
+                        },
                         "title": {
                           "es": "Patente internacional no UE"
                         },
@@ -2819,6 +3122,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Patente tramitada mediante Tratado de Cooperación de Patentes"
+                        },
                         "title": {
                           "es": "Patente PCT"
                         },
@@ -2831,6 +3137,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique las palabras clave que definen el contenido de la patente."
+                        },
                         "title": {
                           "es": "Identificar palabras clave"
                         },
@@ -2845,6 +3154,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Consigne los resultados más relevantes."
+                        },
                         "title": {
                           "es": "Resultados relevantes"
                         },
@@ -2861,6 +3173,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique si dispone de licencias de explotación"
+                        },
                         "title": {
                           "es": "Licencias"
                         },
@@ -2869,6 +3184,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Describa brevemente los resultados registrados como propiedad industrial"
+                        },
                         "title": {
                           "es": "Descripción de cualidades"
                         },
@@ -2882,6 +3200,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique si existe explotación en exclusiva."
+                        },
                         "title": {
                           "es": "Explotación, en exclusiva"
                         },
@@ -2890,6 +3211,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique si se ha generado una empresa innovadora de base tecnológica, de la que el autor es promotor -al menos promotor intelectual"
+                        },
                         "title": {
                           "es": "Generada empresa innovadora"
                         },
@@ -2898,6 +3222,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": ": En el caso de que se haya generado una empresa innovadora de base tecnológica, de la que el autor es promotor, indique el resultado de la relación con la empresa."
+                        },
                         "title": {
                           "es": "Resultado"
                         },
@@ -2918,6 +3245,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En caso de que se haya generado una empresa innovadora de base tecnológica, de la que el autor es promotor, nombre los productos a los que ha dado lugar."
+                        },
                         "title": {
                           "es": "Productos"
                         },
@@ -2940,6 +3270,9 @@
       "property": "http://w3id.org/roh/groups",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la información relativa a la participación en grupos/equipos de investigación, desarrollo o innovación en general. Es decir, es el conjunto de investigadores, preferentemente pertenecientes a un mismo centro de I+D+I, que trabajan bajo la dirección de un investigador principal, publican conjuntamente en el ámbito temático al que aplican y actúan coordinados en el desarrollo y ejecución de los programas científicos que les correspondan."
+        },
         "title": {
           "es": "Grupos/equipos de investigación, desarrollo o innovación"
         },
@@ -3241,6 +3574,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del grupo de investigación en caso de que lo posea."
+                        },
                         "title": {
                           "es": "Nombre del grupo"
                         },
@@ -3254,6 +3590,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Código normalizado del grupo de investigación en caso de que lo posea."
+                        },
                         "title": {
                           "es": "Código normalizado"
                         },
@@ -3266,6 +3605,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Metas que el grupo de investigación se propone alcanzar."
+                        },
                         "title": {
                           "es": "Objeto del grupo"
                         },
@@ -3282,6 +3624,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Seleccione el tipo de colaboración en el grupo de investigación. Seleccione la clase de colaboración que corresponda. dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "Clase de colaboración"
                         },
@@ -3303,6 +3648,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la universidad, instituto, empresa a la que pertenece el grupo de investigación"
+                        },
                         "title": {
                           "es": "Entidad de afiliación"
                         },
@@ -3323,6 +3671,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de entidad a la que pertenece el grupo de investigación. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto en el desplegable, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -3343,6 +3694,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de entidad a la que pertenece el grupo de investigación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -3360,6 +3714,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Fecha del comienzo de la participación del titular del CVN en el grupo de investigación."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -3410,6 +3767,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza el grupo de investigación o en la que desarrolla su actividad el investigador responsable."
+                        },
                         "title": {
                           "es": "Ciudad de radicación"
                         },
@@ -3421,6 +3781,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza el grupo de investigación o en el que desarrolla su actividad el investigador responsable. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País de radicación"
                         },
@@ -3441,6 +3804,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad Autónoma /Región en la que se localiza el grupo de investigación o en la que desarrolla su actividad el investigador responsable. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de radicación"
                         },
@@ -3471,6 +3837,9 @@
                       {
                         "property": "http://w3id.org/roh/mainResearchers",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Nombre del investigador responsable/principal del grupo de investigación, incluso si coincide con el titular del CV."
+                        },
                         "title": {
                           "es": "Investigador/a principal (IP)"
                         },
@@ -3565,6 +3934,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Número total de personas que forman el grupo de investigación."
+                        },
                         "title": {
                           "es": "Nº de componentes grupo"
                         },
@@ -3576,6 +3948,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Número de tesis que han sido dirigidas por el grupo de investigación en el caso de que se conozcan."
+                        },
                         "title": {
                           "es": "Nº de tesis dirigidas"
                         },
@@ -3587,6 +3962,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Número de postdoc. que han sido dirigidos por el grupo de investigación en el caso de que se conozcan."
+                        },
                         "title": {
                           "es": "Nº de posdoc. dirigidos"
                         },
@@ -3602,6 +3980,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Describa los resultados más relevantes obtenidos por el grupo de investigación en texto libre con un máximo de 100 palabras."
+                        },
                         "title": {
                           "es": "Resultados relevantes"
                         },
@@ -3614,6 +3995,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Otros resultados que se quieran hacer constar obtenidos de la participación en grupos de investigación, desarrollo e innovación."
+                        },
                         "title": {
                           "es": "Otros resultados relevantes"
                         },
@@ -3627,6 +4011,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "TODO"
+                        },
                         "title": {
                           "es": "Áreas temáticas"
                         },
@@ -3650,6 +4037,9 @@
       "property": "http://w3id.org/roh/supervisedArtisticProjects",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán los datos relativos a creaciones artísticas, obras artísticas realizadas por encargo, obras presentadas en exposiciones individuales o colectivas y ferias organizadas por instituciones públicas y privadas, obras pertenecientes a museos o colecciones públicas o privadas, fotografías científicas y técnicas admitidas a concursos, participación en exposiciones de prestigio (como autor o como comisario de las mismas)."
+        },
         "title": {
           "es": "Obras artísticas dirigidas"
         },
@@ -3904,6 +4294,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Describa la exposición que ha realizado."
+                        },
                         "title": {
                           "es": "Descripción"
                         },
@@ -3917,6 +4310,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Consigne el nombre de la exposición que ha realizado."
+                        },
                         "title": {
                           "es": "Nombre de la exposición"
                         },
@@ -3925,6 +4321,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha del comienzo de la exposición. Si no recuerda el día del mes, consigne 01."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -3939,6 +4338,9 @@
                       {
                         "property": "http://purl.org/ontology/bibo/authorList",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Consigne los nombres de los autores del trabajo expuesto respentando el orden en el que aparecen. En la casilla firma se debe escribir el nombre del autor tal y como se registró en el material, mientras que en las demás casillas de nombre y apellidos se deberá escribir el nombre completo del autor. Por ejemplo: Firma: López-García, M. Nombre: María Primer Apellido: López Segundo Apellido: García"
+                        },
                         "title": {
                           "es": "Autores/as (p. o. de firma)"
                         },
@@ -4034,6 +4436,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En el caso de que su obra disponga de una publicación, indique el título de la misma."
+                        },
                         "title": {
                           "es": "Título de la publicación"
                         },
@@ -4042,6 +4447,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Indique otros indicios de calidad de la creación diferentes a catalogación, premio o publicación."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -4062,6 +4470,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad donde se localiza la celebración de la actividad descrita."
+                        },
                         "title": {
                           "es": "Ciudad de celebración"
                         },
@@ -4073,6 +4484,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País donde se localiza la celebración de la actividad descrita."
+                        },
                         "title": {
                           "es": "País de celebración"
                         },
@@ -4096,6 +4510,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/Región donde se localiza la celebración de la actividad descrita."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de publicación"
                         },
@@ -4127,6 +4544,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Lugar donde se realiza la exposición."
+                        },
                         "title": {
                           "es": "Foro donde se expone"
                         },
@@ -4139,6 +4559,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique en el desplegable si la exposición es monográfica o no."
+                        },
                         "title": {
                           "es": "Monográfica"
                         },
@@ -4147,6 +4570,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique en el desplegable si existe un catálogo de la exposición o no."
+                        },
                         "title": {
                           "es": "Catálogo"
                         },
@@ -4155,6 +4581,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique en el desplegable si ha sido el comisario de la exposición."
+                        },
                         "title": {
                           "es": "Comisario"
                         },
@@ -4167,6 +4596,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En el caso de que su obra esté catalogada, indique su registro bibliográfico, como indicio de calidad de la creación."
+                        },
                         "title": {
                           "es": "Catalogación"
                         },
@@ -4175,6 +4607,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "En el caso de que su obra esté premiada indique el premio recibido, como indicio de calidad de la creación."
+                        },
                         "title": {
                           "es": "Premio"
                         },
@@ -4197,6 +4632,9 @@
       "property": "http://w3id.org/roh/technologicalResults",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "Consigne en este apartado otras tareas de apoyo como experto realizadas en proyectos, no descritas en otros apartados."
+        },
         "title": {
           "es": "Resultados tecnológicos derivados de actividades especializadas y de transferencia no incluidos en apartados anteriores"
         },
@@ -4614,6 +5052,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Describa brevemente la actividad realizada como experto."
+                        },
                         "title": {
                           "es": "Descripción"
                         },
@@ -4633,6 +5074,9 @@
                       {
                         "property": "http://w3id.org/roh/participates",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Si procede, indique denominación de la entidad, organismo o institución que ha colaborado en la actividad experta y/o de transferencia."
+                        },
                         "title": {
                           "es": "Entidades colaboradora/s"
                         },
@@ -4693,6 +5137,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Si procede, indique denominación de la entidad, organismo o institución que ha colaborado en la actividad experta y/o de transferencia."
+                                  },
                                   "title": {
                                     "es": "Entidad colaboradora"
                                   },
@@ -4714,6 +5161,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad que ha colaborado en la actividad experta y/o de transferencia.dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                                  },
                                   "title": {
                                     "es": "Tipo de entidad"
                                   },
@@ -4734,6 +5184,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad que ha colaborado en la actividad experta y/o de transferencia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                                  },
                                   "title": {
                                     "es": "Otros"
                                   },
@@ -4751,6 +5204,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Ciudad donde radica la entidad de la actividad experta y/o de transferencia."
+                                  },
                                   "title": {
                                     "es": "Ciudad entidad colaboradora"
                                   },
@@ -4762,6 +5218,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "País donde se localiza la entidad de la actividad experta y/o de transferencia."
+                                  },
                                   "title": {
                                     "es": "País entidad colaboradora"
                                   },
@@ -4782,6 +5241,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Comunidad autónoma/Región donde se localiza la entidad de la actividad experta y/o de transferencia."
+                                  },
                                   "title": {
                                     "es": "C. Autón./Reg. entidad colaboradora"
                                   },
@@ -4815,6 +5277,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del investigador principal o responsable del equipo en el que ha realizado actividades como experto y de transferencia."
+                        },
                         "title": {
                           "es": "Firma (IP)"
                         },
@@ -4863,6 +5328,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Consigne el nombre del investigador corresponsable del equipo en el que ha realizado actividades expertas y de transferencia."
+                        },
                         "title": {
                           "es": "Firma (Co-IP)"
                         },
@@ -4911,6 +5379,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Tipo de participación desempeñada. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Grado de contribución"
                         },
@@ -4927,6 +5398,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de participación desempeñada. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -4940,6 +5414,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha del comiezo de la actividad experta y/o de transferencia. Si no recuerda el día del mes, consigne 01."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -4952,6 +5429,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Tiempo de la duración de la actividad experta y/o de transferencia expresado en años , meses y días ; por ejemplo: 6 meses y 15 días, 00.06.15; dos años y medio: 02.06.00"
+                        },
                         "title": {
                           "es": "Años"
                         },
@@ -4987,6 +5467,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Codificación mediante código UNESCO del grupo de especialidad en que se encuentra la principal actividad laboral/profesional desarrollada por el titular del CV."
+                        },
                         "title": {
                           "es": "Primaria (Cód. Unesco)"
                         },
@@ -5001,6 +5484,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En el supuesto de que la actividad laboral/profesional desarrollada por el titular del CV se extienda a más de un grupo de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la segunda actividad realizada. Ésta puede encontrarse o no dentro del mismo grupo de especialidad consignado para la actividad principal."
+                        },
                         "title": {
                           "es": "Secundaria (Cód. Unesco)"
                         },
@@ -5015,6 +5501,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En el supuesto de que la actividad laboral/profesional desarrollada por el titular del CV se extienda a más de dos grupos de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la tercera actividad realizada. Ésta puede encontrarse o no dentro de alguno de los grupos de especialidad consignados para la actividad principal y secundaria."
+                        },
                         "title": {
                           "es": "Terciaria (Cód. Unesco)"
                         },
@@ -5029,6 +5518,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique si se ha puesto en marcha de nuevas técnicas o procedimientos, operación y mantenimiento de grandes instalaciones, o equipamientos complejos."
+                        },
                         "title": {
                           "es": "Nuevas técnicas equipamientos"
                         },
@@ -5037,6 +5529,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique si se ha participado en la generación de empresas spin-off basadas en resultados de I+D+I"
+                        },
                         "title": {
                           "es": "Empresas spin-off de I+D+i"
                         },
@@ -5045,6 +5540,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique si hay resultados de actividades de transferencia de tecnología, introducción de mejoras de productos en el mercado o en procesos en marcha."
+                        },
                         "title": {
                           "es": "Resultados mejora productos"
                         },
@@ -5057,6 +5555,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Indique si existe la realización de Servicios Tecnológicos maduros: homologación, calibración, análisis u otros"
+                        },
                         "title": {
                           "es": "Homologación, calibración…"
                         },
@@ -5065,6 +5566,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique si ha participado como experto tecnológico en labores de supervisión, asesoría, evaluación o peritaje"
+                        },
                         "title": {
                           "es": "Experto/a tecnológico/a"
                         },
@@ -5073,6 +5577,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Indique si existen convenios de colaboración."
+                        },
                         "title": {
                           "es": "Convenios de colaboración"
                         },
@@ -5085,6 +5592,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Cobertura geográfica de la actividad realizada . En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Ámbito geográfico"
                         },
@@ -5101,6 +5611,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Cobertura geográfica de la actividad realizada .Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -5120,6 +5633,9 @@
                       {
                         "property": "http://w3id.org/roh/targetOrganizations",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Indique la denominación de la entidad, organismo o institución destinataria de la actividad experta y/o de transferencia."
+                        },
                         "title": {
                           "es": "Entidades destinataria/s"
                         },
@@ -5180,6 +5696,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Indique la denominación de la entidad, organismo o institución destinataria de la actividad experta y/o de transferencia."
+                                  },
                                   "title": {
                                     "es": "Entidad destinataria"
                                   },
@@ -5201,6 +5720,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad destinataria de la actividad experta y/o de transferencia.dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                                  },
                                   "title": {
                                     "es": "Tipo de entidad"
                                   },
@@ -5221,6 +5743,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad destinataria de la actividad experta y/o de transferencia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                                  },
                                   "title": {
                                     "es": "Otros"
                                   },
@@ -5238,6 +5763,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Ciudad donde se localizan la/s entidad/es destinataria/s."
+                                  },
                                   "title": {
                                     "es": "Ciudad entidad destinataria"
                                   },
@@ -5249,6 +5777,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "País donde se localiza la/s entidad/es destinataria/s."
+                                  },
                                   "title": {
                                     "es": "País entidad destinataria"
                                   },
@@ -5269,6 +5800,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Comunidad autónoma/Región donde se localiza la/s entidad/es destinataria/s."
+                                  },
                                   "title": {
                                     "es": "C. Autón./Reg. entidad destinataria"
                                   },
@@ -5302,6 +5836,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto libre anterior."
+                        },
                         "title": {
                           "es": "Identificar palabras clave"
                         },
@@ -5316,6 +5853,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Descripción en texto libre de los resultados más relevantes , con un máximo de 100 palabras."
+                        },
                         "title": {
                           "es": "Resultados relevantes"
                         },
