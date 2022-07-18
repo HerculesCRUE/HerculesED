@@ -652,7 +652,7 @@
                           "es": "Identificar palabras clave"
                         },
                         "information": {
-                          "es": "Sintetice el texto libre anterior mediante el uso de palabras clave."
+                          "es": "Sintetice el texto anterior mediante el uso de palabras clave."
                         },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
@@ -2083,7 +2083,7 @@
                           "es": "Identificar palabras clave"
                         },
                         "information": {
-                          "es": "Sintetice el texto libre anterior mediante el uso de palabras clave."
+                          "es": "Sintetice el texto anterior mediante el uso de palabras clave."
                         },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
