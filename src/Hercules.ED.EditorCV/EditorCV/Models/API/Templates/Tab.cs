@@ -371,6 +371,10 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public Dictionary<string, string> name;
         /// <summary>
+        /// Información del item
+        /// </summary>
+        public Dictionary<string, string> information;
+        /// <summary>
         /// Indica si se muestra en la minificha (sin desplegar)
         /// </summary>
         public bool showMini;

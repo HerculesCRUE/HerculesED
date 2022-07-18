@@ -82,6 +82,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string title { get; set; }
         /// <summary>
+        /// Información de la propiedad
+        /// </summary>
+        public string information { get; set; }
+        /// <summary>
         /// Placeholder para la edición
         /// </summary>
         public string placeholder { get; set; }
