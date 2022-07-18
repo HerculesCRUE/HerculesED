@@ -239,7 +239,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "TODO"
+                          "es": "Describa brevemente el proyecto I+D+i en el que ha participado"
                         },
                         "title": {
                           "es": "Descripción"
@@ -768,9 +768,6 @@
                   {
                     "properties": [
                       {
-                        "information": {
-                          "es": "TODO"
-                        },
                         "title": {
                           "es": "Áreas temáticas"
                         },
@@ -1333,7 +1330,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "TODO"
+                          "es": "Describa brevemente el proyecto o competitivo en el que ha participado."
                         },
                         "title": {
                           "es": "Descripción"
@@ -1827,7 +1824,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "TODO"
+                          "es": "Indique la naturaleza del proyecto de I+D+i en el que ha participado"
                         },
                         "title": {
                           "es": "Tipo de proyecto"
@@ -1877,9 +1874,6 @@
                   {
                     "properties": [
                       {
-                        "information": {
-                          "es": "TODO"
-                        },
                         "title": {
                           "es": "Áreas temáticas"
                         },
@@ -4011,9 +4005,6 @@
                   {
                     "properties": [
                       {
-                        "information": {
-                          "es": "TODO"
-                        },
                         "title": {
                           "es": "Áreas temáticas"
                         },
@@ -5837,7 +5828,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "Sintetice, mediante el uso de palabras clave, el texto libre anterior."
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto anterior."
                         },
                         "title": {
                           "es": "Identificar palabras clave"
