@@ -261,7 +261,7 @@
           "es": "Publicaciones, documentos científicos y técnicos"
         },
         "information": {
-          "es": " En este apartado se consignarán los trabajos de carácter científico y tecnológico publicados en cualquier soporte, condición de autoría/coautoría y material, incluyéndose notas críticas o recensiones, catálogos de obras artísticas, documentos o informes científicos y técnicos, obras de carácter divulgativo y revisiones, con una única excepción, relativa a las publicaciones específicamente orientadas al ámbito docente, que serán consignadas en el apartado 'Publicaciones docentes o de carácter pedagógico libros artículos etc.', disponible dentro del módulo 4 'Actividad docente'."
+          "es": "En este apartado se consignarán los trabajos de carácter científico y tecnológico publicados en cualquier soporte, condición de autoría/coautoría y material, incluyéndose notas críticas o recensiones, catálogos de obras artísticas, documentos o informes científicos y técnicos, obras de carácter divulgativo y revisiones, con una única excepción, relativa a las publicaciones específicamente orientadas al ámbito docente, que serán consignadas en el apartado 'Publicaciones docentes o de carácter pedagógico libros artículos etc.', disponible dentro del módulo 4 'Actividad docente'."
         },
         "listItemsPresentation": {
           "last5Years": {
@@ -472,6 +472,9 @@
                         "title": {
                           "es": "Título de la publicación"
                         },
+                        "information": {
+                          "es": "Título del artículo, capítulo o elemento publicado."
+                        },
                         "placeholder": {
                           "es": "Introduce el título de la publicación"
                         },
@@ -487,6 +490,9 @@
                       {
                         "title": {
                           "es": "Tipo de producción"
+                        },
+                        "information": {
+                          "es": "Tipo de material publicado."
                         },
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
@@ -504,6 +510,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Tipo de material publicado. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/typeOthers",
                         "required": true,
                         "dependency": {
@@ -516,6 +525,9 @@
                       {
                         "title": {
                           "es": "Fecha de publicación"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se ha publicado el documento."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de publicación"
@@ -694,6 +706,9 @@
                         "title": {
                           "es": "Tipo de soporte"
                         },
+                        "information": {
+                          "es": "Tipo de soporte en el que se ha plasmado el trabajo dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "property": "http://w3id.org/roh/supportType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/DocumentFormat",
@@ -730,6 +745,9 @@
                         "title": {
                           "es": "Nombre de la publicación"
                         },
+                        "information": {
+                          "es": "Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo."
+                        },
                         "property": "http://w3id.org/roh/hasPublicationVenueText",
                         "dependency": {
                           "property": "http://w3id.org/roh/supportType",
@@ -741,6 +759,9 @@
                       {
                         "title": {
                           "es": "Editorial"
+                        },
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
                         },
                         "property": "http://purl.org/ontology/bibo/publisher",
                         "dependency": {
@@ -841,6 +862,9 @@
                       {
                         "title": {
                           "es": "Grado de contribución"
+                        },
+                        "information": {
+                          "es": "Tipo de participación en la elaboración del documento publicado."
                         },
                         "property": "http://w3id.org/roh/contributionGrade",
                         "combo": {
@@ -995,6 +1019,9 @@
                         "title": {
                           "es": "Colección"
                         },
+                        "information": {
+                          "es": "Si un documento forma parte de una colección, consigne el título de ésta entre paréntesis. Si la colección va numerada, se añade el número del documento dentro de la colección precedido de punto y coma y espacio."
+                        },
                         "placeholder": {
                           "es": "Introduce la colección"
                         },
@@ -1005,6 +1032,9 @@
                       {
                         "title": {
                           "es": "URL"
+                        },
+                        "information": {
+                          "es": "Dirección de Internet que enlaza al texto completo del documento publicado."
                         },
                         "placeholder": {
                           "es": "Introduce la URL"
@@ -1323,6 +1353,9 @@
                         "title": {
                           "es": "Publicación relevante"
                         },
+                        "information": {
+                          "es": " Señale si considera que esta publicación ocupa una posición relevante dentro de su producción científica."
+                        },
                         "property": "http://w3id.org/roh/relevantPublication",
                         "type": "boolean",
                         "entity_cv": true,
@@ -1335,6 +1368,9 @@
                       {
                         "title": {
                           "es": "Reseñas en revistas"
+                        },
+                        "information": {
+                          "es": "Reseñas recibidas en revistas científicas especializadas (por ejemplo, en repertorios y boletines bibliográficos más vinculados a su especialidad)."
                         },
                         "placeholder": {
                           "es": "Introduce el número de reseñas en revistas"
@@ -1350,6 +1386,9 @@
                       {
                         "title": {
                           "es": "Traducciones"
+                        },
+                        "information": {
+                          "es": "Lenguas a las que ha sido traducido el documento publicado de acuerdo con las categorías recogidas en la Norma CVN."
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
                         "combo": {
@@ -1371,6 +1410,9 @@
                       {
                         "title": {
                           "es": "Resultados relevantes"
+                        },
+                        "information": {
+                          "es": "Principales contribuciones del titular del CV a la publicación y resultados más destacados de la misma, con un máximo aproximado de 200 palabras."
                         },
                         "placeholder": {
                           "es": "Introduce los resultados relevantes"
