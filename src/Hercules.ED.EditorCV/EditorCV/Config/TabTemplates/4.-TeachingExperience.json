@@ -7337,7 +7337,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "Describa en formato de texto libre la actividad desarrollada, con un máximo aproximado de 100 palabras."
+                          "es": "Describa la actividad desarrollada, con un máximo aproximado de 100 palabras."
                         },
                         "title": {
                           "es": "Descripción de la actividad"
@@ -7510,7 +7510,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "Sintetice, mediante el uso de palabras clave, el texto libre anterior."
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto anterior."
                         },
                         "title": {
                           "es": "Identificar palabras clave"
@@ -7694,7 +7694,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "Describa en formato de texto libre los resultados más destacados de su actividad docente, con un máximo aproximado de 100 palabras."
+                          "es": "Describa los resultados más destacados de su actividad docente, con un máximo aproximado de 100 palabras."
                         },
                         "title": {
                           "es": "Descripción"
@@ -7867,7 +7867,7 @@
                     "properties": [
                       {
                         "information": {
-                          "es": "Sintetice, mediante el uso de palabras clave, el texto libre anterior."
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto anterior."
                         },
                         "title": {
                           "es": "Identificar palabras clave"
