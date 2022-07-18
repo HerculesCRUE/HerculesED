@@ -1732,16 +1732,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         {
                             document.Roh_wosCitationCount = int.Parse(itemMetric.citationCount);
                         }
-
+                    }
+                }
+            }
+            if (document.Roh_scopusCitationCount == null || (document.Roh_hasMetric == null || document.Roh_hasMetric.Count == 0))
+            {
+                if (pPublicacionB != null && pPublicacionB.hasMetric != null && pPublicacionB.hasMetric.Count > 0)
+                {
+                    foreach (HasMetric itemMetric in pPublicacionB.hasMetric)
+                    {
                         if (itemMetric.metricName.ToLower() == "scopus")
                         {
                             document.Roh_scopusCitationCount = int.Parse(itemMetric.citationCount);
                         }
-
-                        //if (itemMetric.metricName.ToLower() == "semanticscholar")
-                        //{
-                        //    document.Roh_semanticScholarCitationCount = int.Parse(itemMetric.citationCount);
-                        //}
                     }
                 }
             }

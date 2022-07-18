@@ -289,6 +289,10 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public Dictionary<string, string> title;
         /// <summary>
+        /// Información de la propiedad
+        /// </summary>
+        public Dictionary<string, string> information;
+        /// <summary>
         /// Nombre para el placeholder
         /// </summary>
         public Dictionary<string, string> placeholder;

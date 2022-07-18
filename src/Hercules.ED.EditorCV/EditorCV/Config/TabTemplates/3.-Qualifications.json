@@ -10,10 +10,17 @@
       "property": "http://w3id.org/roh/firstSecondCycles",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán las enseñanzas universitarias y enseñanzas artísticas superiores, de carácter oficial y no oficial, cursadas por el titular del CV, comprendidas en los dos primeros ciclos (Grado, Máster), en los antiguos ciclos (Licenciado, Diplomado, Ingeniero Superior, Ingeniero Técnico, Arquitecto) y en los planes de estudios de enseñanzas artísticas superiores (Música y Danza, Arte Dramático, Conservación y Restauración de Bienes Culturales, Artes Plásticas y Diseño), de acuerdo con lo dispuesto en la Ley Orgánica 4/2007, de 12 de abril, por la que se modifica la Ley Orgánica 6/2001, de 21 de diciembre, de Universidades."
+        },
         "title": {
           "es": "Estudios de 1º y 2º ciclo, y antiguos ciclos (Licenciados, Diplomados, Ingenieros Superiores, Ingenieros Técnicos, Arquitectos)"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.010.010.000",
           "listItem": {
@@ -265,6 +272,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del título expedido por una institución de educación superior nacional o extranjera. La introducción del nombre deberá hacerse en los mismos términos en que aparezca consignado en el certificado o diploma expedido con validez académica."
+                        },
                         "title": {
                           "es": "Nombre del título"
                         },
@@ -300,6 +310,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nivel académico de los estudios cursados por el titular del CV dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' disponible en este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Titulación universitaria"
                         },
@@ -316,6 +329,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Nivel académico de los estudios cursados por el titular del CV. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -334,6 +350,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la institución que ha expedido el título. En el caso de que se trate de una institución de educación superior extranjera, el nombre de ésta deberá consignarse en la lengua del país de origen, seguido, en su caso, del término equivalente en castellano entre paréntesis."
+                        },
                         "title": {
                           "es": "Entidad de titulación"
                         },
@@ -355,6 +374,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución que ha expedido el título dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -375,6 +397,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -399,6 +424,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la institución que ha expedido el título."
+                        },
                         "title": {
                           "es": "Ciudad entidad titulación"
                         },
@@ -410,6 +438,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la institución que ha expedido el título. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad titulación"
                         },
@@ -430,6 +461,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma /región en la que se localiza la institución que ha expedido el título. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad titulación"
                         },
@@ -458,6 +492,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial del título expedido por una institución de educación superior extranjera. Éste deberá consignarse en la lengua de dicha entidad y tal como aparezca consignado en el certificado o diploma expedido con validez académica oficial. Puede acompañarse, en su caso, y entre paréntesis, del título equivalente en español de entre los comprendidos en el Registro de Universidades, Centros y Títulos (RUCT): https://www.educacion.gob.es/ruct/"
+                        },
                         "title": {
                           "es": "Título extranjero"
                         },
@@ -483,6 +520,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si se trata o no de un título extranjero de educación superior homologado. La homologación otorga en España validez oficial a los títulos de educación superior obtenidos en el extranjero. Un título extranjero homologado posee los mismos efectos (académicos o profesionales) del título o grado académico español al cual se homologa, en todo el territorio nacional. Estos efectos se producen desde la fecha en que le sea concedida y se expida la correspondiente credencial: http://www.mecd.gob.es/educacion-mecd/areas-educacion/universidades/educacion-superior-universitaria/titulos/homologacion-titulos/homologacion-titulos-universitarios.html"
+                        },
                         "title": {
                           "es": "Título homologado"
                         },
@@ -491,6 +531,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha de la resolución de homologación del título extranjero de educación superior mediante credencial expedida por la Subdirección General de Títulos y Reconocimiento de Cualificaciones del Ministerio de Educación, Cultura y Deporte."
+                        },
                         "title": {
                           "es": "Fecha de homologación"
                         },
@@ -499,6 +542,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": " Nota media del expediente. Seleccione la nota que corresponda dentro de las opciones ofrecidas en el desplegable. El sistema de calificaciones está regulado en el artículo 5.3 y 5.4 del RD 1125/2003, de 5 de septiembre, por el que se establece el sistema europeo de créditos y el sistema de calificaciones en las titulaciones universitarias de carácter oficial y validez en todo el territorio nacional: '3. La media del expediente académico de cada alumno será el resultado de la aplicación de la siguiente fórmula: suma de los créditos obtenidos por el alumno multiplicados cada uno de ellos por el valor de las calificaciones que correspondan, y dividida por el número de créditos totales obtenidos por el alumno. 4. Los resultados obtenidos por el alumno en cada una de las materias del plan de estudios se calificarán en función de la siguiente escala numérica de 0 a 10, con expresión de un decimal, a la que podrá añadirse su correspondiente calificación cualitativa: 0-4,9: Suspenso (SS) / 5,0-6,9: Aprobado (AP) / 7,0-8,9: Notable (NT) / 9,0-10: Sobresaliente (SB) / Matrícula de honor: implica haber obtenido sobresaliente más una mención especial'."
+                        },
                         "title": {
                           "es": "Nota media del expediente"
                         },
@@ -519,6 +565,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Premio obtenido, en su caso, mientras el titular del CV cursaba sus estudios universitarias oficiales y no oficiales. Seleccione el tipo de premio que corresponda dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Premio, otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Premio"
                         },
@@ -535,6 +584,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Premio obtenido, en su caso, mientras el titular del CV cursaba sus estudios universitarias oficiales y no oficiales. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -562,10 +614,17 @@
       "property": "http://w3id.org/roh/doctorates",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán las enseñanzas universitarias de tercer ciclo o doctorado conducentes a la obtención del título de Doctor o Doctora, de carácter oficial y no oficial, cursadas por el titular del CV de acuerdo con lo dispuesto en el Real Decreto 99/2011, de 28 de enero, por el que se regulan las enseñanzas oficiales de doctorado."
+        },
         "title": {
           "es": "Doctorados"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.010.020.000",
           "listItem": {
@@ -901,6 +960,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del programa de doctorado cursado por el titular del CV en el marco de los Espacios Europeos de Educación Superior e Investigación, según definición recogida en el artículo 2 del Real Decreto 99/2011, de 28 de enero, por el que se regulan las enseñanzas oficiales de doctorado."
+                        },
                         "title": {
                           "es": "Programa de doctorado"
                         },
@@ -924,6 +986,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Fecha de expedición del título de doctor."
+                        },
                         "title": {
                           "es": "Fecha de titulación"
                         },
@@ -936,6 +1001,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la institución que ha expedido el título de doctor. En el caso de que se trate de una institución de educación superior extranjera, el nombre de ésta deberá consignarse en la lengua del país de origen, seguido, en su caso, del término equivalente en castellano entre paréntesis."
+                        },
                         "title": {
                           "es": "Entidad de titulación"
                         },
@@ -957,6 +1025,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución que ha expedido el título de doctor dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -977,6 +1048,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución que ha expedido el título de doctor. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1001,6 +1075,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la institución que ha expedido el título de doctor."
+                        },
                         "title": {
                           "es": "Ciudad entidad titulación"
                         },
@@ -1012,6 +1089,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la institución que ha expedido el título de doctor. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad titulación"
                         },
@@ -1032,6 +1112,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma /región en la que se localiza la institución que ha expedido el título de doctor. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad titulación"
                         },
@@ -1060,6 +1143,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Institución en la que obtuvo el Diploma de Estudios Avanzados (DEA), regulado en el Real Decreto 778/1998, de 30 de abril."
+                        },
                         "title": {
                           "es": "Entidad de titulación DEA"
                         },
@@ -1081,6 +1167,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que obtuvo el Diploma de Estudios Avanzados (DEA), regulado en el Real Decreto 778/1998, de 30 de abril."
+                        },
                         "title": {
                           "es": "Fecha de obtención DEA"
                         },
@@ -1093,6 +1182,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del título de la tesis doctoral elaborada y defendida por el titular del CV en el marco del Espacio Europeo de Educación Superior regulado en el Real Decreto 1393/2007, de 29 de octubre, por el que se establece la ordenación de las enseñanzas universitarias oficiales y el Real Decreto 99/2011, de 28 de enero, que regula las enseñanzas oficiales de doctorado. La tesis doctoral consiste en un trabajo original de investigación elaborado por el candidato a doctor en cualquier campo de conocimiento y deberá capacitar al doctorando para el trabajo autónomo en el ámbito de la I+D+i."
+                        },
                         "title": {
                           "es": "Título de la tesis"
                         },
@@ -1104,6 +1196,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Calificación obtenida en la defensa de la tesis doctoral por el titular del CV."
+                        },
                         "title": {
                           "es": "Calificación obtenida"
                         },
@@ -1116,6 +1211,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del director de la tesis doctoral elaborada y defendida por el titular del CV, definido en el artículo 2.6 del Real Decreto 99/2011, de 28 de enero, por el que se regulan las enseñanzas oficiales de doctorado"
+                        },
                         "title": {
                           "es": "Firma (Director/a de tesis)"
                         },
@@ -1154,6 +1252,9 @@
                       {
                         "property": "http://w3id.org/roh/codirector",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Nombre del primer co-director de la tesis doctoral elaborada y defendida por el titular del CV."
+                        },
                         "title": {
                           "es": "Codirector/a de tesis"
                         },
@@ -1240,6 +1341,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si su tesis doctoral ha recibido o no una mención europea. La mención europea en el título de Doctor está regulada en el artículo 14 del Real Decreto 56/2005, de 21 de enero, sobre estudios universitarios oficiales de posgrado y en el artículo 22 del Real Decreto 1393/2007, de 29 de octubre, por el que se establece la ordenación de las enseñanzas universitarias oficiales. Los doctorandos que hayan comenzado sus estudios de doctorado con posterioridad al 11 de febrero de 2011 podrán obtener la mención internacional pero no la mención europea en el título de Doctor, ya que ésta ha sido derogada por el RD 99/2011. Los doctorandos que comenzaron sus estudios antes del 11 de febrero de 2011 y que hayan leído o lean sus tesis con posterioridad a dicha fecha, podrán obtener la mención europea, de acuerdo con la anterior normativa, o la mención internacional."
+                        },
                         "title": {
                           "es": "Doctorado Europeo"
                         },
@@ -1248,6 +1352,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha de obtención de la mención europea en el título de Doctor, de acuerdo con el artículo 14 del Real Decreto 56/2005, de 21 de enero, por el que se regulan los estudios universitarios oficiales de Posgrado, y el artículo 22 del Real Decreto 1393/2007, de 29 de octubre, por el que se establece la ordenación de las enseñanzas universitarias oficiales."
+                        },
                         "title": {
                           "es": "Fecha de mención"
                         },
@@ -1264,6 +1371,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si el programa en el que se enmarca su tesis doctoral ha recibido o no una mención de calidad. La mención de calidad es una expresión de reconocimiento a la solvencia científico/técnica y formadora otorgada al programa de doctorado en su conjunto y a los grupos de investigación y departamentos que intervienen en el mismo. La mención de calidad ha sido sustituida por la mención hacia la excelencia, distinción con la que el Ministerio de Educación reconoce la calidad de los mejores programas oficiales de Doctorado, y supone un proceso previo de acreditación de los méritos y la trayectoria del programa ante la ANECA (artículo 16.1 del Real Decreto 99/2011, de 28 de enero, por el que se regulan las enseñanzas oficiales de doctorado: http://www.boe.es/boe/dias/2011/02/10/pdfs/BOE-A-2011-2541.pdf)"
+                        },
                         "title": {
                           "es": "Mención de calidad"
                         },
@@ -1276,6 +1386,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si ha recibido o no el premio extraordinario de doctorado. El premio extraordinario de doctorado se concede a aquellos Doctores que, habiendo obtenido la mención 'cum laude', sean beneficiarios asimismo de dicho premio (file:///C:/Documents%20and%20Settings/externocvn02/Mis%20documentos/Downloads/Normativa.pdf)"
+                        },
                         "title": {
                           "es": "Premio extraordinario doctor"
                         },
@@ -1284,6 +1397,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Año de concesión del premio extraordinario de doctorado."
+                        },
                         "title": {
                           "es": "Fecha de obtención"
                         },
@@ -1300,6 +1416,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si se trata o no de un título extranjero de Doctor homologado. La homologación otorga en España validez oficial a los títulos de Doctorado obtenidos en el extranjero. Un título extranjero homologado posee los mismos efectos (académicos o profesionales) del título español al cual se homologa, en todo el territorio nacional. Estos efectos se producen desde la fecha en que le sea concedida y se expida la correspondiente credencial: http://www.mecd.gob.es/educacion-mecd/areas-educacion/universidades/educacion-superior-universitaria/titulos/homologacion-titulos/homologacion-titulos-universitarios.html"
+                        },
                         "title": {
                           "es": "Título homologado"
                         },
@@ -1308,6 +1427,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha de la resolución de homologación del título extranjero de Doctorado mediante credencial expedida por la Subdirección General de Títulos y Reconocimiento de Cualificaciones del Ministerio de Educación, Cultura y Deporte."
+                        },
                         "title": {
                           "es": "Fecha de homologación"
                         },
@@ -1333,10 +1455,16 @@
       "property": "http://w3id.org/roh/languageSkills",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará el nivel de conocimiento en idiomas que posee el titular del CV."
+        },
         "title": {
           "es": "Conocimiento de idiomas"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": true
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.060.000.000",
           "listItem": {
@@ -1481,6 +1609,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Lengua respecto de la que acredita un nivel de conocimiento."
+                        },
                         "title": {
                           "es": "Idioma"
                         },
@@ -1498,6 +1629,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comprensión auditiva"
+                        },
                         "title": {
                           "es": "Comprensión auditiva"
                         },
@@ -1514,6 +1648,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comprensión de lectura"
+                        },
                         "title": {
                           "es": "Comprensión de lectura"
                         },
@@ -1534,6 +1671,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Interacción oral"
+                        },
                         "title": {
                           "es": "Interacción oral"
                         },
@@ -1550,6 +1690,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Expresión oral"
+                        },
                         "title": {
                           "es": "Expresión oral"
                         },
@@ -1566,6 +1709,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Expresión escrita"
+                        },
                         "title": {
                           "es": "Expresión escrita"
                         },
@@ -1595,10 +1741,17 @@
       "property": "http://w3id.org/roh/postgraduates",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán otros títulos universitarios de segundo y tercer ciclo, de carácter oficial y no oficial (títulos propios u otros), cursados por el titular del CV y que no hayan sido especificados anteriormente."
+        },
         "title": {
           "es": "Otra formación universitaria de posgrado"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.010.030.000",
           "listItem": {
@@ -1812,6 +1965,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del título de posgrado expedido por una institución de educación superior nacional o extranjera. Éste deberá especificarse en los mismos términos en que aparezca consignado en el certificado o diploma expedido con validez académica."
+                        },
                         "title": {
                           "es": "Titulación de posgrado"
                         },
@@ -1835,6 +1991,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Fecha de expedición del título de posgrado. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01)."
+                        },
                         "title": {
                           "es": "Fecha de titulación"
                         },
@@ -1847,6 +2006,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la institución que ha expedido el título de posgrado. En el caso de que se trate de una institución de educación superior extranjera, el nombre de ésta deberá consignarse en la lengua del país de origen, seguido, en su caso, del término equivalente en castellano entre paréntesis."
+                        },
                         "title": {
                           "es": "Entidad de titulación"
                         },
@@ -1868,6 +2030,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución que ha expedido el título de posgrado dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -1888,6 +2053,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución que ha expedido el título de posgrado. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1901,6 +2069,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Nombre oficial del centro donde cursó sus estudios de posgrado."
+                        },
                         "title": {
                           "es": "Facultad, instituto, centro"
                         },
@@ -1924,6 +2095,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la institución que ha expedido el título de posgrado."
+                        },
                         "title": {
                           "es": "Ciudad entidad titulación"
                         },
@@ -1935,6 +2109,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la institución que ha expedido el título de posgrado. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad titulación"
                         },
@@ -1955,6 +2132,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma /región en el que se localiza la institución que ha expedido el título de posgrado. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad titulación"
                         },
@@ -1983,6 +2163,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nivel académico de los estudios cursados por el titular del CV dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "Tipo de formación"
                         },
@@ -1999,6 +2182,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Calificación obtenida en el expediente académico del título de posgrado."
+                        },
                         "title": {
                           "es": "Calificación obtenida"
                         },
@@ -2011,6 +2197,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si se trata o no de un título extranjero de educación superior homologado. La homologación otorga en España validez oficial a los títulos de posgrado obtenidos en el extranjero. Un título extranjero homologado posee los mismos efectos (académicos o profesionales) del título español al cual se homologa, en todo el territorio nacional. Estos efectos se producen desde la fecha en que le sea concedida y se expida la correspondiente credencial: http://www.mecd.gob.es/educacion-mecd/areas-educacion/universidades/educacion-superior-universitaria/titulos/homologacion-titulos/homologacion-titulos-universitarios.html"
+                        },
                         "title": {
                           "es": "Título homologado"
                         },
@@ -2019,6 +2208,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha de la resolución de homologación del título extranjero de posgrado mediante credencial expedida por la Subdirección General de Títulos y Reconocimiento de Cualificaciones del Ministerio de Educación, Cultura y Deporte."
+                        },
                         "title": {
                           "es": "Fecha de homologación"
                         },
@@ -2040,10 +2232,17 @@
       "property": "http://w3id.org/roh/specialisedTraining",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará toda la formación especializada (contenidos propios de su campo de conocimiento) recibida por el titular del CV de carácter permanente (aprendizaje a lo largo de la vida en el ámbito del conocimiento especializado ), continua (destinada a personas trabajadoras en activo que quieren ampliar conocimientos), ocupacional (dirigida a trabajadores/as en situación de desempleo), de reciclaje profesional y técnica que no tenga carácter oficial ni pertenezca al ámbito sanitario."
+        },
         "title": {
           "es": "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización (distinta a la formación académica reglada y a la sanitaria)"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.020.000.000",
           "listItem": {
@@ -2289,6 +2488,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del curso de especialización realizado en una entidad nacional o extranjera. Éste deberá especificarse en los mismos términos en que aparezca consignado en el certificado o diploma acreditativo."
+                        },
                         "title": {
                           "es": "Título de la formación"
                         },
@@ -2306,6 +2508,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha expedido el título de especialización. En el caso de que se trate de una entidad extranjera, el nombre de ésta deberá consignarse en la lengua del país de origen, seguido, en su caso, del término equivalente en castellano entre paréntesis."
+                        },
                         "title": {
                           "es": "Entidad de titulación"
                         },
@@ -2327,6 +2532,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha expedido el título de especialización dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -2347,6 +2555,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha expedido el título de especialización. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2364,6 +2575,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Fecha en la que ha finalizado la formación especializada. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01)"
+                        },
                         "title": {
                           "es": "Fecha de finalización"
                         },
@@ -2372,6 +2586,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tiempo (en horas) que ha durado el curso de especialización."
+                        },
                         "title": {
                           "es": "Duración en horas"
                         },
@@ -2391,6 +2608,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la entidad que ha expedido el título de especialización."
+                        },
                         "title": {
                           "es": "Ciudad entidad titulación"
                         },
@@ -2402,6 +2622,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la entidad que ha expedido el título de especialización. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad titulación"
                         },
@@ -2422,6 +2645,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma /región en la que se localiza la entidad que ha expedido el título de especialización. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad titulación"
                         },
@@ -2450,6 +2676,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Carácter del curso de especialización realizado por el titular del CV dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de la formación"
                         },
@@ -2466,6 +2695,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter del curso de especialización realizado por el titular del CV. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2484,6 +2716,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la impartición del curso descrito, indicando si éste forma parte de algún plan o programa académico, profesional y/o empresarial, su orientación a la docencia u otros, la participación de otras instituciones y/o empresas, si se enmarca en algún convenio, o bien si se trata de una empresa que acoge personal en prácticas de formación."
+                        },
                         "title": {
                           "es": "Objetivos de la entidad"
                         },
@@ -2497,6 +2732,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre de la persona responsable de la especialización impartida. En el campo 'Firma' debe consignarse la forma normalizada con que el responsable de la formación firma sus trabajos, en tanto que en las casillas de nombre y apellidos se especificará el nombre completo de éste. Por ejemplo: Firma: Arenas-Busto, M.; Nombre: Miguel; Primer Apellido: Arenas; Segundo Apellido: Busto."
+                        },
                         "title": {
                           "es": "Firma"
                         },
@@ -2542,10 +2780,18 @@
       "property": "http://w3id.org/roh/coursesAndSeminars",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la formación recibida por el titular del CV sobre metodología docente cuyo objetivo sea el perfeccionamiento, innovación y mejora de la práctica de la docencia, introducción de nuevas tecnologías, etc. (se incluye, entre otros, el Curso de Aptitud Pedagógica, CAP)."
+        },
         "title": {
           "es": "Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la docencia"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.050.000.000",
           "listItem": {
@@ -2557,7 +2803,6 @@
               }
             },
             "properties": [
-
               {
                 "name": {
                   "es": "Objetivos del curso/seminario"
@@ -2844,6 +3089,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del curso, seminario y/o actividad realizada en relación con la mejora de la docencia."
+                        },
                         "title": {
                           "es": "Título del curso/seminario"
                         },
@@ -2857,6 +3105,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en el curso, seminario y/o actividad de mejora docente."
+                        },
                         "title": {
                           "es": "Objetivos del curso/seminario"
                         },
@@ -2873,6 +3124,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado el curso, seminario y/o actividad de mejora docente."
+                        },
                         "title": {
                           "es": "Entidad organizadora"
                         },
@@ -2894,6 +3148,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el curso, seminario y/o actividad de mejora docente dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -2914,6 +3171,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el curso, seminario y/o actividad de mejora docente. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2927,6 +3187,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Nombre oficial del centro al que, en su caso, estaba adscrito el curso, seminario y/o actividad de mejora docente realizado."
+                        },
                         "title": {
                           "es": "Facultad, instituto, centro"
                         },
@@ -2978,6 +3241,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la entidad que ha organizado el curso, seminario y/o actividad de mejora docente."
+                        },
                         "title": {
                           "es": "Ciudad entidad organizadora"
                         },
@@ -2989,6 +3255,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la entidad que ha organizado el curso, seminario y/o actividad de mejora docente. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad organizadora"
                         },
@@ -3009,6 +3278,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se localiza la entidad que ha organizado el curso, seminario y/o actividad de mejora docente. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad organizadora"
                         },
@@ -3065,6 +3337,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en la estancia dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Objetivo de la estancia, otros' donde se podrá consignar dicha circunstancia en texto libre"
+                        },
                         "title": {
                           "es": "Objetivo de la estacia"
                         },
@@ -3081,6 +3356,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en la estancia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -3099,6 +3377,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Programa por el que se ha financiado, en su caso, la estancia. La movilidad de los investigadores se ha convertido en un fenómeno clave y estratégico para la integración del Espacio Europeo de Investigación y está impulsado por la Unión Europea, con el fin de promover la libertad de circulación del conocimiento y la tecnología. Es asimismo una prioridad de la política cientíﬁca española (Plan Nacional: Programa Nacional de Movilidad de Recursos Humanos). Las estancias son periodos de tiempo de corta/media/larga duración que el investigador desarrolla de forma continuada en otro centro de investigación de prestigio diferente a la institución a la que esté adscrito y/o en la que estudia máster o doctorado, desarrollando actividades de investigación y/o docencia. Las estancias pueden ser predoctales (mientras se está haciendo el doctorado) o posdoctorales (una vez obtenido el título de doctor). También pueden clasificarse en competitivas (obtenidas en convocatorias públicas competitivas o contratos de investigación financiados con cargo al centro en que se realiza la estancia) y no competitivas (aquellas que el investigador realiza por su cuenta)."
+                        },
                         "title": {
                           "es": "Programa de financiación"
                         },
@@ -3114,6 +3395,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Perfil profesional de los alumnos/as del curso, seminario y/o actividad de mejora docente, mediante el uso de palabras clave."
+                        },
                         "title": {
                           "es": "Perfil de destinatarios/as"
                         },
@@ -3127,6 +3411,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Campo de texto libre para describir las tareas realizadas durante el tiempo de realización del curso, seminario y/o actividad de mejora docente."
+                        },
                         "title": {
                           "es": "Tareas contrastables"
                         },

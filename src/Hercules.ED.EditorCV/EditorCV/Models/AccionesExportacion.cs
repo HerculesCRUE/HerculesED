@@ -199,7 +199,7 @@ namespace EditorCV.Models
         /// Devuleve un diccionario con todos los perfiles de exportación del usuario
         /// </summary>
         /// <param name="pCVId">Identificador del curriculum vitae</param>
-        /// <returns>Diccionario cib kis perfiles de exportación</returns>
+        /// <returns>Diccionario con los perfiles de exportación</returns>
         public Dictionary<string, List<string>> GetPerfilExportacion(string pCVId)
         {
             Dictionary<string, List<string>> dicIds = new Dictionary<string, List<string>>();

@@ -13,7 +13,14 @@
         "title": {
           "es": "Situación profesional actual"
         },
+        "information": {
+          "es": "En este apartado se consignará toda la información relacionada con los cargos y/o actividades de carácter laboral y/o profesional desempeñados por el titular del CV en el momento de redactar el presente currículum." 
+        },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "010.010.000.000",
           "listItem": {
@@ -400,6 +407,9 @@
                         "title": {
                           "es": "Categoría profesional"
                         },
+                        "information": {
+                          "es": "Nivel de cualificación del puesto que ocupa dentro de la clasificación profesional."
+                        },
                         "placeholder": {
                           "es": "Introduce la categoría profesional"
                         },
@@ -412,6 +422,9 @@
                       {
                         "title": {
                           "es": "Entidad empleadora"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad donde desarrolla su actividad laboral y/o profesional actualmente. Se recomienda introducir, en primer lugar, el nombre extendido, seguido, en su caso, del acrónimo."
                         },
                         "autocomplete": true,
                         "required": true,
@@ -434,6 +447,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad donde desarrolla su actividad laboral y/o profesional dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "property": "http://w3id.org/roh/employerOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -454,6 +470,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad donde desarrolla su actividad laboral y/o profesional. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/employerOrganizationTypeOther",
                         "required": true,
                         "dependency": {
@@ -471,6 +490,9 @@
                         "title": {
                           "es": "Facultad, instituto, centro"
                         },
+                        "information": {
+                          "es": "Nombre oficial del centro al que, en su caso, está adscrito el puesto que ocupa. Este campo se consignará en el supuesto de que dicho centro forme parte de alguna de las siguientes categorías: 'Facultad', 'Escuela', 'Unidad', 'Centro', 'Hospital' o 'Instituto'."
+                        },
                         "placeholder": {
                           "es": "Introduce facultad, instituto, centro"
                         },
@@ -485,6 +507,9 @@
                       {
                         "title": {
                           "es": "Departamento"
+                        },
+                        "information": {
+                          "es": "Nombre del departamento al que, en su caso, está adscrito el puesto que ocupa."
                         },
                         "type": "text",
                         "placeholder": {
@@ -513,6 +538,9 @@
                         "title": {
                           "es": "Modalidad de contrato"
                         },
+                        "information": {
+                          "es": "Tipo de contrato suscrito dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otra' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "property": "http://w3id.org/roh/contractModality",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ContractModality",
@@ -528,6 +556,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de contrato suscrito. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/contractModalityOther",
                         "required": true,
@@ -546,6 +577,9 @@
                         "title": {
                           "es": "Primaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "Codifique mediante código UNESCO el grupo de especialidad en que se encuentra la principal actividad laboral y/o profesional desarrollada por el titular del CV."
+                        },
                         "property": "http://w3id.org/roh/unescoPrimary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -559,6 +593,9 @@
                       {
                         "title": {
                           "es": "Secundaria (Cód. Unesco)"
+                        },
+                        "information": {
+                          "es": "En el supuesto de que la actividad desarrollada por el titular del CV se extienda a más de un grupo de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la segunda actividad realizada. Ésta puede encontrarse o no dentro del mismo grupo de especialidad consignado para la actividad principal."
                         },
                         "property": "http://w3id.org/roh/unescoSecondary",
                         "thesaurus": "unesco",
@@ -574,6 +611,9 @@
                         "title": {
                           "es": "Terciaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "En el supuesto de que la actividad desarrollada por el titular del CV se extienda a más de dos grupos de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la tercera actividad realizada. Ésta puede encontrarse o no dentro de alguno de los grupos de especialidad consignados para la actividad principal y secundaria."
+                        },
                         "property": "http://w3id.org/roh/unescoTertiary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -587,6 +627,9 @@
                       {
                         "title": {
                           "es": "Régimen de dedicación"
+                        },
+                        "information": {
+                          "es": "Tiempo dedicado al puesto de trabajo dentro de las opciones ofrecidas en el desplegable. Dispone de dos opciones por defecto: 'Tiempo completo' y 'Tiempo parcial'. Se entiende por dedicación a tiempo completo aquella en la que media un contrato laboral de obligación dedicada y exclusiva. Dedicación a tiempo parcial corresponde a la que depende de un contrato por horas/tiempo/proyecto."
                         },
                         "property": "http://w3id.org/roh/dedication",
                         "combo": {
@@ -608,6 +651,9 @@
                         "title": {
                           "es": "Identificar palabras clave"
                         },
+                        "information": {
+                          "es": "Sintetice el texto anterior mediante el uso de palabras clave."
+                        },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
                         "type": "thesaurus",
@@ -621,6 +667,9 @@
                       {
                         "title": {
                           "es": "Funciones desempeñadas"
+                        },
+                        "information": {
+                          "es": "Describa en formato de texto libre la actividad laboral y/o profesional que desarrolla actualmente. Se recomienda la utilización de palabras clave en la medida de lo posible."
                         },
                         "property": "http://w3id.org/roh/concreteFunctions",
                         "type": "textarea",
@@ -641,6 +690,9 @@
                         "title": {
                           "es": "Gestión docente (Sí/No)"
                         },
+                        "information": {
+                          "es": "Señale si su actividad laboral y/o profesional actual está o no relacionada con la gestión de la docencia"
+                        },
                         "type": "boolean",
                         "required": false,
                         "property": "http://w3id.org/roh/teachingManagement",
@@ -649,6 +701,9 @@
                       {
                         "title": {
                           "es": "Ámbito de actividad de gestión"
+                        },
+                        "information": {
+                          "es": "Tipo de gestión desarrollada, en su caso, por el titular del CV dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
                         },
                         "property": "http://w3id.org/roh/scopeManagementActivity",
                         "combo": {
@@ -665,6 +720,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de gestión desarrollada, en su caso, por el titular del CV. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/scopeManagementActivityOther",
                         "required": true,
@@ -683,6 +741,9 @@
                         "title": {
                           "es": "Ciudad entidad empleadora"
                         },
+                        "information": {
+                          "es": "Ciudad en la que desempeña su puesto laboral y/o profesional."
+                        },
                         "type": "text",
                         "placeholder": {
                           "es": "Introduce la ciudad de la entidad empleadora"
@@ -694,6 +755,9 @@
                       {
                         "title": {
                           "es": "País entidad empleadora"
+                        },
+                        "information": {
+                          "es": "País en el que desempeña su puesto laboral y/o profesional. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
                         },
                         "placeholder": {
                           "es": "Introduce la región de la entidad empleadora"
@@ -717,6 +781,9 @@
                       {
                         "title": {
                           "es": "C. Autón./Reg. entidad empleadora"
+                        },
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que desempeña su puesto laboral y/o profesional. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
                         },
                         "placeholder": {
                           "es": "Introduce el país de la entidad empleadora"
@@ -750,6 +817,9 @@
                         "type": "auxEntity",
                         "title": {
                           "es": "Teléfono"
+                        },
+                        "information": {
+                          "es": "Teléfono de empresa del titular del CV. En la primera celda deberá consignar el código internacional 00 seguido del prefijo del país; en la segunda, el número de teléfono; y en la tercera, en su caso, la extensión de su puesto de trabajo"
                         },
                         "width": 3,
                         "auxEntityData": {
@@ -834,6 +904,9 @@
                         "type": "auxEntity",
                         "title": {
                           "es": "Fax"
+                        },
+                        "information": {
+                          "es": "Fax de empresa del titular del CV. En la primera celda deberá consignar el código internacional 00 seguido del prefijo del país; en la segunda, el número de teléfono; y en la tercera, en su caso, la extensión de su puesto de trabajo"
                         },
                         "width": 3,
                         "auxEntityData": {
@@ -920,6 +993,9 @@
                         "title": {
                           "es": "Correo electrónico"
                         },
+                        "information": {
+                          "es": "Dirección de correo electrónico del titular del CV."
+                        },
                         "placeholder": {
                           "es": "Introduce el correo electrónico"
                         },
@@ -934,6 +1010,9 @@
                         "type": "textarea",
                         "title": {
                           "es": "Interés para docencia y/o inv."
+                        },
+                        "information": {
+                          "es": "Campo de texto libre para describir la posible orientación de la actividad laboral y/o profesional que desarrolla hacia la docencia y/o investigación."
                         },
                         "placeholder": {
                           "es": "Introduce el interés para docencia y/o inv."
@@ -957,7 +1036,15 @@
         "title": {
           "es": "Cargos y actividades desempeñados con anterioridad"
         },
+        "information": {
+          "es": "En este apartado se consignará toda la información relacionada con los cargos y/o actividades de carácter laboral y/o profesional desempeñados por el titular del CV con anterioridad a la redacción del presente currículum."
+        },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "010.020.000.000",
           "listItem": {
@@ -1394,6 +1481,9 @@
                         "title": {
                           "es": "Categoría profesional"
                         },
+                        "information": {
+                          "es": "Nivel de cualificación del titular del CV dentro de la clasificación profesional."
+                        },
                         "placeholder": {
                           "es": "Introduce la categoría profesional"
                         },
@@ -1405,6 +1495,9 @@
                       {
                         "title": {
                           "es": "Entidad empleadora"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad donde desarrolló la actividad laboral y/o profesional descrita. Se recomienda introducir, en primer lugar, el nombre extendido, seguido, en su caso, del acrónimo."
                         },
                         "autocomplete": true,
                         "required": true,
@@ -1427,6 +1520,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad donde desarrolló la actividad laboral y/o profesional descrita dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "property": "http://w3id.org/roh/employerOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -1446,6 +1542,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad donde desarrolló la actividad laboral y/o profesional descrita. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/employerOrganizationTypeOther",
                         "required": true,
@@ -1519,6 +1618,9 @@
                         "title": {
                           "es": "Modalidad de contrato"
                         },
+                        "information": {
+                          "es": "Tipo de contrato asociado al puesto descrito dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otra' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "property": "http://w3id.org/roh/contractModality",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ContractModality",
@@ -1534,6 +1636,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de contrato asociado al puesto descrito dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otra' donde se podrá consignar dicha circunstancia en texto libre."
                         },
                         "property": "http://w3id.org/roh/contractModalityOther",
                         "required": true,
@@ -1552,6 +1657,9 @@
                         "title": {
                           "es": "Gestión docente (Sí/No)"
                         },
+                        "information": {
+                          "es": "Señale si la actividad laboral y/o profesional descrita está o no relacionada con la gestión de la docencia."
+                        },
                         "type": "boolean",
                         "required": false,
                         "property": "http://w3id.org/roh/teachingManagement",
@@ -1560,6 +1668,9 @@
                       {
                         "title": {
                           "es": "Ámbito de actividad de gestión"
+                        },
+                        "information": {
+                          "es": "Tipo de gestión desarrollada, en su caso, por el titular del CV dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
                         },
                         "property": "http://w3id.org/roh/scopeManagementActivity",
                         "combo": {
@@ -1576,6 +1687,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de gestión desarrollada, en su caso, por el titular del CV dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
                         },
                         "property": "http://w3id.org/roh/scopeManagementActivityOther",
                         "required": true,
@@ -1594,6 +1708,9 @@
                         "title": {
                           "es": "Facultad, instituto, centro"
                         },
+                        "information": {
+                          "es": "Nombre oficial del centro al que, en su caso, estaba adscrito el puesto descrito. Este campo se consignará en el supuesto de que dicho centro forme parte de alguna de las siguientes categorías: 'Facultad', 'Escuela', 'Unidad', 'Centro', 'Hospital' o 'Instituto'."
+                        },
                         "placeholder": {
                           "es": "Introduce facultad, instituto, centro"
                         },
@@ -1604,6 +1721,9 @@
                       {
                         "title": {
                           "es": "Departamento"
+                        },
+                        "information": {
+                          "es": "Nombre del departamento al que, en su caso, estaba adscrito el puesto descrito."
                         },
                         "type": "text",
                         "placeholder": {
@@ -1620,6 +1740,9 @@
                         "title": {
                           "es": "Ciudad entidad empleadora"
                         },
+                        "information": {
+                          "es": "Ciudad en la que desempeñaba el puesto laboral y/o profesional descrito."
+                        },
                         "type": "text",
                         "placeholder": {
                           "es": "Introduce la ciudad de la entidad empleadora"
@@ -1632,8 +1755,11 @@
                         "title": {
                           "es": "País entidad empleadora"
                         },
+                        "information": {
+                          "es": "País en el que desempeñaba el puesto laboral y/o profesional descrito. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "placeholder": {
-                          "es": "Introduce la región de la entidad empleadora"
+                          "es": "Introduce el país de la entidad empleadora"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasCountryName",
                         "combo": {
@@ -1655,8 +1781,11 @@
                         "title": {
                           "es": "C. Autón./Reg. entidad empleadora"
                         },
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que desempeñaba el puesto laboral y/o profesional descrito. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "placeholder": {
-                          "es": "Introduce el país de la entidad empleadora"
+                          "es": "Introduce la región de la entidad empleadora"
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasRegion",
                         "combo": {
@@ -1687,6 +1816,9 @@
                         "type": "auxEntity",
                         "title": {
                           "es": "Teléfono"
+                        },
+                        "information": {
+                          "es": "Teléfono de empresa del titular del CV mientras ocupaba el puesto descrito. En la primera celda deberá consignar el código internacional 00 seguido del prefijo del país; en la segunda, el número de teléfono; y en la tercera, en su caso, la extensión de su puesto de trabajo"
                         },
                         "width": 3,
                         "auxEntityData": {
@@ -1771,6 +1903,9 @@
                         "type": "auxEntity",
                         "title": {
                           "es": "Fax"
+                        },
+                        "information": {
+                          "es": "Fax de empresa del titular del CV mientras ocupaba el puesto descrito. En la primera celda deberá consignar el código internacional 00 seguido del prefijo del país; en la segunda, el número de teléfono; y en la tercera, en su caso, la extensión de su puesto de trabajo"
                         },
                         "width": 3,
                         "auxEntityData": {
@@ -1857,6 +1992,9 @@
                         "title": {
                           "es": "Correo electrónico"
                         },
+                        "information": {
+                          "es": "Dirección de correo electrónico de contacto del titular del CV mientras ocupaba el puesto descrito."
+                        },
                         "placeholder": {
                           "es": "Introduce el correo electrónico"
                         },
@@ -1869,6 +2007,9 @@
                       {
                         "title": {
                           "es": "Primaria (Cód. Unesco)"
+                        },
+                        "information": {
+                          "es": "Codifique mediante código UNESCO el grupo de especialidad en que se encontraba la principal actividad laboral y/o profesional desarrollada por el titular del CV."
                         },
                         "property": "http://w3id.org/roh/unescoPrimary",
                         "thesaurus": "unesco",
@@ -1884,6 +2025,9 @@
                         "title": {
                           "es": "Secundaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "En el supuesto de que la actividad desarrollada por el titular del CV se extendiera a más de un grupo de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la segunda actividad realizada. Ésta puede encontrarse o no dentro del mismo grupo de especialidad consignado para la actividad principal."
+                        },
                         "property": "http://w3id.org/roh/unescoSecondary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -1898,6 +2042,9 @@
                         "title": {
                           "es": "Terciaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "En el supuesto de que la actividad desarrollada por el titular del CV se extendiera a más de dos grupos de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la tercera actividad realizada. Ésta puede encontrarse o no dentro de alguno de los grupos de especialidad consignados para la actividad principal y secundaria."
+                        },
                         "property": "http://w3id.org/roh/unescoTertiary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -1911,6 +2058,9 @@
                       {
                         "title": {
                           "es": "Régimen de dedicación"
+                        },
+                        "information": {
+                          "es": "Tiempo dedicado al puesto de trabajo descrito dentro de las opciones ofrecidas en el desplegable. Dispone de dos opciones por defecto: 'Tiempo completo' y 'Tiempo parcial'. Se entiende por dedicación a tiempo completo aquella en la que media un contrato laboral de obligación dedicada y exclusiva. Dedicación a tiempo parcial corresponde a la que depende de un contrato por horas/tiempo/proyecto."
                         },
                         "property": "http://w3id.org/roh/dedication",
                         "combo": {
@@ -1932,6 +2082,9 @@
                         "title": {
                           "es": "Identificar palabras clave"
                         },
+                        "information": {
+                          "es": "Sintetice el texto anterior mediante el uso de palabras clave."
+                        },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
                         "type": "thesaurus",
@@ -1945,6 +2098,9 @@
                       {
                         "title": {
                           "es": "Funciones desempeñadas"
+                        },
+                        "information": {
+                          "es": "Describa en formato de texto libre la actividad laboral y/o profesional desarrollada en el puesto descrito. Se recomienda la utilización de palabras clave en la medida de lo posible."
                         },
                         "property": "http://w3id.org/roh/concreteFunctions",
                         "type": "textarea",
@@ -1960,6 +2116,9 @@
                         "type": "textarea",
                         "title": {
                           "es": "Interés para docencia y/o inv."
+                        },
+                        "information": {
+                          "es": "Campo de texto libre para describir la posible orientación de la actividad laboral y/o profesional desarrollada hacia la docencia y/o investigación."
                         },
                         "placeholder": {
                           "es": "Introduce el interés para docencia y/o inv."

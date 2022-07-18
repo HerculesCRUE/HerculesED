@@ -10,12 +10,27 @@ String.prototype.width = function (font) {
 
     return w;
 }
+var callbacks = {}
+
 
 function pintarGraficaIndividual(pContenedor, pIdPagina, idGrafica = "") {
+    if (!$(pContenedor).hasClass("grafica")) {
+        $(pContenedor).addClass("grafica");
+    }
     //pintarContenedoresGraficas(pContenedor, pIdPagina);
     getGrafica(pIdPagina, idGrafica, "", pContenedor);
+    callbacks[idGrafica + "_" + pIdPagina] = {
+        ctx: pContenedor,
+        zoom: addZoomButton.bind(null, pContenedor),
+        //downloadcv: addDownloadCvButton.bind(null, pContenedor),
+        //downloadjpg: addDownloadJpgButton.bind(null, pContenedor),
+    };
+
 }
 function pintarContenedoresGraficas(pContenedor, pIdPagina = "", tipografica = "", idgrafica = "") {
+    var isZoom = $(pContenedor).parents("#modal-ampliar-mapa").length > 0;
+    var ctx;
+
     if (tipografica.includes("nodes")) {
         $(pContenedor).append(`
                 <p id="titulo_grafica_${pIdPagina}_${$(pContenedor).data("idgrafica")}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
@@ -29,27 +44,67 @@ function pintarContenedoresGraficas(pContenedor, pIdPagina = "", tipografica = "
                         </li>
                     </ul>
                 </div>
-                <div class="graficoNodos" id="grafica_${pIdPagina}_${idgrafica}" style="height: 500px;"></div>
+                
             `);
-    } else if (tipografica.includes("circular")) {
-        $(pContenedor).css("height", "300px");
-        $(pContenedor).append(`
-            <canvas id = "grafica_${pIdPagina}_${idgrafica}" width = "600" height = "250" ></canvas>
-                `);
+        ctx = $(`<div class="graficoNodos" id="grafica_${pIdPagina}_${idgrafica}" style="height: 100%;"></div>`);
+        $(pContenedor).append(ctx);
+        $(pContenedor).parent().parent().css("overflow", "hidden");
     } else {
-
-        $(pContenedor).append(`
+        ctx = $(`<canvas id = "grafica_${pIdPagina}_${idgrafica}" width = "600" height = "250" ></canvas>`)
+        if (tipografica.includes("circular")) {
+            if (!isZoom) { $(pContenedor).css("height", "90%"); }
+            $(pContenedor).append(ctx);
+        } else {
+            $(pContenedor).append(`
         <div class="chartWrapper" >
             <div class="chartScroll custom-css-scroll">
                 <div class="chartAreaWrapper">
-                    <canvas width = "600" height = "250" id="grafica_${pIdPagina}_${idgrafica}"></canvas>
+                </div>
+            </div>
+        </div>
+        `);
+            $(pContenedor).find(".chartAreaWrapper").append(ctx);
+        }
+    }
+    return ctx[0];
+}
+function pintarContenedoresPersonalizados(pContenedor, pPageData, tipoGrafica) {
+    //var isZoom = pContenedor.parents("#modal-ampliar-mapa").length > 0;
+
+    if (tipoGrafica == "nodes") {
+        $(pContenedor).append(`
+                <p id="titulo_grafica_${pPageData.idRecurso}" style="text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;"></p>
+                <div class="graph-controls">
+                    <ul class="no-list-style align-items-center">
+                        <li class="control zoomin-control" id="zoomIn">
+                            <span class="material-icons">add</span>
+                        </li>
+                        <li class="control zoomout-control" id="zoomOut">
+                            <span class="material-icons" >remove</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="graficoNodos" id="${pPageData.idRecurso}" style="height: 500px;"></div>
+            `);
+    } else if (tipoGrafica == "circular") {
+        $(pContenedor).css("height", "300px");
+        $(pContenedor).append(`
+            <canvas id = "${pPageData.idRecurso}"></canvas>
+                `);
+    } else {
+        $(pContenedor).append(`
+        <div class="chartWrapper" >
+            <div class="chartScroll custom-css-scroll " style="overflow-${tipoGrafica == "horizontal" ? "y" : "x"}: scroll;height:${318}px;">
+                <div class="chartAreaWrapper">
+                    <canvas width = "600" height = "250" id="${pPageData.idRecurso}"></canvas>
                 </div>
             </div>
         </div>
         `);
     }
 }
-function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null, maxScales = null) {
+
+function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize = 50, pIdRecurso = null, pTitulo = null, maxScales = null, pPageData = null) {
     var that = this;
     var url = url_servicio_graphicengine + "GetGrafica"; //"https://localhost:44352/GetGrafica"
     var arg = {};
@@ -60,6 +115,7 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
 
     // Petición para obtener los datos de las gráficas.
     $.get(url, arg, function (data) {
+        var container = ctx;
 
         var tipoGrafica = "";
         if (data.isNodes) {
@@ -72,13 +128,18 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
             tipoGrafica = "circular";
         }
         //if ctx is a canvasElement
-        if (ctx.tagName == "DIV") { //igual es mejor comprobar si la id es de
-            pintarContenedoresGraficas(ctx, pIdPagina, tipoGrafica, pIdGrafica);
-            ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
+        if (ctx) {
+            if (ctx.tagName == "DIV") {//$(ctx).parents(".grafica").length == 0) { //igual es mejor comprobar si la id es de
+                if (pPageData) {
+                    ctx = pintarContenedoresPersonalizados(ctx, pPageData, tipoGrafica)
+                } else {
+                    ctx = pintarContenedoresGraficas(ctx, pIdPagina, tipoGrafica, pIdGrafica);
+                    //addZoomButton(tmp);
+                }
+
+                // ctx = $("#grafica_" + pIdPagina + "_" + pIdGrafica).last()[0];
+            }
         }
-
-
-
         if (!ctx) {
             if (!pIdRecurso) {
                 ctx = document.getElementById("grafica_" + pIdPagina + "_" + pIdGrafica);
@@ -86,6 +147,9 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                 ctx = document.getElementById(pIdRecurso);
             }
         }
+        $(ctx).data("tipoGrafica", tipoGrafica);
+        $(ctx).data("idGrafica", pIdGrafica);
+        $(ctx).data("idPagina", pIdPagina);
 
         var combo = $(ctx).parents("article").find(".toggleGraficas ul.no-list-style");
         var graficaContenedor = $(ctx).parent();
@@ -96,19 +160,14 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
             var controls = $(ctx).parent().find(".graph-controls");
             var download = $(ctx).parents("div.wrap").find('a.descargar');
             data.container = ctx;
-
-
             data.ready = function () { window.cy = this };
             var cy = cytoscape(data);
-
             var combo = $(ctx).parents("article").find(".toggleGraficas ul.no-list-style");
             var titulo = data.title;
             if (pTitulo) {
                 titulo = pTitulo;
             }
             if (combo) { //para graficas agrupadas 
-
-
                 /*
                 var option = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
                 var canvasOrder = combo.parents('.wrap').find("canvas#grafica_" + pIdPagina + "_" + pIdGrafica);
@@ -123,8 +182,6 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                 }
                 */
                 //find the option with the value of the selected value of the combo
-
-
 
                 var selectedOption = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
                 var canvasOrder = combo.parents('.wrap').find("div#grafica_" + pIdPagina + "_" + pIdGrafica);
@@ -284,19 +341,15 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                     chart.ctx.restore();
                 }
             };
-
             data.plugins = [plugin];
-
             data.options.plugins["legend"] = {
                 onHover: (e) => {
                     e.chart.canvas.style.cursor = 'pointer';
-
                 },
                 onLeave: (e) => {
                     e.chart.canvas.style.cursor = 'default';
                 }
             };
-
 
             var fontSize = 12;
             //data.options.plugins.title.text = "AAAA";
@@ -311,7 +364,6 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                 return metrics.width;
             };
             //beforeDraw: function (chart) {
-
             if ($(ctx).parents("div.grafica").length > 0) {
                 while (fontSize > 1 && titulo.width("bold " + fontSize + "px Helvetica") > $(ctx).parents("div.grafica").width() - 200) {
                     fontSize--;
@@ -336,7 +388,6 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                 if (pIdGrafica != null && pIdGrafica.includes("prc")) { //prefijo que indica porcentaje
                     data.options.plugins.tooltip = {
                         callbacks: {
-
                             afterLabel: function (context) {
                                 let label = "Porcentaje: ";
                                 let sum = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -348,50 +399,35 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                     }
                 }
 
-
-
                 if (data.data.datasets.length > 1) {
                     var dataBack = {};
                     data.options.plugins['legend'] = {
                         onHover: (e) => {
-
                             e.chart.canvas.style.cursor = 'pointer';
-
                         },
                         onLeave: (e) => {
-
                             e.chart.canvas.style.cursor = 'default';
-
                         },
                         color: '#FFFFFF',
                         labels: {
                             generateLabels(chart) {
                                 const data = chart.data;
                                 if (data.labels.length && data.datasets.length) {
-
-                                    console.log(data);
                                     var outer = data.datasets[1].label.split("~~~")[1].split("---");
                                     var outerLabels = []
                                     var outerColors = []
                                     outer.forEach(function (item, index) {
-
                                         outerLabels.push(item.split("|")[0]);
                                         outerColors.push(item.split("|")[1]);
-
                                     });
-
-
-
                                     data.labels = data.labels.filter(function (el) {
                                         return !outerLabels.includes(el);
                                     });
                                     data.labels = data.labels.concat(outerLabels);
-
                                     return data.labels.map(function (label, i) {
                                         var meta = chart.getDatasetMeta(1);
                                         var style = meta.controller.getStyle(i);
                                         var isOuter = outerLabels.indexOf(label) != -1;
-
                                         if (!isOuter && !dataBack[i]) {
                                             var grupo = data.datasets[0].grupos[i];
                                             dataBack[i] = {
@@ -400,8 +436,6 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                                                 /* 0: data.datasets[0].data[i * 2],
                                                  1: data.datasets[0].grupos[i * 2 + 1] == grupo ? data.datasets[0].data[i * 2 + 1] : 0,*/
                                             };
-                                            console.log(outer);
-
                                             var itemsGrupo = 0;
                                             var grupoStart = -1;
                                             var indexTmp = 0;
@@ -421,7 +455,6 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                                             for (var j = 0; j < itemsGrupo; j++) {
                                                 //dataBack[i]["outer"][j] = data.datasets[0].data[j]; CANNOT SET PROPRETIES OF UNDEFINED
                                                 dataBack[i].outer[j] = data.datasets[0].data[grupoStart + j];
-
                                             }
                                         }
                                         var hidden;
@@ -432,14 +465,12 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                                         } else {
                                             hidden = isNaN(data.datasets[0].data[i]) || meta.data[i].hidden;
                                         }
-
                                         return {
                                             text: label,
                                             fillStyle: color,
                                             strokeStyle: color == "#FFFFFF" ? "#666666" : style.borderColor,
                                             lineWidth: style.borderWidth,
                                             hidden: hidden,
-
                                             index: i,
                                             grupos: data.datasets[0].grupos,
                                             data: dataBack[i]
@@ -452,7 +483,6 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                         onClick: function (e, legendItem) {
                             const toggleMeta = (meta, index, numGrupo) => {
                                 if (meta.data[index]) {
-
                                     if (meta.data[index].hidden) {
                                         meta.data[index].hidden = false;
                                         //this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 : index] : legendItem.data.inner;
@@ -491,8 +521,6 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
                                 toggleMeta(outerMeta, grupoStart + j, numItemsGrupo);
                             }
 
-
-
                             this.chart.update();
                         }
                     };
@@ -510,7 +538,7 @@ function getGrafica(pIdPagina, pIdGrafica, pFiltroFacetas, ctx = null, barSize =
             }
         }
         //that.engancharComportamientos();
-        comportamientos();
+        comportamientos(container);
     });
 }
 
@@ -549,8 +577,8 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
     }
 
     barSize /= barCount;
-
     if (pTitulo) {
+
         titulo = pTitulo;
     }
 
@@ -623,8 +651,6 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
         }
         scrollContainer.style.overflow = "hidden";
 
-
-
         var myChart = new Chart(ctx, data);
     } else { // a partir de aqui se prepara el scroll
 
@@ -638,8 +664,9 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
             ctx.parentNode.style.height = canvasSize + 'px'; //se establece la altura del eje falso
         } else {// -- vertical
             var parent = $(ctx).parents(".wrap")[0] || $(ctx).parents(".modal-content")[0];
-            if ($(parent).find(".acciones-mapa .expand").length == 0) {
-                $(parent).find(".acciones-mapa .wrap").prepend(`
+            var acciones = pintarAccionesMapa($(ctx).parents(".grafica")[0]);
+            if ($(acciones).find(".wrap .expand").length == 0) {
+                $(acciones).find(".wrap").prepend(`
                 <div class="expand">
                     <a href="javascript: void(0);">
                         <span class="material-icons">close_fullscreen</span>
@@ -661,13 +688,11 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
                 } else if ((scale[1].position == "bottom" || scale[1].position == "right") && !hasSecondaryAxis) {//se comprueba si tiene eje secundario (bottom en caso de horizontal, right en caso de vertical)
                     hasSecondaryAxis = true;
                 }
-
             }
         });
         // Leyenda con titulo y contenedor para datasets. style="text-align: center; position: absolute; top: 0px; background-color: white;
         var legend = $(`<div class="chartLegend" >
             <h4 id="legendTitle">${titulo}</h4>
-            
             </div>`);
         $(chartContainer).append(legend);
         var dataSetLabels = $(`<div class="dataSetLabels"></div>`)
@@ -707,7 +732,8 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
         if (!pIdGrafica.includes("circular")) {
             data.options.animation.onProgress = () => reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
             $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
-                myChart.update();
+                reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horizontal);
+
             });
         }
 
@@ -727,13 +753,9 @@ function drawChart(ctx, data, pIdGrafica = null, barSize = 100, pTitulo = null) 
                         $(scrollContainer).stop();
                     }
                 });
-
-
             }
-
-
         }
-
+        comportamientos(ctx);
     }
 }
 //funcion que se encarga de actualizar el tamaño de los ejes y el scroll en caso de reescalado. tambien los pinta al generarse la grafica
@@ -744,8 +766,6 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
         dataset['barThickness'] = 50/(myChart.getVisibleDatasetCount());
     })
     */
-
-
     // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
     var scale = window.devicePixelRatio;
     //anchura y altura del recorte de la grafica
@@ -763,8 +783,6 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
         axisHeight = myChart.boxes[2]?.height;
     } else {// -- vertical
         myChart.canvas.parentNode.style.width = canvasSize + 'px'; //se escala la anchura respecto al canvas para que ocupe el scroll
-
-
         copyHeight = myChart.chartArea.bottom + 5;
         //targetY = 20; //posicion del eje
         // Le asignamos tamaño a la leyenda.
@@ -778,12 +796,12 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
     //esto sucede cuando en el canvas la leyenda ocupa una fila pero en el div 2 o mas;
     if ($(legend).height() > myChart.chartArea.top) {
         //añadimos el margen
-        myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
+        myChart.canvas.style.marginTop = $(legend).height() - myChart.chartArea.top + 9 + "px";
         if (mainAxis) {
-            mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
+            mainAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 9 + "px";
         }
         if (secondaryAxis) {
-            secondaryAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 5 + "px";
+            secondaryAxis[0].style.marginTop = $(legend).height() - myChart.chartArea.top + 9 + "px";
         }
 
     }
@@ -817,8 +835,12 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
         }
         ctx.scale(scale, scale); // Escala del zoom.
         ctx.canvas.width = copyWidth;
+        try {
 
-        ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
+            ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
+        } catch (e) {
+            // console.log(e);
+        }
     }
 
     // Preparamos el eje inferior o derecho.
@@ -827,7 +849,7 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
 
         ctx = secondaryAxis[0].getContext('2d');
         if (horizontal) {
-            var padding = -1 * (myChart.boxes[2].width - myChart.boxes[2].left - myChart.boxes[2].right);
+            var padding = -1 * (myChart.boxes[2].width - myChart.boxes[2].left - myChart.boxes[2].right) + 5;
             ctx.canvas.height = axisHeight;
             targetY = myChart.chartArea.bottom * scale;
             ctx.canvas.style.paddingLeft = myChart.chartArea.left - 5 + "px";
@@ -847,11 +869,16 @@ function reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, horiz
         ctx.scale(scale, scale); // Escala del zoom.
         ctx.canvas.width = copyWidth;
         ctx.canvas.height = axisHeight;
-        ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
+        try {
+            ctx.drawImage(myChart.canvas, targetX, targetY, targetWidth, targetHeight, x, y, width, height);
+        } catch (e) {
+            //console.log(e);
+        }
+
     }
 
 }
-function comportamientos() {
+function comportamientos(ctx) {
     $('div.labelContainer')
         .unbind()
         .click(function (e) {
@@ -877,4 +904,389 @@ function comportamientos() {
                 chart.draw();
             }
         });
-} 
+
+    $("div.expand")
+        .unbind()
+        .click(function (e) {
+            var parent = $(this).parents('.acciones-mapa').parent()[0] || $(this).parents('.modal-body > .graph-container')[0];
+            parent = $(parent);
+            var canvas = parent.find('.show.grafica .chartAreaWrapper canvas')[0] || parent.find('.chartAreaWrapper canvas')[0];
+            canvas = $(canvas);
+            var myChart = Chart.getChart(canvas[0]);
+            var data = myChart.data;
+            var config = myChart.config;
+
+            var idGrafica = canvas.attr('id').split('_')[2];
+            var idPagina = canvas.attr('id').split('_')[1];
+            if ($('div').hasClass('indicadoresPersonalizados')) {
+                parent = $(this).parents('article > div.wrap');
+                if (parent.length != 0) {
+                    idGrafica = parent.find("div.grafica").attr("idGrafica");
+                    idPagina = parent.find("div.grafica").attr("idPagina");
+                    idGraficaActual = idGrafica;
+                    idPaginaActual = idPagina;
+
+                } else {
+                    idPagina = idPaginaActual;
+                    idGrafica = idGraficaActual;
+                }
+            }
+
+
+
+
+            //plugin para que el color de fondo sea blanco.
+            var plugin = {
+                id: 'custom_canvas_background_color',
+                beforeDraw: (chart) => {
+                    chart.ctx.save();
+                    chart.ctx.globalCompositeOperation = 'destination-over';
+                    chart.ctx.fillStyle = '#FFFFFF';
+                    chart.ctx.fillRect(0, 0, chart.width, chart.height);
+                    chart.ctx.restore();
+                }
+            };
+            var isExpanded = !$(this).hasClass('collapsed');
+            $(this).toggleClass('collapsed');
+            if (isExpanded) {
+                $(this).find("span").text("open_in_full");
+
+                data.datasets.forEach(function (dataset) {
+                    delete dataset['barThickness'];
+                });
+
+                //Destruyo el chart para que se redibuje con el nuevo tamaño
+                myChart.destroy();
+                canvas.parents(".chartScroll").addClass('collapsed');
+                canvas.parent().css('width', 'auto');
+                var chartWrapper = canvas.parents(".chartWrapper");
+                //Elimino la leyenda y los ejes
+                chartWrapper.find(".myChartAxis, .chartLegend").remove();
+                //Elimino el callback que llama a reDrawChart
+                delete config.options.animation['onProgress'];
+
+                //Remake the chart with the data obtained from the previous chart
+                var newChart = new Chart(canvas[0].getContext('2d'), {
+                    type: 'bar',
+                    data: data,
+                    options: config.options,
+                    plugins: [plugin]
+                });
+                getGrafica(idPagina, idGrafica, ObtenerHash2(), null, 50)
+                idGraficaActual = idGrafica;
+                idPaginaActual = idPagina;
+            } else {
+                // cambio el icono
+                $(this).find("span").text("close_fullscreen");
+                canvas.parents(".chartScroll").removeClass('collapsed');
+                myChart.destroy();
+
+
+                var filtro;
+                var idPagina;
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    filtro = ObtenerHash2();
+                    idPagina = idPaginaActual;
+                } else {
+                    filtro = (canvas).parents('div.grafica.show').attr("filtro");
+                    idPagina = (canvas).parents('div.grafica.show').attr("idpagina") || idPaginaActual;
+                    idGrafica = idGraficaActual;
+                }
+                $('#grafica_' + idPagina + '_' + idGrafica).attr('filtro', filtro);
+
+                //obtenemos los datos y pintamos la grafica
+
+                if (!$('div').hasClass('indicadoresPersonalizados')) {
+                    getGrafica(idPagina, idGrafica, filtro, canvas[0], 50);
+                } else {
+                    //idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idrecurso");
+                    var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                    var arg = {};
+                    arg.pPageId = idPaginaActual;
+                    $.get(url, arg, function (listaData) {
+                        listaData.forEach(data => {
+                            if (data.idRecurso == idGraficaActual) {
+                                tituloActual = data.titulo;
+                            }
+                        });
+                        getGrafica(idPagina, idGrafica, filtro, canvas[0], 50, null, tituloActual)
+                    });
+                }
+            }
+        });
+    console.log(callbacks);
+
+    for (const callback of Object.values(callbacks)) {
+        callback.zoom();
+        callback.zoom = function () { };
+    }
+}
+
+function addZoomButton(pContenedor) {
+    var accionesMapa = $(pContenedor).parent().find('.acciones-mapa');
+    $(pContenedor).parent().css('position', 'relative');
+    if (accionesMapa.length == 0) {
+        $(pContenedor).parent().append(`
+        <div class="acciones-mapa">
+            <div class="wrap">
+                <div class="zoom">
+                    <a href="avascript:void(0);" data-toggle="modal">
+                        <span class="material-icons">zoom_in</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        `)
+    } else {
+        accionesMapa.find('.wrap').append(`
+        <div class="zoom">
+            <a href="javascript:void(0);" data-toggle="modal">
+                <span class="material-icons">zoom_in</span>
+            </a>
+        </div>
+        `)
+    }
+    $('div.zoom')
+        .unbind()
+        .click(function (e) {
+            if ($("#modal-ampliar-mapa").length == 0) {
+                $(".modal").first().parent().append(`
+                    <div id="modal-ampliar-mapa" class="modal modal-top fade modal-ampliar-mapa" style="pointer-events:none" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" style="margin:50px" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <p class="modal-title"></p>
+                                    <span class="material-icons cerrar cerrar-grafica" aria-label="Close">close</span>
+                                </div>
+                                    <div class="modal-body">
+                                    <div class="graph-container grafica" style="width:100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `)
+            } else {
+                $("#modal-ampliar-mapa").find('.graph-container').addClass('grafica');
+            }
+            if ($(".modal-backdrop").length == 0) {
+                $(".modal").first().parent().append(`
+                    <div class="modal-backdrop fade" style="pointer-events:none" tabindex="-1" role="dialog"></div>
+                `)
+            }
+            $('.modal-backdrop')
+                .unbind()
+                .click(cerrarModal);
+            $('span.cerrar-grafica')
+                .unbind()
+                .click(cerrarModal);
+
+            // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
+            var canvas = $(this).parents(".acciones-mapa").parent().find('div.grafica.show canvas') || $(this).parents("acciones-mapa").parent().find('div.chartAreaWrapper canvas');
+            var idGrafica = $(canvas).data('idGrafica');
+            var idPagina = $(canvas).data('idPagina');
+            var tipografica = $(canvas).data('tipoGrafica');
+            var parent = $('#modal-ampliar-mapa').find('.graph-container');
+            parent.removeClass('small horizontal vertical'); // se le quitan los estilos que podria tener
+            //var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
+            var ctx;
+            var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
+            // Tamaño del contenedor (dejando 50px de margen arriba y abajo).
+            modalContent.css({ height: 'calc(100vh - 100px)' });
+            modalContent.parent().css({ maxWidth: '1310px' }); // El tamaño maximo del contendor de los articles.
+
+            // Se revela el popup.
+
+            $('#modal-ampliar-mapa').css('display', 'block');
+            $('#modal-ampliar-mapa').css('pointer-events', 'none');
+            $('.modal-backdrop').addClass('show');
+            $('.modal-backdrop').css('pointer-events', 'auto');
+            $('#modal-ampliar-mapa').addClass('show');
+
+            //se popula con los contenedores adecuados
+            if (!$('div').hasClass('indicadoresPersonalizados')) {
+                parent.append(`<div class="acciones-mapa">
+                 <div class="wrap">
+                     <div class="dropdown">
+                         <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
+                             <span class="material-icons">more_vert</span>
+                         </a>
+                         <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                             <p class="dropdown-title">Acciones</p>
+                             <ul class="no-list-style">
+                                 <li>
+                                     <a class="item-dropdown guardarzoom">
+                                         <span class="material-icons">assessment</span>
+                                         <span class="texto">Guardar en mi panel</span>
+                                     </a>
+                                 </li>
+                                 <li>
+                                     <a class="item-dropdown csvzoom">
+                                         <span class="material-icons">insert_drive_file</span>
+                                         <span class="texto">Descargar como .csv</span>
+                                     </a>
+                                 </li>
+                                 <li>
+                                     <a class="item-dropdown descargarzoom">
+                                         <span class="material-icons">download</span>
+                                         <span class="texto">Descargar como imagen .jpg</span>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </div>
+                     </div>
+                 </div>
+             </div> `)
+            } else {
+                parent.append(`<div class="acciones-mapa">
+                <div class="wrap">
+                    <div class="dropdown">
+                        <a href="javascript: void(0);"  id="dropdownMasOpciones" data-toggle="dropdown">
+                            <span class="material-icons">more_vert</span>
+                        </a>
+                        <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
+                            <p class="dropdown-title">Acciones</p>
+                            <ul class="no-list-style">
+                                <li>
+                                    <a class="item-dropdown csvzoom">
+                                        <span class="material-icons">insert_drive_file</span>
+                                        <span class="texto">Descargar como .csv</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="item-dropdown descargarzoom">
+                                        <span class="material-icons">download</span>
+                                        <span class="texto">Descargar como imagen .jpg</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="item-dropdown editargraficazoom" data-toggle="modal" data-target="#modal-editargrafica">
+                                        <span class="material-icons">edit</span>
+                                        <span class="texto">Editar y ordenar gráfica</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="item-dropdown eliminargraficazoom" data-toggle="modal" data-target="#modal-eliminar">
+                                        <span class="material-icons">delete</span>
+                                        <span class="texto">Eliminar gráfica</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>`)
+
+            }
+            // Preparo la imagen a descargar
+            var botonImagen = tipografica == "nodes" ? $(this).parent().find('.descargarcyto') : $(this).parent().find('.descargar');
+            $('.descargarzoom').unbind().click(function (e) {
+                botonImagen.click();
+            });
+            var botonCSV = $(this).parent().find('.csv');
+            $('.csvzoom').unbind().click(function (e) {
+                botonCSV.click();
+            });
+            // Preparo los modales
+            var botonGuardar = $(this).parent().find('.guardar');
+            $('.guardarzoom').unbind().click(function (e) {
+                cerrarModal();
+                botonGuardar.click();
+            });
+            var botonEditar = $(this).parent().find('.editargrafica');
+            $('.editargraficazoom').unbind().click(function (e) {
+                cerrarModal();
+                botonEditar.click();
+            });
+            var botonEliminar = $(this).parent().find('.eliminargrafica');
+            $('.eliminargraficazoom').unbind().click(function (e) {
+                cerrarModal();
+                botonEliminar.click();
+            });
+            ctx = $(`<div class="zoom" style="height:${$(modalContent).height() - 130}px;"></div>`);
+            parent.append(ctx);
+            var filtro;
+
+            if (!$('div').hasClass('indicadoresPersonalizados')) {
+                filtro = ObtenerHash2();
+
+            } else {
+                filtro = (canvas).parents('div.grafica').attr("filtro");
+                idPagina = (canvas).parents('div.grafica').attr("idpagina");
+            }
+            $('#grafica_' + idPagina + '_' + idGrafica).attr('filtro', filtro);
+
+            //obtenemos los datos y pintamos la grafica
+            if (!$('div').hasClass('indicadoresPersonalizados')) {
+                getGrafica(idPagina, idGrafica, filtro, ctx[0], 50);
+            } else {
+                //Obtengo el título de la gráfica
+                idGraficaActual = $(this).closest('article').find("div.show.grafica").attr("idrecurso");
+                var url = url_servicio_graphicengine + "GetGraficasUser"; //"https://localhost:44352/GetGraficasUser"
+                var arg = {};
+                idPaginaActual = $('a.nav-link.active').parent().attr("id");
+                arg.pPageId = idPaginaActual;
+                $.get(url, arg, function (listaData) {
+                    listaData.forEach(data => {
+                        if (data.idRecurso == idGraficaActual) {
+                            tituloActual = data.titulo;
+                        }
+                    });
+                    getGrafica(idPagina, idGrafica, filtro, ctx[0], 50, null, tituloActual)
+
+                });
+            }
+            //metricas.engancharComportamientos();
+        });
+}
+function addDownloadCvButton(pContenedor) {
+    var accionesMapa = $(pContenedor).parent().find("div.acciones-mapa");
+    if (accionesMapa.length == 0) {
+        accionesMapa = pintarAccionesMapa(pContenedor);
+    }
+}
+function addDownloadJpgButton(pContenedor) {
+    var accionesMapa = $(pContenedor).parent().find("div.acciones-mapa");
+    if (accionesMapa.length == 0) {
+        accionesMapa = pintarAccionesMapa(pContenedor);
+    }
+
+}
+function pintarAccionesMapa(pContenedor) {
+
+    if ($(pContenedor).parent().find("div.acciones-mapa").length == 0) {
+
+
+        var accionesMapa = (`<div class="acciones-mapa"><div class="wrap"></div></div>`);
+        $(pContenedor).parent().append(accionesMapa);
+        $(pContenedor).parent().css("position", "relative");
+        return $(pContenedor).parent().find("div.acciones-mapa");
+    }
+    else {
+        return $(pContenedor).parent().find("div.acciones-mapa");
+    }
+}
+/*function addExpandButton(pContenedor) {
+
+    var accionesMapa = pContenedor.parent().find('.acciones-mapa');
+    if (accionesMapa.length > 0) {
+        accionesMapa.append(`<div class="expand-button">
+                                <i class="material-icons">expand_more</i>
+                            </div>`);
+    } else {
+        pContenedor.append(`<div class="expand-button">
+                                <i class="material-icons">expand_more</i>
+                            </div>`);
+    }
+}*/
+
+function cerrarModal() {
+    $('#modal-ampliar-mapa').find('div.graph-container').empty();
+    $('#modal-ampliar-mapa').removeClass('show');
+    $('.modal-backdrop').removeClass('show');
+    $('.modal-backdrop').css('pointer-events', 'none');
+    $('#modal-ampliar-mapa').css('display', 'none');
+    $('#modal-agregar-datos').removeClass('show');
+    $('#modal-agregar-datos').css('display', 'none');
+    $('#modal-admin-config').removeClass('show');
+    $('#modal-admin-config').css('display', 'none');
+}

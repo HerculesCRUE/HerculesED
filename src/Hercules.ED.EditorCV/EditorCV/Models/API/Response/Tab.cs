@@ -32,6 +32,14 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string identifier { get; set; }
         /// <summary>
+        /// Información de la sección
+        /// </summary>
+        public string information;
+        /// <summary>
+        /// Últimos 5 años
+        /// </summary>
+        public TabSectionLast5Years last5Years { get; set; }
+        /// <summary>
         /// Órdenes del listado de la sección
         /// </summary>
         public List<TabSectionPresentationOrder> orders { get; set; }
@@ -43,6 +51,25 @@ namespace EditorCV.Models.API.Response
         /// Item de la sección
         /// </summary>
         public EntityEdit item { get; set; }
+    }
+
+    /// <summary>
+    /// Configuración para indicar si el recurso está dentro de los últimos cinco años.
+    /// </summary>
+    public class TabSectionLast5Years
+    {
+        /// <summary>
+        /// Booleano indicando si debe añadirse siempre independientemente de las fechas de inicio y fin.
+        /// </summary>
+        public bool always { get; set; }
+        /// <summary>
+        /// Propiedad indicadora del fin temporal del atributo.
+        /// </summary>
+        public string end { get; set; }
+        /// <summary>
+        /// Propiedad indicadora del inicio temporal del atributo.
+        /// </summary>
+        public string start { get; set; }
     }
 
     /// <summary>
@@ -105,6 +132,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public bool isopenaccess { get; set; }
         /// <summary>
+        /// Indica si debe estar checkeado por defecto
+        /// </summary>
+        public bool isChecked { get; set; }
+        /// <summary>
         /// Indica si se ha de mostrar el botón de envío a producción cientifica
         /// </summary>
         public bool sendPRC { get; set; }
@@ -139,6 +170,10 @@ namespace EditorCV.Models.API.Response
         /// Nombre
         /// </summary>
         public string name { get; set; }
+        /// <summary>
+        /// Información del item
+        /// </summary>
+        public string information { get; set; }
         /// <summary>
         /// Indica si se muestra en la minificha (sin desplegar)
         /// </summary>

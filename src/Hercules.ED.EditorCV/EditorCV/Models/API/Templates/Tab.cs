@@ -162,6 +162,10 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public Dictionary<string, string> title;
         /// <summary>
+        /// Información de la sección
+        /// </summary>
+        public Dictionary<string, string> information;
+        /// <summary>
         /// Configuración de la presentación para los listados de items
         /// </summary>
         public TabSectionPresentationListItems listItemsPresentation;
@@ -176,6 +180,10 @@ namespace EditorCV.Models.API.Templates
     /// </summary>
     public class TabSectionPresentationListItems
     {
+        /// <summary>
+        /// Propiedad para indicar los valores indicando si el recurso está dentro de los ultimos 5 años.
+        /// </summary>
+        public Last5Years last5Years;
         /// <summary>
         /// Propiedad para acceder a la entidad desde la minificha
         /// </summary>
@@ -200,6 +208,25 @@ namespace EditorCV.Models.API.Templates
         /// Propiedad con el ID de la sección de CVN
         /// </summary>
         public string cvnsection;
+    }
+
+    /// <summary>
+    /// Configuración para indicar si el recurso está dentro de los últimos cinco años.
+    /// </summary>
+    public class Last5Years
+    {
+        /// <summary>
+        /// Booleano indicando si debe añadirse siempre independientemente de las fechas de inicio y fin.
+        /// </summary>
+        public bool always;
+        /// <summary>
+        /// Propiedad indicadora del fin temporal del atributo.
+        /// </summary>
+        public string end;
+        /// <summary>
+        /// Propiedad indicadora del inicio temporal del atributo.
+        /// </summary>
+        public string start;
     }
 
     /// <summary>
@@ -343,6 +370,10 @@ namespace EditorCV.Models.API.Templates
         /// Nombre de la propiedad
         /// </summary>
         public Dictionary<string, string> name;
+        /// <summary>
+        /// Información del item
+        /// </summary>
+        public Dictionary<string, string> information;
         /// <summary>
         /// Indica si se muestra en la minificha (sin desplegar)
         /// </summary>

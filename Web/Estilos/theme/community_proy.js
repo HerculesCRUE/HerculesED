@@ -1487,6 +1487,11 @@ var metabuscador = {
         		"section": "researchObjects",
         		"searchParm": "searcherPublications"
         	},
+			"offer": {
+        		"icon": "icono-offer",
+        		"section": "offers",
+        		"searchParm": "searcherOffers"
+        	},
         };
         this.keyInput = "";
         return;

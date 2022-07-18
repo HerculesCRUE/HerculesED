@@ -10,10 +10,17 @@
       "property": "http://w3id.org/roh/thesisSupervisions",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la experiencia académica en dirección de trabajos de síntesis realizados de manera tutelada en la fase final del plan de estudios -proyectos fin de grado (PFG), proyectos fin de carrera (PFC)-, así como la dirección de trabajos de inicio a la actividad investigadora -trabajos fin de máster (TFM), tesinas, tesis doctorales (TD), diplomas de estudios avanzados (DEA)-, tanto en universidades españolas como extranjeras."
+        },
         "title": {
           "es": "Dirección de tesis doctorales y/o proyectos fin de carrera"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.040.000.000",
           "listItem": {
@@ -304,6 +311,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Título del trabajo o proyecto académico realizado bajo su dirección."
+                        },
                         "title": {
                           "es": "Titulo del trabajo"
                         },
@@ -316,6 +326,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Fecha del acto de defensa del trabajo o proyecto académico dirigido."
+                        },
                         "title": {
                           "es": "Fecha de defensa"
                         },
@@ -328,6 +341,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Identificación del doctorando."
+                        },
                         "title": {
                           "es": "Firma (Alumno)"
                         },
@@ -376,6 +392,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la institución donde ha dirigido el trabajo o proyecto académico."
+                        },
                         "title": {
                           "es": "Entidad de realización"
                         },
@@ -397,6 +416,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución donde ha dirigido el trabajo o proyecto académico dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -416,6 +438,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución donde ha dirigido el trabajo o proyecto académico. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -440,6 +465,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la institución donde ha dirigido el trabajo o proyecto académico."
+                        },
                         "title": {
                           "es": "Ciudad entidad realización"
                         },
@@ -451,6 +479,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la institución donde ha dirigido el trabajo o proyecto académico. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad realización"
                         },
@@ -470,6 +501,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad Autónoma en la que se localiza la institución donde ha dirigido el trabajo o proyecto académico. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
                         },
@@ -497,6 +531,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Carácter del trabajo académico que ha supervisado como director académico dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de proyecto"
                         },
@@ -512,6 +549,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter del trabajo académico que ha supervisado como director académico. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -532,6 +572,9 @@
                       {
                         "property": "http://w3id.org/roh/codirector",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Nombre, en su caso, del co-director/a de tesis."
+                        },
                         "title": {
                           "es": "Codirector/a de tesis"
                         },
@@ -627,6 +670,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Calificación otorgada al trabajo o proyecto académico dirigido. El procedimiento para la obtención del Certificado-Diploma de Estudios Avanzados (DEA) está contemplado en el apartado 6 del Real Decreto 778/1998, de 30 de abril. La superación de esta evaluación garantizará la suficiencia investigadora del doctorando y supondrá el reconocimiento a la labor realizada y la obtención del certificado-diploma acreditativo."
+                        },
                         "title": {
                           "es": "Calificación obtenida"
                         },
@@ -642,6 +688,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si el programa en el que se enmarca la tesis doctoral dirigida ha recibido o no una mención de calidad. La mención de calidad es una expresión de reconocimiento a la solvencia científico/técnica y formadora otorgada al programa de doctorado en su conjunto y a los grupos de investigación y departamentos que intervienen en el mismo. La mención de calidad ha sido sustituida por la mención hacia la excelencia, distinción con la que el Ministerio de Educación reconoce la calidad de los mejores programas oficiales de Doctorado, y supone un proceso previo de acreditación de los méritos y la trayectoria del programa ante la ANECA (artículo 16.1 del Real Decreto 99/2011, de 28 de enero, por el que se regulan las enseñanzas oficiales de doctorado: http://www.boe.es/boe/dias/2011/02/10/pdfs/BOE-A-2011-2541.pdf)"
+                        },
                         "title": {
                           "es": "Mención de calidad"
                         },
@@ -650,6 +699,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha de obtención de la mención de calidad en la tesis doctoral dirigida."
+                        },
                         "title": {
                           "es": "Fecha de obtención"
                         },
@@ -666,6 +718,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale si la tesis doctoral dirigida ha recibido o no una mención europea. La mención europea en el título de Doctor está regulada en el artículo 14 del Real Decreto 56/2005, de 21 de enero, sobre estudios universitarios oficiales de posgrado y en el artículo 22 del Real Decreto 1393/2007, de 29 de octubre, por el que se establece la ordenación de las enseñanzas universitarias oficiales. Los doctorandos que hayan comenzado sus estudios de doctorado con posterioridad al 11 de febrero de 2011 podrán obtener la mención internacional pero no la mención europea en el título de Doctor, ya que ésta ha sido derogada por el RD 99/2011. Los doctorandos que comenzaron sus estudios antes del 11 de febrero de 2011 y que hayan leído o lean sus tesis con posterioridad a dicha fecha, podrán obtener la mención europea, de acuerdo con la anterior normativa, o la mención internacional."
+                        },
                         "title": {
                           "es": "Doctorado Europeo"
                         },
@@ -674,6 +729,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha de obtención de la mención europea en la tesis doctoral dirigida.  "
+                        },
                         "title": {
                           "es": "Fecha de mención"
                         },
@@ -690,6 +748,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto del título del trabajo o proyecto académico que ha dirigido."
+                        },
                         "title": {
                           "es": "Identificar palabras clave"
                         },
@@ -713,10 +774,18 @@
       "property": "http://w3id.org/roh/impartedAcademicTrainings",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la docencia impartida por el titular del CV en enseñanzas universitarias y enseñanzas artísticas superiores, de carácter oficial y no oficial comprendidas en los dos primeros ciclos (Grado, Máster), en los antiguos ciclos (Licenciado, Diplomado, Ingeniero Superior, Ingeniero Técnico, Arquitecto) y en los planes de estudios de enseñanzas artísticas superiores (Música y Danza, Arte Dramático, Conservación y Restauración de Bienes Culturales, Artes Plásticas y Diseño), de acuerdo con lo dispuesto en la Ley Orgánica 4/2007, de 12 de abril, por la que se modifica la Ley Orgánica 6/2001, de 21 de diciembre, de Universidades."
+        },
         "title": {
           "es": "Formación académica impartida"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.010.000.000",
           "listItem": {
@@ -1319,6 +1388,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial del título acreditativo de la docencia impartida. Éste deberá especificarse en los términos en que figure inscrito en el asiento del Registro de Universidades, Centros y Títulos (RUCT) creado mediante RD 1509/2008, de 12 de septiembre (https://www.educacion.gob.es/ruct/home#), seleccionando una de las titulaciones existente en la norma o introduciendo una nueva titulación en texto libre."
+                        },
                         "title": {
                           "es": "Titulación universitaria"
                         },
@@ -1342,6 +1414,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Nombre de la materia impartida."
+                        },
                         "title": {
                           "es": "Nombre de la asignatura/curso"
                         },
@@ -1358,6 +1433,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": " Fecha en la que comenzó a impartirse la docencia. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -1366,6 +1444,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que ha finalizado la impartición de la docencia. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010. Tenga en cuenta que una vez generado el fichero PDF, la información de su CVN se presenta siempre en orden descendente por la fecha de fin. Todos los registros que no tengan consignada la fecha de fin se mostrarán al final en dicho PDF."
+                        },
                         "title": {
                           "es": "Fecha de finalización"
                         },
@@ -1378,6 +1459,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la institución que ha impartido la docencia."
+                        },
                         "title": {
                           "es": "Entidad de realización"
                         },
@@ -1399,6 +1483,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución que ha impartido la docencia dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -1418,6 +1505,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución que ha impartido la docencia dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1431,6 +1521,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Nombre oficial del centro al que, en su caso, estaba adscrita la docencia impartida."
+                        },
                         "title": {
                           "es": "Facultad, instituto, centro"
                         },
@@ -1454,6 +1547,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad donde se localiza la institución que ha impartido la docencia."
+                        },
                         "title": {
                           "es": "Ciudad entidad realización"
                         },
@@ -1465,6 +1561,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País donde se localiza la institución que ha impartido la docencia. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad realización"
                         },
@@ -1484,6 +1583,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región donde se localiza la institución que ha impartido la docencia. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
                         },
@@ -1511,6 +1613,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Carácter de la docencia impartida dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "Tipo de docencia"
                         },
@@ -1526,6 +1631,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carga lectiva del programa de estudio, en función de la forma de medición seleccionada en el campo 'Tipo de horas/créditos ECTS'."
+                        },
                         "title": {
                           "es": "Nº de horas/créditos ECTS"
                         },
@@ -1534,6 +1642,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Si la formación se imparte periódicamente, indique el número de veces que ha impartido esta materia. Si se trata de una práctica sistemática, no es preciso que consigne el dato todas las veces."
+                        },
                         "title": {
                           "es": "Frecuencia de la actividad"
                         },
@@ -1546,6 +1657,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nivel académico en el que se enmarca la docencia impartida dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de programa"
                         },
@@ -1561,6 +1675,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Nivel académico en el que se enmarca la docencia impartida. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior"
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1579,6 +1696,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Categorice la modalidad en que se ha impartido la docencia dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de docencia (modalidad)"
                         },
@@ -1594,6 +1714,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Modalidad en que se ha impartido la docencia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1612,6 +1735,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del departamento al que, en su caso, estaba adscrita la docencia impartida. Este campo tiene por objeto contribuir a evaluar la docencia impartida."
+                        },
                         "title": {
                           "es": "Departamento"
                         },
@@ -1627,6 +1753,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Clase de materia impartida dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de asignatura"
                         },
@@ -1642,6 +1771,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Clase de materia impartida. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1656,6 +1788,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Si la titulación en la que se enmarca la docencia impartida está estructurada en cursos académicos, indique a cuál de ellos pertenece."
+                        },
                         "title": {
                           "es": "Curso que se imparte"
                         },
@@ -1668,6 +1803,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Señale la forma en que se mide la carga de trabajo del alumno en el programa de estudio: horas o créditos ECTS"
+                        },
                         "title": {
                           "es": "Tipo de horas/créditos ECTS"
                         },
@@ -1683,6 +1821,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Lengua en la que se ha impartido la docencia."
+                        },
                         "title": {
                           "es": "Idioma de la asignatura"
                         },
@@ -1702,6 +1843,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Habilidades, competencias, utilidades prácticas y destrezas adquiridas por el alumno durante el proceso de aprendizaje del programa de estudio."
+                        },
                         "title": {
                           "es": "Competencias relacionadas"
                         },
@@ -1714,6 +1858,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Nivel de cualificación del titular del CV dentro de la clasificación profesional. Debe coincidir con la categoría expresada en el Módulo 2 'Situación Profesional'."
+                        },
                         "title": {
                           "es": "Categoría profesional"
                         },
@@ -1730,6 +1877,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "De haberse realizado una evaluación interna o externa, consigne la calificación obtenida."
+                        },
                         "title": {
                           "es": "Calificación obtenida"
                         },
@@ -1741,6 +1891,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "De haberse realizado una evaluación interna o externa, consigne la puntuación máxima posible."
+                        },
                         "title": {
                           "es": "Calificación máxima posible"
                         },
@@ -1756,6 +1909,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "De haberse realizado una evaluación interna o externa, consigne el nombre completo del organismo evaluador."
+                        },
                         "title": {
                           "es": "Entidad de evaluación"
                         },
@@ -1777,6 +1933,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que practicó la evaluación dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -1796,6 +1955,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Características de la evaluación practicada. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1813,6 +1975,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad donde se localiza la entidad que practicó la evaluación"
+                        },
                         "title": {
                           "es": "Ciudad entidad evaluación"
                         },
@@ -1824,6 +1989,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País donde se localiza la entidad que practicó la evaluación. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable"
+                        },
                         "title": {
                           "es": "País entidad evaluación"
                         },
@@ -1843,6 +2011,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región donde se localiza la entidad que practicó la evaluación. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad de evaluación"
                         },
@@ -1870,6 +2041,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "De haberse realizado una evaluación interna o externa, consigne las características de la evaluación seguida dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de evaluación"
                         },
@@ -1885,6 +2059,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Características de la evaluación practicada. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1903,6 +2080,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha financiado la docencia impartida. Señálese solo en el caso de que se trate de financiación externa."
+                        },
                         "title": {
                           "es": "Entidad financiadora"
                         },
@@ -1924,6 +2104,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado la docencia impartida dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -1943,6 +2126,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado la docencia impartida. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -1960,6 +2146,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad donde se localiza la entidad que ha financiado la docencia impartida."
+                        },
                         "title": {
                           "es": "Ciudad entidad financiadora"
                         },
@@ -1971,6 +2160,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": " País donde se localiza la entidad que ha financiado la docencia impartida. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad financiadora"
                         },
@@ -1990,6 +2182,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado la docencia impartida. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad financiadora"
                         },
@@ -2017,6 +2212,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Procedimiento de concesión de las subvenciones y/o ayudas dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de convocatoria"
                         },
@@ -2032,6 +2230,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado la docencia impartida. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2050,6 +2251,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Cobertura geográfica del programa que proporcionó los recursos de financiación dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Ámbito geográfico"
                         },
@@ -2065,6 +2269,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Cobertura geográfica del programa que proporcionó los recursos de financiación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior"
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2092,10 +2299,16 @@
       "property": "http://w3id.org/roh/academicTutorials",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la experiencia docente como tutor/a académico/a en alguno de los procesos de aprendizaje relacionados con enseñanzas universitarias y enseñanzas artísticas superiores oficiales y no oficiales, tanto a nivel individual como grupal."
+        },
         "title": {
           "es": "Tutorías académicas de estudiantes"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": true
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.050.000.000",
           "listItem": {
@@ -2149,7 +2362,6 @@
                   }
                 }
               },
-
               {
                 "name": {
                   "es": "Ciudad de realización"
@@ -2235,6 +2447,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Tipo de programa en el que ha realizado actividades de tutoría académica dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Nombre del programa"
                         },
@@ -2251,6 +2466,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de programa en el que ha realizado actividades de tutoría académica. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2265,6 +2483,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Si la tutoría académica se realiza periódicamente, indique el número de veces que ha desarrollado dicha tutoría. Si se trata de una práctica sistemática, no es preciso que consigne el dato todas las veces."
+                        },
                         "title": {
                           "es": "Frecuencia de la actividad"
                         },
@@ -2280,6 +2501,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre de la institución en la que ha realizado actividades de tutoría académica."
+                        },
                         "title": {
                           "es": "Entidad de realización"
                         },
@@ -2301,6 +2525,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución en la que ha realizado actividades de tutoría académica dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -2320,6 +2547,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la institución en la que ha realizado actividades de tutoría académica. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2344,6 +2574,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que ha realizado actividades de tutoría académica."
+                        },
                         "title": {
                           "es": "Ciudad de realización"
                         },
@@ -2356,6 +2589,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que ha realizado actividades de tutoría académica. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País de realización"
                         },
@@ -2375,6 +2611,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que ha realizado actividades de tutoría académica. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de realización"
                         },
@@ -2402,6 +2641,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Número de alumnos tutelado, basado en la información disponible en los correspondientes registros, expresado de acuerdo con la siguiente tabla: Menos de 10. Entre 11 y 50. Más de 50."
+                        },
                         "title": {
                           "es": "Nº de alumnos/as tutelados/as"
                         },
@@ -2413,6 +2655,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Créditos docentes reconocidos, en su caso, por la institución a la acción tutorial desarrollada."
+                        },
                         "title": {
                           "es": "Nº de horas/créditos ECTS reconocidos"
                         },
@@ -2437,10 +2682,17 @@
       "property": "http://w3id.org/roh/impartedCoursesSeminars",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la experiencia del titular del CV impartiendo cursos, seminarios y otras acciones formativas afines sobre metodología docente en enseñanzas universitarias y enseñanzas artísticas superiores cuyo objetivo sea el perfeccionamiento, innovación y mejora de la práctica de la docencia (se incluye, entre otros, el Curso de Aptitud Pedagógica, CAP)."
+        },
         "title": {
           "es": "Cursos y seminarios impartidos orientados a la formación docente universitaria"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.060.000.000",
           "listItem": {
@@ -2765,6 +3017,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del programa de apoyo a la docencia impartido."
+                        },
                         "title": {
                           "es": "Nombre del evento"
                         },
@@ -2778,6 +3033,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Tipo de evento en el que se enmarca el programa de apoyo a la docencia impartido dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de evento"
                         },
@@ -2793,6 +3051,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de evento en el que se enmarca el programa de apoyo a la docencia impartido. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2811,6 +3072,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado el programa de apoyo a la docencia."
+                        },
                         "title": {
                           "es": "Entidad organizadora"
                         },
@@ -2832,6 +3096,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el programa de apoyo a la docencia dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -2851,6 +3118,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el programa de apoyo a la docencia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -2868,6 +3138,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Fecha en la que ha finalizado la impartición del programa de apoyo a la docencia. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010."
+                        },
                         "title": {
                           "es": "Fecha de impartición"
                         },
@@ -2876,6 +3149,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tiempo (en horas) que duró el curso, seminario y/o actividad docente impartida."
+                        },
                         "title": {
                           "es": "Horas impartidas"
                         },
@@ -2895,6 +3171,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la entidad que ha organizado el programa de apoyo a la docencia impartido."
+                        },
                         "title": {
                           "es": "Ciudad entidad organizadora"
                         },
@@ -2906,6 +3185,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la entidad que ha organizado el programa de apoyo a la docencia impartido. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad organizadora"
                         },
@@ -2925,6 +3207,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se localiza la entidad que ha organizado el programa de apoyo a la docencia impartido. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad organizadora"
                         },
@@ -2952,6 +3237,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en el programa de apoyo a la docencia."
+                        },
                         "title": {
                           "es": "Objetivos del curso"
                         },
@@ -2961,6 +3249,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Lengua en la que se ha impartido el programa de apoyo a la docencia."
+                        },
                         "title": {
                           "es": "Idioma en que se impartió"
                         },
@@ -2980,6 +3271,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En este apartado se puede indicar o modificar el ISBN. El ISBN seleccionado se edita en la caja de texto que aparece en la parte superior de dicho apartado."
+                        },
                         "title": {
                           "es": "ISBN"
                         },
@@ -2988,6 +3282,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "En este apartado se puede indicar o modificar el ISSN. El ISSN seleccionado se edita en la caja de texto que aparece en la parte superior de dicho apartado."
+                        },
                         "title": {
                           "es": "ISSN"
                         },
@@ -3078,7 +3375,6 @@
                           "rows": [
                             {
                               "properties": [
-
                                 {
                                   "title": {
                                     "es": "Nombre del identificador"
@@ -3113,6 +3409,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Perfil profesional de los alumnos/as del programa de formación impartido, mediante el uso de palabras clave."
+                        },
                         "title": {
                           "es": "Perfil de destinatarios/as"
                         },
@@ -3122,6 +3421,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Categorice la modalidad en que se ha impartido el programa de apoyo a la docencia dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de participación"
                         },
@@ -3137,6 +3439,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Modalidad en que se ha impartido el programa de apoyo a la docencia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -3164,10 +3469,17 @@
       "property": "http://w3id.org/roh/teachingPublications",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la experiencia en la elaboración de material docente y otras publicaciones (libros y artículos) relacionadas con el ámbito de la docencia, cualquiera que sea el soporte utilizado."
+        },
         "title": {
           "es": "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc."
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.070.000.000",
           "listItem": {
@@ -3581,6 +3893,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del material docente elaborado."
+                        },
                         "title": {
                           "es": "Nombre del material"
                         },
@@ -3593,6 +3908,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Fecha en que ha finalizado la elaboración del material docente. Los posibles formatos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010, 1/2/10... - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010, 2/10... - año (yyyy): Se indica el año. Ejemplo: 2010, 10..."
+                        },
                         "title": {
                           "es": "Fecha de elaboración"
                         },
@@ -3605,6 +3923,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Título del artículo, capítulo o elemento publicado."
+                        },
                         "title": {
                           "es": "Título de la publicación"
                         },
@@ -3616,6 +3937,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Tipo de soporte en el que se ha plasmado el material docente dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "Tipo de soporte"
                         },
@@ -3631,6 +3955,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de soporte en el que se ha plasmado el material docente. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -3650,6 +3977,9 @@
                       {
                         "property": "http://purl.org/ontology/bibo/authorList",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Nombre del autor/es que han intervenido en la elaboración del material docente. En el campo 'Firma' debe consignarse la forma normalizada con que el autor firma sus trabajos, en tanto que en las casillas de nombre y apellidos se especificará el nombre completo de éste. Por ejemplo: Firma: Arenas-Busto, M.; Nombre: Miguel; Primer Apellido: Arenas; Segundo Apellido: Busto."
+                        },
                         "title": {
                           "es": "Autores/as (p. o. de firma)"
                         },
@@ -3736,6 +4066,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo. Por ejemplo: Journal of Chemistry. En el caso de un libro, dado que el título de la publicación coincide con el nombre de la publicación, es suficiente con que cumplimente este último campo."
+                        },
                         "title": {
                           "es": "Nombre de la publicación"
                         },
@@ -3759,6 +4092,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Volumen, número o designación de parte del trabajo publicado."
+                        },
                         "title": {
                           "es": "Volumen"
                         },
@@ -3785,6 +4121,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Número de la página inicial y final donde se localiza el trabajo dentro de la publicación."
+                        },
                         "title": {
                           "es": "Página inicial"
                         },
@@ -3811,6 +4150,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
+                        },
                         "title": {
                           "es": "Editorial"
                         },
@@ -3833,6 +4175,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Posición que ocupa el titular del CV entre los autores que han intervenido en la elaboración el material docente."
+                        },
                         "title": {
                           "es": "Posición de firma"
                         },
@@ -3841,6 +4186,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de participación en la elaboración del material docente descrito."
+                        },
                         "title": {
                           "es": "Grado de contribución"
                         },
@@ -3860,6 +4208,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En este apartado se puede indicar o modificar el ISBN. El ISBN seleccionado se edita en la caja de texto que aparece en la parte superior de dicho apartado."
+                        },
                         "title": {
                           "es": "ISBN"
                         },
@@ -3868,6 +4219,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "En este apartado se puede indicar o modificar el ISSN. El ISSN seleccionado se edita en la caja de texto que aparece en la parte superior de dicho apartado."
+                        },
                         "title": {
                           "es": "ISSN"
                         },
@@ -3950,7 +4304,6 @@
                           "rows": [
                             {
                               "properties": [
-
                                 {
                                   "title": {
                                     "es": "Nombre del identificador"
@@ -3985,6 +4338,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Número de DL (Depósito Legal) del trabajo publicado. Tal como se desprende de la Ley 23/2011, de 29 de julio, de depósito legal (artículo 4.1), son objeto del depósito legal todo tipo de publicaciones, producidas o editadas en España, por cualquier procedimiento de producción, edición o difusión, y distribuidas o comunicadas en cualquier soporte o por cualquier medio, tangible o intangible."
+                        },
                         "title": {
                           "es": "Depósito legal"
                         },
@@ -3996,6 +4352,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Dirección de Internet que permite enlazar al texto completo del trabajo publicado."
+                        },
                         "title": {
                           "es": "URL"
                         },
@@ -4011,6 +4370,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "País en el que se ha publicado el trabajo. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País de la publicación"
                         },
@@ -4030,6 +4392,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se ha publicado el trabajo. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de la publicación"
                         },
@@ -4057,6 +4422,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Perfil profesional de los destinatarios/as del material docente elaborado, mediante el uso de palabras clave."
+                        },
                         "title": {
                           "es": "Perfil de destinatarios/as"
                         },
@@ -4068,6 +4436,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que se ha publicado el trabajo. Los posibles formatos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010, 1/2/10... - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010, 2/10... - año (yyyy): Se indica el año. Ejemplo: 2010, 10..."
+                        },
                         "title": {
                           "es": "Fecha de la publicación"
                         },
@@ -4080,6 +4451,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Justificación del carácter pedagógico del material docente elaborado."
+                        },
                         "title": {
                           "es": "Justificación del material"
                         },
@@ -4104,10 +4478,18 @@
       "property": "http://w3id.org/roh/teachingProjects",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la participación en acciones y proyectos que hayan tenido un impacto en la práctica docente y hayan contribuido a la mejora de la calidad de la docencia presencial, semipresencial y/o virtual de la institución en la que se ha desarrollado. La innovación implica la utilización de un nuevo conocimiento o de una nueva combinación de conocimientos existentes."
+        },
         "title": {
           "es": "Participación en proyectos de innovación docente"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end",
+            "start": "http://vivoweb.org/ontology/core#start"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.080.000.000",
           "listItem": {
@@ -4523,6 +4905,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del proyecto de innovación docente del que ha formado parte."
+                        },
                         "title": {
                           "es": "Título del proyecto"
                         },
@@ -4535,6 +4920,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Categorice su modalidad de participación en el proyecto de innovación docente dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de participación"
                         },
@@ -4550,6 +4938,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Modalidad de participación en el proyecto de innovación docente. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -4567,6 +4958,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha financiado el proyecto de innovación docente."
+                        },
                         "title": {
                           "es": "Entidad financiadora"
                         },
@@ -4587,6 +4981,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado el proyecto de innovación docente dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -4606,6 +5003,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado el proyecto de innovación docente. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -4623,6 +5023,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Fecha en la que comenzó su participación en el proyecto de innovación docente. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -4631,6 +5034,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que ha finalizado su participación en el proyecto de innovación docente. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010. Tenga en cuenta que una vez generado el fichero PDF, la información de su CVN se presenta siempre en orden descendente por la fecha de fin. Todos los registros que no tengan consignada la fecha de fin se mostrarán al final en dicho PDF."
+                        },
                         "title": {
                           "es": "Fecha de finalización"
                         },
@@ -4643,6 +5049,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Categorice la modalidad temporal en que se desarrolló el proyecto de innovación docente dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "Tipo duración relación laboral"
                         },
@@ -4697,6 +5106,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la entidad donde ha desarrollado el proyecto de innovación docente."
+                        },
                         "title": {
                           "es": "Ciudad entidad realización"
                         },
@@ -4709,6 +5121,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la entidad donde ha desarrollado el proyecto de innovación docente. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad realización"
                         },
@@ -4728,6 +5143,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se localiza la entidad donde ha desarrollado el proyecto de innovación docente. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad realización"
                         },
@@ -4755,6 +5173,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Procedimiento de concesión de las subvenciones y/o ayudas dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de convocatoria"
                         },
@@ -4770,6 +5191,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Procedimiento de concesión de las subvenciones y/o ayudas. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -4787,6 +5211,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Cobertura geográfica del poyecto de innovación docente dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Ámbito del proyecto, otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Ámbito geográfico"
                         },
@@ -4802,6 +5229,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Cobertura geográfica del proyecto de innovación docente. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -4819,6 +5249,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Justificación de las aportaciones realizadas por el titular del CV al proyecto de innovación docente."
+                        },
                         "title": {
                           "es": "Aportación al proyecto"
                         },
@@ -4831,6 +5264,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Tiempo dedicado al proyecto de innovación docente dentro de las opciones ofrecidas en el desplegable. Dispone de dos opciones por defecto: 'Tiempo completo' y 'Tiempo parcial'. Se entiende por dedicación a tiempo completo aquella en la que media un contrato laboral de obligación dedicada y exclusiva. Dedicación a tiempo parcial corresponde a la que depende de un contrato por horas/tiempo/proyecto."
+                        },
                         "title": {
                           "es": "Régimen de dedicación"
                         },
@@ -4850,6 +5286,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del investigador responsable/principal (IP) de proyecto de innovación docente, incluso en el caso de que coincida con el titular del CVN. En el campo 'Firma' debe consignarse la forma normalizada con que cada investigador firma sus trabajos, en tanto que en las casillas de nombre y apellidos se especificará el nombre completo de éste. Por ejemplo: Firma: Arenas-Busto, M.; Nombre: Miguel; Primer Apellido: Arenas; Segundo Apellido: Busto."
+                        },
                         "title": {
                           "es": "Firma (investigador/a principal)"
                         },
@@ -4898,6 +5337,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Número de personas que han formado parte del proyecto de innovación docente. Desde este control se pueden seleccionar varias entidades de la norma o bien escribir una nueva entidad en texto libre."
+                        },
                         "title": {
                           "es": "Nº de participantes"
                         },
@@ -4906,6 +5348,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Importe (en euros) de la financiación recibida por el proyecto de innovación docente."
+                        },
                         "title": {
                           "es": "Importe concedido (€)"
                         },
@@ -4920,6 +5365,9 @@
                       {
                         "property": "http://w3id.org/roh/participates",
                         "type": "auxEntity",
+                        "information": {
+                          "es": "Nombre oficial de las entidades que han participado en el proyecto de innovación docente. Desde este control se pueden seleccionar varias entidades de la norma o bien escribir una nueva entidad en texto libre."
+                        },
                         "title": {
                           "es": "Entidad/es participante/s"
                         },
@@ -4948,6 +5396,9 @@
                             {
                               "properties": [
                                 {
+                                  "information": {
+                                    "es": "Nombre oficial de las entidades que han participado en el proyecto de innovación docente. Desde este control se pueden seleccionar varias entidades de la norma o bien escribir una nueva entidad en texto libre."
+                                  },
                                   "title": {
                                     "es": "Entidad participante"
                                   },
@@ -4969,6 +5420,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad que ha participado en el proyecto de innovación docente dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Tipo de entidad, otros' donde se podrá consignar dicha circunstancia en texto libre."
+                                  },
                                   "title": {
                                     "es": "Tipo de entidad"
                                   },
@@ -4988,6 +5442,9 @@
                                   "width": 1
                                 },
                                 {
+                                  "information": {
+                                    "es": "Carácter de la entidad que ha participado en el proyecto de innovación docente. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                                  },
                                   "title": {
                                     "es": "Otros"
                                   },
@@ -5019,10 +5476,17 @@
       "property": "http://w3id.org/roh/teachingCongress",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignará la participación (como organizador, director, comunicante, ponente, ponente invitado, etc.) y las contribuciones realizadas en congresos, jornadas, seminarios u otros eventos orientados a la formación académica en enseñanzas universitarias y enseñanzas artísticas superiores. "
+        },
         "title": {
           "es": "Participación en congresos con ponencias orientadas a la formación docente"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://purl.org/dc/terms/issued"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.090.000.000",
           "listItem": {
@@ -5595,6 +6059,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del evento en el que se ha presentado la ponencia y/o comunicación."
+                        },
                         "title": {
                           "es": "Nombre del evento"
                         },
@@ -5607,6 +6074,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Tipo de evento en el que se ha presentado la ponencia y/o comunicación dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de evento"
                         },
@@ -5622,6 +6092,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de evento en el que se ha presentado la ponencia y/o comunicación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -5639,6 +6112,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Fecha en la que se ha presentado la ponencia y/o comunicación en el evento."
+                        },
                         "title": {
                           "es": "Fecha de presentación"
                         },
@@ -5647,6 +6123,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que comenzó el evento donde se ha presentado la ponencia y/o comunicación. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010."
+                        },
                         "title": {
                           "es": "Fecha de inicio"
                         },
@@ -5655,6 +6134,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que ha finalizado el evento donde se ha presentado laponencia y/o comunicación. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010. Tenga en cuenta que una vez generado el fichero PDF, la información de su CVN se presenta siempre en orden descendente por la fecha de fin. Todos los registros que no tengan consignada la fecha de fin se mostrarán al final en dicho PDF."
+                        },
                         "title": {
                           "es": "Fecha de fin"
                         },
@@ -5663,6 +6145,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tiempo (en horas) que duró el evento en el que se ha presentado la ponencia y/o comunicación."
+                        },
                         "title": {
                           "es": "Nº de horas"
                         },
@@ -5675,6 +6160,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se ha presentado la ponencia y/o comunicación."
+                        },
                         "title": {
                           "es": "Ciudad de celebración"
                         },
@@ -5687,6 +6175,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se ha presentado la ponencia y/o comunicación. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País de celebración"
                         },
@@ -5706,6 +6197,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se ha presentado la ponencia y/o comunicación. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de celebración"
                         },
@@ -5733,6 +6227,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado el evento."
+                        },
                         "title": {
                           "es": "Entidad organizadora"
                         },
@@ -5753,6 +6250,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el evento dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -5772,6 +6272,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -5789,6 +6292,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la entidad que ha organizado el evento."
+                        },
                         "title": {
                           "es": "Ciudad entidad organizadora"
                         },
@@ -5801,6 +6307,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la entidad que ha organizado el evento. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad organizadora"
                         },
@@ -5820,6 +6329,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se localiza la entidad que ha organizado el evento. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad organizadora"
                         },
@@ -5847,6 +6359,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Título de la ponencia y/o comunicación presentada."
+                        },
                         "title": {
                           "es": "Título de la publicación"
                         },
@@ -5866,6 +6381,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en el evento."
+                        },
                         "title": {
                           "es": "Objetivos del evento"
                         },
@@ -5875,6 +6393,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Categorice su modalidad de participación en el evento dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de participación"
                         },
@@ -5890,6 +6411,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Modalidad de participación en el evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -5915,6 +6439,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Dirección de Internet que enlaza al texto completo de la ponencia y/o comunicación publicada."
+                        },
                         "title": {
                           "es": "URL"
                         },
@@ -5930,6 +6457,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Perfil de los destinatarios/as del evento en el que se ha presentado la ponencia y/o comunicación, mediante el uso de palabras clave."
+                        },
                         "title": {
                           "es": "Perfil de destinatarios/as"
                         },
@@ -5942,6 +6472,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Título de la publicación principal (libro, revista, etc.) en la que se ha publicado ponencia y/o comunicación. Por ejemplo: Journal of Chemistry. En el caso de un libro, dado que el título de la publicación coincide con el nombre de la publicación, es suficiente con que cumplimente este último campo."
+                        },
                         "title": {
                           "es": "Nombre de la publicación"
                         },
@@ -5953,6 +6486,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que se ha publicado la ponencia y/o comunicación. Los posibles formatos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010, 1/2/10... - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010, 2/10... - año (yyyy): Se indica el año. Ejemplo: 2010, 10..."
+                        },
                         "title": {
                           "es": "Fecha de publicación"
                         },
@@ -5965,6 +6501,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Lengua en la que se ha presentado la ponencia y/o comunicación."
+                        },
                         "title": {
                           "es": "Idioma de la presentación"
                         },
@@ -5980,6 +6519,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Tipo de material publicado dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "Tipo de publicación"
                         },
@@ -5999,6 +6541,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Volumen, número o designación de parte de la ponencia y/o comunicación publicada."
+                        },
                         "title": {
                           "es": "Volumen"
                         },
@@ -6025,6 +6570,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Número de la página inicial y final donde se localiza la ponencia y/o comunicación dentro de la publicación."
+                        },
                         "title": {
                           "es": "Página inicial"
                         },
@@ -6051,6 +6599,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
+                        },
                         "title": {
                           "es": "Editorial"
                         },
@@ -6066,6 +6617,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "En este apartado se puede indicar o modificar el ISBN. El ISBN seleccionado se edita en la caja de texto que aparece en la parte superior de dicho apartado."
+                        },
                         "title": {
                           "es": "ISBN"
                         },
@@ -6074,6 +6628,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "En este apartado se puede indicar o modificar el ISSN. El ISSN seleccionado se edita en la caja de texto que aparece en la parte superior de dicho apartado."
+                        },
                         "title": {
                           "es": "ISSN"
                         },
@@ -6156,7 +6713,6 @@
                           "rows": [
                             {
                               "properties": [
-
                                 {
                                   "title": {
                                     "es": "Nombre del identificador"
@@ -6191,6 +6747,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Número de DL (Depósito Legal) de la ponencia y/o comunicación publicada. Tal como se desprende de la Ley 23/2011, de 29 de julio, de depósito legal (artículo 4.1), son objeto del depósito legal todo tipo de publicaciones, producidas o editadas en España, por cualquier procedimiento de producción, edición o difusión, y distribuidas o comunicadas en cualquier soporte o por cualquier medio, tangible o intangible."
+                        },
                         "title": {
                           "es": "Depósito legal"
                         },
@@ -6202,6 +6761,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se ha publicado la ponencia y/o comunicación. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País de la publicación"
                         },
@@ -6221,6 +6783,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se ha publicado la ponencia y/o comunicación. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de la publicación"
                         },
@@ -6256,11 +6821,18 @@
       "rdftype": "http://w3id.org/roh/RelatedTeachingInnovationAwardsReceived",
       "property": "http://w3id.org/roh/teachingInnovationAwardsReceived",
       "presentation": {
-        "type": "listitems",
+        "type": "listitems  ",
+        "information": {
+          "es": "En este apartado se consignarán los premios obtenidos por el titular del CV como resultado de su participación en acciones y/o proyectos que hayan tenido un impacto en la práctica docente y hayan contribuido a la mejora de la calidad de la docencia presencial, semipresencial y/o virtual de la institución en la que se han desarrollado. La innovación implica la utilización de un nuevo conocimiento o de una nueva combinación de conocimientos existentes. Aunque en el apartado donde se ha acreditado el mérito causante del premio de innovación docente se haya constatado la existencia de éste, se recomienda su especificación en este apartado. Las demás menciones, distinciones y premios obtenidos deberán registrarse en el apartado 'Menciones, distinciones y premios obtenidos en el desarrollo del ejercicio profesional' del módulo 6, 'Actividad científica y tecnológica'."
+        },
         "title": {
           "es": "Premios de innovación docente recibidos"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://w3id.org/roh/receptionDate"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.080.000",
           "listItem": {
@@ -6421,6 +6993,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre del premio de innovación docente que le ha sido otorgado."
+                        },
                         "title": {
                           "es": "Nombre del premio"
                         },
@@ -6433,6 +7008,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Nombre de la persona o entidad que, en su caso, haya propuesto la concesión del premio de innovación docente descrito."
+                        },
                         "title": {
                           "es": "A propuesta de"
                         },
@@ -6444,6 +7022,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que se otorgó el premio de innovación docente. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010."
+                        },
                         "title": {
                           "es": "Fecha de concesión"
                         },
@@ -6456,6 +7037,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha concedido el premio de innovación docente."
+                        },
                         "title": {
                           "es": "Entidad concesionaria"
                         },
@@ -6476,6 +7060,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado el premio de innovación docente dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -6495,6 +7082,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado el premio de innovación docente. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -6512,6 +7102,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se localiza la entidad que ha concedido el premio de innovación docente."
+                        },
                         "title": {
                           "es": "Ciudad entidad concesionaria"
                         },
@@ -6523,6 +7116,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se localiza la entidad que ha concedido el premio de innovación docente. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País entidad concesionaria"
                         },
@@ -6542,6 +7138,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se localiza la entidad que ha concedido el premio de innovación docente. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. entidad concesionaria"
                         },
@@ -6578,10 +7177,17 @@
       "property": "http://w3id.org/roh/otherActivities",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán otras modalidades de experiencia docente practicadas por el titular del CV que no hayan sido descritas en los apartados anteriores."
+        },
         "title": {
           "es": "Otras actividades/méritos no incluidos en la relación anterior"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.100.000.000",
           "listItem": {
@@ -6729,6 +7335,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Describa la actividad desarrollada, con un máximo aproximado de 100 palabras."
+                        },
                         "title": {
                           "es": "Descripción de la actividad"
                         },
@@ -6742,6 +7351,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que ha finalizado la actividad. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010. Tenga en cuenta que una vez generado el fichero PDF, la información de su CVN se presenta siempre en orden descendente por la fecha de fin. Todos los registros que no tengan consignada la fecha de fin se mostrarán al final en dicho PDF."
+                        },
                         "title": {
                           "es": "Fecha de finalización"
                         },
@@ -6757,6 +7369,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado la actividad."
+                        },
                         "title": {
                           "es": "Entidad organizadora"
                         },
@@ -6777,6 +7392,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado la actividad dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -6796,6 +7414,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado la actividad. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -6820,6 +7441,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se ha desarrollado la actividad."
+                        },
                         "title": {
                           "es": "Ciudad de realización"
                         },
@@ -6832,6 +7456,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se ha desarrollado la actividad. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País de realización"
                         },
@@ -6851,6 +7478,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se ha desarrollado la actividad. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de realización"
                         },
@@ -6878,6 +7508,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto anterior."
+                        },
                         "title": {
                           "es": "Identificar palabras clave"
                         },
@@ -6901,10 +7534,17 @@
       "property": "http://w3id.org/roh/mostRelevantContributions",
       "presentation": {
         "type": "listitems",
+        "information": {
+          "es": "En este apartado se consignarán aquellas aportaciones que tengan una especial relevancia en su especialidad y quieran destacarse por el titular del CV dentro de su experiencia docente curricular."
+        },
         "title": {
           "es": "Aportaciones más relevantes de su CV de docencia"
         },
         "listItemsPresentation": {
+          "last5Years": {
+            "always": false,
+            "end": "http://vivoweb.org/ontology/core#end"
+          },
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "030.110.000.000",
           "listItem": {
@@ -7052,6 +7692,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Describa los resultados más destacados de su actividad docente, con un máximo aproximado de 100 palabras."
+                        },
                         "title": {
                           "es": "Descripción"
                         },
@@ -7065,6 +7708,9 @@
                         "width": 2
                       },
                       {
+                        "information": {
+                          "es": "Fecha en la que ha finalizado la actividad considerada relevante. Consígnese en la forma más completa posible (si se desconoce el día, introduzca 01). Los formatos admitidos son: - día/mes/año (dd/mm/yyyy): Se indica día, mes y año. Ejemplo: 01/02/2010. - mes/año (mm/yyyy): Se indica mes y año. Ejemplo: 02/2010. - año (yyyy): Se indica el año. Ejemplo: 2010. Tenga en cuenta que una vez generado el fichero PDF, la información de su CVN se presenta siempre en orden descendente por la fecha de fin. Todos los registros que no tengan consignada la fecha de fin se mostrarán al final en dicho PDF."
+                        },
                         "title": {
                           "es": "Fecha de finalización"
                         },
@@ -7080,6 +7726,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado la actividad considerada relevante."
+                        },
                         "title": {
                           "es": "Entidad organizadora"
                         },
@@ -7100,6 +7749,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado la actividad considerada relevante dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
+                        },
                         "title": {
                           "es": "Tipo de entidad"
                         },
@@ -7119,6 +7771,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado la actividad considerada relevante. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "title": {
                           "es": "Otros"
                         },
@@ -7143,6 +7798,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Ciudad en la que se ha desarrollado la actividad considerada relevante."
+                        },
                         "title": {
                           "es": "Ciudad de realización"
                         },
@@ -7155,6 +7813,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "País en el que se ha desarrollado la actividad considerada relevante. Seleccione el país que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "País de realización"
                         },
@@ -7174,6 +7835,9 @@
                         "width": 1
                       },
                       {
+                        "information": {
+                          "es": "Comunidad autónoma/región en la que se ha desarrollado la actividad considerada relevante. Seleccione la comunidad autónoma/región que corresponda dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "title": {
                           "es": "C. Autón./Reg. de realización"
                         },
@@ -7201,6 +7865,9 @@
                   {
                     "properties": [
                       {
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto anterior."
+                        },
                         "title": {
                           "es": "Identificar palabras clave"
                         },
