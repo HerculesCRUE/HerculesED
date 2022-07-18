@@ -14,6 +14,9 @@ var urlLoadLineResearchs ="";
 var urlLoadFramingSectors = "";
 var urlLoadMatureStates ="";
 
+/**
+ * Crea las urls para las llamadas ajax
+ */
 $(document).ready(function () {
 	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
 	urlSOff = new URL(servicioExternoBaseUrl +  uriSaveOffer);
@@ -28,7 +31,11 @@ $(document).ready(function () {
 
 
 
-
+/**
+ * Constructor de la clase StepsOffer, se encargará de la funcionalidad principal del creador de ofertas tecnológicas, 
+ * controlando los 'steps' y todo el proceso de validación, llamadas ajax al servicio externo, guardado y carga de las
+ * ofertas tecnológicas, etc...
+ */
 class StepsOffer {
 	/**
 	 * Constructor de la clase StepsOffer
@@ -1839,7 +1846,9 @@ class StepsOffer {
 
 
 
-
+/**
+ * Función que se llama cuando se cargan los investigadores
+ */
 function CompletadaCargaRecursosInvestigadoresOfertas()
 {	
 	let currentsIds = []
@@ -2074,7 +2083,9 @@ function CompletadaCargaRecursosInvestigadoresOfertas()
 }
 
 
-
+/**
+ * Función que se llama cuando se cargan los proyectos
+ */
 function CompletadaCargaRecursosProyectosOfertas()
 {	
 	let currentsIds = []
@@ -2182,7 +2193,9 @@ function CompletadaCargaRecursosProyectosOfertas()
 }
 
 
-
+/**
+ * Función que se llama cuando se cargan las publicaciones
+ */
 function CompletadaCargaRecursosPublicacionesOfertas()
 {	
 	let currentsIds = []
@@ -2290,6 +2303,9 @@ function CompletadaCargaRecursosPublicacionesOfertas()
 }
 
 
+/**
+ * Función que se llama cuando se cargan las PII
+ */
 function CompletadaCargaRecursosPIIOfertas()
 {	
 	let currentsIds = []
@@ -2373,8 +2389,7 @@ function CompletadaCargaRecursosPIIOfertas()
 
 
 
-
-// Comportamiento página proyecto
+// Comportamiento listado investigadores de la oferta
 var comportamientoPopupOferta = {
 	tabActive: null,
 
@@ -2509,7 +2524,7 @@ var comportamientoPopupOferta = {
 };
 
 
-// Comportamiento página proyecto
+// Comportamiento listado Proyectos de la oferta
 var comportamientoProyectosOferta = {
 	tabActive: null,
 
@@ -2553,7 +2568,7 @@ var comportamientoProyectosOferta = {
 };
 
 
-// Comportamiento página proyecto
+// Comportamiento listado publicaciones de la oferta
 var comportamientoPublicacionesOferta = {
 	tabActive: null,
 
@@ -2592,7 +2607,7 @@ var comportamientoPublicacionesOferta = {
 };
 
 
-// Comportamiento página proyecto
+// Comportamiento listado PII de la oferta
 var comportamientoPIIOferta = {
 	tabActive: null,
 
@@ -2629,6 +2644,27 @@ var comportamientoPIIOferta = {
 		return results
 	},
 };
+
+
+// Comportamiento listado Ofertas del gestor otri
+var comportamientoOfertasOtri = {
+	tabActive: null,
+
+	init: function (pIdUser, idPrint) {
+
+		let that = this
+
+		buscadorPersonalizado.profile=null;
+		
+		// Iniciar el listado de ofertas
+		buscadorPersonalizado.init(document.getElementById(idPrint).dataset.title, "#"+idPrint, "searchOffersOtri=" + pIdUser, null, "rdf:type=offer", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+
+		return;
+	}
+};
+
+
+
 
 /**
 * Clase que contiene la funcionalidad del modal de los TAGS para el Oferta

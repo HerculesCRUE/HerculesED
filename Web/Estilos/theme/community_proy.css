@@ -363,6 +363,22 @@ body.comunidad.listado.buscador-ofertas-tecnologicas #in_schema_availability---d
  * Home MA
  */
 
+
+.home-ma .buscador-container .info-recursos .item {
+    flex: 0 0 calc(100% / 6 - 16px);
+    margin: 0 8px;
+}
+
+/** 
+@media (min-width: 992px) {
+    .home-ma .buscador-container {
+        left: calc(20% / 2);
+        width: 80%;
+    }
+}
+*/
+
+
 .pchild-0 > * {
     padding: 0 !important;
 }
@@ -393,6 +409,54 @@ body.homeComunidad #col01 {
  */
 
 
+/*
+* Buscador Ofertas tecnológicas
+*/
+
+.buscador-ofertas-tecnologicas .resource-list.resource-list-buscador .resource .middle-wrap,
+.gestorOfertaTech .resource-list.resource-list-buscador .resource .middle-wrap {
+    margin-bottom: 0;
+        flex: calc(100% - 42px);
+}
+
+.buscador-ofertas-tecnologicas .resource-list .resource.offer .middle-wrap .title-wrap .resource-title:before,
+.gestorOfertaTech .edicionOfertaTecnologica .resource-list .resource.offer .middle-wrap .title-wrap .resource-title:before {
+    content: '';
+}
+
+.buscador-ofertas-tecnologicas .resource-list.listView .resource .wrap,
+.gestorOfertaTech .edicionOfertaTecnologica  .resource-list.listView .resource .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 0;
+    justify-content: center;
+    /* width: 100%; */
+}
+
+
+.buscador-ofertas-tecnologicas .resource-list.listView .resource .wrap > div,
+.gestorOfertaTech .edicionOfertaTecnologica .resource-list.listView .resource .wrap > div 
+{
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--c-negro);
+    padding: 10px 0;
+    padding-bottom: 0;
+    align-self: flex-start;
+}
+
+
+.buscador-ofertas-tecnologicas .resource-list.listView .resource .wrap,
+.gestorOfertaTech .edicionOfertaTecnologica .resource-list.listView .resource .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 0;
+}
+
+.buscador-ofertas-tecnologicas .resource-list.listView:not(.list-con-checks) .resource .wrap,
+.gestorOfertaTech .edicionOfertaTecnologica .resource-list.listView:not(.list-con-checks) .resource .wrap {
+    margin-left: 35px;
+}
 
 /* ETIQUETAS */
 /*.panFiltros { padding-bottom: 15px; width: 100%; }*/
