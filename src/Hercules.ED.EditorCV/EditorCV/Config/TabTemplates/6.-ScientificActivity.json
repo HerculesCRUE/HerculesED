@@ -14082,7 +14082,7 @@
                         },
                         "information": {
                           "es": "Carácter de la entidad que ha otorgado la acreditación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
-                        }
+                        },
                         "property": "http://w3id.org/roh/organizationTypeOther",
                         "required": true,
                         "dependency": {

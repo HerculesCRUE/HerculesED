@@ -3938,8 +3938,7 @@
                       },
                       {
                         "information": {
-                          "es": "libro, artículo, manual, apuntes, etc.: Tipo de soporte en el que se ha plasmado el material docente dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción "
-                          "Otros\" dentro de este campo, ya que automáticamente despliega el campo adicional \"Otro\" donde se podrá consignar dicha circunstancia en texto libre.\"",
+                          "es": "Tipo de soporte en el que se ha plasmado el material docente dentro de las opciones ofrecidas en el desplegable."
                         },
                         "title": {
                           "es": "Tipo de soporte"
