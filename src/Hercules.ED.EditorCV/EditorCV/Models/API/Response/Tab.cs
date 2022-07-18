@@ -32,6 +32,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string identifier { get; set; }
         /// <summary>
+        /// Información de la sección
+        /// </summary>
+        public string information;
+        /// <summary>
         /// Últimos 5 años
         /// </summary>
         public TabSectionLast5Years last5Years { get; set; }
@@ -166,6 +170,10 @@ namespace EditorCV.Models.API.Response
         /// Nombre
         /// </summary>
         public string name { get; set; }
+        /// <summary>
+        /// Información del item
+        /// </summary>
+        public string information { get; set; }
         /// <summary>
         /// Indica si se muestra en la minificha (sin desplegar)
         /// </summary>

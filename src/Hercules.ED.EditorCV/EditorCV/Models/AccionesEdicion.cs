@@ -941,6 +941,7 @@ namespace EditorCV.Models
                     {
                         identifier = templateSection.property,
                         title = UtilityCV.GetTextLang(pLang, templateSection.presentation.title),
+                        information = UtilityCV.GetTextLang(pLang, templateSection.presentation.information),
                         orders = new List<TabSectionPresentationOrder>()
                     };
                     switch (templateSection.presentation.type)
@@ -1072,7 +1073,6 @@ namespace EditorCV.Models
             {
                 item.title = UtilityCV.GetTextLang(pLang, pListItemConfig.listItem?.propertyTitle?.auxTitle) + " " + item.title;
             }
-
 
             if (item.title == null)
             {
@@ -1227,6 +1227,7 @@ namespace EditorCV.Models
                     {
                         showMini = property.showMini,
                         showMiniBold = property.showMiniBold,
+                        information = UtilityCV.GetTextLang(pLang, property.information),
                         name = UtilityCV.GetTextLang(pLang, property.name)
                     };
                     if (property.childOR != null && property.childOR.Count > 0)
@@ -1308,6 +1309,7 @@ namespace EditorCV.Models
                 }
             }
 
+            
 
             //Multiidiomas cargados
             item.multilang = new Dictionary<string, bool>();
@@ -1462,8 +1464,7 @@ namespace EditorCV.Models
                     }
                 }
             }
-
-
+            
             return item;
         }
 
@@ -1717,6 +1718,7 @@ namespace EditorCV.Models
                     multiple = true,
                     autocomplete = pItemEditSectionRowProperty.autocomplete,
                     title = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.title),
+                    information = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.information),
                     type = DataTypeEdit.auxEntityAuthorList.ToString(),
                     values = new List<string>(),
                     entityAuxData = new EntityEditAuxEntity()
@@ -1856,6 +1858,7 @@ namespace EditorCV.Models
                     autocomplete = pItemEditSectionRowProperty.autocomplete,
                     title = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.title),
                     placeholder = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.placeholder),
+                    information = UtilityCV.GetTextLang(pLang, pItemEditSectionRowProperty.information),
                     type = pItemEditSectionRowProperty.type.ToString(),
                     thesaurusID = pItemEditSectionRowProperty.thesaurus,
                     values = new List<string>()
