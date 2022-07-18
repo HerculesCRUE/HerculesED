@@ -26,16 +26,17 @@ namespace Hercules.ED.UpdateKeywords
         private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/prefijos.json";
         private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
         readonly ConfigService _Configuracion;
+        private const int MAX_NUM_HILOS = 6;
 
         // Lista Preposiciones
         public List<string> preposicionesEng = new List<string>() { "above", "across", "along", "around", "against", "at", "behind", "beside", "below", "beneath", "between", "by", "close to", "in", "in front of", "inside", "near", "on", "opposite", "outside", "over", "under", "underneath", "upon", "about", "after", "around", "before", "beyond", "by", "during", "for", "past", "since", "throughout", "until", "across", "along", "around", "away from", "down", "from", "into", "off", "onto", "out of", "over", "past", "to", "towards", "under", "up", "in", "at", "on", "ago", "circa", "per", "about", "at", "from", "for", "in", "of", "to", "with", "a", "an", "some", "the", "it", "its", "after", "although", "and", "as", "as long as", "as soon as", "as well as", "because", "befpre", "both", "but", "either", "even if", "even though", "however", "if", "in case", "in order to", "moreover", "neither", "nor", "nevertheless", "now that", "or", "once", "since", "so", "so that", "then", "therefore", "though", "unless", "until", "when", "whereas", "whether", "yet" };
         public List<string> preposicionesEsp = new List<string>() { "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", "según", "sin", "so", "sobre", "tras", "versus", "via", "y", "el", "la", "los", "las", "un", "una", "unos", "unas", "lo" };
-        public List<string> caracteres = new List<string>() { "\\", "|", "\"", "·", "$", "%", "&", "/", "=", "?", "¿", "º", "!", "@", "#", "~", "€", "¬", "¡", "[", "]", "{", "}", "^", "*", "¨", ";", ":", "_", "`", "+", "´", ",", "<", ">" };
+        public List<string> caracteres = new List<string>() { "\\", "|", "\"", "·", "$", "%", "&", "/", "=", "?", "¿", "º", "!", "@", "#", "~", "€", "¬", "¡", "[", "]", "{", "}", "^", "*", "¨", ";", ":", "_", "`", "+", "´", ",", "<", ">", ".", "(", ")", "'" };
 
-        public UtilKeywords(ResourceApi pResourceApi, CommunityApi pCommunityApi)
+        public UtilKeywords(ResourceApi pResourceApi, CommunityApi pCommunityApi, ConfigService pConfig)
         {
             this.mResourceApi = pResourceApi;
-            this._Configuracion = new ConfigService();
+            this._Configuracion = pConfig;
         }
 
         /// <summary>
@@ -190,7 +191,7 @@ namespace Hercules.ED.UpdateKeywords
             ConcurrentBag<string> listBroaders = new ConcurrentBag<string>();
             if (pData.broader != null)
             {
-                Parallel.ForEach(pData.broader.Keys, new ParallelOptions { MaxDegreeOfParallelism = 5 }, idBroader =>
+                Parallel.ForEach(pData.broader.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idBroader =>
                 {
                     listBroaders.Add(CargarDataConceptParcial(idBroader, pData.broader[idBroader], pData.type));
                 });
@@ -199,7 +200,7 @@ namespace Hercules.ED.UpdateKeywords
             ConcurrentBag<string> listQualifiers = new ConcurrentBag<string>();
             if (pData.qualifiers != null)
             {
-                Parallel.ForEach(pData.qualifiers.Keys, new ParallelOptions { MaxDegreeOfParallelism = 5 }, idQualifiers =>
+                Parallel.ForEach(pData.qualifiers.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idQualifiers =>
                 {
                     listQualifiers.Add(CargarDataConceptParcial(idQualifiers, pData.qualifiers[idQualifiers], pData.type));
                 });
@@ -208,7 +209,7 @@ namespace Hercules.ED.UpdateKeywords
             ConcurrentBag<string> listRelatedTo = new ConcurrentBag<string>();
             if (pData.relatedTo != null)
             {
-                Parallel.ForEach(pData.relatedTo.Keys, new ParallelOptions { MaxDegreeOfParallelism = 5 }, idRelatedTo =>
+                Parallel.ForEach(pData.relatedTo.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idRelatedTo =>
                 {
                     listRelatedTo.Add(CargarDataConceptParcial(idRelatedTo, pData.relatedTo[idRelatedTo], pData.type));
                 });
@@ -217,7 +218,7 @@ namespace Hercules.ED.UpdateKeywords
             ConcurrentBag<string> listCloseMatch = new ConcurrentBag<string>();
             if (pData.closeMatch != null)
             {
-                Parallel.ForEach(pData.closeMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = 5 }, idCloseMatch =>
+                Parallel.ForEach(pData.closeMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idCloseMatch =>
                 {
                     listCloseMatch.Add(CargarDataConceptParcial(idCloseMatch, pData.closeMatch[idCloseMatch], pData.type));
                 });
@@ -226,7 +227,7 @@ namespace Hercules.ED.UpdateKeywords
             ConcurrentBag<string> listExactMatch = new ConcurrentBag<string>();
             if (pData.exactMatch != null)
             {
-                Parallel.ForEach(pData.exactMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = 5 }, idExactMatch =>
+                Parallel.ForEach(pData.exactMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idExactMatch =>
                 {
                     listExactMatch.Add(CargarDataConceptParcial(idExactMatch, pData.exactMatch[idExactMatch], pData.type));
                 });
@@ -728,7 +729,8 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
 
-                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
+                    //if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
+                    if (ComprobarCaracteres(palabraAux))
                     {
                         continue;
                     }
@@ -742,7 +744,8 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
 
-                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
+                    //if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
+                    if (ComprobarCaracteres(palabraAux))
                     {
                         continue;
                     }
@@ -1005,6 +1008,8 @@ namespace Hercules.ED.UpdateKeywords
                 catch (Exception)
                 {
                     Thread.Sleep(10000);
+                    string tgt = GetTGT();
+                    url = new Uri($@"{_Configuracion.GetUrlTicket()}/{tgt}");
                 }
             }
             return result;
@@ -1144,9 +1149,9 @@ namespace Hercules.ED.UpdateKeywords
 
         public bool ComprobarCaracteres(string pPalabra)
         {
-            foreach(string caracter in caracteres)
+            foreach (string caracter in caracteres)
             {
-                if(pPalabra.Contains(caracter))
+                if (pPalabra.Contains(caracter))
                 {
                     return true;
                 }
