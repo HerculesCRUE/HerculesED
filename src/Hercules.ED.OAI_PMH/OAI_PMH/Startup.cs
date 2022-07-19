@@ -77,18 +77,12 @@ namespace OAI_PMH
             {
                 c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
                 {
+                    new OpenApiServer { Url = $"/oaipmh"},
                     new OpenApiServer { Url = $"/" }
                 });
             });
 
-            app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
-                      {
-                        new OpenApiServer { Url = $"/oaipmh"},
-                        new OpenApiServer { Url = $"/" }
-                      });
-            });
+            app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
