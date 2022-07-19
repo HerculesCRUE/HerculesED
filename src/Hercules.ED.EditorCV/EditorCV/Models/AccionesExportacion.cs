@@ -82,6 +82,7 @@ namespace EditorCV.Models
                 List<KeyValuePair<string, string>> parametros = new List<KeyValuePair<string, string>>();
                 parametros.Add(new KeyValuePair<string, string>("pCVID", pCVID));
                 parametros.Add(new KeyValuePair<string, string>("lang", lang));
+                parametros.Add(new KeyValuePair<string, string>("tipoCVNExportacion", tipoCVNExportacion));
 
                 string urlExportador = "";
                 if (listaId == null)
@@ -92,7 +93,6 @@ namespace EditorCV.Models
                 {
                     urlExportador = _Configuracion.GetUrlExportador() + "/ExportarLimitado";
 
-                    parametros.Add(new KeyValuePair<string, string>("tipoCVNExportacion", tipoCVNExportacion));
                     foreach (string id in listaId)
                     {
                         parametros.Add(new KeyValuePair<string, string>("listaId", id));
