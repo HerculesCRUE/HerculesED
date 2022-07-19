@@ -2,6 +2,7 @@ var urlEdicionCV = url_servicio_editorcv+"EdicionCV/";
 var urlEnvioValidacionCV = url_servicio_editorcv+"EnvioValidacion/";
 var urlGuardadoCV = url_servicio_editorcv+"GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];
+var tooltips = {section:{}, items:{}};
 
 function GetText(id, param1, param2, param3, param4) {
     if ($('#' + id).length) {
@@ -37,7 +38,6 @@ var edicionCV = {
         $('*').on('shown.bs.modal', function(e) {
             $('.modal-backdrop').last().addClass($(this).attr('id'));
         });
-		
 
         //Carga de secciones principales
         var that = this;
@@ -71,7 +71,16 @@ var edicionCV = {
         $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
-			
+			for(var key in tooltips.section) {
+				var value = tooltips.section[key];
+				$(key).tooltip({
+					html: true,
+					placement: 'bottom',
+					template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+					title: value
+				});
+				montarTooltip.comportamiento($(key));
+			}
 			if(getParam('tab')!=null)
 			{
 				if(getParam('section')!=null && getParam('id')==null)
@@ -318,6 +327,8 @@ var edicionCV = {
         //css mas generico
         var id = 'x' + RandomGuid();
         var id2 = 'x' + RandomGuid();
+		var idTooltipSection = "tooltipSection" + RandomGuid();
+		tooltips.section['#'+idTooltipSection] = data.information;
 
         var expanded = "";
         var show = "";
@@ -358,6 +369,7 @@ var edicionCV = {
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
+								<span class="material-icons-outlined" id="${idTooltipSection}">information</span>
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -1012,8 +1024,18 @@ var edicionCV = {
             $('#modal-editar-entidad .form-actions .ko').remove();
             $.get(urlEdicionCV + 'GetEdit?pCVId='+that.idCV+'&pIdSection=' + sectionID + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + entityID + "&pLang=" + lang, null, function(data) {
                 that.printEditItemCV('#modal-editar-entidad form', data, sectionID, rdfTypeTab, entityID);
+				for(var key in tooltips.items) {
+					var value = tooltips.items[key];
+					$(key).tooltip({
+						html: true,
+						placement: 'bottom',
+						template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+						title: value
+					});
+					montarTooltip.comportamiento($(key));
+				}
                 OcultarUpdateProgress();
-
+				
             });
         }
 
@@ -1132,15 +1154,24 @@ var edicionCV = {
     printRowEdit: function(iseditable, row) {
         var rowHtml = `<div class="custom-form-row">`
         for (var k = 0; k < row.properties.length; k++) {
-            rowHtml += this.printPropertyEdit(iseditable, row.properties[k]);			
+			var index = RandomGuid();
+            rowHtml += this.printPropertyEdit(iseditable, row.properties[k], index);
+			if (row.properties[k].information) {
+				id = "#tooltip" + index;
+				tooltips.items[id] = row.properties[k].information;
+			}
         }
         rowHtml += `</div>`;
 
         return rowHtml;
     },
-    printPropertyEdit: function(iseditable, property) {
+    printPropertyEdit: function(iseditable, property, index) {
         //Estilos para el contenedor
         var css = "";
+		//Tooltip
+		// TODO esperar a la maqueta de Felix del tooltip de la sección
+		var spanTooltip = property.information ? `(i)` : '';
+		var idTooltip = property.information ? `id="tooltip${index}"` : '';
         switch (property.width) {
             case 0:
                 css = 'oculto';
@@ -1300,7 +1331,7 @@ var edicionCV = {
 				htmlInput+=`<input propertyorigin="${property.property}_aux" propertyrdf="${property.property}" value="${value}" type="hidden" class="form-control not-outline ${cssDependency} " ${htmlDependency} >`;
 			}
             return `<div class="form-group ${css}" ${rdftype}>
-					<label class="control-label d-block">${property.title}${required}</label>
+					<label class="control-label d-block" ${idTooltip}>${property.title}${required}${spanTooltip}</label>
 					${htmlInput}
 				</div>`;
         } else {
@@ -1495,7 +1526,8 @@ var edicionCV = {
 				
 			}
             return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
-					<label class="control-label d-block">${property.title}${required}</label>
+					<label class="control-label d-block" ${idTooltip}>
+					${property.title}${required}${spanTooltip}</label>
 					${htmlMultiple}
 				</div>`;
         }

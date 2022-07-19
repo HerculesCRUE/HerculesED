@@ -350,3 +350,6 @@ input.form-group-date {
 	padding-left: 4px;
 	margin-top: 1px;
 }
+.tooltipEditor {
+	max-width: 600px;
+}
