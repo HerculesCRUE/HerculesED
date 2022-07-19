@@ -81,7 +81,14 @@ namespace OAI_PMH
                 });
             });
 
-            app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Servers = new List<OpenApiServer>
+                      {
+                        new OpenApiServer { Url = $"/oaipmh"},
+                        new OpenApiServer { Url = $"/" }
+                      });
+            });
 
             app.UseSwaggerUI(c =>
             {
