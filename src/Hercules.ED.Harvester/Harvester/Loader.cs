@@ -227,7 +227,7 @@ namespace Harvester
                         #region - Persona
                         case "Persona":
                             // Obtención de datos en bruto.
-                            if(id.Contains("@") || id.Contains("|"))
+                            if (id.Contains("@") || id.Contains("|"))
                             {
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
@@ -535,7 +535,7 @@ namespace Harvester
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
                             #endregion
-                    }                   
+                    }
                 }
 
                 // Borra el fichero.
@@ -617,7 +617,7 @@ namespace Harvester
             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
             dicResultados.Add("projectAux", "");
             dicResultados.Add("isValidated", "");
-            dicResultados.Add("validationStatusPRC", ""); 
+            dicResultados.Add("validationStatusPRC", "");
 
             string valorEnviado = string.Empty;
             StringBuilder select = new StringBuilder();
@@ -629,7 +629,7 @@ namespace Harvester
             where.Append("?s a bibo:Document. ");
             where.Append("OPTIONAL{?s roh:projectAux ?projectAux. } ");
             where.Append("OPTIONAL{?s roh:isValidated ?isValidated. } ");
-            where.Append("OPTIONAL{?s roh:validationStatusPRC ?validationStatusPRC. } "); 
+            where.Append("OPTIONAL{?s roh:validationStatusPRC ?validationStatusPRC. } ");
             where.Append($@"FILTER(?s = <{pIdRecurso}>) ");
             where.Append("} ");
 
@@ -734,20 +734,45 @@ namespace Harvester
         public static PersonOntology.Person CrearPersona(Persona pDatos)
         {
             PersonOntology.Person persona = new PersonOntology.Person();
+
+            // Crisidentifier (Se corresponde al DNI sin letra)
             persona.Roh_crisIdentifier = pDatos.Id;
+
+            // Sincronización.
             persona.Roh_isSynchronized = true;
+
+            // Nombre.
             if (!string.IsNullOrEmpty(pDatos.Nombre))
             {
                 persona.Foaf_firstName = pDatos.Nombre;
             }
+
+            // Apellidos.
             if (!string.IsNullOrEmpty(pDatos.Apellidos))
             {
                 persona.Foaf_lastName = pDatos.Apellidos;
             }
+
+            // Sexo.
+            if (pDatos.Sexo != null && !string.IsNullOrEmpty(pDatos.Sexo.Id))
+            {
+                if (pDatos.Sexo.Id == "V")
+                {
+                    persona.IdFoaf_gender = $@"{mResourceApi.GraphsUrl}items/gender_000";
+                }
+                else
+                {                    
+                    persona.IdFoaf_gender = $@"{mResourceApi.GraphsUrl}items/gender_010";
+                }
+            }
+
+            // Nombre completo.
             if (!string.IsNullOrEmpty(pDatos.Nombre) && !string.IsNullOrEmpty(pDatos.Apellidos))
             {
                 persona.Foaf_name = pDatos.Nombre + " " + pDatos.Apellidos;
             }
+
+            // Correos.
             if (pDatos.Emails != null && pDatos.Emails.Any())
             {
                 persona.Vcard_email = new List<string>();
@@ -756,6 +781,8 @@ namespace Harvester
                     persona.Vcard_email.Add(item.email);
                 }
             }
+
+            // Dirección de contacto.
             if (!string.IsNullOrEmpty(pDatos.DatosContacto?.PaisContacto?.Nombre) || !string.IsNullOrEmpty(pDatos.DatosContacto?.ComAutonomaContacto?.Nombre)
                 || !string.IsNullOrEmpty(pDatos.DatosContacto?.CiudadContacto) || !string.IsNullOrEmpty(pDatos.DatosContacto?.CodigoPostalContacto)
                 || !string.IsNullOrEmpty(pDatos.DatosContacto?.DireccionContacto))
@@ -768,14 +795,26 @@ namespace Harvester
 
                 persona.Vcard_address = direccionContacto;
             }
+
+            // Teléfonos.
+            HashSet<string> telefonos = new HashSet<string>();
             if (pDatos.DatosContacto?.Telefonos != null && pDatos.DatosContacto.Telefonos.Any())
             {
-                persona.Vcard_hasTelephone = new List<string>();
                 foreach (string item in pDatos.DatosContacto.Telefonos)
                 {
-                    persona.Vcard_hasTelephone.Add(item);
+                    telefonos.Add(item);
                 }
             }
+            if (pDatos.DatosContacto?.Moviles != null && pDatos.DatosContacto.Moviles.Any())
+            {
+                foreach (string item in pDatos.DatosContacto.Telefonos)
+                {
+                    telefonos.Add(item);
+                }
+            }
+            persona.Vcard_hasTelephone = telefonos.ToList();
+
+            // Activo.
             if (pDatos.Activo.HasValue)
             {
                 persona.Roh_isActive = pDatos.Activo.Value;
@@ -784,15 +823,16 @@ namespace Harvester
             // TODO: Posible cambio Treelogic
             if (!string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Id))
             {
-                persona.IdVivo_departmentOrSchool = $@"http://gnoss.com/items/department_{pDatos.Vinculacion.Departamento.Id}";
+                persona.IdVivo_departmentOrSchool = $@"{mResourceApi.GraphsUrl}items/department_{pDatos.Vinculacion.Departamento.Id}";
             }
 
+            // Cargo en la universidad.
             if (!string.IsNullOrEmpty(pDatos.Vinculacion?.CategoriaProfesional?.Nombre))
             {
-                //Cargo en la universidad
                 persona.Roh_hasPosition = pDatos.Vinculacion.CategoriaProfesional.Nombre;
             }
 
+            // Fecha de actualización.
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
 
             return persona;
@@ -1952,7 +1992,7 @@ namespace Harvester
                 }
                 //project.Roh_participates = organizaciones;
             }
-                project.Roh_researchersNumber = pDatos.Equipo.Select(x => x.PersonaRef).GroupBy(x => x).Count();
+            project.Roh_researchersNumber = pDatos.Equipo.Select(x => x.PersonaRef).GroupBy(x => x).Count();
 
             //TODO - revisar
             double porcentajeSubvencion = 0;
