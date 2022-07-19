@@ -39,7 +39,7 @@ namespace EditorCV.Controllers
         /// <param name="lang"></param>
         /// <param name="listaId">listado de Identificadores concatenados por "@@@"</param>
         [HttpPost("GetCV")]
-        public IActionResult GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Required][FromForm] string nombreCV, [Optional][FromForm] string listaId)
+        public IActionResult GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Required][FromForm] string nombreCV, [Optional][FromForm] string listaId, [Optional][FromForm] string tipoCVNExportacion)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace EditorCV.Controllers
 
                 //Añado el archivo
                 AccionesExportacion accionesExportacion = new AccionesExportacion();
-                accionesExportacion.AddFile(_Configuracion, pCVId, nombreCV, lang, listadoId);
+                accionesExportacion.AddFile(_Configuracion, pCVId, nombreCV, lang, listadoId, tipoCVNExportacion);
                 return Ok(new Models.API.Response.JsonResult() { ok = true });
             }
             catch (Exception ex)
