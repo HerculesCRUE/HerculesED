@@ -92,8 +92,8 @@ namespace Harvester
             GuardarIdentificadores(_Config, "Proyecto", fecha);
             GuardarIdentificadores(_Config, "PRC", fecha, true);
             GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            //GuardarIdentificadores(_Config, "Invencion", fecha);
             GuardarIdentificadores(_Config, "Grupo", fecha);
+            //GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);

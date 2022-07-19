@@ -48,6 +48,8 @@ var exportacionCV = {
 		$('.btExportarCV').off('click').on('click', function(e) {
             e.preventDefault();
 
+			var tipoCVNExportacion = $('#ddlTipoExportacion').find("option:selected").val();
+
 			var listaId = "";
 			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
@@ -65,6 +67,7 @@ var exportacionCV = {
 			data.lang= $('#ddlIdioma').val();
 			data.listaId= listaId;
 			data.nombreCV= $('#exportCvName').val();
+			data.tipoCVNExportacion = tipoCVNExportacion;
 			
 			MostrarUpdateProgress();
 			$.post(urlExportacionCV + 'GetCV', data, function(data) {
