@@ -31,7 +31,8 @@ namespace EditorCV.Models
         /// <param name="pCVID"></param>
         /// <param name="lang"></param>
         /// <param name="listaId"></param>
-        public void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId)
+        /// <param name="tipoCVNExportacion"></param>
+        public void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId, string tipoCVNExportacion)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
@@ -56,7 +57,7 @@ namespace EditorCV.Models
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
 
-            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado, listaId));
+            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado, listaId, tipoCVNExportacion));
             thread.Start();
         }
 
@@ -73,7 +74,7 @@ namespace EditorCV.Models
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
         void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
-            string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado, List<string> listaId)
+            string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado, List<string> listaId, string tipoCVNExportacion)
         {
             try
             {
@@ -90,11 +91,14 @@ namespace EditorCV.Models
                 else
                 {
                     urlExportador = _Configuracion.GetUrlExportador() + "/ExportarLimitado";
+
+                    parametros.Add(new KeyValuePair<string, string>("tipoCVNExportacion", tipoCVNExportacion));
                     foreach (string id in listaId)
                     {
                         parametros.Add(new KeyValuePair<string, string>("listaId", id));
                     }
                 }
+
 
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(parametros);
 
