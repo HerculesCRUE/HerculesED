@@ -11,8 +11,10 @@ using OAI_PMH.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -37,8 +39,10 @@ namespace OAI_PMH
 
             services.AddSwaggerGen(c =>
             {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OAI-PMH", Version = "v1", Description = "Open Archives Initiative Protocol for Metadata Harvesting" });
-                c.IncludeXmlComments(string.Format(@"{0}comments.xml", AppDomain.CurrentDomain.BaseDirectory));
+                c.IncludeXmlComments(xmlPath);
             });
 
             // Configuración.
