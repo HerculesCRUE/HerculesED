@@ -46,10 +46,9 @@ namespace MaindocumentOntology
 				this.Roh_format = new DocumentFormat(propRoh_format.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Bibo_eissn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/eissn"));
-			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
-			this.Bibo_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/isbn"));
 			this.Bibo_editor = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/editor"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
+			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
 		public MainDocument(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
@@ -74,10 +73,9 @@ namespace MaindocumentOntology
 				this.Roh_format = new DocumentFormat(propRoh_format.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Bibo_eissn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/eissn"));
-			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
-			this.Bibo_isbn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/isbn"));
 			this.Bibo_editor = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/editor"));
 			this.Bibo_issn = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/issn"));
+			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/MainDocument"; } }
@@ -93,17 +91,14 @@ namespace MaindocumentOntology
 		[RDFProperty("http://purl.org/ontology/bibo/eissn")]
 		public  string Bibo_eissn { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/title")]
-		public  string Roh_title { get; set;}
-
-		[RDFProperty("http://purl.org/ontology/bibo/isbn")]
-		public  string Bibo_isbn { get; set;}
-
 		[RDFProperty("http://purl.org/ontology/bibo/editor")]
 		public  string Bibo_editor { get; set;}
 
 		[RDFProperty("http://purl.org/ontology/bibo/issn")]
 		public  string Bibo_issn { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/title")]
+		public  string Roh_title { get; set;}
 
 
 		internal override void GetProperties()
@@ -111,10 +106,9 @@ namespace MaindocumentOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:format", this.IdRoh_format));
 			propList.Add(new StringOntologyProperty("bibo:eissn", this.Bibo_eissn));
-			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
-			propList.Add(new StringOntologyProperty("bibo:isbn", this.Bibo_isbn));
 			propList.Add(new StringOntologyProperty("bibo:editor", this.Bibo_editor));
 			propList.Add(new StringOntologyProperty("bibo:issn", this.Bibo_issn));
+			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
 		internal override void GetEntities()
@@ -192,9 +186,9 @@ namespace MaindocumentOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/quartile", $"{item1.Roh_quartile.ToString()}", list, " . ");
 				}
-				if(item1.IdRoh_impactIndexCategory != null)
+				if(item1.Roh_title != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/impactIndexCategory", $"<{item1.IdRoh_impactIndexCategory}>", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ImpactCategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(item1.Roh_title)}\"", list, " . ");
 				}
 			}
 			}
@@ -224,14 +218,6 @@ namespace MaindocumentOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/eissn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_eissn)}\"", list, " . ");
 				}
-				if(this.Roh_title != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title)}\"", list, " . ");
-				}
-				if(this.Bibo_isbn != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/isbn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_isbn)}\"", list, " . ");
-				}
 				if(this.Bibo_editor != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/editor", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_editor)}\"", list, " . ");
@@ -239,6 +225,10 @@ namespace MaindocumentOntology
 				if(this.Bibo_issn != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://purl.org/ontology/bibo/issn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_issn)}\"", list, " . ");
+				}
+				if(this.Roh_title != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MainDocument_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title)}\"", list, " . ");
 				}
 			return list;
 		}
@@ -280,19 +270,9 @@ namespace MaindocumentOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/quartile", $"{item1.Roh_quartile.ToString()}", list, " . ");
 				}
-				if(item1.IdRoh_impactIndexCategory != null)
+				if(item1.Roh_title != null)
 				{
-					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = item1.IdRoh_impactIndexCategory;
-					if (regex.IsMatch(itemRegex))
-					{
-						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
-					}
-					else
-					{
-						itemRegex = itemRegex.ToLower();
-					}
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/impactIndexCategory", $"<{itemRegex}>", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/impactcategory_{ResourceID}_{item1.ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(item1.Roh_title).ToLower()}\"", list, " . ");
 				}
 			}
 			}
@@ -342,14 +322,6 @@ namespace MaindocumentOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/eissn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_eissn).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_title != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title).ToLower()}\"", list, " . ");
-				}
-				if(this.Bibo_isbn != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/isbn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_isbn).ToLower()}\"", list, " . ");
-				}
 				if(this.Bibo_editor != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/editor", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_editor).ToLower()}\"", list, " . ");
@@ -357,6 +329,10 @@ namespace MaindocumentOntology
 				if(this.Bibo_issn != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/ontology/bibo/issn", $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_issn).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_title != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_title).ToLower()}\"", list, " . ");
 				}
 			if (listaSearch != null && listaSearch.Count > 0)
 			{
@@ -393,65 +369,11 @@ namespace MaindocumentOntology
 			return valor;
 		}
 
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
 		public override string GetURI(ResourceApi resourceAPI)
 		{
 			return $"{resourceAPI.GraphsUrl}items/MaindocumentOntology_{ResourceID}_{ArticleID}";
 		}
 
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 		internal void AddResourceTitle(ComplexOntologyResource resource)
 		{
@@ -463,21 +385,7 @@ namespace MaindocumentOntology
 			resource.Description = this.Roh_title;
 		}
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
 
 
 	}

@@ -9,6 +9,7 @@ using Es.Riam.Gnoss.Web.MVC.Models;
 using Gnoss.ApiWrapper.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Collections;
 
 namespace GnossBase
 {
@@ -56,7 +57,7 @@ namespace GnossBase
 			ca,
 			eu,
 			gl,
-			fr
+			fr,
 		}
 		internal List<OntologyEntity> entList = new List<OntologyEntity>();
 		internal List<OntologyProperty> propList = new List<OntologyProperty>();
@@ -70,20 +71,22 @@ namespace GnossBase
 		public List<string> tagList = new List<string>();
 		public GnossOCBase()
 		{
+			prefList.Add("xmlns:drm=\"http://vocab.data.gov/def/drm#\"");
+			prefList.Add("xmlns:vivo=\"http://vivoweb.org/ontology/core#\"");
+			prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
+			prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
+			prefList.Add("xmlns:qb=\"http://purl.org/linked-data/cube#\"");
+			prefList.Add("xmlns:bibo=\"http://purl.org/ontology/bibo/\"");
 			prefList.Add("xmlns:roh=\"http://w3id.org/roh/\"");
 			prefList.Add("xmlns:dct=\"http://purl.org/dc/terms/\"");
 			prefList.Add("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"");
 			prefList.Add("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"");
-			prefList.Add("xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"");
-			prefList.Add("xmlns:owl=\"http://www.w3.org/2002/07/owl#\"");
+			prefList.Add("xmlns:schema=\"http://www.schema.org/\"");
+			prefList.Add("xmlns:vcard=\"https://www.w3.org/2006/vcard/ns#\"");
 			prefList.Add("xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
 			prefList.Add("xmlns:skos=\"http://www.w3.org/2008/05/skos#\"");
 			prefList.Add("xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"");
-			prefList.Add("xmlns:vivo=\"http://vivoweb.org/ontology/core#\"");
-			prefList.Add("xmlns:bibo=\"http://purl.org/ontology/bibo/\"");
 			prefList.Add("xmlns:obo=\"http://purl.obolibrary.org/obo/\"");
-			prefList.Add("xmlns:vcard=\"https://www.w3.org/2006/vcard/ns#\"");
-			prefList.Add("xmlns:schema=\"http://www.schema.org/\"");
 			prefList.Add("xmlns:gn=\"http://www.geonames.org/ontology#\"");
 
 			this.resourceID = Guid.NewGuid();
@@ -282,6 +285,80 @@ namespace GnossBase
         }
     
    
+
+		protected string GenerarTextoSinSaltoDeLinea(string pTexto)
+		{
+			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
+		}
+
+		protected void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
+		{
+			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
+			{
+				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
+			} 
+		} 
+
+		protected List<string> ObtenerStringDePropiedad(object propiedad)
+		{
+			List<string> lista = new List<string>();
+			if (propiedad is IList)
+			{
+				foreach (string item in (IList)propiedad)
+				{
+					lista.Add(item);
+				}
+			}
+			else if (propiedad is IDictionary)
+			{
+				foreach (object key in ((IDictionary)propiedad).Keys)
+				{
+					if (((IDictionary)propiedad)[key] is IList)
+					{
+						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
+						foreach(string valor in listaValores)
+						{
+							lista.Add(valor);
+						}
+					}
+					else
+					{
+					lista.Add((string)((IDictionary)propiedad)[key]);
+					}
+				}
+			}
+			else if (propiedad is string)
+			{
+				lista.Add((string)propiedad);
+			}
+			return lista;
+		}
+
+		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
+		{
+			List<object> lista = new List<object>();
+			if(propiedad is IList)
+			{
+				foreach (object item in (IList)propiedad)
+				{
+					lista.Add(item);
+				}
+			}
+			else
+			{
+				lista.Add(propiedad);
+			}
+			return lista;
+		}
+
+		protected void AgregarTags(List<string> pListaTriples)
+		{
+			foreach(string tag in tagList)
+			{
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
+			}
+		}
+
 
         public string GetLabel(string nombrePropiedad, LanguageEnum pLang)
         {

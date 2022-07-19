@@ -57,7 +57,7 @@ namespace OAI_PMH.Services
                 }
             }
 
-            dicFormacionAcademica = AcademicFormation.GetModifiedDoctorados(from, pConfig);
+            dicFormacionAcademica = AcademicFormation.GetModifiedDoctorados(from, pConfig, accessToken);
             foreach (KeyValuePair<string, DateTime> item in dicFormacionAcademica)
             {
                 string idPersona = "Persona_" + item.Key.Split("_")[1];
@@ -74,7 +74,7 @@ namespace OAI_PMH.Services
                 }
             }
 
-            dicFormacionAcademica = AcademicFormation.GetModifiedPosgrado(from, pConfig);
+            dicFormacionAcademica = AcademicFormation.GetModifiedPosgrado(from, pConfig, accessToken);
             foreach (KeyValuePair<string, DateTime> item in dicFormacionAcademica)
             {
                 string idPersona = "Persona_" + item.Key.Split("_")[1];
@@ -91,7 +91,7 @@ namespace OAI_PMH.Services
                 }
             }
 
-            dicFormacionAcademica = AcademicFormation.GetModifiedEspecializada(from, pConfig);
+            dicFormacionAcademica = AcademicFormation.GetModifiedEspecializada(from, pConfig, accessToken);
             foreach (KeyValuePair<string, DateTime> item in dicFormacionAcademica)
             {
                 string idPersona = "Persona_" + item.Key.Split("_")[1];
@@ -110,7 +110,7 @@ namespace OAI_PMH.Services
             #endregion
 
             #region --- Actividad Docente
-            Dictionary<string, DateTime> dicActividadDocente = DocentActivity.GetModifiedTesis(from, pConfig);
+            Dictionary<string, DateTime> dicActividadDocente = DocentActivity.GetModifiedTesis(from, pConfig, accessToken);
             foreach (KeyValuePair<string, DateTime> item in dicActividadDocente)
             {
                 string idPersona = "Persona_" + item.Key.Split("_")[1];
@@ -127,7 +127,7 @@ namespace OAI_PMH.Services
                 }
             }
 
-            dicActividadDocente = DocentActivity.GetModifiedAcademicFormationProvided(from, pConfig);
+            dicActividadDocente = DocentActivity.GetModifiedAcademicFormationProvided(from, pConfig, accessToken);
             foreach (KeyValuePair<string, DateTime> item in dicActividadDocente)
             {
                 string idPersona = "Persona_" + item.Key.Split("_")[1];
@@ -144,7 +144,7 @@ namespace OAI_PMH.Services
                 }
             }
 
-            dicActividadDocente = DocentActivity.GetModifiedSeminars(from, pConfig);
+            dicActividadDocente = DocentActivity.GetModifiedSeminars(from, pConfig, accessToken);
             foreach (KeyValuePair<string, DateTime> item in dicActividadDocente)
             {
                 string idPersona = "Persona_" + item.Key.Split("_")[1];
@@ -180,25 +180,24 @@ namespace OAI_PMH.Services
             }
             var json = JObject.Parse(response.Content);
             persona = JsonConvert.DeserializeObject<Persona>(json.ToString());
-            persona.DatosPersonales = GetDatosPersonales(identifier, pConfig);
-            persona.DatosContacto = GetDatosContacto(identifier, pConfig);
-            persona.Vinculacion = GetVinculacion(identifier, pConfig);
-            persona.DatosAcademicos = GetDatosAcademicos(identifier, pConfig);
-            persona.Fotografia = GetFotografia(identifier, pConfig);
-            persona.Sexenios = GetSexenios(identifier, pConfig);
-            persona.FormacionAcademicaImpartida = DocentActivity.GetAcademicFormationProvided(identifier, pConfig);
-            persona.SeminariosCursos = DocentActivity.GetSeminars(identifier, pConfig);
-            persona.Tesis = DocentActivity.GetTesis(identifier, pConfig);
-            persona.Ciclos = AcademicFormation.GetFormacionAcademicaCiclos(identifier, pConfig);
-            persona.Doctorados = AcademicFormation.GetFormacionAcademicaDoctorados(identifier, pConfig);
-            persona.FormacionEspecializada = AcademicFormation.GetFormacionAcademicaEspecializada(identifier, pConfig);
-            persona.Posgrado = AcademicFormation.GetFormacionAcademicaPosgrado(identifier, pConfig);
+            persona.DatosPersonales = GetDatosPersonales(identifier, pConfig, accessToken);
+            persona.DatosContacto = GetDatosContacto(identifier, pConfig, accessToken);
+            persona.Vinculacion = GetVinculacion(identifier, pConfig, accessToken);
+            persona.DatosAcademicos = GetDatosAcademicos(identifier, pConfig, accessToken);
+            persona.Fotografia = GetFotografia(identifier, pConfig, accessToken);
+            persona.Sexenios = GetSexenios(identifier, pConfig, accessToken);
+            persona.FormacionAcademicaImpartida = DocentActivity.GetAcademicFormationProvided(identifier, pConfig, accessToken);
+            persona.SeminariosCursos = DocentActivity.GetSeminars(identifier, pConfig, accessToken);
+            persona.Tesis = DocentActivity.GetTesis(identifier, pConfig, accessToken);
+            persona.Ciclos = AcademicFormation.GetFormacionAcademicaCiclos(identifier, pConfig, accessToken);
+            persona.Doctorados = AcademicFormation.GetFormacionAcademicaDoctorados(identifier, pConfig, accessToken);
+            persona.FormacionEspecializada = AcademicFormation.GetFormacionAcademicaEspecializada(identifier, pConfig, accessToken);
+            persona.Posgrado = AcademicFormation.GetFormacionAcademicaPosgrado(identifier, pConfig, accessToken);
             return persona;
         }
 
-        private static DatosPersonales GetDatosPersonales(string id, ConfigService pConfig)
+        private static DatosPersonales GetDatosPersonales(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             DatosPersonales datosPersonales = new();
             RestClient client = new(pConfig.GetUrlBasePersona() + "datos-personales/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -208,9 +207,8 @@ namespace OAI_PMH.Services
             return datosPersonales;
         }
 
-        private static DatosContacto GetDatosContacto(string id, ConfigService pConfig)
+        private static DatosContacto GetDatosContacto(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             DatosContacto datosContacto = new();
             RestClient client = new(pConfig.GetUrlBasePersona() + "datos-contacto/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -220,9 +218,8 @@ namespace OAI_PMH.Services
             return datosContacto;
         }
 
-        private static Vinculacion GetVinculacion(string id, ConfigService pConfig)
+        private static Vinculacion GetVinculacion(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             Vinculacion vinculacion = new();
             RestClient client = new(pConfig.GetUrlBasePersona() + "vinculaciones/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -232,9 +229,8 @@ namespace OAI_PMH.Services
             return vinculacion;
         }
 
-        private static DatosAcademicos GetDatosAcademicos(string id, ConfigService pConfig)
+        private static DatosAcademicos GetDatosAcademicos(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             DatosAcademicos datosAcademicos = new();
             RestClient client = new(pConfig.GetUrlBasePersona() + "datos-academicos/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -244,9 +240,8 @@ namespace OAI_PMH.Services
             return datosAcademicos;
         }
 
-        private static Fotografia GetFotografia(string id, ConfigService pConfig)
+        private static Fotografia GetFotografia(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             Fotografia fotografia = new();
             RestClient client = new(pConfig.GetUrlBasePersona() + "personas/" + id + "/fotografia");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -256,9 +251,8 @@ namespace OAI_PMH.Services
             return fotografia;
         }
 
-        private static Sexenio GetSexenios(string id, ConfigService pConfig)
+        private static Sexenio GetSexenios(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             Sexenio sexenios = new();
             RestClient client = new(pConfig.GetUrlBasePersona() + "sexenios/persona/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);

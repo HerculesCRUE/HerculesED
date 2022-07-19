@@ -19,7 +19,6 @@ using ResultType = ResulttypeOntology.ResultType;
 using Feature = FeatureOntology.Feature;
 using Organization = OrganizationOntology.Organization;
 using IndustrialPropertyType = IndustrialpropertytypeOntology.IndustrialPropertyType;
-using Person = PersonOntology.Person;
 
 namespace PatentOntology
 {
@@ -54,14 +53,14 @@ namespace PatentOntology
 					}
 				}
 			}
-			this.Bibo_authorList = new List<Person>();
+			this.Bibo_authorList = new List<PersonAux>();
 			SemanticPropertyModel propBibo_authorList = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/authorList");
 			if(propBibo_authorList != null && propBibo_authorList.PropertyValues.Count > 0)
 			{
 				foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_authorList.PropertyValues)
 				{
 					if(propValue.RelatedEntity!=null){
-						Person bibo_authorList = new Person(propValue.RelatedEntity,idiomaUsuario);
+						PersonAux bibo_authorList = new PersonAux(propValue.RelatedEntity,idiomaUsuario);
 						this.Bibo_authorList.Add(bibo_authorList);
 					}
 				}
@@ -127,21 +126,16 @@ namespace PatentOntology
 			this.Roh_europeanPatent= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanPatent"));
 			this.Roh_authorsRights= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/authorsRights"));
 			this.Roh_tradeSecret= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tradeSecret"));
-			this.Roh_ownerOrganizationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ownerOrganizationTitle"));
 			this.Roh_qualityDescription = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/qualityDescription"));
+			this.Roh_ownerOrganizationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ownerOrganizationTitle"));
 			this.Roh_innovativeEnterprise= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/innovativeEnterprise"));
 			this.Roh_internationalPatent= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/internationalPatent"));
-			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Roh_isValidated= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_licenses= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/licenses"));
-			this.Roh_dateFiled= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/dateFiled"));
+			this.Roh_dateFiled = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/dateFiled"));
 			this.Roh_pctPatent= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/pctPatent"));
-			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
-			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
-			{
-				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
-			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 		}
 
 		public Patent(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
@@ -170,14 +164,14 @@ namespace PatentOntology
 					}
 				}
 			}
-			this.Bibo_authorList = new List<Person>();
+			this.Bibo_authorList = new List<PersonAux>();
 			SemanticPropertyModel propBibo_authorList = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/authorList");
 			if(propBibo_authorList != null && propBibo_authorList.PropertyValues.Count > 0)
 			{
 				foreach (SemanticPropertyModel.PropertyValue propValue in propBibo_authorList.PropertyValues)
 				{
 					if(propValue.RelatedEntity!=null){
-						Person bibo_authorList = new Person(propValue.RelatedEntity,idiomaUsuario);
+						PersonAux bibo_authorList = new PersonAux(propValue.RelatedEntity,idiomaUsuario);
 						this.Bibo_authorList.Add(bibo_authorList);
 					}
 				}
@@ -243,21 +237,16 @@ namespace PatentOntology
 			this.Roh_europeanPatent= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/europeanPatent"));
 			this.Roh_authorsRights= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/authorsRights"));
 			this.Roh_tradeSecret= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tradeSecret"));
-			this.Roh_ownerOrganizationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ownerOrganizationTitle"));
 			this.Roh_qualityDescription = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/qualityDescription"));
+			this.Roh_ownerOrganizationTitle = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ownerOrganizationTitle"));
 			this.Roh_innovativeEnterprise= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/innovativeEnterprise"));
 			this.Roh_internationalPatent= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/internationalPatent"));
-			this.Dct_issued= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+			this.Roh_isValidated= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
 			this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
 			this.Roh_licenses= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/licenses"));
-			this.Roh_dateFiled= GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/dateFiled"));
+			this.Roh_dateFiled = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/dateFiled"));
 			this.Roh_pctPatent= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/pctPatent"));
-			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
-			if(propRoh_owner != null && propRoh_owner.PropertyValues.Count > 0)
-			{
-				this.Roh_owner = new Person(propRoh_owner.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
-			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 		}
 
 		public virtual string RdfType { get { return "http://purl.org/ontology/bibo/Patent"; } }
@@ -274,7 +263,7 @@ namespace PatentOntology
 		public  List<Organization> Roh_operatingCompanies { get; set;}
 
 		[RDFProperty("http://purl.org/ontology/bibo/authorList")]
-		public  List<Person> Bibo_authorList { get; set;}
+		public  List<PersonAux> Bibo_authorList { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/operatingCountries")]
 		public  List<Feature> Roh_operatingCountries { get; set;}
@@ -336,11 +325,11 @@ namespace PatentOntology
 		[RDFProperty("http://w3id.org/roh/tradeSecret")]
 		public  bool Roh_tradeSecret { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/ownerOrganizationTitle")]
-		public  string Roh_ownerOrganizationTitle { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/qualityDescription")]
 		public  string Roh_qualityDescription { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/ownerOrganizationTitle")]
+		public  string Roh_ownerOrganizationTitle { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/innovativeEnterprise")]
 		public  bool Roh_innovativeEnterprise { get; set;}
@@ -350,6 +339,9 @@ namespace PatentOntology
 
 		[RDFProperty("http://purl.org/dc/terms/issued")]
 		public  DateTime? Dct_issued { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/isValidated")]
+		public  bool Roh_isValidated { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/crisIdentifier")]
 		public  string Roh_crisIdentifier { get; set;}
@@ -362,14 +354,6 @@ namespace PatentOntology
 
 		[RDFProperty("http://w3id.org/roh/pctPatent")]
 		public  bool Roh_pctPatent { get; set;}
-
-		[RDFProperty("http://w3id.org/roh/owner")]
-		[Required]
-		public  Person Roh_owner  { get; set;} 
-		public string IdRoh_owner  { get; set;} 
-
-		[RDFProperty("http://w3id.org/roh/cvnCode")]
-		public  string Roh_cvnCode { get; set;}
 
 
 		internal override void GetProperties()
@@ -394,21 +378,20 @@ namespace PatentOntology
 			propList.Add(new BoolOntologyProperty("roh:europeanPatent", this.Roh_europeanPatent));
 			propList.Add(new BoolOntologyProperty("roh:authorsRights", this.Roh_authorsRights));
 			propList.Add(new BoolOntologyProperty("roh:tradeSecret", this.Roh_tradeSecret));
-			propList.Add(new StringOntologyProperty("roh:ownerOrganizationTitle", this.Roh_ownerOrganizationTitle));
 			propList.Add(new StringOntologyProperty("roh:qualityDescription", this.Roh_qualityDescription));
+			propList.Add(new StringOntologyProperty("roh:ownerOrganizationTitle", this.Roh_ownerOrganizationTitle));
 			propList.Add(new BoolOntologyProperty("roh:innovativeEnterprise", this.Roh_innovativeEnterprise));
 			propList.Add(new BoolOntologyProperty("roh:internationalPatent", this.Roh_internationalPatent));
 			if (this.Dct_issued.HasValue){
 				propList.Add(new DateOntologyProperty("dct:issued", this.Dct_issued.Value));
 				}
+			propList.Add(new BoolOntologyProperty("roh:isValidated", this.Roh_isValidated));
 			propList.Add(new StringOntologyProperty("roh:crisIdentifier", this.Roh_crisIdentifier));
 			propList.Add(new BoolOntologyProperty("roh:licenses", this.Roh_licenses));
 			if (this.Roh_dateFiled.HasValue){
 				propList.Add(new DateOntologyProperty("roh:dateFiled", this.Roh_dateFiled.Value));
 				}
 			propList.Add(new BoolOntologyProperty("roh:pctPatent", this.Roh_pctPatent));
-			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
-			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 		}
 
 		internal override void GetEntities()
@@ -424,12 +407,12 @@ namespace PatentOntology
 				}
 			}
 			if(Bibo_authorList!=null){
-				foreach(Person prop in Bibo_authorList){
+				foreach(PersonAux prop in Bibo_authorList){
 					prop.GetProperties();
 					prop.GetEntities();
-					OntologyEntity entityPerson = new OntologyEntity("http://xmlns.com/foaf/0.1/Person", "http://xmlns.com/foaf/0.1/Person", "bibo:authorList", prop.propList, prop.entList);
-				entList.Add(entityPerson);
-				prop.Entity= entityPerson;
+					OntologyEntity entityPersonAux = new OntologyEntity("http://w3id.org/roh/PersonAux", "http://w3id.org/roh/PersonAux", "bibo:authorList", prop.propList, prop.entList);
+				entList.Add(entityPersonAux);
+				prop.Entity= entityPersonAux;
 				}
 			}
 			if(Roh_operatingCountries!=null){
@@ -507,29 +490,33 @@ namespace PatentOntology
 			{
 			foreach(var item0 in this.Bibo_authorList)
 			{
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://xmlns.com/foaf/0.1/Person>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://xmlns.com/foaf/0.1/Person\"", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}", "http://purl.org/ontology/bibo/authorList", $"<{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/PersonAux>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/PersonAux\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}", "http://purl.org/ontology/bibo/authorList", $"<{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdRdf_member != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#member", $"<{item0.IdRdf_member}>", list, " . ");
+				}
 				if(item0.Foaf_familyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName)}\"", list, " . ");
 				}
 				if(item0.Roh_secondFamilyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName)}\"", list, " . ");
 				}
 				if(item0.Foaf_nick != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick)}\"", list, " . ");
 				}
 				if(item0.Foaf_firstName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName)}\"", list, " . ");
 				}
 				if(item0.Rdf_comment != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Person_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonAux_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
 				}
 			}
 			}
@@ -647,13 +634,13 @@ namespace PatentOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/tradeSecret", $"\"{this.Roh_tradeSecret.ToString()}\"", list, " . ");
 				}
-				if(this.Roh_ownerOrganizationTitle != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/ownerOrganizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_ownerOrganizationTitle)}\"", list, " . ");
-				}
 				if(this.Roh_qualityDescription != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/qualityDescription", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_qualityDescription)}\"", list, " . ");
+				}
+				if(this.Roh_ownerOrganizationTitle != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/ownerOrganizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_ownerOrganizationTitle)}\"", list, " . ");
 				}
 				if(this.Roh_innovativeEnterprise != null)
 				{
@@ -666,6 +653,10 @@ namespace PatentOntology
 				if(this.Dct_issued != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://purl.org/dc/terms/issued", $"\"{this.Dct_issued.Value.ToString("yyyyMMddHHmmss")}\"", list, " . ");
+				}
+				if(this.Roh_isValidated != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/isValidated", $"\"{this.Roh_isValidated.ToString()}\"", list, " . ");
 				}
 				if(this.Roh_crisIdentifier != null)
 				{
@@ -682,14 +673,6 @@ namespace PatentOntology
 				if(this.Roh_pctPatent != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/pctPatent", $"\"{this.Roh_pctPatent.ToString()}\"", list, " . ");
-				}
-				if(this.IdRoh_owner != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/owner", $"<{this.IdRoh_owner}>", list, " . ");
-				}
-				if(this.Roh_cvnCode != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Patent_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode)}\"", list, " . ");
 				}
 			return list;
 		}
@@ -738,26 +721,40 @@ namespace PatentOntology
 			{
 			foreach(var item0 in this.Bibo_authorList)
 			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/ontology/bibo/authorList", $"<{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/ontology/bibo/authorList", $"<{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdRdf_member != null)
+				{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item0.IdRdf_member;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#member", $"<{itemRegex}>", list, " . ");
+				}
 				if(item0.Foaf_familyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_familyName).ToLower()}\"", list, " . ");
 				}
 				if(item0.Roh_secondFamilyName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_secondFamilyName).ToLower()}\"", list, " . ");
 				}
 				if(item0.Foaf_nick != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/nick", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_nick).ToLower()}\"", list, " . ");
 				}
 				if(item0.Foaf_firstName != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Foaf_firstName).ToLower()}\"", list, " . ");
 				}
 				if(item0.Rdf_comment != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/person_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaux_{ResourceID}_{item0.ArticleID}",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#comment", $"{item0.Rdf_comment.ToString()}", list, " . ");
 				}
 			}
 			}
@@ -949,13 +946,13 @@ namespace PatentOntology
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/tradeSecret", $"\"{this.Roh_tradeSecret.ToString().ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_ownerOrganizationTitle != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/ownerOrganizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_ownerOrganizationTitle).ToLower()}\"", list, " . ");
-				}
 				if(this.Roh_qualityDescription != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/qualityDescription", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_qualityDescription).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_ownerOrganizationTitle != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/ownerOrganizationTitle", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_ownerOrganizationTitle).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_innovativeEnterprise != null)
 				{
@@ -968,6 +965,10 @@ namespace PatentOntology
 				if(this.Dct_issued != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://purl.org/dc/terms/issued", $"{this.Dct_issued.Value.ToString("yyyyMMddHHmmss")}", list, " . ");
+				}
+				if(this.Roh_isValidated != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/isValidated", $"\"{this.Roh_isValidated.ToString().ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_crisIdentifier != null)
 				{
@@ -984,24 +985,6 @@ namespace PatentOntology
 				if(this.Roh_pctPatent != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/pctPatent", $"\"{this.Roh_pctPatent.ToString().ToLower()}\"", list, " . ");
-				}
-				if(this.IdRoh_owner != null)
-				{
-					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = this.IdRoh_owner;
-					if (regex.IsMatch(itemRegex))
-					{
-						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
-					}
-					else
-					{
-						itemRegex = itemRegex.ToLower();
-					}
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/owner", $"<{itemRegex}>", list, " . ");
-				}
-				if(this.Roh_cvnCode != null)
-				{
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/cvnCode", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_cvnCode).ToLower()}\"", list, " . ");
 				}
 			if (listaSearch != null && listaSearch.Count > 0)
 			{
@@ -1038,65 +1021,11 @@ namespace PatentOntology
 			return valor;
 		}
 
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
 		public override string GetURI(ResourceApi resourceAPI)
 		{
 			return $"{resourceAPI.GraphsUrl}items/PatentOntology_{ResourceID}_{ArticleID}";
 		}
 
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 		internal void AddResourceTitle(ComplexOntologyResource resource)
 		{
@@ -1108,21 +1037,7 @@ namespace PatentOntology
 			resource.Description = this.Roh_title;
 		}
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
 
 
 	}
