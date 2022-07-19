@@ -329,6 +329,10 @@ function CompletadaCargaRecursosComunidad()
 	if ((typeof CompletadaCargaRecursosSimilitud != 'undefined')) {
 		CompletadaCargaRecursosSimilitud();
 	}
+	
+	if ((typeof gOTecnEndLoadedResources != 'undefined')) {
+		gOTecnEndLoadedResources();
+	}
 }
 
 comportamientoFacetasPopUp.numPaginas=2,
