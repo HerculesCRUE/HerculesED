@@ -11,9 +11,8 @@ namespace OAI_PMH.Services
 {
     public class DocentActivity
     {
-        public static Dictionary<string, DateTime> GetModifiedTesis(string from, ConfigService pConfig)
+        public static Dictionary<string, DateTime> GetModifiedTesis(string from, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
             RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + ";tipoActividad=\"030.040.000.000\"");
@@ -35,9 +34,8 @@ namespace OAI_PMH.Services
             }
             return idDictionary;
         }
-        public static List<Tesis> GetTesis(string id, ConfigService pConfig)
+        public static List<Tesis> GetTesis(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Replace("\"", "");
             RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier + "?tipoActividad=\"030.040.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -52,9 +50,8 @@ namespace OAI_PMH.Services
                 return null;
             }
         }
-        public static Dictionary<string, DateTime> GetModifiedAcademicFormationProvided(string from, ConfigService pConfig)
+        public static Dictionary<string, DateTime> GetModifiedAcademicFormationProvided(string from, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
             RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + ";tipoActividad=\"030.010.000.000\"");
@@ -76,9 +73,8 @@ namespace OAI_PMH.Services
             }
             return idDictionary;
         }
-        public static List<FormacionAcademicaImpartida> GetAcademicFormationProvided(string id, ConfigService pConfig)
+        public static List<FormacionAcademicaImpartida> GetAcademicFormationProvided(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Replace("\"", "");
             RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier + "?tipoActividad=\"030.010.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
@@ -93,9 +89,8 @@ namespace OAI_PMH.Services
                 return null;
             }
         }
-        public static Dictionary<string, DateTime> GetModifiedSeminars(string from, ConfigService pConfig)
+        public static Dictionary<string, DateTime> GetModifiedSeminars(string from, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             Dictionary<string, DateTime> idDictionary = new();
             List<string> idList = new();
             RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/modificados-ids?q=fechaModificacion=ge=\"" + from + "\"" + ";tipoActividad=\"030.060.000.000\"");
@@ -117,9 +112,8 @@ namespace OAI_PMH.Services
             }
             return idDictionary;
         }
-        public static List<SeminariosCursos> GetSeminars(string id, ConfigService pConfig)
+        public static List<SeminariosCursos> GetSeminars(string id, ConfigService pConfig, string accessToken)
         {
-            string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Replace("\"", "");
             RestClient client = new(pConfig.GetUrlBaseActividadDocente() + "actividad-docente/" + identifier + "?tipoActividad=\"030.060.000.000\"");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
