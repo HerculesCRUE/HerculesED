@@ -90,7 +90,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="listaId">Listado de identificadores de los recursos a devolver</param>
         /// <returns></returns>
         [HttpPost("ExportarLimitado")]
-        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Optional] List<string> listaId)
+        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion, [FromForm][Optional] List<string> listaId)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -124,7 +124,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
             client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
 
-            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, "PN2008", Utils.UtilityExportar.CvnLangCode(lang));
+            var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
             var resp = peticion.Result.@return;
             client.Close();
 
