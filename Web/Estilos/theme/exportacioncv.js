@@ -27,6 +27,7 @@ var exportacionCV = {
 					data.userID= that.idUsuario;
 					data.lang= $('#ddlIdioma').val();
 					data.nombreCV= $('#exportCvName').val();
+					data.tipoCVNExportacion = $('#ddlTipoExportacion').find("option:selected").val();
 					
 					$.post(urlExportacionCV + 'GetCV', data, function(data) {
 						OcultarUpdateProgress();
