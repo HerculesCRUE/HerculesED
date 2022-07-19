@@ -21,30 +21,30 @@ namespace OAI_PMH.Services
         public static string CheckToken(ConfigService pConfig, bool pTokenGestor = true, bool pTokenPii = false)
         {
             _ConfigService = pConfig;
-
-            if (lastUpdate != default)
-            {
-                TimeSpan diff = DateTime.UtcNow.Subtract(lastUpdate);
-                if (diff.TotalSeconds > 300)
-                {
-                    if (diff.TotalSeconds < 1800)
-                    {
-                        accessToken = RefreshToken(pConfig);
-                        lastUpdate = DateTime.UtcNow;
-                    }
-                    else
-                    {
-                        accessToken = GetToken(pConfig, pTokenGestor, pTokenPii);
-                        lastUpdate = DateTime.UtcNow;
-                    }
-                }
-            }
-            else
-            {
-                accessToken = GetToken(pConfig, pTokenGestor, pTokenPii);
-                lastUpdate = DateTime.UtcNow;
-            }
-            return accessToken;
+            return GetToken(pConfig, pTokenGestor, pTokenPii);
+            //if (lastUpdate != default)
+            //{
+            //    TimeSpan diff = DateTime.UtcNow.Subtract(lastUpdate);
+            //    if (diff.TotalSeconds > 300)
+            //    {
+            //        if (diff.TotalSeconds < 1800)
+            //        {
+            //            accessToken = RefreshToken(pConfig);
+            //            lastUpdate = DateTime.UtcNow;
+            //        }
+            //        else
+            //        {
+            //            accessToken = GetToken(pConfig, pTokenGestor, pTokenPii);
+            //            lastUpdate = DateTime.UtcNow;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    accessToken = GetToken(pConfig, pTokenGestor, pTokenPii);
+            //    lastUpdate = DateTime.UtcNow;
+            //}
+            //return accessToken;
         }
 
 

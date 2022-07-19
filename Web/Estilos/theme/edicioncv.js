@@ -2,7 +2,7 @@ var urlEdicionCV = url_servicio_editorcv+"EdicionCV/";
 var urlEnvioValidacionCV = url_servicio_editorcv+"EnvioValidacion/";
 var urlGuardadoCV = url_servicio_editorcv+"GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];
-var tooltips = {};
+var tooltips = {section:{}, items:{}};
 
 function GetText(id, param1, param2, param3, param4) {
     if ($('#' + id).length) {
@@ -71,7 +71,16 @@ var edicionCV = {
         $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
-			
+			for(var key in tooltips.section) {
+				var value = tooltips.section[key];
+				$(key).tooltip({
+					html: true,
+					placement: 'bottom',
+					template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+					title: value
+				});
+				montarTooltip.comportamiento($(key));
+			}
 			if(getParam('tab')!=null)
 			{
 				if(getParam('section')!=null && getParam('id')==null)
@@ -318,6 +327,8 @@ var edicionCV = {
         //css mas generico
         var id = 'x' + RandomGuid();
         var id2 = 'x' + RandomGuid();
+		var idTooltipSection = "tooltipSection" + RandomGuid();
+		tooltips.section['#'+idTooltipSection] = data.information;
 
         var expanded = "";
         var show = "";
@@ -358,6 +369,7 @@ var edicionCV = {
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
+								<span class="material-icons-outlined" id="${idTooltipSection}">information</span>
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -1012,8 +1024,8 @@ var edicionCV = {
             $('#modal-editar-entidad .form-actions .ko').remove();
             $.get(urlEdicionCV + 'GetEdit?pCVId='+that.idCV+'&pIdSection=' + sectionID + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + entityID + "&pLang=" + lang, null, function(data) {
                 that.printEditItemCV('#modal-editar-entidad form', data, sectionID, rdfTypeTab, entityID);
-				for(var key in tooltips) {
-					var value = tooltips[key];
+				for(var key in tooltips.items) {
+					var value = tooltips.items[key];
 					$(key).tooltip({
 						html: true,
 						placement: 'bottom',
@@ -1021,7 +1033,7 @@ var edicionCV = {
 						title: value
 					});
 					montarTooltip.comportamiento($(key));
-				  }
+				}
                 OcultarUpdateProgress();
 				
             });
@@ -1146,7 +1158,7 @@ var edicionCV = {
             rowHtml += this.printPropertyEdit(iseditable, row.properties[k], index);
 			if (row.properties[k].information) {
 				id = "#tooltip" + index;
-				tooltips[id] = row.properties[k].information;
+				tooltips.items[id] = row.properties[k].information;
 			}
         }
         rowHtml += `</div>`;

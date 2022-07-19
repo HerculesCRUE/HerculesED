@@ -84,7 +84,7 @@ namespace Harvester
 
 
             string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
-            fecha = "2022-01-01T00:00:00Z";
+            fecha = "1900-01-01T00:00:00Z";
 
             //Genero los ficheros con los datos a procesar desde la fecha
             GuardarIdentificadores(_Config, "Organizacion", fecha);
@@ -99,11 +99,11 @@ namespace Harvester
             UpdateLastDate(_Config, fecha);
 
             //Proceso los ficheros
-            //mResourceApi.ChangeOntoly("organization");
-            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
             //mResourceApi.ChangeOntoly("person");
-            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
-            //mResourceApi.ChangeOntoly("project");
+            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            mResourceApi.ChangeOntoly("project");
             //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
             mResourceApi.ChangeOntoly("projectauthorization");
@@ -181,8 +181,9 @@ namespace Harvester
 
                             // Obtención de datos en bruto.
                             Empresa organization = new Empresa();
-                            xmlResult = harvesterServices.GetRecord(id);
+                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
+                            // Si el dato llega mal, skip.
                             if (string.IsNullOrEmpty(xmlResult))
                             {
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
@@ -195,16 +196,15 @@ namespace Harvester
                                 organization = (Empresa)xmlSerializer.Deserialize(sr);
                             }
 
-                            // Cambio de modelo. TODO: Mirar propiedades.
-                            OrganizationOntology.Organization empresaOntology = CrearOrganizacionOntology(organization);
-
-                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
-                            if (string.IsNullOrEmpty(empresaOntology.Roh_crisIdentifier) && string.IsNullOrEmpty(empresaOntology.Roh_title))
+                            // Si la organización no tiene id o título, skip.
+                            if (string.IsNullOrEmpty(organization.Id) || string.IsNullOrEmpty(organization.Nombre))
                             {
-                                // Guardamos el ID cargado.
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
                             }
+
+                            // Cambio de modelo.
+                            OrganizationOntology.Organization empresaOntology = CrearOrganizacionOntology(organization);
 
                             resource = empresaOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicOrganizaciones.ContainsKey(empresaOntology.Roh_crisIdentifier))
@@ -226,10 +226,14 @@ namespace Harvester
 
                         #region - Persona
                         case "Persona":
-
                             // Obtención de datos en bruto.
+                            if(id.Contains("@") || id.Contains("|"))
+                            {
+                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                                continue;
+                            }
                             Persona persona = new Persona();
-                            xmlResult = harvesterServices.GetRecord(id);
+                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
                             if (string.IsNullOrEmpty(xmlResult))
                             {
@@ -242,7 +246,6 @@ namespace Harvester
                             {
                                 persona = (Persona)xmlSerializer.Deserialize(sr);
                             }
-
 
                             // Cambio de modelo. TODO: Mirar propiedades.
                             PersonOntology.Person personOntology = CrearPersona(persona);
@@ -279,7 +282,7 @@ namespace Harvester
 
                             // Obtención de datos en bruto.
                             Proyecto proyecto = new Proyecto();
-                            xmlResult = harvesterServices.GetRecord(id);
+                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
                             if (string.IsNullOrEmpty(xmlResult))
                             {
@@ -368,7 +371,7 @@ namespace Harvester
                         case "AutorizacionProyecto":
                             // Obtención de datos en bruto.
                             Autorizacion autorizacion = new Autorizacion();
-                            xmlResult = harvesterServices.GetRecord(id);
+                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
                             if (string.IsNullOrEmpty(xmlResult))
                             {
@@ -443,7 +446,7 @@ namespace Harvester
                         case "Invencion":
                             // Obtención de datos en bruto.
                             Invencion invencion = new Invencion();
-                            xmlResult = harvesterServices.GetRecord(id);
+                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
                             if (string.IsNullOrEmpty(xmlResult))
                             {
@@ -490,7 +493,7 @@ namespace Harvester
                         case "Grupo":
                             // Obtención de datos en bruto.
                             Grupo grupo = new Grupo();
-                            xmlResult = harvesterServices.GetRecord(id);
+                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
                             if (string.IsNullOrEmpty(xmlResult))
                             {
@@ -532,12 +535,11 @@ namespace Harvester
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
                             #endregion
-
-                    }
-
-                    // Borra el fichero.
-                    File.Delete(fichero);
+                    }                   
                 }
+
+                // Borra el fichero.
+                File.Delete(fichero);
             }
         }
 
@@ -778,11 +780,13 @@ namespace Harvester
             {
                 persona.Roh_isActive = pDatos.Activo.Value;
             }
+
             // TODO: Posible cambio Treelogic
             if (!string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Id))
             {
-                persona.IdVivo_departmentOrSchool = $@"http://gnoss.com/items/department_{pDatos.Vinculacion.Departamento.Id}";//TODO
+                persona.IdVivo_departmentOrSchool = $@"http://gnoss.com/items/department_{pDatos.Vinculacion.Departamento.Id}";
             }
+
             if (!string.IsNullOrEmpty(pDatos.Vinculacion?.CategoriaProfesional?.Nombre))
             {
                 //Cargo en la universidad
@@ -790,7 +794,6 @@ namespace Harvester
             }
 
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
-            //TODO insertar en BBDD y asignar gnossid
 
             return persona;
         }
@@ -826,7 +829,7 @@ namespace Harvester
         {
             // Obtención de datos en bruto.
             Empresa organization = new Empresa();
-            string xmlResult = harvesterServices.GetRecord(id);
+            string xmlResult = harvesterServices.GetRecord(id, _Config);
 
             if (string.IsNullOrEmpty(xmlResult))
             {
@@ -1591,7 +1594,6 @@ namespace Harvester
             organization.Roh_crisIdentifier = pDatos.Id;
             organization.Roh_title = pDatos.Nombre;
             organization.Vcard_locality = pDatos.DatosContacto?.Direccion;
-
             return organization;
         }
 
@@ -1600,7 +1602,7 @@ namespace Harvester
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
             Empresa empresa = new Empresa();
-            string emp = harvesterServices.GetRecord("Organizacion_" + entidadGestoraID);
+            string emp = harvesterServices.GetRecord("Organizacion_" + entidadGestoraID, _Config);
             XmlSerializer xmlSerializer = new(typeof(Empresa));
             using (StringReader sr = new(emp))
             {
@@ -1620,7 +1622,7 @@ namespace Harvester
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
             Empresa empresa = new Empresa();
-            string emp = harvesterServices.GetRecord("Organizacion_" + entidadConvocanteID);
+            string emp = harvesterServices.GetRecord("Organizacion_" + entidadConvocanteID, _Config);
             XmlSerializer xmlSerializer = new(typeof(Empresa));
             using (StringReader sr = new(emp))
             {
@@ -1648,7 +1650,7 @@ namespace Harvester
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
             Empresa empresa = new Empresa();
-            string emp = harvesterServices.GetRecord("Organizacion_" + entidadFinanciadoraID);
+            string emp = harvesterServices.GetRecord("Organizacion_" + entidadFinanciadoraID, _Config);
             XmlSerializer xmlSerializer = new(typeof(Empresa));
             using (StringReader sr = new(emp))
             {
@@ -1767,7 +1769,7 @@ namespace Harvester
         private static Persona ObtenerPersona(string personaRef)
         {
             Persona persona = new Persona();
-            string person = harvesterServices.GetRecord("Persona_" + personaRef);
+            string person = harvesterServices.GetRecord("Persona_" + personaRef, _Config);
             XmlSerializer xmlSerializer = new(typeof(Persona));
             using (StringReader sr = new(person))
             {
