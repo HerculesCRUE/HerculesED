@@ -34,7 +34,7 @@ namespace EditorCV.Models.API.Response
         /// <summary>
         /// Información de la sección
         /// </summary>
-        public string information;
+        public string information { get; set; }
         /// <summary>
         /// Últimos 5 años
         /// </summary>
