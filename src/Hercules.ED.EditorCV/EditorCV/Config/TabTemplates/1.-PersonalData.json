@@ -12,6 +12,11 @@
         "title": {
           "es": "Datos personales"
         },
+        "information": {
+          "es": "En este apartado se consignarán los datos personales del titular del CV, con el fin de facilitar su identificación unívoca dentro del currículum vítae normalizado."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "rows": [
           {
             "properties": [

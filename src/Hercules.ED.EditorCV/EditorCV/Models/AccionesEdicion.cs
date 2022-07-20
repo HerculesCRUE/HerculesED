@@ -255,7 +255,6 @@ namespace EditorCV.Models
         /// <returns></returns>
         public AuxTab GetTab(ConfigService pConfig, string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
         {
-
             //Obtenemos el template
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfType);
             AuxTab respuesta = null;
@@ -942,6 +941,8 @@ namespace EditorCV.Models
                         identifier = templateSection.property,
                         title = UtilityCV.GetTextLang(pLang, templateSection.presentation.title),
                         information = UtilityCV.GetTextLang(pLang, templateSection.presentation.information),
+                        cvaISCIII = templateSection.presentation.cvaISCIII,
+                        cvaAEI = templateSection.presentation.cvaAEI,
                         orders = new List<TabSectionPresentationOrder>()
                     };
                     switch (templateSection.presentation.type)
@@ -1308,7 +1309,6 @@ namespace EditorCV.Models
                     }
                 }
             }
-
             
 
             //Multiidiomas cargados

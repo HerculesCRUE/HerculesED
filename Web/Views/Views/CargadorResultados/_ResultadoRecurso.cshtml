@@ -1721,50 +1721,57 @@
     else if (Model.RdfTypeName == "Offer") // Grupo
     {
 
+        
+        string estado = "estado";
+        string color = "color";
+        string title = "title";
+        // Valores de las propiedades
+        string estadoRes = "";
+        string colorRes = "";
+        string titleRes = "";
 
-        <article class="resource offer" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
+
+        if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+        {
+            foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+            {
+                string idQuery = "EstadoOferta";
+                if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                {
+
+                    foreach (Dictionary<string, string> row in item.Rows)
+                    {
+                        if (row.ContainsKey(estado))
+                        {
+                            estadoRes = row[estado];
+                        }
+                        if (row.ContainsKey(color))
+                        {
+                            colorRes = row[color];
+                        }
+                        if (row.ContainsKey(title))
+                        {
+                            titleRes = row[title];
+                        }
+                    }
+                }
+            }
+        }
+    
+
+        <article class="resource offer" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#" data-estadores="@estadoRes">
             <div class="wrap">
+                <div class="user-miniatura">
+                    <div class="imagen-usuario-wrap">
+                        <span class="material-icons">engineering</span>
+                    </div>
+                </div>
                 <div class="middle-wrap">
                     <div class="title-wrap">
                         <h2 class="resource-title">
                             <a href="@Model.CompletCardLink">@Model.Title</a>
                         </h2>
-                        @{
-                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                            {
-                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                {
-                                    string idQuery = "EstadoOferta";
-                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                    {
-                                        string estado = "estado";
-                                        string color = "color";
-                                        string title = "title";
-                                        // Valores de las propiedades
-                                        string estadoRes = "";
-                                        string colorRes = "";
-                                        string titleRes = "";
-
-                                        foreach (Dictionary<string, string> row in item.Rows)
-                                        {
-                                            if (row.ContainsKey(estado))
-                                            {
-                                                estadoRes = row[estado];
-                                            }
-                                            if (row.ContainsKey(color))
-                                            {
-                                                colorRes = row[color];
-                                            }
-                                            if (row.ContainsKey(title))
-                                            {
-                                                titleRes = row[title];
-                                            }
-                                        }
-                                        <span class="indicador @colorRes" data-id="@estadoRes">@titleRes</span>
-                                    }
-                                }
-                            }
-                        }
+                        <span class="indicador @colorRes" data-id="@estadoRes">@titleRes</span>
                         <div class="acciones-recurso-listado">
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

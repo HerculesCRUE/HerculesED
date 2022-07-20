@@ -32,9 +32,17 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string identifier { get; set; }
         /// <summary>
+        /// Es parte del CV abreviado del ISCIII
+        /// </summary>
+        public bool cvaISCIII { get; set; }
+        /// <summary>
+        /// Es parte del CV abreviado del AEI
+        /// </summary>
+        public bool cvaAEI { get; set; }
+        /// <summary>
         /// Información de la sección
         /// </summary>
-        public string information;
+        public string information { get; set; }
         /// <summary>
         /// Últimos 5 años
         /// </summary>

@@ -29,6 +29,14 @@ namespace Utilidades
             }
         }
 
+        public static bool DicPaisesContienePais(string pais)
+        {
+            return dicPaises.ContainsKey(pais);
+        }
+        public static bool DicRegionesContieneRegion(string region)
+        {
+            return dicRegiones.ContainsKey(region);
+        }
 
     }
 

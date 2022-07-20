@@ -43,11 +43,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
         public const int MAX_INTENTOS = 10;
         public const int NUM_HILOS = 6;
+
+        private static string RUTA_PAISES = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/paises.json";
         #endregion
 
         private static Dictionary<string, string> ISSN_Revista = new Dictionary<string, string>();
         private static Dictionary<string, string> Titulo_Revista = new Dictionary<string, string>();
         private static Dictionary<string, string> EISSN_Revista = new Dictionary<string, string>();
+        private static Dictionary<string, string> dicPaises = new Dictionary<string, string>();
 
         public static void CargaMain()
         {
@@ -58,6 +61,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             DirectoryInfo directorio = new DirectoryInfo(pRutaLectura);
             Disambiguation.mResourceApi = mResourceApi;
+            IniciadorDiccionarioPaises();
 
             // Obtención de las categorías.
             // TODO: Falta la asignación por ID y no por nombre. A la espera que elhuyar nos envíe los IDs, en lugar de los nombres.
@@ -865,6 +869,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
         }
 
+        public static void IniciadorDiccionarioPaises()
+        {
+            List<Pais> listaPaises = JsonConvert.DeserializeObject<List<Pais>>(File.ReadAllText(RUTA_PAISES));
+            foreach (Pais pais in listaPaises)
+            {
+                dicPaises.Add(pais.name.ToLower(), pais.country_code);
+            }
+        }
+
         /// <summary>
         /// Obtiene los RO pertenecientes al autor con ORCID <paramref name="orcidAutor"/>
         /// </summary>
@@ -1366,6 +1379,65 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         descpLimpiaB = descpLimpiaB.Remove(descpLimpiaB.Length - 1, 1);
                     }
                     document.Bibo_abstract = descpLimpiaB.Trim();
+                }
+            }
+
+            // Titulo de la Conferencia
+            if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.titulo))
+            {
+                document.Bibo_presentedAt = pPublicacion.conferencia.titulo;
+
+                if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.titulo) && string.IsNullOrEmpty(document.Bibo_presentedAt))
+                {
+                    document.Roh_title = pPublicacionB.conferencia.titulo;
+                }
+            }
+
+            // Fecha inicio de la Conferencia
+            if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.fechaInicio))
+            {
+                string fecha = pPublicacion.conferencia.fechaInicio;
+                document.Roh_presentedAtStart = new DateTime(Int32.Parse(fecha.Split('-')[0]), Int32.Parse(fecha.Split('-')[1]), Int32.Parse(fecha.Split('-')[2]));
+
+                if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.fechaInicio) && document.Roh_presentedAtStart == null)
+                {
+                    string fechaB = pPublicacionB.conferencia.fechaInicio;
+                    document.Roh_presentedAtStart = new DateTime(Int32.Parse(fechaB.Split('-')[0]), Int32.Parse(fechaB.Split('-')[1]), Int32.Parse(fechaB.Split('-')[2]));
+                }
+            }
+
+            // Fecha fin de la Conferencia
+            if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.fechaFin))
+            {
+                string fecha = pPublicacion.conferencia.fechaFin;
+                document.Roh_presentedAtEnd = new DateTime(Int32.Parse(fecha.Split('-')[0]), Int32.Parse(fecha.Split('-')[1]), Int32.Parse(fecha.Split('-')[2]));
+
+                if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.fechaFin) && document.Roh_presentedAtEnd == null)
+                {
+                    string fechaB = pPublicacionB.conferencia.fechaFin;
+                    document.Roh_presentedAtEnd = new DateTime(Int32.Parse(fechaB.Split('-')[0]), Int32.Parse(fechaB.Split('-')[1]), Int32.Parse(fechaB.Split('-')[2]));
+                }
+            }
+
+            // Ciudad de celebración de la Conferencia
+            if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.ciudad))
+            {
+                document.Roh_presentedAtLocality = pPublicacion.conferencia.ciudad;
+
+                if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.ciudad) && string.IsNullOrEmpty(document.Roh_presentedAtLocality))
+                {
+                    document.Roh_presentedAtLocality = pPublicacionB.conferencia.ciudad;
+                }
+            }
+
+            // País de celebración de la Conferencia
+            if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.pais))
+            {
+                document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacion.conferencia.pais.ToLower()]}";
+
+                if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.pais) && string.IsNullOrEmpty(document.IdRoh_presentedAtHasCountryName))
+                {
+                    document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacionB.conferencia.pais.ToLower()]}";
                 }
             }
 

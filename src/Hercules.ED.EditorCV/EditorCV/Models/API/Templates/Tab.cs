@@ -166,6 +166,14 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public Dictionary<string, string> information;
         /// <summary>
+        /// Es parte del CV abreviado del ISCIII
+        /// </summary>
+        public bool cvaISCIII;
+        /// <summary>
+        /// Es parte del CV abreviado del AEI
+        /// </summary>
+        public bool cvaAEI;
+        /// <summary>
         /// Configuración de la presentación para los listados de items
         /// </summary>
         public TabSectionPresentationListItems listItemsPresentation;

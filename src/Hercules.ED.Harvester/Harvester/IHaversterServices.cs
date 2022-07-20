@@ -17,18 +17,18 @@ namespace Harvester
 {
     public interface IHaversterServices
     {
-        public List<IdentifierOAIPMH> ListIdentifiers(string from, string until = null, string set = null);
-        public List<ListRecordsOAIPMH> ListRecords(string from, string until = null, string set = null);
-        public string GetRecord(string id, string file = null);
+        public List<IdentifierOAIPMH> ListIdentifiers(string from, ReadConfig pConfig, string until = null, string set = null);
+        public List<ListRecordsOAIPMH> ListRecords(string from, ReadConfig pConfig, string until = null, string set = null);
+        public string GetRecord(string id, ReadConfig pConfig, string file = null);
 
     }
 
     public class IHarvesterServices : IHaversterServices
     {
-        public List<IdentifierOAIPMH> ListIdentifiers(string from, string until = null, string set = null)
+        public List<IdentifierOAIPMH> ListIdentifiers(string from, ReadConfig pConfig, string until = null, string set = null)
         {
             List<IdentifierOAIPMH> idList = new();
-            string uri = "https://localhost:44300/OAI_PMH?verb=ListIdentifiers&metadataPrefix=EDMA";
+            string uri = $@"{pConfig.GetUrlOaiPmh()}?verb=ListIdentifiers&metadataPrefix=EDMA";
             if (from != null)
             {
                 uri += $"&from={from}";
@@ -43,7 +43,7 @@ namespace Harvester
             }
 
             WebRequest wrGETURL = WebRequest.Create(uri);
-            wrGETURL.Timeout = 900000;
+            wrGETURL.Timeout = 1800000;
             Stream stream = wrGETURL.GetResponse().GetResponseStream();
 
             XDocument XMLresponse = XDocument.Load(stream);
@@ -72,10 +72,10 @@ namespace Harvester
             }
             return idList;
         }
-        public List<ListRecordsOAIPMH> ListRecords(string from, string until = null, string set = null)
+        public List<ListRecordsOAIPMH> ListRecords(string from, ReadConfig pConfig, string until = null, string set = null)
         {
             List<ListRecordsOAIPMH> idList = new();
-            string uri = "https://localhost:44300/OAI_PMH?verb=ListRecords&metadataPrefix=EDMA";
+            string uri = $@"{pConfig.GetUrlOaiPmh()}?verb=ListRecords&metadataPrefix=EDMA";
             if (from != null)
             {
                 uri += $"&from={from}";
@@ -128,11 +128,11 @@ namespace Harvester
             }
             return idList;
         }
-        public string GetRecord(string id, String file = null)
+        public string GetRecord(string id, ReadConfig pConfig, string file = null)
         {
             try
             {
-                string uri = "https://localhost:44300/OAI_PMH?verb=GetRecord&identifier=" + id + "&metadataPrefix=EDMA";
+                string uri = $@"{pConfig.GetUrlOaiPmh()}?verb=GetRecord&identifier=" + id + "&metadataPrefix=EDMA";
                 WebRequest wrGETURL = WebRequest.Create(uri);
                 Stream stream = wrGETURL.GetResponse().GetResponseStream();
                 XDocument XMLresponse = XDocument.Load(stream);

@@ -16,6 +16,8 @@
         "information": {
           "es": "En este apartado se consignarán los datos relativos a la calidad del investigador utilizando como sistema de medición el índice H, uno de los indicadores más relevantes del impacto de la producción científica, que combina el número de publicaciones con su impacto medido por el número de citas. El índice H puede obtenerse en las siguientes fuentes de información: ISI Web of Science (WOS), disponible en https://www.accesowok.fecyt.es/wp-content/uploads/2014/03/RMws-wok-25_02_2014_SpaRM.pdf; Scopus, en http://www.scopus.fecyt.es/; y SCImago Journal & Country Rank, en http://www.scimagojr.com/. Para ampliar la información sobre la Web of Science (WOS) puede consultarse la siguiente guía: https://www.accesowok.fecyt.es/wp-content/uploads/2014/03/RMws-wok-25_02_2014_SpaRM.pdf."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -143,6 +145,9 @@
                         "title": {
                           "es": "Índice H"
                         },
+                        "information": {
+                          "es": "Valor númerico aplicable al índice H."
+                        },
                         "placeholder": {
                           "es": "Introduce el índice H"
                         },
@@ -184,6 +189,9 @@
                         "title": {
                           "es": "Fecha de aplicación"
                         },
+                        "information": {
+                          "es": "Fecha aplicable al valor del índice H."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de aplicación"
                         },
@@ -211,6 +219,8 @@
         "information": {
           "es": "En este apartado se consignarán los indicadores de calidad de la producción científica que el titular del CV considere más relevante destacar. La amplitud de este aparado no debe superar los 3.500 caracteres, incluyendo espacios en blanco."
         },
+        "cvaISCIII": true,
+        "cvaAEI": false,
         "itemPresentation": {
           "last5Years": {
             "always": true
@@ -255,8 +265,10 @@
           "es": "Publicaciones, documentos científicos y técnicos"
         },
         "information": {
-          "es": " En este apartado se consignarán los trabajos de carácter científico y tecnológico publicados en cualquier soporte, condición de autoría/coautoría y material, incluyéndose notas críticas o recensiones, catálogos de obras artísticas, documentos o informes científicos y técnicos, obras de carácter divulgativo y revisiones, con una única excepción, relativa a las publicaciones específicamente orientadas al ámbito docente, que serán consignadas en el apartado 'Publicaciones docentes o de carácter pedagógico libros artículos etc.', disponible dentro del módulo 4 'Actividad docente'."
+          "es": "En este apartado se consignarán los trabajos de carácter científico y tecnológico publicados en cualquier soporte, condición de autoría/coautoría y material, incluyéndose notas críticas o recensiones, catálogos de obras artísticas, documentos o informes científicos y técnicos, obras de carácter divulgativo y revisiones, con una única excepción, relativa a las publicaciones específicamente orientadas al ámbito docente, que serán consignadas en el apartado 'Publicaciones docentes o de carácter pedagógico libros artículos etc.', disponible dentro del módulo 4 'Actividad docente'."
         },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -466,6 +478,9 @@
                         "title": {
                           "es": "Título de la publicación"
                         },
+                        "information": {
+                          "es": "Título del artículo, capítulo o elemento publicado."
+                        },
                         "placeholder": {
                           "es": "Introduce el título de la publicación"
                         },
@@ -481,6 +496,9 @@
                       {
                         "title": {
                           "es": "Tipo de producción"
+                        },
+                        "information": {
+                          "es": "Tipo de material publicado."
                         },
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
@@ -498,6 +516,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Tipo de material publicado. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/typeOthers",
                         "required": true,
                         "dependency": {
@@ -510,6 +531,9 @@
                       {
                         "title": {
                           "es": "Fecha de publicación"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se ha publicado el documento."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de publicación"
@@ -688,6 +712,9 @@
                         "title": {
                           "es": "Tipo de soporte"
                         },
+                        "information": {
+                          "es": "Tipo de soporte en el que se ha plasmado el trabajo dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "property": "http://w3id.org/roh/supportType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/DocumentFormat",
@@ -724,6 +751,9 @@
                         "title": {
                           "es": "Nombre de la publicación"
                         },
+                        "information": {
+                          "es": "Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo."
+                        },
                         "property": "http://w3id.org/roh/hasPublicationVenueText",
                         "dependency": {
                           "property": "http://w3id.org/roh/supportType",
@@ -735,6 +765,9 @@
                       {
                         "title": {
                           "es": "Editorial"
+                        },
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
                         },
                         "property": "http://purl.org/ontology/bibo/publisher",
                         "dependency": {
@@ -835,6 +868,9 @@
                       {
                         "title": {
                           "es": "Grado de contribución"
+                        },
+                        "information": {
+                          "es": "Tipo de participación en la elaboración del documento publicado."
                         },
                         "property": "http://w3id.org/roh/contributionGrade",
                         "combo": {
@@ -989,6 +1025,9 @@
                         "title": {
                           "es": "Colección"
                         },
+                        "information": {
+                          "es": "Si un documento forma parte de una colección, consigne el título de ésta entre paréntesis. Si la colección va numerada, se añade el número del documento dentro de la colección precedido de punto y coma y espacio."
+                        },
                         "placeholder": {
                           "es": "Introduce la colección"
                         },
@@ -999,6 +1038,9 @@
                       {
                         "title": {
                           "es": "URL"
+                        },
+                        "information": {
+                          "es": "Dirección de Internet que enlaza al texto completo del documento publicado."
                         },
                         "placeholder": {
                           "es": "Introduce la URL"
@@ -1317,6 +1359,9 @@
                         "title": {
                           "es": "Publicación relevante"
                         },
+                        "information": {
+                          "es": " Señale si considera que esta publicación ocupa una posición relevante dentro de su producción científica."
+                        },
                         "property": "http://w3id.org/roh/relevantPublication",
                         "type": "boolean",
                         "entity_cv": true,
@@ -1329,6 +1374,9 @@
                       {
                         "title": {
                           "es": "Reseñas en revistas"
+                        },
+                        "information": {
+                          "es": "Reseñas recibidas en revistas científicas especializadas (por ejemplo, en repertorios y boletines bibliográficos más vinculados a su especialidad)."
                         },
                         "placeholder": {
                           "es": "Introduce el número de reseñas en revistas"
@@ -1344,6 +1392,9 @@
                       {
                         "title": {
                           "es": "Traducciones"
+                        },
+                        "information": {
+                          "es": "Lenguas a las que ha sido traducido el documento publicado de acuerdo con las categorías recogidas en la Norma CVN."
                         },
                         "property": "https://www.w3.org/2006/vcard/ns#hasLanguage",
                         "combo": {
@@ -1365,6 +1416,9 @@
                       {
                         "title": {
                           "es": "Resultados relevantes"
+                        },
+                        "information": {
+                          "es": "Principales contribuciones del titular del CV a la publicación y resultados más destacados de la misma, con un máximo aproximado de 200 palabras."
                         },
                         "placeholder": {
                           "es": "Introduce los resultados relevantes"
@@ -1394,6 +1448,8 @@
         "information": {
           "es": "En este apartado se consignará la participación (como organizador, director, comunicante, ponente, ponente invitado, etc.) y las contribuciones realizadas en congresos científicos, técnicos y tecnológicos de carácter nacional y/o internacional. Tenga en cuenta que el apartado siguiente está destinado a especificar las aportaciones realizadas en jornadas, seminarios, talleres de trabajo, simposios, cursos y otros eventos afines."
         },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -1598,6 +1654,9 @@
                         "title": {
                           "es": "Título del trabajo (Título de la ponencia y/o comunicación presentada)"
                         },
+                        "information": {
+                          "es": "Título de la ponencia y/o comunicación presentada."
+                        },
                         "placeholder": {
                           "es": "Introduce el título del trabajo"
                         },
@@ -1614,6 +1673,9 @@
                         "title": {
                           "es": "Título de la publicación (Título del artículo, capítulo o elemento publicado)"
                         },
+                        "information": {
+                          "es": "Título del artículo, capítulo o elemento publicado."
+                        },
                         "placeholder": {
                           "es": "Introduce el título de la publicación"
                         },
@@ -1628,6 +1690,9 @@
                       {
                         "title": {
                           "es": "Nombre de la publicación (Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo)"
+                        },
+                        "information": {
+                          "es": "Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo."
                         },
                         "placeholder": {
                           "es": "Introduce el nombre de la publicación"
@@ -1644,6 +1709,9 @@
                         "title": {
                           "es": "Forma de contribución"
                         },
+                        "information": {
+                          "es": "Tipo de material publicado."
+                        },
                         "property": "http://purl.org/dc/elements/1.1/type",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/PublicationType",
@@ -1659,6 +1727,9 @@
                       {
                         "title": {
                           "es": "Fecha de publicación"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se ha publicado el trabajo."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de publicación"
@@ -1936,6 +2007,9 @@
                         "title": {
                           "es": "Nombre del congreso"
                         },
+                        "information": {
+                          "es": "Nombre del congreso en el que ha participado."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre del congreso"
                         },
@@ -1945,6 +2019,9 @@
                       {
                         "title": {
                           "es": "Tipo evento"
+                        },
+                        "information": {
+                          "es": "Tipo de evento en el que se ha presentado la ponencia y/o comunicación."
                         },
                         "property": "http://w3id.org/roh/presentedAtType",
                         "combo": {
@@ -1961,6 +2038,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de evento en el que se ha presentado la ponencia y/o comunicación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/presentedAtTypeOther",
                         "required": true,
@@ -1979,6 +2059,9 @@
                         "title": {
                           "es": "Fecha de celebración"
                         },
+                        "information": {
+                          "es": "Fecha en la que ha comenzado el congreso."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de celebración"
                         },
@@ -1989,6 +2072,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado el congreso."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de finalización"
@@ -2064,6 +2150,9 @@
                         "title": {
                           "es": "Entidad organizadora"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado el congreso."
+                        },
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad organizadora"
@@ -2084,6 +2173,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el congreso."
+                        },
                         "property": "http://w3id.org/roh/presentedAtOrganizerType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -2103,6 +2195,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el congreso. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/presentedAtOrganizerTypeOther",
                         "required": true,
@@ -2180,6 +2275,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica del congreso."
+                        },
                         "property": "http://w3id.org/roh/presentedAtGeographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -2195,6 +2293,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica del congreso. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/presentedAtGeographicFocusOther",
                         "required": true,
@@ -2213,6 +2314,9 @@
                         "title": {
                           "es": "Con comité de admisión ext."
                         },
+                        "information": {
+                          "es": "Señale si el congreso cuenta o no con procedimientos selectivos externos de admisión de ponencias y trabajos."
+                        },
                         "type": "boolean",
                         "property": "http://w3id.org/roh/presentedAtWithExternalAdmissionsCommittee",
                         "width": 1
@@ -2224,6 +2328,9 @@
                       {
                         "title": {
                           "es": "Intervención por"
+                        },
+                        "information": {
+                          "es": "Forma de inscripción en el congreso."
                         },
                         "property": "http://w3id.org/roh/inscriptionType",
                         "combo": {
@@ -2242,6 +2349,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Forma de inscripción en el congreso. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/inscriptionTypeOther",
                         "required": true,
                         "dependency": {
@@ -2259,6 +2369,9 @@
                       {
                         "title": {
                           "es": "Tipo de participación"
+                        },
+                        "information": {
+                          "es": "Categorice su modalidad de participación en el congreso."
                         },
                         "property": "http://w3id.org/roh/participationType",
                         "combo": {
@@ -2432,6 +2545,9 @@
                         "title": {
                           "es": "Publicación en acta de congreso"
                         },
+                        "information": {
+                          "es": "Señale si el trabajo presentado ha sido publicado o no en las actas del congreso (proceedings)."
+                        },
                         "property": "http://w3id.org/roh/congressProceedingsPublication",
                         "type": "boolean",
                         "width": 1
@@ -2443,6 +2559,9 @@
                       {
                         "title": {
                           "es": "URL"
+                        },
+                        "information": {
+                          "es": "Dirección de Internet que enlaza al texto completo del trabajo publicado."
                         },
                         "placeholder": {
                           "es": "Introduce la URL"
@@ -2519,6 +2638,8 @@
         "information": {
           "es": "En este apartado se consignará la participación (como organizador, director, comunicante, ponente, ponente invitado, etc.) y las contribuciones realizadas en reuniones de carácter científico, técnico y tecnológico como jornadas, seminarios, talleres de trabajo, simposios, cursos y otros eventos afines, de carácter nacional y/o internacional. Tenga en cuenta que el apartado anterior está dedicado a especificar las contribuciones realizadas en congresos científicos, técnicos y tecnológicos."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -2723,6 +2844,9 @@
                         "title": {
                           "es": "Título del trabajo (Título de la ponencia y/o comunicación presentada)"
                         },
+                        "information": {
+                          "es": "Título de la ponencia y/o comunicación presentada."
+                        },
                         "placeholder": {
                           "es": "Introduce el título del trabajo"
                         },
@@ -2739,6 +2863,9 @@
                         "title": {
                           "es": "Título de la publicación (Título del artículo, capítulo o elemento publicado)"
                         },
+                        "information": {
+                          "es": "Título del artículo, capítulo o elemento publicado."
+                        },
                         "placeholder": {
                           "es": "Introduce el título de la publicación"
                         },
@@ -2753,6 +2880,9 @@
                       {
                         "title": {
                           "es": "Nombre de la publicación (Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo)"
+                        },
+                        "information": {
+                          "es": "Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo."
                         },
                         "placeholder": {
                           "es": "Introduce el nombre de la publicación"
@@ -2784,6 +2914,9 @@
                       {
                         "title": {
                           "es": "Fecha de publicación"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se ha publicado el trabajo."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de publicación"
@@ -3014,6 +3147,9 @@
                         "title": {
                           "es": "Editorial"
                         },
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
+                        },
                         "placeholder": {
                           "es": "Introduce la editorial"
                         },
@@ -3071,6 +3207,9 @@
                         "title": {
                           "es": "Tipo evento"
                         },
+                        "information": {
+                          "es": "Tipo de evento en el que ha presentado su trabajo."
+                        },
                         "property": "http://w3id.org/roh/presentedAtSeminarType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/SeminarEventType",
@@ -3086,6 +3225,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de evento en el que ha presentado su trabajo. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/presentedAtSeminarTypeOther",
                         "required": true,
@@ -3104,6 +3246,9 @@
                         "title": {
                           "es": "Fecha de celebración"
                         },
+                        "information": {
+                          "es": "Fecha en la que comenzó el evento."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de celebración"
                         },
@@ -3114,6 +3259,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado el evento."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de finalización"
@@ -3189,6 +3337,9 @@
                         "title": {
                           "es": "Entidad organizadora"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado el evento."
+                        },
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad organizadora"
@@ -3209,6 +3360,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el evento."
+                        },
                         "property": "http://w3id.org/roh/presentedAtOrganizerType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -3228,6 +3382,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior"
                         },
                         "property": "http://w3id.org/roh/presentedAtOrganizerTypeOther",
                         "required": true,
@@ -3305,6 +3462,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica del evento."
+                        },
                         "property": "http://w3id.org/roh/presentedAtGeographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -3320,6 +3480,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica del evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/presentedAtGeographicFocusOther",
                         "required": true,
@@ -3338,6 +3501,9 @@
                         "title": {
                           "es": "Con comité de admisión ext."
                         },
+                        "information": {
+                          "es": "Señale si el evento cuenta con procedimientos selectivos externos de admisión de ponencias y trabajos."
+                        },
                         "type": "boolean",
                         "property": "http://w3id.org/roh/presentedAtWithExternalAdmissionsCommittee",
                         "width": 1
@@ -3349,6 +3515,9 @@
                       {
                         "title": {
                           "es": "Intervención por"
+                        },
+                        "information": {
+                          "es": "Forma de inscripción en el evento."
                         },
                         "property": "http://w3id.org/roh/inscriptionType",
                         "combo": {
@@ -3522,6 +3691,9 @@
                         "title": {
                           "es": "Publicación en acta de congreso"
                         },
+                        "information": {
+                          "es": "Señale si el trabajo presentado ha sido publicado o no en las actas del congreso (proceedings)."
+                        },
                         "property": "http://w3id.org/roh/congressProceedingsPublication",
                         "type": "boolean",
                         "width": 1
@@ -3533,6 +3705,9 @@
                       {
                         "title": {
                           "es": "URL"
+                        },
+                        "information": {
+                          "es": "Dirección de Internet que enlaza al texto completo del trabajo publicado."
                         },
                         "placeholder": {
                           "es": "Introduce la URL"
@@ -3609,6 +3784,8 @@
         "information": {
           "es": "En este apartado se consignarán otras formas de divulgación científica y/o técnica derivadas de la participación en otros eventos no expresados anteriormente, como conferencias impartidas, entrevistas en medios de comunicación, participación en ferias y/o exhibiciones, etc."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -3863,6 +4040,9 @@
                         "title": {
                           "es": "Fecha de celebración"
                         },
+                        "information": {
+                          "es": "Fecha en la que se ha celebrado el evento."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de celebración"
                         },
@@ -3890,6 +4070,9 @@
                         "title": {
                           "es": "Tipo de evento"
                         },
+                        "information": {
+                          "es": "Tipo de evento en el que ha participado."
+                        },
                         "property": "http://w3id.org/roh/eventType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/EventType",
@@ -3905,6 +4088,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de evento en el que ha participado. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/eventTypeOther",
                         "required": true,
@@ -3983,6 +4169,9 @@
                         "title": {
                           "es": "Entidad organizadora"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha organizado el evento."
+                        },
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad organizadora"
@@ -4003,6 +4192,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el evento."
+                        },
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -4022,6 +4214,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad que ha organizado el evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/promotedByTypeOther",
                         "required": true,
@@ -4199,6 +4394,9 @@
                         "title": {
                           "es": "Título de la publicación"
                         },
+                        "information": {
+                          "es": "Título del artículo, capítulo o elemento publicado."
+                        },
                         "property": "http://w3id.org/roh/publicationTitle",
                         "width": 2
                       }
@@ -4217,6 +4415,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica del evento."
+                        },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -4233,6 +4434,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica del evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
                         "dependency": {
@@ -4246,6 +4450,9 @@
                         "title": {
                           "es": "Con comité de admisión ext."
                         },
+                        "information": {
+                          "es": "Señale si el evento cuenta con procedimientos selectivos externos de admisión de ponencias y trabajos."
+                        },
                         "property": "http://w3id.org/roh/withExternalAdmissionsCommittee",
                         "type": "boolean",
                         "width": 1
@@ -4257,6 +4464,9 @@
                       {
                         "title": {
                           "es": "Intervención por"
+                        },
+                        "information": {
+                          "es": "Forma de inscripción en el evento."
                         },
                         "property": "http://w3id.org/roh/eventInscriptionType",
                         "combo": {
@@ -4273,6 +4483,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Forma de inscripción en el evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/eventInscriptionTypeOther",
                         "required": true,
@@ -4291,6 +4504,9 @@
                         "title": {
                           "es": "Nombre de la publicación"
                         },
+                        "information": {
+                          "es": "Título de la publicación principal (libro, revista, etc.) en la que se ha publicado el trabajo."
+                        },
                         "property": "http://w3id.org/roh/publicationName",
                         "type": "text",
                         "width": 1
@@ -4298,6 +4514,9 @@
                       {
                         "title": {
                           "es": "Tipo"
+                        },
+                        "information": {
+                          "es": "Tipo de material publicado."
                         },
                         "property": "http://w3id.org/roh/publicationType",
                         "combo": {
@@ -4378,6 +4597,9 @@
                       {
                         "title": {
                           "es": "Editorial"
+                        },
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
                         },
                         "placeholder": {
                           "es": "Introduce la Editorial"
@@ -4523,6 +4745,9 @@
                         "title": {
                           "es": "Depósito legal"
                         },
+                        "information": {
+                          "es": "Número de DL (Depósito Legal) del trabajo publicado. "
+                        },
                         "placeholder": {
                           "es": "Introduce el depósito legal"
                         },
@@ -4533,6 +4758,9 @@
                       {
                         "title": {
                           "es": "Publicación en acta de congreso"
+                        },
+                        "information": {
+                          "es": "Señale si el trabajo presentado ha sido publicado o no en las actas del congreso (proceedings)."
                         },
                         "property": "http://w3id.org/roh/congressProceedingsPublication",
                         "type": "boolean",
@@ -4545,6 +4773,9 @@
                       {
                         "title": {
                           "es": "URL"
+                        },
+                        "information": {
+                          "es": "Dirección de Internet que enlaza al texto completo del trabajo publicado."
                         },
                         "placeholder": {
                           "es": "Introduce la URL"
@@ -4622,6 +4853,8 @@
         "information": {
           "es": "En este apartado se consignarán los datos relativos a la participación en comités científicos, técnicos, asesores y/u otros organismos de asesoramiento y consulta en materias científicas relevantes y representaciones nacionales e internacionales."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -4861,6 +5094,9 @@
                         "title": {
                           "es": "Título del comité"
                         },
+                        "information": {
+                          "es": "Nombre del comité científico, técnico y/o asesor del que ha formado parte."
+                        },
                         "placeholder": {
                           "es": "Introduce el título del comité"
                         },
@@ -4877,6 +5113,9 @@
                         "title": {
                           "es": "Primaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "Codifique mediante código UNESCO el grupo de especialidad en que se encuentra la principal actividad laboral/profesional desempeñada por el titular del CV."
+                        },
                         "property": "http://w3id.org/roh/unescoPrimary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -4892,6 +5131,9 @@
                         "title": {
                           "es": "Secundaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "En el supuesto de que la actividad laboral/profesional desempeñada por el titular del CV se extienda a más de un grupo de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la segunda actividad realizada. Ésta puede encontrarse o no dentro del mismo grupo de especialidad consignado para la actividad principal."
+                        },
                         "property": "http://w3id.org/roh/unescoSecondary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -4906,6 +5148,9 @@
                         "title": {
                           "es": "Terciaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "En el supuesto de que la actividad laboral/profesional desempeñada por el titular del CV se extienda a más de dos grupos de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la tercera actividad realizada. Ésta puede encontrarse o no dentro de alguno de los grupos de especialidad consignados para la actividad principal y secundaria."
+                        },
                         "property": "http://w3id.org/roh/unescoTertiary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -4919,6 +5164,9 @@
                       {
                         "title": {
                           "es": "Entidad de afiliación"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad de la que depende el comité científico, técnico y/o asesor del que ha formado parte."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -4940,6 +5188,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad de la que depende el comité científico, técnico y/o asesor."
+                        },
                         "property": "http://w3id.org/roh/affiliatedOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -4959,6 +5210,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad de la que depende el comité científico, técnico y/o asesor. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/affiliatedOrganizationTypeOther",
                         "required": true,
@@ -5037,6 +5291,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que comenzó su participación en el comité científico, técnico y/o asesor."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de inicio"
                         },
@@ -5047,6 +5304,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado su participación en el comité científico, técnico y/o o asesor."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de finalización"
@@ -5129,6 +5389,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica de la entidad de la que depende el comité científico, técnico y/o asesor."
+                        },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -5144,6 +5407,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica de la entidad de la que depende el comité científico, técnico y/o asesor. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
@@ -5174,6 +5440,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia en la organización y planificación de actividades y/o eventos científicos, técnicos y/o tecnológicos públicos y privados, nacionales e internacionales, como congresos, seminarios, jornadas, exposiciones, ferias, etc. La organización de un evento se relaciona con el establecimiento de objetivos, la planificación y programación de actividades (tiempo y fases) y con la organización y gestión de los recursos necesarios para alcanzar los objetivos fijados."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -5498,6 +5766,9 @@
                         "title": {
                           "es": "Título de la actividad"
                         },
+                        "information": {
+                          "es": "Nombre de la actividad y/o evento científico, técnico y/o tecnológico en cuya organización ha participado."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre de la actividad"
                         },
@@ -5509,6 +5780,9 @@
                       {
                         "title": {
                           "es": "Tipo de actividad"
+                        },
+                        "information": {
+                          "es": "Tipo de actividad y/o evento científico, técnico y/o tecnológico en cuya organización ha participado."
                         },
                         "placeholder": {
                           "es": "Introduce el tipo de actividad"
@@ -5524,6 +5798,9 @@
                       {
                         "title": {
                           "es": "Entidad convocante"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha convocado la actividad y/o evento científico, técnico y/o tecnológico."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -5545,6 +5822,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha convocado la actividad y/o evento."
+                        },
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -5564,6 +5844,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad que ha convocado la actividad y/o evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/promotedByTypeOther",
                         "required": true,
@@ -5641,6 +5924,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica de la actividad y/o evento."
+                        },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -5656,6 +5942,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica de la actividad y/o evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
@@ -5674,6 +5963,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que comenzó su participación en la organización de la actividad y/o evento."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de inicio"
                         },
@@ -5684,6 +5976,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado su participación en la organización de la actividad y/o evento científico,"
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de finalización"
@@ -5699,6 +5994,9 @@
                       {
                         "title": {
                           "es": "Duración años"
+                        },
+                        "information": {
+                          "es": "Tiempo que permaneció organizando y planificando la actividad y/o evento científico, técnico y/o tecnológico público y privado, nacional e internacional, expresado en años, meses y días."
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -5794,6 +6092,9 @@
                         "title": {
                           "es": "Modo de participación"
                         },
+                        "information": {
+                          "es": "Categorice su modalidad de participación en la organización de la actividad y/o evento."
+                        },
                         "property": "http://w3id.org/roh/participationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ParticipationTypeActivity",
@@ -5810,6 +6111,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Modalidad de participación en la organización de la actividad y/o evento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/participationTypeOther",
                         "required": true,
                         "dependency": {
@@ -5822,6 +6126,9 @@
                       {
                         "title": {
                           "es": "Nº de asistentes"
+                        },
+                        "information": {
+                          "es": "Número aproximado de personas que han asistido a la actividad y/o evento científico, técnico y/o tecnológico celebrado."
                         },
                         "property": "http://w3id.org/roh/attendants",
                         "type": "number",
@@ -5847,6 +6154,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia en el desempeño de cargos de dirección y/o administración en el entorno educativo, científico, técnico y/o tecnológico, público y privado, nacional e internacional."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -6190,6 +6499,9 @@
                         "title": {
                           "es": "Nombre de la actividad"
                         },
+                        "information": {
+                          "es": "Nombre de la actividad, programa y/o evento científico, técnico y/o tecnológico en cuya gestión ha participado."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre de la actividad"
                         },
@@ -6201,6 +6513,9 @@
                       {
                         "title": {
                           "es": "Funciones desempeñadas"
+                        },
+                        "information": {
+                          "es": "Describa en formato de texto libre sus funciones de gestión en I+D+i. Se recomienda la utilización de palabras clave en la medida de lo posible."
                         },
                         "placeholder": {
                           "es": "Introduce las funciones desempeñadas"
@@ -6216,6 +6531,9 @@
                       {
                         "title": {
                           "es": "Entidad de realización"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad en la que ha desempeñado funciones de gestión en I+D+i."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -6237,6 +6555,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad en la que ha desempeñado funciones de gestión en I+D+i."
+                        },
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -6257,6 +6578,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad en la que ha desempeñado funciones de gestión en I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/promotedByTypeOther",
                         "required": true,
                         "dependency": {
@@ -6274,6 +6598,9 @@
                         "title": {
                           "es": "Tipología de la gestión"
                         },
+                        "information": {
+                          "es": "Tipo de actividad, programa y /o evento científico, técnico y/o tecnológico en el que ha desempeñado funciones de gestión en I+D+i."
+                        },
                         "property": "http://w3id.org/roh/managementType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ManagementTypeActivity",
@@ -6289,6 +6616,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de actividad, programa y/o evento científico, técnico y/o tecnológico en el que ha desempeñado funciones de gestión en I+D+i. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/managementTypeOther",
                         "required": true,
@@ -6307,6 +6637,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que comenzó a desempeñar funciones de gestión en I+D+i."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de inicio"
                         },
@@ -6321,6 +6654,9 @@
                       {
                         "title": {
                           "es": "Duración años"
+                        },
+                        "information": {
+                          "es": "Tiempo que permaneció desempeñando el cargo de dirección y/o administración en el entorno educativo, científico, técnico y/o tecnológico expresado en años, meses y días."
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -6416,6 +6752,9 @@
                         "title": {
                           "es": "Sistema de acceso"
                         },
+                        "information": {
+                          "es": "Procedimiento por el que accedió al puesto de gestión."
+                        },
                         "property": "http://w3id.org/roh/accessSystemActivity",
                         "combo": {
                           "cache": true,
@@ -6431,6 +6770,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Procedimiento por el que accedió al puesto de gestión. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/accessSystemActivityOther",
                         "required": true,
@@ -6449,6 +6791,9 @@
                         "title": {
                           "es": "Promedio presupuesto anual"
                         },
+                        "information": {
+                          "es": "Presupuesto (en euros) de la actividad, programa y/o evento científico, técnico y/o tecnológico en el que ha desempeñado funciones de gestión."
+                        },
                         "placeholder": {
                           "es": "Introduce el presupuesto (en euros) de la actividad"
                         },
@@ -6459,6 +6804,9 @@
                       {
                         "title": {
                           "es": "Nº de personas"
+                        },
+                        "information": {
+                          "es": "Número aproximado de personas que han asistido a la actividad, programa y/o evento científico, técnico y/o tecnológico."
                         },
                         "placeholder": {
                           "es": "Introduce el número aproximado de personas que han asistido"
@@ -6474,6 +6822,9 @@
                       {
                         "title": {
                           "es": "Perfil grupo receptor"
+                        },
+                        "information": {
+                          "es": "Perfil profesional de los participantes en la actividad, programa y/o evento científico, técnico y/o tecnológico mediante el uso de palabras clave."
                         },
                         "property": "http://w3id.org/roh/targetGroupProfile",
                         "combo": {
@@ -6495,6 +6846,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica de la actividad, programa y/o evento científico, técnico y/o tecnológico."
+                        },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -6510,6 +6864,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica de la actividad, programa y/o evento científico, técnico y/o tecnológico. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
@@ -6528,6 +6885,9 @@
                         "title": {
                           "es": "Tareas concretas"
                         },
+                        "information": {
+                          "es": "Tareas realizadas durante el tiempo que desempeñó funciones de gestión en I+D+i, con un máximo aproximado de 100 palabras."
+                        },
                         "placeholder": {
                           "es": "Introduce las tareas realizadas durante el tiempo que desempeñó funciones de gestión en I+D+i"
                         },
@@ -6538,6 +6898,9 @@
                       {
                         "title": {
                           "es": "Objetivos del evento"
+                        },
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en la actividad, programa y/o evento científico, técnico y/o tecnológico en el que ha desempeñado funciones de gestión."
                         },
                         "placeholder": {
                           "es": "Introduce las metas que la entidad se propone alcanzar como resultado de la participación"
@@ -6553,6 +6916,9 @@
                       {
                         "title": {
                           "es": "Identificar palabras clave"
+                        },
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto libre 'Tareas concretas'"
                         },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
@@ -6580,6 +6946,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia en el desempeño de funciones en delegaciones y representaciones españolas destacadas ante organizaciones y/o foros internacionales. Entre éstas, cabe destacar las oficinas consulares, misiones diplomáticas permanentes y especiales, representaciones permanentes ante una organización internacional, delegaciones e instituciones y organismos públicos de la Administración General del Estado cuya actuación se desarrolle en el exterior (Ley 6/1997, de 14 de abril, de Organización y Funcionamiento de la Administración General del Estado, LOFAGE)."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -6862,6 +7230,9 @@
                         "title": {
                           "es": "Nombre del foro"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la organización, foro, etc. en la que ha desempeñado funciones de representación."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre del foro"
                         },
@@ -6873,6 +7244,9 @@
                       {
                         "title": {
                           "es": "Categoría profesional"
+                        },
+                        "information": {
+                          "es": "Categoría profesional del puesto y/ocargo ocupado."
                         },
                         "placeholder": {
                           "es": "Introduce la categoría profesional"
@@ -6888,6 +7262,9 @@
                       {
                         "title": {
                           "es": "Entidad organizadora"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad, organismo o institución responsable de la organización y promoción de las acciones de representación."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -6909,6 +7286,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución responsable de la organización y promoción de las acciones de representación."
+                        },
                         "property": "http://w3id.org/roh/promotedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -6928,6 +7308,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución responsable de la organización y promoción de las acciones de representación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/promotedByTypeOther",
                         "required": true,
@@ -7005,6 +7388,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que comenzó a desempeñar funciones de representación."
+                        },
                         "placeholder": {
                           "es": "Introduce la fecha de inicio"
                         },
@@ -7015,6 +7401,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado el desempeño de funciones de representación."
                         },
                         "placeholder": {
                           "es": "Introduce la fecha de finalización"
@@ -7097,6 +7486,9 @@
                         "title": {
                           "es": "Entidad representada"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la entidad, organismo o institución a la que representa ante organizaciones y/o foros internacionales."
+                        },
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad representada"
@@ -7117,6 +7509,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución a la que representa ante organizaciones y/o foros internacionales."
+                        },
                         "property": "http://w3id.org/roh/representedEntityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -7136,6 +7531,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución a la que representa ante organizaciones y/o foros internacionales. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/representedEntityTypeOther",
                         "required": true,
@@ -7225,6 +7623,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia profesional realizando actividades de evaluación de I+D+i en alguna de las agencias del sistema nacional y/o autonómico de evaluación científica (ANEP, Agencia Nacional de Evaluación y Prospectiva; CNEAI. Comisión Nacional de Evaluación de la Actividad Investigadora; ANECA. Agencia Nacional de Evaluación de la Calidad y Acreditación, etc.), así como los trabajos de revisión de artículos realizados para publicaciones académicas y científicas con el fin de evaluar su calidad, originalidad, factibilidad, rigor científico, etc. antes de su publicación. Se consideran especialmente relevantes los que se hayan desarrollado para revistas indexadas en el Journal Citation Reports o repertorio equivalente en cada especialidad"
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -7494,6 +7894,9 @@
                         "title": {
                           "es": "Funciones desempeñadas"
                         },
+                        "information": {
+                          "es": "Describa en formato de texto libre las actividades de evaluación/revisión practicadas. Se recomienda la utilización de palabras clave en la medida de lo posible."
+                        },
                         "placeholder": {
                           "es": "Introduce las funciones desempeñadas"
                         },
@@ -7506,6 +7909,9 @@
                       {
                         "title": {
                           "es": "Nombre de la actividad"
+                        },
+                        "information": {
+                          "es": "Nombre de las actividades de evaluación/revisión practicadas."
                         },
                         "placeholder": {
                           "es": "Introduce el nombre de la actividad"
@@ -7522,6 +7928,9 @@
                       {
                         "title": {
                           "es": "Entidad de realización"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad, agencia de evaluación, revista científica/tecnológica, comité editorial, etc. para el que ha desempeñado funciones de evaluación/revisión."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -7543,6 +7952,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, agencia de evaluación, revista científica/tecnológica, comité editorial, etc. para el que ha desempeñado funciones de evaluación/revisión."
+                        },
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -7562,6 +7974,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad, agencia de evaluación, revista científica/tecnológica, comité editorial, etc. para el que ha desempeñado funciones de evaluación/revisión. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/conductedByTypeOther",
                         "required": true,
@@ -7639,6 +8054,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que comenzó a desempeñar funciones de evaluación/revisión."
+                        },
                         "property": "http://vivoweb.org/ontology/core#start",
                         "type": "date",
                         "width": 1
@@ -7646,6 +8064,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado el desempeño de funciones de evaluación/revisión."
                         },
                         "property": "http://vivoweb.org/ontology/core#end",
                         "type": "date",
@@ -7666,6 +8087,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica de la entidad, agencia de evaluación, revista científica y/o tecnológica, comité editorial, etc. para el que ha desempeñado funciones de evaluación/revisión."
+                        },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -7681,6 +8105,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica de la entidad, agencia de evaluación, revista científica y/o tecnológica, comité editorial, etc. para el que ha desempeñado funciones de evaluación/revisión. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
@@ -7700,6 +8127,9 @@
                         "title": {
                           "es": "Modalidad de actividad"
                         },
+                        "information": {
+                          "es": "Categorice el tipo de evaluación/revisión practicada."
+                        },
                         "property": "http://w3id.org/roh/activityModality",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/ActivityModality",
@@ -7715,6 +8145,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Tipo de evaluación/revisión practicada. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/activityModalityOther",
                         "required": true,
@@ -7734,6 +8167,9 @@
                         "title": {
                           "es": "Sistema de acceso"
                         },
+                        "information": {
+                          "es": "Categorice la modalidad de acceso al puesto de evaluación/revisión desempeñado."
+                        },
                         "property": "http://w3id.org/roh/accessSystemActivity",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/AccessSystemActivity",
@@ -7749,6 +8185,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Modalidad de acceso al puesto de evaluación/revisión desempeñado. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/accessSystemActivityOther",
                         "multilang": true,
@@ -7767,6 +8206,9 @@
                       {
                         "title": {
                           "es": "Frecuencia de la actividad"
+                        },
+                        "information": {
+                          "es": "Si las actividades de evaluación/revisión se realizan periódicamente en el seno de una misma agencia de evaluación, revista científica/tecnológica, comité editorial, etc., indique el número de veces que ha realizado dichas actividades. Si se trata de una práctica sistemática, no es preciso que consigne el dato todas las veces."
                         },
                         "property": "http://w3id.org/roh/frequency",
                         "type": "number",
@@ -7792,6 +8234,8 @@
         "information": {
           "es": " En este apartado se consignarán los datos relacionados con estancias de movilidad temporal del titular del CV en centros I+D+i de enseñanza superior y/o de investigación de titularidad pública o privada, nacionales e internacionales, con una única excepción, relativa a las estancias realizadas en el ámbito de la docencia, que deberán consignarse en el módulo 3 'Formación académica recibida', apartado 'Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la docencia'. Las estancias son periodos de tiempo de corta/media/larga duración que el investigador desarrolla de forma continuada en otro centro de investigación de prestigio diferente a la institución a la que esté adscrito y/o en la que estudia máster o doctorado, desarrollando actividades de investigación y/o docencia. Para mayor información, puede consultarse: http://www.idi.mineco.gob.es/stfls/MICINN/Ayudas/PE_2013_2016/PE_Promocion_e_Incorporacion_Talento_y_su_Empleabilidad/AYUDAS/SE_Movilidad/Consultas_frecuentes_EEBB2014_V01.pdf."
         },
+        "cvaISCIII": true,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -8127,6 +8571,9 @@
                         "title": {
                           "es": "Tareas contrastables"
                         },
+                        "information": {
+                          "es": "Tareas realizadas durante el tiempo de disfrute de la estancia."
+                        },
                         "placeholder": {
                           "es": "Introduce las tareas contrastables"
                         },
@@ -8142,6 +8589,9 @@
                       {
                         "title": {
                           "es": "Objetivos de la estancia"
+                        },
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en la estancia."
                         },
                         "property": "http://w3id.org/roh/goals",
                         "combo": {
@@ -8159,6 +8609,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Metas que la entidad se propone alcanzar como resultado de la participación en la estancia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/goalsOther",
                         "required": true,
                         "dependency": {
@@ -8175,6 +8628,9 @@
                       {
                         "title": {
                           "es": "Entidad de realización"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad en la que se ha desarrollado la estancia."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -8196,6 +8652,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad en la que se ha desarrollado la estancia."
+                        },
                         "property": "http://w3id.org/roh/entityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -8216,6 +8675,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad en la que se ha desarrollado la estancia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/entityTypeOther",
                         "required": true,
                         "dependency": {
@@ -8232,6 +8694,9 @@
                       {
                         "title": {
                           "es": "Facultad, instituto, centro"
+                        },
+                        "information": {
+                          "es": "Nombre oficial del centro al que, en su caso, estaba adscrita la estancia."
                         },
                         "placeholder": {
                           "es": "Introduce facultad, instituto, centro"
@@ -8311,6 +8776,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que ha comenzado la estancia."
+                        },
                         "property": "http://vivoweb.org/ontology/core#start",
                         "type": "date",
                         "width": 1
@@ -8318,6 +8786,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado la estancia."
                         },
                         "property": "http://vivoweb.org/ontology/core#end",
                         "type": "date",
@@ -8330,6 +8801,9 @@
                       {
                         "title": {
                           "es": "Duración años"
+                        },
+                        "information": {
+                          "es": "Tiempo que permaneció en la estancia, expresado en años, meses y días."
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -8366,6 +8840,9 @@
                         "title": {
                           "es": "Primaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "Codifique mediante código UNESCO el grupo de especialidad en que se encuentra la principal actividad laboral/profesional desempeñada por el titular del CV."
+                        },
                         "property": "http://w3id.org/roh/unescoPrimary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -8380,6 +8857,9 @@
                       {
                         "title": {
                           "es": "Secundaria (Cód. Unesco)"
+                        },
+                        "information": {
+                          "es": "En el supuesto de que la actividad laboral/profesional desempeñada por el titular del CV se extienda a más de un grupo de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la segunda actividad realizada. Ésta puede encontrarse o no dentro del mismo grupo de especialidad consignado para la actividad principal."
                         },
                         "property": "http://w3id.org/roh/unescoSecondary",
                         "thesaurus": "unesco",
@@ -8396,6 +8876,9 @@
                         "title": {
                           "es": "Terciaria (Cód. Unesco)"
                         },
+                        "information": {
+                          "es": "En el supuesto de que la actividad laboral/profesional desempeñada por el titular del CV se extienda a más de dos grupos de especialidad, se deberá codificar mediante código UNESCO el que corresponda a la tercera actividad realizada. Ésta puede encontrarse o no dentro de alguno de los grupos de especialidad consignados para la actividad principal y secundaria."
+                        },
                         "property": "http://w3id.org/roh/unescoTertiary",
                         "thesaurus": "unesco",
                         "type": "thesaurus",
@@ -8410,6 +8893,9 @@
                         "title": {
                           "es": "Nombre del programa"
                         },
+                        "information": {
+                          "es": "Programa por el que se ha financiado la estancia."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre del programa"
                         },
@@ -8420,6 +8906,9 @@
                       {
                         "title": {
                           "es": "Capac. adq. desarrolladas"
+                        },
+                        "information": {
+                          "es": "Describa en formato de texto libre la actividad desarrollada durante la estancia en un centro de I+D+i, mencionando las habilidades y destrezas adquiridas, con un máximo aproximado de 100 palabras."
                         },
                         "placeholder": {
                           "es": "Introduce las capac. adq. desarrolladas"
@@ -8436,6 +8925,9 @@
                         "title": {
                           "es": "Resultados relevantes"
                         },
+                        "information": {
+                          "es": "Describa en formato de texto libre las principales contribuciones realizadas por el titular del CV durante la estancia en un centro de I+D+i, con un máximo aproximado de 100 palabras."
+                        },
                         "placeholder": {
                           "es": "Introduce los resultados relevantes"
                         },
@@ -8450,6 +8942,9 @@
                       {
                         "title": {
                           "es": "Entidad financiadora"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha financiado la estancia."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -8471,6 +8966,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado la estancia."
+                        },
                         "property": "http://w3id.org/roh/fundedByType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -8491,6 +8989,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad que ha financiado la estancia. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/fundedByTypeOther",
                         "required": true,
@@ -8568,6 +9069,9 @@
                         "title": {
                           "es": "Identificar palabras clave"
                         },
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto libre 'Resultados relevantes'"
+                        },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
                         "type": "thesaurus",
@@ -8594,6 +9098,8 @@
         "information": {
           "es": "En este apartado se consignarán todas las ayudas económicas y/o becas de titularidad pública o privada, nacionales e internacionales, de las que haya sido beneficiario el titular del CV. Aunque en el apartado donde se ha acreditado el mérito causante de la ayuda y/o beca, se haya constatado la existencia de ésta, se recomienda su especificación en este apartado."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -8860,6 +9366,9 @@
                         "title": {
                           "es": "Nombre de la ayuda"
                         },
+                        "information": {
+                          "es": "Nombre de la ayuda económica y/o beca de la que ha sido beneficiario/a."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre de la ayuda"
                         },
@@ -8876,6 +9385,9 @@
                       {
                         "title": {
                           "es": "Entidad concesionaria"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha concedido la ayuda económica y/o beca."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -8897,6 +9409,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha concedido la ayuda económica y/o beca."
+                        },
                         "property": "http://w3id.org/roh/awardingEntityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -8917,6 +9432,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha concedido la ayuda económica y/o beca. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/awardingEntityTypeOther",
                         "required": true,
                         "dependency": {
@@ -8934,6 +9452,9 @@
                         "title": {
                           "es": "Finalidad"
                         },
+                        "information": {
+                          "es": "Categorice la finalidad de la ayuda económica y/o beca recibida."
+                        },
                         "property": "http://w3id.org/roh/aims",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/GrantAim",
@@ -8949,6 +9470,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Finalidad de la ayuda económica y/o beca recibida. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/aimsOther",
                         "required": true,
@@ -8968,6 +9492,9 @@
                         "title": {
                           "es": "Fecha de concesión"
                         },
+                        "information": {
+                          "es": "Fecha en la que se concedió la ayuda económica y/o beca."
+                        },
                         "property": "http://vivoweb.org/ontology/core#start",
                         "type": "date",
                         "width": 1
@@ -8975,6 +9502,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha finalizado el disfrute de la ayuda económica y/o beca recibida."
                         },
                         "property": "http://vivoweb.org/ontology/core#end",
                         "type": "date",
@@ -8987,6 +9517,9 @@
                       {
                         "title": {
                           "es": "Duración años"
+                        },
+                        "information": {
+                          "es": "Tiempo que permaneció como beneficiario de la ayuda económica y/o beca expresado en años, meses y días."
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -9016,6 +9549,9 @@
                         "title": {
                           "es": "Entidad de realización"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la entidad donde ha cursado los estudios que han sido objeto de una ayuda económica y/o beca."
+                        },
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad de realización"
@@ -9035,6 +9571,9 @@
                       {
                         "title": {
                           "es": "Facultad, instituto, centro"
+                        },
+                        "information": {
+                          "es": "Nombre oficial del centro al que, en su caso, estaban adscritos los estudios que han sido objeto de una ayuda económica y/o beca."
                         },
                         "placeholder": {
                           "es": "Introduce la facultad, instituto, centro"
@@ -9121,6 +9660,9 @@
                         "title": {
                           "es": "Importe de la ayuda (€)"
                         },
+                        "information": {
+                          "es": "Importe (en euros) de la ayuda económica y/o beca recibida."
+                        },
                         "placeholder": {
                           "es": "Introduce el importe de la ayuda (€)"
                         },
@@ -9135,6 +9677,9 @@
                       {
                         "title": {
                           "es": "Identificar palabras clave"
+                        },
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave la ayuda económica y/o beca recibida."
                         },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
@@ -9162,6 +9707,8 @@
         "information": {
           "es": "En este apartado se consignarán los datos relativos a otros modos de colaboración con equipos de investigación científicos, técnicos y/o tecnológicos de otros centros de I+D, tanto públicos como privados (incluida la colaboración mixta público-privada en cualquiera de sus modalidades), nacionales o internacionales, de reconocido prestigio a criterio del titular del CV."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -9394,6 +9941,9 @@
                         "title": {
                           "es": "Descripción de la colaboración"
                         },
+                        "information": {
+                          "es": "Describa en formato de texto libre la actividad desarrollada durante su colaboración con el equipo investigador de otro centro de I+D, con un máximo aproximado de 100 palabras."
+                        },
                         "placeholder": {
                           "es": "Introduce la descripción de la colaboración"
                         },
@@ -9411,6 +9961,9 @@
                         "title": {
                           "es": "Modo de relación"
                         },
+                        "information": {
+                          "es": "Categorice la modalidad de colaboración desarrollada."
+                        },
                         "property": "http://w3id.org/roh/relationshipType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/RelationshipType",
@@ -9426,6 +9979,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Modalidad de colaboración desarrollada. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "required": true,
                         "property": "http://w3id.org/roh/relationshipTypeOther",
@@ -9534,6 +10090,9 @@
                         "type": "auxEntity",
                         "title": {
                           "es": "Entidad/es participantes"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de las entidades que han participado en el proyecto."
                         },
                         "multiple": true,
                         "width": 3,
@@ -9717,6 +10276,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que comenzó su colaboración con el equipo investigador de otro centro de I+D."
+                        },
                         "property": "http://vivoweb.org/ontology/core#start",
                         "type": "date",
                         "width": 1
@@ -9728,6 +10290,9 @@
                       {
                         "title": {
                           "es": "Duración años"
+                        },
+                        "information": {
+                          "es": "Tiempo que permaneció colaborando con el equipo investigador de otro centro de I+D expresado en años, meses y días."
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -9823,6 +10388,9 @@
                         "title": {
                           "es": "Identificar palabras clave"
                         },
+                        "information": {
+                          "es": "Sintetice, mediante el uso de palabras clave, el texto libre 'Resultados relevantes'"
+                        },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
                         "type": "thesaurus",
@@ -9836,6 +10404,9 @@
                       {
                         "title": {
                           "es": "Resultados relevantes"
+                        },
+                        "information": {
+                          "es": "Describa en formato de texto libre las principales contribuciones realizadas durante su colaboración con el equipo investigador de otro centro de I+D, con un máximo aproximado de 100 palabras."
                         },
                         "placeholder": {
                           "es": "Introduce los resultados relevantes"
@@ -9865,6 +10436,8 @@
         "information": {
           "es": "En este apartado se consignará la relación de pertenencia como miembro de sociedades científicas, literarias o artísticas establecidas con autoridad pública (definición del DRAE al término 'academia': http://lema.rae.es/drae/?val=Academia), así como la pertenencia a sociedades y asociaciones nacionales e internacionales de carácter científico-técnico, tecnológico, académico y/o profesional (colegios profesionales, reales sociedades, patronatos de museos, fundaciones culturales, etc.). Quedan incluidas todas las modalidades de pertenencia: socios numerarios, socios honoríficos, corresponsales, agregados, protectores, etc."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -10103,6 +10676,9 @@
                         "title": {
                           "es": "Nombre de la sociedad"
                         },
+                        "information": {
+                          "es": "Nombre de la sociedad/asociación científica, técnica, tecnológica, académica, profesional, etc. a la que ha pertenecido."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre de la sociedad"
                         },
@@ -10118,6 +10694,9 @@
                       {
                         "title": {
                           "es": "Entidad de afiliación"
+                        },
+                        "information": {
+                          "es": "Nombre, en su caso, de la entidad, organismo o institución de la que depende la sociedad/asociación científica, técnica, tecnológica, académica, profesional, etc. a la que ha pertenecido."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -10139,6 +10718,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución de la que depende la sociedad/asociación científica, técnica, tecnológica, académica, profesional, etc. a la que ha pertenecido."
+                        },
                         "property": "http://w3id.org/roh/affiliatedOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -10158,6 +10740,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución de la que depende la sociedad/asociación científica, técnica, tecnológica, académica, profesional, etc. a la que ha pertenecido. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/affiliatedOrganizationTypeOther",
                         "required": true,
@@ -10235,6 +10820,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": " Fecha en la que se incorporó a la sociedad/asociación."
+                        },
                         "type": "date",
                         "required": false,
                         "property": "http://vivoweb.org/ontology/core#start",
@@ -10243,6 +10831,9 @@
                       {
                         "title": {
                           "es": "Fecha de finalización"
+                        },
+                        "information": {
+                          "es": "Fecha en la que ha dejado de pertenecer a la sociedad/asociación."
                         },
                         "property": "http://vivoweb.org/ontology/core#end",
                         "type": "date",
@@ -10322,6 +10913,9 @@
                         "title": {
                           "es": "Identificar palabras clave"
                         },
+                        "information": {
+                          "es": "Sintetice sus funciones en la sociedad/asociación mediante el uso de palabras clave."
+                        },
                         "property": "http://vivoweb.org/ontology/core#freeTextKeyword",
                         "thesaurus": "tesauro_cvn",
                         "type": "thesaurus",
@@ -10336,6 +10930,9 @@
                         "title": {
                           "es": "Categoría profesional"
                         },
+                        "information": {
+                          "es": "Categoría profesional, en su caso, del cargo que ocupó en la sociedad/asociación."
+                        },
                         "placeholder": {
                           "es": "Introduce la categoría profesional"
                         },
@@ -10347,6 +10944,9 @@
                       {
                         "title": {
                           "es": "Nº de socios/as"
+                        },
+                        "information": {
+                          "es": "Número aproximado de miembros integrantes de la sociedad/asociación científica, técnica, tecnológica, académica, profesional, etc. de la que ha formado parte."
                         },
                         "placeholder": {
                           "es": "Introduce el nº de socios/as"
@@ -10375,6 +10975,8 @@
         "information": {
           "es": "En este apartado se consignará la participación y/o pertenencia a consejos editoriales de revistas científicas, consejos asesores o de redacción y comités editoriales."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -10672,6 +11274,9 @@
                         "title": {
                           "es": "Nombre del Consejo editorial"
                         },
+                        "information": {
+                          "es": "Nombre del consejo editorial, consejo asesor o de redacción y/o comité editorial al que ha pertenecido."
+                        },
                         "placeholder": {
                           "es": "Introduce la descripción"
                         },
@@ -10687,6 +11292,9 @@
                       {
                         "title": {
                           "es": "Entidad de afiliación"
+                        },
+                        "information": {
+                          "es": "Nombre, en su caso, de la entidad, organismo o institución de la que depende el consejo editorial, consejo asesor o de redacción y/o comité editorial al que ha pertenecido."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -10708,6 +11316,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución de la que depende el consejo editorial, consejo asesor o de redacción y/o comité editorial al que ha pertenecido dentro de las opciones ofrecidas en el desplegable."
+                        },
                         "property": "http://w3id.org/roh/affiliatedOrganizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -10727,6 +11338,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución de la que depende el consejo editorial, consejo asesor o de redacción y/o comité editorial al que ha pertenecido. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/affiliatedOrganizationTypeOther",
                         "required": true,
@@ -10804,6 +11418,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que se incorporó al consejo editorial, consejo asesor o de redacción y/o comité editorial."
+                        },
                         "property": "http://vivoweb.org/ontology/core#start",
                         "type": "date",
                         "width": 1
@@ -10815,6 +11432,9 @@
                       {
                         "title": {
                           "es": "Duración años"
+                        },
+                        "information": {
+                          "es": "Tiempo que duró su participación y/o pertenencia al consejo editorial, consejo asesor o de redacción y/o comité editorial expresado en años, meses y días."
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -10910,6 +11530,9 @@
                         "title": {
                           "es": "Tareas desarrolladas"
                         },
+                        "information": {
+                          "es": "Tareas realizadas durante el tiempo que perteneció al consejo editorial, consejo asesor o de redacción y/o comité editorial."
+                        },
                         "property": "http://w3id.org/roh/performedTasks",
                         "multilang": true,
                         "type": "text",
@@ -10919,6 +11542,9 @@
                         "title": {
                           "es": "Categoría profesional"
                         },
+                        "information": {
+                          "es": "Categoría profesional, en su caso, del cargo que ocupó en el consejo editorial, consejo asesor o de redacción y/o comité editorial."
+                        },
                         "property": "http://w3id.org/roh/professionalCategory",
                         "multilang": true,
                         "type": "text",
@@ -10927,6 +11553,9 @@
                       {
                         "title": {
                           "es": "Nº de socios/as"
+                        },
+                        "information": {
+                          "es": "Número aproximado de miembros integrantes del consejo editorial, consejo asesor o de redacción y/o comité editorial al que ha pertenecido."
                         },
                         "property": "http://w3id.org/roh/members",
                         "type": "number",
@@ -10939,6 +11568,9 @@
                       {
                         "title": {
                           "es": "Ámbito geográfico"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica del consejo editorial, consejo asesor o de redacción y/o comité editorial al que ha pertenecido."
                         },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
@@ -10955,6 +11587,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica del consejo editorial, consejo asesor o de redacción y/o comité editorial al que ha pertenecido. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "required": true,
@@ -10986,6 +11621,8 @@
         "information": {
           "es": "En este apartado se consignarán las diferentes formas de participación y/o pertenencia a redes de cooperación nacional, regional e internacional, constituidas por entidades públicas o privadas: redes académicas, de investigación, temáticas, interdisciplinares, de innovación, institucionales, interinstitucionales, etc., que tengan relevancia en el ámbito científico. Las redes temáticas buscan promover y fortalecer la colaboración en áreas estratégicas de conocimiento, entre grupos de investigación científica, técnica y/o tecnológica de instituciones de educación superior, centros de investigación, empresas y/o laboratorios nacionales, con el fin de alcanzar soluciones articuladas y estructuradas que contribuyan a una mayor proyección nacional e internacional en dichas líneas de investigación."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -11274,6 +11911,9 @@
                         "title": {
                           "es": "Nombre de la red"
                         },
+                        "information": {
+                          "es": "Nombre de la red de cooperación a la que ha pertenecido."
+                        },
                         "placeholder": {
                           "es": "Introduce el nombre de la red"
                         },
@@ -11285,6 +11925,9 @@
                       {
                         "title": {
                           "es": "Identificación de la red"
+                        },
+                        "information": {
+                          "es": "Ámbito de conocimiento y/o línea de investigación en la que se enmarca la red de cooperación."
                         },
                         "placeholder": {
                           "es": "Introduce la identificación de la red"
@@ -11303,6 +11946,9 @@
                         "type": "auxEntity",
                         "title": {
                           "es": "Entidad/es participante/s"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de las entidades que integran la red de cooperación."
                         },
                         "multiple": true,
                         "width": 3,
@@ -11395,6 +12041,9 @@
                         "title": {
                           "es": "Fecha de inicio"
                         },
+                        "information": {
+                          "es": "Fecha en la que se incorporó a la red de cooperación."
+                        },
                         "property": "http://vivoweb.org/ontology/core#start",
                         "type": "date",
                         "width": 1
@@ -11406,6 +12055,9 @@
                       {
                         "title": {
                           "es": "Duración años"
+                        },
+                        "information": {
+                          "es": "Tiempo que duró su participación y/o pertenencia a la red de cooperación expresado en años, meses y días."
                         },
                         "property": "http://w3id.org/roh/durationYears",
                         "type": "number",
@@ -11501,6 +12153,9 @@
                         "title": {
                           "es": "Entidad de selección"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que, en su caso, realizó la selección de grupos y/o evaluó la idoneidad de las actividades programadas en la red de cooperación."
+                        },
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad de selección"
@@ -11521,6 +12176,9 @@
                         "title": {
                           "es": "Tipo de entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que realizó la selección de los grupos y/o evaluó la idoneidad de las actividades programadas en la red de cooperación."
+                        },
                         "property": "http://w3id.org/roh/selectionEntityType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -11540,6 +12198,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad que realizó la selección de los grupos y/o evaluó la idoneidad de las actividades programadas en la red de cooperación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/selectionEntityTypeOther",
                         "required": true,
@@ -11617,6 +12278,9 @@
                         "title": {
                           "es": "Tareas desarrolladas"
                         },
+                        "information": {
+                          "es": "Tareas realizadas por el titular del CV en el seno de la red de cooperación."
+                        },
                         "placeholder": {
                           "es": "Introduce las tareas desarrolladas"
                         },
@@ -11628,6 +12292,9 @@
                       {
                         "title": {
                           "es": "Nº de investigadores/as"
+                        },
+                        "information": {
+                          "es": "Número aproximado de miembros integrantes de la red de cooperación."
                         },
                         "property": "http://w3id.org/roh/members",
                         "type": "number",
@@ -11653,6 +12320,8 @@
         "information": {
           "es": "En este apartado se consignarán los galardones que han sido otorgados al titular del CV: premios, menciones y/o distinciones obtenidos en recocimiento de la trayectoria académica y/o la calidad científica o profesional. Pueden especificarse, entre otros, los premios de licenciatura, premios extraordinarios de doctorado, premios pre y postdoctorales, etc. Aunque en el apartado donde se ha acreditado el mérito causante de la mención, distinción y/o premio se haya constatado la existencia de éste, se recomienda su especificación en este apartado. Los premios de innovación docente deberán consignarse en el módulo 4 'Actividad docente', apartado 'Premios de innovación docente recibidos'."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -11837,6 +12506,9 @@
                         "title": {
                           "es": "Descripción"
                         },
+                        "information": {
+                          "es": "Nombre de la distinción y/o galardón que le ha sido otorgado."
+                        },
                         "placeholder": {
                           "es": "Introduce la descripción"
                         },
@@ -11852,6 +12524,9 @@
                       {
                         "title": {
                           "es": "Entidad concesionaria"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad, organismo o institución que ha concedido la distinción y/o el galardón."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -11873,6 +12548,9 @@
                         "title": {
                           "es": "Tipo entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución que ha concedido la distinción y/o el galardón."
+                        },
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -11893,6 +12571,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución que ha concedido la distinción y/o el galardón. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/organizationTypeOther",
                         "required": true,
                         "dependency": {
@@ -11905,6 +12586,9 @@
                       {
                         "title": {
                           "es": "Fecha de concesión"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se otorgó el galardón."
                         },
                         "property": "http://w3id.org/roh/dateIssued",
                         "type": "date",
@@ -11984,6 +12668,9 @@
                         "title": {
                           "es": "Reconocimientos ligados"
                         },
+                        "information": {
+                          "es": "Reconocimientos que conlleva, en su caso, la concesión del galardón."
+                        },
                         "multilang": true,
                         "property": "http://w3id.org/roh/recognitionLinked",
                         "width": 3
@@ -12008,6 +12695,8 @@
         "information": {
           "es": "En este apartado se consignarán otras distinciones y/o prerrogativas otorgadas al titular del CV durante su carrera profesional y/o empresarial que sean atribuibles al reconocimiento de la calidad y/o excelencia académica, científica, técnica y/o tecnológica, y que no hayan sido reseñadas anteriormente (en el apartado de 'Premios y distinciones' u otros)."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -12202,6 +12891,9 @@
                         "title": {
                           "es": "Descripción"
                         },
+                        "information": {
+                          "es": "Nombre de la distinción y/o prerrogativa que le ha sido otorgada, atribuible a la calidad y/o excelencia académica, científica, técnica y/o tecnológica."
+                        },
                         "placeholder": {
                           "es": "Introduce la descripción"
                         },
@@ -12217,6 +12909,9 @@
                       {
                         "title": {
                           "es": "Entidad concesionaria"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad, organismo o institución que ha concedido la distinción y/o prerrogativa."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -12238,6 +12933,9 @@
                         "title": {
                           "es": "Tipo entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución que ha concedido la distinción y/o prerrogativa."
+                        },
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -12258,6 +12956,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad, organismo o institución que ha concedido la distinción y/o prerrogativa. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/organizationTypeOther",
                         "required": true,
                         "dependency": {
@@ -12270,6 +12971,9 @@
                       {
                         "title": {
                           "es": "Fecha de concesión"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se otorgó la distinción."
                         },
                         "property": "http://w3id.org/roh/dateIssued",
                         "type": "date",
@@ -12349,6 +13053,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica de la entidad, organismo o institución que ha concedido la distinción."
+                        },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -12364,6 +13071,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Cobertura geográfica de la entidad, organismo o institución que ha concedido la distinción. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "dependency": {
@@ -12394,6 +13104,8 @@
         "information": {
           "es": " En este apartado se consignarán los períodos de actividad investigadora o sexenios evaluados favorablemente, así como cualquier otro procedimiento de evaluación cuya finalidad sea el reconocimiento de complementos específicos de investigación a partir de la obtención de tramos. Más info en: https://sede.educacion.gob.es/catalogo-tramites/organismos/sexenios-cneai.html y http://www.mecd.gob.es/ministerio-mecd/organizacion/organismos/cneai.html."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -12588,6 +13300,9 @@
                         "title": {
                           "es": "Nº de tramos reconocidos"
                         },
+                        "information": {
+                          "es": "Número de tramos de investigación que tiene actualmente reconocidos."
+                        },
                         "property": "http://w3id.org/roh/recognizedPeriods",
                         "type": "number",
                         "required": true,
@@ -12596,6 +13311,9 @@
                       {
                         "title": {
                           "es": "Fecha de obtención"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se otorgó el reconocimiento de los tramos de investigación."
                         },
                         "property": "http://w3id.org/roh/dateIssued",
                         "type": "date",
@@ -12608,6 +13326,9 @@
                       {
                         "title": {
                           "es": "Entidad acreditante"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha otorgado el reconocimiento de los tramos de investigación."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -12629,6 +13350,9 @@
                         "title": {
                           "es": "Tipo entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado el reconocimiento de los tramos de investigación."
+                        },
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -12648,6 +13372,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado el reconocimiento de los tramos de investigación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/organizationTypeOther",
                         "required": true,
@@ -12732,6 +13459,9 @@
                         "title": {
                           "es": "Ámbito geográfico"
                         },
+                        "information": {
+                          "es": "Cobertura geográfica de la entidad que ha otorgado el reconocimiento de los tramos de investigación."
+                        },
                         "property": "http://vivoweb.org/ontology/core#geographicFocus",
                         "combo": {
                           "rdftype": "http://vivoweb.org/ontology/core#GeographicRegion",
@@ -12747,6 +13477,9 @@
                       {
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": " Cobertura geográfica de la entidad que ha otorgado el reconocimiento de los tramos de investigación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/geographicFocusOther",
                         "dependency": {
@@ -12777,6 +13510,8 @@
         "information": {
           "es": "En este apartado se consignarán los períodos de actividad docente o quinquenios evaluados favorablemente con objeto de participar en un proceso de contratación o acceso a la función pública. Las agencias de evaluación son las responsables de asegurar el cumplimiento de unos estándares de calidad básicos en la evaluación de solicitudes de acreditación para el acceso a los cuerpos docentes universitarios. Más info en: http://www.aneca.es/. "
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -12962,6 +13697,9 @@
                         "title": {
                           "es": "Descripción"
                         },
+                        "information": {
+                          "es": "Nombre de la acreditación/reconocimiento que le ha sido otorgado."
+                        },
                         "placeholder": {
                           "es": "Introduce la descripción"
                         },
@@ -12977,6 +13715,9 @@
                       {
                         "title": {
                           "es": "Entidad acreditante"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha otorgado la acreditación/reconocimiento."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -12998,6 +13739,9 @@
                         "title": {
                           "es": "Tipo entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado la acreditación/reconocimiento."
+                        },
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -13018,6 +13762,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado la acreditación/reconocimiento. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/organizationTypeOther",
                         "required": true,
                         "dependency": {
@@ -13030,6 +13777,9 @@
                       {
                         "title": {
                           "es": "Fecha del reconocimiento"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se otorgó la acreditación/reconocimiento."
                         },
                         "property": "http://w3id.org/roh/dateIssued",
                         "type": "date",
@@ -13109,6 +13859,9 @@
                         "title": {
                           "es": "Nº de tramos reconocidos"
                         },
+                        "information": {
+                          "es": "Número de tramos de investigación que tiene actualmente reconocidos."
+                        },
                         "property": "http://w3id.org/roh/recognizedPeriods",
                         "type": "number",
                         "width": 1
@@ -13116,6 +13869,9 @@
                       {
                         "title": {
                           "es": "Fecha de obtención"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se otorgó la acreditación/reconocimiento."
                         },
                         "property": "http://w3id.org/roh/receptionDate",
                         "type": "date",
@@ -13141,6 +13897,8 @@
         "information": {
           "es": "En este apartado se consignarán otros méritos o especificaciones que se deseen hacer constar por el titular del CV y en particular, los referidos a la experiencia profesional en el ámbito de la divulgación de la ciencia y la tecnología."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -13301,6 +14059,9 @@
                         "title": {
                           "es": "Descripción del mérito"
                         },
+                        "information": {
+                          "es": "Nombre del mérito que se quiere acreditar"
+                        },
                         "placeholder": {
                           "es": "Introduce la descripción del mérito"
                         },
@@ -13316,6 +14077,9 @@
                       {
                         "title": {
                           "es": "Entidad acreditante"
+                        },
+                        "information": {
+                          "es": "Nombre oficial de la entidad que ha otorgado la acreditación."
                         },
                         "autocomplete": true,
                         "placeholder": {
@@ -13337,6 +14101,9 @@
                         "title": {
                           "es": "Tipo entidad"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado la acreditación."
+                        },
                         "property": "http://w3id.org/roh/organizationType",
                         "combo": {
                           "rdftype": "http://w3id.org/roh/OrganizationType",
@@ -13357,6 +14124,9 @@
                         "title": {
                           "es": "Otros"
                         },
+                        "information": {
+                          "es": "Carácter de la entidad que ha otorgado la acreditación. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
+                        },
                         "property": "http://w3id.org/roh/organizationTypeOther",
                         "required": true,
                         "dependency": {
@@ -13369,6 +14139,9 @@
                       {
                         "title": {
                           "es": "Fecha de concesión"
+                        },
+                        "information": {
+                          "es": "Fecha en la que se otorgó la acreditación."
                         },
                         "property": "http://w3id.org/roh/dateIssued",
                         "type": "date",

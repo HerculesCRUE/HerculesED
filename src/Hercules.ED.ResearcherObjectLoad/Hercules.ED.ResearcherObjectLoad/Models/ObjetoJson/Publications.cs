@@ -107,12 +107,22 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string articleNumber { get; set; }
         public bool? openAccess { get; set; }
         public List<string> iDs { get; set; }
-        public object presentedAt { get; set; }
+        public Conferencia conferencia { get; set; }
         public HasPublicationVenue hasPublicationVenue { get; set; }
         public List<HasMetric> hasMetric { get; set; }
         public List<Bibliografia> bibliografia { get; set; }
         public List<Publication> citas { get; set; }
         public List<string> dataOriginList { get; set; }
+    }
+
+    public class Conferencia
+    {
+        public int id { get; set; }
+        public string titulo { get; set; }
+        public string fechaInicio { get; set; }
+        public string fechaFin { get; set; }
+        public string pais { get; set; }
+        public string ciudad { get; set; }
     }
 
     public class Bibliografia

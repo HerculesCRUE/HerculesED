@@ -6,6 +6,12 @@ const uriLoadLineResearchs = "Ofertas/LoadLineResearchs"
 const uriLoadFramingSectors = "Ofertas/LoadFramingSectors"
 const uriLoadMatureStates = "Ofertas/LoadMatureStates"
 
+// Constantes para el listado de las ofertas
+const urlCambioEstado = url_servicio_externo + "Ofertas/CambiarEstado"
+const urlCambioEstadoAll = url_servicio_externo + "Ofertas/CambiarEstadoAll"
+const urlBorrarOferta = url_servicio_externo + "Ofertas/BorrarOferta"
+
+
 var urlSOff ="";
 var urlSTAGSOffer = "";
 var urlLoadUsersGroup ="";
@@ -14,6 +20,9 @@ var urlLoadLineResearchs ="";
 var urlLoadFramingSectors = "";
 var urlLoadMatureStates ="";
 
+/**
+ * Crea las urls para las llamadas ajax
+ */
 $(document).ready(function () {
 	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
 	urlSOff = new URL(servicioExternoBaseUrl +  uriSaveOffer);
@@ -28,7 +37,11 @@ $(document).ready(function () {
 
 
 
-
+/**
+ * Constructor de la clase StepsOffer, se encargará de la funcionalidad principal del creador de ofertas tecnológicas, 
+ * controlando los 'steps' y todo el proceso de validación, llamadas ajax al servicio externo, guardado y carga de las
+ * ofertas tecnológicas, etc...
+ */
 class StepsOffer {
 	/**
 	 * Constructor de la clase StepsOffer
@@ -1839,7 +1852,9 @@ class StepsOffer {
 
 
 
-
+/**
+ * Función que se llama cuando se cargan los investigadores
+ */
 function CompletadaCargaRecursosInvestigadoresOfertas()
 {	
 	let currentsIds = []
@@ -2074,7 +2089,9 @@ function CompletadaCargaRecursosInvestigadoresOfertas()
 }
 
 
-
+/**
+ * Función que se llama cuando se cargan los proyectos
+ */
 function CompletadaCargaRecursosProyectosOfertas()
 {	
 	let currentsIds = []
@@ -2182,7 +2199,9 @@ function CompletadaCargaRecursosProyectosOfertas()
 }
 
 
-
+/**
+ * Función que se llama cuando se cargan las publicaciones
+ */
 function CompletadaCargaRecursosPublicacionesOfertas()
 {	
 	let currentsIds = []
@@ -2290,6 +2309,9 @@ function CompletadaCargaRecursosPublicacionesOfertas()
 }
 
 
+/**
+ * Función que se llama cuando se cargan las PII
+ */
 function CompletadaCargaRecursosPIIOfertas()
 {	
 	let currentsIds = []
@@ -2373,8 +2395,7 @@ function CompletadaCargaRecursosPIIOfertas()
 
 
 
-
-// Comportamiento página proyecto
+// Comportamiento listado investigadores de la oferta
 var comportamientoPopupOferta = {
 	tabActive: null,
 
@@ -2509,7 +2530,7 @@ var comportamientoPopupOferta = {
 };
 
 
-// Comportamiento página proyecto
+// Comportamiento listado Proyectos de la oferta
 var comportamientoProyectosOferta = {
 	tabActive: null,
 
@@ -2553,7 +2574,7 @@ var comportamientoProyectosOferta = {
 };
 
 
-// Comportamiento página proyecto
+// Comportamiento listado publicaciones de la oferta
 var comportamientoPublicacionesOferta = {
 	tabActive: null,
 
@@ -2592,7 +2613,7 @@ var comportamientoPublicacionesOferta = {
 };
 
 
-// Comportamiento página proyecto
+// Comportamiento listado PII de la oferta
 var comportamientoPIIOferta = {
 	tabActive: null,
 
@@ -2629,6 +2650,313 @@ var comportamientoPIIOferta = {
 		return results
 	},
 };
+
+
+// Comportamiento listado Ofertas del gestor otri
+var comportamientoOfertasOtri = {
+	tabActive: null,
+
+	init: function (pIdUser, idPrint) {
+
+		let that = this
+
+		buscadorPersonalizado.profile=null;
+
+		// Iniciar el listado de ofertas
+		buscadorPersonalizado.init(document.getElementById(idPrint).dataset.title, "#"+idPrint, "searchOffersOtri=" + pIdUser, null, "rdf:type=offer", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+
+		return;
+	}
+};
+
+
+
+
+/** 
+* Objeto que actualiza el estado de las ofertas
+*/
+cambiarEstado = {
+	/** 
+	* Método de configuración que establece los datos de la próxima llamada
+	* @param id, Id (Guid) con la oferta a modificar
+	* @param estado, string con el estado al que cambiar
+	* @param estadoActual, string con el estado actual al que actualizar
+	*/
+    config(id, estado, estadoActual) {
+        this.arg = {
+            pIdOfferId: id,
+            estado: estado,
+            estadoActual: estadoActual,
+            pIdGnossUser: pIdGnossUser,
+        };
+    },
+    borrarOferta() {
+        $.get(urlBorrarOferta, this.arg, function (data) {
+            location.reload()
+        });
+    },
+    /** 
+	* Método que realiza la petición post para la actualización del estado
+	*/
+    sendPost() {
+        $.post(urlCambioEstado, this.arg, function (data) {
+            location.reload()
+        });
+    },
+    /** 
+	* Método que se llama desde el popup, que realiza el cambio de estado y que contiene el mensaje
+	* para la notificación al usuario con el texto introducido en él.
+	* @param texto, String con el texto para la notificación
+	*/
+    sendModal(texto) {
+        this.arg.texto = texto
+        this.modal.modal('hide')
+        this.sendPost()
+    },
+    /** 
+	* Método de inicia el proceso para cambiar un estado 'simple'
+	* @param id, Id (Guid) con la oferta a modificar
+	* @param estado, string con el estado al que cambiar
+	* @param estadoActual, string con el estado actual al que actualizar
+	*/
+    send(id, estado, estadoActual) {
+        this.config(id, estado, estadoActual)
+        this.sendPost()
+    },
+    /** 
+	* Método de inicia el proceso para cambiar el estado a un listado de ofertas
+	* @param ids, Array de ids (Guid) con la oferta a modificar
+	* @param estado, string con el estado al que cambiar
+	* @param estadoActual, string con el estado actual al que actualizar
+	*/
+    sendAll(ids, estado, estadoActual) {
+        if (ids && ids.length > 0) {
+            // Set init config
+            let _arg = {
+                pIdOfferIds: ids,
+                estado: estado,
+                estadoActual: estadoActual,
+                pIdGnossUser: pIdGnossUser,
+            };
+            // Post Call
+            $.post(urlCambioEstadoAll, _arg, function (data) {
+                location.reload()
+            });
+        } else {
+            alert(ERROR_IDS_VACIO)
+        }
+    },
+    /** 
+	* Método de inicia el proceso para cambiar un estado con un mensaje de modal.
+	* @param id, Id (Guid) con la oferta a modificar
+	* @param estado, string con el estado al que cambiar
+	* @param estadoActual, string con el estado actual al que actualizar
+	* @param idModal, Id del modal a abrir
+	*/
+    setModal(id, estado, estadoActual, idModal) {
+        this.config(id, estado, estadoActual)
+        this.modal = $("#"+idModal)
+        this.modal.modal('show')
+    }
+}
+
+/** 
+* Clase que se encarga de añadir los menús de opciones dependiendo de los estados actuales 
+*/
+class OfferList {
+
+	/** 
+	* Constructor de la clase OfferList
+	* @param arrLang, Objeto clave valor de literales con traducciones
+	*/
+	constructor(arrLang) {
+		this.arrLang = arrLang
+	}
+
+	/** 
+	* Método que pinta los menús en cada elemento de búsqueda
+	* @param ids, Array con los ids sobre los que pintar el menú
+	* @param typeUser, String con el tipo de usuario que accede a la oferta 
+	*/
+	loadActionsOffer(ids, typeUser = "otri") {
+
+	    ids.forEach(idDocument => {
+
+	        // Obtiene el recurso en el dom
+	        let item = document.getElementById("resource_" + idDocument)
+	        // Obtiene el estado del recurso
+	        let itemState = item.dataset.estadores
+	        // Obtiene el listado de opciones en el menu
+	        let selector = item.querySelector(".acciones-recurso-listado .dropdown-menu ul")
+
+
+	        let htmlRes = "";
+	        let estados = [];
+	        let idEstadoOFerta = "";
+	        let txtEnviar = "";
+
+	        estados = this.setActionsOffer(itemState, typeUser)
+
+	        
+	        htmlRes = estados.map(e => {
+
+	            if (e.targetModalId) {
+	                return `
+	                    <li>
+	                        <a class="item-dropdown" href="javascript: void(0)">
+	                            <span class="material-icons">${e.icono}</span>
+	                            <span class="texto" onclick="javascript:cambiarEstado.setModal('${idDocument}','${e.idEstadoOFerta}', '${itemState}', '${e.targetModalId}')" >${e.txtEnviar}</span>
+	                        </a>
+	                    </li>`
+	            } else {
+
+	                return `
+	                    <li>
+	                        <a class="item-dropdown" href="javascript:cambiarEstado.send('${idDocument}','${e.idEstadoOFerta}', '${itemState}')">
+	                            <span class="material-icons">${e.icono}</span>
+	                            <span class="texto">${e.txtEnviar}</span>
+	                        </a>
+	                    </li>`
+	            }
+
+	        })
+
+	        selector.innerHTML = htmlRes.join("")
+	            
+	    })
+
+	}
+
+
+	/** 
+	* Método que obtiene un array de acciones dependiendo del estado de una oferta determinada y el usuario logueado actualmente
+	* @param estado, String con el estado actual de la oferta
+	* @param typeUser, String con el tipo de usuario que accede a la oferta 
+	* @return Array, Array de objetos para construir el menú de opciones
+	*/
+	setActionsOffer(estado, typeUser = "other") {
+
+	    /**
+	    * typeUser es el usuario actual, puede contener:
+	    * own, es el propio usuario
+	    * otri, es el investigador otri
+	    * ip, es el investigador principal
+	    * other, es otro usuario que no coincide con ninguno de los anteriores
+	    */
+
+	    let estados = [];
+	    let idEstadoOFerta = "";
+	    let txtEnviar = "";
+	    let icono = "send";
+	    let targetModalId = "";
+
+	    switch (estado) 
+	    {
+	        case "http://gnoss.com/items/offerstate_001":
+	            // Es el creador de la oferta
+	            // Puede pasar la oferta a revisión
+	            if (typeUser == "own") 
+	            {
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_002"
+	                txtEnviar = this.arrLang["ENVIAR_REVISION"]
+	                targetModalId = ""
+	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+
+	            }
+	            break;
+	        case "http://gnoss.com/items/offerstate_002":
+	            // Es el creador de la oferta
+	            // Puede pasar la oferta a borrador
+	            if (typeUser == "own" || typeUser == "otri") 
+	            {
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_001"
+	                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
+	                targetModalId = ""
+	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+
+	            }
+	            // Es el gestor otri
+	            // Puede pasar la oferta a borrador
+	            if (typeUser == "otri")
+	            {
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_002";
+	                txtEnviar = this.arrLang["MEJORAR"]
+	                targetModalId = "modal-enviar-comentario"
+	                estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_003";
+	                txtEnviar = this.arrLang["VALIDAR"]
+	                targetModalId = ""
+	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_004";
+	                txtEnviar = this.arrLang["DENEGAR"]
+	                targetModalId = "modal-enviar-comentario"
+	                estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+
+	            }
+	            break;
+	        case "http://gnoss.com/items/offerstate_003":
+	            if (typeUser == "otri")
+	            {
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+	                txtEnviar = this.arrLang["ARCHIVAR"]
+	                targetModalId = "modal-enviar-comentario"
+	                estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+
+	                targetModalId = ""
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
+	                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
+	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+	            }
+	            break;
+	        case "http://gnoss.com/items/offerstate_004":
+	            if (typeUser == "own") 
+	            {
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
+	                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
+	                targetModalId = ""
+	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+
+	            }
+	            if (typeUser == "otri")
+	            {
+	                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+	                txtEnviar = this.arrLang["ARCHIVAR"]
+	                targetModalId = ""
+	                icono = "delete"
+	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+	            }
+	            break;
+
+	    }
+
+	    if ((typeUser == "own" || typeUser == "otri" || typeuser == "ip") && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))
+	    {
+	        idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+	        txtEnviar = this.arrLang["BORRAR"]
+	        icono = "delete"
+	        targetModalId = "modal-eliminar-oferta-confirmacion"
+	        estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+	    } 
+
+	    return estados
+
+
+	}
+
+
+}
+
+/**
+* Función que añade un elemento después de otro elmento, usando únicamente js
+*/
+function insertAfter(newNode, existingNode) {
+    existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+}
+
+
+
 
 /**
 * Clase que contiene la funcionalidad del modal de los TAGS para el Oferta
@@ -2820,3 +3148,7 @@ class ModalSearchTagsOffer {
 		})
 	}
 }
+
+
+
+

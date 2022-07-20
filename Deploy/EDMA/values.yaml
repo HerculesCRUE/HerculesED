@@ -71,20 +71,20 @@ postgres:
   tag: "11.15"
   portSql: 5432
   targetPortSql: 5432
-  cadenaConexionAcid: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=ApHSTCRBwX;Persist Security Info = true"
-  cadenaConexionBase: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=ApHSTCRBwX;Persist Security Info = true"
-  cadenaConexionOauth: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=ApHSTCRBwX;Persist Security Info = true"
-  password: "ApHSTCRBwX"
+  cadenaConexionAcid: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=<;YOUR_PASSWORD_HERE;>;Persist Security Info = true"
+  cadenaConexionBase: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=<;YOUR_PASSWORD_HERE;>;Persist Security Info = true"
+  cadenaConexionOauth: "Host=servicios-gnoss;Port=5432;Database=postgres;Username=postgres;Password=<;YOUR_PASSWORD_HERE;>;Persist Security Info = true"
+  password: "<;YOUR_PASSWORD_HERE;>"
 
 virtuoso:
   image: "openlink/virtuoso-opensource-7"
   tag: "latest"
-  password: "mysecret"
+  password: "<;YOUR_PASSWORD_HERE;>"
   portSparql: 8890
   targetPortSparql: 8890
   portIsql: 1111
   targetPortIsql: 1111
-  cadenaConexion: "HOST=servicios-gnoss:1111;UID=dba;PWD=mysecret;Pooling=true;Max Pool Size=10;Connection Lifetime=15000"
+  cadenaConexion: "HOST=servicios-gnoss:1111;UID=dba;PWD=<;YOUR_PASSWORD_HERE;>;Pooling=true;Max Pool Size=10;Connection Lifetime=15000"
   maxClientConnecction: "50"
   serverIdString: "virtuoso"
   xAnyNormalization: "3"
@@ -106,7 +106,7 @@ redis:
   liveusuariosTimeout: "60"
 
 rabbitmq:
-  cadenaConexion: "amqp://gnoss:gnoss1234@rabbitmq:5672/"
+  cadenaConexion: "amqp://gnoss:<;YOUR_PASSWORD_HERE;>@rabbitmq:5672/"
 #  replicaCount: 1
 #  volNameState: volrabbitmq
 #  volumeClaimStorage: "5Gi"

@@ -15,19 +15,25 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using Person = PersonOntology.Person;
 
-namespace SupervisedartisticprojectOntology
+namespace PatentOntology
 {
 	[ExcludeFromCodeCoverage]
-	public class Person : GnossOCBase
+	public class PersonAux : GnossOCBase
 	{
 
-		public Person() : base() { } 
+		public PersonAux() : base() { } 
 
-		public Person(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+		public PersonAux(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
+			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
+			{
+				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
 			this.Roh_secondFamilyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/secondFamilyName"));
 			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
@@ -35,9 +41,13 @@ namespace SupervisedartisticprojectOntology
 			this.Rdf_comment = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#comment")).Value;
 		}
 
-		public virtual string RdfType { get { return "http://xmlns.com/foaf/0.1/Person"; } }
-		public virtual string RdfsLabel { get { return "http://xmlns.com/foaf/0.1/Person"; } }
+		public virtual string RdfType { get { return "http://w3id.org/roh/PersonAux"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/PersonAux"; } }
 		public OntologyEntity Entity { get; set; }
+
+		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+		public  Person Rdf_member  { get; set;} 
+		public string IdRdf_member  { get; set;} 
 
 		[RDFProperty("http://xmlns.com/foaf/0.1/familyName")]
 		public  string Foaf_familyName { get; set;}
@@ -58,6 +68,7 @@ namespace SupervisedartisticprojectOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
+			propList.Add(new StringOntologyProperty("rdf:member", this.IdRdf_member));
 			propList.Add(new StringOntologyProperty("foaf:familyName", this.Foaf_familyName));
 			propList.Add(new StringOntologyProperty("roh:secondFamilyName", this.Roh_secondFamilyName));
 			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));
@@ -73,79 +84,11 @@ namespace SupervisedartisticprojectOntology
 
 
 
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
-
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
+
 
 
 	}

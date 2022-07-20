@@ -268,7 +268,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <p class="modal-title"><span class="material-icons">delete</span>@Html.Translate("BORRAR_OFERTA")</p>
+                        <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("BORRAR_OFERTA")</p>
                         <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
                     </div>
                     <div class="modal-body">
@@ -298,6 +298,10 @@
 
             // Datos gráfica áreas temáticas
             function borrarOferta() {
+
+                // Convierte el id en un guid
+                currentId = currentId.contain('_') ? currentId.Split('_')[1] : currentId
+
                 var url = url_servicio_externo + "Ofertas/BorrarOferta"
                 var arg = {};
                 arg.pIdOfferId = currentId
@@ -308,6 +312,9 @@
 
             // Datos gráfica áreas temáticas
             function cambiarEstado(id, estado, estadoActual) {
+
+                id = id.contain('_') ? id.Split('_')[1] : id
+
                 var url = url_servicio_externo + "Ofertas/CambiarEstado"
                 var arg = {};
                 arg.pIdOfferId = id

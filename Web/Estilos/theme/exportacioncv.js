@@ -12,7 +12,8 @@ var exportacionCV = {
     },
 	config: function(){
 		var that = this;
-		that.cargarListadoCV();		
+		that.cargarListadoCV();
+		
 		//Preparar exportación
 		$('.btGenerarExportarCV').off('click').on('click', function(e) {            
 			e.preventDefault();
@@ -27,6 +28,7 @@ var exportacionCV = {
 					data.userID= that.idUsuario;
 					data.lang= $('#ddlIdioma').val();
 					data.nombreCV= $('#exportCvName').val();
+					data.tipoCVNExportacion = $('#ddlTipoExportacion').find("option:selected").val();
 					
 					$.post(urlExportacionCV + 'GetCV', data, function(data) {
 						OcultarUpdateProgress();
@@ -48,6 +50,8 @@ var exportacionCV = {
 		$('.btExportarCV').off('click').on('click', function(e) {
             e.preventDefault();
 
+			var tipoCVNExportacion = $('#ddlTipoExportacion').find("option:selected").val();
+
 			var listaId = "";
 			$('.resource-list .custom-control-input:checkbox:checked').each(function(){
 				listaId += (this.checked ? $(this).val()+"@@@" : "")
@@ -65,6 +69,7 @@ var exportacionCV = {
 			data.lang= $('#ddlIdioma').val();
 			data.listaId= listaId;
 			data.nombreCV= $('#exportCvName').val();
+			data.tipoCVNExportacion = tipoCVNExportacion;
 			
 			MostrarUpdateProgress();
 			$.post(urlExportacionCV + 'GetCV', data, function(data) {
@@ -73,6 +78,8 @@ var exportacionCV = {
 				that.cargarListadoCV();
 			});
         });
+		
+		cambiarTipoExportacion();
 	},
 	//Carga los CV exportados
     cargarListadoCV: function() {
@@ -242,6 +249,26 @@ var exportacionCV = {
         return;
     }
 };
+
+function cambiarTipoExportacion(){
+	$('#ddlTipoExportacion').change( function(e){
+		e.preventDefault();
+		var tipoExportacion = $("#ddlTipoExportacion").find("option:selected").val();
+		if(tipoExportacion == "PN2008"){
+			//CVN
+			// Muestro "Total" y asigno por defecto "Total"
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio')[0]).show();
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio input')[0]).prop('checked', true);
+		}
+		else{
+			//CV abreviado
+			// Oculto "Total" y asigno por defecto "Seleccionar"
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio')[0]).hide();
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio input')[1]).prop('checked', true);
+		}
+	});
+}
+
 
 function asignarAccionesBotonesPerfil(userID){
 	$('.btn.btn-primary.uppercase.btGuardarCV').off('click').on('click', function(e) {

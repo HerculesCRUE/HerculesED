@@ -99,7 +99,7 @@
 						<label class="control-label d-block">@Html.Translate("TITULO")</label>
 						<input id="exportCvName" placeholder="@Html.Translate("INTRODUCE_UN_TITULO_PARA_EL_FICHERO")" type="text" class="form-control not-outline">
 					</div>
-					<div class="form-group mb-3">
+					<div class="form-group mb-3 ddlIdioma">
 						<label class="control-label d-block">@Html.Translate("IDIOMA")</label>
 						<select id="ddlIdioma" name="ddlIdioma" class="js-select2">
 							<option value="es" selected>@Html.Translate("ESPAGNOL")</option>
@@ -111,18 +111,26 @@
 						</select>
 					</div>
 					<div class="form-group mb-3">
+						<label class="control-label d-block ddlTipoExportacion">@Html.Translate("TIPO_EXPORTACION")</label>
+						<select id="ddlTipoExportacion" name="ddlTipoExportacion" class="js-select2">
+							<option value="PN2008" selected>CVN</option>
+							<option value="CVAISCIII">CVA-ISCIII</option>
+							<option value="CVA2015">CVA-AEI</option>
+						</select>
+					</div>
+					<div class="form-group mb-3 ddlSecciones">
 						<label class="control-label d-block mb-3">@Html.Translate("SECCIONES")</label>
 						<div class="custom-control themed little custom-radio">
 							<input type="radio" checked="checked" id="todas" name="secciones" class="custom-control-input">
 							<label class="custom-control-label" for="todas">@Html.Translate("TODAS")</label>
 						</div>
 						<div class="custom-control themed little custom-radio">
-							<input type="radio" id="ultimosCinco" name="secciones" class="custom-control-input">
-							<label class="custom-control-label" for="ultimosCinco">@Html.Translate("ULTIMOS_CINCO_ANIOS")</label>
-						</div>
-						<div class="custom-control themed little custom-radio">
 							<input type="radio" id="seleccionar" name="secciones" class="custom-control-input">
 							<label class="custom-control-label" for="seleccionar">@Html.Translate("SELECCIONAR")</label>
+						</div>
+						<div class="custom-control themed little custom-radio">
+							<input type="radio" id="ultimosCinco" name="secciones" class="custom-control-input">
+							<label class="custom-control-label" for="ultimosCinco">@Html.Translate("ULTIMOS_CINCO_ANIOS")</label>
 						</div>
 						<a class="btn btn-primary uppercase btGenerarExportarCV" >@Html.Translate("GENERAR_NUEVA_EXPORTACION")</a>
 					</div>
