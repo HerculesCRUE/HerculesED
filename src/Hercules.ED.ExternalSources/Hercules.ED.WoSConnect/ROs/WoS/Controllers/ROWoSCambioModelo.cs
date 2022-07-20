@@ -276,27 +276,27 @@ namespace WoSConnect.ROs.WoS.Controllers
 
         public Conferencia getConferencia(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.conferences != null && pPublicacionIn.static_data.summary.conferences.conference != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.conferences != null && pPublicacionIn.static_data.summary.conferences.conference[0] != null)
             {
                 Conferencia conferencia = new Conferencia();
 
                 // ID.
-                conferencia.id = pPublicacionIn.static_data.summary.conferences.conference.conf_id;
+                conferencia.id = pPublicacionIn.static_data.summary.conferences.conference[0].conf_id;
 
                 // Título.
-                if (pPublicacionIn.static_data.summary.conferences.conference.conf_titles != null && pPublicacionIn.static_data.summary.conferences.conference.conf_titles.count == 1 && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference.conf_titles.conf_title))
+                if (pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles.count == 1 && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles.conf_title))
                 {
-                    conferencia.titulo = pPublicacionIn.static_data.summary.conferences.conference.conf_titles.conf_title;
+                    conferencia.titulo = pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles.conf_title;
                 }
 
                 // Fechas
-                if (pPublicacionIn.static_data.summary.conferences.conference.conf_dates != null && pPublicacionIn.static_data.summary.conferences.conference.conf_dates.conf_date != null)
+                if (pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date != null)
                 {
                     try
                     {
-                        int yearInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference.conf_dates.conf_date.conf_start.ToString().Substring(0, 4));
-                        int monthInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference.conf_dates.conf_date.conf_start.ToString().Substring(4, 2));
-                        int dayInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference.conf_dates.conf_date.conf_start.ToString().Substring(6, 2));
+                        int yearInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(0, 4));
+                        int monthInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(4, 2));
+                        int dayInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(6, 2));
                         conferencia.fechaInicio = $@"{yearInicio}-{monthInicio}-{dayInicio}";
                     }
                     catch
@@ -306,9 +306,9 @@ namespace WoSConnect.ROs.WoS.Controllers
 
                     try
                     {
-                        int yearFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference.conf_dates.conf_date.conf_start.ToString().Substring(0, 4));
-                        int monthFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference.conf_dates.conf_date.conf_start.ToString().Substring(4, 2));
-                        int dayFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference.conf_dates.conf_date.conf_start.ToString().Substring(6, 2));
+                        int yearFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(0, 4));
+                        int monthFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(4, 2));
+                        int dayFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(6, 2));
                         conferencia.fechaFin = $@"{yearFin}-{monthFin}-{dayFin}";
                     }
                     catch
@@ -318,16 +318,16 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
 
                 // Pais y ciudad
-                if (pPublicacionIn.static_data.summary.conferences.conference.conf_locations != null && pPublicacionIn.static_data.summary.conferences.conference.conf_locations.conf_location != null && pPublicacionIn.static_data.summary.conferences.conference.conf_locations.count == 1)
+                if (pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.count == 1)
                 {
-                    if (!string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference.conf_locations.conf_location.conf_state))
+                    if (!string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_state))
                     {
-                        conferencia.pais = pPublicacionIn.static_data.summary.conferences.conference.conf_locations.conf_location.conf_state;
+                        conferencia.pais = pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_state;
                     }
 
-                    if (!string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference.conf_locations.conf_location.conf_city))
+                    if (!string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_city))
                     {
-                        conferencia.ciudad = pPublicacionIn.static_data.summary.conferences.conference.conf_locations.conf_location.conf_city;
+                        conferencia.ciudad = pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_city;
                     }
                 }
 
