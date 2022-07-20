@@ -291,6 +291,11 @@ namespace Hercules.ED.UpdateKeywords
                     }
 
                     mResourceApi.LoadComplexSemanticResource(resource, false, true);
+
+                    if(!resource.Uploaded)
+                    {
+                        Thread.Sleep(numIntentos * 1000);
+                    }
                 }
             }
             else
@@ -308,6 +313,11 @@ namespace Hercules.ED.UpdateKeywords
                     }
 
                     mResourceApi.ModifyComplexOntologyResource(resource, false, true);
+
+                    if (!resource.Modified)
+                    {
+                        Thread.Sleep(numIntentos * 1000);
+                    }
                 }
             }
 
@@ -352,6 +362,11 @@ namespace Hercules.ED.UpdateKeywords
                     }
 
                     mResourceApi.LoadComplexSemanticResource(resource, false, true);
+
+                    if (!resource.Uploaded)
+                    {
+                        Thread.Sleep(numIntentos * 1000);
+                    }
                 }
             }
 
