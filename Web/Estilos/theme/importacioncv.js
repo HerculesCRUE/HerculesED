@@ -6,7 +6,7 @@ var dropdownSimilitudes = '';
 var contador = 1;
 var urlUserCV = '';
 
-window.addEventListener('beforeunload', event => preventBeforeUnload(event), false);
+window.addEventListener('beforeunload', preventBeforeUnload);
 
 function preventBeforeUnload(event){
 	// Cancel the event as stated by the standard.
@@ -101,6 +101,7 @@ var importarCVN = {
 			listaId = listaId.slice(0,-3);			
 			listaOpcionSeleccionados = listaOpcionSeleccionados.slice(0,-3);
 			
+			window.removeEventListener('beforeunload', preventBeforeUnload);
 			that.importarCV(listaId, listaOpcionSeleccionados);
 		});
     },
@@ -257,7 +258,7 @@ var importarCVN = {
 				checkAllConflict();
 				aniadirComportamientoWrapperSeccion();
 				aniadirTooltipsConflict();
-				window.removeEventListener('beforeunload', preventBeforeUnload, false);
+				window.removeEventListener('beforeunload', preventBeforeUnload);
 				
 				OcultarUpdateProgress();
 			},
@@ -265,7 +266,7 @@ var importarCVN = {
 				clearInterval(intervalStatus);				
 				$('#titleMascaraBlanca').remove();
 				$('#workMascaraBlanca').remove();
-				window.removeEventListener('beforeunload', preventBeforeUnload, false);
+				window.removeEventListener('beforeunload', preventBeforeUnload);
 				
 				var msg = '';
 				if (jqXHR.status === 0) {
