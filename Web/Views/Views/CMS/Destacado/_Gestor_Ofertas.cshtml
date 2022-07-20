@@ -107,15 +107,28 @@
         <!-- JAVASCRIPT -->
         <script type="text/javascript">
 
-            // Constantes
-            const urlCambioEstado = url_servicio_externo + "Ofertas/CambiarEstado"
-            const urlCambioEstadoAll = url_servicio_externo + "Ofertas/CambiarEstadoAll"
-            const urlBorrarOferta = url_servicio_externo + "Ofertas/BorrarOferta"
+            const pIdGnossUser = "@IdentidadActual.KeyUser"
+            const ERROR_IDS_VACIO = "@Html.Translate("ERROR_IDS_VACIO")"
 
 
             // Selectores seleccionados
             var currentsSelected = []
             var currentsIds = []
+
+
+            // Langs para el constructor
+            const arrLang = {
+                "ENVIAR_REVISION": "@Html.Translate("ENVIAR_REVISION")",
+                "ENVIAR_BORRADOR": "@Html.Translate("ENVIAR_BORRADOR")",
+                "MEJORAR": "@Html.Translate("MEJORAR")",
+                "VALIDAR": "@Html.Translate("VALIDAR")",
+                "DENEGAR": "@Html.Translate("DENEGAR")",
+                "ARCHIVAR": "@Html.Translate("ARCHIVAR")",
+                "BORRAR": "@Html.Translate("BORRAR")",
+            }
+
+            var offerList = new OfferList(arrLang)
+
 
             // Carga las ofertas
             comportamientoOfertasOtri.init("@currentIdstr", "ofertaListOtri")
@@ -133,61 +146,10 @@
                 });
             }
 
-            /** 
-            * Objeto que actualiza el estado de las ofertas
-            * param id, Array con el estado a cambiar
-            * param estado, string con el estado al que cambiar
-            * param estadoActual, string con el estado actual al que actualizar
+            /**
+            * Función que se llama cuando se cargan los recursos (las ofertas tecnológicas)
+            * Éste método se encarga de añadir el menú de opciones y las acciones 'rápidas'
             */
-            cambiarEstado = {
-                config(id, estado, estadoActual) {
-                    this.arg = {
-                        pIdOfferId: id,
-                        estado: estado,
-                        estadoActual: estadoActual,
-                        pIdGnossUser: "@IdentidadActual.KeyUser",
-                    };
-                },
-                borrarOferta() {
-                    $.get(urlBorrarOferta, this.arg, function (data) {
-                        window.location = "@Comunidad.Url/@Html.Translate("OFERTA_URL")"
-                    });
-                },
-                sendPost() {
-                    $.post(urlCambioEstado, this.arg, function (data) {
-                        location.reload()
-                    });
-                },
-                sendModal(texto) {
-                    this.arg.texto = texto
-                    this.modal.modal('hide')
-                    this.sendPost()
-                },
-                send(id, estado, estadoActual) {
-                    this.config(id, estado, estadoActual)
-                    this.sendPost()
-                },
-                sendAll(ids, estado, estadoActual) {
-                    // Set init config
-                    let _arg = {
-                        pIdOfferIds: ids,
-                        estado: estado,
-                        estadoActual: estadoActual,
-                        pIdGnossUser: "@IdentidadActual.KeyUser",
-                    };
-                    // Post Call
-                    $.post(urlCambioEstadoAll, _arg, function (data) {
-                        location.reload()
-                    });
-                },
-
-                setModal(id, estado, estadoActual, idModal) {
-                    this.config(id, estado, estadoActual)
-                    this.modal = $("#"+idModal)
-                    this.modal.modal('show')
-                }
-            }
-
             function gOTecnEndLoadedResources() {
 
                 if(true)
@@ -197,7 +159,12 @@
                     
                     $("#ofertaListOtri article.resource").each((i, e) => {
 
-                        currentsIds.push(e.id.split('_')[1])
+                        try {
+                            cId = e.id.split('_')[1]
+                            if (!currentsIds.includes(cId)) {
+                                currentsIds.push(cId)
+                            }
+                        } catch (e) {}
 
                         let materialIcon = e.querySelector(".custom-checkbox-resource .material-icons")
                         if (materialIcon == null) {
@@ -206,10 +173,6 @@
                                 e.innerHTML = `<div class="custom-control custom-checkbox-resource add">
                                     <span class="material-icons">add</span>
                                 </div>` + e.innerHTML
-
-                                @* $(e).prepend(`<div class="custom-control custom-checkbox-resource add">
-                                    <span class="material-icons">add</span>
-                                </div>`) *@
                             }
                         }
                     })
@@ -226,7 +189,7 @@
                             <div class="descargar dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="material-icons">check</span>
-                                    <span class="texto">@Html.Translate("SELECCIONAR")</span>
+                                    <span class="texto">@Html.Translate("SELECCIONAR_EN_REVISION")</span>
                                 </a>
                                 <div class="dropdown-menu basic-dropdown dropdown-menu-right">
                                     <a href="javascript: seleccionarTodos()" class="item-dropdown">@Html.Translate("SELECCIONAR_TODOS")</a>
@@ -289,59 +252,14 @@
                     })
                 }
 
-                loadActions()
+                offerList.loadActionsOffer(currentsIds)
             }
 
-            function loadActions() {
 
 
-                currentsIds.forEach(idDocument => {
-
-                    // Obtiene el recurso en el dom
-                    let item = document.getElementById("resource_" + idDocument)
-                    // Obtiene el estado del recurso
-                    let itemState = item.dataset.estadores
-                    // Obtiene el listado de opciones en el menu
-                    let selector = item.querySelector(".acciones-recurso-listado .dropdown-menu ul")
-
-
-                    let htmlRes = "";
-                    let estados = [];
-                    let idEstadoOFerta = "";
-                    let txtEnviar = "";
-
-                    estados = setActions(itemState, "otri")
-
-                    
-                    htmlRes = estados.map(e => {
-
-                        if (e.targetModalId) {
-                            return `
-                                <li>
-                                    <a class="item-dropdown" href="javascript: void(0)">
-                                        <span class="material-icons">${e.icono}</span>
-                                        <span class="texto" onclick="javascript:cambiarEstado.setModal('${idDocument}','${e.idEstadoOFerta}', '${itemState}', '${e.targetModalId}')" >${e.txtEnviar}</span>
-                                    </a>
-                                </li>`
-                        } else {
-
-                            return `
-                                <li>
-                                    <a class="item-dropdown" href="javascript:cambiarEstado.send('${idDocument}','${e.idEstadoOFerta}', '${itemState}')">
-                                        <span class="material-icons">${e.icono}</span>
-                                        <span class="texto">${e.txtEnviar}</span>
-                                    </a>
-                                </li>`
-                        }
-
-                    })
-
-                    selector.innerHTML = htmlRes.join("")
-                        
-                })
-
-            }
-
+            /**
+            * Función que añade a seleccionados todos los items cargados (En revisión)
+            */
             function seleccionarTodos() {
 
 
@@ -361,6 +279,10 @@
                 })
             }
 
+
+            /**
+            * Función que elimina a seleccionados todos los items cargados (En revisión)
+            */
             function deseleccionarTodos() {
 
 
@@ -380,121 +302,6 @@
                 })
             }
 
-            function insertAfter(newNode, existingNode) {
-                existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-            }
-
-
-            function setActions(estado, typeUser = "other") {
-
-                /**
-                * typeUser es el usuario actual, puede contener:
-                * own, es el propio usuario
-                * otri, es el investigador otri
-                * ip, es el investigador principal
-                * other, es otro usuario que no coincide con ninguno de los anteriores
-                */
-
-                let estados = [];
-                let idEstadoOFerta = "";
-                let txtEnviar = "";
-                let icono = "send";
-                let targetModalId = "";
-
-                switch (estado) 
-                {
-                    case "http://gnoss.com/items/offerstate_001":
-                        // Es el creador de la oferta
-                        // Puede pasar la oferta a revisión
-                        if (typeUser == "own") 
-                        {
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_002"
-                            txtEnviar = "@Html.Translate("ENVIAR_REVISION")"
-                            targetModalId = ""
-                            estados.push({ idEstadoOFerta, txtEnviar, icono })
-
-                        }
-                        break;
-                    case "http://gnoss.com/items/offerstate_002":
-                        // Es el creador de la oferta
-                        // Puede pasar la oferta a borrador
-                        if (typeUser == "own" || typeUser == "otri") 
-                        {
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_001"
-                            txtEnviar = "@Html.Translate("ENVIAR_BORRADOR")"
-                            targetModalId = ""
-                            estados.push({ idEstadoOFerta, txtEnviar, icono })
-
-                        }
-                        // Es el gestor otri
-                        // Puede pasar la oferta a borrador
-                        if (typeUser == "otri")
-                        {
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_002";
-                            txtEnviar = "@Html.Translate("MEJORAR")"
-                            targetModalId = "modal-enviar-comentario"
-                            estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
-
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_003";
-                            txtEnviar = "@Html.Translate("VALIDAR")"
-                            targetModalId = ""
-                            estados.push({ idEstadoOFerta, txtEnviar, icono })
-
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_004";
-                            txtEnviar = "@Html.Translate("DENEGAR")"
-                            targetModalId = "modal-enviar-comentario"
-                            estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
-
-                        }
-                        break;
-                    case "http://gnoss.com/items/offerstate_003":
-                        if (typeUser == "otri")
-                        {
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
-                            txtEnviar = "@Html.Translate("ARCHIVAR")"
-                            targetModalId = "modal-enviar-comentario"
-                            estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
-
-                            targetModalId = ""
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
-                            txtEnviar = "@Html.Translate("ENVIAR_BORRADOR")"
-                            estados.push({ idEstadoOFerta, txtEnviar, icono })
-                        }
-                        break;
-                    case "http://gnoss.com/items/offerstate_004":
-                        if (typeUser == "own") 
-                        {
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
-                            txtEnviar = "@Html.Translate("ENVIAR_BORRADOR")"
-                            targetModalId = ""
-                            estados.push({ idEstadoOFerta, txtEnviar, icono })
-
-                        }
-                        if (typeUser == "otri")
-                        {
-                            idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
-                            txtEnviar = "@Html.Translate("ARCHIVAR")"
-                            targetModalId = ""
-                            icono = "delete"
-                            estados.push({ idEstadoOFerta, txtEnviar, icono })
-                        }
-                        break;
-
-                }
-
-                if ((typeUser == "own" || typeUser == "otri" || typeuser == "ip") && (idEstadoOFerta == "http://gnoss.com/items/offerstate_001" || idEstadoOFerta == "http://gnoss.com/items/offerstate_002"))
-                {
-                    idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
-                    txtEnviar = "@Html.Translate("BORRAR")"
-                    icono = "delete"
-                    targetModalId = "modal-eliminar-oferta-confirmacion"
-                    estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
-                } 
-
-                return estados
-
-
-            }
 
         </script>
     }
