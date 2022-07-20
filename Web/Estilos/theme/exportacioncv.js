@@ -13,7 +13,6 @@ var exportacionCV = {
 	config: function(){
 		var that = this;
 		that.cargarListadoCV();
-		cambiarTipoExportacion();
 		
 		//Preparar exportación
 		$('.btGenerarExportarCV').off('click').on('click', function(e) {            
@@ -79,6 +78,8 @@ var exportacionCV = {
 				that.cargarListadoCV();
 			});
         });
+		
+		cambiarTipoExportacion();
 	},
 	//Carga los CV exportados
     cargarListadoCV: function() {
@@ -251,9 +252,9 @@ var exportacionCV = {
 
 
 function cambiarTipoExportacion(){
-	$('#ddlExportacion').off('change').on('change', function(e){
+	$('#ddlTipoExportacion').change( function(e){
 		e.preventDefault();
-		var tipoExportacion = $("#ddlExportacion").find("option:selected").val();
+		var tipoExportacion = $("#ddlTipoExportacion").find("option:selected").val();
 		if(tipoExportacion == "PN2008"){
 			//CVN
 			// Muestro "Total" y asigno por defecto "Total"
