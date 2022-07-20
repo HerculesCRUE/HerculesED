@@ -1131,7 +1131,7 @@ namespace EditorCV.Models
 
             //Ultimos 5 años
             item.isChecked = false;
-            if (last5Years.always)
+            if (last5Years != null && last5Years.always)
             {
                 item.isChecked = true;
             }
@@ -1157,61 +1157,64 @@ namespace EditorCV.Models
                 }
             }
 
-            foreach (string propertyIn in listadoPropiedades)
+            if (last5Years != null)
             {
-                string propEnd = "";
-                if (item.isChecked)
+                foreach (string propertyIn in listadoPropiedades)
                 {
-                    break;
-                }
-                if (listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.end))
-                {
-                    propEnd = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.end)).First();
-                    if (!string.IsNullOrEmpty(propEnd))
+                    string propEnd = "";
+                    if (item.isChecked)
                     {
-                        List<string> value = GetPropValues(pId, propEnd, pData);
-
-                        if (value.Count > 0)
+                        break;
+                    }
+                    if (listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.end))
+                    {
+                        propEnd = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.end)).First();
+                        if (!string.IsNullOrEmpty(propEnd))
                         {
-                            string fecha = value.First();
-                            int anio = int.Parse(fecha.Substring(0, 4));
-                            int mes = int.Parse(fecha.Substring(4, 2));
-                            int dia = int.Parse(fecha.Substring(6, 2));
-                            int horas = int.Parse(fecha.Substring(8, 2));
-                            int minutos = int.Parse(fecha.Substring(10, 2));
-                            int segundos = int.Parse(fecha.Substring(12, 2));
-                            DateTime dateTime = new DateTime(anio, mes, dia);
-                            DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
+                            List<string> value = GetPropValues(pId, propEnd, pData);
 
-                            if (dateTime > dateMenos5Anio)
+                            if (value.Count > 0)
                             {
-                                item.isChecked = true;
+                                string fecha = value.First();
+                                int anio = int.Parse(fecha.Substring(0, 4));
+                                int mes = int.Parse(fecha.Substring(4, 2));
+                                int dia = int.Parse(fecha.Substring(6, 2));
+                                int horas = int.Parse(fecha.Substring(8, 2));
+                                int minutos = int.Parse(fecha.Substring(10, 2));
+                                int segundos = int.Parse(fecha.Substring(12, 2));
+                                DateTime dateTime = new DateTime(anio, mes, dia);
+                                DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
+
+                                if (dateTime > dateMenos5Anio)
+                                {
+                                    item.isChecked = true;
+                                }
                             }
                         }
                     }
-                }
-                else if(propEnd == null && listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.start))
-                {
-                    string propStart = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.start)).First();
-                    if (!string.IsNullOrEmpty(propStart))
+                    else if (propEnd == null && listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.start))
                     {
-                        List<string> value = GetPropValues(pId, propStart, pData);
-
-                        if (value.Count > 0)
+                        string propStart = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.start)).First();
+                        if (!string.IsNullOrEmpty(propStart))
                         {
-                            string fecha = value.First();
-                            int anio = int.Parse(fecha.Substring(0, 4));
-                            int mes = int.Parse(fecha.Substring(4, 2));
-                            int dia = int.Parse(fecha.Substring(6, 2));
-                            int horas = int.Parse(fecha.Substring(8, 2));
-                            int minutos = int.Parse(fecha.Substring(10, 2));
-                            int segundos = int.Parse(fecha.Substring(12, 2));
-                            DateTime dateTime = new DateTime(anio, mes, dia);
-                            DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
+                            List<string> value = GetPropValues(pId, propStart, pData);
 
-                            if (dateTime > dateMenos5Anio)
+                            if (value.Count > 0)
                             {
-                                item.isChecked = true;
+                                string fecha = value.First();
+                                int anio = int.Parse(fecha.Substring(0, 4));
+                                int mes = int.Parse(fecha.Substring(4, 2));
+                                int dia = int.Parse(fecha.Substring(6, 2));
+                                int horas = int.Parse(fecha.Substring(8, 2));
+                                int minutos = int.Parse(fecha.Substring(10, 2));
+                                int segundos = int.Parse(fecha.Substring(12, 2));
+                                DateTime dateTime = new DateTime(anio, mes, dia);
+                                DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
+
+                                if (dateTime > dateMenos5Anio)
+                                {
+                                    item.isChecked = true;
+                                }
                             }
                         }
                     }
@@ -1309,7 +1312,7 @@ namespace EditorCV.Models
                     }
                 }
             }
-            
+
 
             //Multiidiomas cargados
             item.multilang = new Dictionary<string, bool>();
@@ -1464,7 +1467,7 @@ namespace EditorCV.Models
                     }
                 }
             }
-            
+
             return item;
         }
 
