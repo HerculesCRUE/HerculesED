@@ -55,7 +55,7 @@ namespace Hercules.ED.UpdateKeywords
                             string[] partes = etiquetaTag.Value.Split(" ");
 
                             // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
-                            // debido al excesivo tamaño de la query. TODO: ¿Hacerlo en dos peticiones?
+                            // debido al excesivo tamaño de la query. 
                             if (partes.Count() <= 3)
                             {
                                 dicResultados = ConsultarDatos(utilKeywords, partes);

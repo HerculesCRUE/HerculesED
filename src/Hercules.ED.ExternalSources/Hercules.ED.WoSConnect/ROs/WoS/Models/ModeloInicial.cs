@@ -25,7 +25,7 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
         public string pubtype { get; set; }
         public Page page { get; set; }
         public string has_citation_context { get; set; }
-        public string? supplement { get; set; }
+        public string supplement { get; set; }
         public string special_issue { get; set; }
         public object issue { get; set; }
     }
@@ -127,7 +127,6 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     {
         public ConfDates conf_dates { get; set; }
         public int conf_id { get; set; }
-        public Sponsors sponsors { get; set; }
         public ConfInfos conf_infos { get; set; }
         public ConfLocations conf_locations { get; set; }
         public ConfTitles conf_titles { get; set; }
