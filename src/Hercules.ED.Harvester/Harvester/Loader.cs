@@ -64,50 +64,53 @@ namespace Harvester
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
-
             //Compruebo que no hay ficheros pendientes de procesar
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
-            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
-            mResourceApi.ChangeOntoly("patent");
+            //mResourceApi.ChangeOntoly("organization");
+            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            //mResourceApi.ChangeOntoly("person");
+            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            //mResourceApi.ChangeOntoly("project");
+            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+            //mResourceApi.ChangeOntoly("projectauthorization");
+            //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
+            //mResourceApi.ChangeOntoly("group");
+            //ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
+            //mResourceApi.ChangeOntoly("patent");
             //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
-
-            //TODO eliminar
-
 
             string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
             fecha = "1900-01-01T00:00:00Z";
 
             //Genero los ficheros con los datos a procesar desde la fecha
-            GuardarIdentificadores(_Config, "Organizacion", fecha);
-            GuardarIdentificadores(_Config, "Persona", fecha);
+            //GuardarIdentificadores(_Config, "Organizacion", fecha);
+            //GuardarIdentificadores(_Config, "Persona", fecha);
             GuardarIdentificadores(_Config, "Proyecto", fecha);
-            GuardarIdentificadores(_Config, "PRC", fecha, true);
-            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            GuardarIdentificadores(_Config, "Grupo", fecha);
+            //GuardarIdentificadores(_Config, "PRC", fecha, true);
+            //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+            //GuardarIdentificadores(_Config, "Grupo", fecha);
             //GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
 
             //Proceso los ficheros
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+
+            // Organizaciones. Terminado
+            //mResourceApi.ChangeOntoly("organization");
+            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+
+            // Personas. Datos no usables, revisar propiedades de las personas.
             //mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+
+            // Proyectos.
             mResourceApi.ChangeOntoly("project");
-            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+
             //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
+            //mResourceApi.ChangeOntoly("projectauthorization");
+            //ProcesarFichero(_Config, "AutorizacionProyecto");
             //mResourceApi.ChangeOntoly("group");
             //ProcesarFichero(_Config, "Grupo");
             //mResourceApi.ChangeOntoly("patent");
@@ -761,7 +764,7 @@ namespace Harvester
                     persona.IdFoaf_gender = $@"{mResourceApi.GraphsUrl}items/gender_000";
                 }
                 else
-                {                    
+                {
                     persona.IdFoaf_gender = $@"{mResourceApi.GraphsUrl}items/gender_010";
                 }
             }
