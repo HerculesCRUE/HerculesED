@@ -1890,7 +1890,7 @@
                           "es": "Editorial"
                         },
                         "placeholder": {
-                          "es": "Introduce la ediorial"
+                          "es": "Introduce la editorial"
                         },
                         "property": "http://purl.org/ontology/bibo/publisher",
                         "type": "text",
@@ -3015,7 +3015,7 @@
                           "es": "Editorial"
                         },
                         "placeholder": {
-                          "es": "Introduce la ediorial"
+                          "es": "Introduce la editorial"
                         },
                         "property": "http://purl.org/ontology/bibo/publisher",
                         "type": "text",
