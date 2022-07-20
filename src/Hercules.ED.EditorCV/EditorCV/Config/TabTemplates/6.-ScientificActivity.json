@@ -553,6 +553,7 @@
                         "placeholder": {
                           "es": "Introduce la url del documento"
                         },
+                        "editable": true,
                         "property": "http://w3id.org/roh/hasFile",
                         "type": "text",
                         "width": 3
@@ -1749,6 +1750,7 @@
                         "placeholder": {
                           "es": "Introduce la url del documento"
                         },
+                        "editable": true,
                         "property": "http://w3id.org/roh/hasFile",
                         "type": "text",
                         "width": 3
@@ -2936,6 +2938,7 @@
                         "placeholder": {
                           "es": "Introduce la url del documento"
                         },
+                        "editable": true,
                         "property": "http://w3id.org/roh/hasFile",
                         "type": "text",
                         "width": 3
