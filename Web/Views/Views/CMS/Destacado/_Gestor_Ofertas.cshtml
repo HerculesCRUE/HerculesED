@@ -107,6 +107,12 @@
         <!-- JAVASCRIPT -->
         <script type="text/javascript">
 
+            // Constantes
+            const urlCambioEstado = url_servicio_externo + "Ofertas/CambiarEstado"
+            const urlCambioEstadoAll = url_servicio_externo + "Ofertas/CambiarEstadoAll"
+            const urlBorrarOferta = url_servicio_externo + "Ofertas/BorrarOferta"
+
+
             // Selectores seleccionados
             var currentsSelected = []
             var currentsIds = []
@@ -135,7 +141,6 @@
             */
             cambiarEstado = {
                 config(id, estado, estadoActual) {
-                    this.url = url_servicio_externo + "Ofertas/CambiarEstado"
                     this.arg = {
                         pIdOfferId: id,
                         estado: estado,
@@ -144,13 +149,12 @@
                     };
                 },
                 borrarOferta() {
-                    this.url = url_servicio_externo + "Ofertas/BorrarOferta"
-                    $.get(url, arg, function (data) {
+                    $.get(urlBorrarOferta, this.arg, function (data) {
                         window.location = "@Comunidad.Url/@Html.Translate("OFERTA_URL")"
                     });
                 },
                 sendPost() {
-                    $.post(this.url, this.arg, function (data) {
+                    $.post(urlCambioEstado, this.arg, function (data) {
                         location.reload()
                     });
                 },
@@ -163,6 +167,20 @@
                     this.config(id, estado, estadoActual)
                     this.sendPost()
                 },
+                sendAll(ids, estado, estadoActual) {
+                    // Set init config
+                    let _arg = {
+                        pIdOfferIds: ids,
+                        estado: estado,
+                        estadoActual: estadoActual,
+                        pIdGnossUser: "@IdentidadActual.KeyUser",
+                    };
+                    // Post Call
+                    $.post(urlCambioEstadoAll, _arg, function (data) {
+                        location.reload()
+                    });
+                },
+
                 setModal(id, estado, estadoActual, idModal) {
                     this.config(id, estado, estadoActual)
                     this.modal = $("#"+idModal)
@@ -221,15 +239,15 @@
                                     <span class="texto">@Html.Translate("ENVIAR_A")</span>
                                 </a>
                                 <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll('all','http://gnoss.com/items/offerstate_001', 'http://gnoss.com/items/offerstate_002')">
+                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_001', 'http://gnoss.com/items/offerstate_002')">
                                         <span class="material-icons">send</span>
                                         <span class="texto">@Html.Translate("REVISION")</span>
                                     </a>
-                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll('all','http://gnoss.com/items/offerstate_003', 'http://gnoss.com/items/offerstate_002')">
+                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_003', 'http://gnoss.com/items/offerstate_002')">
                                         <span class="material-icons">send</span>
                                         <span class="texto">@Html.Translate("VALIDAR")</span>
                                     </a>
-                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll('all','http://gnoss.com/items/offerstate_004', 'http://gnoss.com/items/offerstate_002')">
+                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_004', 'http://gnoss.com/items/offerstate_002')">
                                         <span class="material-icons">send</span>
                                         <span class="texto">@Html.Translate("DENEGAR")</span>
                                     </a>
