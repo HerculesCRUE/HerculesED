@@ -13,9 +13,11 @@ namespace Harvester
         // Archivo de configuración.
         public static IConfigurationRoot configuracion;
 
+        private string urlOaipmh { get; set; }
+
         // Rutas.
-        private static string dirLogCargas { get; set; }
-        private static string lastUpdateDateFile { get; set; }
+        private string dirLogCargas { get; set; }
+        private string lastUpdateDateFile { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -23,6 +25,31 @@ namespace Harvester
         public ReadConfig()
         {
             configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}/Config/appsettings.json").Build();
+        }
+
+        /// <summary>
+        /// Obtiene la URL del servidor OAI-PMH.
+        /// </summary>
+        /// <returns></returns>
+        public string GetUrlOaiPmh()
+        {
+            if (string.IsNullOrEmpty(urlOaipmh))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("Url_OAI-PMH"))
+                {
+                    connectionString = environmentVariables["Url_OAI-PMH"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["Url_OAI-PMH"];
+                }
+
+                urlOaipmh = connectionString;
+            }
+
+            return urlOaipmh;
         }
 
         /// <summary>

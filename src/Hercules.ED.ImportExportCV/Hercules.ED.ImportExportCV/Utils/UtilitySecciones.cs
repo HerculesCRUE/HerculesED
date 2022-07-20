@@ -123,6 +123,8 @@ namespace Utils
                     string where = $@"where {{
                                 ?identificador a <http://w3id.org/roh/MainDocument> .
                                 ?identificador <http://w3id.org/roh/title> ?nombreRevista .
+                                #OPTIONAL{{ ?identificador <http://purl.org/ontology/bibo/issn> ?issn }}
+                                #OPTIONAL{{ ?identificador <http://purl.org/ontology/bibo/editor> ?editorial }}
                              }} ORDER BY ?nombreRevista
                         }} LIMIT {limit} OFFSET {offsetInt} ";
                     SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "maindocument");
@@ -412,20 +414,15 @@ namespace Utils
         /// <param name="propiedadAutorSegundoApellido">propiedadAutorSegundoApellido</param>
         public static void InsertaAutorProperties(List<CvnItemBeanCvnAuthorBean> listaAutores, Entity entidadAux, string propiedadAutorFirma, string propiedadAutorOrden,
             string propiedadAutorNombre, string propiedadAutorPrimerApellido, string propiedadAutorSegundoApellido)
-        {
-            // En caso de no tener firma, la creo con la concatenación del nombre y los apellidos
-            if (string.IsNullOrEmpty(propiedadAutorFirma) && !string.IsNullOrEmpty(propiedadAutorNombre) &&
-                !string.IsNullOrEmpty(propiedadAutorPrimerApellido) || !string.IsNullOrEmpty(propiedadAutorSegundoApellido))
-            {
-                propiedadAutorFirma = propiedadAutorNombre + " " + propiedadAutorPrimerApellido;
-                propiedadAutorFirma = propiedadAutorFirma.Trim() + " " + propiedadAutorSegundoApellido.Trim();
-            }
+        {            
 
             //No hago nada si no se pasa la propiedad.
             if (string.IsNullOrEmpty(propiedadAutorFirma) || string.IsNullOrEmpty(propiedadAutorOrden) ||
                 string.IsNullOrEmpty(propiedadAutorNombre) || string.IsNullOrEmpty(propiedadAutorPrimerApellido) ||
                 string.IsNullOrEmpty(propiedadAutorSegundoApellido))
-            { return; }
+            { 
+                return; 
+            }
 
             foreach (CvnItemBeanCvnAuthorBean autor in listaAutores)
             {
@@ -444,9 +441,11 @@ namespace Utils
                 string valorSegundoApellido = StringGNOSSID(entityPartAux, autor.GetSegundoApellidoAutor());
 
                 //Si no tiene ningun valor no lo inserto
-                if (string.IsNullOrEmpty(valorFirma) || string.IsNullOrEmpty(valorOrden) ||
-                    string.IsNullOrEmpty(valorNombre) || string.IsNullOrEmpty(valorPrimerApellido) ||
-                    string.IsNullOrEmpty(valorSegundoApellido)) { continue; }
+                if (string.IsNullOrEmpty(valorFirma) && string.IsNullOrEmpty(valorOrden) &&
+                    string.IsNullOrEmpty(valorNombre) && string.IsNullOrEmpty(valorPrimerApellido) &&
+                    string.IsNullOrEmpty(valorSegundoApellido)) {
+                    continue;
+                }
 
                 CheckProperty(propertyFirma, entidadAux, valorFirma, propiedadAutorFirma);
                 CheckProperty(propertyOrden, entidadAux, valorOrden, propiedadAutorOrden);

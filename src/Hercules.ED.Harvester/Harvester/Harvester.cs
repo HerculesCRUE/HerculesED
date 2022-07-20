@@ -29,7 +29,7 @@ namespace Harvester
             // Obtención de los IDs.
             HashSet<string> listaIdsSinRepetir = new HashSet<string>();
 
-            List<IdentifierOAIPMH> idList = HaversterServices.ListIdentifiers(pFecha, set: pSet);
+            List<IdentifierOAIPMH> idList = HaversterServices.ListIdentifiers(pFecha, pConfig, set: pSet);
             foreach (var id in idList)
             {
                 listaIdsSinRepetir.Add(id.Identifier);
@@ -54,7 +54,7 @@ namespace Harvester
             // Obtención de los IDs.
             HashSet<string> listaIdsSinRepetir = new HashSet<string>();
 
-            List<ListRecordsOAIPMH> idList = HaversterServices.ListRecords(pFecha, set: pSet);
+            List<ListRecordsOAIPMH> idList = HaversterServices.ListRecords(pFecha, pConfig, set: pSet);
             foreach (var id in idList)
             {
                 listaIdsSinRepetir.Add(id.Identifier + "||" + id.Estado);

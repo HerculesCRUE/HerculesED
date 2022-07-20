@@ -8,7 +8,7 @@
         public const string direccionTesisTipoProyecto = "http://w3id.org/roh/projectCharacterType";
         public const string direccionTesisTipoProyectoOtros = "http://w3id.org/roh/projectCharacterTypeOther";
         public const string direccionTesisTituloTrabajo = "http://w3id.org/roh/title";
-        public const string direccionTesisCodirectorTesisOrden = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/Person|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
+        public const string direccionTesisCodirectorTesisOrden = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://www.w3.org/1999/02/22-rdf-syntax-ns#comment";
         public const string direccionTesisCodirectorTesisFirma = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
         public const string direccionTesisCodirectorTesisNombre = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
         public const string direccionTesisCodirectorTesisPrimerApellido = "http://w3id.org/roh/codirector@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";

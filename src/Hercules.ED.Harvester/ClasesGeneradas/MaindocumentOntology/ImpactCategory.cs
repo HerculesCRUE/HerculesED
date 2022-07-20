@@ -15,7 +15,6 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using ImpactIndexCategory = ImpactindexcategoryOntology.ImpactIndexCategory;
 
 namespace MaindocumentOntology
 {
@@ -32,11 +31,7 @@ namespace MaindocumentOntology
 			this.Roh_journalNumberInCat = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalNumberInCat"));
 			this.Roh_publicationPosition = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationPosition"));
 			this.Roh_quartile = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/quartile")).Value;
-			SemanticPropertyModel propRoh_impactIndexCategory = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexCategory");
-			if(propRoh_impactIndexCategory != null && propRoh_impactIndexCategory.PropertyValues.Count > 0)
-			{
-				this.Roh_impactIndexCategory = new ImpactIndexCategory(propRoh_impactIndexCategory.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
+			this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/ImpactCategory"; } }
@@ -52,11 +47,8 @@ namespace MaindocumentOntology
 		[RDFProperty("http://w3id.org/roh/quartile")]
 		public  int Roh_quartile { get; set;}
 
-		[LABEL(LanguageEnum.es,"Categoría del índice de impacto")]
-		[RDFProperty("http://w3id.org/roh/impactIndexCategory")]
-		[Required]
-		public  ImpactIndexCategory Roh_impactIndexCategory  { get; set;} 
-		public string IdRoh_impactIndexCategory  { get; set;} 
+		[RDFProperty("http://w3id.org/roh/title")]
+		public  string Roh_title { get; set;}
 
 
 		internal override void GetProperties()
@@ -65,7 +57,7 @@ namespace MaindocumentOntology
 			propList.Add(new StringOntologyProperty("roh:journalNumberInCat", this.Roh_journalNumberInCat.ToString()));
 			propList.Add(new StringOntologyProperty("roh:publicationPosition", this.Roh_publicationPosition.ToString()));
 			propList.Add(new StringOntologyProperty("roh:quartile", this.Roh_quartile.ToString()));
-			propList.Add(new StringOntologyProperty("roh:impactIndexCategory", this.IdRoh_impactIndexCategory));
+			propList.Add(new StringOntologyProperty("roh:title", this.Roh_title));
 		}
 
 		internal override void GetEntities()
@@ -76,79 +68,11 @@ namespace MaindocumentOntology
 
 
 
-		protected List<object> ObtenerObjetosDePropiedad(object propiedad)
-		{
-			List<object> lista = new List<object>();
-			if(propiedad is IList)
-			{
-				foreach (object item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else
-			{
-				lista.Add(propiedad);
-			}
-			return lista;
-		}
-		protected List<string> ObtenerStringDePropiedad(object propiedad)
-		{
-			List<string> lista = new List<string>();
-			if (propiedad is IList)
-			{
-				foreach (string item in (IList)propiedad)
-				{
-					lista.Add(item);
-				}
-			}
-			else if (propiedad is IDictionary)
-			{
-				foreach (object key in ((IDictionary)propiedad).Keys)
-				{
-					if (((IDictionary)propiedad)[key] is IList)
-					{
-						List<string> listaValores = (List<string>)((IDictionary)propiedad)[key];
-						foreach(string valor in listaValores)
-						{
-							lista.Add(valor);
-						}
-					}
-					else
-					{
-					lista.Add((string)((IDictionary)propiedad)[key]);
-					}
-				}
-			}
-			else if (propiedad is string)
-			{
-				lista.Add((string)propiedad);
-			}
-			return lista;
-		}
-
-		private string GenerarTextoSinSaltoDeLinea(string pTexto)
-		{
-			return pTexto.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Replace("\"", "\\\"");
-		}
 
 
 
-		private void AgregarTripleALista(string pSujeto, string pPredicado, string pObjeto, List<string> pLista, string pDatosExtra)
-		{
-			if(!string.IsNullOrEmpty(pObjeto) && !pObjeto.Equals("\"\"") && !pObjeto.Equals("<>"))
-			{
-				pLista.Add($"<{pSujeto}> <{pPredicado}> {pObjeto}{pDatosExtra}");
-			} 
-		} 
 
-		private void AgregarTags(List<string> pListaTriples)
-		{
-			foreach(string tag in tagList)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://rdfs.org/sioc/types#Tag", tag.ToLower(), pListaTriples, " . ");
-			}
-		}
+
 
 
 	}
