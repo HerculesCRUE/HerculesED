@@ -16,6 +16,8 @@
         "information": {
           "es": "En este apartado se consignarán los datos relativos a la calidad del investigador utilizando como sistema de medición el índice H, uno de los indicadores más relevantes del impacto de la producción científica, que combina el número de publicaciones con su impacto medido por el número de citas. El índice H puede obtenerse en las siguientes fuentes de información: ISI Web of Science (WOS), disponible en https://www.accesowok.fecyt.es/wp-content/uploads/2014/03/RMws-wok-25_02_2014_SpaRM.pdf; Scopus, en http://www.scopus.fecyt.es/; y SCImago Journal & Country Rank, en http://www.scimagojr.com/. Para ampliar la información sobre la Web of Science (WOS) puede consultarse la siguiente guía: https://www.accesowok.fecyt.es/wp-content/uploads/2014/03/RMws-wok-25_02_2014_SpaRM.pdf."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -217,6 +219,8 @@
         "information": {
           "es": "En este apartado se consignarán los indicadores de calidad de la producción científica que el titular del CV considere más relevante destacar. La amplitud de este aparado no debe superar los 3.500 caracteres, incluyendo espacios en blanco."
         },
+        "cvaISCIII": true,
+        "cvaAEI": false,
         "itemPresentation": {
           "last5Years": {
             "always": true
@@ -263,6 +267,8 @@
         "information": {
           "es": "En este apartado se consignarán los trabajos de carácter científico y tecnológico publicados en cualquier soporte, condición de autoría/coautoría y material, incluyéndose notas críticas o recensiones, catálogos de obras artísticas, documentos o informes científicos y técnicos, obras de carácter divulgativo y revisiones, con una única excepción, relativa a las publicaciones específicamente orientadas al ámbito docente, que serán consignadas en el apartado 'Publicaciones docentes o de carácter pedagógico libros artículos etc.', disponible dentro del módulo 4 'Actividad docente'."
         },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -1442,6 +1448,8 @@
         "information": {
           "es": "En este apartado se consignará la participación (como organizador, director, comunicante, ponente, ponente invitado, etc.) y las contribuciones realizadas en congresos científicos, técnicos y tecnológicos de carácter nacional y/o internacional. Tenga en cuenta que el apartado siguiente está destinado a especificar las aportaciones realizadas en jornadas, seminarios, talleres de trabajo, simposios, cursos y otros eventos afines."
         },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -2630,6 +2638,8 @@
         "information": {
           "es": "En este apartado se consignará la participación (como organizador, director, comunicante, ponente, ponente invitado, etc.) y las contribuciones realizadas en reuniones de carácter científico, técnico y tecnológico como jornadas, seminarios, talleres de trabajo, simposios, cursos y otros eventos afines, de carácter nacional y/o internacional. Tenga en cuenta que el apartado anterior está dedicado a especificar las contribuciones realizadas en congresos científicos, técnicos y tecnológicos."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -3774,6 +3784,8 @@
         "information": {
           "es": "En este apartado se consignarán otras formas de divulgación científica y/o técnica derivadas de la participación en otros eventos no expresados anteriormente, como conferencias impartidas, entrevistas en medios de comunicación, participación en ferias y/o exhibiciones, etc."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -4841,6 +4853,8 @@
         "information": {
           "es": "En este apartado se consignarán los datos relativos a la participación en comités científicos, técnicos, asesores y/u otros organismos de asesoramiento y consulta en materias científicas relevantes y representaciones nacionales e internacionales."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -5426,6 +5440,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia en la organización y planificación de actividades y/o eventos científicos, técnicos y/o tecnológicos públicos y privados, nacionales e internacionales, como congresos, seminarios, jornadas, exposiciones, ferias, etc. La organización de un evento se relaciona con el establecimiento de objetivos, la planificación y programación de actividades (tiempo y fases) y con la organización y gestión de los recursos necesarios para alcanzar los objetivos fijados."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -6138,6 +6154,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia en el desempeño de cargos de dirección y/o administración en el entorno educativo, científico, técnico y/o tecnológico, público y privado, nacional e internacional."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -6928,6 +6946,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia en el desempeño de funciones en delegaciones y representaciones españolas destacadas ante organizaciones y/o foros internacionales. Entre éstas, cabe destacar las oficinas consulares, misiones diplomáticas permanentes y especiales, representaciones permanentes ante una organización internacional, delegaciones e instituciones y organismos públicos de la Administración General del Estado cuya actuación se desarrolle en el exterior (Ley 6/1997, de 14 de abril, de Organización y Funcionamiento de la Administración General del Estado, LOFAGE)."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -7603,6 +7623,8 @@
         "information": {
           "es": "En este apartado se consignará la experiencia profesional realizando actividades de evaluación de I+D+i en alguna de las agencias del sistema nacional y/o autonómico de evaluación científica (ANEP, Agencia Nacional de Evaluación y Prospectiva; CNEAI. Comisión Nacional de Evaluación de la Actividad Investigadora; ANECA. Agencia Nacional de Evaluación de la Calidad y Acreditación, etc.), así como los trabajos de revisión de artículos realizados para publicaciones académicas y científicas con el fin de evaluar su calidad, originalidad, factibilidad, rigor científico, etc. antes de su publicación. Se consideran especialmente relevantes los que se hayan desarrollado para revistas indexadas en el Journal Citation Reports o repertorio equivalente en cada especialidad"
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -8212,6 +8234,8 @@
         "information": {
           "es": " En este apartado se consignarán los datos relacionados con estancias de movilidad temporal del titular del CV en centros I+D+i de enseñanza superior y/o de investigación de titularidad pública o privada, nacionales e internacionales, con una única excepción, relativa a las estancias realizadas en el ámbito de la docencia, que deberán consignarse en el módulo 3 'Formación académica recibida', apartado 'Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la docencia'. Las estancias son periodos de tiempo de corta/media/larga duración que el investigador desarrolla de forma continuada en otro centro de investigación de prestigio diferente a la institución a la que esté adscrito y/o en la que estudia máster o doctorado, desarrollando actividades de investigación y/o docencia. Para mayor información, puede consultarse: http://www.idi.mineco.gob.es/stfls/MICINN/Ayudas/PE_2013_2016/PE_Promocion_e_Incorporacion_Talento_y_su_Empleabilidad/AYUDAS/SE_Movilidad/Consultas_frecuentes_EEBB2014_V01.pdf."
         },
+        "cvaISCIII": true,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -9074,6 +9098,8 @@
         "information": {
           "es": "En este apartado se consignarán todas las ayudas económicas y/o becas de titularidad pública o privada, nacionales e internacionales, de las que haya sido beneficiario el titular del CV. Aunque en el apartado donde se ha acreditado el mérito causante de la ayuda y/o beca, se haya constatado la existencia de ésta, se recomienda su especificación en este apartado."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -9681,6 +9707,8 @@
         "information": {
           "es": "En este apartado se consignarán los datos relativos a otros modos de colaboración con equipos de investigación científicos, técnicos y/o tecnológicos de otros centros de I+D, tanto públicos como privados (incluida la colaboración mixta público-privada en cualquiera de sus modalidades), nacionales o internacionales, de reconocido prestigio a criterio del titular del CV."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -10408,6 +10436,8 @@
         "information": {
           "es": "En este apartado se consignará la relación de pertenencia como miembro de sociedades científicas, literarias o artísticas establecidas con autoridad pública (definición del DRAE al término 'academia': http://lema.rae.es/drae/?val=Academia), así como la pertenencia a sociedades y asociaciones nacionales e internacionales de carácter científico-técnico, tecnológico, académico y/o profesional (colegios profesionales, reales sociedades, patronatos de museos, fundaciones culturales, etc.). Quedan incluidas todas las modalidades de pertenencia: socios numerarios, socios honoríficos, corresponsales, agregados, protectores, etc."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -10945,6 +10975,8 @@
         "information": {
           "es": "En este apartado se consignará la participación y/o pertenencia a consejos editoriales de revistas científicas, consejos asesores o de redacción y comités editoriales."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -11589,6 +11621,8 @@
         "information": {
           "es": "En este apartado se consignarán las diferentes formas de participación y/o pertenencia a redes de cooperación nacional, regional e internacional, constituidas por entidades públicas o privadas: redes académicas, de investigación, temáticas, interdisciplinares, de innovación, institucionales, interinstitucionales, etc., que tengan relevancia en el ámbito científico. Las redes temáticas buscan promover y fortalecer la colaboración en áreas estratégicas de conocimiento, entre grupos de investigación científica, técnica y/o tecnológica de instituciones de educación superior, centros de investigación, empresas y/o laboratorios nacionales, con el fin de alcanzar soluciones articuladas y estructuradas que contribuyan a una mayor proyección nacional e internacional en dichas líneas de investigación."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -12286,6 +12320,8 @@
         "information": {
           "es": "En este apartado se consignarán los galardones que han sido otorgados al titular del CV: premios, menciones y/o distinciones obtenidos en recocimiento de la trayectoria académica y/o la calidad científica o profesional. Pueden especificarse, entre otros, los premios de licenciatura, premios extraordinarios de doctorado, premios pre y postdoctorales, etc. Aunque en el apartado donde se ha acreditado el mérito causante de la mención, distinción y/o premio se haya constatado la existencia de éste, se recomienda su especificación en este apartado. Los premios de innovación docente deberán consignarse en el módulo 4 'Actividad docente', apartado 'Premios de innovación docente recibidos'."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -12659,6 +12695,8 @@
         "information": {
           "es": "En este apartado se consignarán otras distinciones y/o prerrogativas otorgadas al titular del CV durante su carrera profesional y/o empresarial que sean atribuibles al reconocimiento de la calidad y/o excelencia académica, científica, técnica y/o tecnológica, y que no hayan sido reseñadas anteriormente (en el apartado de 'Premios y distinciones' u otros)."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -13066,6 +13104,8 @@
         "information": {
           "es": " En este apartado se consignarán los períodos de actividad investigadora o sexenios evaluados favorablemente, así como cualquier otro procedimiento de evaluación cuya finalidad sea el reconocimiento de complementos específicos de investigación a partir de la obtención de tramos. Más info en: https://sede.educacion.gob.es/catalogo-tramites/organismos/sexenios-cneai.html y http://www.mecd.gob.es/ministerio-mecd/organizacion/organismos/cneai.html."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -13470,6 +13510,8 @@
         "information": {
           "es": "En este apartado se consignarán los períodos de actividad docente o quinquenios evaluados favorablemente con objeto de participar en un proceso de contratación o acceso a la función pública. Las agencias de evaluación son las responsables de asegurar el cumplimiento de unos estándares de calidad básicos en la evaluación de solicitudes de acreditación para el acceso a los cuerpos docentes universitarios. Más info en: http://www.aneca.es/. "
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -13855,6 +13897,8 @@
         "information": {
           "es": "En este apartado se consignarán otros méritos o especificaciones que se deseen hacer constar por el titular del CV y en particular, los referidos a la experiencia profesional en el ámbito de la divulgación de la ciencia y la tecnología."
         },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,

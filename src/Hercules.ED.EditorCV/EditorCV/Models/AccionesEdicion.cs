@@ -941,6 +941,8 @@ namespace EditorCV.Models
                         identifier = templateSection.property,
                         title = UtilityCV.GetTextLang(pLang, templateSection.presentation.title),
                         information = UtilityCV.GetTextLang(pLang, templateSection.presentation.information),
+                        cvaISCIII = templateSection.presentation.cvaISCIII,
+                        cvaAEI = templateSection.presentation.cvaAEI,
                         orders = new List<TabSectionPresentationOrder>()
                     };
                     switch (templateSection.presentation.type)

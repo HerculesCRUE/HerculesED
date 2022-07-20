@@ -10,12 +10,14 @@
       "property": "http://w3id.org/roh/firstSecondCycles",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignarán las enseñanzas universitarias y enseñanzas artísticas superiores, de carácter oficial y no oficial, cursadas por el titular del CV, comprendidas en los dos primeros ciclos (Grado, Máster), en los antiguos ciclos (Licenciado, Diplomado, Ingeniero Superior, Ingeniero Técnico, Arquitecto) y en los planes de estudios de enseñanzas artísticas superiores (Música y Danza, Arte Dramático, Conservación y Restauración de Bienes Culturales, Artes Plásticas y Diseño), de acuerdo con lo dispuesto en la Ley Orgánica 4/2007, de 12 de abril, por la que se modifica la Ley Orgánica 6/2001, de 21 de diciembre, de Universidades."
-        },
         "title": {
           "es": "Estudios de 1º y 2º ciclo, y antiguos ciclos (Licenciados, Diplomados, Ingenieros Superiores, Ingenieros Técnicos, Arquitectos)"
         },
+        "information": {
+          "es": "En este apartado se consignarán las enseñanzas universitarias y enseñanzas artísticas superiores, de carácter oficial y no oficial, cursadas por el titular del CV, comprendidas en los dos primeros ciclos (Grado, Máster), en los antiguos ciclos (Licenciado, Diplomado, Ingeniero Superior, Ingeniero Técnico, Arquitecto) y en los planes de estudios de enseñanzas artísticas superiores (Música y Danza, Arte Dramático, Conservación y Restauración de Bienes Culturales, Artes Plásticas y Diseño), de acuerdo con lo dispuesto en la Ley Orgánica 4/2007, de 12 de abril, por la que se modifica la Ley Orgánica 6/2001, de 21 de diciembre, de Universidades."
+        },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -614,12 +616,14 @@
       "property": "http://w3id.org/roh/doctorates",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignarán las enseñanzas universitarias de tercer ciclo o doctorado conducentes a la obtención del título de Doctor o Doctora, de carácter oficial y no oficial, cursadas por el titular del CV de acuerdo con lo dispuesto en el Real Decreto 99/2011, de 28 de enero, por el que se regulan las enseñanzas oficiales de doctorado."
-        },
         "title": {
           "es": "Doctorados"
         },
+        "information": {
+          "es": "En este apartado se consignarán las enseñanzas universitarias de tercer ciclo o doctorado conducentes a la obtención del título de Doctor o Doctora, de carácter oficial y no oficial, cursadas por el titular del CV de acuerdo con lo dispuesto en el Real Decreto 99/2011, de 28 de enero, por el que se regulan las enseñanzas oficiales de doctorado."
+        },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -1455,12 +1459,14 @@
       "property": "http://w3id.org/roh/languageSkills",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará el nivel de conocimiento en idiomas que posee el titular del CV."
-        },
         "title": {
           "es": "Conocimiento de idiomas"
         },
+        "information": {
+          "es": "En este apartado se consignará el nivel de conocimiento en idiomas que posee el titular del CV."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": true
@@ -1741,12 +1747,14 @@
       "property": "http://w3id.org/roh/postgraduates",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignarán otros títulos universitarios de segundo y tercer ciclo, de carácter oficial y no oficial (títulos propios u otros), cursados por el titular del CV y que no hayan sido especificados anteriormente."
-        },
         "title": {
           "es": "Otra formación universitaria de posgrado"
         },
+        "information": {
+          "es": "En este apartado se consignarán otros títulos universitarios de segundo y tercer ciclo, de carácter oficial y no oficial (títulos propios u otros), cursados por el titular del CV y que no hayan sido especificados anteriormente."
+        },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -2232,12 +2240,14 @@
       "property": "http://w3id.org/roh/specialisedTraining",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará toda la formación especializada (contenidos propios de su campo de conocimiento) recibida por el titular del CV de carácter permanente (aprendizaje a lo largo de la vida en el ámbito del conocimiento especializado ), continua (destinada a personas trabajadoras en activo que quieren ampliar conocimientos), ocupacional (dirigida a trabajadores/as en situación de desempleo), de reciclaje profesional y técnica que no tenga carácter oficial ni pertenezca al ámbito sanitario."
-        },
         "title": {
           "es": "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización (distinta a la formación académica reglada y a la sanitaria)"
         },
+        "information": {
+          "es": "En este apartado se consignará toda la formación especializada (contenidos propios de su campo de conocimiento) recibida por el titular del CV de carácter permanente (aprendizaje a lo largo de la vida en el ámbito del conocimiento especializado ), continua (destinada a personas trabajadoras en activo que quieren ampliar conocimientos), ocupacional (dirigida a trabajadores/as en situación de desempleo), de reciclaje profesional y técnica que no tenga carácter oficial ni pertenezca al ámbito sanitario."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -2780,12 +2790,14 @@
       "property": "http://w3id.org/roh/coursesAndSeminars",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la formación recibida por el titular del CV sobre metodología docente cuyo objetivo sea el perfeccionamiento, innovación y mejora de la práctica de la docencia, introducción de nuevas tecnologías, etc. (se incluye, entre otros, el Curso de Aptitud Pedagógica, CAP)."
-        },
         "title": {
           "es": "Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la docencia"
         },
+        "information": {
+          "es": "En este apartado se consignará la formación recibida por el titular del CV sobre metodología docente cuyo objetivo sea el perfeccionamiento, innovación y mejora de la práctica de la docencia, introducción de nuevas tecnologías, etc. (se incluye, entre otros, el Curso de Aptitud Pedagógica, CAP)."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
