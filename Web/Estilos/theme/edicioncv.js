@@ -117,6 +117,16 @@ var edicionCV = {
 			{
 				that.printTab(entityID, data,section);
 				OcultarUpdateProgress();
+				for(var key in tooltips.section) {
+					var value = tooltips.section[key];
+					$(key).tooltip({
+						html: true,
+						placement: 'bottom',
+						template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+						title: value
+					});
+					montarTooltip.comportamiento($(key));
+				}
 				if(data.sections.length>section+1)
 				{
 					that.completeTab(entityID,rdfType,section+1);
