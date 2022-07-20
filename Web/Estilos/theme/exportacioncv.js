@@ -250,7 +250,6 @@ var exportacionCV = {
     }
 };
 
-
 function cambiarTipoExportacion(){
 	$('#ddlTipoExportacion').change( function(e){
 		e.preventDefault();
@@ -265,7 +264,7 @@ function cambiarTipoExportacion(){
 			//CV abreviado
 			// Oculto "Total" y asigno por defecto "Seleccionar"
 			$($('.ddlSecciones .custom-control.themed.little.custom-radio')[0]).hide();
-			$($('.ddlSecciones .custom-control.themed.little.custom-radio input')[2]).prop('checked', true);
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio input')[1]).prop('checked', true);
 		}
 	});
 }

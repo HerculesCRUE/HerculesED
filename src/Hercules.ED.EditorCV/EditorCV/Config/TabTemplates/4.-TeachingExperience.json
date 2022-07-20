@@ -10,12 +10,14 @@
       "property": "http://w3id.org/roh/thesisSupervisions",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la experiencia académica en dirección de trabajos de síntesis realizados de manera tutelada en la fase final del plan de estudios -proyectos fin de grado (PFG), proyectos fin de carrera (PFC)-, así como la dirección de trabajos de inicio a la actividad investigadora -trabajos fin de máster (TFM), tesinas, tesis doctorales (TD), diplomas de estudios avanzados (DEA)-, tanto en universidades españolas como extranjeras."
-        },
         "title": {
           "es": "Dirección de tesis doctorales y/o proyectos fin de carrera"
         },
+        "information": {
+          "es": "En este apartado se consignará la experiencia académica en dirección de trabajos de síntesis realizados de manera tutelada en la fase final del plan de estudios -proyectos fin de grado (PFG), proyectos fin de carrera (PFC)-, así como la dirección de trabajos de inicio a la actividad investigadora -trabajos fin de máster (TFM), tesinas, tesis doctorales (TD), diplomas de estudios avanzados (DEA)-, tanto en universidades españolas como extranjeras."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -774,12 +776,14 @@
       "property": "http://w3id.org/roh/impartedAcademicTrainings",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la docencia impartida por el titular del CV en enseñanzas universitarias y enseñanzas artísticas superiores, de carácter oficial y no oficial comprendidas en los dos primeros ciclos (Grado, Máster), en los antiguos ciclos (Licenciado, Diplomado, Ingeniero Superior, Ingeniero Técnico, Arquitecto) y en los planes de estudios de enseñanzas artísticas superiores (Música y Danza, Arte Dramático, Conservación y Restauración de Bienes Culturales, Artes Plásticas y Diseño), de acuerdo con lo dispuesto en la Ley Orgánica 4/2007, de 12 de abril, por la que se modifica la Ley Orgánica 6/2001, de 21 de diciembre, de Universidades."
-        },
         "title": {
           "es": "Formación académica impartida"
         },
+        "information": {
+          "es": "En este apartado se consignará la docencia impartida por el titular del CV en enseñanzas universitarias y enseñanzas artísticas superiores, de carácter oficial y no oficial comprendidas en los dos primeros ciclos (Grado, Máster), en los antiguos ciclos (Licenciado, Diplomado, Ingeniero Superior, Ingeniero Técnico, Arquitecto) y en los planes de estudios de enseñanzas artísticas superiores (Música y Danza, Arte Dramático, Conservación y Restauración de Bienes Culturales, Artes Plásticas y Diseño), de acuerdo con lo dispuesto en la Ley Orgánica 4/2007, de 12 de abril, por la que se modifica la Ley Orgánica 6/2001, de 21 de diciembre, de Universidades."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -2299,12 +2303,14 @@
       "property": "http://w3id.org/roh/academicTutorials",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la experiencia docente como tutor/a académico/a en alguno de los procesos de aprendizaje relacionados con enseñanzas universitarias y enseñanzas artísticas superiores oficiales y no oficiales, tanto a nivel individual como grupal."
-        },
         "title": {
           "es": "Tutorías académicas de estudiantes"
         },
+        "information": {
+          "es": "En este apartado se consignará la experiencia docente como tutor/a académico/a en alguno de los procesos de aprendizaje relacionados con enseñanzas universitarias y enseñanzas artísticas superiores oficiales y no oficiales, tanto a nivel individual como grupal."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": true
@@ -2682,12 +2688,14 @@
       "property": "http://w3id.org/roh/impartedCoursesSeminars",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la experiencia del titular del CV impartiendo cursos, seminarios y otras acciones formativas afines sobre metodología docente en enseñanzas universitarias y enseñanzas artísticas superiores cuyo objetivo sea el perfeccionamiento, innovación y mejora de la práctica de la docencia (se incluye, entre otros, el Curso de Aptitud Pedagógica, CAP)."
-        },
         "title": {
           "es": "Cursos y seminarios impartidos orientados a la formación docente universitaria"
         },
+        "information": {
+          "es": "En este apartado se consignará la experiencia del titular del CV impartiendo cursos, seminarios y otras acciones formativas afines sobre metodología docente en enseñanzas universitarias y enseñanzas artísticas superiores cuyo objetivo sea el perfeccionamiento, innovación y mejora de la práctica de la docencia (se incluye, entre otros, el Curso de Aptitud Pedagógica, CAP)."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -3469,12 +3477,14 @@
       "property": "http://w3id.org/roh/teachingPublications",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la experiencia en la elaboración de material docente y otras publicaciones (libros y artículos) relacionadas con el ámbito de la docencia, cualquiera que sea el soporte utilizado."
-        },
         "title": {
           "es": "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc."
         },
+        "information": {
+          "es": "En este apartado se consignará la experiencia en la elaboración de material docente y otras publicaciones (libros y artículos) relacionadas con el ámbito de la docencia, cualquiera que sea el soporte utilizado."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -4478,12 +4488,14 @@
       "property": "http://w3id.org/roh/teachingProjects",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la participación en acciones y proyectos que hayan tenido un impacto en la práctica docente y hayan contribuido a la mejora de la calidad de la docencia presencial, semipresencial y/o virtual de la institución en la que se ha desarrollado. La innovación implica la utilización de un nuevo conocimiento o de una nueva combinación de conocimientos existentes."
-        },
         "title": {
           "es": "Participación en proyectos de innovación docente"
         },
+        "information": {
+          "es": "En este apartado se consignará la participación en acciones y proyectos que hayan tenido un impacto en la práctica docente y hayan contribuido a la mejora de la calidad de la docencia presencial, semipresencial y/o virtual de la institución en la que se ha desarrollado. La innovación implica la utilización de un nuevo conocimiento o de una nueva combinación de conocimientos existentes."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -5476,12 +5488,14 @@
       "property": "http://w3id.org/roh/teachingCongress",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignará la participación (como organizador, director, comunicante, ponente, ponente invitado, etc.) y las contribuciones realizadas en congresos, jornadas, seminarios u otros eventos orientados a la formación académica en enseñanzas universitarias y enseñanzas artísticas superiores. "
-        },
         "title": {
           "es": "Participación en congresos con ponencias orientadas a la formación docente"
         },
+        "information": {
+          "es": "En este apartado se consignará la participación (como organizador, director, comunicante, ponente, ponente invitado, etc.) y las contribuciones realizadas en congresos, jornadas, seminarios u otros eventos orientados a la formación académica en enseñanzas universitarias y enseñanzas artísticas superiores. "
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -6822,12 +6836,14 @@
       "property": "http://w3id.org/roh/teachingInnovationAwardsReceived",
       "presentation": {
         "type": "listitems  ",
-        "information": {
-          "es": "En este apartado se consignarán los premios obtenidos por el titular del CV como resultado de su participación en acciones y/o proyectos que hayan tenido un impacto en la práctica docente y hayan contribuido a la mejora de la calidad de la docencia presencial, semipresencial y/o virtual de la institución en la que se han desarrollado. La innovación implica la utilización de un nuevo conocimiento o de una nueva combinación de conocimientos existentes. Aunque en el apartado donde se ha acreditado el mérito causante del premio de innovación docente se haya constatado la existencia de éste, se recomienda su especificación en este apartado. Las demás menciones, distinciones y premios obtenidos deberán registrarse en el apartado 'Menciones, distinciones y premios obtenidos en el desarrollo del ejercicio profesional' del módulo 6, 'Actividad científica y tecnológica'."
-        },
         "title": {
           "es": "Premios de innovación docente recibidos"
         },
+        "information": {
+          "es": "En este apartado se consignarán los premios obtenidos por el titular del CV como resultado de su participación en acciones y/o proyectos que hayan tenido un impacto en la práctica docente y hayan contribuido a la mejora de la calidad de la docencia presencial, semipresencial y/o virtual de la institución en la que se han desarrollado. La innovación implica la utilización de un nuevo conocimiento o de una nueva combinación de conocimientos existentes. Aunque en el apartado donde se ha acreditado el mérito causante del premio de innovación docente se haya constatado la existencia de éste, se recomienda su especificación en este apartado. Las demás menciones, distinciones y premios obtenidos deberán registrarse en el apartado 'Menciones, distinciones y premios obtenidos en el desarrollo del ejercicio profesional' del módulo 6, 'Actividad científica y tecnológica'."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -7177,12 +7193,14 @@
       "property": "http://w3id.org/roh/otherActivities",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignarán otras modalidades de experiencia docente practicadas por el titular del CV que no hayan sido descritas en los apartados anteriores."
-        },
         "title": {
           "es": "Otras actividades/méritos no incluidos en la relación anterior"
         },
+        "information": {
+          "es": "En este apartado se consignarán otras modalidades de experiencia docente practicadas por el titular del CV que no hayan sido descritas en los apartados anteriores."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -7534,12 +7552,14 @@
       "property": "http://w3id.org/roh/mostRelevantContributions",
       "presentation": {
         "type": "listitems",
-        "information": {
-          "es": "En este apartado se consignarán aquellas aportaciones que tengan una especial relevancia en su especialidad y quieran destacarse por el titular del CV dentro de su experiencia docente curricular."
-        },
         "title": {
           "es": "Aportaciones más relevantes de su CV de docencia"
         },
+        "information": {
+          "es": "En este apartado se consignarán aquellas aportaciones que tengan una especial relevancia en su especialidad y quieran destacarse por el titular del CV dentro de su experiencia docente curricular."
+        },
+        "cvaISCIII": false,
+        "cvaAEI": false,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,

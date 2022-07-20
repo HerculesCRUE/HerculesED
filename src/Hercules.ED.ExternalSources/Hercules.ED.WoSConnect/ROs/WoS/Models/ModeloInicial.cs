@@ -107,7 +107,7 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
         public PubInfo pub_info { get; set; }
         public Names names { get; set; }
         public Doctypes doctypes { get; set; }
-        public Titles titles { get; set; }
+        public Titles titles { get; set; }        
         public Conferences conferences { get; set; }
     }
     public class ConfDate
@@ -134,7 +134,8 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
 
     public class Conferences
     {
-        public Conference conference { get; set; }
+        [JsonConverter(typeof(SingleOrArrayConverter<Conference>))]
+        public List<Conference> conference { get; set; }
         public int count { get; set; }
     }
 

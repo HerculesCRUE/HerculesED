@@ -14,8 +14,10 @@
           "es": "Situación profesional actual"
         },
         "information": {
-          "es": "En este apartado se consignará toda la información relacionada con los cargos y/o actividades de carácter laboral y/o profesional desempeñados por el titular del CV en el momento de redactar el presente currículum." 
+          "es": "En este apartado se consignará toda la información relacionada con los cargos y/o actividades de carácter laboral y/o profesional desempeñados por el titular del CV en el momento de redactar el presente currículum."
         },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,
@@ -1039,6 +1041,8 @@
         "information": {
           "es": "En este apartado se consignará toda la información relacionada con los cargos y/o actividades de carácter laboral y/o profesional desempeñados por el titular del CV con anterioridad a la redacción del presente currículum."
         },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "listItemsPresentation": {
           "last5Years": {
             "always": false,

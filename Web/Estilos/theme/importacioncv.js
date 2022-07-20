@@ -6,7 +6,6 @@ var dropdownSimilitudes = '';
 var contador = 1;
 var urlUserCV = '';
 
-window.addEventListener('beforeunload', preventBeforeUnload);
 
 function preventBeforeUnload(event){
 	// Cancel the event as stated by the standard.
@@ -63,8 +62,9 @@ var importarCVN = {
 										<option value="du">${GetText('CV_DUPLICAR')}</option>
 									</select>`;
 
-		selectorCamposTexto = `<select hidden name="itemConflict">
+		selectorCamposTexto = `<select hidden name="itemConflict" id="uniqueItemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
+									<option value="ig">${GetText('CV_IGNORAR')}</option>
 								</select>`;
 
         return;        
@@ -83,6 +83,7 @@ var importarCVN = {
             }
         });
 		$('.btProcesarCV').off('click').on('click', function(e) {
+			window.addEventListener('beforeunload', preventBeforeUnload);
             e.preventDefault();
 			that.cargarCV();
 		});
@@ -385,15 +386,25 @@ function checkAllWrappersCV(check){
 	var wrappersUnchecked = $('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
 	if(!check){
 		for(var i = 0; i< wrappersChecked.length; i++)
-		{		
-			wrappersChecked[i].click();
+		{
+			$(wrappersChecked[i]).click();
 		}
+		$('#uniqueItemConflict').each(function(){
+			$(this).closest('article').find('input[type="checkbox"]:checked').click();
+			$(this).find('option[value="so"]').attr("selected", false);
+			$(this).find('option[value="ig"]').attr("selected", true);
+		});
 	}
 	else{
 		for(var i = 0; i< wrappersUnchecked.length; i++)
 		{
-			wrappersUnchecked[i].click();
+			$(wrappersUnchecked[i]).click();
 		}
+		$('#uniqueItemConflict').each(function(){
+			$(this).closest('article').find('input[type="checkbox"]:not(:checked)').click();
+			$(this).find('option[value="ig"]').attr("selected", false);
+			$(this).find('option[value="so"]').attr("selected", true);
+		});
 	}
 }
 
@@ -608,7 +619,7 @@ function printCientificProduction(id, data){
 												<div class="wrap">
 													<div class="middle-wrap">
 														<div class="title-wrap">
-															<h2 class="resource-title">Indicadores generales de calidad de la producción científica</h2>`
+															<h2 class="resource-title">${GetText('CV_INDICADORES_GENERALES')}</h2>`
 															+selectorCamposTexto+														
 														`</div>
 													</div>
@@ -804,7 +815,7 @@ edicionCV.printPersonalData=function(id, data) {
 														<div class="wrap">
 															<div class="middle-wrap">
 																<div class="title-wrap">
-																	<h2 class="resource-title">Datos de identificación</h2>`
+																	<h2 class="resource-title">${GetText('CV_DATOS_IDENTIFICACION')}</h2>`
 																	+selectorCamposTexto+
 																`</div>
 																<div class="content-wrap">

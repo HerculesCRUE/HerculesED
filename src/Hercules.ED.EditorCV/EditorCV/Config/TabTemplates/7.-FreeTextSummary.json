@@ -16,6 +16,8 @@
         "information": {
           "es": "En este apartado se consignará un resumen de la trayectoria científica, académica e investigadora del titular del CV, permitiéndole así explicar con mayor detalle aquellos hitos curriculares de excepcional relevancia en su biografía profesional. Describa brevemente: - Sus aportaciones científicas, explicando su relevancia y su contribución a la generación del conocimiento, la generación de ideas, hipótesis y resultados y cómo los ha comunicado, la financiación obtenida, las capacidades científico técnicas adquiridas, las responsabilidades científicas ejercidas, las colaboraciones internacionales y el liderazgo. - Sus aportaciones a la sociedad, tales como actividades de desarrollo tecnológico y de innovación, actividades de divulgación, colaboración con la industria y el sector privado, entidades, instituciones públicas y otros usuarios finales de la investigación. - Sus aportaciones a la formación de jóvenes investigadores y cómo ha contribuido al desarrollo de la carrera de estas personas, a la constitución de equipos de investigación, a creación de empresas, a actividades editoriales, o a la evaluación de investigadores, proyectos y otras actividades de investigación. Además, los investigadores pre doctorales pueden consignar en este apartado una breve descripción de su Trabajo de Fin de Grado (TFG) y la puntuación obtenida así como de su Trabajo de Fin de Máster (TFM) y la puntuación obtenida. - Otras aportaciones que considere relevantes."
         },
+        "cvaISCIII": true,
+        "cvaAEI": true,
         "itemPresentation": {
           "property": "http://w3id.org/roh/freeTextSummaryValuesCV",
           "itemEdit": {
