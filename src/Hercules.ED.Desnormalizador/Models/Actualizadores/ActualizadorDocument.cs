@@ -903,6 +903,8 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// <param name="pDocuments">IDs de documentos</param>
         public void ActualizarIndicesImpacto(List<string> pDocuments = null)
         {
+            //TODO revisar desde cero
+
             HashSet<string> filters = new HashSet<string>();
             if (pDocuments != null && pDocuments.Count > 0)
             {
@@ -912,42 +914,50 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add("");
             }
+            
 
             foreach (string filter in filters)
             {
-                //Insertamos las auxiliares http://w3id.org/roh/ImpactIndex
+                //Insertamos las auxiliares http://w3id.org/roh/ImpactIndex con categorías
                 while (true)
                 {
                     int limit = 500;
 
-                    String select = @"select ?document ?impactIndexInYear ?impactSource ?impactSourceOther from <http://gnoss.com/maindocument.owl> ";
-                    String where = @$"where{{
-                                ?document a <http://purl.org/ontology/bibo/Document>.                               
-                                {filter}
-                                {{
-                                    #Deseables
-                                    ?document <http://w3id.org/roh/isValidated>  'true'.
-	                                ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
-	                                ?document<http://w3id.org/roh/year> ?anioDoc.
-	                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
-	                                ?revista a <http://w3id.org/roh/MainDocument>.
-	                                ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
-	                                ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
-	                                ?impactIndex <http://w3id.org/roh/year> ?anioFactorImpactoRevista.                          
-	                                FILTER(?anioDoc=?anioFactorImpactoRevista)
-                                    OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource. }}
-                                    OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  
-                                }}MINUS
-                                {{
-                                    #Actuales
-                                    ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
-                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
-                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource. }}
-                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  	                                
-                                }}
-                            }} limit {limit}";
+                    String select = @"select distinct ?document ?impactSource ?categoryTitle ?impactIndexInYear from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String where = @$"where{{          
+    ?document a <http://purl.org/ontology/bibo/Document>.
+    {filter}
+    {{
+        #Deseables
+        ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+        ?document<http://w3id.org/roh/year> ?anio.
+        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+        ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+        ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+        ?impactIndex <http://w3id.org/roh/year> ?anio.     
+        ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource.          
+        ?impactIndex <http://w3id.org/roh/impactCategory> ?impactCategory .     
+        ?impactCategory <http://w3id.org/roh/title> ?categoryTitle.
+
+        #Doc
+		?document <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeAreaDoc.
+		?hasKnowledgeAreaDoc <http://w3id.org/roh/categoryNode> ?categoryNode.
+		?categoryNode <http://w3id.org/roh/sourceDescriptor> ?sourceDescriptor.
+        ?sourceDescriptor <http://w3id.org/roh/impactSource> ?impactSource.
+		?sourceDescriptor <http://w3id.org/roh/impactSourceCategory> ?titleCategoryCat.
+		FILTER(lcase(?titleCategoryCat)=lcase(?categoryTitle))
+
+    }}MINUS
+    {{
+        #Actuales
+        ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.        
+        ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
+        ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?categoryTitle.
+        ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+    }}
+}}order by (?document) limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-                    
+
                     InsercionIndicesImpacto(resultado.results.bindings);
 
                     if (resultado.results.bindings.Count != limit)
@@ -956,48 +966,68 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     }
                 }
 
-                //Eliminamos las auxiliares http://w3id.org/roh/ImpactIndex
+                //Eliminamos las auxiliares http://w3id.org/roh/ImpactIndex con categorías
                 while (true)
                 {
                     int limit = 500;
 
-                    String select = @"select ?document ?impactIndexDoc from <http://gnoss.com/maindocument.owl> ";
-                    String where = @$"where{{
-                                ?document a <http://purl.org/ontology/bibo/Document>.
-                                ?document <http://w3id.org/roh/isValidated>  'true'.
-                                {filter}
-                                {{
-                                    #Actuales
-                                    ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
-                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
-                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource. }}
-                                    OPTIONAL{{?impactIndexDoc  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  
-                                }}MINUS
-                                {{
-                                    #Deseables
-                                    ?document <http://w3id.org/roh/isValidated>  'true'.
-	                                ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
-	                                ?document<http://w3id.org/roh/year> ?anioDoc.
-	                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
-	                                ?revista a <http://w3id.org/roh/MainDocument>.
-	                                ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
-	                                ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
-	                                ?impactIndex <http://w3id.org/roh/year> ?anioFactorImpactoRevista.                  
-	                                FILTER(?anioDoc=?anioFactorImpactoRevista)
-	                                OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource. }}
-                                    OPTIONAL{{?impactIndex  <http://w3id.org/roh/impactSourceOther> ?impactSourceOther. }}  
-                                }}
-                            }} limit {limit}";
+                    String select = @"select distinct ?document ?impactIndexDoc from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String where = @$"where{{   
+    ?document a <http://purl.org/ontology/bibo/Document>.
+    {filter}
+    {{
+        #Actuales
+        ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.    
+        ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
+        ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?categoryTitle.
+    }}MINUS
+    {{
+        #Deseables
+        ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+        ?document<http://w3id.org/roh/year> ?anio.
+        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+        ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+        ?impactIndex <http://w3id.org/roh/year> ?anio.     
+        ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource. 
+        ?impactIndex <http://w3id.org/roh/impactCategory> ?impactCategory .     
+        ?impactCategory <http://w3id.org/roh/title> ?categoryTitle.
+
+        #Doc
+		?document <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeAreaDoc.
+		?hasKnowledgeAreaDoc <http://w3id.org/roh/categoryNode> ?categoryNode.
+		?categoryNode <http://w3id.org/roh/sourceDescriptor> ?sourceDescriptor.
+        ?sourceDescriptor <http://w3id.org/roh/impactSource> ?impactSource.
+		?sourceDescriptor <http://w3id.org/roh/impactSourceCategory> ?titleCategoryCat.
+		FILTER(lcase(?titleCategoryCat)=lcase(?categoryTitle))
+
+    }}
+    
+}}order by (?document) limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
+                    if (ids.Count > 0)
                     {
-                        string document = fila["document"].value;
-                        string indiceImpactoAEliminar = fila["impactIndexDoc"].value;
-                        ActualizadorTriple(document, "http://w3id.org/roh/impactIndex", indiceImpactoAEliminar, "");
-                        //TODO agrupar docs
-                    });
+                        Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                        {
+                            Guid guid = mResourceApi.GetShortGuid(id);
+
+                            Dictionary<Guid, List<RemoveTriples>> triples = new() { { guid, new List<RemoveTriples>() } };
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings.Where(x => x["document"].value == id))
+                            {
+                                string indiceImpactoAEliminar = fila["impactIndexDoc"].value;
+                                RemoveTriples t = new();
+                                t.Predicate = "http://w3id.org/roh/impactIndex";
+                                t.Value = indiceImpactoAEliminar;
+                                triples[guid].Add(t);
+                            }
+                            if (triples[guid].Count > 0)
+                            {
+                                var resultado = mResourceApi.DeletePropertiesLoadedResources(triples);
+                            }
+                        });
+                    }
 
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1005,71 +1035,65 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     }
                 }
 
-                //Enriquecemos http://w3id.org/roh/ImpactIndex con http://w3id.org/roh/publicationPosition
+                //Completamos http://w3id.org/roh/ImpactIndex con http://w3id.org/roh/publicationPosition
                 while (true)
                 {
                     int limit = 500;
 
-                    String select = @"select ?document ?impactIndexDoc ?publicationPositonCargar ?publicationPositonCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select distinct ?document ?impactIndexDoc ?publicationPositionCargar ?publicationPositionCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
                     String where = @$"where{{
                                     ?document a <http://purl.org/ontology/bibo/Document>. 
 		                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
 		                            ?impactIndexDoc <http://w3id.org/roh/impactSource> ?impactSource.
+                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?impactCategoryTitle.
                                     {filter}
-                                    OPTIONAL{{
-                                        select ?document ?impactSource MIN(xsd:int(?publicationPositonCargar)) as ?publicationPositonCargar where
-                                        {{
-				                            ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-				                            ?document <http://w3id.org/roh/year> ?year.
+                                    OPTIONAL{{                                        
+				                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
+				                        ?document <http://w3id.org/roh/year> ?year.
 
-				                            #Revista
-				                            ?revista a <http://w3id.org/roh/MainDocument>.                         
-				                            ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
-				                            ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
-				                            ?impactIndexRevista <http://w3id.org/roh/year> ?year.
-				                            ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
-				                            ?impactCategory <http://w3id.org/roh/title> ?titleCategoryRev.
-					
+				                        #Revista                     
+				                        ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
+				                        ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
+				                        ?impactIndexRevista <http://w3id.org/roh/year> ?year.
+				                        ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
+				                        ?impactCategory <http://w3id.org/roh/title> ?impactCategoryTitle.					
 
-				                            #Doc
-				                            ?document <http://w3id.org/roh/hasKnowledgeArea> ?hasKnowledgeAreaDoc.
-				                            ?hasKnowledgeAreaDoc <http://w3id.org/roh/categoryNode> ?categoryNode.
-				                            ?categoryNode <http://w3id.org/roh/sourceDescriptor> ?sourceDescriptor.
-				                            ?sourceDescriptor <http://w3id.org/roh/impactSource> ?impactSource.
-				                            ?sourceDescriptor <http://w3id.org/roh/impactSourceCategory> ?titleCategoryCat.
-				                            FILTER(lcase(?titleCategoryCat)=lcase(?titleCategoryRev))
-
-				                            OPTIONAL{{
-					                            ?impactCategory <http://w3id.org/roh/publicationPosition> ?publicationPositonCargar.      
-				                            }}  
-                                        }}group by (?document) (?impactSource) 
+				                        OPTIONAL{{
+					                        ?impactCategory <http://w3id.org/roh/publicationPosition> ?publicationPositionCargar.      
+				                        }}  
+                                        
 		                            }}	
 		                            OPTIONAL{{
-			                            ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?publicationPositonCargadoAux.      
-			                            BIND(xsd:int(?publicationPositonCargadoAux) as ?publicationPositonCargado)
+			                            ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?publicationPositionCargado.
 		                            }}  
-                                    FILTER(?publicationPositonCargado!= ?publicationPositonCargar OR (!BOUND(?publicationPositonCargado) AND BOUND(?publicationPositonCargar)) OR (!BOUND(?publicationPositonCargar) AND BOUND(?publicationPositonCargado)))
+                                    FILTER(?publicationPositionCargado!= ?publicationPositionCargar OR (!BOUND(?publicationPositionCargado) AND BOUND(?publicationPositionCargar)) OR (!BOUND(?publicationPositionCargar) AND BOUND(?publicationPositionCargado)))
                                 }} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
+                    if (ids.Count > 0)
                     {
-                        string document = fila["document"].value;
-                        string impactIndexDoc = fila["impactIndexDoc"].value;
-                        string publicationPositonCargar = "";
-                        if (fila.ContainsKey("publicationPositonCargar"))
+                        Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
                         {
-                            publicationPositonCargar = impactIndexDoc + "|" + fila["publicationPositonCargar"].value;
-                        }
-                        string publicationPositonCargado = "";
-                        if (fila.ContainsKey("publicationPositonCargado"))
-                        {
-                            publicationPositonCargado = impactIndexDoc + "|" + fila["publicationPositonCargado"].value;
-                        }
-                        ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/publicationPosition", publicationPositonCargado, publicationPositonCargar);
-                        //TODO agrupar docs
-                    });
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings.Where(x => x["document"].value == id))
+                            {
+                                string document = fila["document"].value;
+                                string impactIndexDoc = fila["impactIndexDoc"].value;
+                                string publicationPositionCargar = "";
+                                if (fila.ContainsKey("publicationPositionCargar"))
+                                {
+                                    publicationPositionCargar = impactIndexDoc + "|" + fila["publicationPositionCargar"].value;
+                                }
+                                string publicationPositionCargado = "";
+                                if (fila.ContainsKey("publicationPositionCargado"))
+                                {
+                                    publicationPositionCargado = impactIndexDoc + "|" + fila["publicationPositionCargado"].value;
+                                }
+                                ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/publicationPosition", publicationPositionCargado, publicationPositionCargar);
+                            }
+                        });
+                    }
 
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1077,123 +1101,65 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     }
                 }
 
-                //Enriquecemos http://w3id.org/roh/ImpactIndex con http://w3id.org/roh/impactIndexCategory
+                //Completamos http://w3id.org/roh/ImpactIndex con http://w3id.org/roh/journalNumberInCat
                 while (true)
                 {
                     int limit = 500;
 
-                    String select = @"select ?document ?impactIndexDoc ?impactIndexCategoryCargar ?impactIndexCategoryCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select distinct ?document ?impactIndexDoc ?journalNumberInCatCargar ?journalNumberInCatCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
                     String where = @$"where{{
                                     ?document a <http://purl.org/ontology/bibo/Document>. 
 		                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
 		                            ?impactIndexDoc <http://w3id.org/roh/impactSource> ?impactSource.
+                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?impactCategoryTitle.
                                     {filter}
-                                    OPTIONAL{{
-                                        select ?document ?impactSource ?impactIndexDoc MIN(?impactIndexCategoryCargar) as ?impactIndexCategoryCargar where
-                                        {{
-				                            ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-				                            ?document <http://w3id.org/roh/year> ?year.
+                                    OPTIONAL{{                                        
+				                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
+				                        ?document <http://w3id.org/roh/year> ?year.
 
-				                            #Revista
-				                            ?revista a <http://w3id.org/roh/MainDocument>.                         
-				                            ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
-				                            ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
-				                            ?impactIndexRevista <http://w3id.org/roh/year> ?year.
-				                            ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
-				                            ?impactCategory <http://w3id.org/roh/publicationPosition> ?publicationPosition.
-                                            ?impactCategory <http://w3id.org/roh/title> ?impactIndexCategoryCargar.					                        
+				                        #Revista                     
+				                        ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
+				                        ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
+				                        ?impactIndexRevista <http://w3id.org/roh/year> ?year.
+				                        ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
+				                        ?impactCategory <http://w3id.org/roh/title> ?impactCategoryTitle.					
 
-                                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
-                                            ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?publicationPosition.
-                                        }}group by (?document) (?impactSource) (?impactIndexDoc) 
+				                        OPTIONAL{{
+					                        ?impactCategory <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargar.      
+				                        }}  
+                                        
 		                            }}	
 		                            OPTIONAL{{
-			                            ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?impactIndexCategoryCargado. 
-		                            }}  
-                                    FILTER(?impactIndexCategoryCargado!= ?impactIndexCategoryCargar OR (!BOUND(?impactIndexCategoryCargado) AND BOUND(?impactIndexCategoryCargar)) OR (!BOUND(?impactIndexCategoryCargar) AND BOUND(?impactIndexCategoryCargado)))
-                                }} limit {limit}";
-
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
-                    {
-                        string document = fila["document"].value;
-                        string impactIndexDoc = fila["impactIndexDoc"].value;
-                        string impactIndexCategoryCargar = "";
-                        if (fila.ContainsKey("impactIndexCategoryCargar"))
-                        {
-                            impactIndexCategoryCargar = impactIndexDoc + "|" + fila["impactIndexCategoryCargar"].value;
-                        }
-                        string impactIndexCategoryCargado = "";
-                        if (fila.ContainsKey("impactIndexCategoryCargado"))
-                        {
-                            impactIndexCategoryCargado = impactIndexDoc + "|" + fila["impactIndexCategoryCargado"].value;
-                        }
-                        ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategory", impactIndexCategoryCargado, impactIndexCategoryCargar);
-                        //TODO agrupar docs
-                    });
-
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-
-                //Enriquecemos http://w3id.org/roh/ImpactIndex con http://w3id.org/roh/journalNumberInCat
-                while (true)
-                {
-                    int limit = 500;
-
-                    String select = @"select ?document ?impactIndexDoc ?journalNumberInCatCargar ?journalNumberInCatCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
-                    String where = @$"where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>. 
-		                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
-		                            ?impactIndexDoc <http://w3id.org/roh/impactSource> ?impactSource.
-                                    {filter}
-                                    OPTIONAL{{
-                                        select ?document ?impactSource ?impactIndexDoc MIN(?journalNumberInCatCargar) as ?journalNumberInCatCargar where
-                                        {{
-				                            ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-				                            ?document <http://w3id.org/roh/year> ?year.
-
-				                            #Revista
-				                            ?revista a <http://w3id.org/roh/MainDocument>.                         
-				                            ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
-				                            ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
-				                            ?impactIndexRevista <http://w3id.org/roh/year> ?year.
-				                            ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
-				                            ?impactCategory <http://w3id.org/roh/publicationPosition> ?publicationPosition.
-                                            ?impactCategory <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargar.					                        
-
-                                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
-                                            ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?publicationPosition.
-                                        }}group by (?document) (?impactSource) (?impactIndexDoc) 
-		                            }}	
-		                            OPTIONAL{{
-			                            ?impactIndexDoc <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargado. 
+			                            ?impactIndexDoc <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargado.
 		                            }}  
                                     FILTER(?journalNumberInCatCargado!= ?journalNumberInCatCargar OR (!BOUND(?journalNumberInCatCargado) AND BOUND(?journalNumberInCatCargar)) OR (!BOUND(?journalNumberInCatCargar) AND BOUND(?journalNumberInCatCargado)))
                                 }} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
+                    if (ids.Count > 0)
                     {
-                        string document = fila["document"].value;
-                        string impactIndexDoc = fila["impactIndexDoc"].value;
-                        string journalNumberInCatCargar = "";
-                        if (fila.ContainsKey("journalNumberInCatCargar"))
+                        Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
                         {
-                            journalNumberInCatCargar = impactIndexDoc + "|" + fila["journalNumberInCatCargar"].value;
-                        }
-                        string journalNumberInCatCargado = "";
-                        if (fila.ContainsKey("journalNumberInCatCargado"))
-                        {
-                            journalNumberInCatCargado = impactIndexDoc + "|" + fila["impactIndexCategoryCargado"].value;
-                        }
-                        ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/journalNumberInCat", journalNumberInCatCargado, journalNumberInCatCargar);
-                        //TODO agrupar docs
-                    });
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings.Where(x => x["document"].value == id))
+                            {
+                                string document = fila["document"].value;
+                                string impactIndexDoc = fila["impactIndexDoc"].value;
+                                string journalNumberInCatCargar = "";
+                                if (fila.ContainsKey("journalNumberInCatCargar"))
+                                {
+                                    journalNumberInCatCargar = impactIndexDoc + "|" + fila["journalNumberInCatCargar"].value;
+                                }
+                                string journalNumberInCatCargado = "";
+                                if (fila.ContainsKey("journalNumberInCatCargado"))
+                                {
+                                    journalNumberInCatCargado = impactIndexDoc + "|" + fila["journalNumberInCatCargado"].value;
+                                }
+                                ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/journalNumberInCat", journalNumberInCatCargado, journalNumberInCatCargar);
+                            }
+                        });
+                    }
 
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1201,61 +1167,65 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     }
                 }
 
-                //Enriquecemos http://w3id.org/roh/ImpactIndex con http://w3id.org/roh/quartile
+                //Completamos http://w3id.org/roh/ImpactIndex con http://w3id.org/roh/quartile
                 while (true)
                 {
                     int limit = 500;
 
-                    String select = @"select ?document ?impactIndexDoc ?quartileCargar ?quartileCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select distinct ?document ?impactIndexDoc ?quartileCargar ?quartileCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
                     String where = @$"where{{
                                     ?document a <http://purl.org/ontology/bibo/Document>. 
 		                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
 		                            ?impactIndexDoc <http://w3id.org/roh/impactSource> ?impactSource.
+                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?impactCategoryTitle.
                                     {filter}
-                                    OPTIONAL{{
-                                        select ?document ?impactSource ?impactIndexDoc MIN(?quartileCargar) as ?quartileCargar where
-                                        {{
-				                            ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-				                            ?document <http://w3id.org/roh/year> ?year.
+                                    OPTIONAL{{                                        
+				                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
+				                        ?document <http://w3id.org/roh/year> ?year.
 
-				                            #Revista
-				                            ?revista a <http://w3id.org/roh/MainDocument>.                         
-				                            ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
-				                            ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
-				                            ?impactIndexRevista <http://w3id.org/roh/year> ?year.
-				                            ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
-				                            ?impactCategory <http://w3id.org/roh/publicationPosition> ?publicationPosition.
-                                            ?impactCategory <http://w3id.org/roh/quartile> ?quartileCargar.					                        
+				                        #Revista                     
+				                        ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
+				                        ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
+				                        ?impactIndexRevista <http://w3id.org/roh/year> ?year.
+				                        ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
+				                        ?impactCategory <http://w3id.org/roh/title> ?impactCategoryTitle.					
 
-                                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.
-                                            ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?publicationPosition.
-                                        }}group by (?document) (?impactSource) (?impactIndexDoc) 
+				                        OPTIONAL{{
+					                        ?impactCategory <http://w3id.org/roh/quartile> ?quartileCargar.      
+				                        }}  
+                                        
 		                            }}	
 		                            OPTIONAL{{
-			                            ?impactIndexDoc <http://w3id.org/roh/quartile> ?quartileCargado. 
+			                            ?impactIndexDoc <http://w3id.org/roh/quartile> ?quartileCargado.
 		                            }}  
                                     FILTER(?quartileCargado!= ?quartileCargar OR (!BOUND(?quartileCargado) AND BOUND(?quartileCargar)) OR (!BOUND(?quartileCargar) AND BOUND(?quartileCargado)))
                                 }} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
+                    if (ids.Count > 0)
                     {
-                        string document = fila["document"].value;
-                        string impactIndexDoc = fila["impactIndexDoc"].value;
-                        string quartileCargar = "";
-                        if (fila.ContainsKey("quartileCargar"))
+                        Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
                         {
-                            quartileCargar = impactIndexDoc + "|" + fila["quartileCargar"].value;
-                        }
-                        string quartileCargado = "";
-                        if (fila.ContainsKey("quartileCargado"))
-                        {
-                            quartileCargado = impactIndexDoc + "|" + fila["quartileCargado"].value;
-                        }
-                        ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/quartile", quartileCargado, quartileCargar);
-                        //TODO agrupar docs
-                    });
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings.Where(x => x["document"].value == id))
+                            {
+                                string document = fila["document"].value;
+                                string impactIndexDoc = fila["impactIndexDoc"].value;
+                                string quartileCargar = "";
+                                if (fila.ContainsKey("quartileCargar"))
+                                {
+                                    quartileCargar = impactIndexDoc + "|" + fila["quartileCargar"].value;
+                                }
+                                string quartileCargado = "";
+                                if (fila.ContainsKey("quartileCargado"))
+                                {
+                                    quartileCargado = impactIndexDoc + "|" + fila["quartileCargado"].value;
+                                }
+                                ActualizadorTriple(document, "http://w3id.org/roh/impactIndex|http://w3id.org/roh/quartile", quartileCargado, quartileCargar);
+                            }
+                        });
+                    }
 
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1263,8 +1233,99 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     }
                 }
 
+                //Insertamos las auxiliares http://w3id.org/roh/ImpactIndex sin categorías
+                while (true)
+                {
+                    int limit = 500;
 
+                    String select = @"select distinct ?document ?impactSource ?impactIndexInYear from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String where = @$"where{{          
+    ?document a <http://purl.org/ontology/bibo/Document>.
+    {filter}
+    {{
+        #Deseables
+        ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+        ?document<http://w3id.org/roh/year> ?anio.
+        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+        ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+        ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+        ?impactIndex <http://w3id.org/roh/year> ?anio.     
+        ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource.    
+    }}MINUS
+    {{
+        #Actuales
+        ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.        
+        ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
+        ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+    }}
+}}order by (?document) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
+                    InsercionIndicesImpacto(resultado.results.bindings);
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //Eliminamos las auxiliares http://w3id.org/roh/ImpactIndex sin categorías
+                while (true)
+                {
+                    int limit = 500;
+
+                    String select = @"select ?document ?impactIndexDoc from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String where = @$"where{{          
+    ?document a <http://purl.org/ontology/bibo/Document>.
+    {filter}
+    {{
+        #Actuales
+        ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.        
+        ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
+        ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+    }}MINUS
+    {{
+        #Deseables
+        ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
+        ?document<http://w3id.org/roh/year> ?anio.
+        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
+        ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+        ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+        ?impactIndex <http://w3id.org/roh/year> ?anio.     
+        ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource.   
+    }}
+}}order by (?document) limit {limit}";
+
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
+                    if (ids.Count > 0)
+                    {
+                        Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                        {
+                            Guid guid = mResourceApi.GetShortGuid(id);
+
+                            Dictionary<Guid, List<RemoveTriples>> triples = new() { { guid, new List<RemoveTriples>() } };
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings.Where(x => x["document"].value == id))
+                            {
+                                string indiceImpactoAEliminar = fila["impactIndexDoc"].value;
+                                RemoveTriples t = new();
+                                t.Predicate = "http://w3id.org/roh/impactIndex";
+                                t.Value = indiceImpactoAEliminar;
+                                triples[guid].Add(t);
+                            }
+                            if (triples[guid].Count > 0)
+                            {
+                                var resultado = mResourceApi.DeletePropertiesLoadedResources(triples);
+                            }
+                        });
+                    }
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
 
                 //Actualizamos cuartiles del doc
                 //Eliminamos los duplicados
@@ -1272,7 +1333,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select ?document ?quartileCargado ?quartileCargar ";
+                    String select = @"select distinct ?document ?quartileCargado ?quartileCargar ";
                     String where = @$"where{{
                                     ?document a <http://purl.org/ontology/bibo/Document>.
                                     {filter}
@@ -1322,7 +1383,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select ?document ?impactIndexInYearCargado ?impactIndexInYearCargar ";
+                    String select = @"select distinct ?document ?impactIndexInYearCargado ?impactIndexInYearCargar ";
                     String where = @$"where{{
     ?document a <http://purl.org/ontology/bibo/Document>.
     {filter}
@@ -1364,149 +1425,10 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         break;
                     }
                 }
+
             }
         }
 
-        ///// <summary>
-        ///// TODO hacer bien
-        ///// </summary>
-        ///// <param name="pDocument"></param>
-        //public void ActualizarIndiceImpacto(string pDocument = null)
-        //{
-        //    string filter = "";
-        //    if (!string.IsNullOrEmpty(pDocument))
-        //    {
-        //        filter = $" FILTER(?document =<{pDocument}>)";
-        //    }
-        //    //Eliminamos los duplicados
-        //    EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/impactIndexInYear");
-
-        //    //Actualizamos los datos
-        //    while (true)
-        //    {
-        //        int limit = 500;
-        //        //TODO Eliminar from
-        //        //TODO eliminar decha competa revista
-        //        //TODO agregar la fuente para el factor de impacto
-        //        String select = @"select distinct * where{select ?document ?indiceImpactoCargado ?indiceImpactoACargar  from <http://gnoss.com/maindocument.owl> ";
-        //        String where = @$"where{{
-        //                    ?document a <http://purl.org/ontology/bibo/Document>.
-        //                    {filter}
-        //                    OPTIONAL
-        //                    {{
-        //                      ?document <http://w3id.org/roh/impactIndexInYear> ?indiceImpactoCargado. 
-        //                    }}
-        //                    OPTIONAL
-        //                    {{
-        //                      select ?document max(?indiceImpactoACargar) as ?indiceImpactoACargar
-        //                      Where{{
-        //                        ?document a <http://purl.org/ontology/bibo/Document>.
-        //                        ?document <http://purl.org/dc/terms/issued> ?fechaDoc.
-        //                        BIND(substr(str(?fechaDoc),0,4) as ?anioDoc).
-        //                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
-        //                        ?revista a <http://w3id.org/roh/MainDocument>.
-        //                        ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
-        //                        ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?indiceImpactoACargar.
-        //                        ?impactIndex <http://w3id.org/roh/year> ?fechaFactorImpactoRevista.
-        //                        BIND(substr(str(?fechaFactorImpactoRevista),0,4) as ?anioFactorImpactoRevista).                                
-        //                        FILTER(?anioDoc=?anioFactorImpactoRevista)                               
-        //                      }}
-        //                    }}
-        //                    FILTER(?indiceImpactoCargado!= ?indiceImpactoACargar)
-        //                    }}}} limit {limit}";
-        //        SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-
-        //        Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
-        //        {
-        //            string document = fila["document"].value;
-        //            string indiceImpactoACargar = "";
-        //            if (fila.ContainsKey("indiceImpactoACargar"))
-        //            {
-        //                indiceImpactoACargar = fila["indiceImpactoACargar"].value;
-        //            }
-        //            string indiceImpactoCargado = "";
-        //            if (fila.ContainsKey("indiceImpactoCargado"))
-        //            {
-        //                indiceImpactoCargado = fila["indiceImpactoCargado"].value;
-        //            }
-        //            ActualizadorTriple(document, "http://w3id.org/roh/impactIndexInYear", indiceImpactoCargado, indiceImpactoACargar);
-        //        });
-
-        //        if (resultado.results.bindings.Count != limit)
-        //        {
-        //            break;
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// TODO hacer bien
-        ///// </summary>
-        ///// <param name="pDocument"></param>
-        //public void ActualizarCuartil(string pDocument = null)
-        //{
-        //    string filter = "";
-        //    if (!string.IsNullOrEmpty(pDocument))
-        //    {
-        //        filter = $" FILTER(?document =<{pDocument}>)";
-        //    }
-        //    //Eliminamos los duplicados
-        //    EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/quartile");
-
-        //    //Actualizamos los datos
-        //    while (true)
-        //    {
-        //        int limit = 500;
-        //        //TODO Eliminar from
-        //        String select = @"select distinct * where{select ?document ?quartileCargado ?quartileCargar  from <http://gnoss.com/maindocument.owl> ";
-        //        String where = @$"where{{
-        //                    ?document a <http://purl.org/ontology/bibo/Document>.
-        //                    {filter}
-        //                    OPTIONAL
-        //                    {{
-        //                      ?document <http://w3id.org/roh/quartile> ?quartileCargado. 
-        //                    }}
-        //                    OPTIONAL
-        //                    {{
-        //                      select ?document min(?quartile) as ?quartileCargar
-        //                      Where{{
-        //                        ?document a <http://purl.org/ontology/bibo/Document>.
-        //                        ?document <http://purl.org/dc/terms/issued> ?fecha.  
-        //                        BIND(substr(str(?fecha),0,4) as ?anioDoc).
-        //                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-        //                        ?revista <http://w3id.org/roh/impactIndex> ?indiceImpacto.
-        //                        ?indiceImpacto <http://w3id.org/roh/year> ?anioIndiceImpacto.
-        //                        ?indiceImpacto  <http://w3id.org/roh/impactCategory> ?categoriaIndiceImpacto.
-        //                        ?categoriaIndiceImpacto <http://w3id.org/roh/quartile> ?quartile.
-        //                        FILTER(?anioIndiceImpacto=?anioFecha)        
-        //                      }}
-        //                    }}
-        //                    FILTER(?quartileCargado!= ?quartileCargar)
-        //                    }}}} limit {limit}";
-        //        SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
-
-        //        Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
-        //        {
-        //            string document = fila["document"].value;
-        //            string quartileCargar = "";
-        //            if (fila.ContainsKey("quartileCargar"))
-        //            {
-        //                quartileCargar = fila["quartileCargar"].value;
-        //            }
-        //            string quartileCargado = "";
-        //            if (fila.ContainsKey("quartileCargado"))
-        //            {
-        //                quartileCargado = fila["quartileCargado"].value;
-        //            }
-        //            ActualizadorTriple(document, "http://w3id.org/roh/quartile", quartileCargado, quartileCargar);
-        //        });
-
-        //        if (resultado.results.bindings.Count != limit)
-        //        {
-        //            break;
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Método para inserción múltiple de indices de impacto
@@ -1532,7 +1454,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             t.NewValue = idAux + "|" + fila["impactIndexInYear"].value;
                             triples[guid].Add(t);
                         }
-
                         if (fila.ContainsKey("impactSource"))
                         {
                             TriplesToInclude t = new();
@@ -1547,6 +1468,34 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             t.NewValue = idAux + "|" + fila["impactSourceOther"].value;
                             triples[guid].Add(t);
                         }
+                        if (fila.ContainsKey("categoryTitle"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategory";
+                            t.NewValue = idAux + "|" + fila["categoryTitle"].value;
+                            triples[guid].Add(t);
+                        }
+                        if (fila.ContainsKey("publicationPosition"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/publicationPosition";
+                            t.NewValue = idAux + "|" + fila["publicationPosition"].value;
+                            triples[guid].Add(t);
+                        }
+                        if (fila.ContainsKey("journalNumberInCat"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/journalNumberInCat";
+                            t.NewValue = idAux + "|" + fila["journalNumberInCat"].value;
+                            triples[guid].Add(t);
+                        }
+                        if (fila.ContainsKey("quartile"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/quartile";
+                            t.NewValue = idAux + "|" + fila["quartile"].value;
+                            triples[guid].Add(t);
+                        }
                     }
                     if (triples[guid].Count > 0)
                     {
@@ -1555,62 +1504,5 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 });
             }
         }
-
-        ///// <summary>
-        ///// Método para inserción múltiple de indices de impacto
-        ///// </summary>
-        ///// <param name="pFilas">Filas con los datos para insertar</param>
-        //public void InsercionIndicesImpacto(List<Dictionary<string, SparqlObject.Data>> pFilas)
-        //{
-        //    List<string> ids = pFilas.Select(x => x["document"].value).Distinct().ToList();
-        //    if (ids.Count > 0)
-        //    {
-        //        Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
-        //        {
-        //            Guid guid = mResourceApi.GetShortGuid(id);
-
-        //            Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
-        //            foreach (Dictionary<string, SparqlObject.Data> fila in pFilas.Where(x => x["document"].value == id))
-        //            {
-        //                string idAux = mResourceApi.GraphsUrl + "items/ImpactIndex_" + guid.ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
-        //                string document = fila["document"].value;
-        //                {
-        //                    TriplesToInclude t = new();
-        //                    t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexInYear";
-        //                    t.NewValue = idAux + "|" + fila["impactIndexInYear"].value;
-        //                    triples[guid].Add(t);
-        //                }
-
-        //                if (fila.ContainsKey("impactSource"))
-        //                {
-        //                    TriplesToInclude t = new();
-        //                    t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactSource";
-        //                    t.NewValue = idAux + "|" + fila["impactSource"].value;
-        //                    triples[guid].Add(t);
-        //                }
-        //                if (fila.ContainsKey("impactSourceOther"))
-        //                {
-        //                    TriplesToInclude t = new();
-        //                    t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactSourceOther";
-        //                    t.NewValue = idAux + "|" + fila["impactSourceOther"].value;
-        //                    triples[guid].Add(t);
-        //                }
-        //                if (fila.ContainsKey("impactIndexCategory"))
-        //                {
-        //                    TriplesToInclude t = new();
-        //                    t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategory";
-        //                    t.NewValue = idAux + "|" + fila["impactIndexCategory"].value;
-        //                    triples[guid].Add(t);
-        //                }
-        //            }
-        //            if (triples[guid].Count > 0)
-        //            {
-        //                var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
-        //            }
-        //        });
-        //    }
-        //}
-
-       
     }
 }
