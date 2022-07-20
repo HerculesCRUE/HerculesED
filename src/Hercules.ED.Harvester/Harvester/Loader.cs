@@ -849,6 +849,10 @@ namespace Harvester
         /// <returns></returns>
         private static string IdentificadorPais(string pais)
         {
+            if (!UtilidadesGeneral.DicPaisesContienePais(pais))
+            {
+                return null;
+            }
             return mResourceApi.GraphsUrl + "items/feature_PCLD_" + UtilidadesGeneral.dicPaises[pais];
         }
 
@@ -860,6 +864,10 @@ namespace Harvester
         /// <returns></returns>
         private static string IdentificadorRegion(string region)
         {
+            if (!UtilidadesGeneral.DicRegionesContieneRegion(region))
+            {
+                return null;
+            }
             return mResourceApi.GraphsUrl + "items/feature_ADM1_" + UtilidadesGeneral.dicRegiones[region];
         }
 
