@@ -6,7 +6,6 @@ var dropdownSimilitudes = '';
 var contador = 1;
 var urlUserCV = '';
 
-window.addEventListener('beforeunload', preventBeforeUnload);
 
 function preventBeforeUnload(event){
 	// Cancel the event as stated by the standard.
@@ -83,6 +82,7 @@ var importarCVN = {
             }
         });
 		$('.btProcesarCV').off('click').on('click', function(e) {
+			window.addEventListener('beforeunload', preventBeforeUnload);
             e.preventDefault();
 			that.cargarCV();
 		});
