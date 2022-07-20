@@ -108,6 +108,64 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
         public Names names { get; set; }
         public Doctypes doctypes { get; set; }
         public Titles titles { get; set; }
+        public Conferences conferences { get; set; }
+    }
+    public class ConfDate
+    {
+        public int conf_start { get; set; }
+        public int conf_end { get; set; }
+        public string content { get; set; }
+    }
+
+    public class ConfDates
+    {
+        public ConfDate conf_date { get; set; }
+        public int count { get; set; }
+    }
+
+    public class Conference
+    {
+        public ConfDates conf_dates { get; set; }
+        public int conf_id { get; set; }
+        public Sponsors sponsors { get; set; }
+        public ConfInfos conf_infos { get; set; }
+        public ConfLocations conf_locations { get; set; }
+        public ConfTitles conf_titles { get; set; }
+    }
+
+    public class Conferences
+    {
+        public Conference conference { get; set; }
+        public int count { get; set; }
+    }
+
+    public class ConfInfos
+    {
+        public int count { get; set; }
+        public string conf_info { get; set; }
+    }
+
+    public class ConfLocation
+    {
+        public string conf_state { get; set; }
+        public string conf_city { get; set; }
+    }
+
+    public class ConfLocations
+    {
+        public int count { get; set; }
+        public ConfLocation conf_location { get; set; }
+    }
+
+    public class ConfTitles
+    {
+        public int count { get; set; }
+        public string conf_title { get; set; }
+    }
+    public class Sponsors
+    {
+        public List<string> sponsor { get; set; }
+        public int count { get; set; }
     }
 
     public class Subheadings
