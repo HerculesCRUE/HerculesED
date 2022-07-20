@@ -12,7 +12,9 @@ var exportacionCV = {
     },
 	config: function(){
 		var that = this;
-		that.cargarListadoCV();		
+		that.cargarListadoCV();
+		cambiarTipoExportacion();
+		
 		//Preparar exportación
 		$('.btGenerarExportarCV').off('click').on('click', function(e) {            
 			e.preventDefault();
@@ -246,6 +248,27 @@ var exportacionCV = {
         return;
     }
 };
+
+
+function cambiarTipoExportacion(){
+	$('#ddlExportacion').off('change').on('change', function(e){
+		e.preventDefault();
+		var tipoExportacion = $("#ddlExportacion").find("option:selected").val();
+		if(tipoExportacion == "PN2008"){
+			//CVN
+			// Muestro "Total" y asigno por defecto "Total"
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio')[0]).show();
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio input')[0]).prop('checked', true);
+		}
+		else{
+			//CV abreviado
+			// Oculto "Total" y asigno por defecto "Seleccionar"
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio')[0]).hide();
+			$($('.ddlSecciones .custom-control.themed.little.custom-radio input')[2]).prop('checked', true);
+		}
+	});
+}
+
 
 function asignarAccionesBotonesPerfil(userID){
 	$('.btn.btn-primary.uppercase.btGuardarCV').off('click').on('click', function(e) {
