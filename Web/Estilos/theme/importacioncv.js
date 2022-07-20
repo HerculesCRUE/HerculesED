@@ -101,7 +101,6 @@ var importarCVN = {
 			listaId = listaId.slice(0,-3);			
 			listaOpcionSeleccionados = listaOpcionSeleccionados.slice(0,-3);
 			
-			window.removeEventListener('beforeunload', preventBeforeUnload);
 			that.importarCV(listaId, listaOpcionSeleccionados);
 		});
     },
