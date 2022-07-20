@@ -1,4 +1,4 @@
-var urlImportacionCV = url_servicio_editorcv+"ImportadoCV";
+var urlImportacionCV = url_servicio_editorcv+"ImportadoCV/";
 var selectorConflictoNoBloqueado = '';
 var selectorConflictoBloqueado = '';
 var selectorCamposTexto = '';
@@ -99,7 +99,7 @@ var importarCVN = {
 			});
 			
 			listaId = listaId.slice(0,-3);			
-			listaOpcionSeleccionados = listaOpcionSeleccionados.slice(0,-3);			
+			listaOpcionSeleccionados = listaOpcionSeleccionados.slice(0,-3);
 			
 			that.importarCV(listaId, listaOpcionSeleccionados);
 		});
@@ -153,7 +153,7 @@ var importarCVN = {
 		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
-				url: urlImportacionCV + '/ImportarCVStatus?petitionID='+petition+'&accion=PREIMPORTAR',
+				url: urlImportacionCV + 'ImportarCVStatus?petitionID='+petition+'&accion=PREIMPORTAR',
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
@@ -174,7 +174,7 @@ var importarCVN = {
 		
 
 		$.ajax({
-			url: urlImportacionCV + '/PreimportarCV',
+			url: urlImportacionCV + 'PreimportarCV',
 			type: 'POST',
 			data: formData,	
 			cache: false,
@@ -309,7 +309,7 @@ var importarCVN = {
 		//Actualizo el estado cada 500 milisegundos
 		var intervalStatus = setInterval(function() {
 			$.ajax({
-				url: urlImportacionCV + '/ImportarCVStatus?petitionID='+petition+'&accion=POSTIMPORTAR',
+				url: urlImportacionCV + 'ImportarCVStatus?petitionID='+petition+'&accion=POSTIMPORTAR',
 				type: 'GET',
 				success: function ( response ) {
 					if(response != null && response != ''){
@@ -329,7 +329,7 @@ var importarCVN = {
 		}, 500);
 		
 		$.ajax({
-			url: urlImportacionCV + '/PostimportarCV',
+			url: urlImportacionCV + 'PostimportarCV',
 			type: 'POST',
 			data: formData,
 			cache: false,
