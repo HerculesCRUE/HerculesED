@@ -127,6 +127,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacion.openAccess = getOpenAccess(objInicial);
             publicacion.volume = getVolume(objInicial);
             publicacion.dataOrigin = "WoS";
+            publicacion.conferencia = getConferencia(objInicial);
             if (publicacion.typeOfPublication == CHAPTER)
             {
                 publicacion.doi = null;
@@ -263,11 +264,74 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Fecha de la publiación.</returns>
         public DateTimeValue getDate(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.sortdate))
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.sortdate))
             {
                 DateTimeValue fecha = new DateTimeValue();
                 fecha.datimeTime = pPublicacionIn.static_data.summary.pub_info.sortdate;
                 return fecha;
+            }
+
+            return null;
+        }
+
+        public Conferencia getConferencia(PublicacionInicial pPublicacionIn)
+        {
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.conferences != null && pPublicacionIn.static_data.summary.conferences.conference[0] != null)
+            {
+                Conferencia conferencia = new Conferencia();
+
+                // ID.
+                conferencia.id = pPublicacionIn.static_data.summary.conferences.conference[0].conf_id;
+
+                // Título.
+                if (pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles.count == 1 && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles.conf_title))
+                {
+                    conferencia.titulo = pPublicacionIn.static_data.summary.conferences.conference[0].conf_titles.conf_title;
+                }
+
+                // Fechas
+                if (pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date != null)
+                {
+                    try
+                    {
+                        int yearInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(0, 4));
+                        int monthInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(4, 2));
+                        int dayInicio = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(6, 2));
+                        conferencia.fechaInicio = $@"{yearInicio}-{monthInicio}-{dayInicio}";
+                    }
+                    catch
+                    {
+                        // Fecha inválida.
+                    }
+
+                    try
+                    {
+                        int yearFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(0, 4));
+                        int monthFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(4, 2));
+                        int dayFin = int.Parse(pPublicacionIn.static_data.summary.conferences.conference[0].conf_dates.conf_date.conf_start.ToString().Substring(6, 2));
+                        conferencia.fechaFin = $@"{yearFin}-{monthFin}-{dayFin}";
+                    }
+                    catch
+                    {
+                        // Fecha inválida.
+                    }
+                }
+
+                // Pais y ciudad
+                if (pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location != null && pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.count == 1)
+                {
+                    if (!string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_state))
+                    {
+                        conferencia.pais = pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_state;
+                    }
+
+                    if (!string.IsNullOrEmpty(pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_city))
+                    {
+                        conferencia.ciudad = pPublicacionIn.static_data.summary.conferences.conference[0].conf_locations.conf_location.conf_city;
+                    }
+                }
+
+                return conferencia;
             }
 
             return null;

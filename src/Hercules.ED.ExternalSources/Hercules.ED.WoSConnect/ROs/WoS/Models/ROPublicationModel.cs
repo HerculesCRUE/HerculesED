@@ -22,9 +22,20 @@ namespace WoSConnect.ROs.WoS.Models
         public List<PublicationMetric> hasMetric { get; set; }
         public bool? openAccess { get; set; }
         public string volume { get; set; }
-        
+        public Conferencia conferencia { get; set; }
         public string dataOrigin { get; set; }
     }
+
+    public class Conferencia
+    {
+        public int id { get; set; }
+        public string titulo { get; set; }
+        public string fechaInicio { get; set; }
+        public string fechaFin { get; set; }
+        public string pais { get; set; }
+        public string ciudad { get; set; }
+    }
+
     public class FreetextKeywords
     {
         public string source { get; set; }
