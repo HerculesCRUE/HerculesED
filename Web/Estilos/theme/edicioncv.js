@@ -1695,6 +1695,14 @@ var edicionCV = {
 				if(autocompleteConfig.getEntityId)
 				{
 					atributesAutocomplete+=' entityidautocomplete="true" ';
+				}		
+				if(autocompleteConfig.propertiesAux!=null)
+				{
+					atributesAutocomplete+=' propertyautocompleteaux="'+autocompleteConfig.propertiesAux.join('|')+'" ';
+				}
+				if(autocompleteConfig.printAux!=null)
+				{
+					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.print+'" ';
 				}				
 				atributesAutocomplete+=' entityidautocomplete="true" ';
 			}
