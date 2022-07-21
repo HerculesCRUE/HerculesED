@@ -7,6 +7,7 @@ using EditorCV.Models.Enrichment;
 using EditorCV.Models;
 using EditorCV.Models.API.Input;
 using EditorCV.Models.Utils;
+using System.Collections.Generic;
 
 namespace GuardadoCV.Controllers
 {
@@ -55,12 +56,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pCache">Indica si hay que cachear</param>
         /// <returns></returns>
         [HttpPost("GetAutocomplete")]
-        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] bool pGetEntityID, [FromForm] string lista, [FromForm] string pLang, [FromForm] bool pCache)
+        public IActionResult GetAutocomplete([FromForm] string q, [FromForm] string pProperty, [FromForm] List<string> pPropertiesAux, [FromForm] string pPrint, [FromForm] string pRdfType, [FromForm] string pGraph, [FromForm] bool pGetEntityID, [FromForm] string lista, [FromForm] string pLang, [FromForm] bool pCache)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pRdfType, pGraph, pGetEntityID, lista?.Split(',').ToList(), pLang, pCache));
+                return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pPropertiesAux, pPrint, pRdfType, pGraph, pGetEntityID, lista?.Split(',').ToList(), pLang, pCache));
             }
             catch (Exception ex)
             {
