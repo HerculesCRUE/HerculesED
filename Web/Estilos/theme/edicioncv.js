@@ -736,16 +736,20 @@ var edicionCV = {
 		var sectionItem=$('.panel-group[section="' + id + '"]');
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
-		//var mostrarSoloConflictos = false;
-		//if(sectionItem.find('.checkAllConflict input[type="checkbox"]').is(':checked'))
-		//{
-		//	mostrarSoloConflictos = true;
-		//}
-		//var mostrarSoloNuevos = false;
-		//if(sectionItem.find('.checkAllNew input[type="checkbox"]').is(':checked'))
-		//{
-		//	mostrarSoloNuevos = true;
-		//}
+		
+		if(mostrarSoloConflictos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarConflictos'))
+		{
+			mostrarSoloConflictos = true;
+		}		
+		else if(mostrarSoloNuevos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarNuevos'))
+		{
+			mostrarSoloNuevos = true;
+		}
+		else {
+			mostrarSoloConflictos = false;
+			mostrarSoloNuevos = false;
+		}
+		
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
 		var ordenItem=sectionItem.find(' .ordenar.dropdown.orders .texto');
         var ordenProperty = ordenItem.attr('property');
