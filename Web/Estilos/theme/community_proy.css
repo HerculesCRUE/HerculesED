@@ -459,6 +459,10 @@ body.homeComunidad #col01 {
     margin-left: 35px;
 }
 
+.noMiniUser .user-miniatura {
+    display: none;
+}
+
 /* ETIQUETAS */
 /*.panFiltros { padding-bottom: 15px; width: 100%; }*/
 /*.panFiltros { padding-bottom: 10px; width: 100%; margin-bottom: -3px; }

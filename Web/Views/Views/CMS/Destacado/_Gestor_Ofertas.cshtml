@@ -65,7 +65,7 @@
                                 <div class="form-group full-group">
                                     <label class="control-label d-block">@Html.Translate("CONFIRMACION_BORRAR_OFERTA")</label>
                                     <div class="form-actions">
-                                        <a href="javascript: cambiarEstado.borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
+                                        <a href="javascript: cambiarEstadoOfertas.borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                                     <label class="control-label d-block">@Html.Translate("INTRODUCE_UN_COMENTARIO")</label>
                                     <textarea class="w-100" id="areaTextoComentario"> </textarea>
                                     <div class="form-actions">
-                                        <a href="javascript: cambiarEstado.sendModal(document.getElementById('areaTextoComentario').value)" class="btn btn-primary uppercase">@Html.Translate("ENVIAR")</a>
+                                        <a href="javascript: cambiarEstadoOfertas.sendModal(document.getElementById('areaTextoComentario').value)" class="btn btn-primary uppercase">@Html.Translate("ENVIAR")</a>
                                     </div>
                                 </div>
                             </div>
@@ -202,15 +202,15 @@
                                     <span class="texto">@Html.Translate("ENVIAR_A")</span>
                                 </a>
                                 <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_001', 'http://gnoss.com/items/offerstate_002')">
+                                    <a class="item-dropdown" href="javascript:cambiarEstadoOfertas.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_001', 'http://gnoss.com/items/offerstate_002')">
                                         <span class="material-icons">send</span>
                                         <span class="texto">@Html.Translate("REVISION")</span>
                                     </a>
-                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_003', 'http://gnoss.com/items/offerstate_002')">
+                                    <a class="item-dropdown" href="javascript:cambiarEstadoOfertas.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_003', 'http://gnoss.com/items/offerstate_002')">
                                         <span class="material-icons">send</span>
                                         <span class="texto">@Html.Translate("VALIDAR")</span>
                                     </a>
-                                    <a class="item-dropdown" href="javascript:cambiarEstado.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_004', 'http://gnoss.com/items/offerstate_002')">
+                                    <a class="item-dropdown" href="javascript:cambiarEstadoOfertas.sendAll(currentsSelected,'http://gnoss.com/items/offerstate_004', 'http://gnoss.com/items/offerstate_002')">
                                         <span class="material-icons">send</span>
                                         <span class="texto">@Html.Translate("DENEGAR")</span>
                                     </a>
