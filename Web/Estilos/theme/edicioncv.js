@@ -1952,7 +1952,7 @@ var edicionCV = {
 			}else{
 				if(values.EndsWith('|||')){
 					values = values.substring(0,values.length-3);
-					values = values.split();
+					values = values.split('|||');
 				}
 			}
             if (values != '' && values.find(x => x == propiedad.id) != null) {
