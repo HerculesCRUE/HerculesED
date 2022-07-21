@@ -1621,7 +1621,7 @@ var edicionCV = {
 				}
 				if(autocompleteConfig.printAux!=null)
 				{
-					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.print+'" ';
+					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.printAux+'" ';
 				}
 			}
         }
@@ -1702,7 +1702,7 @@ var edicionCV = {
 				}
 				if(autocompleteConfig.printAux!=null)
 				{
-					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.print+'" ';
+					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.printAux+'" ';
 				}				
 				atributesAutocomplete+=' entityidautocomplete="true" ';
 			}
