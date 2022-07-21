@@ -144,7 +144,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// </summary>
         /// <param name="pPersona">Persona a convertir.</param>
         /// <returns>Objeto para desambiguar.</returns>
-        public static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona = null, Person_JSON pPersonaRo = null ,string pPersonaGit = null)
+        public static DisambiguationPerson GetDisambiguationPerson(PersonaPub pPersona = null, Person_JSON pPersonaRo = null, string pPersonaGit = null)
         {
             if (pPersona != null)
             {
@@ -194,6 +194,54 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             return null;
         }
 
+
+        public static DocumentoBBDD ObtenerDatosDocumento(string pIdDocumento)
+        {
+            DocumentoBBDD documento = new DocumentoBBDD();
+            documento.categorias = new HashSet<string>();
+            documento.etiquetas = new HashSet<string>();
+
+            string select = $@"SELECT DISTINCT ?urlPdf ?label ?etiquetas FROM <{mResourceApi.GraphsUrl}taxonomy.owl>  ";
+            string where = $@"WHERE {{
+                                ?s ?p ?o.
+                                OPTIONAL{{ ?s <http://w3id.org/roh/hasFile> ?urlPdf. }}
+                                OPTIONAL{{ {{?s <http://w3id.org/roh/userKnowledgeArea> ?categorias. 
+                                           ?categorias <http://w3id.org/roh/categoryNode> ?concept. 
+                                           ?concept <http://www.w3.org/2008/05/skos#prefLabel> ?label.}}
+                                            MINUS
+                                            {{
+                                            ?concept <http://www.w3.org/2008/05/skos#narrower> ?hijos. 
+                                            }}
+                                }}
+                                OPTIONAL{{ ?s <http://w3id.org/roh/userKeywords> ?etiquetas. }}
+                                FILTER(?s = <{pIdDocumento}>)
+                            }}";
+
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    if (fila.ContainsKey("urlPdf") && !string.IsNullOrEmpty(fila["urlPdf"].value))
+                    {
+                        documento.urlPdf = fila["urlPdf"].value;
+                    }
+
+                    if (fila.ContainsKey("label") && !string.IsNullOrEmpty(fila["label"].value))
+                    {
+                        documento.categorias.Add(fila["label"].value);
+                    }
+
+                    if (fila.ContainsKey("etiquetas") && !string.IsNullOrEmpty(fila["etiquetas"].value))
+                    {
+                        documento.etiquetas.Add(fila["etiquetas"].value);
+                    }
+                }
+            }
+
+            return documento;
+        }
+
         public static List<Tuple<string, string, string, string, string, string>> ObtenerPersonas(HashSet<string> pIdsPersonas)
         {
             List<Tuple<string, string, string, string, string, string>> listaResultados = new List<Tuple<string, string, string, string, string, string>>();
@@ -206,7 +254,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 int offset = 0;
 
                 // Consulta sparql.
-                while(true)
+                while (true)
                 {
                     string select = "SELECT * WHERE { SELECT DISTINCT ?s ?orcid ?crisIdentifier ?nombre ?apellidos ?nombreCompleto ";
                     string where = $@"WHERE {{
@@ -327,7 +375,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
                                     sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                    sbUnion.AppendLine($@"				{FilterWordComplete(word,"name")} BIND({score} as ?num) ");
+                                    sbUnion.AppendLine($@"				{FilterWordComplete(word, "name")} BIND({score} as ?num) ");
                                     //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
                                     unions.Add(sbUnion.ToString());
                                 }
@@ -422,7 +470,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             }
             return personID;
         }
-        
+
         /// <summary>
         /// Obtiene un diccionario con las personas, su ORCID y el nombre de la misma
         /// </summary>
