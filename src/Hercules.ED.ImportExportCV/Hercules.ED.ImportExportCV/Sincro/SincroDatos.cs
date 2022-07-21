@@ -71,26 +71,40 @@ namespace ImportadorWebCV.Sincro
             //Si es un PDF lo convierto a XML y lo inserto.
             if (extensionFile.Equals(".pdf"))
             {
-                CVFileAsXML = GenerarRootBean(mConfiguracion, CVFile);
-
-                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
+                try
                 {
-                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                    CVFileAsXML = GenerarRootBean(mConfiguracion, CVFile);
+
+                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                    using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
+                    {
+                        cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                    }
+                    this.cvID = cvID;
+                    this.personID = Utility.PersonaCV(cvID);
                 }
-                this.cvID = cvID;
-                this.personID = Utility.PersonaCV(cvID);
+                catch (Exception e)
+                {
+                    
+                }
             }
             else
             {
-                XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                CVFileAsXML = (FormFile)CVFile;
-                using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
+                try
                 {
-                    cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                    CVFileAsXML = (FormFile)CVFile;
+                    using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
+                    {
+                        cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                    }
+                    this.cvID = cvID;
+                    this.personID = Utility.PersonaCV(cvID);
                 }
-                this.cvID = cvID;
-                this.personID = Utility.PersonaCV(cvID);
+                catch (Exception e)
+                {
+
+                }
             }
         }
 
@@ -177,7 +191,7 @@ namespace ImportadorWebCV.Sincro
         public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
         {
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID, mConfiguracion);
-            
+
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar, listadoIdBBDD)));
 
