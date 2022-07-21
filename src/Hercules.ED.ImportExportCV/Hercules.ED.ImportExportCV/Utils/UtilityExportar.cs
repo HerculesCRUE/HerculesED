@@ -695,7 +695,9 @@ namespace Utils
             {
                 List<string[]> listadoPersonas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
                 .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
-                Dictionary<string, string> dicPersonas = listadoPersonas.ToDictionary(x => x.ElementAt(1), x => x.ElementAt(0));
+                //Dictionary<string, string> dicPersonas = listadoPersonas.ToDictionary(x => x.ElementAt(1), x => x.ElementAt(0));
+                Dictionary<string, string> dicPersonas = listadoPersonas.GroupBy(p => p.ElementAt(1), StringComparer.OrdinalIgnoreCase).ToDictionary(g => g.Key, g => g.ElementAt(0).First());
+                
 
                 autorNombreApellido = GetListadoAutores(resourceApi, dicPersonas);
             }
