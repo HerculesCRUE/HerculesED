@@ -4402,6 +4402,8 @@ function addAutocompletar(control) {
     var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
     var pGraph = $('#modal-editar-entidad form').attr('ontology');
 	var pLang = 'es';
+	var pPrint=null;
+	var pPropertiesAux=null;
 	if($(control).attr('multilang')!=null)
 	{
 		pLang = $(control).attr('multilang');
