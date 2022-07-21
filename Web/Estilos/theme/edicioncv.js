@@ -1706,7 +1706,7 @@ var edicionCV = {
 			}			
 		}
 
-        return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}_aux" placeholder="${placeholder}" value="${value}" value="${value}" onclick="${action}" type="text" class="form-control not-outline autocompleteentity ${css}" ${htmlDependency}>`;
+        return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}_aux" placeholder="${placeholder}" value="${value}" value="${value}" onfocus="${action}" type="text" class="form-control not-outline autocompleteentity ${css}" ${htmlDependency}>`;
     },
     printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency) {
         var css = "";
