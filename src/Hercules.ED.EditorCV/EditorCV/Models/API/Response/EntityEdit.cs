@@ -196,6 +196,14 @@ namespace EditorCV.Models.API.Response
         /// Indica si sólo se pueden seleccionar opciones del autocompletar
         /// </summary>
         public bool mandatory;
+        /// <summary>
+        /// Propiedades auxiliares
+        /// </summary>
+        public List<string> propertiesAux;
+        /// <summary>
+        /// Forma de pintado
+        /// </summary>
+        public string printAux;
     }
 
     /// <summary>
