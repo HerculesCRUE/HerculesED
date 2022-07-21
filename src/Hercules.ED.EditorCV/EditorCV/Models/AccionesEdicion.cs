@@ -64,13 +64,15 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pSearch">Texto por el que se van a buscar sugerencias</param>
         /// <param name="pProperty">Propiedad en la que se quiere buscar</param>
+        /// <param name="pPropertiesAux">Propiedades auxiliares que se quieren buscar</param>
+        /// <param name="pPrint">Formato de como pintar</param>
         /// <param name="pRdfType">Rdf:type de la entidad en la que se quiere buscar</param>
         /// <param name="pGraph">Grafo en el que se encuentra la propiedad</param>
         /// <param name="pGetEntityID">Obtiene el ID de la entidad además del valor de la propiedad</param>
         /// <param name="pLang">Idioma</param>
         /// <param name="pCache">Indica si hay que cachear</param>
         /// <returns></returns>
-        public object GetAutocomplete(string pSearch, string pProperty, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista, string pLang, bool pCache)
+        public object GetAutocomplete(string pSearch, string pProperty, List<string> pPropertiesAux, string pPrint, string pRdfType, string pGraph, bool pGetEntityID, List<string> pLista, string pLang, bool pCache)
         {
             int numMax = 20;
             string searchText = pSearch.Trim();
@@ -206,7 +208,17 @@ namespace EditorCV.Models
                     filter = $"bif:contains(?o, \"'{ searchText }'\"){filter}";
                 }
                 string select = "SELECT DISTINCT ?s ?o ";
-                string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pPropertyAux }> ?o . FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
+                string auxProperties = "";
+                if (pPropertiesAux != null && pPropertiesAux.Count() > 0 && !string.IsNullOrEmpty(pPrint))
+                {
+                    for (int i = 0; i < pPropertiesAux.Count(); i++)
+                    {
+                        select += " ?o" + (i + 1);
+                        auxProperties += $"OPTIONAL{{ ?s <{pPropertiesAux[i]}> ?o{i + 1}.}}";
+                    }
+
+                }
+                string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pPropertyAux }> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
@@ -234,6 +246,28 @@ namespace EditorCV.Models
                         }
                         string s = fila["s"].value;
                         string o = fila["o"].value;
+                        if (pPropertiesAux != null && pPropertyAux.Count() > 0 && !string.IsNullOrEmpty(pPrint))
+                        {
+                            o = "";
+                            string[] printSplit = pPrint.Split('|');
+                            for (int j = 0; j < printSplit.Count(); j++)
+                            {
+                                string valor = "";
+                                if (j == 0)
+                                {
+                                    valor = fila["o"].value;
+                                }
+                                else if (fila.ContainsKey("o" + j))
+                                {
+                                    valor = fila["o" + j].value;
+                                }
+                                if (!string.IsNullOrEmpty(valor))
+                                {
+                                    o += printSplit[j].Replace($"{{{j}}}", valor);
+                                }
+                            }
+                        }
+
                         if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
                         {
                             respuesta.Add(s, o);
@@ -1999,6 +2033,8 @@ namespace EditorCV.Models
                         cache = pItemEditSectionRowProperty.autocompleteConfig.cache,
                         getEntityId = !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity),
                         mandatory = pItemEditSectionRowProperty.autocompleteConfig.mandatory,
+                        propertiesAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.properties,
+                        printAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.print,
                     };
                 }
 
@@ -2019,8 +2055,33 @@ namespace EditorCV.Models
                         string entity = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
                         if (!string.IsNullOrEmpty(entity) && pData.ContainsKey(entity))
                         {
-                            string entityText = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
-                            entityEditSectionRowProperty.propertyEntityValue = entityText;
+                            if (pItemEditSectionRowProperty.autocompleteConfig.propertyAux != null)
+                            {
+                                string entityText = "";
+                                string[] printSplit = pItemEditSectionRowProperty.autocompleteConfig.propertyAux.print.Split('|');
+                                for (int j = 0; j < printSplit.Count(); j++)
+                                {
+                                    string valor = "";
+                                    if (j == 0)
+                                    {
+                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault(); ;
+                                    }
+                                    else
+                                    {
+                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.propertyAux.properties[j-1]).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                                    }
+                                    if (!string.IsNullOrEmpty(valor))
+                                    {
+                                        entityText += printSplit[j].Replace($"{{{j}}}", valor);
+                                    }
+                                }
+                                entityEditSectionRowProperty.propertyEntityValue = entityText;
+                            }
+                            else
+                            {
+                                string entityText = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                                entityEditSectionRowProperty.propertyEntityValue = entityText;
+                            }
                         }
                     }
                 }
