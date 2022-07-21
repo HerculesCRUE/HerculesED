@@ -914,31 +914,14 @@
                           "graph": "maindocument",
                           "property": {
                             "property": "http://w3id.org/roh/title"
+                          },
+                          "propertyAux": {
+                            "properties": [ "http://purl.org/ontology/bibo/issn", "http://purl.org/ontology/bibo/eissn" ],
+                            "print": "{0}| - ISSN: {1}| - EISSN: {2}"
                           }
                         },
                         "type": "entityautocomplete",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "ISSN"
-                        },
-                        "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
-                        "autocomplete": true,
-                        "blocked": true,
-                        "dependency": {
-                          "property": "http://w3id.org/roh/supportType",
-                          "propertyValue": "{GraphsUrl}items/documentformat_057"
-                        },
-                        "autocompleteConfig": {
-                          "rdftype": "http://w3id.org/roh/MainDocument",
-                          "graph": "maindocument",
-                          "property": {
-                            "property": "http://purl.org/ontology/bibo/issn"
-                          }
-                        },
-                        "type": "entityautocomplete",
-                        "width": 1
+                        "width": 2
                       },
                       {
                         "title": {

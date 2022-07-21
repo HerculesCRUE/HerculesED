@@ -903,8 +903,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// <param name="pDocuments">IDs de documentos</param>
         public void ActualizarIndicesImpacto(List<string> pDocuments = null)
         {
-            //TODO revisar desde cero
-
             HashSet<string> filters = new HashSet<string>();
             if (pDocuments != null && pDocuments.Count > 0)
             {
@@ -923,7 +921,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select distinct ?document ?impactSource ?categoryTitle ?impactIndexInYear from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct ?document ?impactSource ?categoryTitle ?impactCategory ?impactIndexInYear from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
                     String where = @$"where{{          
     ?document a <http://purl.org/ontology/bibo/Document>.
     {filter}
@@ -979,7 +977,8 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         #Actuales
         ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.    
         ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
-        ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?categoryTitle.
+        ?impactIndexDoc <http://w3id.org/roh/impactIndexCategoryEntity> ?impactCategoryAux.
+        BIND(uri(?impactCategoryAux) as ?impactCategory)
     }}MINUS
     {{
         #Deseables
@@ -987,8 +986,9 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         ?document<http://w3id.org/roh/year> ?anio.
         ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista. 
         ?revista <http://w3id.org/roh/impactIndex> ?impactIndex.
+        ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
         ?impactIndex <http://w3id.org/roh/year> ?anio.     
-        ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource. 
+        ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource.          
         ?impactIndex <http://w3id.org/roh/impactCategory> ?impactCategory .     
         ?impactCategory <http://w3id.org/roh/title> ?categoryTitle.
 
@@ -1042,32 +1042,19 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
                     String select = @"select distinct ?document ?impactIndexDoc ?publicationPositionCargar ?publicationPositionCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
                     String where = @$"where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>. 
-		                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
-		                            ?impactIndexDoc <http://w3id.org/roh/impactSource> ?impactSource.
-                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?impactCategoryTitle.
-                                    {filter}
-                                    OPTIONAL{{                                        
-				                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-				                        ?document <http://w3id.org/roh/year> ?year.
-
-				                        #Revista                     
-				                        ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
-				                        ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
-				                        ?impactIndexRevista <http://w3id.org/roh/year> ?year.
-				                        ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
-				                        ?impactCategory <http://w3id.org/roh/title> ?impactCategoryTitle.					
-
-				                        OPTIONAL{{
-					                        ?impactCategory <http://w3id.org/roh/publicationPosition> ?publicationPositionCargar.      
-				                        }}  
-                                        
-		                            }}	
-		                            OPTIONAL{{
-			                            ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?publicationPositionCargado.
-		                            }}  
-                                    FILTER(?publicationPositionCargado!= ?publicationPositionCargar OR (!BOUND(?publicationPositionCargado) AND BOUND(?publicationPositionCargar)) OR (!BOUND(?publicationPositionCargar) AND BOUND(?publicationPositionCargado)))
-                                }} limit {limit}";
+    ?document a <http://purl.org/ontology/bibo/Document>. 
+	?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
+    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategoryEntity> ?impactCategoryAux.
+    BIND(uri(?impactCategoryAux) as ?impactCategory)
+    {filter}
+    OPTIONAL{{
+        ?impactCategory <http://w3id.org/roh/publicationPosition> ?publicationPositionCargar.      
+    }} 
+    OPTIONAL{{
+        ?impactIndexDoc <http://w3id.org/roh/publicationPosition> ?publicationPositionCargado.
+    }}  
+    FILTER(?publicationPositionCargado!= ?publicationPositionCargar OR (!BOUND(?publicationPositionCargado) AND BOUND(?publicationPositionCargar)) OR (!BOUND(?publicationPositionCargar) AND BOUND(?publicationPositionCargado)))
+}} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
@@ -1108,32 +1095,19 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
                     String select = @"select distinct ?document ?impactIndexDoc ?journalNumberInCatCargar ?journalNumberInCatCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
                     String where = @$"where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>. 
-		                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
-		                            ?impactIndexDoc <http://w3id.org/roh/impactSource> ?impactSource.
-                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?impactCategoryTitle.
-                                    {filter}
-                                    OPTIONAL{{                                        
-				                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-				                        ?document <http://w3id.org/roh/year> ?year.
-
-				                        #Revista                     
-				                        ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
-				                        ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
-				                        ?impactIndexRevista <http://w3id.org/roh/year> ?year.
-				                        ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
-				                        ?impactCategory <http://w3id.org/roh/title> ?impactCategoryTitle.					
-
-				                        OPTIONAL{{
-					                        ?impactCategory <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargar.      
-				                        }}  
-                                        
-		                            }}	
-		                            OPTIONAL{{
-			                            ?impactIndexDoc <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargado.
-		                            }}  
-                                    FILTER(?journalNumberInCatCargado!= ?journalNumberInCatCargar OR (!BOUND(?journalNumberInCatCargado) AND BOUND(?journalNumberInCatCargar)) OR (!BOUND(?journalNumberInCatCargar) AND BOUND(?journalNumberInCatCargado)))
-                                }} limit {limit}";
+    ?document a <http://purl.org/ontology/bibo/Document>. 
+	?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
+    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategoryEntity> ?impactCategoryAux.
+    BIND(uri(?impactCategoryAux) as ?impactCategory)
+    {filter}
+	OPTIONAL{{
+		?impactCategory <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargar.      
+	}}  
+	OPTIONAL{{
+		?impactIndexDoc <http://w3id.org/roh/journalNumberInCat> ?journalNumberInCatCargado.
+	}}  
+    FILTER(?journalNumberInCatCargado!= ?journalNumberInCatCargar OR (!BOUND(?journalNumberInCatCargado) AND BOUND(?journalNumberInCatCargar)) OR (!BOUND(?journalNumberInCatCargar) AND BOUND(?journalNumberInCatCargado)))
+}} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
@@ -1174,32 +1148,18 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
                     String select = @"select distinct ?document ?impactIndexDoc ?quartileCargar ?quartileCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
                     String where = @$"where{{
-                                    ?document a <http://purl.org/ontology/bibo/Document>. 
-		                            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
-		                            ?impactIndexDoc <http://w3id.org/roh/impactSource> ?impactSource.
-                                    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategory> ?impactCategoryTitle.
-                                    {filter}
-                                    OPTIONAL{{                                        
-				                        ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
-				                        ?document <http://w3id.org/roh/year> ?year.
-
-				                        #Revista                     
-				                        ?revista <http://w3id.org/roh/impactIndex> ?impactIndexRevista.
-				                        ?impactIndexRevista<http://w3id.org/roh/impactSource> ?impactSource. 
-				                        ?impactIndexRevista <http://w3id.org/roh/year> ?year.
-				                        ?impactIndexRevista <http://w3id.org/roh/impactCategory> ?impactCategory .
-				                        ?impactCategory <http://w3id.org/roh/title> ?impactCategoryTitle.					
-
-				                        OPTIONAL{{
-					                        ?impactCategory <http://w3id.org/roh/quartile> ?quartileCargar.      
-				                        }}  
-                                        
-		                            }}	
-		                            OPTIONAL{{
-			                            ?impactIndexDoc <http://w3id.org/roh/quartile> ?quartileCargado.
-		                            }}  
-                                    FILTER(?quartileCargado!= ?quartileCargar OR (!BOUND(?quartileCargado) AND BOUND(?quartileCargar)) OR (!BOUND(?quartileCargar) AND BOUND(?quartileCargado)))
-                                }} limit {limit}";
+    ?document a <http://purl.org/ontology/bibo/Document>. 
+	?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
+    ?impactIndexDoc <http://w3id.org/roh/impactIndexCategoryEntity> ?impactCategoryAux.
+    BIND(uri(?impactCategoryAux) as ?impactCategory)
+	OPTIONAL{{
+		?impactCategory <http://w3id.org/roh/quartile> ?quartileCargar.      
+	}}  
+	OPTIONAL{{
+		?impactIndexDoc <http://w3id.org/roh/quartile> ?quartileCargado.
+	}}  
+    FILTER(?quartileCargado!= ?quartileCargar OR (!BOUND(?quartileCargado) AND BOUND(?quartileCargar)) OR (!BOUND(?quartileCargar) AND BOUND(?quartileCargado)))
+}} limit {limit}";
 
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
 
@@ -1283,6 +1243,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.        
         ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
         ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+        MINUS{{?impactIndexDoc  <http://w3id.org/roh/impactIndexCategoryEntity> ?impactIndexCategoryEntity}}
     }}MINUS
     {{
         #Deseables
@@ -1293,6 +1254,11 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
         ?impactIndex <http://w3id.org/roh/year> ?anio.     
         ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource.   
+        MINUS{{
+            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.        
+            ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
+            ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
+        }}
     }}
 }}order by (?document) limit {limit}";
 
@@ -1494,6 +1460,13 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             TriplesToInclude t = new();
                             t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/quartile";
                             t.NewValue = idAux + "|" + fila["quartile"].value;
+                            triples[guid].Add(t);
+                        }
+                        if(fila.ContainsKey("impactCategory"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategoryEntity";
+                            t.NewValue = idAux + "|" + fila["impactCategory"].value;
                             triples[guid].Add(t);
                         }
                     }

@@ -394,7 +394,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
 
                             //Datos de los objetos encontrados en la BBDD
-                            List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);
+                            List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);                      
 
                             #region 1º PERSONAS Procesamos las personas, actualizando las que corresponda
                             Dictionary<Person, HashSet<string>> listaPersonasCargarEquivalencias = new Dictionary<Person, HashSet<string>>();
@@ -499,8 +499,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                                     if (tipo == DISAMBIGUATION_PUBLICATION && listaIds.Any())
                                     {
+                                        // Atributos que no hay que machacar de los documentos.
+                                        DocumentoBBDD datosDocumentoBBDD = UtilityPersona.ObtenerDatosDocumento(item.Key);
                                         listaDocumentosCargados.Add(idA, item.Key);
-                                        CrearDocumentDesambiguado(idA, listaIds, dicIdDatosPub, listaDocumentosCargarEquivalencias, tupla.Item1, tupla.Item2);
+                                        CrearDocumentDesambiguado(idA, listaIds, dicIdDatosPub, listaDocumentosCargarEquivalencias, tupla.Item1, tupla.Item2, pDocCargado: datosDocumentoBBDD);
                                     }
                                 }
                             }
@@ -1185,7 +1187,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pDicAreasNombre"></param>
         private static void CrearDocumentDesambiguado(string idPublicacion, HashSet<string> pListaIds,
             Dictionary<string, Publication> pDicIdPublicacion, Dictionary<Document, HashSet<string>> pListaPublicacionesCreadas,
-            Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
+            Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, DocumentoBBDD pDocCargado = null)
         {
             Publication documentoA = pDicIdPublicacion[idPublicacion];
             Document documentoCreado = new Document();
@@ -1193,7 +1195,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             foreach (string idSimilar in pListaIds)
             {
                 Publication documentoB = pDicIdPublicacion[idSimilar];
-                documentoCreado = ConstruirDocument(documentoA, pDicAreasBroader, pDicAreasNombre, pPublicacionB: documentoB);
+                documentoCreado = ConstruirDocument(documentoA, pDicAreasBroader, pDicAreasNombre, pPublicacionB: documentoB, pDocCargado: pDocCargado);
             }
 
             HashSet<string> listaTotalIds = pListaIds;
@@ -1211,7 +1213,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <param name="pPublicacionB"></param>
         /// <returns></returns>
         public static Document ConstruirDocument(Publication pPublicacion, Dictionary<string, string> pDicAreasBroader,
-            Dictionary<string, string> pDicAreasNombre, Publication pPublicacionB = null)
+            Dictionary<string, string> pDicAreasNombre, Publication pPublicacionB = null, DocumentoBBDD pDocCargado = null)
         {
             Document document = new Document();
 
@@ -1559,6 +1561,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
             document.Roh_enrichedKeywords = etiquetasEnriquecidas.ToList();
 
+            // Etiquetas del Usuario (UserKeyWords)
+            if(pDocCargado != null && pDocCargado.etiquetas != null && pDocCargado.etiquetas.Any())
+            {
+                document.Roh_userKeywords = pDocCargado.etiquetas.ToList();
+            }
+
             // Fecha de publicación (Issued)
             if (pPublicacion.dataIssued != null && pPublicacion.dataIssued.datimeTime != null)
             {
@@ -1592,7 +1600,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
 
             // PDF
-            if (!string.IsNullOrEmpty(pPublicacion.pdf))
+            if(pDocCargado != null && !string.IsNullOrEmpty(pDocCargado.urlPdf) && string.IsNullOrEmpty(pPublicacion.pdf))
+            {
+                document.Roh_hasFile = pDocCargado.urlPdf;
+            }
+            else
             {
                 document.Roh_hasFile = pPublicacion.pdf;
 
@@ -1766,6 +1778,37 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             if (categoria.IdsRoh_categoryNode.Count > 0)
                             {
                                 document.Roh_enrichedKnowledgeArea.Add(categoria);
+                            }
+                        }
+                        listaIDs.Add(idHijoAux);
+                    }
+                }
+            }
+
+            // Areas de conocimiento del Usuario (UserKnowledgeArea) 
+            // TODO: Cuando se haga el cambio de los IDs, hay que coger el ID en lugar del nombre.
+            if (pDocCargado != null && pDocCargado.categorias != null && pDocCargado.categorias.Any())
+            {
+                document.Roh_userKnowledgeArea = new List<DocumentOntology.CategoryPath>();
+                foreach (string area in pDocCargado.categorias)
+                {
+                    if (pDicAreasNombre.ContainsKey(area.ToLower()))
+                    {
+                        DocumentOntology.CategoryPath categoria = new DocumentOntology.CategoryPath();
+                        categoria.IdsRoh_categoryNode = new List<string>();
+                        categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
+                        string idHijo = pDicAreasNombre[area.ToLower()];
+                        string idHijoAux = idHijo;
+                        if (!listaIDs.Contains(idHijo))
+                        {
+                            while (!idHijo.EndsWith(".0.0.0"))
+                            {
+                                categoria.IdsRoh_categoryNode.Add(pDicAreasBroader[idHijo]);
+                                idHijo = pDicAreasBroader[idHijo];
+                            }
+                            if (categoria.IdsRoh_categoryNode.Count > 0)
+                            {
+                                document.Roh_userKnowledgeArea.Add(categoria);
                             }
                         }
                         listaIDs.Add(idHijoAux);

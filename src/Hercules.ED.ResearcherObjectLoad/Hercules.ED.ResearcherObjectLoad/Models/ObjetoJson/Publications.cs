@@ -90,6 +90,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string typeOfPublication { get; set; }
         public string title { get; set; }
         public List<FreetextKeyword> freetextKeywords { get; set; }
+        public List<string> etiquetasUsuario { get; set; }
         public string @abstract { get; set; }
         public string language { get; set; }
         public string doi { get; set; }
@@ -98,6 +99,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public string pdf { get; set; }
         public List<TopicsEnriquecido> topics_enriquecidos { get; set; }
         public List<FreetextKeywordEnriquecida> freetextKeyword_enriquecidas { get; set; }
+        public List<string> categoriasUsuario { get; set; }
         public PersonaPub correspondingAuthor { get; set; }
         public List<PersonaPub> seqOfAuthors { get; set; }
         public List<HasKnowledgeArea> hasKnowledgeAreas { get; set; }

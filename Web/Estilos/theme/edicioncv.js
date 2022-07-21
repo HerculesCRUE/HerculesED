@@ -1615,6 +1615,14 @@ var edicionCV = {
 				{
 					atributesAutocomplete+=' entityidautocomplete="true" ';
 				}
+				if(autocompleteConfig.propertiesAux!=null)
+				{
+					atributesAutocomplete+=' propertyautocompleteaux="'+autocompleteConfig.propertiesAux.join('|')+'" ';
+				}
+				if(autocompleteConfig.printAux!=null)
+				{
+					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.printAux+'" ';
+				}
 			}
         }
 		
@@ -1687,6 +1695,14 @@ var edicionCV = {
 				if(autocompleteConfig.getEntityId)
 				{
 					atributesAutocomplete+=' entityidautocomplete="true" ';
+				}		
+				if(autocompleteConfig.propertiesAux!=null)
+				{
+					atributesAutocomplete+=' propertyautocompleteaux="'+autocompleteConfig.propertiesAux.join('|')+'" ';
+				}
+				if(autocompleteConfig.printAux!=null)
+				{
+					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.printAux+'" ';
 				}				
 				atributesAutocomplete+=' entityidautocomplete="true" ';
 			}
@@ -4390,10 +4406,12 @@ function addAutocompletar(control) {
 	var pGetEntityID=false;
 	//Por defecto busca en los valores introducidos en esa propiedad en otras entidades iguales
 	urlAutocomplete=urlEdicionCV + "GetAutocomplete";
-    var pProperty = $(control).attr('propertyrdf')
+    var pProperty = $(control).attr('propertyrdf');	
     var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
     var pGraph = $('#modal-editar-entidad form').attr('ontology');
 	var pLang = 'es';
+	var pPrint=null;
+	var pPropertiesAux=null;
 	if($(control).attr('multilang')!=null)
 	{
 		pLang = $(control).attr('multilang');
@@ -4402,6 +4420,14 @@ function addAutocompletar(control) {
 	if($(control).attr('propertyautocomplete')!=null)
 	{
 		pProperty=$(control).attr('propertyautocomplete');
+	}
+	if($(control).attr('propertyautocompleteaux')!=null)
+	{
+		pPropertiesAux=$(control).attr('propertyautocompleteaux');
+	}	
+	if($(control).attr('propertyautocompleteprint')!=null)
+	{
+		pPrint=$(control).attr('propertyautocompleteprint');
 	}
 	if($(control).attr('rdftypeautocomplete')!=null)
 	{
@@ -4470,6 +4496,17 @@ function addAutocompletar(control) {
             },
             formatItem: function(data) { return data; },
             extraParams: {
+				pPropertiesAux: function() {
+					var lista=[];
+                    if (pPropertiesAux != null && pPropertiesAux!='') {						
+						var pPropertiesAuxSplit = pPropertiesAux.split('|');
+						for (var i = 0; i < pPropertiesAuxSplit.length; i++) {
+							lista.push(pPropertiesAuxSplit[i]);
+						}
+                    }
+                    return lista;
+                },
+				pPrint:pPrint,
                 lista: function() {
                     var lista = '';
                     $('.added input[propertyrdf="' + pProperty + '"]').each(function() {
@@ -4491,7 +4528,8 @@ function addAutocompletar(control) {
 				pLang: pLang,
 				pCache: pCache,
 				pGetEntityID:pGetEntityID,
-                botonBuscar: btnID
+                botonBuscar: btnID,
+				
             }
         }
     );
