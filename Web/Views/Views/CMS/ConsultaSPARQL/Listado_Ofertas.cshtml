@@ -300,7 +300,7 @@
             function borrarOferta() {
 
                 // Convierte el id en un guid
-                currentId = currentId.contain('_') ? currentId.Split('_')[1] : currentId
+                currentId = currentId.includes('_') ? currentId.split('_')[1] : currentId
 
                 var url = url_servicio_externo + "Ofertas/BorrarOferta"
                 var arg = {};
@@ -313,7 +313,7 @@
             // Datos gráfica áreas temáticas
             function cambiarEstado(id, estado, estadoActual) {
 
-                id = id.contain('_') ? id.Split('_')[1] : id
+                id = id.includes('_') ? id.split('_')[1] : id
 
                 var url = url_servicio_externo + "Ofertas/CambiarEstado"
                 var arg = {};

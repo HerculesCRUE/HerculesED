@@ -2670,12 +2670,30 @@ var comportamientoOfertasOtri = {
 };
 
 
+// Comportamiento listado Ofertas del gestor otri
+var comportamientoMisOfertas = {
+	tabActive: null,
+
+	init: function (pIdUser, idPrint) {
+
+		let that = this
+
+		buscadorPersonalizado.profile=null;
+
+		// Iniciar el listado de ofertas
+		buscadorPersonalizado.init(document.getElementById(idPrint).dataset.title, "#"+idPrint, "searchOwnOffers=" + pIdUser, null, "rdf:type=offer", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+
+		return;
+	}
+};
+
+
 
 
 /** 
 * Objeto que actualiza el estado de las ofertas
 */
-cambiarEstado = {
+cambiarEstadoOfertas = {
 	/** 
 	* Método de configuración que establece los datos de la próxima llamada
 	* @param id, Id (Guid) con la oferta a modificar
@@ -2805,14 +2823,14 @@ class OfferList {
 	                    <li>
 	                        <a class="item-dropdown" href="javascript: void(0)">
 	                            <span class="material-icons">${e.icono}</span>
-	                            <span class="texto" onclick="javascript:cambiarEstado.setModal('${idDocument}','${e.idEstadoOFerta}', '${itemState}', '${e.targetModalId}')" >${e.txtEnviar}</span>
+	                            <span class="texto" onclick="javascript:cambiarEstadoOfertas.setModal('${idDocument}','${e.idEstadoOFerta}', '${itemState}', '${e.targetModalId}')" >${e.txtEnviar}</span>
 	                        </a>
 	                    </li>`
 	            } else {
 
 	                return `
 	                    <li>
-	                        <a class="item-dropdown" href="javascript:cambiarEstado.send('${idDocument}','${e.idEstadoOFerta}', '${itemState}')">
+	                        <a class="item-dropdown" href="javascript:cambiarEstadoOfertas.send('${idDocument}','${e.idEstadoOFerta}', '${itemState}')">
 	                            <span class="material-icons">${e.icono}</span>
 	                            <span class="texto">${e.txtEnviar}</span>
 	                        </a>
