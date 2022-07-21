@@ -1872,12 +1872,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
 
-                // Comprobar EISSN
-                if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacionB.hasPublicationVenue.eissn))
-                {
-                    idRevista = ComprobarRevistaEISSN(pPublicacionB.hasPublicationVenue.eissn);
-                }
-
                 // Comprobar Título
                 if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacionB.hasPublicationVenue.name))
                 {

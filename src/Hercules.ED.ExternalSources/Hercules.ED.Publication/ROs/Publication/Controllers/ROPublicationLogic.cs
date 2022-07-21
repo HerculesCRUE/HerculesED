@@ -332,7 +332,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             bool encontrado = false;
                             foreach (Person persona in pub_completa.seqOfAuthors)
                             {
-                                if (persona.ORCID == name)
+                                if (persona.ORCID == name || pDoi != null)
                                 {
                                     encontrado = true;
                                     break;
@@ -498,7 +498,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 bool encontrado = false;
                                 foreach (Person persona in pub_completa.seqOfAuthors)
                                 {
-                                    if (persona.ORCID == name)
+                                    if (persona.ORCID == name || pDoi != null)
                                     {
                                         encontrado = true;
                                         break;
@@ -644,7 +644,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 bool encontrado = false;
                                 foreach (Person persona in pub_completa.seqOfAuthors)
                                 {
-                                    if (persona.ORCID == name)
+                                    if (persona.ORCID == name || pDoi != null)
                                     {
                                         encontrado = true;
                                         break;
