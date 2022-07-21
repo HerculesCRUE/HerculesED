@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using Utils;
 using static Models.Entity;
 
@@ -146,7 +147,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Publicaciones, documentos científicos y técnicos".
         /// Con el codigo identificativo 060.010.010.000
         /// </summary>
-        public List<SubseccionItem> SincroPublicacionesDocumentos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
+        public List<SubseccionItem> SincroPublicacionesDocumentos(ConfigService mConfiguracion, bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -161,7 +162,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(listadoDatos, listadoSituacionProfesional, petitionStatus);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -1484,7 +1485,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetPublicacionesDocumentos(List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus)
+        public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1496,12 +1497,22 @@ namespace ImportadorWebCV.Sincro.Secciones
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
 
+
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
                     entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.030")))
                     {
+                        //Añado las etiquetas enriquecidas
+                        string tituloPublicacion = item.GetStringPorIDCampo("060.010.010.030");
+                        tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
+                        ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
+                        //Categorias
+                        Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
+                        //Etiquetas
+                        Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
+
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD1")
                         ));
