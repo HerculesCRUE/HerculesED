@@ -78,6 +78,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                         string select = $@"SELECT * WHERE {{ SELECT DISTINCT ?persona ?nombreCompleto";
                                         string where = $@"WHERE {{
                                                             ?persona a <http://xmlns.com/foaf/0.1/Person>. 
+                                                            ?persona <http://w3id.org/roh/isActive> 'true'. 
                                                             ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.                                
                                                         }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
                                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
