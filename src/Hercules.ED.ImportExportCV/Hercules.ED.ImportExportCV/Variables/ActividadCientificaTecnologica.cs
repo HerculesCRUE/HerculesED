@@ -58,7 +58,9 @@
         public const string pubDocumentosAutores = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
         public const string pubDocumentosAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://xmlns.com/foaf/0.1/nick";
         public const string pubDocumentosNombreRevista = "http://vivoweb.org/ontology/core#hasPublicationVenue@@@http://purl.org/ontology/bibo/Document|http://w3id.org/roh/title";
-        public const string pubDocumentoTextosEnriquecidos = "";
+        public const string pubDocumentosAreasTematicas = "http://w3id.org/roh/userKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode@@@http://www.w3.org/2008/05/skos#Concept|dc:identifier";
+        public const string pubDocumentosTextosEnriquecidosTitulo = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/title";
+        public const string pubDocumentosTextosEnriquecidosScore = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/score";
         
         /// <summary>
         /// Trabajos presentados en congresos nacionales o internacionales - 060.010.020.000
