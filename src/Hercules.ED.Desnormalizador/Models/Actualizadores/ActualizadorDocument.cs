@@ -903,8 +903,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// <param name="pDocuments">IDs de documentos</param>
         public void ActualizarIndicesImpacto(List<string> pDocuments = null)
         {
-            //TODO revisar desde cero
-
             HashSet<string> filters = new HashSet<string>();
             if (pDocuments != null && pDocuments.Count > 0)
             {
