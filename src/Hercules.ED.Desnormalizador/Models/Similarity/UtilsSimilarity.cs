@@ -17,15 +17,7 @@ namespace DesnormalizadorHercules.Models.Similarity
         private readonly string mType;
         private readonly string mRdfType;
         private readonly string mGraph;
-        private readonly string mQueryVisible = $@"{{ ?doc <http://w3id.org/roh/isValidated> 'true'.}}
-    UNION
-    {{  
-        ?cv a <http://w3id.org/roh/CV>.
-        ?cv ?p1 ?o1.
-        ?o1 ?p2 ?item.
-        ?item <http://vivoweb.org/ontology/core#relatedBy> ?doc.
-        ?item <http://w3id.org/roh/isPublic> 'true'.
-    }}";
+        private readonly string mQueryVisible = $@"{{ ?doc <http://w3id.org/roh/isValidated> 'true'.}}";
 
         /// <summary>
         /// Constructor
@@ -465,21 +457,13 @@ where
             }
             if (dicSimilarsAux.Count > 0)
             {
-                //Hacemos una verificación para que sólo se devuelvan validados o publicios en el cv
+                //Hacemos una verificación para que sólo se devuelvan validados
                 string select = "select distinct ?id from <http://gnoss.com/curriculumvitae.owl> ";
                 string where = $@"
 where{{
     FILTER(?id in (<{string.Join(">,<", dicSimilarsAux.Keys)}>))
     ?id a <{rdfType}>.
-    {{ ?id <http://w3id.org/roh/isValidated> 'true'.}}
-    UNION
-    {{  
-        ?cv a <http://w3id.org/roh/CV>.
-        ?cv ?p1 ?o1.
-        ?o1 ?p2 ?item.
-        ?item <http://vivoweb.org/ontology/core#relatedBy> ?id.
-        ?item <http://w3id.org/roh/isPublic> 'true'.
-    }}
+    ?id <http://w3id.org/roh/isValidated> 'true'.
 
 }}";
                 List<string> listID = mResourceApi.VirtuosoQuery(select, where, graph).results.bindings.Select(x => x["id"].value).ToList();
