@@ -6437,7 +6437,6 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 			}
 		}, 
 		error: function(response){
-			
 		}
 	});
 }
