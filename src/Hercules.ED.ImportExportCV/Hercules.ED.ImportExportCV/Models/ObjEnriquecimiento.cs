@@ -71,7 +71,7 @@ namespace Hercules.ED.ImportExportCV.Models
                 result = response.Content.ReadAsStringAsync().Result;
             }
 
-            if (!string.IsNullOrEmpty(result))
+            if (string.IsNullOrEmpty(result))
             {
                 Topics_enriquecidos data = null;
                 try

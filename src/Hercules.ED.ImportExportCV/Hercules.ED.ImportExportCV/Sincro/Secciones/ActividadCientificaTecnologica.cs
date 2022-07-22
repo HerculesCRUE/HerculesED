@@ -1497,13 +1497,32 @@ namespace ImportadorWebCV.Sincro.Secciones
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
 
-
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
                     entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.030")))
                     {
+                        ////Compruebo si está el DOI asociado a la publicación en BBDD
+                        //string doi = PublicacionesDocumentosComprobarDOI(item);
+                        //string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+                        //if (!string.IsNullOrEmpty(idDOIBBDD))
+                        //{
+                        //    //Si existe alguna publicación con ese DOI no la inserto
+                        //    listadoCvn.Remove(item);
+                        //    mCvn.cvnRootBean = listadoCvn.ToArray();
+
+                        //    continue;
+                        //}
+                        //else if (!string.IsNullOrEmpty(doi))
+                        //{
+                        //    //Compruebo si encuentra algún dato en Fuentes Externas
+                        //    //PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(mConfiguracion, doi);
+                        //}
+                        //else
+                        //{
+
+                        //}
 
                         //Añado las etiquetas enriquecidas
                         string tituloPublicacion = item.GetStringPorIDCampo("060.010.010.030");
@@ -1562,6 +1581,25 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
+        private void PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
+        {
+            UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
+        }
+
+        private string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
+        {
+            string idDOIValue = "";
+            List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.400");
+            foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
+            {
+                if (identificador.Type.Equals("040"))
+                {
+                    idDOIValue = identificador.Value;
+                }
+            }
+            return idDOIValue;
+        }
+
         /// <summary>
         /// Añade los topics/categorias enriquecidos del documento.
         /// </summary>
@@ -1569,6 +1607,10 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void PublicacionesDocumentosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
         {
+            if (dicTopics == null || dicTopics.Count == 0)
+            {
+                return;
+            }
             foreach (KeyValuePair<string, string> topics in dicTopics)
             {
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
@@ -1594,12 +1636,16 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void PublicacionesDocumentosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
         {
+            if (dicEtiquetas == null || dicEtiquetas.Count == 0)
+            {
+                return;
+            }
             foreach (KeyValuePair<string, string> etiquetas in dicEtiquetas)
             {
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
                 string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Key);
                 string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Value);
-                
+
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosScore, etiquetasScore),
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosTitulo, etiquetasValor)
