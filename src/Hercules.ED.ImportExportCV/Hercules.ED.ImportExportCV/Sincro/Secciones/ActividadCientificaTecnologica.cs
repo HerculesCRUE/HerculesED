@@ -250,7 +250,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Trabajos presentados en congresos nacionales o internacionales".
         /// Con el codigo identificativo 060.010.020.000
         /// </summary>
-        public List<SubseccionItem> SincroTrabajosCongresos(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
+        public List<SubseccionItem> SincroTrabajosCongresos(ConfigService mConfiguracion, bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -265,7 +265,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedConferences";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosCongresos(listadoDatos, petitionStatus);
+            List<Entity> listadoAux = GetTrabajosCongresos(mConfiguracion, listadoDatos, petitionStatus);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -354,7 +354,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// talleres de trabajo y/o cursos nacionales o internacionales".
         /// Con el codigo identificativo 060.010.030.000
         /// </summary>
-        public List<SubseccionItem> SincroTrabajosJornadasSeminarios(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
+        public List<SubseccionItem> SincroTrabajosJornadasSeminarios(ConfigService mConfiguracion, bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -369,7 +369,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedSeminars";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(listadoDatos, petitionStatus);
+            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(mConfiguracion, listadoDatos, petitionStatus);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -1504,14 +1504,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.030")))
                     {
+
                         //Añado las etiquetas enriquecidas
                         string tituloPublicacion = item.GetStringPorIDCampo("060.010.010.030");
                         tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
                         ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
+
                         //Categorias
                         Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
+                        PublicacionesDocumentosTopics(dicTopics, entidadAux);
                         //Etiquetas
                         Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
+                        PublicacionesDocumentosEtiquetas(dicEtiquetas, entidadAux);
+
 
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD1")
@@ -1555,6 +1560,51 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
+        }
+
+        /// <summary>
+        /// Añade los topics/categorias enriquecidos del documento.
+        /// </summary>
+        /// <param name="dicTopics"></param>
+        /// <param name="entidadAux"></param>
+        private void PublicacionesDocumentosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
+        {
+            foreach (KeyValuePair<string, string> topics in dicTopics)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string topic = UtilitySecciones.ObtenerTopics(topics.Key);
+
+                List<string> topicList = new List<string>();
+                topicList.AddRange(UtilitySecciones.GetPadresTesauro(topic));
+
+                foreach (string topicIn in topicList)
+                {
+                    string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, topicIn);
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAreasTematicasEnriquecidas, topicInsert)
+                    ));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Añade las etiquetas enriquecidas del documento.
+        /// </summary>
+        /// <param name="dicEtiquetas"></param>
+        /// <param name="entidadAux"></param>
+        private void PublicacionesDocumentosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
+        {
+            foreach (KeyValuePair<string, string> etiquetas in dicEtiquetas)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Key);
+                string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Value);
+                
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosScore, etiquetasScore),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosTitulo, etiquetasValor)
+                ));
+            }
         }
 
         /// <summary>
@@ -1686,7 +1736,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetTrabajosCongresos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
+        public List<Entity> GetTrabajosCongresos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1704,6 +1754,19 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.030")))
                     {
+                        // Añado las etiquetas enriquecidas
+                        string tituloPublicacion = item.GetStringPorIDCampo("060.010.020.030");
+                        tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
+                        ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
+
+                        //Categorias
+                        Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
+                        TrabajosCongresosTopics(dicTopics, entidadAux);
+                        //Etiquetas
+                        Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
+                        TrabajosCongresosEtiquetas(dicEtiquetas, entidadAux);
+
+
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD2")
                         ));
@@ -1757,6 +1820,51 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
+        }
+
+        /// <summary>
+        /// Añade los topics/categorias enriquecidos del documento.
+        /// </summary>
+        /// <param name="dicTopics"></param>
+        /// <param name="entidadAux"></param>
+        private void TrabajosCongresosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
+        {
+            foreach (KeyValuePair<string, string> topics in dicTopics)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string topic = UtilitySecciones.ObtenerTopics(topics.Key);
+
+                List<string> topicList = new List<string>();
+                topicList.AddRange(UtilitySecciones.GetPadresTesauro(topic));
+
+                foreach (string topicIn in topicList)
+                {
+                    string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, topicIn);
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAreasTematicasEnriquecidas, topicInsert)
+                    ));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Añade las etiquetas enriquecidas del documento.
+        /// </summary>
+        /// <param name="dicEtiquetas"></param>
+        /// <param name="entidadAux"></param>
+        private void TrabajosCongresosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
+        {
+            foreach (KeyValuePair<string, string> etiquetas in dicEtiquetas)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Key);
+                string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Value);
+
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTextosEnriquecidosScore, etiquetasScore),
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTextosEnriquecidosTitulo, etiquetasValor)
+                ));
+            }
         }
 
         /// <summary>
@@ -1881,7 +1989,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetTrabajosJornadasSeminarios(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
+        public List<Entity> GetTrabajosJornadasSeminarios(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1899,6 +2007,18 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.030.010")))
                     {
+                        // Añado las etiquetas enriquecidas
+                        string tituloPublicacion = item.GetStringPorIDCampo("060.010.030.010");
+                        tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
+                        ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
+
+                        //Categorias
+                        Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
+                        TrabajosJornadasSeminariosTopics(dicTopics, entidadAux);
+                        //Etiquetas
+                        Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
+                        TrabajosJornadasSeminariosEtiquetas(dicEtiquetas, entidadAux);
+
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD3")
                         ));
@@ -1950,6 +2070,51 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
+        }
+
+        /// <summary>
+        /// Añade los topics/categorias enriquecidos del documento.
+        /// </summary>
+        /// <param name="dicTopics"></param>
+        /// <param name="entidadAux"></param>
+        private void TrabajosJornadasSeminariosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
+        {
+            foreach (KeyValuePair<string, string> topics in dicTopics)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string topic = UtilitySecciones.ObtenerTopics(topics.Key);
+
+                List<string> topicList = new List<string>();
+                topicList.AddRange(UtilitySecciones.GetPadresTesauro(topic));
+
+                foreach (string topicIn in topicList)
+                {
+                    string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, topicIn);
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemAreasTematicasEnriquecidas, topicInsert)
+                    ));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Añade las etiquetas enriquecidas del documento.
+        /// </summary>
+        /// <param name="dicEtiquetas"></param>
+        /// <param name="entidadAux"></param>
+        private void TrabajosJornadasSeminariosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
+        {
+            foreach (KeyValuePair<string, string> etiquetas in dicEtiquetas)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Key);
+                string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, etiquetas.Value);
+
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTextosEnriquecidosScore, etiquetasScore),
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosJornSemTextosEnriquecidosTitulo, etiquetasValor)
+                ));
+            }
         }
 
         /// <summary>

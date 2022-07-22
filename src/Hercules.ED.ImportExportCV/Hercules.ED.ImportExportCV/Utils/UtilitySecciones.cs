@@ -17,7 +17,11 @@ namespace Utils
         private static Dictionary<string, string> mListaPalabrasClave = new Dictionary<string, string>();
         public static List<Tuple<string, string>> Lenguajes = new List<Tuple<string, string>>();
         private static Dictionary<string, string> mOrgsNombreIds = new Dictionary<string, string>();
+        private static Dictionary<string, string> dicTopics = new Dictionary<string, string>();
+        private static Dictionary<string, Dictionary<string, string>> dicEtiquetas = new Dictionary<string, Dictionary<string, string>>();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
+
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
         public static void GetLenguajes(ResourceApi pResourceApi)
         {
@@ -379,6 +383,105 @@ namespace Utils
         }
 
         /// <summary>
+        /// Devuelve un listado con los padres del tesauro incluido al hijo pasado como parametro.
+        /// </summary>
+        /// <param name="hijo">Nodo final del tesauro</param>
+        /// <returns>Listado con los padres del teauro desde el hijo</returns>
+        public static List<string> GetPadresTesauro(string hijo)
+        {
+            HashSet<string> listado = new HashSet<string>();
+            listado.Add(hijo);
+
+            //Base del recurso
+            string item = hijo.Split("_").First();
+            //Numeracion
+            string values = hijo.Split("_").Last();
+            List<string> listValues = values.Split(".").ToList();
+            //Contador para concatenar los hijos
+            string numCeros = "0";
+            //Elimino el valor del último elemento
+            listValues.RemoveAt(listValues.Count - 1);
+
+            while (listValues.Count != 0)
+            {
+                string valueAux = item + "_";
+                foreach (string valueIn in listValues)
+                {
+                    valueAux += valueIn + ".";
+                }
+                //Concateno los ".0" y sumo uno más
+                valueAux += numCeros;
+                numCeros += ".0";
+                //Elimino el ultimo valor para llegar a su padre
+                listValues.RemoveAt(listValues.Count() - 1);
+                //En caso de que no esté en el listado añado el valor
+                if (!listado.Contains(valueAux))
+                {
+                    listado.Add(valueAux);
+                }
+            }
+
+
+            return listado.ToList();
+        }
+
+        /// <summary>
+        /// Obtiene los topics de base de datos, los guarda en dicTopics en caso de no estar inicializado y devuelve la referencia en BBDD si se encuentra en el listado.
+        /// </summary>
+        /// <param name="nombreTopic">Nombre del topic</param>
+        /// <returns>Referencia en BBDD</returns>
+        public static string ObtenerTopics(string nombreTopic)
+        {
+            if (string.IsNullOrEmpty(nombreTopic))
+            {
+                return null;
+            }
+
+            int offsetInt = 0;
+            int limit = 10000;
+
+            if (dicTopics.Count == 0)
+            {
+                while (true)
+                {
+                    //Selecciono las labels que no tengan hijos del tesauro (de último nivel), el tesauro no es multiidioma por lo que no filtro por el lenguaje.
+                    string select = $@"select distinct ?skos ?label";
+                    string where = $@"where{{
+    ?skos a <http://www.w3.org/2008/05/skos#Concept> . 
+    ?skos <http://www.w3.org/2008/05/skos#prefLabel> ?label .
+    ?skos <http://purl.org/dc/elements/1.1/source> 'researcharea'.
+    MINUS{{
+        ?skos <http://www.w3.org/2008/05/skos#narrower> ?hijo
+    }}
+}}LIMIT {limit} OFFSET {offsetInt}";
+
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
+                    if (sparqlObject.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObject.results.bindings)
+                        {
+                            string skos = fila["skos"].value;
+                            string label = fila["label"].value;
+                            dicTopics[label] = skos;
+                        }
+                    }
+
+                    offsetInt += limit;
+                    if (sparqlObject.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (dicTopics.ContainsKey(nombreTopic))
+            {
+                return dicTopics[nombreTopic];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Obtiene el identificador y nick de la persona con CV <paramref name="CVID"/>
         /// </summary>
         /// <param name="resourceApi"></param>
@@ -414,14 +517,14 @@ namespace Utils
         /// <param name="propiedadAutorSegundoApellido">propiedadAutorSegundoApellido</param>
         public static void InsertaAutorProperties(List<CvnItemBeanCvnAuthorBean> listaAutores, Entity entidadAux, string propiedadAutorFirma, string propiedadAutorOrden,
             string propiedadAutorNombre, string propiedadAutorPrimerApellido, string propiedadAutorSegundoApellido)
-        {            
+        {
 
             //No hago nada si no se pasa la propiedad.
             if (string.IsNullOrEmpty(propiedadAutorFirma) || string.IsNullOrEmpty(propiedadAutorOrden) ||
                 string.IsNullOrEmpty(propiedadAutorNombre) || string.IsNullOrEmpty(propiedadAutorPrimerApellido) ||
                 string.IsNullOrEmpty(propiedadAutorSegundoApellido))
-            { 
-                return; 
+            {
+                return;
             }
 
             foreach (CvnItemBeanCvnAuthorBean autor in listaAutores)
@@ -443,7 +546,8 @@ namespace Utils
                 //Si no tiene ningun valor no lo inserto
                 if (string.IsNullOrEmpty(valorFirma) && string.IsNullOrEmpty(valorOrden) &&
                     string.IsNullOrEmpty(valorNombre) && string.IsNullOrEmpty(valorPrimerApellido) &&
-                    string.IsNullOrEmpty(valorSegundoApellido)) {
+                    string.IsNullOrEmpty(valorSegundoApellido))
+                {
                     continue;
                 }
 
