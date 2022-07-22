@@ -30,14 +30,31 @@ $(document).ready(function () {
             } else if (valor.id == "tokenFigShare") {
                 var help = "Haz click aquí para generar un token de acceso a tu cuenta de FigShare";
                 var tokenPage = "https://figshare.com/account/applications"
+            } else if (valor.id == "useMatching") {
+                var html = `<div class="form-group mb-4"><label id="${valor.id}" class="control-label d-block">${label}</label><div class="form-check form-check-inline"><input type="radio" name="radioMatching" id="check-si" value="true" class="form-check-input form-control not-outline"> <label for="html">Sí</label> <input type="radio" name="radioMatching" id="check-no" value="false" class="form-check-input form-control not-outline"> <label for="html">No</label> </div></div>`;
             }
-
 
             $('form.formulario-edicion fieldset').append(html);
             if (help != undefined) {
                 $('label#' + valor.id).after(
                     `<a href="${tokenPage}" target="_blank" class="text-primary">${help}</a>`
                 );
+            }
+
+            if(valor.valor == "true")
+            {
+                $("input[id=check-si]").prop("checked", true);
+                $("input[id=check-no]").prop("checked", false);
+            }
+            else if (valor.valor == "false")
+            {
+                $("input[id=check-si]").prop("checked", false);
+                $("input[id=check-no]").prop("checked", true);
+            } 
+            else 
+            {
+                $("input[id=check-si]").prop("checked", false);
+                $("input[id=check-no]").prop("checked", true);
             }
         });
         OcultarUpdateProgress();
@@ -55,6 +72,10 @@ function GuardarDatos() {
         var valorData = "";
         if (div.children()[div.children().length - 1].value != "") {
             valorData = div.children()[div.children().length - 1].value;
+        }
+        if(div.children()[0].innerHTML == "Matching")
+        {
+            valorData = $('input[name=radioMatching]:checked').attr("value");
         }
         var obj = { nombre: div.children()[0].innerHTML, id: div.children()[0].id, valor: valorData };
         lista.push(obj);
