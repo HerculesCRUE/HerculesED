@@ -62,7 +62,7 @@ var importarCVN = {
 										<option value="du">${GetText('CV_DUPLICAR')}</option>
 									</select>`;
 
-		selectorCamposTexto = `<select hidden name="itemConflict" id="uniqueItemConflict">
+		selectorCamposTexto = `<select hidden name="itemConflict" class="uniqueItemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 									<option value="ig">${GetText('CV_IGNORAR')}</option>
 								</select>`;
@@ -189,7 +189,7 @@ var importarCVN = {
 				for(var i=0;i<7;i++){
 					var id = 'x' + RandomGuid();
 					var dropdowns = '';
-					if(i!=0 && i!=7){
+					if(i!=0 && i!=6 && i!=7){
 						dropdownSelectorSeccion = `
 						<div class="seleccionar dropdown dropdown-select seccion">
 							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -389,7 +389,7 @@ function checkAllWrappersCV(check){
 		{
 			$(wrappersChecked[i]).click();
 		}
-		$('#uniqueItemConflict').each(function(){
+		$('.uniqueItemConflict').each(function(){
 			$(this).closest('article').find('input[type="checkbox"]:checked').click();
 			$(this).find('option[value="so"]').attr("selected", false);
 			$(this).find('option[value="ig"]').attr("selected", true);
@@ -400,7 +400,7 @@ function checkAllWrappersCV(check){
 		{
 			$(wrappersUnchecked[i]).click();
 		}
-		$('#uniqueItemConflict').each(function(){
+		$('.uniqueItemConflict').each(function(){
 			$(this).closest('article').find('input[type="checkbox"]:not(:checked)').click();
 			$(this).find('option[value="ig"]').attr("selected", false);
 			$(this).find('option[value="so"]').attr("selected", true);
@@ -462,15 +462,23 @@ function wrapperVisibilitySection(opcion, section){
 	}
 }
 
-function checkAllWrappersSection(check, section){
+function checkAllWrappersSection(toCheck, section){
 	var wrappersChecked = section.find('.checkAllCVWrapper input[type="checkbox"]:checked');
+	var inputsChecked = section.find('input[type="checkbox"]:checked');
+	
 	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
-	if(!check){
+	
+	//Si quiero quitar los checks
+	if(!toCheck){
+		for(var i=0; i<inputsChecked.length; i++){
+			inputsChecked[i].click();
+		}
 		for(var i = 0; i< wrappersChecked.length; i++)
 		{		
 			wrappersChecked[i].click();
 		}
 	}
+	//Si quiero añadir checks
 	else{
 		for(var i = 0; i< wrappersUnchecked.length; i++)
 		{
@@ -529,6 +537,8 @@ function checkAllConflict(){
 			dropdownText.text(GetText('CV_MOSTRAR_NUEVOS'));
 			edicionCV.buscarListado(seccion, false, true);
 		}
+		
+		checkAllCVWrapper();
 	});	
 };
 
@@ -555,12 +565,26 @@ function checkAllCVWrapper(){
 		{
 			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_' + tipo)}`);
 		}
+		
 		$(this).closest('.panel-body').find('article' + conflictType + ' div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
 	
 	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
+		var tipo = "";
+		if($(this).closest('.panel-body').find('.checkAllCVWrapper input').hasClass('mostrarTodos'))
+		{
+			tipo = "TODOS";
+		}
+		else if($(this).closest('.panel-body').find('.checkAllCVWrapper input').hasClass('mostrarSimilitudes')){
+			tipo = "SIMILITUDES";
+		}
+		else if($(this).closest('.panel-body').find('.checkAllCVWrapper input').hasClass('mostrarNuevos')){
+			tipo = "NUEVOS";
+		}
+		
 		if(!$(this).prop('checked')){
 			$(this).closest('.panel-body').find('.checkAllCVWrapper input[type="checkbox"]').prop('checked', false);
+			$(this).closest('.panel-body').find('.checkAllCVWrapper label').text(`${GetText('CV_SELECCIONAR_' + tipo)}`);			
 		}
 	});
 };
