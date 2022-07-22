@@ -256,9 +256,12 @@ var importarCVN = {
 				
 				checkAllCVWrapper();
 				checkAllConflict();
+				checkUniqueItems();
 				aniadirComportamientoWrapperSeccion();
-				aniadirTooltipsConflict();
+				aniadirTooltipsConflict();				
 				window.removeEventListener('beforeunload', preventBeforeUnload);
+				
+				
 				
 				OcultarUpdateProgress();
 			},
@@ -381,6 +384,28 @@ function dropdownVisibilityCV(tipo){
 	dropdownVisibility.click();
 }
 
+function changeUniqueItem(opcion, itemConflict){
+	if(opcion == 'ig')
+	{
+		itemConflict.find('option[value="so"]').attr("selected", true);
+		itemConflict.find('option[value="ig"]').attr("selected", false);
+	}
+	else if(opcion == 'so')
+	{
+		itemConflict.find('option[value="so"]').attr("selected", false);
+		itemConflict.find('option[value="ig"]').attr("selected", true);
+	}
+}
+
+function checkUniqueItems(){
+	$('.uniqueItemConflict').closest('.resource').find('input[type="checkbox"]').off('click').on('click', function(e){
+		
+		var itemConflict = $(this).closest('.resource').find('.uniqueItemConflict');
+		var seleccion = $(this).closest('.resource').find('.uniqueItemConflict option:selected').val();
+		changeUniqueItem(seleccion, itemConflict);
+	});
+}
+
 function checkAllWrappersCV(check){
 	var wrappersChecked = $('.checkAllCVWrapper input[type="checkbox"]:checked');
 	var wrappersUnchecked = $('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
@@ -464,25 +489,27 @@ function wrapperVisibilitySection(opcion, section){
 
 function checkAllWrappersSection(toCheck, section){
 	var wrappersChecked = section.find('.checkAllCVWrapper input[type="checkbox"]:checked');
-	var inputsChecked = section.find('input[type="checkbox"]:checked');
+	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');	
+	checkAllCVWrapper();
 	
-	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
-	
+	//Si quiero añadir checks
+	if(toCheck){		
+		for(var i = 0; i< wrappersUnchecked.length; i++)
+		{
+			wrappersUnchecked[i].click();
+		}		
+	}
 	//Si quiero quitar los checks
-	if(!toCheck){
-		for(var i=0; i<inputsChecked.length; i++){
-			inputsChecked[i].click();
-		}
+	else
+	{		
 		for(var i = 0; i< wrappersChecked.length; i++)
 		{		
 			wrappersChecked[i].click();
 		}
-	}
-	//Si quiero añadir checks
-	else{
-		for(var i = 0; i< wrappersUnchecked.length; i++)
-		{
-			wrappersUnchecked[i].click();
+		
+		var inputsChecked = section.find('article input[type="checkbox"]:checked');
+		for(var i=0; i<inputsChecked.length; i++){
+			inputsChecked[i].click();
 		}
 	}
 	
@@ -521,7 +548,7 @@ function checkAllConflict(){
 			seleccionar.attr('conflict', '');
 			seleccionar.addClass('mostrarTodos');
 			dropdownText.text(GetText('CV_MOSTRAR_TODOS'));
-			edicionCV.buscarListado(seccion, false, false);
+			edicionCV.buscarListado(seccion, false, false);	
 		}
 		else if(tipo=='SIMILITUDES')
 		{
@@ -537,7 +564,6 @@ function checkAllConflict(){
 			dropdownText.text(GetText('CV_MOSTRAR_NUEVOS'));
 			edicionCV.buscarListado(seccion, false, true);
 		}
-		
 		checkAllCVWrapper();
 	});	
 };
