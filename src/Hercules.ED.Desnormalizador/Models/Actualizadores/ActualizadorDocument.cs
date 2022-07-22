@@ -912,7 +912,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add("");
             }
-            
 
             foreach (string filter in filters)
             {
