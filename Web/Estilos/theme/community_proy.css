@@ -503,3 +503,5 @@ body.homeComunidad #col01 {
     .panNavegador { padding: 0 8px; }
 }*/
 /**/
+
+.tooltip.cuartiles > .tooltip-inner { max-width: 800px; }
