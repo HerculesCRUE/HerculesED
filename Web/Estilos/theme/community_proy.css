@@ -504,4 +504,35 @@ body.homeComunidad #col01 {
 }*/
 /**/
 
-.tooltip.cuartiles > .tooltip-inner { max-width: 800px; }
+.tooltip.cuartiles > .tooltip-inner { max-width: 1000px; }
+
+.tooltip > .tooltip-inner table tr td {
+    font-size: .933rem;
+    font-weight: 300;
+    color: var(--c-texto-claro);
+	padding-right:10px
+}
+.tooltip > .tooltip-inner table tr th {
+    font-size: .933rem;
+    font-weight: 600;
+    color: var(--c-texto-claro);
+	padding-right:10px
+}
+
+.quartileTooltip,.impactFactorTooltip {
+    line-height: 24px;
+    margin-left: 10px;
+    color: var(--c-texto-claro);
+    cursor: pointer;
+}
+
+.impactFactorTooltip:before {
+    content: 'show_chart';
+    font-family: 'Material Icons';
+    font-size: 1.6rem;
+}
+
+.quartileTooltip p,.impactFactorTooltip p {
+    padding-left: 5px;
+    margin-bottom: 0;
+}

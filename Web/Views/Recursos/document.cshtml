@@ -128,47 +128,66 @@
 					//Cuartiles
 					int? quartile=null;
 					List<string> quartiles=new List<string>();
-					foreach(ImpactIndex impactindex in pDocument.Roh_impactIndex)
+					foreach(ImpactIndex impactindex in pDocument.Roh_impactIndex.OrderBy(x=>x.Roh_impactSource?.Dc_title?[idiomaUsuario]).ThenBy(x=>x.Roh_quartile).ThenBy(x=>x.Roh_impactIndexCategory))
 					{
 						if(impactindex.Roh_quartile.HasValue )
 						{
-							string fileCuartil="";
+							string fileCuartil="<tr>";
 							if(impactindex.Roh_impactSource!=null && impactindex.Roh_impactSource.Dc_title.ContainsKey(idiomaUsuario))
 							{
-								fileCuartil+=impactindex.Roh_impactSource.Dc_title[idiomaUsuario];
+								fileCuartil+="<td>"+impactindex.Roh_impactSource.Dc_title[idiomaUsuario]+"</td>";
+							}else
+							{
+								fileCuartil+="<td></td>";
 							}
+							
 							if(!string.IsNullOrEmpty(impactindex.Roh_impactIndexCategory))
 							{
-								fileCuartil+=" "+impactindex.Roh_impactIndexCategory;
-							}
-							if(impactindex.Roh_publicationPosition.HasValue && impactindex.Roh_journalNumberInCat.HasValue)
+								fileCuartil+="<td>"+impactindex.Roh_impactIndexCategory+"</td>";
+							}else
 							{
-								fileCuartil+=" "+impactindex.Roh_publicationPosition.Value+"/"+impactindex.Roh_journalNumberInCat.Value;
+								fileCuartil+="<td></td>";
 							}
-							quartiles.Add("<li><span class=\"texto\">"+fileCuartil+"</span><span class=\"num-resultado\">Q"+impactindex.Roh_quartile.Value+"</span></li>");
+							if(impactindex.Roh_publicationPosition.HasValue)
+							{
+								fileCuartil+="<td>"+impactindex.Roh_publicationPosition.Value+"</td>";
+							}else
+							{
+								fileCuartil+="<td></td>";
+							}
+							
+							if(impactindex.Roh_journalNumberInCat.HasValue)
+							{
+								fileCuartil+="<td>"+impactindex.Roh_journalNumberInCat.Value+"</td>";
+							}else
+							{
+								fileCuartil+="<td></td>";
+							}
+							fileCuartil+="<td>Q"+impactindex.Roh_quartile.Value+"</td>";
+							quartiles.Add(fileCuartil);
 							if(!quartile.HasValue || impactindex.Roh_quartile.Value<quartile.Value)
 							{
 								quartile=impactindex.Roh_quartile;
 							}
 						}
 					}
-					string htmlTooltipCuartil="<p class=\"tooltip-title\">"+Html.Translate("CUARTIL")+"</p><ul class=\"no-list-style\">"+string.Join("",quartiles)+"</ul>";
+					string htmlTooltipCuartil="<p class=\"tooltip-title\">"+Html.Translate("CUARTIL")+"</p><table><tr><th>"+Html.Translate("CUARTIL_FUENTE")+"</th><th>"+Html.Translate("CUARTIL_CATEGORIA")+"</th><th>"+Html.Translate("CUARTIL_PUBLICATIONPOSITION")+"</th><th>"+Html.Translate("CUARTIL_JOURNALNUMBERINCAT")+"</th><th>"+Html.Translate("CUARTIL")+"</th></tr>"+string.Join("",quartiles)+"</table>";
 				}
 				
 				@if(impactFactor.HasValue)
 				{
-					<div class="d-flex quotes" id="impactfactor_number">
+					<div class="d-flex impactFactorTooltip">
 						<p><span>@impactFactor.Value</p>
-						<span class="oculto" id="impactfactor_number_tooltip">@Html.Raw(htmlTooltipImpactFactor)</span>
+						<span class="oculto tooltipContent">@Html.Raw(htmlTooltipImpactFactor)</span>
 					</div>
 				}
 				
 				@if(quartile.HasValue)
 				{
 					string valorCuartil="Q"+quartile.Value;
-					<div class="d-flex quotes" id="quartiles">
+					<div class="d-flex quartileTooltip">
 						<p><span>@valorCuartil</p>
-						<span class="oculto" id="quartiles_tooltip">@Html.Raw(htmlTooltipCuartil)</span>
+						<span class="oculto tooltipContent">@Html.Raw(htmlTooltipCuartil)</span>
 					</div>
 				}
 				
@@ -678,23 +697,8 @@
 </div>
 
 <!-- JAVASCRIPT -->
-<script type="text/javascript">
-	//Tooltip factor de impacto
-	$('#impactfactor_number').tooltip({
-		html: true,
-		placement: 'bottom',
-		template: '<div class="tooltip background-blanco impactfactor" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-		title: $('#impactfactor_number_tooltip').html()		
-	});
-	
-	//Tooltip cuartil
-	$('#quartiles').tooltip({
-		html: true,
-		placement: 'bottom',
-		template: '<div class="tooltip background-blanco cuartiles" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-		title: $('#quartiles_tooltip').html(),
-		delay: { "show": 500, "hide": 1000000 }
-	});
+<script type="text/javascript">	
+	tooltipsImpactFactor();
 				
 
     var depuracion = false;
