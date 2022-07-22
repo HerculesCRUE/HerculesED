@@ -1,10 +1,14 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Hercules.ED.ImportExportCV.Controllers;
+using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV;
 using Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
@@ -18,7 +22,7 @@ namespace Utils
         public static List<Tuple<string, string>> Lenguajes = new List<Tuple<string, string>>();
         private static Dictionary<string, string> mOrgsNombreIds = new Dictionary<string, string>();
         private static Dictionary<string, string> dicTopics = new Dictionary<string, string>();
-        private static Dictionary<string, Dictionary<string, string>> dicEtiquetas = new Dictionary<string, Dictionary<string, string>>();
+        private static Dictionary<string, string> dicDOI = new Dictionary<string, string>();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
 
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
@@ -350,6 +354,67 @@ namespace Utils
                     CheckProperty(propertyCodUnesco, entidadAux, valorCodigo, propiedadCodUnesco);
                 }
             }
+        }
+
+        public static void PublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
+        {
+            string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "GetRoPublication/?pDoi='" + doi +"'";
+            HttpClient httpClientEstado = new HttpClient();
+            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+            Publication publication = JsonConvert.DeserializeObject<Publication>(responseEstado.Content.ReadAsStringAsync().Result);
+
+        }
+
+        /// <summary>
+        /// Devuelve la referencia a la publicacion con doi <paramref name="doiPublicacion"/>.
+        /// </summary>
+        /// <param name="doiPublicacion">DOI de publicación</param>
+        /// <returns>Referencia a la publicación</returns>
+        public static string GetPublicationDOI(string doiPublicacion)
+        {
+            if (string.IsNullOrEmpty(doiPublicacion))
+            {
+                return null;
+            }
+
+            int offsetInt = 0;
+            int limit = 10000;
+
+            if (dicDOI.Count == 0)
+            {
+                while (true)
+                {
+                    string select = $@"select distinct ?document ?doi";
+                    string where = $@"where{{
+    ?document a <http://purl.org/ontology/bibo/Document> .
+    ?document <http://purl.org/ontology/bibo/doi> ?doi .
+}}LIMIT {limit} OFFSET {offsetInt}";
+
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
+                    if (sparqlObject.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                        {
+                            string document = fila["document"].value;
+                            string doi = fila["doi"].value;
+                            dicTopics[doi] = document;
+                        }
+                    }
+
+                    offsetInt += limit;
+                    if (sparqlObject.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (dicTopics.ContainsKey(doiPublicacion))
+            {
+                return dicTopics[doiPublicacion];
+            }
+
+            return null;
         }
 
         /// <summary>
