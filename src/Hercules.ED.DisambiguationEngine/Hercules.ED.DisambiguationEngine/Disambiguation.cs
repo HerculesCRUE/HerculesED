@@ -78,6 +78,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
                                         string select = $@"SELECT * WHERE {{ SELECT DISTINCT ?persona ?nombreCompleto";
                                         string where = $@"WHERE {{
                                                             ?persona a <http://xmlns.com/foaf/0.1/Person>. 
+                                                            ?persona <http://w3id.org/roh/isActive> 'true'. 
                                                             ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.                                
                                                         }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
                                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
@@ -1935,10 +1936,7 @@ namespace Hercules.ED.DisambiguationEngine.Models
         {
             pSource = ObtenerTextosNombresNormalizados(pSource, pDicNomAutoresDesnormalizados);
             pTarget = ObtenerTextosNombresNormalizados(pTarget, pDicNomAutoresDesnormalizados);
-
-            //Almacenamos los scores de cada una de las palabras
-            List<float> scores = new List<float>();
-
+                        
             string[] pFirmaNormalizadoSplitAux = pSource.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             string[] pTargetNormalizadoSplitAux = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -1975,81 +1973,120 @@ namespace Hercules.ED.DisambiguationEngine.Models
             string[] pTargetNormalizadoSplit = pTargetNormalizadoSplitAux2.ToArray();
 
 
+            
+            string[] source1 = pFirmaNormalizadoSplit;
+            string[] target1 = pTargetNormalizadoSplit;
 
-            string[] source = pFirmaNormalizadoSplit;
-            string[] target = pTargetNormalizadoSplit;
+            List<string[]> sources = new List<string[]>();
+            List<string[]> targets = new List<string[]>();
 
-            int indexTarget = 0;
-            bool coincidenciaNombreNoinicial = false;
-            for (int i = 0; i < source.Length; i++)
+            sources.Add(source1);
+            targets.Add(target1);
+
+            int sourceLength = source1.Length;
+            if (sourceLength > 1 && source1.Last().Length==1)
             {
-                //Similitud real
-                float score = 0;
-                string wordSource = source[i];
-                bool wordSourceInicial = wordSource.Length == 1;
-                //int desplazamiento = 0;
-                for (int j = indexTarget; j < target.Length; j++)
+                string[] source2 = new string[sourceLength];
+                source2[0] = source1.Last();
+                for(int i=0;i< sourceLength-1;i++)
                 {
-                    string wordTarget = target[j];
-                    bool wordTargetInicial = wordTarget.Length == 1;
-                    //Alguna de las dos es inicial
-                    if (wordSourceInicial || wordTargetInicial)
+                    source2[i + 1] = source1[i];
+                }
+                sources.Add(source2);
+            }
+            int targetLength = target1.Length;
+            if (targetLength > 1 && target1.Last().Length == 1)
+            {
+                string[] target2 = new string[targetLength];
+                target2[0] = target1.Last();
+                for (int i = 0; i < targetLength - 1; i++)
+                {
+                    target2[i + 1] = target1[i];
+                }
+                targets.Add(target2);
+            }
+            float scoreMax = 0;
+            foreach (string[] source in sources)
+            {
+                foreach (string[] target in targets)
+                {
+                    //Almacenamos los scores de cada una de las palabras
+                    List<float> scores = new List<float>();
+
+                    int indexTarget = 0;
+                    bool coincidenciaNombreNoinicial = false;
+                    for (int i = 0; i < source.Length; i++)
                     {
-                        float scoreWord = scoreInicial;
-                        if (ScoreNombresCalculado.ContainsKey(wordSource[0].ToString()))
+                        //Similitud real
+                        float score = 0;
+                        string wordSource = source[i];
+                        bool wordSourceInicial = wordSource.Length == 1;
+                        //int desplazamiento = 0;
+                        for (int j = indexTarget; j < target.Length; j++)
                         {
-                            scoreWord = ScoreNombresCalculado[wordSource[0].ToString()];
+                            string wordTarget = target[j];
+                            bool wordTargetInicial = wordTarget.Length == 1;
+                            //Alguna de las dos es inicial
+                            if (wordSourceInicial || wordTargetInicial)
+                            {
+                                float scoreWord = scoreInicial;
+                                if (ScoreNombresCalculado.ContainsKey(wordSource[0].ToString()))
+                                {
+                                    scoreWord = ScoreNombresCalculado[wordSource[0].ToString()];
+                                }
+                                if (wordSource[0] == wordTarget[0])
+                                {
+                                    score = scoreWord;
+                                    indexTarget = j + 1;
+                                    break;
+                                }
+                            }
+                            //Ninguna de las dos es inicial
+                            if (wordSource.Equals(wordTarget))
+                            {
+                                coincidenciaNombreNoinicial = true;
+                                float scoreWord = minimoScoreNombres;
+                                if (ScoreNombresCalculado.ContainsKey(wordTarget))
+                                {
+                                    scoreWord = ScoreNombresCalculado[wordTarget];
+                                }
+                                score = scoreWord;
+                                indexTarget = j + 1;
+                                break;
+                            }
                         }
-                        if (wordSource[0] == wordTarget[0])
+                        if (score > 0)
                         {
-                            score = scoreWord;
-                            indexTarget = j + 1;
-                            break;
+                            scores.Add(score);
                         }
                     }
-                    //Ninguna de las dos es inicial
-                    if (wordSource.Equals(wordTarget))
+
+                    //Coincide algo que no sea inicial y hay algun asimilitud
+                    if (coincidenciaNombreNoinicial && scores.Count > 0)
                     {
-                        coincidenciaNombreNoinicial = true;
-                        float scoreWord = minimoScoreNombres;
-                        if (ScoreNombresCalculado.ContainsKey(wordTarget))
+                        int longMin = Math.Min(source.Length, target.Length);
+                        if (1 - (scores.Count / (float)longMin) > pToleranciaNombres)
                         {
-                            scoreWord = ScoreNombresCalculado[wordTarget];
+                            //return 0;
+                            continue;
                         }
-                        score = scoreWord;
-                        indexTarget = j + 1;
-                        break;
+
+                        //Calculamos las coincidencias
+                        float scoreFinal = 0;
+                        foreach (float score in scores)
+                        {
+                            scoreFinal += (1 - scoreFinal) * score;
+                        }
+                        //Si hay varias no coincidencias dividimos
+                        if (scores.Count < longMin)
+                        {
+                            scoreFinal = scoreFinal / (1 + longMin - scores.Count);
+                        }
+                        scoreMax = Math.Max(scoreMax, scoreFinal);
                     }
                 }
-                if (score > 0)
-                {
-                    scores.Add(score);
-                }
             }
-
-            //Coincide algo que no sea inicial y hay algun asimilitud
-            if (coincidenciaNombreNoinicial && scores.Count > 0)
-            {
-                int longMin = Math.Min(source.Length, target.Length);
-                if (1 - (scores.Count / (float)longMin) > pToleranciaNombres)
-                {
-                    return 0;
-                }
-
-                //Calculamos las coincidencias
-                float scoreFinal = 0;
-                foreach (float score in scores)
-                {
-                    scoreFinal += (1 - scoreFinal) * score;
-                }
-                //Si hay varias no coincidencias dividimos
-                if (scores.Count < longMin)
-                {
-                    scoreFinal = scoreFinal / (1 + longMin - scores.Count);
-                }
-                return scoreFinal;
-            }
-            return 0;
+            return scoreMax;
         }
 
         public static bool GetTitleSimilarity(string pTituloA, string pTituloB, Dictionary<string, string> pDicTitulosDesnormalizados)

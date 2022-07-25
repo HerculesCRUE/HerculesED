@@ -952,7 +952,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         FILTER(?item=<{pIdEntidadBBDD}>)
                                     }}";
                 SparqlObject entityIDCV = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-
+                if (entityIDCV.results.bindings.Count == 0) { 
+                    return;
+                }
                 string idEntity = entityIDCV.results.bindings[0]["related"].value;
 
                 //Si no es una nueva entidad añado la referencia de la clase intermedia y de claseCV

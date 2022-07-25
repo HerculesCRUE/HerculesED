@@ -1,10 +1,14 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Hercules.ED.ImportExportCV.Controllers;
+using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV;
 using Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
@@ -17,7 +21,11 @@ namespace Utils
         private static Dictionary<string, string> mListaPalabrasClave = new Dictionary<string, string>();
         public static List<Tuple<string, string>> Lenguajes = new List<Tuple<string, string>>();
         private static Dictionary<string, string> mOrgsNombreIds = new Dictionary<string, string>();
+        private static Dictionary<string, string> dicTopics = new Dictionary<string, string>();
+        private static Dictionary<string, string> dicDOI = new Dictionary<string, string>();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
+
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
         public static void GetLenguajes(ResourceApi pResourceApi)
         {
@@ -348,6 +356,67 @@ namespace Utils
             }
         }
 
+        public static void PublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
+        {
+            string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "GetRoPublication/?pDoi='" + doi +"'";
+            HttpClient httpClientEstado = new HttpClient();
+            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+            Publication publication = JsonConvert.DeserializeObject<Publication>(responseEstado.Content.ReadAsStringAsync().Result);
+
+        }
+
+        /// <summary>
+        /// Devuelve la referencia a la publicacion con doi <paramref name="doiPublicacion"/>.
+        /// </summary>
+        /// <param name="doiPublicacion">DOI de publicación</param>
+        /// <returns>Referencia a la publicación</returns>
+        public static string GetPublicationDOI(string doiPublicacion)
+        {
+            if (string.IsNullOrEmpty(doiPublicacion))
+            {
+                return null;
+            }
+
+            int offsetInt = 0;
+            int limit = 10000;
+
+            if (dicDOI.Count == 0)
+            {
+                while (true)
+                {
+                    string select = $@"select distinct ?document ?doi";
+                    string where = $@"where{{
+    ?document a <http://purl.org/ontology/bibo/Document> .
+    ?document <http://purl.org/ontology/bibo/doi> ?doi .
+}}LIMIT {limit} OFFSET {offsetInt}";
+
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
+                    if (sparqlObject.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                        {
+                            string document = fila["document"].value;
+                            string doi = fila["doi"].value;
+                            dicTopics[doi] = document;
+                        }
+                    }
+
+                    offsetInt += limit;
+                    if (sparqlObject.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (dicTopics.ContainsKey(doiPublicacion))
+            {
+                return dicTopics[doiPublicacion];
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Diccionario con el tesauro de todas las palabras clave, 
         /// con clave el identificador de la palabra clave y valor el identificador del padre o null en caso de ser el ultimo nodo.
@@ -376,6 +445,105 @@ namespace Utils
             }
 
             return mListaPalabrasClave;
+        }
+
+        /// <summary>
+        /// Devuelve un listado con los padres del tesauro incluido al hijo pasado como parametro.
+        /// </summary>
+        /// <param name="hijo">Nodo final del tesauro</param>
+        /// <returns>Listado con los padres del teauro desde el hijo</returns>
+        public static List<string> GetPadresTesauro(string hijo)
+        {
+            HashSet<string> listado = new HashSet<string>();
+            listado.Add(hijo);
+
+            //Base del recurso
+            string item = hijo.Split("_").First();
+            //Numeracion
+            string values = hijo.Split("_").Last();
+            List<string> listValues = values.Split(".").ToList();
+            //Contador para concatenar los hijos
+            string numCeros = "0";
+            //Elimino el valor del último elemento
+            listValues.RemoveAt(listValues.Count - 1);
+
+            while (listValues.Count != 0)
+            {
+                string valueAux = item + "_";
+                foreach (string valueIn in listValues)
+                {
+                    valueAux += valueIn + ".";
+                }
+                //Concateno los ".0" y sumo uno más
+                valueAux += numCeros;
+                numCeros += ".0";
+                //Elimino el ultimo valor para llegar a su padre
+                listValues.RemoveAt(listValues.Count() - 1);
+                //En caso de que no esté en el listado añado el valor
+                if (!listado.Contains(valueAux))
+                {
+                    listado.Add(valueAux);
+                }
+            }
+
+
+            return listado.ToList();
+        }
+
+        /// <summary>
+        /// Obtiene los topics de base de datos, los guarda en dicTopics en caso de no estar inicializado y devuelve la referencia en BBDD si se encuentra en el listado.
+        /// </summary>
+        /// <param name="nombreTopic">Nombre del topic</param>
+        /// <returns>Referencia en BBDD</returns>
+        public static string ObtenerTopics(string nombreTopic)
+        {
+            if (string.IsNullOrEmpty(nombreTopic))
+            {
+                return null;
+            }
+
+            int offsetInt = 0;
+            int limit = 10000;
+
+            if (dicTopics.Count == 0)
+            {
+                while (true)
+                {
+                    //Selecciono las labels que no tengan hijos del tesauro (de último nivel), el tesauro no es multiidioma por lo que no filtro por el lenguaje.
+                    string select = $@"select distinct ?skos ?label";
+                    string where = $@"where{{
+    ?skos a <http://www.w3.org/2008/05/skos#Concept> . 
+    ?skos <http://www.w3.org/2008/05/skos#prefLabel> ?label .
+    ?skos <http://purl.org/dc/elements/1.1/source> 'researcharea'.
+    MINUS{{
+        ?skos <http://www.w3.org/2008/05/skos#narrower> ?hijo
+    }}
+}}LIMIT {limit} OFFSET {offsetInt}";
+
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "taxonomy");
+                    if (sparqlObject.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObject.results.bindings)
+                        {
+                            string skos = fila["skos"].value;
+                            string label = fila["label"].value;
+                            dicTopics[label] = skos;
+                        }
+                    }
+
+                    offsetInt += limit;
+                    if (sparqlObject.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (dicTopics.ContainsKey(nombreTopic))
+            {
+                return dicTopics[nombreTopic];
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -414,14 +582,14 @@ namespace Utils
         /// <param name="propiedadAutorSegundoApellido">propiedadAutorSegundoApellido</param>
         public static void InsertaAutorProperties(List<CvnItemBeanCvnAuthorBean> listaAutores, Entity entidadAux, string propiedadAutorFirma, string propiedadAutorOrden,
             string propiedadAutorNombre, string propiedadAutorPrimerApellido, string propiedadAutorSegundoApellido)
-        {            
+        {
 
             //No hago nada si no se pasa la propiedad.
             if (string.IsNullOrEmpty(propiedadAutorFirma) || string.IsNullOrEmpty(propiedadAutorOrden) ||
                 string.IsNullOrEmpty(propiedadAutorNombre) || string.IsNullOrEmpty(propiedadAutorPrimerApellido) ||
                 string.IsNullOrEmpty(propiedadAutorSegundoApellido))
-            { 
-                return; 
+            {
+                return;
             }
 
             foreach (CvnItemBeanCvnAuthorBean autor in listaAutores)
@@ -443,7 +611,8 @@ namespace Utils
                 //Si no tiene ningun valor no lo inserto
                 if (string.IsNullOrEmpty(valorFirma) && string.IsNullOrEmpty(valorOrden) &&
                     string.IsNullOrEmpty(valorNombre) && string.IsNullOrEmpty(valorPrimerApellido) &&
-                    string.IsNullOrEmpty(valorSegundoApellido)) {
+                    string.IsNullOrEmpty(valorSegundoApellido))
+                {
                     continue;
                 }
 

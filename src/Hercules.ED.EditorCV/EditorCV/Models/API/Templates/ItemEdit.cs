@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 
 namespace EditorCV.Models.API.Templates
-{  
+{
     //Contiene las clases mecesarias para la configuración de la edición de un item de un listado de una pestaña
 
 
@@ -16,11 +16,11 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Secciones
         /// </summary>
-        public List<ItemEditSection> sections;        
+        public List<ItemEditSection> sections;
         /// <summary>
         /// Grafo en el que está la entidad
         /// </summary>
-        public string graph;        
+        public string graph;
         /// <summary>
         /// Propiedad utilizada para el título del recurso
         /// </summary>
@@ -66,7 +66,7 @@ namespace EditorCV.Models.API.Templates
                     {
                         foreach (ItemEditSectionRow itemEditSectionRow in itemEditSection.rows)
                         {
-                            List<Utils.PropertyData> aux = itemEditSectionRow.GenerarPropertyDatas(pGraph,pCV);
+                            List<Utils.PropertyData> aux = itemEditSectionRow.GenerarPropertyDatas(pGraph, pCV);
                             propertyDatas.AddRange(aux);
                         }
                     }
@@ -175,6 +175,21 @@ namespace EditorCV.Models.API.Templates
                         if (!property.childs.Exists(x => x.property == itemEditSectionRowProperty.property))
                         {
                             property.childs.Add(propertyAC);
+                        }
+                        if(itemEditSectionRowProperty.autocompleteConfig.propertyAux!=null)
+                        {
+                            foreach(var aux in itemEditSectionRowProperty.autocompleteConfig.propertyAux.properties)
+                            {
+                                Utils.PropertyData propertyAux = new Utils.PropertyData()
+                                {
+                                    property = aux,
+                                    childs = new List<Utils.PropertyData>()
+                                };
+                                if (!property.childs.Exists(x => x.property == aux))
+                                {
+                                    property.childs.Add(propertyAux);
+                                }
+                            }
                         }
                     }
                     if (!propertyDatas.Exists(x => x.property == itemEditSectionRowProperty.property))
@@ -327,7 +342,7 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Indica si es multiidioma
         /// </summary>
-        public bool multilang; 
+        public bool multilang;
         /// <summary>
         /// Datos para el combo
         /// </summary>
@@ -408,7 +423,24 @@ namespace EditorCV.Models.API.Templates
         /// Indica si sólo se pueden seleccionar opciones del autocompletar
         /// </summary>
         public bool mandatory;
+        /// <summary>
+        /// Configuración de Propiedades auxiliares para el autocompletar
+        /// </summary>
+        public ItemEditSectionRowPropertyAutocompleteConfigPropertyAux propertyAux;
     }
+
+    public class ItemEditSectionRowPropertyAutocompleteConfigPropertyAux
+    {
+        /// <summary>
+        /// Propiedades auxiliares
+        /// </summary>
+        public List<string> properties;
+        /// <summary>
+        /// Forma de pintado
+        /// </summary>
+        public string print;
+    }
+
     public class ItemEditAuxEntityData
     {
         /// <summary>

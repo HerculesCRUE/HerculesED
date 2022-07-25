@@ -62,7 +62,7 @@ var importarCVN = {
 										<option value="du">${GetText('CV_DUPLICAR')}</option>
 									</select>`;
 
-		selectorCamposTexto = `<select hidden name="itemConflict" id="uniqueItemConflict">
+		selectorCamposTexto = `<select hidden name="itemConflict" class="uniqueItemConflict">
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 									<option value="ig">${GetText('CV_IGNORAR')}</option>
 								</select>`;
@@ -166,7 +166,7 @@ var importarCVN = {
 						}
 						//Si no hay pasos maximos no muestro la lista
 						if(response.totalWorks != 0){
-							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+							$('#workMascaraBlanca').text('Pasos totales: ' + response.actualWork + '/' + response.totalWorks);
 						}
 					}
 				}
@@ -189,7 +189,7 @@ var importarCVN = {
 				for(var i=0;i<7;i++){
 					var id = 'x' + RandomGuid();
 					var dropdowns = '';
-					if(i!=0 && i!=7){
+					if(i!=0 && i!=6 && i!=7){
 						dropdownSelectorSeccion = `
 						<div class="seleccionar dropdown dropdown-select seccion">
 							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -256,9 +256,12 @@ var importarCVN = {
 				
 				checkAllCVWrapper();
 				checkAllConflict();
+				checkUniqueItems();
 				aniadirComportamientoWrapperSeccion();
-				aniadirTooltipsConflict();
+				aniadirTooltipsConflict();				
 				window.removeEventListener('beforeunload', preventBeforeUnload);
+				
+				
 				
 				OcultarUpdateProgress();
 			},
@@ -381,6 +384,28 @@ function dropdownVisibilityCV(tipo){
 	dropdownVisibility.click();
 }
 
+function changeUniqueItem(opcion, itemConflict){
+	if(opcion == 'ig')
+	{
+		itemConflict.find('option[value="so"]').attr("selected", true);
+		itemConflict.find('option[value="ig"]').attr("selected", false);
+	}
+	else if(opcion == 'so')
+	{
+		itemConflict.find('option[value="so"]').attr("selected", false);
+		itemConflict.find('option[value="ig"]').attr("selected", true);
+	}
+}
+
+function checkUniqueItems(){
+	$('.uniqueItemConflict').closest('.resource').find('input[type="checkbox"]').off('click').on('click', function(e){
+		
+		var itemConflict = $(this).closest('.resource').find('.uniqueItemConflict');
+		var seleccion = $(this).closest('.resource').find('.uniqueItemConflict option:selected').val();
+		changeUniqueItem(seleccion, itemConflict);
+	});
+}
+
 function checkAllWrappersCV(check){
 	var wrappersChecked = $('.checkAllCVWrapper input[type="checkbox"]:checked');
 	var wrappersUnchecked = $('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
@@ -389,7 +414,7 @@ function checkAllWrappersCV(check){
 		{
 			$(wrappersChecked[i]).click();
 		}
-		$('#uniqueItemConflict').each(function(){
+		$('.uniqueItemConflict').each(function(){
 			$(this).closest('article').find('input[type="checkbox"]:checked').click();
 			$(this).find('option[value="so"]').attr("selected", false);
 			$(this).find('option[value="ig"]').attr("selected", true);
@@ -400,7 +425,7 @@ function checkAllWrappersCV(check){
 		{
 			$(wrappersUnchecked[i]).click();
 		}
-		$('#uniqueItemConflict').each(function(){
+		$('.uniqueItemConflict').each(function(){
 			$(this).closest('article').find('input[type="checkbox"]:not(:checked)').click();
 			$(this).find('option[value="ig"]').attr("selected", false);
 			$(this).find('option[value="so"]').attr("selected", true);
@@ -462,19 +487,29 @@ function wrapperVisibilitySection(opcion, section){
 	}
 }
 
-function checkAllWrappersSection(check, section){
+function checkAllWrappersSection(toCheck, section){
 	var wrappersChecked = section.find('.checkAllCVWrapper input[type="checkbox"]:checked');
-	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');
-	if(!check){
+	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');	
+	checkAllCVWrapper();
+	
+	//Si quiero añadir checks
+	if(toCheck){		
+		for(var i = 0; i< wrappersUnchecked.length; i++)
+		{
+			wrappersUnchecked[i].click();
+		}		
+	}
+	//Si quiero quitar los checks
+	else
+	{		
 		for(var i = 0; i< wrappersChecked.length; i++)
 		{		
 			wrappersChecked[i].click();
 		}
-	}
-	else{
-		for(var i = 0; i< wrappersUnchecked.length; i++)
-		{
-			wrappersUnchecked[i].click();
+		
+		var inputsChecked = section.find('article input[type="checkbox"]:checked');
+		for(var i=0; i<inputsChecked.length; i++){
+			inputsChecked[i].click();
 		}
 	}
 	
@@ -513,7 +548,7 @@ function checkAllConflict(){
 			seleccionar.attr('conflict', '');
 			seleccionar.addClass('mostrarTodos');
 			dropdownText.text(GetText('CV_MOSTRAR_TODOS'));
-			edicionCV.buscarListado(seccion, false, false);
+			edicionCV.buscarListado(seccion, false, false);	
 		}
 		else if(tipo=='SIMILITUDES')
 		{
@@ -529,6 +564,7 @@ function checkAllConflict(){
 			dropdownText.text(GetText('CV_MOSTRAR_NUEVOS'));
 			edicionCV.buscarListado(seccion, false, true);
 		}
+		checkAllCVWrapper();
 	});	
 };
 
@@ -555,12 +591,26 @@ function checkAllCVWrapper(){
 		{
 			$(this).closest('.custom-control').find('.custom-control-label').text(`${GetText('CV_DESELECCIONAR_' + tipo)}`);
 		}
+		
 		$(this).closest('.panel-body').find('article' + conflictType + ' div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
 	});
 	
 	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
+		var tipo = "";
+		if($(this).closest('.panel-body').find('.checkAllCVWrapper input').hasClass('mostrarTodos'))
+		{
+			tipo = "TODOS";
+		}
+		else if($(this).closest('.panel-body').find('.checkAllCVWrapper input').hasClass('mostrarSimilitudes')){
+			tipo = "SIMILITUDES";
+		}
+		else if($(this).closest('.panel-body').find('.checkAllCVWrapper input').hasClass('mostrarNuevos')){
+			tipo = "NUEVOS";
+		}
+		
 		if(!$(this).prop('checked')){
 			$(this).closest('.panel-body').find('.checkAllCVWrapper input[type="checkbox"]').prop('checked', false);
+			$(this).closest('.panel-body').find('.checkAllCVWrapper label').text(`${GetText('CV_SELECCIONAR_' + tipo)}`);			
 		}
 	});
 };

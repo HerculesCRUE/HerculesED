@@ -104,9 +104,95 @@
                     });
 
                 }
-
+				
+				
+				@{
+					//Factor de impacto
+					float? impactFactor=null;
+					Dictionary<string,float> impactFactors=new Dictionary<string,float>();
+					foreach(ImpactIndex impactindex in pDocument.Roh_impactIndex)
+					{
+						if(impactindex.Roh_impactIndexInYear.HasValue)
+						{
+							impactFactors[impactindex.Roh_impactSource.Dc_title[idiomaUsuario]]=impactindex.Roh_impactIndexInYear.Value;
+							if(!impactFactor.HasValue || impactindex.Roh_impactIndexInYear.Value>impactFactor.Value )
+							{
+								impactFactor=impactindex.Roh_impactIndexInYear;								
+							}
+						}
+					}
+					string htmlTooltipImpactFactor="<p class=\"tooltip-title\">"+Html.Translate("FACTOR_DE_IMPACTO")+"</p><ul class=\"no-list-style\">"+string.Join("", impactFactors.Select(x=>"<li><span class=\"texto\">"+x.Key+"</span><span class=\"num-resultado\">"+x.Value+"</span></li>"))+"</ul>";
+				}
+				
+				@{
+					//Cuartiles
+					int? quartile=null;
+					List<string> quartiles=new List<string>();
+					foreach(ImpactIndex impactindex in pDocument.Roh_impactIndex.OrderBy(x=>x.Roh_impactSource?.Dc_title?[idiomaUsuario]).ThenBy(x=>x.Roh_quartile).ThenBy(x=>x.Roh_impactIndexCategory))
+					{
+						if(impactindex.Roh_quartile.HasValue )
+						{
+							string fileCuartil="<tr>";
+							if(impactindex.Roh_impactSource!=null && impactindex.Roh_impactSource.Dc_title.ContainsKey(idiomaUsuario))
+							{
+								fileCuartil+="<td>"+impactindex.Roh_impactSource.Dc_title[idiomaUsuario]+"</td>";
+							}else
+							{
+								fileCuartil+="<td></td>";
+							}
+							
+							if(!string.IsNullOrEmpty(impactindex.Roh_impactIndexCategory))
+							{
+								fileCuartil+="<td>"+impactindex.Roh_impactIndexCategory+"</td>";
+							}else
+							{
+								fileCuartil+="<td></td>";
+							}
+							if(impactindex.Roh_publicationPosition.HasValue)
+							{
+								fileCuartil+="<td>"+impactindex.Roh_publicationPosition.Value+"</td>";
+							}else
+							{
+								fileCuartil+="<td></td>";
+							}
+							
+							if(impactindex.Roh_journalNumberInCat.HasValue)
+							{
+								fileCuartil+="<td>"+impactindex.Roh_journalNumberInCat.Value+"</td>";
+							}else
+							{
+								fileCuartil+="<td></td>";
+							}
+							fileCuartil+="<td>Q"+impactindex.Roh_quartile.Value+"</td>";
+							quartiles.Add(fileCuartil);
+							if(!quartile.HasValue || impactindex.Roh_quartile.Value<quartile.Value)
+							{
+								quartile=impactindex.Roh_quartile;
+							}
+						}
+					}
+					string htmlTooltipCuartil="<p class=\"tooltip-title\">"+Html.Translate("CUARTIL")+"</p><table><tr><th>"+Html.Translate("CUARTIL_FUENTE")+"</th><th>"+Html.Translate("CUARTIL_CATEGORIA")+"</th><th>"+Html.Translate("CUARTIL_PUBLICATIONPOSITION")+"</th><th>"+Html.Translate("CUARTIL_JOURNALNUMBERINCAT")+"</th><th>"+Html.Translate("CUARTIL")+"</th></tr>"+string.Join("",quartiles)+"</table>";
+				}
+				
+				@if(impactFactor.HasValue)
+				{
+					<div class="d-flex impactFactorTooltip">
+						<p><span>@impactFactor.Value</p>
+						<span class="oculto tooltipContent">@Html.Raw(htmlTooltipImpactFactor)</span>
+					</div>
+				}
+				
+				@if(quartile.HasValue)
+				{
+					string valorCuartil="Q"+quartile.Value;
+					<div class="d-flex quartileTooltip">
+						<p><span>@valorCuartil</p>
+						<span class="oculto tooltipContent">@Html.Raw(htmlTooltipCuartil)</span>
+					</div>
+				}
+				
                 <div class="d-flex quotes" data-scopus="@pDocument.Roh_scopusCitationCount" data-wos="@pDocument.Roh_wosCitationCount" data-inrecs="@pDocument.Roh_inrecsCitationCount" data-otros="@valorOtros">
-                    <p><span id="citas_number">@pDocument.Roh_citationCount</span> citas</p>
+                    <p><span id="citas_number">@pDocument.Roh_citationCount</span> @Html.Translate("CITAS")</p>
                 </div>
                 <div class="acciones-ficha-wrap">
                     <ul class="no-list-style d-flex">
@@ -611,7 +697,10 @@
 </div>
 
 <!-- JAVASCRIPT -->
-<script type="text/javascript">
+<script type="text/javascript">	
+	tooltipsImpactFactor();
+				
+
     var depuracion = false;
     const localUrlBase = "https://localhost:44321/";
 
@@ -1577,6 +1666,18 @@
             this.Roh_isValidated = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isValidated"));
             this.Roh_citationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/citationCount")).Value;
             this.Roh_title = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/title"));
+			this.Roh_impactIndex = new List<ImpactIndex>();
+			SemanticPropertyModel propRoh_impactIndex = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndex");
+			if(propRoh_impactIndex != null && propRoh_impactIndex.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_impactIndex.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						ImpactIndex roh_impactIndex = new ImpactIndex(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_impactIndex.Add(roh_impactIndex);
+					}
+				}
+			}
         }
 
 
@@ -1835,6 +1936,9 @@
 
         [RDFProperty("http://w3id.org/roh/title")]
         public string Roh_title { get; set; }
+		
+		[RDFProperty("http://w3id.org/roh/impactIndex")]
+		public  List<ImpactIndex> Roh_impactIndex { get; set;}
     }
 
     public class PublicationMetric : GnossOCBase
@@ -1991,19 +2095,6 @@
         public MainDocument(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
             this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
-            this.Roh_impactIndex = new List<ImpactIndex>();
-            SemanticPropertyModel propRoh_impactIndex = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndex");
-            if (propRoh_impactIndex != null && propRoh_impactIndex.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_impactIndex.PropertyValues)
-                {
-                    if (propValue.RelatedEntity != null)
-                    {
-                        ImpactIndex roh_impactIndex = new ImpactIndex(propValue.RelatedEntity, idiomaUsuario);
-                        this.Roh_impactIndex.Add(roh_impactIndex);
-                    }
-                }
-            }
             SemanticPropertyModel propRoh_format = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/format");
             if (propRoh_format != null && propRoh_format.PropertyValues.Count > 0)
             {
@@ -2020,19 +2111,6 @@
         {
             this.mGNOSSID = pSemCmsModel.Entity.Uri;
             this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-            this.Roh_impactIndex = new List<ImpactIndex>();
-            SemanticPropertyModel propRoh_impactIndex = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndex");
-            if (propRoh_impactIndex != null && propRoh_impactIndex.PropertyValues.Count > 0)
-            {
-                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_impactIndex.PropertyValues)
-                {
-                    if (propValue.RelatedEntity != null)
-                    {
-                        ImpactIndex roh_impactIndex = new ImpactIndex(propValue.RelatedEntity, idiomaUsuario);
-                        this.Roh_impactIndex.Add(roh_impactIndex);
-                    }
-                }
-            }
             SemanticPropertyModel propRoh_format = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/format");
             if (propRoh_format != null && propRoh_format.PropertyValues.Count > 0)
             {
@@ -2053,8 +2131,6 @@
         {
             get { return "http://w3id.org/roh/MainDocument"; }
         }
-        [RDFProperty("http://w3id.org/roh/impactIndex")]
-        public List<ImpactIndex> Roh_impactIndex { get; set; }
 
         [LABEL(LanguageEnum.es, "Título de la publicación principal")]
         [RDFProperty("http://w3id.org/roh/title")]
@@ -2077,77 +2153,7 @@
         public string Roh_crisIdentifier { get; set; }
     }
 
-    public class ImpactIndex : GnossOCBase
-    {
-
-        public ImpactIndex() : base() { }
-
-        public ImpactIndex(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
-        {
-            this.mGNOSSID = pSemCmsModel.Entity.Uri;
-            this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-            SemanticPropertyModel propRoh_impactCategory = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactCategory");
-            if (propRoh_impactCategory != null && propRoh_impactCategory.PropertyValues.Count > 0)
-            {
-                this.Roh_impactCategory = new ImpactIndexCategory(propRoh_impactCategory.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-            this.Roh_impactIndexInYear = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexInYear"));
-            this.Roh_impactSourceOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSourceOther"));
-            this.Roh_year = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/year"));
-            this.Roh_journalNumberInCat = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalNumberInCat"));
-            this.Roh_publicationPosition = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationPosition"));
-            this.Roh_journalTop25 = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalTop25"));
-            SemanticPropertyModel propRoh_impactSource = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSource");
-            if (propRoh_impactSource != null && propRoh_impactSource.PropertyValues.Count > 0)
-            {
-                this.Roh_impactSource = new ReferenceSource(propRoh_impactSource.PropertyValues[0].RelatedEntity, idiomaUsuario);
-            }
-        }
-
-        public virtual string RdfType
-        {
-            get { return "http://w3id.org/roh/ImpactIndex"; }
-        }
-        public virtual string RdfsLabel
-        {
-            get { return "http://w3id.org/roh/ImpactIndex"; }
-        }
-
-        [LABEL(LanguageEnum.es, "Categoría del índice de impacto")]
-        [RDFProperty("http://w3id.org/roh/impactCategory")]
-        public ImpactIndexCategory Roh_impactCategory { get; set; }
-        public string IdRoh_impactCategory { get; set; }
-
-        [LABEL(LanguageEnum.es, "Índice de impacto en año de publicación")]
-        [RDFProperty("http://w3id.org/roh/impactIndexInYear")]
-        public float? Roh_impactIndexInYear { get; set; }
-
-        [LABEL(LanguageEnum.es, "Fuente de impacto, otros")]
-        [RDFProperty("http://w3id.org/roh/impactSourceOther")]
-        public string Roh_impactSourceOther { get; set; }
-
-        [LABEL(LanguageEnum.es, "Año del índice de impacto")]
-        [RDFProperty("http://w3id.org/roh/year")]
-        public DateTime? Roh_year { get; set; }
-
-        [LABEL(LanguageEnum.es, "Número de revistas en la categoría")]
-        [RDFProperty("http://w3id.org/roh/journalNumberInCat")]
-        public int? Roh_journalNumberInCat { get; set; }
-
-        [LABEL(LanguageEnum.es, "Posición de publicación")]
-        [RDFProperty("http://w3id.org/roh/publicationPosition")]
-        public int? Roh_publicationPosition { get; set; }
-
-        [LABEL(LanguageEnum.es, "Revista dentro del 25%")]
-        [RDFProperty("http://w3id.org/roh/journalTop25")]
-        public bool Roh_journalTop25 { get; set; }
-
-        [LABEL(LanguageEnum.es, "Fuente de impacto")]
-        [RDFProperty("http://w3id.org/roh/impactSource")]
-        public ReferenceSource Roh_impactSource { get; set; }
-        public string IdRoh_impactSource { get; set; }
-    }
-
+    
     public class ReferenceSource : GnossOCBase
     {
 
@@ -2425,5 +2431,53 @@
 
         [RDFProperty("http://w3id.org/roh/title")]
         public string Roh_title { get; set; }
+    }
+	
+	public class ImpactIndex : GnossOCBase
+    {
+
+        public ImpactIndex() : base() { }
+
+        public ImpactIndex(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
+        {
+            this.mGNOSSID = pSemCmsModel.Entity.Uri;
+			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propRoh_impactSource = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSource");
+			if(propRoh_impactSource != null && propRoh_impactSource.PropertyValues.Count > 0)
+			{
+				this.Roh_impactSource = new ReferenceSource(propRoh_impactSource.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_impactIndexInYear = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexInYear"));
+			this.Roh_impactSourceOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSourceOther"));			
+			this.Roh_journalNumberInCat = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalNumberInCat"));
+			this.Roh_impactIndexCategory = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexCategory"));
+			this.Roh_publicationPosition = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationPosition"));
+			this.Roh_quartile = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/quartile"));
+        }
+
+        public virtual string RdfType { get { return "http://w3id.org/roh/ImpactIndex"; } }
+		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ImpactIndex"; } }
+
+		[LABEL(LanguageEnum.es,"Fuente de impacto")]
+		[RDFProperty("http://w3id.org/roh/impactSource")]
+		public  ReferenceSource Roh_impactSource  { get; set;} 
+
+		[RDFProperty("http://w3id.org/roh/impactIndexInYear")]
+		public  float? Roh_impactIndexInYear { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/impactSourceOther")]
+		public  string Roh_impactSourceOther { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/journalNumberInCat")]
+		public  int? Roh_journalNumberInCat { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/impactIndexCategory")]
+		public  string Roh_impactIndexCategory { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/publicationPosition")]
+		public  int? Roh_publicationPosition { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/quartile")]
+		public  int? Roh_quartile { get; set;}
     }
 }

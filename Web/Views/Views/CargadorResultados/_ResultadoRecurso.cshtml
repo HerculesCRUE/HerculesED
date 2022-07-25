@@ -130,8 +130,136 @@
                                 }
                             }
                         }
+						
+						@{
+							List<ImpactIndex> imactIndexes=new List<ImpactIndex>();
+                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
+                            {
+                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
+                                {
+                                    string idQuery = "ImpactIndex";
+                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
+                                    {
+                                        foreach (Dictionary<string, string> row in item.Rows)
+                                        {
+											ImpactIndex impactIndex=new ImpactIndex();
+                                            if (row.ContainsKey("impactSource"))
+                                            {
+                                                impactIndex.impactSource=row["impactSource"];
+                                            }
+											if (row.ContainsKey("impactIndexCategory"))
+                                            {
+                                                impactIndex.impactIndexCategory=row["impactIndexCategory"];
+                                            }
+											if (row.ContainsKey("impactIndexInYear"))
+                                            {
+                                                impactIndex.impactIndexInYear=float.Parse(row["impactIndexInYear"].Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
+                                            }
+											if (row.ContainsKey("publicationPosition"))
+                                            {
+                                                impactIndex.publicationPosition=int.Parse(row["publicationPosition"]);
+                                            }
+											if (row.ContainsKey("journalNumberInCat"))
+                                            {
+                                                impactIndex.journalNumberInCat=int.Parse(row["journalNumberInCat"]);
+                                            }
+											if (row.ContainsKey("quartile"))
+                                            {
+                                                impactIndex.quartile=int.Parse(row["quartile"]);
+                                            }
+											imactIndexes.Add(impactIndex);
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         @{
+							//Factor de impacto
+							float? impactFactor=null;
+							Dictionary<string,float> impactFactors=new Dictionary<string,float>();
+							foreach(ImpactIndex impactIndex in imactIndexes)
+							{
+								if(impactIndex.impactIndexInYear.HasValue)
+								{
+									impactFactors[impactIndex.impactSource]=impactIndex.impactIndexInYear.Value;
+									if(!impactFactor.HasValue || impactIndex.impactIndexInYear.Value>impactFactor.Value )
+									{
+										impactFactor=impactIndex.impactIndexInYear;								
+									}
+								}
+							}
+							string htmlTooltipImpactFactor="<p class=\"tooltip-title\">"+Html.Translate("FACTOR_DE_IMPACTO")+"</p><ul class=\"no-list-style\">"+string.Join("", impactFactors.Select(x=>"<li><span class=\"texto\">"+x.Key+"</span><span class=\"num-resultado\">"+x.Value+"</span></li>"))+"</ul>";
+						}
+						
+						@{
+							//Cuartiles
+							int? quartile=null;
+							List<string> quartiles=new List<string>();
+							foreach(ImpactIndex impactIndex in imactIndexes.OrderBy(x=>x.impactSource).ThenBy(x=>x.quartile).ThenBy(x=>x.impactIndexCategory))
+							{
+								if(impactIndex.quartile.HasValue )
+								{
+									string fileCuartil="<tr>";
+									if(!string.IsNullOrEmpty(impactIndex.impactSource))
+									{
+										fileCuartil+="<td>"+impactIndex.impactSource+"</td>";
+									}else
+									{
+										fileCuartil+="<td></td>";
+									}
+									
+									if(!string.IsNullOrEmpty(impactIndex.impactIndexCategory))
+									{
+										fileCuartil+="<td>"+impactIndex.impactIndexCategory+"</td>";
+									}else
+									{
+										fileCuartil+="<td></td>";
+									}
+									if(impactIndex.publicationPosition.HasValue)
+									{
+										fileCuartil+="<td>"+impactIndex.publicationPosition.Value+"</td>";
+									}else
+									{
+										fileCuartil+="<td></td>";
+									}
+									
+									if(impactIndex.journalNumberInCat.HasValue)
+									{
+										fileCuartil+="<td>"+impactIndex.journalNumberInCat.Value+"</td>";
+									}else
+									{
+										fileCuartil+="<td></td>";
+									}
+									fileCuartil+="<td>Q"+impactIndex.quartile.Value+"</td>";
+									quartiles.Add(fileCuartil);
+									if(!quartile.HasValue || impactIndex.quartile.Value<quartile.Value)
+									{
+										quartile=impactIndex.quartile;
+									}
+								}
+							}
+							string htmlTooltipCuartil="<p class=\"tooltip-title\">"+Html.Translate("CUARTIL")+"</p><table><tr><th>"+Html.Translate("CUARTIL_FUENTE")+"</th><th>"+Html.Translate("CUARTIL_CATEGORIA")+"</th><th>"+Html.Translate("CUARTIL_PUBLICATIONPOSITION")+"</th><th>"+Html.Translate("CUARTIL_JOURNALNUMBERINCAT")+"</th><th>"+Html.Translate("CUARTIL")+"</th></tr>"+string.Join("",quartiles)+"</table>";
+						}
+						
+						@if(impactFactor.HasValue)
+						{
+							<div class="d-flex impactFactorTooltip">
+								<p><span>@impactFactor.Value</p>
+								<span class="oculto tooltipContent">@Html.Raw(htmlTooltipImpactFactor)</span>
+							</div>
+						}
+						
+						@if(quartile.HasValue)
+						{
+							string valorCuartil="Q"+quartile.Value;
+							<div class="d-flex quartileTooltip">
+								<p><span>@valorCuartil</p>
+								<span class="oculto tooltipContent">@Html.Raw(htmlTooltipCuartil)</span>
+							</div>
+						}
+						
+						@{
                             string valorOtros = string.Empty;
                             if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                             {
@@ -158,6 +286,7 @@
                                 valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
                             }
                         }
+						
                         <div class="d-flex quotes" data-scopus="@valorScopus" data-wos="@valorWos" data-semanticscholar="@valorSemanticScholar" data-inrecs="@valorInrecs" data-otros="@valorOtros">
                             @{
                                 if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
@@ -172,7 +301,7 @@
                                             {
                                                 if (row.ContainsKey(propiedad))
                                                 {
-                                                    <p>@row[propiedad] citas</p>
+                                                    <p>@row[propiedad] @Html.Translate("CITAS")</p>
                                                 }
                                             }
                                         }
@@ -1948,17 +2077,13 @@
 
 
 @functions{
-    class UserJsonData
+    class ImpactIndex
     {
-        public string name { get; set; }
-        public string descripcion { get; set; }
-        public string url { get; set; }
-        public List<string> listadoCath { get; set; }
-        public List<string> listadoTags { get; set; }
-        public string numDocumento { get; set; }
-        public string hIndex { get; set; }
-        public string hasPosition { get; set; }
-        public string tituloOrg { get; set; }
-        public string departamento { get; set; }
+        public string impactSource { get; set; }
+        public string impactIndexCategory { get; set; }
+        public float? impactIndexInYear { get; set; }
+        public int? publicationPosition { get; set; }
+		public int? journalNumberInCat { get; set; }
+		public int? quartile { get; set; }
     }
 }

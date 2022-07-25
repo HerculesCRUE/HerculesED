@@ -333,6 +333,7 @@ function CompletadaCargaRecursosComunidad()
 	if ((typeof gOTecnEndLoadedResources != 'undefined')) {
 		gOTecnEndLoadedResources();
 	}
+	tooltipsImpactFactor();
 }
 
 comportamientoFacetasPopUp.numPaginas=2,
@@ -831,7 +832,6 @@ montarTooltip.lanzar = function (elem, title, classes) {
 tooltipsAccionesRecursos.getTooltipQuotes= function () {
 	var that = this;	
 	this.quotes.each(function () {
-			console.log("toltipFN(montarTooltip)");
 			var scopusInt=$(this).data('scopus');
 			var wosInt=$(this).data('wos');
 			var inrecsInt=$(this).data('inrecs');
@@ -2032,3 +2032,24 @@ menusLateralesManagement.montarMenuLateralMetabuscador= function () {
 		}
 	});
 }
+
+function tooltipsImpactFactor()
+{
+	$('.impactFactorTooltip').each(function() {
+		$(this).tooltip({
+			html: true,
+			placement: 'bottom',
+			template: '<div class="tooltip background-blanco impactfactor" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+			title: $(this).find('.tooltipContent').html()
+		});
+	});	
+	$('.quartileTooltip').each(function() {
+		$(this).tooltip({
+			sanitize: false,
+			html: true,
+			placement: 'bottom',
+			template: '<div class="tooltip background-blanco cuartiles" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+			title: $(this).find('.tooltipContent').html()
+		});
+	});	
+}	

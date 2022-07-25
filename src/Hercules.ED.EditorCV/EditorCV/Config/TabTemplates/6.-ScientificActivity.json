@@ -914,31 +914,14 @@
                           "graph": "maindocument",
                           "property": {
                             "property": "http://w3id.org/roh/title"
+                          },
+                          "propertyAux": {
+                            "properties": [ "http://purl.org/ontology/bibo/issn", "http://purl.org/ontology/bibo/eissn" ],
+                            "print": "{0}| - ISSN: {1}| - EISSN: {2}"
                           }
                         },
                         "type": "entityautocomplete",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "ISSN"
-                        },
-                        "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
-                        "autocomplete": true,
-                        "blocked": true,
-                        "dependency": {
-                          "property": "http://w3id.org/roh/supportType",
-                          "propertyValue": "{GraphsUrl}items/documentformat_057"
-                        },
-                        "autocompleteConfig": {
-                          "rdftype": "http://w3id.org/roh/MainDocument",
-                          "graph": "maindocument",
-                          "property": {
-                            "property": "http://purl.org/ontology/bibo/issn"
-                          }
-                        },
-                        "type": "entityautocomplete",
-                        "width": 1
+                        "width": 2
                       },
                       {
                         "title": {
@@ -1840,16 +1823,13 @@
               },
               {
                 "name": {
-                  "es": "Grado de contribución"
+                  "es": "ISSN"
                 },
                 "child": {
-                  "property": "http://w3id.org/roh/relatedScientificPublicationCV",
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
                   "child": {
-                    "property": "http://w3id.org/roh/contributionGrade",
-                    "graph": "contributiongradedocument",
-                    "child": {
-                      "property": "http://purl.org/dc/elements/1.1/title"
-                    }
+                    "property": "http://w3id.org/roh/issn"
                   }
                 }
               },
@@ -1859,7 +1839,7 @@
                 },
                 "type": "boolean",
                 "child": {
-                  "property": "http://w3id.org/roh/relatedScientificPublicationCV",
+                  "property": "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV",
                   "child": {
                     "property": "http://w3id.org/roh/correspondingAuthor"
                   }
@@ -1867,13 +1847,106 @@
               },
               {
                 "name": {
-                  "es": "Relevante"
+                  "es": "Editorial"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/publisher"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Congreso"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de celebración"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtOrganizerTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de entidad"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtOrganizerType",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de participación"
+                },
+                "child": {
+                  "property": "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV",
+                  "child": {
+                    "property": "http://w3id.org/roh/participationType",
+                    "graph": "participationtypedocument",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Publicación en acta de congreso"
                 },
                 "type": "boolean",
                 "child": {
-                  "property": "http://w3id.org/roh/relatedScientificPublicationCV",
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
                   "child": {
-                    "property": "http://w3id.org/roh/relevantPublication"
+                    "property": "http://w3id.org/roh/congressProceedingsPublication"
                   }
                 }
               },
@@ -1910,66 +1983,6 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/ontology/bibo/pmid"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Nº de citas inrecs"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/inrecsCitationCount"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Nº de citas scopus"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/scopusCitationCount"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Nº de citas wos"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/wosCitationCount"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Nº de citas semantic scholar"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/semanticScholarCitationCount"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Número de reseñas"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/reviewsNumber"
                   }
                 }
               }
@@ -3185,6 +3198,135 @@
                   "graph": "document",
                   "child": {
                     "property": "http://w3id.org/roh/isbn"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "ISSN"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/issn"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Autor de correspondencia"
+                },
+                "type": "boolean",
+                "child": {
+                  "property": "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV",
+                  "child": {
+                    "property": "http://w3id.org/roh/correspondingAuthor"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Editorial"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/publisher"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Evento"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de celebración"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Entidad organizadora"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtOrganizerTitle"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de entidad"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtOrganizerType",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Tipo de participación"
+                },
+                "child": {
+                  "property": "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV",
+                  "child": {
+                    "property": "http://w3id.org/roh/participationType",
+                    "graph": "participationtypedocument",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Publicación en acta de congreso"
+                },
+                "type": "boolean",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/congressProceedingsPublication"
                   }
                 }
               },

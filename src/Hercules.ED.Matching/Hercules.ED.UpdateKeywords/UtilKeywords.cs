@@ -53,10 +53,15 @@ namespace Hercules.ED.UpdateKeywords
 
             // Consulta sparql.
             select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?s ");
+            select.Append($@"SELECT DISTINCT ?s FROM <{mResourceApi.GraphsUrl}person.owl> ");
             where.Append("WHERE { ");
             where.Append("?s a bibo:Document. ");
             where.Append("?s roh:getKeyWords 'true'. ");
+            where.Append("?s roh:hasKnowledgeArea ?area. ");
+            where.Append($@"?area roh:categoryNode <{mResourceApi.GraphsUrl}items/researcharea_3.0.0.0>. "); // Health Sciences
+            where.Append("?s bibo:authorList ?listaAutores. ");
+            where.Append("?listaAutores rdf:member ?persona. ");
+            where.Append("?persona roh:useMatching 'true'. ");
             where.Append("} ");
 
 
@@ -778,8 +783,7 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
 
-                    //if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
-                    if (ComprobarCaracteres(palabraAux))
+                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
                     {
                         continue;
                     }
@@ -793,8 +797,7 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
 
-                    //if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
-                    if (ComprobarCaracteres(palabraAux))
+                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
                     {
                         continue;
                     }

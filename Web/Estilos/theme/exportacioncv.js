@@ -176,7 +176,7 @@ var exportacionCV = {
 						}
 						//Si no hay pasos maximos no muestro la lista
 						if(response.totalWorks != 0){
-							$('#workMascaraBlanca').text(response.actualWork + '/' + response.totalWorks);
+							$('#workMascaraBlanca').text('Pasos totales: ' + response.actualWork + '/' + response.totalWorks);
 						}
 					}
 				}
