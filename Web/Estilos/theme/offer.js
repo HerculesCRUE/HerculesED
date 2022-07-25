@@ -1,6 +1,7 @@
 const uriSaveOffer = "Ofertas/SaveOffer"
 const uriLoadOffer = "Ofertas/LoadOffer"
 const uriLoadUsersGroup = "Ofertas/LoadUsersGroup"
+const uriLoadTaxonomiesOffer = "Ofertas/GetThesaurus"
 // STEP 3
 const uriLoadLineResearchs = "Ofertas/LoadLineResearchs"
 const uriLoadFramingSectors = "Ofertas/LoadFramingSectors"
@@ -12,6 +13,10 @@ const urlCambioEstadoAll = url_servicio_externo + "Ofertas/CambiarEstadoAll"
 const urlBorrarOferta = url_servicio_externo + "Ofertas/BorrarOferta"
 
 
+
+
+
+var urlLT = "";
 var urlSOff ="";
 var urlSTAGSOffer = "";
 var urlLoadUsersGroup ="";
@@ -25,6 +30,7 @@ var urlLoadMatureStates ="";
  */
 $(document).ready(function () {
 	servicioExternoBaseUrl=$('#inpt_baseURLContent').val()+'/servicioexterno/';
+	urlLT = new URL(url_servicio_externo +  uriLoadTaxonomiesOffer);
 	urlSOff = new URL(servicioExternoBaseUrl +  uriSaveOffer);
 	urlSTAGSOffer = new URL(servicioExternoBaseUrl +  uriSearchTags);
 	urlLoadOffer = new URL(servicioExternoBaseUrl +  uriLoadOffer);
@@ -49,7 +55,6 @@ class StepsOffer {
 	constructor() {
 		var _self = this
 		this.body = $('body')
-		this.dataTaxonomies = null
 
 		// Secciones principales
 		this.crearOferta = this.body.find('#wrapper-crear-oferta')
@@ -92,6 +97,26 @@ class StepsOffer {
 		this.framingsectors = undefined
 
 
+		// Modal(es) dinámicos
+		this.modalesDinamicos = {
+			"sectoraplicacion": {
+				item: "sectorAplicacionData",
+				field: "sectorAplicacion",
+				modal: undefined,
+				cambios: 0,
+				obligatorio: true,
+			},
+			"areaprocedencia": {
+				item: "areaProcedenciaData",
+				field: "areaProcedencia",
+				modal: undefined,
+				cambios: 0,
+				obligatorio: true,
+			},
+		}
+		this.dataModalesDinamicos = undefined
+
+
 		// STEP 4
 
 		// Ids de los campos de la sección 4
@@ -99,6 +124,7 @@ class StepsOffer {
 			"descripcion",
 			"aplicaciones",
 			"destinatarios",
+			"ventajasBeneficios",
 		]
 		this.listIdsTextsOptional = [
 			"origen",
@@ -143,6 +169,7 @@ class StepsOffer {
 		this.ofertaId = undefined
 		this.data = {
 			researchers: {},
+			groups: [],
 			projects: {},
 			documents: {},
 			pii: {},
@@ -182,19 +209,35 @@ class StepsOffer {
 		// Check if we need load the offer
 		var currentUrl = new URL(window.location)
 		_self.ofertaId = currentUrl.searchParams.get("id")
-		if (_self.ofertaId) {
-			// Load the pffer
-			_self.loadOffer().then((res) => {
+
+
+		// Fill taxonomies data
+
+		MostrarUpdateProgress();
+		this.getDataTaxonomies().then((data) => {
+
+			_self.dataModalesDinamicos = data;
+			_self.fillDataTaxonomies(data);
+
+
+			if (_self.ofertaId) {
+				// Load the pffer
+				_self.loadOffer().then((res) => {
+
+					// Carga los usuarios del grupo al que perteneces 
+					_self.LoadUsersGroup().then(() => {
+						OcultarUpdateProgress()
+					})
+				
+				})
+			} else {
 
 				// Carga los usuarios del grupo al que perteneces 
-				_self.LoadUsersGroup()
-			
-			})
-		} else {
-
-			// Carga los usuarios del grupo al que perteneces 
-			_self.LoadUsersGroup()
-		}
+				_self.LoadUsersGroup().then(() => {
+					OcultarUpdateProgress()
+				})
+			}
+		})
 
 
 		this.topicsM = new ModalSearchTagsOffer()
@@ -255,7 +298,7 @@ class StepsOffer {
 	 */
 	LoadUsersGroup() {
 		var _self = this
-		MostrarUpdateProgress();
+		// MostrarUpdateProgress();
 		return new Promise((resolve, reject) => {
 			_self.callLoadUsersGroup().then((res) => {
 
@@ -321,7 +364,7 @@ class StepsOffer {
 					_self.listInvestigadoresSTP1 = _self.crearOfertaStep1.find(".resource-list-investigadores > div")
 				}
 
-				OcultarUpdateProgress()
+				// OcultarUpdateProgress()
 				resolve(true)
 			})
 		})
@@ -565,18 +608,36 @@ class StepsOffer {
 
 
 		// Get the second screen
-		let lineasInvestigacion = this.crearOfertaStep3.find('.edit-etiquetas')
+		let lineasInvestigacion = this.crearOfertaStep3.find('.edit-etiquetas.lineasinvestigacion')
 		let inputsTermsProf = lineasInvestigacion.find('input')
 		let profTerms = {}
 		inputsTermsProf.each((i, el) => {profTerms["id_" + el.value] = _self.divTesListaCats[el.value]})
 
+
+		let dynamicRellenado = true
+		// Comprueba si los campos de los modales están cargados (si son obligatorios)
+		for (var [i, el] of Object.entries(_self.modalesDinamicos)) {
+			
+			// Get the second screen
+			let item = document.getElementById(el.item)
+			let inputsTermsProfDyn = item.querySelectorAll('input')
+			let profTermsDyn = {}
+			inputsTermsProfDyn.forEach((input, index) => { profTermsDyn[input.value] = _self.dataModalesDinamicos[i].find(e => e.id == input.value).name })
+
+			// Set the post data
+			_self.data[el.field] = profTermsDyn;
+
+			if (el.obligatorio) {
+				dynamicRellenado = dynamicRellenado && Object.keys(profTermsDyn).length > 0 || _self.dataModalesDinamicos[i].length == 0
+			}
+		}
 
 		// Set the post data
 		this.data = {
 			...this.data,
 			lineResearchs: profTerms,
 			matureState: _self.ddlMadurez.val(),
-			framingSector: _self.ddlEncuadre.val(),
+			// framingSector: _self.ddlEncuadre.val(),
 		}
 		
 		// Comprueba si las líneas de investigación se han rellenado o no hay ninguna disponible
@@ -586,9 +647,12 @@ class StepsOffer {
 		let ematRellenado = _self.ddlMadurez.val() != ""
 
 		// Comprueba si el sector de encuadre se ha seleccionado
-		let sencuaRellenado = _self.ddlEncuadre.val() != ""
+		// let sencuaRellenado = _self.ddlEncuadre.val() != ""
 
-		return existenTerms && ematRellenado && sencuaRellenado
+
+
+		// return existenTerms && ematRellenado && sencuaRellenado
+		return existenTerms && ematRellenado && dynamicRellenado
 	}
 
 	/**
@@ -632,22 +696,54 @@ class StepsOffer {
 	 */
 	getDataTaxonomies() {
 		
-		// https://localhost:44321/Oferta/GetThesaurus?listadoOferta=%5B%22researcharea%22%5D
-		let listThesaurus = ["researcharea"]
-		urlLT.searchParams.set('listThesaurus', JSON.stringify(listThesaurus))
+		let _self = this
+		// Lista de Tesauros semánticos a cargar
+		let listThesaurus = Object.keys(this.modalesDinamicos)
+		var args = {
+			listThesaurus: listThesaurus,
+			lang: this.currentLang,
+		}
+		
+		// Carga el idioma
+		// urlLT.searchParams.set('lang', this.currentLang)
+
+		// Realizo la llamada ajax y devuelvo la promesa
+		// return new Promise((resolve, reject) => {
+		// 	_self.postCall(urlLT, args).then((data) => {
+		// 		resolve(data)
+		// 	})
+		// })
 
 		return new Promise((resolve, reject) => {
-			$.get(urlLT.toString(), function (data) {
+			$.post(urlLT.toString(), args, function (data) {
 				resolve(data)
 			})
 		})
 	}
 
 	/**
+	 * Crea un objeto (y lo almacena) de un modal para cargar y seleccionar elementos
+	 * @param data, Objeto con los datos resultantes de la petición, que contiene el árbol de opciones del modal
+	 */
+	fillDataTaxonomies(data) {
+
+		// let resultHtml = this.fillTaxonomiesTree(data['areaprocedencia']);
+		// let resultHtml = this.fillTaxonomiesTree(data['sectoraplicacion']);
+
+		for (const [index, itemData] of Object.entries(data)) {
+			
+			this.modalesDinamicos[index].modal = new ModalCategoryCreator(this.modalesDinamicos[index].item, index, this.crearOferta)
+			this.modalesDinamicos[index].modal.create(itemData)
+
+			// this.modalesDinamicos[index].modalObject = modalObject
+		}
+	}
+
+	/**
 	 * Inicia la generación del html para las diferentes taxonomías
 	 * @param data, Objeto con los items
 	 */
-	fillDataTaxonomies(data) {
+	fillDataTaxonomiesWithoutParent(data) {
 		// Set tree
 		let resultHtml = this.fillTaxonomiesTreeWithoutParent(data)
 		this.divTesArbol.find('.categoria-wrap').remove()
@@ -668,28 +764,28 @@ class StepsOffer {
 		}
 
 		// Add events when the items are clicked
-		this.itemsClicked()
+		this.itemsClickedWithoutParent()
 	}
 
 	/**
 	 * Add events when the Taxonomies items are clicked
 	 */
-	itemsClicked() {
+	itemsClickedWithoutParent() {
 
-		var _self = this
+		let _self = this
 
 		// Click into the tree
-		this.divTesArbol.off('click').on("click", "input.at-input", function() {
+		_self.divTesArbol.off('click').on("click", "input.at-input", function() {
 			let dataVal = this.checked
 			let dataId = $(this).attr('id')
 
 			// Añadimos un cambio para las areas tematicas
 			_self.cambiosAreasTematicas ++
+
 			_self.btnSaveAT.removeClass('disabled')
 			
 		})
 	}
-
 	/**
 	 * Crea el html con las taxonomías
 	 * @param data, array con los items
@@ -717,29 +813,6 @@ class StepsOffer {
 		return resultHtml
 	}
 
-	/**
-	 * Crea el html con las taxonomías en arbol
-	 * @param data, array con los items
-	 * @return string con el texto generado
-	 */
-	fillTaxonomiesList(data) {
-
-		var _self = this
-
-		let resultHtml = ""
-		data.forEach((e, id) => {
-			resultHtml += '<div class="categoria-wrap" data-text="' + e + '">\
-					<div class="categoria list__' + id + '">\
-						<div class="custom-control custom-checkbox themed little primary">\
-							<input type="checkbox" class="custom-control-input at-input" id="list__' + id + '" data-id="' + id + '" data-name="' + e + '">\
-							<label class="custom-control-label" for="list__' + id + '">' + e + '</label>\
-						</div>\
-					</div>\
-				</div>'
-		})
-
-		return resultHtml
-	}
 
 
 	/**
@@ -867,6 +940,16 @@ class StepsOffer {
 
 			this.saveAreasTematicasEvent(relItem)
 		}
+	}
+
+	/**
+	 * Carga todas las áreas temáticas seleccionadas para ese perfil / sección 
+	 * @param item, sección donde se encuentra la información para cargar las areas temáticas
+	 */
+	setAreasTematicasDynamic(item, id) {
+
+		this.modalesDinamicos[id].modal.setAreasTematicas(item)
+
 	}
 
 	/**
@@ -1065,6 +1148,96 @@ class StepsOffer {
 
 
 	/**
+	 * Método que genera el evento para añadir las áreas temáticas selecciondas en el popup
+	 * @param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temáticas seleccionadas
+	 * @param data, array con las areas temáticas seleccionadas
+	 */
+	saveAreasTematicasEventDynamic(itemId, relItem, data = null) {
+
+
+		if (data != null) {
+			// Entra aquí por primera vez si el cluster ha sido guardado
+
+			let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
+
+			let htmlRes = ''
+			let dataWithNames = [];
+
+			if (this.dataModalesDinamicos != null && this.dataModalesDinamicos[this.id]) {
+				data.forEach(id => {
+					dataWithNames.push({id, name: this.dataTaxonomies.find(e => e.id == id).name})
+				})
+			}
+
+			let arrayRes = []
+			dataWithNames.forEach(e => {
+				htmlRes += '<div class="tag" title="' + e.name + '" data-id="' + e.id.split('/').pop() + '">\
+					<div class="tag-wrap">\
+						<span class="tag-text">' + e.name + '</span>\
+						<span class="tag-remove material-icons">close</span>\
+					</div>\
+					<input type="hidden" value="' + e.id + '">\
+				</div>'
+				arrayRes.push(e.id.split('/').pop())
+			})
+
+			htmlResWrapper.append(htmlRes)
+			relItem.html(htmlResWrapper)
+
+			// Se añade un json para saber qué categorías se han seleccionado
+			relItem.data('jsondata', arrayRes)
+
+			this.deleteAreasTematicasEvent(relItem)
+
+		} else {
+
+			// Evento para cuando se seleccione guardar las áreas temáticas desde el popup
+			this.btnSaveAT.off('click').on('click', (e) => {
+				e.preventDefault()
+
+				// Oculta el modal de las áreas temáticas
+				this.modalAreasTematicas.modal('hide')
+
+				// Reestablecemos el botón de guardar las Áreas Temáticas
+				this.cambiosAreasTematicas = 0
+				this.btnSaveAT.addClass('disabled')
+
+				// Selecciona y establece el contenedor de las areas temáticas
+				// let relItem = $('#' + $(item).data("rel"))
+
+				let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
+
+				let htmlRes = ''
+				let arrayItems = [] // Array para guardar los items que se van a usar
+				this.divTesArbol.find('input.at-input').each((i, e) => {
+					if (e.checked) {
+						htmlRes += '<div class="tag" title="' + $(e).data('name') + '" data-id="' + $(e).data('id') + '">\
+							<div class="tag-wrap">\
+								<span class="tag-text">' + $(e).data('name') + '</span>\
+								<span class="tag-remove material-icons">close</span>\
+							</div>\
+							<input type="hidden" value="' + $(e).data('id') + '">\
+						</div>'
+						arrayItems.push(e.id)
+					}
+				})
+
+				htmlResWrapper.append(htmlRes)
+
+				relItem.html(htmlResWrapper)
+
+				// Se añade un json para saber qué categorías se han seleccionado
+				relItem.data('jsondata', arrayItems)
+
+				this.deleteAreasTematicasEvent(relItem)
+
+			})
+		}
+	}
+
+
+
+	/**
 	 * Método que elimina las áreas temáticas del arbol y del listado
 	 * @param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
 	 */
@@ -1170,13 +1343,21 @@ class StepsOffer {
 		let _self = this
 
 		MostrarUpdateProgress();
-		Promise.all([this.loadLineResearchs(), this.loadMatureStates(), this.loadFramingSectors()]).then(values => {
+		// Promise.all([this.loadLineResearchs(), this.loadMatureStates(), this.loadFramingSectors()]).then(values => {
+		Promise.all([this.loadLineResearchs(), this.loadMatureStates()]).then(values => {
 
 			// Líneas de investigación
-			let lineResearchs = values[0]
+			let lineResearchs = undefined
+			let groups = undefined
+			if (values[0] && values[0].item1) {
+				lineResearchs = values[0].item1
+				this.data.groups = values[0].item2
+			} else {
+				lineResearchs = values[0]
+			}
 
 			// Carga las taxonomías
-			_self.fillDataTaxonomies(lineResearchs)
+			_self.fillDataTaxonomiesWithoutParent(lineResearchs)
 			_self.divTesListaCats = lineResearchs
 
 
@@ -1185,7 +1366,7 @@ class StepsOffer {
 			if (!_self.maturesStates || !_self.framingsectors) {
 
 				_self.maturesStates = values[1]
-				_self.framingsectors = values[2]
+				// _self.framingsectors = values[2]
 
 
 				// Pintar Estado de madurez
@@ -1196,12 +1377,12 @@ class StepsOffer {
 				this.ddlMadurez.html(htmlMaturesStates)
 
 
-				// Pintar categoría de encuadre
-				let htmlFramingsectors = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
-				for (const[i, el] of Object.entries(_self.framingsectors)) {
-					htmlFramingsectors += `<option value="${i}">${el}</option>`
-				}
-				this.ddlEncuadre.html(htmlFramingsectors)
+				// // Pintar categoría de encuadre
+				// let htmlFramingsectors = "<option value=\"\" selected=\"selected\">"+ _self.sinEspcificarText +"</option>"
+				// for (const[i, el] of Object.entries(_self.framingsectors)) {
+				// 	htmlFramingsectors += `<option value="${i}">${el}</option>`
+				// }
+				// this.ddlEncuadre.html(htmlFramingsectors)
 
 
 				if (_self.ofertaId) {
@@ -1211,7 +1392,7 @@ class StepsOffer {
 				
 				// Start the select2
 				this.ddlMadurez.select2();
-				this.ddlEncuadre.select2();
+				// this.ddlEncuadre.select2();
 			}
 
 			OcultarUpdateProgress();
@@ -1847,6 +2028,484 @@ class StepsOffer {
 
 		this.PrintSelectedPIIStp5()
 	}
+}
+
+
+
+class ModalCategoryCreator {
+
+	constructor (itemRelatedId, id, crearOferta) {
+
+		this.modal = undefined
+		this.divTesArbol = undefined
+
+		this.itemRelatedId = itemRelatedId
+		this.crearOferta = crearOferta
+
+		this.id = id
+		this.cambios = 0
+	}
+
+	/**
+	 * Inicia la generación del html para las diferentes taxonomías
+	 * @param data, Objeto con los items
+	 */
+	create (data) {
+
+		this.data = data
+
+		let modal = this.setNewDynamicModal()
+		this.modal = modal
+
+		this.divTesArbol = $(modal.querySelector(".divTesArbol"))
+
+		let divTesArbol = modal.querySelector(".divTesArbol")
+		let $divTesArbol = $(divTesArbol)
+
+
+		// Set tree
+		let resultHtml = this.fillTaxonomiesTree(data);
+		$divTesArbol.find('.categoria-wrap').remove();
+		$divTesArbol.append(resultHtml);
+
+		// Set list
+		/* resultHtml = this.fillTaxonomiesList(data['researcharea'])
+		this.divTesLista.append(resultHtml)
+		this.divTesListaCaths = this.divTesLista.find(".categoria-wrap") */
+
+		// Open & close event trigger
+		let desplegables = modal.querySelectorAll('.boton-desplegar')
+	
+		if ($(desplegables).length > 0) {
+			$(desplegables).off('click').on('click', function () {
+				$(this).toggleClass('mostrar-hijos');
+			});
+		}
+
+		// Add events when the items are clicked
+		this.itemsClicked();
+
+
+	}
+
+	/**
+	 * Método que crea un modal de forma dinámica
+	 */
+	setNewDynamicModal() {
+
+		let itemRelated = document.getElementById(this.itemRelatedId)
+
+		// Establezco las traducciones
+		let traducciones = {}
+		if (itemRelated) {
+			traducciones = {
+				"title": itemRelated.dataset.title,
+				"subtitle": itemRelated.dataset.subtitle,
+				"small": itemRelated.dataset.small,
+				"arbol": itemRelated.dataset.arbol,
+				"buscar": itemRelated.dataset.buscar,
+				"guardar": itemRelated.dataset.guardar,
+			}
+		}
+
+		// Creo el modal
+		let modal = document.createElement('div')
+        modal.classList.add('modal')
+        modal.classList.add('modal-top')
+        modal.classList.add('fade')
+        modal.classList.add('modal-edicion')
+        modal.setAttribute("tabindex", -1)
+        modal.setAttribute("role", "dialog")
+        modal.setAttribute("id", "modal-seleccionar-"+ this.id)
+        modal.setAttribute("data-backdrop", "static")
+
+		let html = `
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<p class="modal-title"><span class="material-icons">folder_open</span>${traducciones.title}</p>
+							<span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+						</div>
+						<div class="modal-body">
+							<div class="formulario-edicion">
+								<div class="form-group">
+									<label class="control-label">${traducciones.subtitle}</label>
+								</div>
+								<small>${traducciones.small}</small>
+								<div id="panDesplegableSelCat_${this.id}" class="mt-4">
+									<ul class="nav nav-tabs d-none" id="myTab" role="tablist">
+										<li class="nav-item">
+											<a class="nav-link active" id="ver-arbol-tab" data-toggle="tab" href="#ver-arbol" role="tab" aria-controls="ver-arbol" aria-selected="true">${traducciones.arbol}</a>
+										</li>
+									</ul>
+									<div class="tab-content pt-0">
+
+										<div class="tab-pane fade show active" id="ver-arbol" role="tabpanel" aria-labelledby="ver-arbol-tab">
+											<div class="divTesArbol divCategorias clearfix">
+												<div class="buscador-categorias">
+													<div class="form-group">
+														<input class="filtroRapido form-control not-outline" placeholder="${traducciones.buscar}" type="text" onkeydown="javascript:if(event.which || event.keyCode){if ((event.which == 13) || (event.keyCode == 13)) {return false;}}" onkeyup="javascript:MVCFiltrarListaSelCatArbol(this, 'panDesplegableSelCat');">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-actions top">
+									<a href="javascript:void(0)" class="btn btn-primary pmd-ripple-effect btnsave disabled">${traducciones.guardar}</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		`
+		// Le añado el html contenedor
+		modal.innerHTML += html
+
+		// Inserto el modal en la página
+		this.crearOferta.after(modal)
+		// insertAfter(modal, this.crearOferta)
+
+		return modal
+	}
+
+
+	/**
+	 * Add events when the Taxonomies items are clicked
+	 */
+	itemsClicked() {
+
+		let _self = this
+		let currentModal = this.modal
+
+		// Click into the tree
+		this.divTesArbol.off('click').on("click", "input.at-input", function() {
+			let dataVal = this.checked
+			let dataId = $(this).attr('id')
+			let dataParentId = $(this).data('parentid')
+			dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
+
+			// Añadimos un cambio para las areas tematicas
+			_self.cambios ++
+			$(currentModal).find('.btnsave').removeClass('disabled')
+
+			if (dataParentId.length > 0) {
+				if (!dataVal) {
+					let brothers = $(this).parent().parent().parent().parent().find('input.at-input:checked')
+					if (brothers.length == 0) {
+						_self.selectParent(dataParentId, false)
+					} else {
+						_self.selectParent(dataParentId)
+					}
+				} else {
+					_self.selectParent(dataParentId)
+				}
+			}
+
+			
+		})
+
+		// Click into the list
+		/* this.divTesLista.off('click').on("click","input.at-input", function() {
+			let dataVal = this.checked
+			let dataId = $(this).attr('id').substring("list__".length)
+
+			if (dataVal) {
+				document.getElementById(dataId).checked = true
+			} else  {
+				document.getElementById(dataId).checked = false
+			}
+		}) */
+	}
+
+
+	/**
+	 * Select the parent in the list and add a class to active the item
+	 * @param pId, the parent id
+	 * @param addclass, check if should dishabled the item
+	 */
+	selectParent(pId, addclass = true) {
+
+		let itemP = document.getElementById(pId)
+		let $itemP = $(itemP)
+		// Check if add or remove class select
+		if (addclass) {
+			$itemP.addClass('selected')
+		} else {
+			// Search for childs and remove selected class if not has childs enhabled
+			let childs = $itemP.parent().parent().parent().find('input.at-input:checked')
+			if (childs.length == 0) {
+				$itemP.removeClass('selected')
+			} else {
+				// Stop the recursive function if it's childs checked
+				return null
+			}
+		}
+		// Call to the parent to change the 'selected' class
+		let dataParentId = $itemP.data('parentid')
+		dataParentId = (dataParentId.length > 0) ? dataParentId.split('/').pop() : dataParentId
+
+		if (dataParentId.length > 0) {this.selectParent(dataParentId, addclass)}
+	}
+
+	
+
+
+	/**
+	 * Crea el html con las taxonomías
+	 * @param data, array con los items
+	 * @param idParent, id del nodo padre, para generar los hijos
+	 * @return string con el texto generado
+	 */
+	fillTaxonomiesTree(data, idParent = "") {
+
+		var _self = this;
+
+		let resultHtml = "";
+		data.filter(e => e.parentId == idParent).forEach(e => {
+			let id = e.id.split('/').pop()
+			
+			let children = _self.fillTaxonomiesTree(data, e.id);
+
+			let disabled = (children != "" && children != undefined) ? 'disabled="disabled"' : ""
+			
+			resultHtml += '<div class="categoria-wrap">\
+					<div class="categoria ' + id + '">\
+						<div class="custom-control custom-checkbox themed little primary">\
+							<input type="checkbox" class="custom-control-input at-input" id="' + id + '" data-id="' + e.id + '" data-name="' + e.name + '" data-parentid="' + e.parentId + '" ' + disabled +'>\
+							<label class="custom-control-label" for="' + id + '">' + e.name + '</label>\
+						</div>\
+					</div>'
+
+
+			if (children != "" && children != undefined) {
+				resultHtml += '<!--  pintar esto solo cuando tenga hijos -->\
+					<div class="boton-desplegar">\
+						<span class="material-icons">keyboard_arrow_down</span>\
+					</div> \
+					<!--  -->'
+
+				resultHtml += '<div class="panHijos">' + children + '</div>'
+			}
+
+			resultHtml += '</div>'
+		});
+
+		return resultHtml
+	}
+
+
+	/**
+	 * Crea el html con las taxonomías en arbol
+	 * @param data, array con los items
+	 * @return string con el texto generado
+	 */
+	fillTaxonomiesList(data) {
+
+		var _self = this
+
+		let resultHtml = ""
+		data.forEach((e, id) => {
+			resultHtml += '<div class="categoria-wrap" data-text="' + e + '">\
+					<div class="categoria list__' + id + '">\
+						<div class="custom-control custom-checkbox themed little primary">\
+							<input type="checkbox" class="custom-control-input at-input" id="list__' + id + '" data-id="' + id + '" data-name="' + e + '">\
+							<label class="custom-control-label" for="list__' + id + '">' + e + '</label>\
+						</div>\
+					</div>\
+				</div>'
+		})
+
+		return resultHtml
+	}
+
+
+	/*  SECTION SAVE METHODS  */
+
+
+
+	/**
+	 * Carga todas las áreas temáticas seleccionadas para ese perfil / sección 
+	 * @param item, sección donde se encuentra la información para cargar las areas temáticas
+	 */
+	setAreasTematicas(item) {
+
+		let _self = this
+
+		let relItem = $('#' + $(item).data("rel"))
+
+		if (relItem.length > 0) {
+
+			let dataJson = relItem.data('jsondata')
+
+			// Reestablecer las categorías
+			_self.divTesArbol.find('input.at-input').each((i, e) => {
+				e.checked = false
+				e.classList.remove('selected')
+			})
+
+			// Establece las categorías de la sección
+			if (typeof dataJson == "object") {
+
+				dataJson.forEach(e => {
+					let item = document.getElementById(e)
+					
+					if (item) {
+						item.checked = true
+						// Comprueba si tiene padre para establecerlo con habilitado.
+						let parentId = item.getAttribute('data-parentid')
+						if (parentId.length > 0) {
+							parentId = (parentId.length > 0) ? parentId.split('/').pop() : parentId
+
+							_self.selectParent(parentId)
+						}
+					} else {
+						console.log ("item no existe: #", e)
+					}
+
+				})
+			}
+
+
+			// Reestablecemos el botón de guardar las Áreas Temáticas
+			this.cambios = 0
+			$(_self.modal).find('.btnsave').addClass('disabled')
+
+			// Muestra el modal de las áreas temáticas
+			$(_self.modal).modal('show')
+
+			this.saveAreasTematicasEvent(relItem)
+		}
+	}
+
+
+	/**
+	 * Método que genera el evento para añadir las áreas temáticas selecciondas en el popup
+	 * @param relItem, elemento relacionado para indicar dónde deben de guardarse las areas temáticas seleccionadas
+	 * @param data, array con las areas temáticas seleccionadas
+	 */
+	saveAreasTematicasEvent (relItem, data = null) {
+
+		let _self = this
+
+		if (data != null) {
+
+			// Entra aquí por primera vez si el cluster ha sido guardado
+			let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
+
+			let htmlRes = ''
+			let dataWithNames = [];
+
+			if (this.data != null) {
+				data.forEach(id => {
+					dataWithNames.push({id, name: this.data.find(e => e.id == id).name})
+				})
+			}
+
+			let arrayRes = []
+			dataWithNames.forEach(e => {
+				htmlRes += '<div class="tag" title="' + e.name + '" data-id="' + e.id.split('/').pop() + '">\
+					<div class="tag-wrap">\
+						<span class="tag-text">' + e.name + '</span>\
+						<span class="tag-remove material-icons">close</span>\
+					</div>\
+					<input type="hidden" value="' + e.id + '">\
+				</div>'
+				arrayRes.push(e.id.split('/').pop())
+			})
+
+			htmlResWrapper.append(htmlRes)
+			relItem.html(htmlResWrapper)
+
+			// Se añade un json para saber qué categorías se han seleccionado
+			relItem.data('jsondata', arrayRes)
+
+			this.deleteAreasTematicasEvent(relItem)
+
+		} else {
+
+			// Evento para cuando se seleccione guardar las áreas temáticas desde el popup
+			$(this.modal).find('.btnsave').off('click').on('click', (e) => {
+				e.preventDefault()
+
+				// Oculta el modal de las áreas temáticas
+				$(_self.modal).modal('hide')
+
+				// Reestablecemos el botón de guardar las Áreas Temáticas
+				_self.cambios = 0
+				$(_self.modal).find('.btnsave').addClass('disabled')
+
+				// Selecciona y establece el contenedor de las areas temáticas
+				// let relItem = $('#' + $(item).data("rel"))
+
+				let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
+
+				let htmlRes = ''
+				let arrayItems = [] // Array para guardar los items que se van a usar
+				_self.divTesArbol.find('input.at-input').each((i, e) => {
+					if (e.checked) {
+						htmlRes += '<div class="tag" title="' + $(e).data('name') + '" data-id="' + $(e).data('id') + '">\
+							<div class="tag-wrap">\
+								<span class="tag-text">' + $(e).data('name') + '</span>\
+								<span class="tag-remove material-icons">close</span>\
+							</div>\
+							<input type="hidden" value="' + $(e).data('id') + '">\
+						</div>'
+						arrayItems.push(e.id)
+					}
+				})
+
+				htmlResWrapper.append(htmlRes)
+
+				relItem.html(htmlResWrapper)
+
+				// Se añade un json para saber qué categorías se han seleccionado
+				relItem.data('jsondata', arrayItems)
+
+				this.deleteAreasTematicasEvent(relItem)
+
+			})
+		}
+	}
+
+
+	/**
+	 * Método que elimina las áreas temáticas del arbol y del listado
+	 * @param relItem, contenedor donde se encuentran las áreas temáticas seleccionadas
+	 */
+	deleteAreasTematicasEvent(relItem) {
+
+		// Selecciona la áreas temáticas seleccionadas dentro de selector
+		let tagsItems = relItem.find('.tag-wrap')
+		tagsItems.on('click', '.tag-remove', function() {
+			// Selecciona el item padre para eliminar
+			let itemToDel = $(this).parent().parent()
+			let inputShortId = itemToDel.data('id')
+
+			if (inputShortId.length > 0) {
+				inputShortId = inputShortId.split('/').pop()
+			}
+
+			// Set the inputs into the areas temáticas in false
+			try {
+				document.getElementById(inputShortId).checked = false
+				// document.getElementById('list__' + inputShortId).checked = false
+			}catch (error) { }
+
+			// Remove the current item from array
+			let jsonItems = relItem.data('jsondata')
+			let myIndex = jsonItems.indexOf(inputShortId)
+			if (myIndex !== -1) {
+				jsonItems.splice(myIndex, 1)
+			}
+
+
+			// Delete item
+			itemToDel.remove()
+
+		})
+	}
+
 }
 
 

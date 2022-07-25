@@ -219,7 +219,7 @@
 									<legend>@Html.Translate("ESTADO")</legend>
 
 									<!-- Líneas de investigación -->
-									<div class="form-group mb-5 edit-etiquetas terms-items">
+									<div class="form-group mb-5 edit-etiquetas lineasinvestigacion terms-items">
 										<label class="control-label d-block">@Html.Translate("LINEAS_INVESTIGACION"): (*)</label>
 										<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-area-tematica-linv">
 											<div class="tag-list mb-4 d-inline"></div> 
@@ -240,12 +240,47 @@
 											<option value="" selected="selected">@Html.Translate("SIN_ESPECIFICAR")</option>
 										</select>
 									</div>
-									<div class="form-group mb-5">
+
+									@* <div class="form-group mb-5">
 										<label class="control-label d-block">@Html.Translate("SECTOR_ENCUADRE") (*)</label>
 										<select id="ddlEncuadre2" name="ddlEncuadre" class="js-select2" data-select-search="true">
 											<option value="" selected="selected">@Html.Translate("SIN_ESPECIFICAR")</option>
 										</select>
+									</div> *@
+
+
+
+									<!-- Áreas de procedencia -->
+									<div class="form-group mb-5 edit-etiquetas terms-items" id="areaProcedenciaData" data-title="@Html.Translate("SELECCIONAR_AREAS_PROCEDENCIA")" data-subtitle="@Html.Translate("AREAS_PROCEDENCIA")"  data-small="@Html.Translate("TEXTO_EXPLICATIVO_MODAL_AREAS_PROCEDENCIA_OFERTA")"  data-arbol="@Html.Translate("ARBOL")"  data-buscar="@Html.Translate("BUSCAR_AREAS_PROCEDENCIA")"  data-guardar="@Html.Translate("GUARDAR_CAMBIOS")" >
+										<label class="control-label d-block">@Html.Translate("AREAS_PROCEDENCIA"): (*)</label>
+										<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-areas-procedencia-1">
+											<div class="tag-list mb-4 d-inline"></div> 
+										</div>
+										<a class="btn btn-outline-primary" href="javascript: void(0)">
+											<div class="btn-wrap" onclick="stepsOffer.setAreasTematicasDynamic(this, 'areaprocedencia')" data-rel="modal-seleccionar-areas-procedencia-1">
+												<span class="btn-text">@Html.Translate("NUEVA_AREA")</span>
+												<span class="material-icons">add</span>
+											</div>
+										</a>
 									</div>
+									<!-- Fin áreas de procedencia-->
+
+
+									<!-- Sectores de aplicación -->
+									<div class="form-group mb-5 edit-etiquetas terms-items" id="sectorAplicacionData" data-title="@Html.Translate("SELECCIONAR_SECTOR_APLICACION")" data-subtitle="@Html.Translate("SECTOR_APLICACION")"  data-small="@Html.Translate("TEXTO_EXPLICATIVO_MODAL_SECTOR_APLICACION_OFERTA")"  data-arbol="@Html.Translate("ARBOL")"  data-buscar="@Html.Translate("BUSCAR_SECTOR_APLICACION")"  data-guardar="@Html.Translate("GUARDAR_CAMBIOS")" >
+										<label class="control-label d-block">@Html.Translate("SECTORES_APLICACION"): (*)</label>
+										<div class="autocompletar autocompletar-tags form-group" id="modal-seleccionar-sector-aplicacion-1">
+											<div class="tag-list mb-4 d-inline"></div> 
+										</div>
+										<a class="btn btn-outline-primary" href="javascript: void(0)">
+											<div class="btn-wrap" onclick="stepsOffer.setAreasTematicasDynamic(this, 'sectoraplicacion')" data-rel="modal-seleccionar-sector-aplicacion-1">
+												<span class="btn-text">@Html.Translate("NUEVO_SECTOR")</span>
+												<span class="material-icons">add</span>
+											</div>
+										</a>
+									</div>
+									<!-- Fin sectores de aplicación-->
+
 
 								</fieldset>
 							</form>
@@ -357,6 +392,16 @@
 											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="destinatarios" ></div>
 											<div class="content-area">
 												<textarea placeholder="@Html.Translate("INTRODUCE_DESTINATARIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+											</div>
+										</div>
+									</div>
+									<div class="form-group mb-3">
+										<label class="control-label d-block">@Html.Translate("VENTAJAS_BENEFICIOS") (*)</label>
+										<div class="edmaTextEditor">
+											@Html.Raw(toolbar)
+											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="ventajasBeneficios" ></div>
+											<div class="content-area">
+												<textarea placeholder="@Html.Translate("INTRODUCE_VENTAJAS_BENEFICIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 											</div>
 										</div>
 									</div>
