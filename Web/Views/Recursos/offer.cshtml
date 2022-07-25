@@ -157,9 +157,20 @@
                         <li>
                             @pOffer.Bibo_status.Dc_title[idiomaUsuario]
                         </li>
-                        <li>
+                        @{
+                            try {
+                                if (pOffer.Roh_sectoraplicacion != null && pOffer.Roh_sectoraplicacion.Count > 0 && pOffer.Roh_sectoraplicacion[0].Roh_categoryNode != null && pOffer.Roh_sectoraplicacion[0].Roh_categoryNode.Count > 0)
+                                {
+                                   <li>
+                                        <span class="indicador">@pOffer.Roh_sectoraplicacion[0].Roh_categoryNode[0].Skos_prefLabel</span>
+                                    </li> 
+                                }
+                            } catch (Exception e) {}
+                        }
+                        
+                        @* <li>
                             <span class="indicador">@pOffer.Roh_framingSector.Dc_title[idiomaUsuario]</span>
-                        </li>
+                        </li> *@
                     </ul>
                 </div>
                 @if (pOffer.Schema_description != null)
@@ -210,6 +221,7 @@
                         }
                     </div>
                 }
+
                 @if (pOffer.Vivo_freetextKeyword != null && pOffer.Vivo_freetextKeyword.Count > 0)
                 {
                     <div class="list-wrap">
@@ -251,6 +263,106 @@
                         }
                     </div>
                 }
+                
+                
+                @if (pOffer.Roh_sectoraplicacion != null && pOffer.Roh_sectoraplicacion.Count > 0)
+                {
+                    <div class="list-wrap tags">
+                        <div class="label">@Html.Translate("SECTOR_APLICACION")</div>
+                        <ul>
+
+                            @{
+                                int contadorAreaConocimiento = 0;
+                                foreach (CategoryPath knowArea in pOffer.Roh_sectoraplicacion)
+                                {
+
+                                    foreach (Concept area in knowArea.Roh_categoryNode)
+                                    {
+                                        if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel) && contadorAreaConocimiento < 3)
+                                        {
+                                            contadorAreaConocimiento++;
+                                            <li>
+                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:sectoraplicacion@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                </a>
+                                            </li>
+                                        }
+                                        else if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel))
+                                        {
+                                            contadorAreaConocimiento++;
+                                            <li class="ocultar" style="display: none;">
+                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:sectoraplicacion@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                </a>
+                                            </li>
+                                        }
+                                            
+                                    }
+                                }
+                            }
+                        </ul>
+                        @if (contadorAreaConocimiento > 3)
+                        {
+                            <p class="moreResults">
+                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                            </p>
+                        }
+                    </div>
+
+                }
+
+                
+                
+                
+                @if (pOffer.Roh_areaprocedencia != null && pOffer.Roh_areaprocedencia.Count > 0)
+                {
+                    <div class="list-wrap tags">
+                        <div class="label">@Html.Translate("AREA_PROCEDENCIA")</div>
+                        <ul>
+
+                            @{
+                                int contadorAreaConocimiento = 0;
+                                foreach (CategoryPath knowArea in pOffer.Roh_areaprocedencia)
+                                {
+
+                                    foreach (Concept area in knowArea.Roh_categoryNode)
+                                    {
+                                        if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel) && contadorAreaConocimiento < 3)
+                                        {
+                                            contadorAreaConocimiento++;
+                                            <li>
+                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:areaprocedencia@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                </a>
+                                            </li>
+                                        }
+                                        else if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel))
+                                        {
+                                            contadorAreaConocimiento++;
+                                            <li class="ocultar" style="display: none;">
+                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:areaprocedencia@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                </a>
+                                            </li>
+                                        }
+                                            
+                                    }
+                                }
+                            }
+                        </ul>
+                        @if (contadorAreaConocimiento > 3)
+                        {
+                            <p class="moreResults">
+                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                            </p>
+                        }
+                    </div>
+
+                }
+
+
                 <div class="list-wrap">
                     <div class="label">@Html.Translate("APLICACIONES")</div>
                     <div class="description-wrap counted">
@@ -267,6 +379,17 @@
                         </div>
                     </div>
                 </div>
+                @if (!string.IsNullOrEmpty(pOffer.Roh_advantagesBenefits))
+                {
+                    <div class="list-wrap">
+                        <div class="label">@Html.Translate("VENTAJAS_BENEFICIOS")</div>
+                        <div class="description-wrap counted">
+                            <div class="desc">
+                                <p>@Html.Raw(pOffer.Roh_advantagesBenefits)</p>
+                            </div>
+                        </div>
+                    </div>
+                }
                 @if (!string.IsNullOrEmpty(pOffer.Drm_origin))
                 {
                     <div class="list-wrap">
@@ -947,6 +1070,18 @@
         public Offer(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
             this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+            this.Roh_sectoraplicacion = new List<CategoryPath>();
+            SemanticPropertyModel propRoh_sectoraplicacion = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/sectoraplicacion");
+            if(propRoh_sectoraplicacion != null && propRoh_sectoraplicacion.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_sectoraplicacion.PropertyValues)
+                {
+                    if(propValue.RelatedEntity!=null){
+                        CategoryPath roh_sectoraplicacion = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_sectoraplicacion.Add(roh_sectoraplicacion);
+                    }
+                }
+            }
             this.Roh_researchers = new List<Person>();
             SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
             if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
@@ -995,6 +1130,18 @@
                     }
                 }
             }
+            this.Roh_areaprocedencia = new List<CategoryPath>();
+            SemanticPropertyModel propRoh_areaprocedencia = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/areaprocedencia");
+            if(propRoh_areaprocedencia != null && propRoh_areaprocedencia.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_areaprocedencia.PropertyValues)
+                {
+                    if(propValue.RelatedEntity!=null){
+                        CategoryPath roh_areaprocedencia = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_areaprocedencia.Add(roh_areaprocedencia);
+                    }
+                }
+            }
             this.Roh_patents = new List<Patent>();
             SemanticPropertyModel propRoh_patents = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/patents");
             if(propRoh_patents != null && propRoh_patents.PropertyValues.Count > 0)
@@ -1007,6 +1154,7 @@
                     }
                 }
             }
+            this.Roh_search = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/search"));
             this.Drm_origin = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vocab.data.gov/def/drm#origin"));
             SemanticPropertyModel propRoh_lineResearch = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lineResearch");
             this.Roh_lineResearch = new List<string>();
@@ -1017,6 +1165,7 @@
                     this.Roh_lineResearch.Add(propValue.Value);
                 }
             }
+            this.Roh_advantagesBenefits = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/advantagesBenefits"));
             SemanticPropertyModel propVivo_freetextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freetextKeyword");
             this.Vivo_freetextKeyword = new List<string>();
             if (propVivo_freetextKeyword != null && propVivo_freetextKeyword.PropertyValues.Count > 0)
@@ -1031,10 +1180,10 @@
             this.Roh_partnerType = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/partnerType"));
             this.Qb_observation = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/linked-data/cube#observation"));
             this.Bibo_recipient = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/recipient"));
-            var item0 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-            if(item0.HasValue){
-                this.Dct_issued = item0.Value;
-            }
+var item0 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+if(item0.HasValue){
+            this.Dct_issued = item0.Value;
+}
             SemanticPropertyModel propSchema_offeredBy = pSemCmsModel.GetPropertyByPath("http://www.schema.org/offeredBy");
             if(propSchema_offeredBy != null && propSchema_offeredBy.PropertyValues.Count > 0)
             {
@@ -1047,23 +1196,30 @@
                 this.Schema_availability = new OfferState(propSchema_availability.PropertyValues[0].RelatedEntity,idiomaUsuario);
             }
             this.Schema_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/description"));
-            SemanticPropertyModel propRoh_framingSector = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/framingSector");
-            if(propRoh_framingSector != null && propRoh_framingSector.PropertyValues.Count > 0)
-            {
-                this.Roh_framingSector = new FramingSector(propRoh_framingSector.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
+            this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/name"));
             SemanticPropertyModel propBibo_status = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/status");
             if(propBibo_status != null && propBibo_status.PropertyValues.Count > 0)
             {
                 this.Bibo_status = new MatureState(propBibo_status.PropertyValues[0].RelatedEntity,idiomaUsuario);
             }
-            this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/name"));
         }
 
         public Offer(SemanticEntityModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
         {
             this.mGNOSSID = pSemCmsModel.Entity.Uri;
             this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+            this.Roh_sectoraplicacion = new List<CategoryPath>();
+            SemanticPropertyModel propRoh_sectoraplicacion = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/sectoraplicacion");
+            if(propRoh_sectoraplicacion != null && propRoh_sectoraplicacion.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_sectoraplicacion.PropertyValues)
+                {
+                    if(propValue.RelatedEntity!=null){
+                        CategoryPath roh_sectoraplicacion = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_sectoraplicacion.Add(roh_sectoraplicacion);
+                    }
+                }
+            }
             this.Roh_researchers = new List<Person>();
             SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
             if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
@@ -1112,6 +1268,18 @@
                     }
                 }
             }
+            this.Roh_areaprocedencia = new List<CategoryPath>();
+            SemanticPropertyModel propRoh_areaprocedencia = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/areaprocedencia");
+            if(propRoh_areaprocedencia != null && propRoh_areaprocedencia.PropertyValues.Count > 0)
+            {
+                foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_areaprocedencia.PropertyValues)
+                {
+                    if(propValue.RelatedEntity!=null){
+                        CategoryPath roh_areaprocedencia = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+                        this.Roh_areaprocedencia.Add(roh_areaprocedencia);
+                    }
+                }
+            }
             this.Roh_patents = new List<Patent>();
             SemanticPropertyModel propRoh_patents = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/patents");
             if(propRoh_patents != null && propRoh_patents.PropertyValues.Count > 0)
@@ -1124,6 +1292,7 @@
                     }
                 }
             }
+            this.Roh_search = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/search"));
             this.Drm_origin = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vocab.data.gov/def/drm#origin"));
             SemanticPropertyModel propRoh_lineResearch = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/lineResearch");
             this.Roh_lineResearch = new List<string>();
@@ -1134,6 +1303,7 @@
                     this.Roh_lineResearch.Add(propValue.Value);
                 }
             }
+            this.Roh_advantagesBenefits = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/advantagesBenefits"));
             SemanticPropertyModel propVivo_freetextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freetextKeyword");
             this.Vivo_freetextKeyword = new List<string>();
             if (propVivo_freetextKeyword != null && propVivo_freetextKeyword.PropertyValues.Count > 0)
@@ -1148,10 +1318,10 @@
             this.Roh_partnerType = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/partnerType"));
             this.Qb_observation = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/linked-data/cube#observation"));
             this.Bibo_recipient = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/recipient"));
-            var item1 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-            if(item1.HasValue){
-                this.Dct_issued = item1.Value;
-            }
+var item1 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+if(item1.HasValue){
+            this.Dct_issued = item1.Value;
+}
             SemanticPropertyModel propSchema_offeredBy = pSemCmsModel.GetPropertyByPath("http://www.schema.org/offeredBy");
             if(propSchema_offeredBy != null && propSchema_offeredBy.PropertyValues.Count > 0)
             {
@@ -1164,21 +1334,19 @@
                 this.Schema_availability = new OfferState(propSchema_availability.PropertyValues[0].RelatedEntity,idiomaUsuario);
             }
             this.Schema_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/description"));
-            SemanticPropertyModel propRoh_framingSector = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/framingSector");
-            if(propRoh_framingSector != null && propRoh_framingSector.PropertyValues.Count > 0)
-            {
-                this.Roh_framingSector = new FramingSector(propRoh_framingSector.PropertyValues[0].RelatedEntity,idiomaUsuario);
-            }
+            this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/name"));
             SemanticPropertyModel propBibo_status = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/status");
             if(propBibo_status != null && propBibo_status.PropertyValues.Count > 0)
             {
                 this.Bibo_status = new MatureState(propBibo_status.PropertyValues[0].RelatedEntity,idiomaUsuario);
             }
-            this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/name"));
         }
 
         public virtual string RdfType { get { return "http://www.schema.org/Offer"; } }
         public virtual string RdfsLabel { get { return "http://www.schema.org/Offer"; } }
+        [RDFProperty("http://w3id.org/roh/sectoraplicacion")]
+        public  List<CategoryPath> Roh_sectoraplicacion { get; set;}
+
         [RDFProperty("http://w3id.org/roh/researchers")]
         public  List<Person> Roh_researchers { get; set;}
         public List<string> IdsRoh_researchers { get; set;}
@@ -1187,6 +1355,9 @@
         public  List<Document> Roh_document { get; set;}
         public List<string> IdsRoh_document { get; set;}
 
+        [RDFProperty("http://w3id.org/roh/groups")]
+        public List<string> IdsRoh_groups { get; set;}
+
         [RDFProperty("http://w3id.org/roh/project")]
         public  List<Project> Roh_project { get; set;}
         public List<string> IdsRoh_project { get; set;}
@@ -1194,15 +1365,24 @@
         [RDFProperty("http://w3id.org/roh/availabilityChangeEvent")]
         public  List<AvailabilityChangeEvent> Roh_availabilityChangeEvent { get; set;}
 
+        [RDFProperty("http://w3id.org/roh/areaprocedencia")]
+        public  List<CategoryPath> Roh_areaprocedencia { get; set;}
+
         [RDFProperty("http://w3id.org/roh/patents")]
         public  List<Patent> Roh_patents { get; set;}
         public List<string> IdsRoh_patents { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/search")]
+        public  string Roh_search { get; set;}
 
         [RDFProperty("http://vocab.data.gov/def/drm#origin")]
         public  string Drm_origin { get; set;}
 
         [RDFProperty("http://w3id.org/roh/lineResearch")]
         public  List<string> Roh_lineResearch { get; set;}
+
+        [RDFProperty("http://w3id.org/roh/advantagesBenefits")]
+        public  string Roh_advantagesBenefits { get; set;}
 
         [RDFProperty("http://vivoweb.org/ontology/core#freetextKeyword")]
         public  List<string> Vivo_freetextKeyword { get; set;}
@@ -1239,16 +1419,12 @@
         [RDFProperty("http://www.schema.org/description")]
         public  string Schema_description { get; set;}
 
-        [RDFProperty("http://w3id.org/roh/framingSector")]
-        public  FramingSector Roh_framingSector  { get; set;} 
-        public string IdRoh_framingSector  { get; set;} 
+        [RDFProperty("http://www.schema.org/name")]
+        public  string Schema_name { get; set;}
 
         [RDFProperty("http://purl.org/ontology/bibo/status")]
         public  MatureState Bibo_status  { get; set;} 
         public string IdBibo_status  { get; set;} 
-
-        [RDFProperty("http://www.schema.org/name")]
-        public  string Schema_name { get; set;}
 
     }
 
