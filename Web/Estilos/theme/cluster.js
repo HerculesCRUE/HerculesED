@@ -5,14 +5,14 @@ const uriLoadProfiles = "Cluster/loadProfiles"
 const uriLoadSavedProfiles = "Cluster/LoadSavedProfiles"
 const uriLoadClst = "Cluster/LoadCluster"
 
-var urlLT = "";
+var urlCLT = "";
 var urlSC ="";
 var urlSTAGS = "";
 var urlLoadClst ="";
 var urlCargarPerfiles = "";
 
 $(document).ready(function () {
-	urlLT = new URL(url_servicio_externo +  uriLoadTaxonomies);
+	urlCLT = new URL(url_servicio_externo +  uriLoadTaxonomies);
 	urlSC = new URL(url_servicio_externo +  uriSaveCluster);
 	urlSTAGS = new URL(url_servicio_externo +  uriSearchTags);
 	urlLoadClst = new URL(url_servicio_externo +  uriLoadClst);
@@ -493,10 +493,10 @@ class StepsCluster {
 		
 		// https://localhost:44321/Cluster/GetThesaurus?listadoCluster=%5B%22researcharea%22%5D
 		let listThesaurus = ["researcharea"];
-		urlLT.searchParams.set('listThesaurus', JSON.stringify(listThesaurus));
+		urlCLT.searchParams.set('listThesaurus', JSON.stringify(listThesaurus));
 
 		return new Promise((resolve, reject) => {
-			$.get(urlLT.toString(), function (data) {
+			$.get(urlCLT.toString(), function (data) {
 				resolve(data)
 			});
 		})
@@ -939,7 +939,10 @@ class StepsCluster {
 
 			if (this.dataTaxonomies != null) {
 				data.forEach(id => {
-					dataWithNames.push({id, name: this.dataTaxonomies.find(e => e.id == id).name})
+					let item = undefined
+					if (item = this.dataTaxonomies.find(e => e.id == id)) {
+						dataWithNames.push({ id, name: item.name })
+					}
 				})
 			}
 
