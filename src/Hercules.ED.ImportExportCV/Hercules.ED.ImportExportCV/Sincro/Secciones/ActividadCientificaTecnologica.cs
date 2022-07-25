@@ -1514,15 +1514,17 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         //    continue;
                         //}
+                        ////Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
                         //else if (!string.IsNullOrEmpty(doi))
                         //{
                         //    //Compruebo si encuentra algún dato en Fuentes Externas
                         //    //PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(mConfiguracion, doi);
+                        //    // TODO - añadir valores especificos
+                        //    //continue;
                         //}
+                        ////Si no añado la publicación de manera normal.
                         //else
                         //{
-
-                        //}
 
                         //Añado las etiquetas enriquecidas
                         string tituloPublicacion = item.GetStringPorIDCampo("060.010.010.030");
@@ -1570,6 +1572,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         PublicacionesDocumentosISBN(item, entidadAux);
 
                         listado.Add(entidadAux);
+
+                        //}
                     }
                     else
                     {
