@@ -2139,6 +2139,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void TrabajosJornadasSeminariosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
         {
+            if (dicTopics == null || dicTopics.Count == 0)
+            {
+                return;
+            }
+
             foreach (KeyValuePair<string, string> topics in dicTopics)
             {
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
@@ -2164,6 +2169,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="entidadAux"></param>
         private void TrabajosJornadasSeminariosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
         {
+            if (dicEtiquetas == null || dicEtiquetas.Count == 0)
+            {
+                return;
+            }
+
             foreach (KeyValuePair<string, string> etiquetas in dicEtiquetas)
             {
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
