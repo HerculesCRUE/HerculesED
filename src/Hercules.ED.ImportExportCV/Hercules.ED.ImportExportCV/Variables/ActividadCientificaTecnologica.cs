@@ -56,7 +56,7 @@
         public const string pubDocumentosIndiceImpactoJournalNumberInCat = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/journalNumberInCat";
         public const string pubDocumentosIndiceImpactoCuartil = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/quartile";
         public const string pubDocumentosCitasInrecs = "http://w3id.org/roh/inrecsCitationCount";
-        public const string pubDocumentosCitasGoogleScholar = "http://w3id.org/roh/gogleScholarCitationCount";
+        public const string pubDocumentosCitasGoogleScholar = "http://w3id.org/roh/googleScholarCitationCount";
         public const string pubDocumentosCitasScopus = "http://w3id.org/roh/scopusCitationCount";
         public const string pubDocumentosCitasWOS = "http://w3id.org/roh/wosCitationCount";
         public const string pubDocumentosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
@@ -130,7 +130,7 @@
         public const string trabajosCongresosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
         public const string trabajosCongresosNombreOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
         public const string trabajosCongresosCitasInrecs = "http://w3id.org/roh/inrecsCitationCount";
-        public const string trabajosCongresosCitasGoogleScholar = "http://w3id.org/roh/gogleScholarCitationCount";
+        public const string trabajosCongresosCitasGoogleScholar = "http://w3id.org/roh/googleScholarCitationCount";
         public const string trabajosCongresosCitasScopus = "http://w3id.org/roh/scopusCitationCount";
         public const string trabajosCongresosCitasWOS = "http://w3id.org/roh/wosCitationCount";
         public const string trabajosCongresosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
