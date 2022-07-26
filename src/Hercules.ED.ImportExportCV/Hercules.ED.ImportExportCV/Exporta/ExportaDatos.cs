@@ -143,11 +143,9 @@ namespace ImportadorWebCV.Exporta
             IndicadoresGenerales indicadoresGenerales = new IndicadoresGenerales(cvn, cvID);
             indicadoresGenerales.ExportaIndicadoresGenerales(entity, MultilangProp, listaId);
 
-            //TODO Citas, Indice de impacto
             PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos(cvn, cvID);
             publicacionesDocumentos.ExportaPublicacionesDocumentos(seccion, MultilangProp, listaId);
 
-            //TODO Citas, Indice de impacto
             TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
             trabajosCongresos.ExportaTrabajosCongresos(seccion, MultilangProp, listaId);
 

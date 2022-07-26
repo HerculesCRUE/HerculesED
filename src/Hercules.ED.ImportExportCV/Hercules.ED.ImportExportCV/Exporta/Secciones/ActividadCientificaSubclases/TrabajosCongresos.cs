@@ -185,14 +185,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCitas(itemBean, dicCodigosScholar,
                     "060.010.020.430", keyValue.Value);
 
-                //List<Tuple<string, string, string>> dicCodigosOther = new List<Tuple<string, string, string>>();
-                //dicCodigosOther.Add(new Tuple<string, string, string>("Double", "060.010.020.430", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitas)));
-                //dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.020.440", "OTHERS"));
-                //dicCodigosOther.Add(new Tuple<string, string, string>("String", "060.010.020.450", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitasNombre)));
-                //UtilityExportar.AddCitas(itemBean, dicCodigosOther,
-                //    "060.010.020.430", keyValue.Value);
+                //Cita Other
+                List<Tuple<string, string>> citasother = UtilityExportar.GetCitasOther(Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitasNombre, Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitasNumero, keyValue.Value, mResourceApi);
 
-                // TODO Indice de impacto
+                foreach (Tuple<string, string> citaOther in citasother)
+                {
+                    List<Tuple<string, string, string>> dicOtras = new List<Tuple<string, string, string>>();
+                    dicOtras.Add(new Tuple<string, string, string>("Double", "060.010.020.430", citaOther.Item2));
+                    dicOtras.Add(new Tuple<string, string, string>("String", "060.010.020.440", "OTHERS"));
+                    dicOtras.Add(new Tuple<string, string, string>("String", "060.010.020.450", citaOther.Item1));
+                    UtilityExportar.AddCitas(itemBean, dicOtras,
+                        "060.010.010.310", keyValue.Value);
+                }
 
                 listado.Add(itemBean);
             }
