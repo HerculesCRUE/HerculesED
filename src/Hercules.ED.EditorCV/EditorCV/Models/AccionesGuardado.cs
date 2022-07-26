@@ -253,7 +253,7 @@ namespace EditorCV.Models
                             {
                                 //Comprobamos que no exista otra entidad con esta propiedad
                                 string select = "select ?s";
-                                string where = $@"where{{?s <{prop.property}> ?id, FILTER(lcase(?id)='{valorCargar.Replace("'","\\'").ToLower()}'}}";
+                                string where = $@"where{{?s <{prop.property}> ?id. FILTER(lcase(?id)='{valorCargar.Replace("'","\\'").ToLower()}'}}";
                                 var existe = mResourceApi.VirtuosoQuery(select, where, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                                 if (existe.results.bindings.Count > 0)
                                 {
