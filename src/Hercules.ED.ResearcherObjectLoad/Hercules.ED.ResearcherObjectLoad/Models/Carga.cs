@@ -1837,7 +1837,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if (document.Roh_wosCitationCount == null || (document.Roh_hasMetric == null || document.Roh_hasMetric.Count == 0))
+            if (document.Roh_wosCitationCount == null)
             {
                 if (pPublicacionB != null && pPublicacionB.hasMetric != null && pPublicacionB.hasMetric.Count > 0)
                 {
@@ -1850,7 +1850,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if (document.Roh_scopusCitationCount == null || (document.Roh_hasMetric == null || document.Roh_hasMetric.Count == 0))
+            if (document.Roh_scopusCitationCount == null)
             {
                 if (pPublicacionB != null && pPublicacionB.hasMetric != null && pPublicacionB.hasMetric.Count > 0)
                 {
