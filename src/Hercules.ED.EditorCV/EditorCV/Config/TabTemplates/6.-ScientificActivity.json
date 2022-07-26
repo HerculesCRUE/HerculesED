@@ -1459,7 +1459,7 @@
                         "title": {
                           "es": "Nº citas Google Scholar"
                         },
-                        "property": "http://w3id.org/roh/gogleScholarCitationCount",
+                        "property": "http://w3id.org/roh/googleScholarCitationCount",
                         "entity_cv": true,
                         "type": "number",
                         "width": 1
@@ -2982,7 +2982,7 @@
                         "title": {
                           "es": "Nº citas Google Scholar"
                         },
-                        "property": "http://w3id.org/roh/gogleScholarCitationCount",
+                        "property": "http://w3id.org/roh/googleScholarCitationCount",
                         "entity_cv": true,
                         "type": "number",
                         "width": 1
