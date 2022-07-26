@@ -71,8 +71,6 @@
         public const string pubDocumentosOpenAccess = "http://w3id.org/roh/openAccess";
         public const string pubDocumentosAreasTematicasExternas = "http://w3id.org/roh/externalKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string pubDocumentosTextosExternosTitulo = "http://w3id.org/roh/externalKeywords";
-        public const string pubDocumentosPublicationMetricName = "http://w3id.org/roh/hasMetric@@@http://w3id.org/roh/PublicationMetric|http://w3id.org/roh/metricName";
-        public const string pubDocumentosPublicationMetricCitas = "http://w3id.org/roh/hasMetric@@@http://w3id.org/roh/PublicationMetric|http://w3id.org/roh/citationCount";
         public const string pubDocumentosBiblioDOI = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/ontology/bibo/doi";
         public const string pubDocumentosBiblioURL = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|https://www.w3.org/2006/vcard/ns#url";
         public const string pubDocumentosBiblioAnioPub = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/dc/terms/issued";
