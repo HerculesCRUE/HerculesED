@@ -20,11 +20,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         private List<CvnItemBean> listadoSituacionProfesional = new List<CvnItemBean>();
         private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
+        private Person personaCV = new Person();
+
         public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
             listadoDatos = mCvn.GetListadoBloque("060");
             listadoSituacionProfesional = mCvn.GetListadoBloque("010");
             listadoCvn = mCvn.cvnRootBean.ToList();
+            personaCV = Utility.PersonaCV(cvID);
         }
 
         /// <summary>
@@ -1537,13 +1540,17 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                                 //Añado las areas tematicas externas
                                 HashSet<string> listadoAreasExternas = PublicacionesDocumentosFEAreasTematicasExternas(publicationFE.hasKnowledgeAreas, entidadAux);
-                                //Añado las areas tematicas enriquecidas
-                                PublicacionesDocumentosFEAreasTematicasEnriquecidas(listadoAreasExternas, publicationFE.topics_enriquecidos, entidadAux);
+                                //Categorias enriquecidas
+                                ObjEnriquecimiento objEnr = new ObjEnriquecimiento(publicationFE.title, publicationFE.@abstract);
+                                Dictionary<string, string> dicTopics = objEnr.getDescriptores(mConfiguracion, objEnr, "thematic");
+                                PublicacionesDocumentosTopics(dicTopics, entidadAux);
+                                ////Añado las areas tematicas enriquecidas
+                                //PublicacionesDocumentosFEAreasTematicasEnriquecidas(listadoAreasExternas, publicationFE.topics_enriquecidos, entidadAux);
 
                                 //Autor de correspondencia
-                                PublicacionesDocumentosFEAutorCorrespondencia(publicationFE.correspondingAuthor, entidadAux);
+                                PublicacionesDocumentosFEAutorCorrespondencia(this.personaCV, publicationFE.correspondingAuthor, entidadAux);
                                 //Autores del documento
-                                PublicacionesDocumentosFEAutores(publicationFE.seqOfAuthors, entidadAux);
+                                PublicacionesDocumentosFEAutores(this.personaCV, publicationFE.seqOfAuthors, entidadAux);
                                 //Origenes de las fuentes
                                 PublicacionesDocumentosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
                                 //Identificadores
@@ -1582,10 +1589,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                         tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
                         ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
 
-                        //Categorias
+                        //Categorias enriquecidas
                         Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
                         PublicacionesDocumentosTopics(dicTopics, entidadAux);
-                        //Etiquetas
+                        //Etiquetas enriquecidas
                         Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
                         PublicacionesDocumentosEtiquetas(dicEtiquetas, entidadAux);
 
@@ -1669,17 +1676,20 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private void PublicacionesDocumentosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
         {
-
             foreach (PublicationMetric metrica in hasMetric)
             {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                string metricNameInsert = UtilitySecciones.StringGNOSSID(entityPartAux, metrica.metricName);
-                string citationCountInsert = UtilitySecciones.StringGNOSSID(entityPartAux, metrica.citationCount);
-
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPublicationMetricName, metricNameInsert),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPublicationMetricCitas, citationCountInsert)
-                ));
+                if (metrica.metricName.ToLower().Equals("wos"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
+                    ));
+                }
+                else if (metrica.metricName.ToLower().Equals("scopus"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
+                    ));
+                }
             }
         }
 
@@ -1695,12 +1705,27 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private void PublicacionesDocumentosFEPublicationVenue(Source hasPublicationVenue, Entity entidadAux)
         {
+            //Si el tipo de publicacion no es una revista no hago nada
+            if (!hasPublicationVenue.type.ToLower().Equals("journal"))
+            {
+                return;
+            }
+            //Compruebo si existe alguna revista con ese nombre
+            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, hasPublicationVenue.name, hasPublicationVenue.issn);
 
+            //Si existe añado como tipo de soporte revista directamente.
+            if (!string.IsNullOrEmpty(revista))
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, mResourceApi.GraphsUrl + "items/documentformat_057"),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubMainDoc, revista)
+                ));
+            }
         }
 
         private void PublicacionesDocumentosFEIdentificadores(List<string> ids, Entity entidadAux)
         {
-            foreach(string identificador in ids)
+            foreach (string identificador in ids)
             {
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
                 string fuente = identificador.Split(":").First().ToLower();
@@ -1745,21 +1770,58 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
-        //TODO
-        private void PublicacionesDocumentosFEAutores(List<Person> listadoAutores, Entity entidadAux)
+        private void PublicacionesDocumentosFEAutores(Person personaCV, List<Person> listadoAutores, Entity entidadAux)
         {
+            entidadAux.autores = new List<Persona>();
+            foreach (Person person in listadoAutores)
+            {
+                Persona personaInsert = new Persona(person.name.given, person.name.familia, person.name.nombre_completo);
+                //Si no tiene nombre no lo añado
+                if (string.IsNullOrEmpty(personaInsert.nombreCompleto) && string.IsNullOrEmpty(personaInsert.firma))
+                {
+                    continue;
+                }
+                if (string.IsNullOrEmpty(persona.nombreCompleto) && !string.IsNullOrEmpty(persona.firma))
+                {
+                    persona.nombreCompleto = persona.firma;
+                    persona.nombre = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                    if (persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).Count() > 1)
+                    {
+                        persona.primerApellido = persona.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
+                    }
+                }
+                //Si no tiene firma le añado como firma el nombre completo
+                if (string.IsNullOrEmpty(persona.firma)) { 
+                    persona.firma = persona.nombreCompleto; 
+                }
 
+                persona.ID = Guid.NewGuid().ToString();
+                entidadAux.autores.Add(persona);
+            }            
+
+            foreach (Persona persona in entidadAux.autores)
+            {
+                persona.distincts = new HashSet<string>(entidadAux.autores.Select(x => x.ID).Except(new List<string> { persona.ID }));
+            }
         }
 
-        //TODO
-        private void PublicacionesDocumentosFEAutorCorrespondencia(Person autorCorrespondencia, Entity entidadAux)
+        private void PublicacionesDocumentosFEAutorCorrespondencia(Person personaCV, Person autorCorrespondencia, Entity entidadAux)
         {
             string orcid = autorCorrespondencia.ORCID;
             string nombrecompleto = autorCorrespondencia.name.nombre_completo;
             bool isAutorCorrespondecia = false;
+            if (!string.IsNullOrEmpty(orcid) && !string.IsNullOrEmpty(personaCV.ORCID) && orcid.Equals(personaCV.ORCID))
+            {
+                isAutorCorrespondecia = true;
+            }
+            if (!isAutorCorrespondecia && !string.IsNullOrEmpty(nombrecompleto)
+                && !string.IsNullOrEmpty(personaCV.name) && nombrecompleto.Equals(personaCV.name))
+            {
+                isAutorCorrespondecia = true;
+            }
 
             entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
-                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, isAutorCorrespondecia)
+                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, isAutorCorrespondecia.ToString().ToLower())
             ));
         }
 
@@ -1875,7 +1937,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             Publication pub = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
             if (pub != null)
             {
-
+                return null;
             }
 
             return pub;
