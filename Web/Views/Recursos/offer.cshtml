@@ -157,7 +157,7 @@
                         <li>
                             @pOffer.Bibo_status.Dc_title[idiomaUsuario]
                         </li>
-                        @{
+                        @* @{
                             try {
                                 if (pOffer.Roh_sectoraplicacion != null && pOffer.Roh_sectoraplicacion.Count > 0 && pOffer.Roh_sectoraplicacion[0].Roh_categoryNode != null && pOffer.Roh_sectoraplicacion[0].Roh_categoryNode.Count > 0)
                                 {
@@ -166,7 +166,7 @@
                                     </li> 
                                 }
                             } catch (Exception e) {}
-                        }
+                        } *@
                         
                         @* <li>
                             <span class="indicador">@pOffer.Roh_framingSector.Dc_title[idiomaUsuario]</span>
@@ -273,31 +273,40 @@
 
                             @{
                                 int contadorAreaConocimiento = 0;
-                                foreach (CategoryPath knowArea in pOffer.Roh_sectoraplicacion)
+                                foreach (CategoryPath sector in pOffer.Roh_sectoraplicacion)
                                 {
 
-                                    foreach (Concept area in knowArea.Roh_categoryNode)
+                                    if (sector != null && sector.Roh_categoryNode != null && sector.Roh_categoryNode.Count > 0)
                                     {
-                                        if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel) && contadorAreaConocimiento < 3)
+
+                                        Concept concept = sector.Roh_categoryNode.LastOrDefault();
+                                        
+                                        if (concept.Skos_narrower != null && concept.Skos_narrower.Count() == 0)
                                         {
-                                            contadorAreaConocimiento++;
-                                            <li>
-                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:sectoraplicacion@("@@@")roh:categoryNode=@area.GNOSSID">
-                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
-                                                </a>
-                                            </li>
-                                        }
-                                        else if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel))
-                                        {
-                                            contadorAreaConocimiento++;
-                                            <li class="ocultar" style="display: none;">
-                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:sectoraplicacion@("@@@")roh:categoryNode=@area.GNOSSID">
-                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
-                                                </a>
-                                            </li>
+
+                                            if (concept != null && !string.IsNullOrEmpty(concept.Skos_prefLabel) && contadorAreaConocimiento < 3)
+                                            {
+                                                contadorAreaConocimiento++;
+                                                <li>
+                                                    <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:sectoraplicacion@("@@@")roh:categoryNode=@concept.GNOSSID">
+                                                        <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            else if (concept != null && !string.IsNullOrEmpty(concept.Skos_prefLabel))
+                                            {
+                                                contadorAreaConocimiento++;
+                                                <li class="ocultar" style="display: none;">
+                                                    <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:sectoraplicacion@("@@@")roh:categoryNode=@concept.GNOSSID">
+                                                        <span about="@concept.GNOSSID" property="@concept.GetPropertyURI(nameof(concept.Skos_prefLabel))" class="texto">@concept.Skos_prefLabel</span>
+                                                    </a>
+                                                </li>
+                                            }
+
                                         }
                                             
                                     }
+                                    
                                 }
                             }
                         </ul>
@@ -318,7 +327,7 @@
                 @if (pOffer.Roh_areaprocedencia != null && pOffer.Roh_areaprocedencia.Count > 0)
                 {
                     <div class="list-wrap tags">
-                        <div class="label">@Html.Translate("AREA_PROCEDENCIA")</div>
+                        <div class="label">@Html.Translate("AREAS_PROCEDENCIA")</div>
                         <ul>
 
                             @{
@@ -326,25 +335,31 @@
                                 foreach (CategoryPath knowArea in pOffer.Roh_areaprocedencia)
                                 {
 
-                                    foreach (Concept area in knowArea.Roh_categoryNode)
+                                    if (knowArea != null && knowArea.Roh_categoryNode != null && knowArea.Roh_categoryNode.Count > 0)
                                     {
-                                        if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel) && contadorAreaConocimiento < 3)
+
+                                        Concept area = knowArea.Roh_categoryNode.LastOrDefault();
+
+                                        if (area.Skos_narrower != null && area.Skos_narrower.Count() == 0)
                                         {
-                                            contadorAreaConocimiento++;
-                                            <li>
-                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:areaprocedencia@("@@@")roh:categoryNode=@area.GNOSSID">
-                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
-                                                </a>
-                                            </li>
-                                        }
-                                        else if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel))
-                                        {
-                                            contadorAreaConocimiento++;
-                                            <li class="ocultar" style="display: none;">
-                                                <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:areaprocedencia@("@@@")roh:categoryNode=@area.GNOSSID">
-                                                    <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
-                                                </a>
-                                            </li>
+                                            if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel) && contadorAreaConocimiento < 3)
+                                            {
+                                                contadorAreaConocimiento++;
+                                                <li>
+                                                    <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:areaprocedencia@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                        <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            else if (area != null && !string.IsNullOrEmpty(area.Skos_prefLabel))
+                                            {
+                                                contadorAreaConocimiento++;
+                                                <li class="ocultar" style="display: none;">
+                                                    <a href="@Comunidad.Url/@Html.Translate("OFFER_SEARCH_URL")?roh:areaprocedencia@("@@@")roh:categoryNode=@area.GNOSSID">
+                                                        <span about="@area.GNOSSID" property="@area.GetPropertyURI(nameof(area.Skos_prefLabel))" class="texto">@area.Skos_prefLabel</span>
+                                                    </a>
+                                                </li>
+                                            }
                                         }
                                             
                                     }

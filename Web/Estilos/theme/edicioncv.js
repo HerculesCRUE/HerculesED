@@ -398,7 +398,7 @@ var edicionCV = {
 											</a>
 										</li>
 									</ul>
-									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
+									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
 											<div class="textoBusquedaPrincipalInput">
@@ -751,7 +751,7 @@ var edicionCV = {
 		}
 		
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
-		var ordenItem=sectionItem.find(' .ordenar.dropdown.orders .texto');
+		var ordenItem=sectionItem.find(' .ordenar.dropdown .texto');
         var ordenProperty = ordenItem.attr('property');
         var ordenAsc = ordenItem.attr('asc');
 		
@@ -1251,7 +1251,7 @@ var edicionCV = {
                     htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
-                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.dependency);
+                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.dependency,property.entity_cv);
                     break;
                 case 'selectCombo':
                     htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable|| property.blocked,property.entity_cv,property.dependency);
@@ -1363,7 +1363,7 @@ var edicionCV = {
                     htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable|| property.blocked, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
-                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable || property.blocked, property.dependency);
+                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable || property.blocked, property.dependency,property.entity_cv);
                     break;
                 case 'selectCombo':
                     htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable|| property.blocked,property.entity_cv,property.dependency);
@@ -1457,7 +1457,7 @@ var edicionCV = {
                         htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, property.values[valor], property.required, true, false,null,null,null,property.multilang,property.valuesmultilang);
                         break;
                     case 'number':
-                        htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true);
+                        htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true,null,property.entity_cv);
                         break;
                     case 'selectCombo':
                         htmlMultiple += this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required, true,property.entity_cv,property.dependency);
@@ -1724,11 +1724,16 @@ var edicionCV = {
 
         return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}_aux" placeholder="${placeholder}" value="${value}" value="${value}" onfocus="${action}" type="text" class="form-control not-outline autocompleteentity ${css}" ${htmlDependency}>`;
     },
-    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency) {
+    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency,pEntity_cv) 
+	{
         var css = "";
         if (required) {
             css = "obligatorio";
         }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
         var prop_property = 'propertyrdf';
         var disabled = '';
         if (pDisabled) {
@@ -2869,7 +2874,7 @@ var edicionCV = {
             that.buscarListado(sectionID);
         });
         //Ordenar
-        $('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
+        $('.panel-group .ordenar.dropdown .dropdown-menu a').off('click').on('click', function(e) {
             var sectionID = $(this).closest('.panel-group').attr('section');
 			var dropdown = $(this).closest('.ordenar.dropdown').find('.dropdown-toggle .texto');
             that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'), dropdown);
@@ -4111,7 +4116,7 @@ var edicionCV = {
 						}
 
 					} else {
-						if(data.error.startsWith("PROPREPETIDA"))
+						if(data.error!=null && data.error.startsWith("PROPREPETIDA"))
 						{
 							var msg= GetText("CV_PROPIEDADIDENTIFICADORREPETIDA",data.error.replace("PROPREPETIDA|",""));
 							$('#modal-editar-entidad .modal-body>.form-actions').append('<p class="ko" style="display:block">'+msg+'</p>');

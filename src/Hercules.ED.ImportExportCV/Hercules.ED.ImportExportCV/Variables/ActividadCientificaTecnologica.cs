@@ -56,6 +56,7 @@
         public const string pubDocumentosIndiceImpactoJournalNumberInCat = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/journalNumberInCat";
         public const string pubDocumentosIndiceImpactoCuartil = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/quartile";
         public const string pubDocumentosCitasInrecs = "http://w3id.org/roh/inrecsCitationCount";
+        public const string pubDocumentosCitasGoogleScholar = "http://w3id.org/roh/googleScholarCitationCount";
         public const string pubDocumentosCitasScopus = "http://w3id.org/roh/scopusCitationCount";
         public const string pubDocumentosCitasWOS = "http://w3id.org/roh/wosCitationCount";
         public const string pubDocumentosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
@@ -70,8 +71,6 @@
         public const string pubDocumentosOpenAccess = "http://w3id.org/roh/openAccess";
         public const string pubDocumentosAreasTematicasExternas = "http://w3id.org/roh/externalKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string pubDocumentosTextosExternosTitulo = "http://w3id.org/roh/externalKeywords";
-        public const string pubDocumentosPublicationMetricName = "http://w3id.org/roh/hasMetric@@@http://w3id.org/roh/PublicationMetric|http://w3id.org/roh/metricName";
-        public const string pubDocumentosPublicationMetricCitas = "http://w3id.org/roh/hasMetric@@@http://w3id.org/roh/PublicationMetric|http://w3id.org/roh/citationCount";
         public const string pubDocumentosBiblioDOI = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/ontology/bibo/doi";
         public const string pubDocumentosBiblioURL = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|https://www.w3.org/2006/vcard/ns#url";
         public const string pubDocumentosBiblioAnioPub = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/dc/terms/issued";
@@ -124,13 +123,14 @@
         public const string trabajosCongresosPubISSN = "http://purl.org/ontology/bibo/issn";
         public const string trabajosCongresosPubDepositoLegal = "http://w3id.org/roh/legalDeposit";
         public const string trabajosCongresosFechaFin = "http://w3id.org/roh/presentedAtEnd";
-        public const string trabajosCongresosAutoCorrespondencia = "http://w3id.org/roh/correspondingAuthor";
+        public const string trabajosCongresosAutorCorrespondencia = "http://w3id.org/roh/correspondingAuthor";
         public const string trabajosCongresosIDPubDigitalDOI = "http://purl.org/ontology/bibo/doi";
         public const string trabajosCongresosIDPubDigitalHandle = "http://purl.org/ontology/bibo/handle";
         public const string trabajosCongresosIDPubDigitalPMID = "http://purl.org/ontology/bibo/pmid";
         public const string trabajosCongresosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
         public const string trabajosCongresosNombreOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
         public const string trabajosCongresosCitasInrecs = "http://w3id.org/roh/inrecsCitationCount";
+        public const string trabajosCongresosCitasGoogleScholar = "http://w3id.org/roh/googleScholarCitationCount";
         public const string trabajosCongresosCitasScopus = "http://w3id.org/roh/scopusCitationCount";
         public const string trabajosCongresosCitasWOS = "http://w3id.org/roh/wosCitationCount";
         public const string trabajosCongresosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
@@ -139,6 +139,21 @@
         public const string trabajosCongresosAreasTematicasEnriquecidas = "http://w3id.org/roh/enrichedKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string trabajosCongresosTextosEnriquecidosTitulo = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/title";
         public const string trabajosCongresosTextosEnriquecidosScore = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/score";
+        public const string trabajosCongresosDescripcion = "http://purl.org/ontology/bibo/abstract";
+        public const string trabajosCongresosURLDocumento = "http://w3id.org/roh/hasFile";
+        public const string trabajosCongresosOpenAccess = "http://w3id.org/roh/openAccess";
+        public const string trabajosCongresosBiblioDOI = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/ontology/bibo/doi";
+        public const string trabajosCongresosBiblioURL = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|https://www.w3.org/2006/vcard/ns#url";
+        public const string trabajosCongresosBiblioAnioPub = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/dc/terms/issued";
+        public const string trabajosCongresosBiblioTitulo = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/title";
+        public const string trabajosCongresosBiblioRevista = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/hasPublicationVenueText";
+        public const string trabajosCongresosBiblioAutoresNombre = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://xmlns.com/foaf/0.1/name";
+        public const string trabajosCongresosBiblioAutoresScholarID = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://w3id.org/roh/semanticScholarId";
+        public const string trabajosCongresosIDNombre = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
+        public const string trabajosCongresosIDValor = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
+        public const string trabajosCongresosOrigenFuentes = "http://w3id.org/roh/dataOrigin";
+        public const string trabajosCongresosAreasTematicasExternas = "http://w3id.org/roh/externalKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string trabajosCongresosTextosExternosTitulo = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/title";
 
         /// <summary>
         /// Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o internacionales - 060.010.030.000

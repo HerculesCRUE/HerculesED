@@ -152,6 +152,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosJornSemCiudadEntidadOrganizadora),
                     "060.010.030.340", keyValue.Value);
                 listado.Add(itemBean);
+
+                //TODO citas, cuando se use la 1.4.3, con la 1.4.0 no funciona
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
