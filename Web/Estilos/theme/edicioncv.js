@@ -4116,7 +4116,7 @@ var edicionCV = {
 						}
 
 					} else {
-						if(data.error.startsWith("PROPREPETIDA"))
+						if(data.error!=null && data.error.startsWith("PROPREPETIDA"))
 						{
 							var msg= GetText("CV_PROPIEDADIDENTIFICADORREPETIDA",data.error.replace("PROPREPETIDA|",""));
 							$('#modal-editar-entidad .modal-body>.form-actions').append('<p class="ko" style="display:block">'+msg+'</p>');
