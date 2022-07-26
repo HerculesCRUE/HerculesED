@@ -1552,7 +1552,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 //Autor de correspondencia
                                 PublicacionesDocumentosFEAutorCorrespondencia(this.personaCV, publicationFE.correspondingAuthor, entidadAux);
                                 //Autores del documento
-                                PublicacionesDocumentosFEAutores(this.personaCV, publicationFE.seqOfAuthors, entidadAux);
+                                PublicacionesDocumentosFEAutores(publicationFE.seqOfAuthors, entidadAux);
                                 //Origenes de las fuentes
                                 PublicacionesDocumentosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
                                 //Identificadores
@@ -1775,7 +1775,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
-        private void PublicacionesDocumentosFEAutores(Person personaCV, List<Person> listadoAutores, Entity entidadAux)
+        private void PublicacionesDocumentosFEAutores(List<Person> listadoAutores, Entity entidadAux)
         {
             entidadAux.autores = new List<Persona>();
             foreach (Person person in listadoAutores)
@@ -2209,25 +2209,23 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 TrabajosCongresosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
                                 //Identificadores
                                 TrabajosCongresosFEIdentificadores(publicationFE.IDs, entidadAux);
-                                //PublicationVenue
-                                TrabajosCongresosFEPublicationVenue(publicationFE.hasPublicationVenue, entidadAux);
                                 ////TODO - Metricas
                                 //TrabajosCongresosFEMetricas(publicationFE.hasMetric, entidadAux);
                                 //Bibliografia
                                 TrabajosCongresosFEBibliografia(publicationFE.bibliografia, entidadAux);
 
                                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, publicationFE.title),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosDescripcion, publicationFE.@abstract),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI, publicationFE.doi),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First()),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosURLDocumento, publicationFE.pdf),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, publicationFE.pageEnd),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, publicationFE.pageStart),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, publicationFE.volume),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, publicationFE.articleNumber),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosOpenAccess, isOpenAccess)
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubTitulo, publicationFE.title),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosDescripcion, publicationFE.@abstract),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalDOI, publicationFE.doi),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL, publicationFE.url.First()),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosURLDocumento, publicationFE.pdf),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagFin, publicationFE.pageEnd),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagIni, publicationFE.pageStart),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubVolumen, publicationFE.volume),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNumero, publicationFE.articleNumber),
+                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosOpenAccess, isOpenAccess)
                                 ));
 
                                 listado.Add(entidadAux);
@@ -2285,7 +2283,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("060.010.020.050")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetTipoInscripcionEventoPorIDCampo("060.010.020.060")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.020.390"))
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.020.390"))
                         ));
                         TrabajosCongresosAutores(item, entidadAux);
                         TrabajosCongresosIDPublicacion(item, entidadAux);
@@ -2307,47 +2305,216 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private string TrabajosCongresosComprobarDOI(CvnItemBean item)
         {
-            throw new NotImplementedException();
+            string idDOIValue = "";
+            List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
+            foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
+            {
+                if (identificador.Type.Equals("040"))
+                {
+                    idDOIValue = identificador.Value;
+                }
+            }
+            return idDOIValue;
         }
 
-        private void TrabajosCongresosFEBibliografia(List<Bibliografia> bibliografia, Entity entidadAux)
+        private void TrabajosCongresosFEBibliografia(List<Bibliografia> bibliografias, Entity entidadAux)
         {
+            foreach (Bibliografia bibliografia in bibliografias)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string biblioDOIInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.doi);
+                string biblioURLInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.url);
 
+                string anioPub = bibliografia.anyoPublicacion != null ? bibliografia.anyoPublicacion.ToString() : "";
+                string biblioAnioPubInsert = UtilitySecciones.StringGNOSSID(entityPartAux, anioPub);
+                string biblioTituloInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.titulo);
+                string biblioRevistaInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.revista);
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioDOI, biblioDOIInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioURL, biblioURLInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioAnioPub, biblioAnioPubInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioTitulo, biblioTituloInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioRevista, biblioRevistaInsert)
+                ));
+
+                //Añado los autores de la bibliografia
+                for (int i = 0; i < bibliografia.autores.Count; i++)
+                {
+                    string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux + "@@@";
+                    string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Key);
+                    string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Value);
+
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioAutoresNombre, biblioAutorNombreInsert),
+                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioAutoresScholarID, biblioAutorScholarIdInsert)
+                    ));
+                }
+            }
         }
 
-        private void TrabajosCongresosFEPublicationVenue(Source hasPublicationVenue, Entity entidadAux)
+        private void TrabajosCongresosFEIdentificadores(List<string> ids, Entity entidadAux)
         {
+            foreach (string identificador in ids)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string fuente = identificador.Split(":").First().ToLower();
+                string valor = identificador.Split(":").Last();
+                string fuenteAux = "";
+                switch (fuente.ToLower())
+                {
+                    case "wos":
+                        fuenteAux = "WoS";
+                        break;
+                    case "semanticscholar":
+                        fuenteAux = "SemanticScholar";
+                        break;
+                    case "mag":
+                        fuenteAux = "MAG";
+                        break;
+                    case "pubmedcentral":
+                        fuenteAux = "PubMedCentral";
+                        break;
+                    case "scopus_id":
+                        fuenteAux = "Scopus";
+                        break;
+                    case "arxiv":
+                        fuenteAux = "ArXiv";
+                        break;
+                    case "medline":
+                        fuenteAux = "Medline";
+                        break;
+                }
+                //Si no encuentro la fuente no inserto nada
+                if (string.IsNullOrEmpty(fuenteAux))
+                {
+                    continue;
+                }
 
-        }
-
-        private void TrabajosCongresosFEIdentificadores(List<string> ds, Entity entidadAux)
-        {
-
+                string nombreFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, fuenteAux);
+                string valorFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, valor);
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                   new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIDNombre, nombreFuenteInsert),
+                   new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIDValor, valorFuenteInsert)
+                ));
+            }
         }
 
         private void TrabajosCongresosFEOrigenesFuentes(HashSet<string> dataOriginList, Entity entidadAux)
         {
-
+            foreach (string origen in dataOriginList)
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosOrigenFuentes, origen)
+                ));
+            }
         }
 
-        private void TrabajosCongresosFEAutores(Person personaCV, List<Person> seqOfAuthors, Entity entidadAux)
+        private void TrabajosCongresosFEAutores(Person personaCV, List<Person> listadoAutores, Entity entidadAux)
         {
+            entidadAux.autores = new List<Persona>();
+            foreach (Person person in listadoAutores)
+            {
+                Persona personaInsert = new Persona(person.name.given.First(), person.name.familia.First(), person.name.nombre_completo.First());
+                //Si no tiene nombre no lo añado
+                if (string.IsNullOrEmpty(personaInsert.nombreCompleto) && string.IsNullOrEmpty(personaInsert.firma))
+                {
+                    continue;
+                }
+                if (string.IsNullOrEmpty(personaInsert.nombreCompleto) && !string.IsNullOrEmpty(personaInsert.firma))
+                {
+                    personaInsert.nombreCompleto = personaInsert.firma;
+                    personaInsert.nombre = personaInsert.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                    if (personaInsert.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).Count() > 1)
+                    {
+                        personaInsert.primerApellido = personaInsert.firma.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
+                    }
+                }
+                //Si no tiene firma le añado como firma el nombre completo
+                if (string.IsNullOrEmpty(personaInsert.firma))
+                {
+                    personaInsert.firma = personaInsert.nombreCompleto;
+                }
 
+                personaInsert.ID = Guid.NewGuid().ToString();
+                entidadAux.autores.Add(personaInsert);
+            }
+
+            foreach (Persona persona in entidadAux.autores)
+            {
+                persona.distincts = new HashSet<string>(entidadAux.autores.Select(x => x.ID).Except(new List<string> { persona.ID }));
+            }
         }
 
-        private void TrabajosCongresosFEAutorCorrespondencia(Person personaCV, Person correspondingAuthor, Entity entidadAux)
+        private void TrabajosCongresosFEAutorCorrespondencia(Person personaCV, Person autorCorrespondencia, Entity entidadAux)
         {
+            string orcid = autorCorrespondencia.ORCID;
+            string nombrecompleto = autorCorrespondencia.name.nombre_completo.First();
+            bool isAutorCorrespondecia = false;
+            if (!string.IsNullOrEmpty(orcid) && !string.IsNullOrEmpty(personaCV.ORCID) && orcid.Equals(personaCV.ORCID))
+            {
+                isAutorCorrespondecia = true;
+            }
+            if (!isAutorCorrespondecia && !string.IsNullOrEmpty(nombrecompleto)
+                && !string.IsNullOrEmpty(personaCV.name.nombre_completo.First()) && nombrecompleto.Equals(personaCV.name.nombre_completo.First()))
+            {
+                isAutorCorrespondecia = true;
+            }
 
+            entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorCorrespondencia, isAutorCorrespondecia.ToString().ToLower())
+            ));
         }
 
         private HashSet<string> TrabajosCongresosFEAreasTematicasExternas(List<KnowledgeAreas> hasKnowledgeAreas, Entity entidadAux)
         {
-            return null;
+            HashSet<string> listadoAreas = new HashSet<string>();
+            List<string> topicList = new List<string>();
+
+            foreach (KnowledgeAreas knowledgeAreas in hasKnowledgeAreas)
+            {
+                foreach (KnowledgeArea knowledgeArea in knowledgeAreas.knowledgeArea)
+                {
+                    //Si el listado contiene el id del area no lo inserto, para eliminar repetidos
+                    if (listadoAreas.Contains(knowledgeArea.hasCode))
+                    {
+                        continue;
+                    }
+
+                    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                    listadoAreas.Add(knowledgeArea.hasCode);
+                    topicList.AddRange(UtilitySecciones.GetPadresTesauro(knowledgeArea.hasCode));
+                    foreach (string topicIn in topicList)
+                    {
+                        string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, topicIn);
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                           new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAreasTematicasExternas, topicInsert)
+                        ));
+                    }
+                }
+            }
+
+            return listadoAreas;
         }
 
         private void TrabajosCongresosFEEtiquetasEnriquecidas(HashSet<string> listadoEtiquetasExternas, List<Knowledge_enriquecidos> freetextKeyword_enriquecidas, Entity entidadAux)
         {
+            foreach (Knowledge_enriquecidos freetextKeyword in freetextKeyword_enriquecidas)
+            {
+                //Si la etiqueta se encuentra en el listado no la inserto de nuevo
+                if (listadoEtiquetasExternas.Contains(freetextKeyword.word.ToLower()))
+                {
+                    continue;
+                }
 
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.word);
+                string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.porcentaje);
+
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                   new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTextosEnriquecidosTitulo, etiquetasValor),
+                   new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTextosEnriquecidosScore, etiquetasScore)
+                ));
+            }
         }
 
         private HashSet<string> TrabajosCongresosFEEtiquetasExternas(List<FreetextKeywords> freetextKeywords, Entity entidadAux)
