@@ -376,6 +376,10 @@ namespace EditorCV.Models.API.Templates
         /// Indica si la propiedad pertenece al CV y no a la entidad
         /// </summary>
         public bool entity_cv;
+        /// <summary>
+        /// Indica si la propiedad es única (no puede estar repetida en otro ítem)
+        /// </summary>
+        public bool unique;
     }
 
     public class ItemEditSectionRowPropertyDependency
