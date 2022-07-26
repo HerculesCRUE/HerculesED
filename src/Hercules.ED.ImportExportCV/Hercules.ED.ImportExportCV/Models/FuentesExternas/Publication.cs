@@ -11,7 +11,7 @@ namespace Hercules.ED.ImportExportCV.Models.FuentesExternas
         public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
         public string title { get; set; }
         public List<FreetextKeywords> freetextKeywords { get; set; }
-        public string Abstract { get; set; }
+        public string @abstract { get; set; }
         public string language { get; set; }
         public string doi { get; set; }
         public DateTimeValue dataIssued { get; set; }
@@ -28,11 +28,13 @@ namespace Hercules.ED.ImportExportCV.Models.FuentesExternas
         public string articleNumber { get; set; }
         public bool? openAccess { get; set; }
         public List<string> IDs { get; set; }
+        public Conferencia conferencia { get; set; }
         public string presentedAt { get; set; }
         //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
         public Source hasPublicationVenue { get; set; }
         public List<PublicationMetric> hasMetric { get; set; }
-        public List<PubReferencias> bibliografia { get; set; }
+        public List<Bibliografia> bibliografia { get; set; }
+        public List<Publication> citas { get; set; }
         public HashSet<string> dataOriginList { get; set; }
         public string dataOrigin { get; set; }
     }
