@@ -2,6 +2,7 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Models;
+using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV;
 using Models;
 using System;
@@ -1889,6 +1890,32 @@ namespace Utils
         public static string GetResearcherID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
             return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
+        }
+
+        public static Person GetPersonaCV()
+        {
+            Person persona = new Person();
+            try
+            {
+                string select = $@"select distinct ?person ";
+                string where = $@" where {{
+                                    ?s <http://w3id.org/roh/cvOf> ?person .
+                                    ?person <http://w3id.org/roh/ORCID> ?orcid .
+                                    ?person <http://xmlns.com/foaf/0.1/name> ?nombre .
+                                    FILTER(?s=<{pCVID}>)
+                                }}";
+                SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                {
+                    persona.name = fila["nombre"].value;
+                    persona.ORCID = fila["orcid"].value;
+                }
+                return persona;
+            }
+            catch(Exception e)
+            {
+                mResourceApi.Log.Error(e.Message);
+            }
         }
 
         public static string DatetimeFE(string dateTime)
