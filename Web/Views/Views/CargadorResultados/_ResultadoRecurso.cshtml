@@ -48,7 +48,6 @@
                             <a href="@Model.CompletCardLink">@Model.Title</a>
                         </h2>
                         @{
-                            string valorInrecs = string.Empty;
                             string valorWos = string.Empty;
                             string valorScopus = string.Empty;
 							string valorSemanticScholar = string.Empty;
@@ -60,17 +59,11 @@
                                     string idQuery = "Identificadores";
                                     if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
                                     {
-                                        string propInrecs = "inrecs";
                                         string propWos = "wos";
                                         string propScopus = "scopus";
 										string propSemanticScholar = "semanticScholar";
                                         foreach (Dictionary<string, string> row in item.Rows)
                                         {
-                                            if (row.ContainsKey(propInrecs))
-                                            {
-                                                valorInrecs = row[propInrecs];
-                                            }
-
                                             if (row.ContainsKey(propWos))
                                             {
                                                 valorWos = row[propWos];
@@ -257,37 +250,10 @@
 								<p><span>@valorCuartil</p>
 								<span class="oculto tooltipContent">@Html.Raw(htmlTooltipCuartil)</span>
 							</div>
-						}
+						}						
 						
-						@{
-                            string valorOtros = string.Empty;
-                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                            {
-                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                {
-                                    string idQuery = "IdentificadoresOtros";
-                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                    {
-                                        string propNombre = "nombre";
-                                        string propNumCitas = "numCitas";
-                                        foreach (Dictionary<string, string> row in item.Rows)
-                                        {
-                                            if (row.ContainsKey(propNombre) && row.ContainsKey(propNumCitas))
-                                            {
-                                                valorOtros += row[propNombre] + "~" + row[propNumCitas] + "|";
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (valorOtros.Length > 0)
-                            {
-                                valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
-                            }
-                        }
 						
-                        <div class="d-flex quotes" data-scopus="@valorScopus" data-wos="@valorWos" data-semanticscholar="@valorSemanticScholar" data-inrecs="@valorInrecs" data-otros="@valorOtros">
+                        <div class="d-flex quotes" data-scopus="@valorScopus" data-wos="@valorWos" data-semanticscholar="@valorSemanticScholar">
                             @{
                                 if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                                 {
@@ -680,7 +646,6 @@
                             <a href="@Model.CompletCardLink">@Model.Title</a>
                         </h2>
                         @{
-                            string valorInrecs = string.Empty;
                             string valorWos = string.Empty;
                             string valorScopus = string.Empty;
 
@@ -696,11 +661,6 @@
                                         string propScopus = "scopus";
                                         foreach (Dictionary<string, string> row in item.Rows)
                                         {
-                                            if (row.ContainsKey(propInrecs))
-                                            {
-                                                valorInrecs = row[propInrecs];
-                                            }
-
                                             if (row.ContainsKey(propWos))
                                             {
                                                 valorWos = row[propWos];
@@ -744,35 +704,7 @@
                                 }
                             }
                         }
-
-                        @{
-                            string valorOtros = string.Empty;
-
-                            if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
-                            {
-                                foreach (CustomSemanticPropertiesModel item in Model.ViewSettings.CustomSemanticProperties)
-                                {
-                                    string idQuery = "IdentificadoresOtros";
-                                    if (item.Id == idQuery && item.Rows != null && item.Rows.Count > 0)
-                                    {
-                                        string propNombre = "nombre";
-                                        string propNumCitas = "numCitas";
-                                        foreach (Dictionary<string, string> row in item.Rows)
-                                        {
-                                            if (row.ContainsKey(propNombre) && row.ContainsKey(propNumCitas))
-                                            {
-                                                valorOtros += row[propNombre] + "~" + row[propNumCitas] + "|";
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (valorOtros.Length > 0)
-                            {
-                                valorOtros = valorOtros.Substring(0, valorOtros.Length - 1);
-                            }
-                        }
+                        
                         <div class="acciones-recurso-listado acciones-recurso-publicacion">
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" role="button" id="dropdownMasOpciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
