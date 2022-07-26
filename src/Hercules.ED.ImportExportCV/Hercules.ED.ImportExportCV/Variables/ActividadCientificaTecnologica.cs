@@ -149,11 +149,11 @@
         public const string trabajosCongresosBiblioRevista = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/hasPublicationVenueText";
         public const string trabajosCongresosBiblioAutoresNombre = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://xmlns.com/foaf/0.1/name";
         public const string trabajosCongresosBiblioAutoresScholarID = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://w3id.org/roh/semanticScholarId";
-        public const string trabajosCongresosPubMainDoc = "";
-        public const string trabajosCongresosIDNombre = "";
-        public const string trabajosCongresosIDValor = "";
-        public const string trabajosCongresosOrigenFuentes = "";
-        public const string trabajosCongresosAreasTematicasExternas = "";
+        public const string trabajosCongresosIDNombre = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
+        public const string trabajosCongresosIDValor = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
+        public const string trabajosCongresosOrigenFuentes = "http://w3id.org/roh/dataOrigin";
+        public const string trabajosCongresosAreasTematicasExternas = "http://w3id.org/roh/externalKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string trabajosCongresosTextosExternosTitulo = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/title";
 
         /// <summary>
         /// Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o internacionales - 060.010.030.000
