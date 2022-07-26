@@ -1557,8 +1557,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 PublicacionesDocumentosFEIdentificadores(publicationFE.IDs, entidadAux);
                                 //PublicationVenue
                                 PublicacionesDocumentosFEPublicationVenue(publicationFE.hasPublicationVenue, entidadAux);
-                                //Metricas
-                                PublicacionesDocumentosFEMetricas(publicationFE.hasMetric, entidadAux);
+                                ////TODO - Metricas
+                                //PublicacionesDocumentosFEMetricas(publicationFE.hasMetric, entidadAux);
                                 //Bibliografia
                                 PublicacionesDocumentosFEBibliografia(publicationFE.bibliografia, entidadAux);
 
@@ -1674,24 +1674,25 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
-        private void PublicacionesDocumentosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
-        {
-            foreach (PublicationMetric metrica in hasMetric)
-            {
-                if (metrica.metricName.ToLower().Equals("wos"))
-                {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
-                    ));
-                }
-                else if (metrica.metricName.ToLower().Equals("scopus"))
-                {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
-                    ));
-                }
-            }
-        }
+        //TODO
+        //private void PublicacionesDocumentosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
+        //{
+        //    foreach (PublicationMetric metrica in hasMetric)
+        //    {
+        //        if (metrica.metricName.ToLower().Equals("wos"))
+        //        {
+        //            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+        //                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
+        //            ));
+        //        }
+        //        else if (metrica.metricName.ToLower().Equals("scopus"))
+        //        {
+        //            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+        //                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
+        //            ));
+        //        }
+        //    }
+        //}
 
         private void PublicacionesDocumentosFEOrigenesFuentes(HashSet<string> origenesDatos, Entity entidadAux)
         {
@@ -1825,20 +1826,20 @@ namespace ImportadorWebCV.Sincro.Secciones
             ));
         }
 
-        private void PublicacionesDocumentosFEAreasTematicasEnriquecidas(HashSet<string> listadoAreasExternas, List<Knowledge_enriquecidos> topics_enriquecidos, Entity entidadAux)
-        {
-            return;
-            //TODO - utilizar cuando llegue el codigo
-            foreach (Knowledge_enriquecidos knowledgeEnriquecidos in topics_enriquecidos)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                //TODO - llamar a GetPadresTesauro()
-                string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, knowledgeEnriquecidos.word);
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAreasTematicasEnriquecidas, topicInsert)
-                ));
-            }
-        }
+        //private void PublicacionesDocumentosFEAreasTematicasEnriquecidas(HashSet<string> listadoAreasExternas, List<Knowledge_enriquecidos> topics_enriquecidos, Entity entidadAux)
+        //{
+        //    return;
+        //    //TODO - utilizar cuando llegue el codigo
+        //    foreach (Knowledge_enriquecidos knowledgeEnriquecidos in topics_enriquecidos)
+        //    {
+        //        string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+        //        //TODO - llamar a GetPadresTesauro()
+        //        string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, knowledgeEnriquecidos.word);
+        //        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+        //           new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAreasTematicasEnriquecidas, topicInsert)
+        //        ));
+        //    }
+        //}
 
         private HashSet<string> PublicacionesDocumentosFEAreasTematicasExternas(List<KnowledgeAreas> hasKnowledgeAreas, Entity entidadAux)
         {
