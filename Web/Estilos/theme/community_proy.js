@@ -2053,3 +2053,51 @@ function tooltipsImpactFactor()
 		});
 	});	
 }	
+
+tooltipsAccionesRecursos.lanzar = function () {
+    montarTooltip.lanzar(this.info_resource, '', 'background-gris grupos');
+    montarTooltip.lanzar(this.quotes, this.getTooltipQuotes(), 'background-blanco citas');
+    montarTooltip.lanzar(this.block, 'Bloqueado', 'background-gris-oscuro');
+    montarTooltip.lanzar(this.visible, 'Visible', 'background-gris-oscuro');
+    montarTooltip.lanzar(this.oculto, 'Oculto', 'background-gris-oscuro');
+}
+
+function tooltipMatching (pTextoMesh, pUrlMesh, pDicSnomed, pElemento) {
+
+    var dic = JSON.parse(pDicSnomed);
+	var infoSnomed = "";
+
+	for (const [ key, value ] of Object.entries(dic)) {
+	    infoSnomed += `<a href="${key}" target="_blank" class="tooltip-link">SNOMED: ${value}</a><br>`;
+	}
+
+	var info = `<p class="tooltip-title">Matching</p>
+                <span class="material-icons cerrar">close</span>
+                <div class="tooltip-content">
+                    <a href="${pUrlMesh}" target="_blank" class="tooltip-link">MESH: ${pTextoMesh}</a><br>
+                    ${infoSnomed}
+                </div>`
+
+    montarTooltip.lanzar($(pElemento), info, 'background-blanco link');
+}
+
+comportamientoVerMasVerMenosTags.comportamiento = function() {
+    $('.list-wrap .moreResults .ver-mas').off('click').on('click', function () {
+        var list = $(this).closest('.list-wrap');
+        list.find('ul > .ocultar').show(200);
+        setTimeout(function(){        	
+		  	list.find('.ver-mas').css('display', 'none');
+        	list.find('.ver-menos').css('display', 'flex');    
+        	//$('ul > .ocultar').attr('style',"display:flex");    	
+		}, 300);        
+    });
+
+    $('.list-wrap .moreResults .ver-menos').off('click').on('click', function () {
+        var list = $(this).closest('.list-wrap');
+        list.find('ul > .ocultar').hide(200);
+        setTimeout(function(){
+		  	list.find('.ver-menos').css('display', 'none');
+        	list.find('.ver-mas').css('display', 'flex');
+		}, 300);         
+    });    
+};

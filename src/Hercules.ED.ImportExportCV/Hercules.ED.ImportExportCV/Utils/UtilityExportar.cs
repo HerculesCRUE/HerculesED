@@ -1280,12 +1280,12 @@ namespace Utils
 
                 listadoStrings.Add(cvnString);
             }
-            else if (dicCodigos.ElementAt(1).Item3.Equals("INRECS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))))
+            else if (dicCodigos.ElementAt(1).Item3.Equals("INRECS") && Comprobar(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))))
             {
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
+                cvnDouble.Value = int.Parse(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
@@ -1294,12 +1294,12 @@ namespace Utils
                 cvnString.Value = "020";
                 listadoStrings.Add(cvnString);
             }
-            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
             {
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
+                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo

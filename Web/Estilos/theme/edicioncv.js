@@ -398,7 +398,7 @@ var edicionCV = {
 											</a>
 										</li>
 									</ul>
-									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
+									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
 											<div class="textoBusquedaPrincipalInput">
@@ -751,7 +751,7 @@ var edicionCV = {
 		}
 		
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
-		var ordenItem=sectionItem.find(' .ordenar.dropdown.orders .texto');
+		var ordenItem=sectionItem.find(' .ordenar.dropdown .texto');
         var ordenProperty = ordenItem.attr('property');
         var ordenAsc = ordenItem.attr('asc');
 		
@@ -2874,7 +2874,7 @@ var edicionCV = {
             that.buscarListado(sectionID);
         });
         //Ordenar
-        $('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
+        $('.panel-group .ordenar.dropdown .dropdown-menu a').off('click').on('click', function(e) {
             var sectionID = $(this).closest('.panel-group').attr('section');
 			var dropdown = $(this).closest('.ordenar.dropdown').find('.dropdown-toggle .texto');
             that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'), dropdown);

@@ -102,6 +102,7 @@ class StepsOffer {
 			"sectoraplicacion": {
 				item: "sectorAplicacionData",
 				field: "sectorAplicacion",
+				rel: "modal-seleccionar-sector-aplicacion-1",
 				modal: undefined,
 				cambios: 0,
 				obligatorio: true,
@@ -109,6 +110,7 @@ class StepsOffer {
 			"areaprocedencia": {
 				item: "areaProcedenciaData",
 				field: "areaProcedencia",
+				rel: "modal-seleccionar-areas-procedencia-1",
 				modal: undefined,
 				cambios: 0,
 				obligatorio: true,
@@ -263,6 +265,19 @@ class StepsOffer {
 				nameInput.value = _self.data.name
 				// descInput.value = this.data.description
 				// this.saveAreasTematicasEvent(selectTerms, this.data.tags)
+
+
+
+				// Cargar datos de los modales dinámicos 
+				Object.keys(_self.modalesDinamicos).forEach(idDyn => {
+					let tmp = undefined
+					try {
+						if (tmp = _self.data[_self.modalesDinamicos[idDyn].field]) {
+							_self.modalesDinamicos[idDyn].modal.saveAreasTematicasEvent($('#' + _self.modalesDinamicos[idDyn].rel), tmp)
+						}
+					} catch (error) {}
+				})
+
 
 				// CARGAR TAGS
 				let selectTags = $('#oferta-modal-seleccionar-tags-stp1')
@@ -946,9 +961,9 @@ class StepsOffer {
 	 * Carga todas las áreas temáticas seleccionadas para ese perfil / sección 
 	 * @param item, sección donde se encuentra la información para cargar las areas temáticas
 	 */
-	setAreasTematicasDynamic(item, id) {
+	setAreasTematicasDynamic(id) {
 
-		this.modalesDinamicos[id].modal.setAreasTematicas(item)
+		this.modalesDinamicos[id].modal.setAreasTematicas(this.modalesDinamicos[id].rel)
 
 	}
 
@@ -1165,7 +1180,10 @@ class StepsOffer {
 
 			if (this.dataModalesDinamicos != null && this.dataModalesDinamicos[this.id]) {
 				data.forEach(id => {
-					dataWithNames.push({id, name: this.dataTaxonomies.find(e => e.id == id).name})
+					let item = undefined
+					if (item = this.dataTaxonomies.find(e => e.id == id)) {
+						dataWithNames.push({ id, name: item.name })
+					}
 				})
 			}
 
@@ -2332,7 +2350,7 @@ class ModalCategoryCreator {
 
 		let _self = this
 
-		let relItem = $('#' + $(item).data("rel"))
+		let relItem = $('#' + item)
 
 		if (relItem.length > 0) {
 
@@ -2348,19 +2366,19 @@ class ModalCategoryCreator {
 			if (typeof dataJson == "object") {
 
 				dataJson.forEach(e => {
-					let item = document.getElementById(e)
+					let citem = document.getElementById(e)
 					
-					if (item) {
-						item.checked = true
+					if (citem) {
+						citem.checked = true
 						// Comprueba si tiene padre para establecerlo con habilitado.
-						let parentId = item.getAttribute('data-parentid')
+						let parentId = citem.getAttribute('data-parentid')
 						if (parentId.length > 0) {
 							parentId = (parentId.length > 0) ? parentId.split('/').pop() : parentId
 
 							_self.selectParent(parentId)
 						}
 					} else {
-						console.log ("item no existe: #", e)
+						console.log ("el elemento no existe: #", e)
 					}
 
 				})
@@ -2390,17 +2408,18 @@ class ModalCategoryCreator {
 
 		if (data != null) {
 
-			// Entra aquí por primera vez si el cluster ha sido guardado
+			// Entra aquí por primera vez si la oferta ha sido guardado
 			let htmlResWrapper = $('<div class="tag-list mb-4 d-inline"></div>')
 
 			let htmlRes = ''
 			let dataWithNames = [];
 
-			if (this.data != null) {
-				data.forEach(id => {
-					dataWithNames.push({id, name: this.data.find(e => e.id == id).name})
-				})
-			}
+			Object.keys(data).forEach(id => {
+				let item = undefined
+				if (item = this.data.find(e => e.id == id)) {
+					dataWithNames.push({ id, name: item.name })
+				}
+			})
 
 			let arrayRes = []
 			dataWithNames.forEach(e => {
