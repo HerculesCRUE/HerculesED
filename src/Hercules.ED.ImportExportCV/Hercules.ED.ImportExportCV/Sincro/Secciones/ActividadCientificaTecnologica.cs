@@ -1522,65 +1522,68 @@ namespace ImportadorWebCV.Sincro.Secciones
                         else if (!string.IsNullOrEmpty(doi))
                         {
                             //Compruebo si encuentra algún dato en Fuentes Externas
-                            Publication publicationFE = PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(mConfiguracion, doi);
-                            if (publicationFE != null && string.IsNullOrEmpty(publicationFE.title)
+                            Publication publicationFE = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
+                            if (publicationFE != null)
+                            {
+                                if (string.IsNullOrEmpty(publicationFE.title)
                                 && publicationFE.typeOfPublication.Equals("Journal Article") || publicationFE.typeOfPublication.Equals("Chapter")
                                 || publicationFE.typeOfPublication.Equals("Book"))
-                            {
-                                // TODO - añadir valores especificos
-                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                                    new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD1"),
-                                    new Property("http://w3id.org/roh/isValidated", new List<string>() { "true" })
-                                ));
+                                {
+                                    //Añadir valores especificos
+                                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                        new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD1"),
+                                        new Property("http://w3id.org/roh/isValidated", new List<string>() { "true" })
+                                    ));
 
-                                string tipoPublicacion = PublicacionesDocumentosFETipoPublicacion(publicationFE.typeOfPublication);
-                                string isOpenAccess = publicationFE.openAccess != null ? publicationFE.openAccess.ToString() : "False";
-                                //Añado las Etiquetas Externas
-                                HashSet<string> listadoEtiquetasExternas = PublicacionesDocumentosFEEtiquetasExternas(publicationFE.freetextKeywords, entidadAux);
-                                //Añado las Etiquetas enriquecidas
-                                PublicacionesDocumentosFEEtiquetasEnriquecidas(listadoEtiquetasExternas, publicationFE.freetextKeyword_enriquecidas, entidadAux);
+                                    string tipoPublicacion = PublicacionesDocumentosFETipoPublicacion(publicationFE.typeOfPublication);
+                                    string isOpenAccess = publicationFE.openAccess != null ? publicationFE.openAccess.ToString() : "False";
+                                    //Añado las Etiquetas Externas
+                                    HashSet<string> listadoEtiquetasExternas = PublicacionesDocumentosFEEtiquetasExternas(publicationFE.freetextKeywords, entidadAux);
+                                    //Añado las Etiquetas enriquecidas
+                                    PublicacionesDocumentosFEEtiquetasEnriquecidas(listadoEtiquetasExternas, publicationFE.freetextKeyword_enriquecidas, entidadAux);
 
-                                //Añado las areas tematicas externas
-                                HashSet<string> listadoAreasExternas = PublicacionesDocumentosFEAreasTematicasExternas(publicationFE.hasKnowledgeAreas, entidadAux);
-                                //Categorias enriquecidas
-                                ObjEnriquecimiento objEnr = new ObjEnriquecimiento(publicationFE.title, publicationFE.@abstract);
-                                Dictionary<string, string> dicTopicsAux = objEnr.getDescriptores(mConfiguracion, objEnr, "thematic");
-                                PublicacionesDocumentosTopics(dicTopicsAux, entidadAux);
-                                ////Añado las areas tematicas enriquecidas
-                                //PublicacionesDocumentosFEAreasTematicasEnriquecidas(listadoAreasExternas, publicationFE.topics_enriquecidos, entidadAux);
+                                    //Añado las areas tematicas externas
+                                    HashSet<string> listadoAreasExternas = PublicacionesDocumentosFEAreasTematicasExternas(publicationFE.hasKnowledgeAreas, entidadAux);
+                                    //Categorias enriquecidas
+                                    ObjEnriquecimiento objEnr = new ObjEnriquecimiento(publicationFE.title, publicationFE.@abstract);
+                                    Dictionary<string, string> dicTopicsAux = objEnr.getDescriptores(mConfiguracion, objEnr, "thematic");
+                                    PublicacionesDocumentosTopics(dicTopicsAux, entidadAux);
+                                    ////Añado las areas tematicas enriquecidas
+                                    //PublicacionesDocumentosFEAreasTematicasEnriquecidas(listadoAreasExternas, publicationFE.topics_enriquecidos, entidadAux);
 
-                                //Autor de correspondencia
-                                PublicacionesDocumentosFEAutorCorrespondencia(this.personaCV, publicationFE.correspondingAuthor, entidadAux);
-                                //Autores del documento
-                                PublicacionesDocumentosFEAutores(publicationFE.seqOfAuthors, entidadAux);
-                                //Origenes de las fuentes
-                                PublicacionesDocumentosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
-                                //Identificadores
-                                PublicacionesDocumentosFEIdentificadores(publicationFE.IDs, entidadAux);
-                                //PublicationVenue
-                                PublicacionesDocumentosFEPublicationVenue(publicationFE.hasPublicationVenue, entidadAux);
-                                // Metricas
-                                PublicacionesDocumentosFEMetricas(publicationFE.hasMetric, entidadAux);
-                                //Bibliografia
-                                PublicacionesDocumentosFEBibliografia(publicationFE.bibliografia, entidadAux);
+                                    //Autor de correspondencia
+                                    PublicacionesDocumentosFEAutorCorrespondencia(this.personaCV, publicationFE.correspondingAuthor, entidadAux);
+                                    //Autores del documento
+                                    PublicacionesDocumentosFEAutores(publicationFE.seqOfAuthors, entidadAux);
+                                    //Origenes de las fuentes
+                                    PublicacionesDocumentosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
+                                    //Identificadores
+                                    PublicacionesDocumentosFEIdentificadores(publicationFE.IDs, entidadAux);
+                                    //PublicationVenue
+                                    PublicacionesDocumentosFEPublicationVenue(publicationFE.hasPublicationVenue, entidadAux);
+                                    // Metricas
+                                    PublicacionesDocumentosFEMetricas(publicationFE.hasMetric, entidadAux);
+                                    //Bibliografia
+                                    PublicacionesDocumentosFEBibliografia(publicationFE.bibliografia, entidadAux);
 
-                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd, tipoPublicacion),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, publicationFE.title),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosDescripcion, publicationFE.@abstract),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI, publicationFE.doi),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First()),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosURLDocumento, publicationFE.pdf),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, publicationFE.pageEnd),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, publicationFE.pageStart),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, publicationFE.volume),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, publicationFE.articleNumber),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosOpenAccess, isOpenAccess)
-                                ));
+                                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd, tipoPublicacion),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, publicationFE.title),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosDescripcion, publicationFE.@abstract),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI, publicationFE.doi),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First()),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosURLDocumento, publicationFE.pdf),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, publicationFE.pageEnd),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, publicationFE.pageStart),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, publicationFE.volume),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, publicationFE.articleNumber),
+                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosOpenAccess, isOpenAccess)
+                                    ));
 
-                                listado.Add(entidadAux);
-                                continue;
+                                    listado.Add(entidadAux);
+                                    continue;
+                                }
                             }
                         }
 
@@ -1936,17 +1939,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
-        private Publication PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
-        {
-            Publication pub = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
-            if (pub != null)
-            {
-                return null;
-            }
-
-            return pub;
-        }
-
         private string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
         {
             string idDOIValue = "";
@@ -2176,59 +2168,60 @@ namespace ImportadorWebCV.Sincro.Secciones
                         else if (!string.IsNullOrEmpty(doi))
                         {
                             //Compruebo si encuentra algún dato en Fuentes Externas
-                            Publication publicationFE = TrabajosCongresosComprobarPublicacionFuentesExternasDOI(mConfiguracion, doi);
-                            if (publicationFE != null && string.IsNullOrEmpty(publicationFE.title) && publicationFE.typeOfPublication.Equals("Conference Paper"))
+                            Publication publicationFE = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi); ;
+                            if (publicationFE != null)
                             {
-                                // TODO - añadir valores especificos
-                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                                    new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD2"),
-                                    new Property("http://w3id.org/roh/isValidated", new List<string>() { "true" })
-                                ));
+                                if (string.IsNullOrEmpty(publicationFE.title) && publicationFE.typeOfPublication.Equals("Conference Paper"))
+                                {
+                                    //Valores especificos
+                                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                        new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD2"),
+                                        new Property("http://w3id.org/roh/isValidated", new List<string>() { "true" })
+                                    ));
 
-                                string isOpenAccess = publicationFE.openAccess != null ? publicationFE.openAccess.ToString() : "False";
-                                //Añado las Etiquetas Externas
-                                HashSet<string> listadoEtiquetasExternas = TrabajosCongresosFEEtiquetasExternas(publicationFE.freetextKeywords, entidadAux);
-                                //Añado las Etiquetas enriquecidas
-                                TrabajosCongresosFEEtiquetasEnriquecidas(listadoEtiquetasExternas, publicationFE.freetextKeyword_enriquecidas, entidadAux);
+                                    string isOpenAccess = publicationFE.openAccess != null ? publicationFE.openAccess.ToString() : "False";
+                                    //Añado las Etiquetas Externas
+                                    HashSet<string> listadoEtiquetasExternas = TrabajosCongresosFEEtiquetasExternas(publicationFE.freetextKeywords, entidadAux);
+                                    //Añado las Etiquetas enriquecidas
+                                    TrabajosCongresosFEEtiquetasEnriquecidas(listadoEtiquetasExternas, publicationFE.freetextKeyword_enriquecidas, entidadAux);
 
-                                //Añado las areas tematicas externas
-                                HashSet<string> listadoAreasExternas = TrabajosCongresosFEAreasTematicasExternas(publicationFE.hasKnowledgeAreas, entidadAux);
-                                //Categorias enriquecidas
-                                ObjEnriquecimiento objEnr = new ObjEnriquecimiento(publicationFE.title, publicationFE.@abstract);
-                                Dictionary<string, string> dicTopicsAux = objEnr.getDescriptores(mConfiguracion, objEnr, "thematic");
-                                TrabajosCongresosTopics(dicTopicsAux, entidadAux);
-                                ////Añado las areas tematicas enriquecidas
-                                //TrabajosCongresosFEAreasTematicasEnriquecidas(listadoAreasExternas, publicationFE.topics_enriquecidos, entidadAux);
+                                    //Añado las areas tematicas externas
+                                    HashSet<string> listadoAreasExternas = TrabajosCongresosFEAreasTematicasExternas(publicationFE.hasKnowledgeAreas, entidadAux);
+                                    //Categorias enriquecidas
+                                    ObjEnriquecimiento objEnr = new ObjEnriquecimiento(publicationFE.title, publicationFE.@abstract);
+                                    Dictionary<string, string> dicTopicsAux = objEnr.getDescriptores(mConfiguracion, objEnr, "thematic");
+                                    TrabajosCongresosTopics(dicTopicsAux, entidadAux);
 
-                                //Autor de correspondencia
-                                TrabajosCongresosFEAutorCorrespondencia(this.personaCV, publicationFE.correspondingAuthor, entidadAux);
-                                //Autores del documento
-                                TrabajosCongresosFEAutores(this.personaCV, publicationFE.seqOfAuthors, entidadAux);
-                                //Origenes de las fuentes
-                                TrabajosCongresosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
-                                //Identificadores
-                                TrabajosCongresosFEIdentificadores(publicationFE.IDs, entidadAux);
-                                //Metricas
-                                TrabajosCongresosFEMetricas(publicationFE.hasMetric, entidadAux);
-                                //Bibliografia
-                                TrabajosCongresosFEBibliografia(publicationFE.bibliografia, entidadAux);
+                                    //Autor de correspondencia
+                                    TrabajosCongresosFEAutorCorrespondencia(this.personaCV, publicationFE.correspondingAuthor, entidadAux);
+                                    //Autores del documento
+                                    TrabajosCongresosFEAutores(this.personaCV, publicationFE.seqOfAuthors, entidadAux);
+                                    //Origenes de las fuentes
+                                    TrabajosCongresosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
+                                    //Identificadores
+                                    TrabajosCongresosFEIdentificadores(publicationFE.IDs, entidadAux);
+                                    //Metricas
+                                    TrabajosCongresosFEMetricas(publicationFE.hasMetric, entidadAux);
+                                    //Bibliografia
+                                    TrabajosCongresosFEBibliografia(publicationFE.bibliografia, entidadAux);
 
-                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubTitulo, publicationFE.title),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosDescripcion, publicationFE.@abstract),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalDOI, publicationFE.doi),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL, publicationFE.url.First()),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosURLDocumento, publicationFE.pdf),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagFin, publicationFE.pageEnd),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagIni, publicationFE.pageStart),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubVolumen, publicationFE.volume),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNumero, publicationFE.articleNumber),
-                                    new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosOpenAccess, isOpenAccess)
-                                ));
+                                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubTitulo, publicationFE.title),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosDescripcion, publicationFE.@abstract),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalDOI, publicationFE.doi),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubURL, publicationFE.url.First()),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosURLDocumento, publicationFE.pdf),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagFin, publicationFE.pageEnd),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubPagIni, publicationFE.pageStart),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubVolumen, publicationFE.volume),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNumero, publicationFE.articleNumber),
+                                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosOpenAccess, isOpenAccess)
+                                    ));
 
-                                listado.Add(entidadAux);
-                                continue;
+                                    listado.Add(entidadAux);
+                                    continue;
+                                }
                             }
                         }
 
@@ -2559,16 +2552,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listadoEtiquetas;
         }
 
-        private Publication TrabajosCongresosComprobarPublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
-        {
-            Publication pub = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
-            if (pub != null)
-            {
-                return null;
-            }
-
-            return pub;
-        }
 
         /// <summary>
         /// Añade los topics/categorias enriquecidos del documento.
