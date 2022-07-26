@@ -397,10 +397,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
 
-            //Insertamos en la cola del desnormalizador
-            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
+            //Insertamos en la cola del desnormalizador            
             if (itemsNuevosOModificados.Count > 0)
             {
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
                 if (rdfType == "http://vivoweb.org/ontology/core#Project")
                 {
                     rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.project, itemsNuevosOModificados));
@@ -883,14 +883,15 @@ namespace ImportadorWebCV.Sincro.Secciones
             });
             personasDesnormalizar.UnionWith(personasDesnormalizarAux);
 
-            //Insertamos en la cola del desnormalizador
-            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
+            //Insertamos en la cola del desnormalizador            
             if (personasDesnormalizar.Count > 0)
             {
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, personasDesnormalizar));
             }
             if (documentosDesnormalizar.Count > 0)
             {
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, documentosDesnormalizar));
             }
 
