@@ -1,6 +1,7 @@
 ﻿using Hercules.ED.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Controllers;
 using Hercules.ED.ImportExportCV.Models;
+using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases;
 using Models;
 using System;
@@ -1503,28 +1504,78 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.010.030")))
                     {
-                        ////Compruebo si está el DOI asociado a la publicación en BBDD
-                        //string doi = PublicacionesDocumentosComprobarDOI(item);
-                        //string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
-                        //if (!string.IsNullOrEmpty(idDOIBBDD))
-                        //{
-                        //    //Si existe alguna publicación con ese DOI no la inserto
-                        //    listadoCvn.Remove(item);
-                        //    mCvn.cvnRootBean = listadoCvn.ToArray();
+                        //Compruebo si está el DOI asociado a la publicación en BBDD
+                        string doi = PublicacionesDocumentosComprobarDOI(item);
+                        string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+                        if (!string.IsNullOrEmpty(idDOIBBDD))
+                        {
+                            //Si existe alguna publicación con ese DOI no la inserto
+                            listadoCvn.Remove(item);
+                            mCvn.cvnRootBean = listadoCvn.ToArray();
 
-                        //    continue;
-                        //}
-                        ////Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
-                        //else if (!string.IsNullOrEmpty(doi))
-                        //{
-                        //    //Compruebo si encuentra algún dato en Fuentes Externas
-                        //    //PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(mConfiguracion, doi);
-                        //    // TODO - añadir valores especificos
-                        //    //continue;
-                        //}
-                        ////Si no añado la publicación de manera normal.
-                        //else
-                        //{
+                            continue;
+                        }
+                        //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
+                        else if (!string.IsNullOrEmpty(doi))
+                        {
+                            //Compruebo si encuentra algún dato en Fuentes Externas
+                            Publication publicationFE = PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(mConfiguracion, doi);
+                            if (publicationFE != null && string.IsNullOrEmpty(publicationFE.title) && publicationFE.typeOfPublication.Equals("Journal Article"))
+                            {
+                                // TODO - añadir valores especificos
+                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                    new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD1"),
+                                    new Property("http://w3id.org/roh/isValidated", new List<string>() { "true" })
+                                ));
+
+                                string tipoPublicacion = PublicacionesDocumentosFETipoPublicacion(publicationFE.typeOfPublication);
+                                string isOpenAccess = publicationFE.openAccess != null ? publicationFE.openAccess.ToString() : "False";
+                                //Añado las Etiquetas Externas
+                                HashSet<string> listadoEtiquetasExternas = PublicacionesDocumentosFEEtiquetasExternas(publicationFE.freetextKeywords, entidadAux);
+                                //Añado las Etiquetas enriquecidas
+                                PublicacionesDocumentosFEEtiquetasEnriquecidas(listadoEtiquetasExternas, publicationFE.freetextKeyword_enriquecidas, entidadAux);
+
+                                //Añado las areas tematicas externas
+                                HashSet<string> listadoAreasExternas = PublicacionesDocumentosFEAreasTematicasExternas(publicationFE.hasKnowledgeAreas, entidadAux);
+                                //Añado las areas tematicas enriquecidas
+                                PublicacionesDocumentosFEAreasTematicasEnriquecidas(listadoAreasExternas, publicationFE.topics_enriquecidos, entidadAux);
+
+                                //Autor de correspondencia
+                                PublicacionesDocumentosFEAutorCorrespondencia(publicationFE.correspondingAuthor, entidadAux);
+                                //Autores del documento
+                                PublicacionesDocumentosFEAutores(publicationFE.seqOfAuthors, entidadAux);
+                                //Origenes de las fuentes
+                                PublicacionesDocumentosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
+                                //Identificadores
+                                PublicacionesDocumentosFEIdentificadores(publicationFE.IDs, entidadAux);
+                                //PublicationVenue
+                                PublicacionesDocumentosFEPublicationVenue(publicationFE.hasPublicationVenue, entidadAux);
+                                //Metricas
+                                PublicacionesDocumentosFEMetricas(publicationFE.hasMetric, entidadAux);
+                                //Bibliografia
+                                PublicacionesDocumentosFEBibliografia(publicationFE.bibliografia, entidadAux);
+
+                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd, tipoPublicacion),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, publicationFE.title),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosDescripcion, publicationFE.@abstract),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI, publicationFE.doi),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First()),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosURLDocumento, publicationFE.pdf),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, publicationFE.pageEnd),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, publicationFE.pageStart),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, publicationFE.volume),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, publicationFE.articleNumber),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosOpenAccess, isOpenAccess)
+                                ));
+
+                                listado.Add(entidadAux);
+                                continue;
+                            }
+                        }
+
+                        //Si no añado la publicación de manera normal.
 
                         //Añado las etiquetas enriquecidas
                         string tituloPublicacion = item.GetStringPorIDCampo("060.010.010.030");
@@ -1572,8 +1623,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         PublicacionesDocumentosISBN(item, entidadAux);
 
                         listado.Add(entidadAux);
-
-                        //}
                     }
                     else
                     {
@@ -1585,9 +1634,251 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
-        private void PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
+        private void PublicacionesDocumentosFEBibliografia(List<Bibliografia> bibliografias, Entity entidadAux)
         {
-            UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
+            foreach (Bibliografia bibliografia in bibliografias)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string biblioDOIInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.doi);
+                string biblioURLInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.url);
+                string biblioAnioPubInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.anyoPublicacion);
+                string biblioTituloInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.titulo);
+                string biblioRevistaInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.revista);
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioDOI, biblioDOIInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioURL, biblioURLInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAnioPub, biblioAnioPubInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioTitulo, biblioTituloInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioRevista, biblioRevistaInsert)
+                ));
+
+                //Añado los autores de la bibliografia
+                for (int i = 0; i < bibliografia.autores.Count; i++)
+                {
+                    string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux + "@@@";
+                    string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Key);
+                    string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Value);
+
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresNombre, citationCountInsert),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresScholarID, citationCountInsert)
+                    ));
+                }
+            }
+        }
+
+        private void PublicacionesDocumentosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
+        {
+
+            foreach (PublicationMetric metrica in hasMetric)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string metricNameInsert = UtilitySecciones.StringGNOSSID(entityPartAux, metrica.metricName);
+                string citationCountInsert = UtilitySecciones.StringGNOSSID(entityPartAux, metrica.citationCount);
+
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPublicationMetricName, metricNameInsert),
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPublicationMetricCitas, citationCountInsert)
+                ));
+            }
+        }
+
+        private void PublicacionesDocumentosFEOrigenesFuentes(HashSet<string> origenesDatos, Entity entidadAux)
+        {
+            foreach (string origen in origenesDatos)
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosOrigenFuentes, origenInsert)
+                ));
+            }
+        }
+
+        private void PublicacionesDocumentosFEPublicationVenue(Source hasPublicationVenue, Entity entidadAux)
+        {
+
+        }
+
+        private void PublicacionesDocumentosFEIdentificadores(List<string> ids, Entity entidadAux)
+        {
+            foreach(string identificador in ids)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string fuente = identificador.Split(":").First().ToLower();
+                string valor = identificador.Split(":").Last();
+                string fuenteAux = "";
+                switch (fuente.ToLower())
+                {
+                    case "wos":
+                        fuenteAux = "WoS";
+                        break;
+                    case "semanticscholar":
+                        fuenteAux = "SemanticScholar";
+                        break;
+                    case "mag":
+                        fuenteAux = "MAG";
+                        break;
+                    case "pubmedcentral":
+                        fuenteAux = "PubMedCentral";
+                        break;
+                    case "scopus_id":
+                        fuenteAux = "Scopus";
+                        break;
+                    case "arxiv":
+                        fuenteAux = "ArXiv";
+                        break;
+                    case "medline":
+                        fuenteAux = "Medline";
+                        break;
+                }
+                //Si no encuentro la fuente no inserto nada
+                if (string.IsNullOrEmpty(fuenteAux))
+                {
+                    continue;
+                }
+
+                string nombreFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, fuenteAux);
+                string valorFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, valor);
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDNombre, nombreFuenteInsert),
+                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDValor, valorFuenteInsert)
+                ));
+            }
+        }
+
+        //TODO
+        private void PublicacionesDocumentosFEAutores(List<Person> listadoAutores, Entity entidadAux)
+        {
+
+        }
+
+        //TODO
+        private void PublicacionesDocumentosFEAutorCorrespondencia(Person autorCorrespondencia, Entity entidadAux)
+        {
+            string orcid = autorCorrespondencia.ORCID;
+            string nombrecompleto = autorCorrespondencia.name.nombre_completo;
+            bool isAutorCorrespondecia = false;
+
+            entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, isAutorCorrespondecia)
+            ));
+        }
+
+        private void PublicacionesDocumentosFEAreasTematicasEnriquecidas(HashSet<string> listadoAreasExternas, List<Knowledge_enriquecidos> topics_enriquecidos, Entity entidadAux)
+        {
+            return;
+            //TODO - utilizar cuando llegue el codigo
+            foreach (Knowledge_enriquecidos knowledgeEnriquecidos in topics_enriquecidos)
+            {
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                //TODO - llamar a GetPadresTesauro()
+                string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, knowledgeEnriquecidos.word);
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAreasTematicasEnriquecidas, topicInsert)
+                ));
+            }
+        }
+
+        private HashSet<string> PublicacionesDocumentosFEAreasTematicasExternas(List<KnowledgeAreas> hasKnowledgeAreas, Entity entidadAux)
+        {
+            HashSet<string> listadoAreas = new HashSet<string>();
+            List<string> topicList = new List<string>();
+
+            foreach (KnowledgeAreas knowledgeAreas in hasKnowledgeAreas)
+            {
+                foreach (KnowledgeArea knowledgeArea in knowledgeAreas.knowledgeArea)
+                {
+                    //Si el listado contiene el id del area no lo inserto, para eliminar repetidos
+                    if (listadoAreas.Contains(knowledgeArea.hasCode))
+                    {
+                        continue;
+                    }
+
+                    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                    listadoAreas.Add(knowledgeArea.hasCode);
+                    topicList.AddRange(UtilitySecciones.GetPadresTesauro(knowledgeArea.hasCode));
+                    foreach (string topicIn in topicList)
+                    {
+                        string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, topicIn);
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                           new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAreasTematicasExternas, topicInsert)
+                        ));
+                    }
+                }
+            }
+
+            return listadoAreas;
+        }
+
+        private void PublicacionesDocumentosFEEtiquetasEnriquecidas(HashSet<string> listadoEtiquetasExternas, List<Knowledge_enriquecidos> freetextKeywords, Entity entidadAux)
+        {
+            foreach (Knowledge_enriquecidos freetextKeyword in freetextKeywords)
+            {
+                //Si la etiqueta se encuentra en el listado no la inserto de nuevo
+                if (listadoEtiquetasExternas.Contains(freetextKeyword.word.ToLower()))
+                {
+                    continue;
+                }
+
+                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.word);
+                string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.porcentaje);
+
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosTitulo, etiquetasValor),
+                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosScore, etiquetasScore)
+                ));
+            }
+        }
+
+        private HashSet<string> PublicacionesDocumentosFEEtiquetasExternas(List<FreetextKeywords> freetextKeywords, Entity entidadAux)
+        {
+            HashSet<string> listadoEtiquetas = new HashSet<string>();
+            //Agrupo todas las etiquetas y posteriormente las añado
+            foreach (FreetextKeywords freetextKeyword in freetextKeywords)
+            {
+                foreach (string keyword in freetextKeyword.freetextKeyword)
+                {
+                    if (!listadoEtiquetas.Contains(keyword.ToLower()))
+                    {
+                        listadoEtiquetas.Add(keyword.ToLower());
+                    }
+                }
+            }
+            foreach (string keyword in listadoEtiquetas)
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosExternosTitulo, keyword)
+                ));
+            }
+
+            return listadoEtiquetas;
+        }
+
+        private string PublicacionesDocumentosFETipoPublicacion(string publicationType)
+        {
+            switch (publicationType)
+            {
+                case "Journal Article":
+                    return $"{mResourceApi.GraphsUrl}items/publicationtype_020";
+                case "Book":
+                    return $"{mResourceApi.GraphsUrl}items/publicationtype_032";
+                case "Chapter":
+                    return $"{mResourceApi.GraphsUrl}items/publicationtype_020";
+                default:
+                    return null;
+            }
+
+        }
+
+        private Publication PublicacionesDocumentosComprobarPublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
+        {
+            Publication pub = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
+            if (pub != null)
+            {
+
+            }
+
+            return pub;
         }
 
         private string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
