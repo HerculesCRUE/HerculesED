@@ -113,7 +113,7 @@ namespace EditorCV.Models
                         Dictionary<string, string> dicValores = new Dictionary<string, string>();
                         string select = "SELECT * WHERE { SELECT DISTINCT ?s ?o  ";
                         string where = $@"WHERE {{
-                                                            ?s a <{ pRdfType }>.  ?s <{ pPropertyAux }> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
+                                                            ?s a <{pRdfType}>.  ?s <{pPropertyAux}> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
                                                         }} ORDER BY DESC(?o) DESC (?s) }} LIMIT {limit} OFFSET {offset}";
                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -190,7 +190,7 @@ namespace EditorCV.Models
                         }
                         else
                         {
-                            filter = $" AND lcase(?o) like \"% { splitSearch.Last() }%\" ";
+                            filter = $" AND lcase(?o) like \"% {splitSearch.Last()}%\" ";
                         }
                     }
                     else if (searchText.Length > 3)
@@ -199,13 +199,13 @@ namespace EditorCV.Models
                     }
                     else // Si tiene menos de 4 caracteres y no termina en espacio, buscamos por like
                     {
-                        filter = $"  lcase(?o) like \"{ searchText }%\" OR lcase(?o) like \"% { searchText }%\" ";
+                        filter = $"  lcase(?o) like \"{searchText}%\" OR lcase(?o) like \"% {searchText}%\" ";
                         searchText = "";
                     }
                 }
                 if (searchText != "")
                 {
-                    filter = $"bif:contains(?o, \"'{ searchText }'\"){filter}";
+                    filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
                 }
                 string select = "SELECT DISTINCT ?s ?o ";
                 string auxProperties = "";
@@ -218,7 +218,7 @@ namespace EditorCV.Models
                     }
 
                 }
-                string where = $"WHERE {{ ?s a <{ pRdfType }>. ?s <{ pPropertyAux }> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
+                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
@@ -276,6 +276,200 @@ namespace EditorCV.Models
                     return respuesta;
                 }
             }
+        }
+
+
+
+
+        //public TabSectionItem getPublicationMiniData(ConfigService conf, string entityID, string tipo, string usuarioID, string lang)
+        //{
+        //    try
+        //    {
+        //        string pCVId = UtilityCV.GetCVFromUser(usuarioID);
+        //        if (string.IsNullOrEmpty(pCVId))
+        //        {
+        //            throw new Exception("Usuario no encontrado " + usuarioID);
+        //        }
+        //        string rdf;
+        //        string section;
+
+        //        rdf = "http://w3id.org/roh/ScientificActivity";
+        //        switch (tipo)
+        //        {
+        //            case "http://gnoss.com/items/scientificactivitydocument_SAD1":
+        //                section = "http://w3id.org/roh/scientificPublications";
+        //                break;
+        //            case "http://gnoss.com/items/scientificactivitydocument_SAD2":
+        //                section = "http://w3id.org/roh/worksSubmittedConferences";
+        //                break;
+        //            case "http://gnoss.com/items/scientificactivitydocument_SAD3":
+        //                section = "http://w3id.org/roh/worksSubmittedSeminars";
+        //                break;
+        //            default:
+        //                throw new Exception("Tipo de documento no reconocido");
+        //        }
+
+
+
+        //        return GetItemMini(conf, pCVId, section, rdf, entityID, lang);
+
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        mResourceApi.Log.Error(e.Message);
+        //    }
+        //    return null;
+
+        //}
+
+
+        /// <summary>
+        /// Funcion para obtener los elementos con duplicidad.
+        /// </summary>
+        /// <returns>
+        /// Un diccionario que tiene el titulo como llave y una lista contiendo las ids de todas las veces que aparece ese titulo.
+        /// </returns>
+        public Dictionary<string, Dictionary<string, List<string>>> GetItemsDuplicados(string pCVId)
+        {
+
+            foreach(API.Templates.Tab tab in UtilityCV.TabTemplates)
+            {
+                if (tab.sections != null)
+                {
+                    foreach (API.Templates.TabSection tabSection in tab.sections)
+                    {
+                        if (tabSection.presentation.listItemsPresentation != null && tabSection.presentation.listItemsPresentation.checkDuplicates)
+                        {
+
+                        }
+                    }
+                }
+            }
+
+            Dictionary<string, Dictionary<string, List<string>>> publicaciones = new Dictionary<string, Dictionary<string, List<string>>>();
+            int limit = 10000;
+            int offset = 0;
+            while (true)
+            {
+                string select = $@"SELECT distinct ?s ?tipoDoc ?o ?doc
+                                    from <{mResourceApi.GraphsUrl}person.owl>
+                                    from <{mResourceApi.GraphsUrl}curriculumvitae.owl>";
+                string where = $@"where
+                            {{ 
+                                ?s <http://vivoweb.org/ontology/core#relatedBy> ?doc .
+                                ?doc a <http://purl.org/ontology/bibo/Document> .
+                                ?doc  <http://w3id.org/roh/title> ?o .
+                                ?doc <http://w3id.org/roh/scientificActivityDocument> ?tipoDoc .
+                                ?doc <http://purl.org/ontology/bibo/authorList> ?autores .
+                                ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
+                                ?person <http://w3id.org/roh/gnossUser> ?gnossUser FILTER(?gnossUser = <http://gnoss/{pCVId.ToUpper()}>) .
+                            }}order by desc (?o) LIMIT {limit} OFFSET {offset}";
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
+                offset += limit;
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                {
+                    string titulo = fila["o"].value;
+                    string id = fila["s"].value;
+                    string docId = fila["doc"].value;
+                    string tipo = fila["tipoDoc"].value;
+                    if (!publicaciones.ContainsKey(tipo))
+                    {
+                        publicaciones[tipo] = new Dictionary<string, List<string>>();
+                    }
+                    Dictionary<string, List<string>> publicacionesTipo = publicaciones[tipo];
+                    string similar = null;
+
+                    foreach (KeyValuePair<string, List<string>> entry in publicacionesTipo)
+                    {                        
+                        double similitud = calcSimilititud(entry.Key, titulo.ToLower().Trim());
+                        if (similitud > 0.90)
+                        {
+                            similar = entry.Key;
+                            break;
+                        }
+
+                    }
+                    if (similar != null && publicacionesTipo.ContainsKey(similar))
+                    {
+                        publicacionesTipo[similar].Add(id);                        
+                    }
+                    else
+                    {
+                        publicacionesTipo[titulo] = new List<string>();
+                        publicacionesTipo[titulo].Add(id);
+                    }
+                }
+                if (sparqlObject.results.bindings.Count < limit)
+                {
+                    break;
+                }
+            }
+
+
+            foreach (KeyValuePair<string, Dictionary<string, List<string>>> entry in publicaciones)
+            {
+                foreach (KeyValuePair<string, List<string>> entry2 in entry.Value)
+                {
+                    if (entry2.Value.Count == 1)
+                    {
+                        entry.Value.Remove(entry2.Key);
+                    }
+                }
+
+            }
+
+            return publicaciones;
+        }
+
+        int i = 0;
+        private double calcSimilititud(string x, string y)
+        {
+            i++;
+            if (x == null || y == null)
+            {
+                throw new ArgumentException("Strings must not be null");
+            }
+
+            double maxLength = Math.Max(x.Length, y.Length);
+            if (maxLength > 0)
+            {
+                // opcionalmente ignora el caso si es necesario
+                return (maxLength - getEditDistance(x, y)) / maxLength;
+            }
+            return 1.0;
+        }
+
+        public static int getEditDistance(string X, string Y)
+        {
+            int m = X.Length;
+            int n = Y.Length;
+
+            int[][] T = new int[m + 1][];
+            for (int i = 0; i < m + 1; ++i)
+            {
+                T[i] = new int[n + 1];
+            }
+            for (int i = 1; i <= m; i++)
+            {
+                T[i][0] = i;
+            }
+            for (int j = 1; j <= n; j++)
+            {
+                T[0][j] = j;
+            }
+
+            int cost;
+            for (int i = 1; i <= m; i++)
+            {
+                for (int j = 1; j <= n; j++)
+                {
+                    cost = X[i - 1] == Y[j - 1] ? 0 : 1;
+                    T[i][j] = Math.Min(Math.Min(T[i - 1][j] + 1, T[i][j - 1] + 1),
+                            T[i - 1][j - 1] + cost);
+                }
+            }
+            return T[m][n];
         }
 
         /// <summary>
@@ -2068,7 +2262,7 @@ namespace EditorCV.Models
                                     }
                                     else
                                     {
-                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.propertyAux.properties[j-1]).Select(x => x["o"].value).Distinct().FirstOrDefault();
+                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.propertyAux.properties[j - 1]).Select(x => x["o"].value).Distinct().FirstOrDefault();
                                     }
                                     if (!string.IsNullOrEmpty(valor))
                                     {
