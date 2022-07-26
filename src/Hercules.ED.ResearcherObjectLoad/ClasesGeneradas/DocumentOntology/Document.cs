@@ -256,18 +256,7 @@ namespace DocumentOntology
 			{
 				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_hasMetric = new List<PublicationMetric>();
-			SemanticPropertyModel propRoh_hasMetric = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasMetric");
-			if(propRoh_hasMetric != null && propRoh_hasMetric.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_hasMetric.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						PublicationMetric roh_hasMetric = new PublicationMetric(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_hasMetric.Add(roh_hasMetric);
-					}
-				}
-			}
+
 			SemanticPropertyModel propRoh_genderIP = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/genderIP");
 			if(propRoh_genderIP != null && propRoh_genderIP.PropertyValues.Count > 0)
 			{
@@ -616,18 +605,7 @@ namespace DocumentOntology
 			{
 				this.Vcard_hasRegion = new Feature(propVcard_hasRegion.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_hasMetric = new List<PublicationMetric>();
-			SemanticPropertyModel propRoh_hasMetric = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasMetric");
-			if(propRoh_hasMetric != null && propRoh_hasMetric.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_hasMetric.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						PublicationMetric roh_hasMetric = new PublicationMetric(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_hasMetric.Add(roh_hasMetric);
-					}
-				}
-			}
+
 			SemanticPropertyModel propRoh_genderIP = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/genderIP");
 			if(propRoh_genderIP != null && propRoh_genderIP.PropertyValues.Count > 0)
 			{
@@ -860,9 +838,6 @@ namespace DocumentOntology
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasRegion")]
 		public  Feature Vcard_hasRegion  { get; set;} 
 		public string IdVcard_hasRegion  { get; set;} 
-
-		[RDFProperty("http://w3id.org/roh/hasMetric")]
-		public  List<PublicationMetric> Roh_hasMetric { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/genderIP")]
 		public  Gender Roh_genderIP  { get; set;} 
@@ -1214,15 +1189,6 @@ namespace DocumentOntology
 				prop.Entity= entityEnrichedKeyWord;
 				}
 			}
-			if(Roh_hasMetric!=null){
-				foreach(PublicationMetric prop in Roh_hasMetric){
-					prop.GetProperties();
-					prop.GetEntities();
-					OntologyEntity entityPublicationMetric = new OntologyEntity("http://w3id.org/roh/PublicationMetric", "http://w3id.org/roh/PublicationMetric", "roh:hasMetric", prop.propList, prop.entList);
-				entList.Add(entityPublicationMetric);
-				prop.Entity= entityPublicationMetric;
-				}
-			}
 			if(Roh_hasKnowledgeArea!=null){
 				foreach(CategoryPath prop in Roh_hasKnowledgeArea){
 					prop.GetProperties();
@@ -1520,24 +1486,6 @@ namespace DocumentOntology
 				if(item0.Roh_title != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/EnrichedKeyWord_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_title)}\"", list, " . ");
-				}
-			}
-			}
-			if(this.Roh_hasMetric != null)
-			{
-			foreach(var item0 in this.Roh_hasMetric)
-			{
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PublicationMetric_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/PublicationMetric>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PublicationMetric_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/PublicationMetric\"", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/PublicationMetric_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Document_{ResourceID}_{ArticleID}", "http://w3id.org/roh/hasMetric", $"<{resourceAPI.GraphsUrl}items/PublicationMetric_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				if(item0.Roh_metricName != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PublicationMetric_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/metricName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_metricName)}\"", list, " . ");
-				}
-				if(item0.Roh_citationCount != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PublicationMetric_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/citationCount", $"{item0.Roh_citationCount.ToString()}", list, " . ");
 				}
 			}
 			}
@@ -2170,21 +2118,6 @@ namespace DocumentOntology
 				if(item0.Roh_title != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/enrichedkeyword_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/title", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_title).ToLower()}\"", list, " . ");
-				}
-			}
-			}
-			if(this.Roh_hasMetric != null)
-			{
-			foreach(var item0 in this.Roh_hasMetric)
-			{
-				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/hasMetric", $"<{resourceAPI.GraphsUrl}items/publicationmetric_{ResourceID}_{item0.ArticleID}>", list, " . ");
-				if(item0.Roh_metricName != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/publicationmetric_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/metricName", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_metricName).ToLower()}\"", list, " . ");
-				}
-				if(item0.Roh_citationCount != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/publicationmetric_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/citationCount", $"{item0.Roh_citationCount.ToString()}", list, " . ");
 				}
 			}
 			}
