@@ -1251,7 +1251,7 @@ var edicionCV = {
                     htmlInput = this.printPropertyEditTextInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
-                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.dependency);
+                    htmlInput = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable|| property.blocked, property.dependency,property.entity_cv);
                     break;
                 case 'selectCombo':
                     htmlInput = this.printSelectCombo(property.property, value, property.comboValues, property.comboDependency, property.required, !iseditable|| property.blocked,property.entity_cv,property.dependency);
@@ -1363,7 +1363,7 @@ var edicionCV = {
                     htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, '', property.required, !iseditable|| property.blocked, property.autocomplete, property.dependency,property.autocompleteConfig,property.entity_cv,property.multilang,property.valuesmultilang);
                     break;
                 case 'number':
-                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable || property.blocked, property.dependency);
+                    htmlMultiple = this.printPropertyEditNumberInput(property.property, property.placeholder, value, property.required, !iseditable || property.blocked, property.dependency,property.entity_cv);
                     break;
                 case 'selectCombo':
                     htmlMultiple += this.printSelectCombo(property.property, '', property.comboValues, property.comboDependency, property.required, !iseditable|| property.blocked,property.entity_cv,property.dependency);
@@ -1457,7 +1457,7 @@ var edicionCV = {
                         htmlMultiple += this.printPropertyEditTextInput(property.property, property.placeholder, property.values[valor], property.required, true, false,null,null,null,property.multilang,property.valuesmultilang);
                         break;
                     case 'number':
-                        htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true);
+                        htmlMultiple += this.printPropertyEditNumberInput(property.property, property.placeholder, property.values[valor], property.required, true,null,property.entity_cv);
                         break;
                     case 'selectCombo':
                         htmlMultiple += this.printSelectCombo(property.property, property.values[valor], property.comboValues, property.comboDependency, property.required, true,property.entity_cv,property.dependency);
@@ -1724,11 +1724,16 @@ var edicionCV = {
 
         return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}_aux" placeholder="${placeholder}" value="${value}" value="${value}" onfocus="${action}" type="text" class="form-control not-outline autocompleteentity ${css}" ${htmlDependency}>`;
     },
-    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency) {
+    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency,pEntity_cv) 
+	{
         var css = "";
         if (required) {
             css = "obligatorio";
         }
+		if(pEntity_cv)
+		{
+			css+=" entity_cv";
+		}
         var prop_property = 'propertyrdf';
         var disabled = '';
         if (pDisabled) {
@@ -3880,8 +3885,9 @@ var edicionCV = {
     },
     guardarEntidad: function(pFormulario) {
         var that = this;
-
-        //Los modales son de 3 tipos
+		$('#modal-editar-entidad .modal-body>.form-actions>.ko').remove();
+        
+		//Los modales son de 3 tipos
         //Modal principal (item del CV)
         //Entidad auxiliar
         //Entidad principal
@@ -4110,7 +4116,14 @@ var edicionCV = {
 						}
 
 					} else {
-						alert("Error: " + data.error);
+						if(data.error!=null && data.error.startsWith("PROPREPETIDA"))
+						{
+							var msg= GetText("CV_PROPIEDADIDENTIFICADORREPETIDA",data.error.replace("PROPREPETIDA|",""));
+							$('#modal-editar-entidad .modal-body>.form-actions').append('<p class="ko" style="display:block">'+msg+'</p>');
+						}else
+						{
+							alert("Error: " + data.error);
+						}
 						OcultarUpdateProgress();
 					}					
 				});

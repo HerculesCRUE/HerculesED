@@ -39,12 +39,12 @@ namespace Utils
         public static string CvnLangCode(string lang)
         {
             Dictionary<string, string> langCodeGnossCVN = new Dictionary<string, string>();
-            langCodeGnossCVN.Add("es","spa");
+            langCodeGnossCVN.Add("es", "spa");
             langCodeGnossCVN.Add("ca", "cat");
             langCodeGnossCVN.Add("eu", "eus");
             langCodeGnossCVN.Add("gl", "glg");
             langCodeGnossCVN.Add("fr", "fra");
-            langCodeGnossCVN.Add("en", "eng");            
+            langCodeGnossCVN.Add("en", "eng");
             return langCodeGnossCVN[lang];
         }
         /// <summary>
@@ -696,7 +696,7 @@ namespace Utils
                 List<string[]> listadoPersonas = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad)))
                 .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
                 Dictionary<string, string> dicPersonas = listadoPersonas.GroupBy(p => p.ElementAt(1), StringComparer.OrdinalIgnoreCase).ToDictionary(g => g.Key, g => g.ElementAt(0).First());
-                
+
 
                 autorNombreApellido = GetListadoAutores(resourceApi, dicPersonas);
             }
@@ -724,6 +724,178 @@ namespace Utils
                 dicFirmas = listadoFirmas.ToDictionary(x => x.ElementAt(0), x => x.ElementAt(1));
             }
             return dicFirmas;
+        }
+
+        /// <summary>
+        /// Devuelve un lista de tuplas con las citas de Other
+        /// </summary>
+        /// <param name="propiedadNombre">Propiedad para el nombre de la fuente</param>
+        /// <param name="propiedadNumero">Propiedad para el nº de citas</param>
+        /// <param name="entity"></param>
+        /// <param name="resourceApi"></param>
+        /// <returns></returns>
+        public static List<Tuple<string, string>> GetCitasOther(string propiedadNombre, string propiedadNumero, Entity entity, ResourceApi resourceApi)
+        {
+            List<Tuple<string, string>> nombreCitas = new List<Tuple<string, string>>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedadNombre))))
+                &&
+                Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedadNombre))).Select(x => x.values).First())
+            )
+            {
+                List<string[]> listadoNombres = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedadNombre)))
+                .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+
+                List<string[]> listadoNumeros = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedadNumero)))
+                .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+
+                foreach (string[] nombres in listadoNombres)
+                {
+                    string entityAux = nombres[0];
+                    string nombre = nombres[1];
+                    foreach (string[] numeros in listadoNumeros)
+                    {
+                        if (entityAux == numeros[0])
+                        {
+                            nombreCitas.Add(new Tuple<string, string>(nombre, numeros[1]));
+                        }
+                    }
+                }
+            }
+
+            return nombreCitas;
+        }
+
+        /// <summary>
+        /// Devuelve un lista de tuplas con os indices de impacto
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="resourceApi"></param>
+        /// <returns></returns>
+        public static List<Tuple<string, string, string, string, string, string, string>> GetImpactIndex(Entity entity, ResourceApi resourceApi)
+        {
+            //Source
+            //SourceOther
+            //Categoria
+            //ImpactIndex
+            //PublicationPosition
+            //JournalNumberInCat
+            //Cuartil
+            List<Tuple<string, string, string, string, string, string, string>> impacts = new List<Tuple<string, string, string, string, string, string, string>>();
+            if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSource))))
+                &&
+                Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSource))).Select(x => x.values).First())
+            )
+            {
+                List<string[]> listadoSource = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSource)))
+                .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+
+                List<string[]> listadoSourceOther = new List<string[]>();
+                if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSourceOther))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSourceOther))).Select(x => x.values).First())
+                )
+                {
+                    listadoSourceOther = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSourceOther))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                }
+                List<string[]> listadoCategoria = new List<string[]>();
+                if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCategoria))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCategoria))).Select(x => x.values).First())
+                )
+                {
+                    listadoCategoria = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCategoria))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                }
+                List<string[]> listadoImpactindex = new List<string[]>();
+                if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoIndexInYear))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoIndexInYear))).Select(x => x.values).First())
+                )
+                {
+                    listadoImpactindex = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoIndexInYear))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                }
+                List<string[]> listadoPublicationPosition = new List<string[]>();
+                if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoPublicationPosition))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoPublicationPosition))).Select(x => x.values).First())
+                )
+                {
+                    listadoPublicationPosition = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoPublicationPosition))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                }
+                List<string[]> listadoJournalNumberInCat = new List<string[]>();
+                if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoJournalNumberInCat))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoJournalNumberInCat))).Select(x => x.values).First())
+                )
+                {
+                    listadoJournalNumberInCat = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoJournalNumberInCat))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                }
+                List<string[]> listadoCuartil = new List<string[]>();
+                if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCuartil))))
+                    &&
+                    Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCuartil))).Select(x => x.values).First())
+                )
+                {
+                    listadoCuartil = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCuartil))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
+                }
+
+
+                foreach (string[] sourceIn in listadoSource)
+                {
+                    string entityAux = sourceIn[0];
+                    string source = sourceIn[1].Replace(resourceApi.GraphsUrl + "items/referencesource_", "");
+                    string sourceOther = "";
+                    string categoria = "";
+                    string impactindex = "";
+                    string publicationPosition = "";
+                    string journalNumberInCat = "";
+                    string cuartil = "";
+                    foreach (string[] sourceOtherIn in listadoSourceOther)
+                    {
+                        if (entityAux == sourceOtherIn[0])
+                        {
+                            sourceOther = sourceOtherIn[1];
+                        }
+                    }
+                    foreach (string[] sourceCategoriaIn in listadoCategoria)
+                    {
+                        if (entityAux == sourceCategoriaIn[0])
+                        {
+                            categoria = sourceCategoriaIn[1];
+                        }
+                    }
+                    foreach (string[] impactIndexIn in listadoImpactindex)
+                    {
+                        if (entityAux == impactIndexIn[0])
+                        {
+                            impactindex = impactIndexIn[1];
+                        }
+                    }
+                    foreach (string[] publicationPositionIn in listadoPublicationPosition)
+                    {
+                        if (entityAux == publicationPositionIn[0])
+                        {
+                            publicationPosition = publicationPositionIn[1];
+                        }
+                    }
+                    foreach (string[] journalNumberInCatIn in listadoJournalNumberInCat)
+                    {
+                        if (entityAux == journalNumberInCatIn[0])
+                        {
+                            journalNumberInCat = journalNumberInCatIn[1];
+                        }
+                    }
+                    foreach (string[] cuartilIn in listadoCuartil)
+                    {
+                        if (entityAux == cuartilIn[0])
+                        {
+                            cuartil = cuartilIn[1];
+                        }
+                    }
+                    impacts.Add(new Tuple<string, string, string, string, string, string, string>(source, sourceOther, categoria, impactindex, publicationPosition, journalNumberInCat, cuartil));
+                }
+            }
+
+            return impacts;
         }
 
         /// <summary>
@@ -1066,7 +1238,7 @@ namespace Utils
                 return;
             }
 
-            // Si el tamaño del listado no es 2(WOS,SCOPUS,INRECS) o 3 (SCHOLAR) no hago nada
+            // Si el tamaño del listado no es 2 no hago nada
             if (dicCodigos.Count > 3 && dicCodigos.Count < 2)
             {
                 return;
@@ -1120,46 +1292,184 @@ namespace Utils
                 CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnString.Code = dicCodigos.ElementAt(1).Item2;
                 cvnString.Value = "020";
-
                 listadoStrings.Add(cvnString);
             }
-            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
             {
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
+                cvnDouble.Value = int.Parse(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
                 CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnString.Code = dicCodigos.ElementAt(1).Item2;
-                codeGroup.CvnString.Append(cvnString);
-
-                //Añado nombre otros
-                CvnItemBeanCvnCodeGroupCvnString cvnStringOthers = new CvnItemBeanCvnCodeGroupCvnString();
-                cvnStringOthers.Code = dicCodigos.ElementAt(2).Item2;
-                cvnStringOthers.Value = "OTHERS";
+                cvnString.Value = "OTHERS";
+                listadoStrings.Add(cvnString);
 
                 //Añado nombre otros
                 CvnItemBeanCvnCodeGroupCvnString cvnStringOthersNombre = new CvnItemBeanCvnCodeGroupCvnString();
-                cvnStringOthersNombre.Code = dicCodigos.ElementAt(3).Item2;
-                cvnStringOthersNombre.Value = entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault();
+                cvnStringOthersNombre.Code = dicCodigos.ElementAt(2).Item2;
+                cvnStringOthersNombre.Value = dicCodigos.ElementAt(2).Item3;
 
+                listadoStrings.Add(cvnStringOthersNombre);
+            }
+            else if (dicCodigos.ElementAt(1).Item3.Equals("GOOGLE") && Comprobar(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            {
+                //Añado nº de citas
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+                cvnDouble.Value = int.Parse(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
+                listadoDouble.Add(cvnDouble);
+
+                //Añado Tipo
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = dicCodigos.ElementAt(1).Item2;
+                cvnString.Value = "OTHERS";
                 listadoStrings.Add(cvnString);
+
+                //Añado nombre otros
+                CvnItemBeanCvnCodeGroupCvnString cvnStringOthersNombre = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnStringOthersNombre.Code = dicCodigos.ElementAt(2).Item2;
+                cvnStringOthersNombre.Value = dicCodigos.ElementAt(2).Item3;
+
+                listadoStrings.Add(cvnStringOthersNombre);
+            }
+            else if (dicCodigos.ElementAt(1).Item3.Equals("OTHERS") && dicCodigos.Count == 3)
+            {
+                //Añado nº de citas
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+                cvnDouble.Value = int.Parse(dicCodigos.ElementAt(0).Item3).ToString();
+                listadoDouble.Add(cvnDouble);
+
+                //Añado Tipo
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = dicCodigos.ElementAt(1).Item2;
+                cvnString.Value = dicCodigos.ElementAt(1).Item3;
+                listadoStrings.Add(cvnString);
+
+                //Añado nombre otros
+                CvnItemBeanCvnCodeGroupCvnString cvnStringOthersNombre = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnStringOthersNombre.Code = dicCodigos.ElementAt(2).Item2;
+                cvnStringOthersNombre.Value = dicCodigos.ElementAt(2).Item3;
+
+                listadoStrings.Add(cvnStringOthersNombre);
             }
 
 
             if (listadoStrings.Count > 0)
             {
-                codeGroup.CvnString = new CvnItemBeanCvnCodeGroupCvnString[10];
                 codeGroup.CvnString = listadoStrings.ToArray();
             }
             if (listadoDouble.Count > 0)
             {
-                codeGroup.CvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble[10];
                 codeGroup.CvnDouble = listadoDouble.ToArray();
             }
+
+            if (codeGroup.CvnString != null && codeGroup.CvnString.Length != 0)
+            {
+                itemBean.Items.Add(codeGroup);
+            }
+        }
+
+        /// <summary>
+        /// Añade índices de impacto al objeto <paramref name="itemBean"/>.
+        /// </summary>
+        /// <param name="itemBean"></param>
+        /// <param name="source"></param>
+        /// <param name="sourceOther"></param>
+        /// <param name="categoria"></param>
+        /// <param name="impactIndex"></param>
+        /// <param name="publicationPosition"></param>
+        /// <param name="journalNumberInCat"></param>
+        /// <param name="cuartil"></param>
+        public static void AddImpactIndex(CvnItemBean itemBean, string source,string sourceOther,string categoria,string impactIndex, string publicationPosition, string journalNumberInCat, string cuartil)
+        {
+            //Source
+            //SourceOther
+            //Categoria
+            //ImpactIndex
+            //PublicationPosition
+            //JournalNumberInCat
+            //Cuartil
+
+
+            //Inicializacion de valores
+            CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
+            codeGroup.Code = "060.010.010.180";
+
+            CvnItemBeanCvnCodeGroupCvnTitleBean titleBean = null;
+            CvnItemBeanCvnCodeGroupCvnBoolean boolBean = null;
+            List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new List<CvnItemBeanCvnCodeGroupCvnString>();
+            List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new List<CvnItemBeanCvnCodeGroupCvnDouble>();
+            
+
+            if(!string.IsNullOrEmpty(source))
+            {
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = "060.010.010.190";
+                cvnString.Value = source;
+                listadoStrings.Add(cvnString);
+            }
+            if (!string.IsNullOrEmpty(sourceOther))
+            {
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = "060.010.010.200";
+                cvnString.Value = sourceOther;
+                listadoStrings.Add(cvnString);
+            }
+            if (!string.IsNullOrEmpty(categoria))
+            {
+                titleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
+                titleBean.Code = "060.010.010.240";
+                titleBean.Name = categoria;
+            }
+            if (!string.IsNullOrEmpty(impactIndex))
+            {
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = "060.010.010.180";
+                cvnString.Value = impactIndex;
+                listadoStrings.Add(cvnString);
+            }
+            if (!string.IsNullOrEmpty(publicationPosition))
+            {
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = "060.010.010.250";
+                cvnDouble.Value = publicationPosition;
+                listadoDouble.Add(cvnDouble);
+            }
+            if (!string.IsNullOrEmpty(journalNumberInCat))
+            {
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = "060.010.010.260";
+                cvnDouble.Value = journalNumberInCat;
+                listadoDouble.Add(cvnDouble);
+            }
+            if (!string.IsNullOrEmpty(cuartil))
+            {
+                boolBean = new CvnItemBeanCvnCodeGroupCvnBoolean();
+                boolBean.Code = "060.010.010.330";
+                boolBean.Value = cuartil=="1";
+            }
+
+            if (titleBean!=null)
+            {
+                codeGroup.CvnTitleBean = titleBean;
+            }
+            if (boolBean != null)
+            {
+                codeGroup.CvnBoolean = boolBean;
+            }
+            if (listadoStrings.Count > 0)
+            {
+                codeGroup.CvnString = listadoStrings.ToArray();
+            }
+            if (listadoDouble.Count > 0)
+            {
+                codeGroup.CvnDouble = listadoDouble.ToArray();
+            }            
 
             if (codeGroup.CvnString != null && codeGroup.CvnString.Length != 0)
             {

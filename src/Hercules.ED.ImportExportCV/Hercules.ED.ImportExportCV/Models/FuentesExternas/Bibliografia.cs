@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Hercules.ED.ImportExportCV.Models.FuentesExternas
 {
-    public class PubReferencias
+    public class Bibliografia
     {
         public string doi { get; set; }
         public string url { get; set; }

@@ -21,6 +21,12 @@ namespace Hercules.ED.ImportExportCV.Models
             this.rotype = "papers";
             this.title = tituloPublicacion;
         }
+        public ObjEnriquecimiento(string tituloPublicacion, string @abstract)
+        {
+            this.abstract_ = @abstract;
+            this.rotype = "papers";
+            this.title = tituloPublicacion;
+        }
 
         public class Topics_enriquecidos
         {

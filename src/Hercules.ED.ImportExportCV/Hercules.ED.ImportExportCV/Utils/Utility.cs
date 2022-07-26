@@ -2,6 +2,7 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Models;
+using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV;
 using Models;
 using System;
@@ -1889,6 +1890,61 @@ namespace Utils
         public static string GetResearcherID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
             return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
+        }
+
+        public static Person GetPersonaCV(string pCVID)
+        {
+            Person persona = new Person();
+            try
+            {
+                string select = $@"select distinct ?person ";
+                string where = $@" where {{
+                                    ?s <http://w3id.org/roh/cvOf> ?person .
+                                    ?person <http://w3id.org/roh/ORCID> ?orcid .
+                                    ?person <http://xmlns.com/foaf/0.1/name> ?nombre .
+                                    FILTER(?s=<{pCVID}>)
+                                }}";
+                SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                {
+                    persona.name.nombre_completo = new List<string>() { fila["nombre"].value };
+                    persona.ORCID = fila["orcid"].value;
+                }
+                return persona;
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error(e.Message);
+            }
+            return persona;
+        }
+
+        public static string DatetimeFE(string dateTime)
+        {
+            try
+            {
+                //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
+                int anio = int.Parse(dateTime.Split("-").ElementAt(0));
+                int mes = int.Parse(dateTime.Split("-").ElementAt(1));
+                int dia = int.Parse(dateTime.Split("-").ElementAt(2));
+
+                DateTime datetimeAux = new DateTime(anio, mes, dia);
+
+                DateTime dateTime2 = new DateTime(datetimeAux.Ticks, DateTimeKind.Unspecified);
+
+                if (TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id.Contains("Europe/Madrid")))
+                {
+                    dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+                }
+
+
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error("Error en el formato de fecha" + e.Message + " " + e.StackTrace);
+                return null;
+            }
         }
 
         /// <summary>

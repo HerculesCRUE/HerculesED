@@ -113,7 +113,7 @@ namespace Utils
         /// <param name="pResourceApi">pResourceApi</param>
         /// <param name="nombreRevista">nombreRevista</param>
         /// <returns>string</returns>
-        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista)
+        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista, [Optional] string issn)
         {
             //Si el nombre de la revista es nulo o vacio
             if (string.IsNullOrEmpty(nombreRevista)) { return null; }
@@ -356,13 +356,24 @@ namespace Utils
             }
         }
 
-        public static void PublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
+        public static Publication PublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
         {
-            string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "GetRoPublication/?pDoi='" + doi +"'";
-            HttpClient httpClientEstado = new HttpClient();
-            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
-            Publication publication = JsonConvert.DeserializeObject<Publication>(responseEstado.Content.ReadAsStringAsync().Result);
-
+            try
+            {
+                string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "Publication/GetRoPublication/?pDoi=" + doi + "";
+                HttpClient httpClientEstado = new HttpClient();
+                HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+                List<Publication> publication = JsonConvert.DeserializeObject<List<Publication>>(responseEstado.Content.ReadAsStringAsync().Result);
+                if (publication != null && publication.Count != 0)
+                {
+                    return publication.First();
+                }
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error(e.Message);
+            }
+            return null;
         }
 
         /// <summary>
@@ -485,7 +496,6 @@ namespace Utils
                     listado.Add(valueAux);
                 }
             }
-
 
             return listado.ToList();
         }
@@ -780,10 +790,10 @@ namespace Utils
         }
 
         /// <summary>
-        /// Dada una cadena de GUID concatenados y finalizando en "|" y un string en caso de que 
+        /// Dada una cadena de GUID concatenados y un string en caso de que 
         /// el string no sea nulo los concatena, sino devuelve null.
         /// </summary>
-        /// <param name="entityAux">GUID concatenado con "|"</param>
+        /// <param name="entityAux">GUID concatenado</param>
         /// <param name="valor">Valor del parametro</param>
         /// <returns>String de concatenar los parametros, o nulo si el valor es vacio</returns>
         public static string StringGNOSSID(string entityAux, string valor)
