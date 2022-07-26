@@ -1294,12 +1294,33 @@ namespace Utils
                 cvnString.Value = "020";
                 listadoStrings.Add(cvnString);
             }
-            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            else if (dicCodigos.ElementAt(1).Item3.Equals("SCHOLAR") && Comprobar(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
             {
                 //Añado nº de citas
                 CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
                 cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
-                cvnDouble.Value = int.Parse(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
+                cvnDouble.Value = int.Parse(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
+                listadoDouble.Add(cvnDouble);
+
+                //Añado Tipo
+                CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnString.Code = dicCodigos.ElementAt(1).Item2;
+                cvnString.Value = "OTHERS";
+                listadoStrings.Add(cvnString);
+
+                //Añado nombre otros
+                CvnItemBeanCvnCodeGroupCvnString cvnStringOthersNombre = new CvnItemBeanCvnCodeGroupCvnString();
+                cvnStringOthersNombre.Code = dicCodigos.ElementAt(2).Item2;
+                cvnStringOthersNombre.Value = dicCodigos.ElementAt(2).Item3;
+
+                listadoStrings.Add(cvnStringOthersNombre);
+            }
+            else if (dicCodigos.ElementAt(1).Item3.Equals("GOOGLE") && Comprobar(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))) && dicCodigos.Count == 3)
+            {
+                //Añado nº de citas
+                CvnItemBeanCvnCodeGroupCvnDouble cvnDouble = new CvnItemBeanCvnCodeGroupCvnDouble();
+                cvnDouble.Code = dicCodigos.ElementAt(0).Item2;
+                cvnDouble.Value = int.Parse(entity.properties_cv.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3)).Select(x => x.values).FirstOrDefault().FirstOrDefault()).ToString();
                 listadoDouble.Add(cvnDouble);
 
                 //Añado Tipo
