@@ -113,7 +113,7 @@ namespace Utils
         /// <param name="pResourceApi">pResourceApi</param>
         /// <param name="nombreRevista">nombreRevista</param>
         /// <returns>string</returns>
-        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista)
+        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista, [Optional] string issn)
         {
             //Si el nombre de la revista es nulo o vacio
             if (string.IsNullOrEmpty(nombreRevista)) { return null; }
@@ -358,17 +358,24 @@ namespace Utils
 
         public static Publication PublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
         {
-            string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "Publication/GetRoPublication/?pDoi=" + doi + "";
-            HttpClient httpClientEstado = new HttpClient();
-            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
-            List<Publication> publication = JsonConvert.DeserializeObject<List<Publication>>(responseEstado.Content.ReadAsStringAsync().Result);
-            if (publication != null && publication.Count != 0)
+            try
             {
-                return publication.First();
+                string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "Publication/GetRoPublication/?pDoi=" + doi + "";
+                HttpClient httpClientEstado = new HttpClient();
+                HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+                List<Publication> publication = JsonConvert.DeserializeObject<List<Publication>>(responseEstado.Content.ReadAsStringAsync().Result);
+                if (publication != null && publication.Count != 0)
+                {
+                    return publication.First();
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
-                return null;
+                mResourceApi.Log.Error(e.Message);
             }
         }
 
