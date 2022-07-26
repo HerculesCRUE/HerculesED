@@ -1559,8 +1559,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 PublicacionesDocumentosFEIdentificadores(publicationFE.IDs, entidadAux);
                                 //PublicationVenue
                                 PublicacionesDocumentosFEPublicationVenue(publicationFE.hasPublicationVenue, entidadAux);
-                                ////TODO - Metricas
-                                //PublicacionesDocumentosFEMetricas(publicationFE.hasMetric, entidadAux);
+                                // Metricas
+                                PublicacionesDocumentosFEMetricas(publicationFE.hasMetric, entidadAux);
                                 //Bibliografia
                                 PublicacionesDocumentosFEBibliografia(publicationFE.bibliografia, entidadAux);
 
@@ -1678,25 +1678,24 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
         }
 
-        //TODO
-        //private void PublicacionesDocumentosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
-        //{
-        //    foreach (PublicationMetric metrica in hasMetric)
-        //    {
-        //        if (metrica.metricName.ToLower().Equals("wos"))
-        //        {
-        //            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-        //                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
-        //            ));
-        //        }
-        //        else if (metrica.metricName.ToLower().Equals("scopus"))
-        //        {
-        //            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-        //                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
-        //            ));
-        //        }
-        //    }
-        //}
+        private void PublicacionesDocumentosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
+        {
+            foreach (PublicationMetric metrica in hasMetric)
+            {
+                if (metrica.metricName.ToLower().Equals("wos"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
+                    ));
+                }
+                else if (metrica.metricName.ToLower().Equals("scopus"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
+                    ));
+                }
+            }
+        }
 
         private void PublicacionesDocumentosFEOrigenesFuentes(HashSet<string> origenesDatos, Entity entidadAux)
         {
@@ -2209,8 +2208,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 TrabajosCongresosFEOrigenesFuentes(publicationFE.dataOriginList, entidadAux);
                                 //Identificadores
                                 TrabajosCongresosFEIdentificadores(publicationFE.IDs, entidadAux);
-                                ////TODO - Metricas
-                                //TrabajosCongresosFEMetricas(publicationFE.hasMetric, entidadAux);
+                                //Metricas
+                                TrabajosCongresosFEMetricas(publicationFE.hasMetric, entidadAux);
                                 //Bibliografia
                                 TrabajosCongresosFEBibliografia(publicationFE.bibliografia, entidadAux);
 
@@ -2301,6 +2300,25 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
+        }
+
+        private void TrabajosCongresosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
+        {
+            foreach (PublicationMetric metrica in hasMetric)
+            {
+                if (metrica.metricName.ToLower().Equals("wos"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
+                    ));
+                }
+                else if (metrica.metricName.ToLower().Equals("scopus"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
+                    ));
+                }
+            }
         }
 
         private string TrabajosCongresosComprobarDOI(CvnItemBean item)
@@ -2519,7 +2537,26 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private HashSet<string> TrabajosCongresosFEEtiquetasExternas(List<FreetextKeywords> freetextKeywords, Entity entidadAux)
         {
-            return null;
+            HashSet<string> listadoEtiquetas = new HashSet<string>();
+            //Agrupo todas las etiquetas y posteriormente las añado
+            foreach (FreetextKeywords freetextKeyword in freetextKeywords)
+            {
+                foreach (string keyword in freetextKeyword.freetextKeyword)
+                {
+                    if (!listadoEtiquetas.Contains(keyword.ToLower()))
+                    {
+                        listadoEtiquetas.Add(keyword.ToLower());
+                    }
+                }
+            }
+            foreach (string keyword in listadoEtiquetas)
+            {
+                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                   new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTextosExternosTitulo, keyword)
+                ));
+            }
+
+            return listadoEtiquetas;
         }
 
         private Publication TrabajosCongresosComprobarPublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
