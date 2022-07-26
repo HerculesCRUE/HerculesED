@@ -226,6 +226,43 @@ namespace EditorCV.Models
                 ItemEdit itemEditConfig = null;
                 if (templateSection.presentation.listItemsPresentation != null)
                 {
+                    List<ItemEditSectionRowProperty> propsUnique = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.unique).ToList();
+                    if (propsUnique.Count > 0)
+                    {
+                        Entity loadedEntity = null;
+                        if (!string.IsNullOrEmpty(pEntity.id) && !Guid.TryParse(pEntity.id, out Guid xx))
+                        {
+                            loadedEntity = GetLoadedEntity(pEntity.id, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
+                        }                        
+
+                        foreach (ItemEditSectionRowProperty prop in propsUnique)
+                        {
+                            //Si se ha cambiado la propiedad comprobamos que no exista otra entidad con esa propiedad
+                            bool cambiado = false;
+                            string valorCargar = pEntity.properties.Where(x => x.prop == prop.property).SelectMany(x => x.values).ToList().FirstOrDefault();
+                            if (loadedEntity==null)
+                            {
+                                cambiado = true;
+                            }else
+                            {
+                                string valorCargado = loadedEntity.properties.Where(x => x.prop == prop.property).SelectMany(x => x.values).ToList().FirstOrDefault();                                
+                                cambiado = valorCargado?.ToLower() != valorCargar?.ToLower();
+                            }
+
+                            if (cambiado && !string.IsNullOrEmpty(valorCargar))
+                            {
+                                //Comprobamos que no exista otra entidad con esta propiedad
+                                string select = "select ?s";
+                                string where = $@"where{{?s <{prop.property}> ?id, FILTER(lcase(?id)='{valorCargar.Replace("'","\\'").ToLower()}'}}";
+                                var existe = mResourceApi.VirtuosoQuery(select, where, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
+                                if (existe.results.bindings.Count > 0)
+                                {
+                                    return new JsonResult() { ok = false, error = "PROPREPETIDA|" + prop.title[pLang] };
+                                }
+                            }
+                        }
+                    }
+
                     mResourceApi.ChangeOntoly(templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                     pEntity.ontology = templateSection.presentation.listItemsPresentation.listItemEdit.graph;
                     itemEditConfig = templateSection.presentation.listItemsPresentation.listItemEdit;
