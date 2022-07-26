@@ -201,6 +201,10 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public string property_cv;
         /// <summary>
+        /// Propiedad para indicar que se quieren revisar los duplicados
+        /// </summary>
+        public bool checkDuplicates;
+        /// <summary>
         /// Rdf:type de ña entidad del cv 
         /// </summary>
         public string rdftype_cv;        
