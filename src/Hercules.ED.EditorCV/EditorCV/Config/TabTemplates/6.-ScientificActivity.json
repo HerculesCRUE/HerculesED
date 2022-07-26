@@ -1447,7 +1447,20 @@
                           "es": "Nº citas inrecs"
                         },
                         "property": "http://w3id.org/roh/inrecsCitationCount",
-                        "blocked": true,
+                        "entity_cv": true,
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nº citas Google Scholar"
+                        },
+                        "property": "http://w3id.org/roh/gogleScholarCitationCount",
+                        "entity_cv": true,
                         "type": "number",
                         "width": 1
                       }
@@ -1491,7 +1504,7 @@
                         "width": 1
                       }
                     ]
-                  },                  
+                  },
                   {
                     "properties": [
                       {
@@ -2957,7 +2970,20 @@
                           "es": "Nº citas inrecs"
                         },
                         "property": "http://w3id.org/roh/inrecsCitationCount",
-                        "blocked": true,
+                        "entity_cv": true,
+                        "type": "number",
+                        "width": 1
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Nº citas Google Scholar"
+                        },
+                        "property": "http://w3id.org/roh/gogleScholarCitationCount",
+                        "entity_cv": true,
                         "type": "number",
                         "width": 1
                       }
