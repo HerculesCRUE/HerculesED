@@ -368,15 +368,12 @@ namespace Utils
                 {
                     return publication.First();
                 }
-                else
-                {
-                    return null;
-                }
             }
             catch (Exception e)
             {
                 mResourceApi.Log.Error(e.Message);
             }
+            return null;
         }
 
         /// <summary>

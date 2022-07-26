@@ -1892,7 +1892,7 @@ namespace Utils
             return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
         }
 
-        public static Person GetPersonaCV()
+        public static Person GetPersonaCV(string pCVID)
         {
             Person persona = new Person();
             try
@@ -1907,15 +1907,16 @@ namespace Utils
                 SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    persona.name = fila["nombre"].value;
+                    persona.name.nombre_completo = new List<string>() { fila["nombre"].value };
                     persona.ORCID = fila["orcid"].value;
                 }
                 return persona;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 mResourceApi.Log.Error(e.Message);
             }
+            return persona;
         }
 
         public static string DatetimeFE(string dateTime)
