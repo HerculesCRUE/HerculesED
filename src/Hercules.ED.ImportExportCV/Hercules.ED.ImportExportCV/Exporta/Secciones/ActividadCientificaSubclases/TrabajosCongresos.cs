@@ -111,7 +111,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.060", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros),
                     "060.010.020.070", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosAutoCorrespondencia),
+                UtilityExportar.AddCvnItemBeanCvnBoolean_cv(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorCorrespondencia),
                     "060.010.020.390", keyValue.Value);
 
                 // Lista de autores
