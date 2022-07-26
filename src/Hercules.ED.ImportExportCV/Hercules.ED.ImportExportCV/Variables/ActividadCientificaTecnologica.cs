@@ -48,20 +48,40 @@
         public const string pubDocumentosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
         public const string pubDocumentosNombreOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
         public const string pubDocumentosPubEditorial = "http://purl.org/ontology/bibo/publisher";
-        public const string pubDocumentosIndiceImpacto = "";
+        public const string pubDocumentosIndiceImpactoSource = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/impactSource";
+        public const string pubDocumentosIndiceImpactoSourceOther = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/impactSourceOther";
+        public const string pubDocumentosIndiceImpactoCategoria = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/impactIndexCategory";
+        public const string pubDocumentosIndiceImpactoIndexInYear = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/impactIndexInYear";
+        public const string pubDocumentosIndiceImpactoPublicationPosition = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/publicationPosition";
+        public const string pubDocumentosIndiceImpactoJournalNumberInCat = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/journalNumberInCat";
+        public const string pubDocumentosIndiceImpactoCuartil = "http://w3id.org/roh/impactIndex@@@http://w3id.org/roh/ImpactIndex|http://w3id.org/roh/quartile";
         public const string pubDocumentosCitasInrecs = "http://w3id.org/roh/inrecsCitationCount";
+        public const string pubDocumentosCitasGoogleScholar = "http://w3id.org/roh/googleScholarCitationCount";
         public const string pubDocumentosCitasScopus = "http://w3id.org/roh/scopusCitationCount";
         public const string pubDocumentosCitasWOS = "http://w3id.org/roh/wosCitationCount";
         public const string pubDocumentosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
-        public const string pubDocumentosOtrasCitas = "";
-        public const string pubDocumentosOtrasCitasNombre = "";
         public const string pubDocumentosAutores = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
         public const string pubDocumentosAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://xmlns.com/foaf/0.1/nick";
         public const string pubDocumentosNombreRevista = "http://vivoweb.org/ontology/core#hasPublicationVenue@@@http://purl.org/ontology/bibo/Document|http://w3id.org/roh/title";
         public const string pubDocumentosAreasTematicasEnriquecidas = "http://w3id.org/roh/enrichedKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string pubDocumentosTextosEnriquecidosTitulo = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/title";
         public const string pubDocumentosTextosEnriquecidosScore = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/score";
-        
+        public const string pubDocumentosDescripcion = "http://purl.org/ontology/bibo/abstract";
+        public const string pubDocumentosURLDocumento = "http://w3id.org/roh/hasFile";
+        public const string pubDocumentosOpenAccess = "http://w3id.org/roh/openAccess";
+        public const string pubDocumentosAreasTematicasExternas = "http://w3id.org/roh/externalKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string pubDocumentosTextosExternosTitulo = "http://w3id.org/roh/externalKeywords";
+        public const string pubDocumentosBiblioDOI = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/ontology/bibo/doi";
+        public const string pubDocumentosBiblioURL = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|https://www.w3.org/2006/vcard/ns#url";
+        public const string pubDocumentosBiblioAnioPub = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/dc/terms/issued";
+        public const string pubDocumentosBiblioTitulo = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/title";
+        public const string pubDocumentosBiblioRevista = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/hasPublicationVenueText";
+        public const string pubDocumentosBiblioAutoresNombre = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://xmlns.com/foaf/0.1/name";
+        public const string pubDocumentosBiblioAutoresScholarID = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://w3id.org/roh/semanticScholarId";
+        public const string pubDocumentosOrigenFuentes = "http://w3id.org/roh/dataOrigin";
+        public const string pubDocumentosIDNombre = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
+        public const string pubDocumentosIDValor = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
+
         /// <summary>
         /// Trabajos presentados en congresos nacionales o internacionales - 060.010.020.000
         /// <summary>
@@ -110,11 +130,10 @@
         public const string trabajosCongresosIDOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
         public const string trabajosCongresosNombreOtroPubDigital = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
         public const string trabajosCongresosCitasInrecs = "http://w3id.org/roh/inrecsCitationCount";
+        public const string trabajosCongresosCitasGoogleScholar = "http://w3id.org/roh/googleScholarCitationCount";
         public const string trabajosCongresosCitasScopus = "http://w3id.org/roh/scopusCitationCount";
         public const string trabajosCongresosCitasWOS = "http://w3id.org/roh/wosCitationCount";
         public const string trabajosCongresosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
-        public const string trabajosCongresosOtrasCitas = "";
-        public const string trabajosCongresosOtrasCitasNombre = "";
         public const string trabajosCongresosMiembrosAutores = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
         public const string trabajosCongresosMiembrosAutorFirma = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://xmlns.com/foaf/0.1/nick";
         public const string trabajosCongresosAreasTematicasEnriquecidas = "http://w3id.org/roh/enrichedKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";

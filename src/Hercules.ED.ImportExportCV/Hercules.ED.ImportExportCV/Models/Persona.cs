@@ -181,6 +181,21 @@ namespace Hercules.ED.ImportExportCV.Models
             this.proyectos = new HashSet<string>();
         }
 
+        public Persona(string nombre, string primerApellido, string firma)
+        {
+            this.nombreCompleto = (nombre + " " + primerApellido).Trim();
+            this.firma = firma;
+            this.nombre = nombre;
+            this.primerApellido = primerApellido;
+            this.segundoApellido = "";
+            this.coautores = new HashSet<string>();
+            this.documentos = new HashSet<string>();
+            this.departamento = new HashSet<string>();
+            this.organizacion = new HashSet<string>();
+            this.grupos = new HashSet<string>();
+            this.proyectos = new HashSet<string>();
+        }
+
         public Persona()
         {
             this.nombreCompleto = "";
