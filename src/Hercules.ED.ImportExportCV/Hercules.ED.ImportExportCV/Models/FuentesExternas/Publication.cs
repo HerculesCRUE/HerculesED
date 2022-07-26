@@ -32,6 +32,7 @@ namespace Hercules.ED.ImportExportCV.Models.FuentesExternas
         public string presentedAt { get; set; }
         //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
         public Source hasPublicationVenue { get; set; }
+        public List<PublicationMetric> hasMetric { get; set; }
         public List<Bibliografia> bibliografia { get; set; }
         public List<Publication> citas { get; set; }
         public HashSet<string> dataOriginList { get; set; }
