@@ -4369,6 +4369,70 @@ var edicionCV = {
     }
 };
 
+$(document).ready(function () {
+
+	//TODO DUPLICIDAD	
+	var userID = $("#inpt_usuarioID").val();
+	var url = urlEdicionCV + "getPublicacionesDuplicadas?usuarioID=" + userID;
+	MostrarUpdateProgress();
+	$.get(url, null, function (data) {
+		console.log(data);
+		console.log(Object.entries(data).length);
+
+		var modal = $("#modal-posible-duplicidad");
+		modal.modal('show');
+		var numDuplicdad = Object.values(Object.values(data)[0]).length;
+		var titulo = $(modal).find(".alert-title").text();
+		modal.find(".alert-title").text(titulo + " (" + (i+1) + "/" + numDuplicdad + ")");
+		var first = Object.values(Object.values(data)[0])[0];
+		console.log(first);
+
+
+
+		for (var i = 0; i < first.length; i++) {
+			console.log(first[i]);
+			url = urlEdicionCV + "getPublicationMiniData?usuarioID=" + userID + "&entityID=" + first[i]+ "&tipo=" +Object.entries(data)[0][0] + "&lang=" + "es";
+
+			$.get(url, null, function (data) {
+				console.log(data);
+
+	
+
+
+				modal.find(".formulario-publicacion div.resource-list-wrap").append(`
+				<article class="resource">
+					<div class="form-group">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="publicacion" id="publicacion-1">
+							<label class="form-check-label" for="publicacion-1"></label>
+						</div>
+					</div>
+					<div class="wrap">
+						<div class="middle-wrap">
+							<div class="title-wrap">
+								<h2 class="resource-title">
+								<a href="javascript: void(0);">${data.title}</a>
+								</h2>
+								<div class="block-wrapper" data-original-title="" title="">
+									<span class="material-icons">block</span>
+								</div>
+								<div class="visibility-wrapper">
+									<div class="con-icono-before eye" data-original-title="" title=""></div>
+								</div>
+								<span class="material-icons arrow">keyboard_arrow_down</span>
+							</div>
+
+						
+
+						</div>
+					</div>
+				</article>
+				`
+				);		
+			});
+		}
+	});
+});
 
 //Métodos auxiliares
 function EliminarAcentos(texto) {
