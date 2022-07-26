@@ -1891,6 +1891,34 @@ namespace Utils
             return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
         }
 
+        public static string DatetimeFE(string dateTime)
+        {
+            try
+            {
+                //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
+                int anio = int.Parse(dateTime.Split("-").ElementAt(0));
+                int mes = int.Parse(dateTime.Split("-").ElementAt(1));
+                int dia = int.Parse(dateTime.Split("-").ElementAt(2));
+
+                DateTime datetimeAux = new DateTime(anio, mes, dia);
+
+                DateTime dateTime2 = new DateTime(datetimeAux.Ticks, DateTimeKind.Unspecified);
+
+                if (TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id.Contains("Europe/Madrid")))
+                {
+                    dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
+                }
+
+
+                return dateTime2.ToString("yyyyMMdd000000");
+            }
+            catch (Exception e)
+            {
+                mResourceApi.Log.Error("Error en el formato de fecha" + e.Message + " " + e.StackTrace);
+                return null;
+            }
+        }
+
         /// <summary>
         /// Devuelve un string en formato de fecha de GNOSS
         /// YYYYMMDD000000
