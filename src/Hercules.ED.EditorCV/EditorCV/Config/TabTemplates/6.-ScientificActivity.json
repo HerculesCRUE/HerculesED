@@ -1090,6 +1090,7 @@
                         },
                         "property": "http://purl.org/ontology/bibo/doi",
                         "type": "text",
+                        "unique": true,
                         "width": 1
                       },
                       {
@@ -1490,64 +1491,7 @@
                         "width": 1
                       }
                     ]
-                  },
-                  {
-                    "properties": [
-                      {
-                        "property": "http://w3id.org/roh/hasMetric",
-                        "type": "auxEntity",
-                        "title": {
-                          "es": "Otras fuentes de citas"
-                        },
-                        "multiple": true,
-                        "blocked": true,
-                        "width": 3,
-                        "auxEntityData": {
-                          "rdftype": "http://w3id.org/roh/PublicationMetric",
-                          "propertyTitle": {
-                            "property": "http://w3id.org/roh/metricName"
-                          },
-                          "properties": [
-                            {
-                              "name": {
-                                "es": "Nº de citas"
-                              },
-                              "child": {
-                                "property": "http://w3id.org/roh/citationCount"
-                              }
-                            }
-                          ],
-                          "rows": [
-                            {
-                              "properties": [
-
-                                {
-                                  "title": {
-                                    "es": "Nombre de la fuente"
-                                  },
-                                  "type": "text",
-                                  "required": true,
-                                  "blocked": true,
-                                  "property": "http://w3id.org/roh/metricName",
-                                  "width": 1
-                                },
-                                {
-                                  "title": {
-                                    "es": "Nº de citas"
-                                  },
-                                  "type": "number",
-                                  "required": true,
-                                  "blocked": true,
-                                  "property": "http://w3id.org/roh/citationCount",
-                                  "width": 1
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  },
+                  },                  
                   {
                     "properties": [
                       {
@@ -2819,6 +2763,7 @@
                         },
                         "property": "http://purl.org/ontology/bibo/doi",
                         "type": "text",
+                        "unique": true,
                         "width": 1
                       },
                       {
@@ -4267,6 +4212,7 @@
                         },
                         "property": "http://purl.org/ontology/bibo/doi",
                         "type": "text",
+                        "unique": true,
                         "width": 1
                       },
                       {
@@ -5332,6 +5278,7 @@
                         },
                         "property": "http://purl.org/ontology/bibo/doi",
                         "type": "text",
+                        "unique": true,
                         "width": 1
                       },
                       {
