@@ -67,7 +67,24 @@
         public const string pubDocumentosAreasTematicasEnriquecidas = "http://w3id.org/roh/enrichedKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string pubDocumentosTextosEnriquecidosTitulo = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/title";
         public const string pubDocumentosTextosEnriquecidosScore = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/score";
-        
+        public const string pubDocumentosDescripcion = "http://purl.org/ontology/bibo/abstract";
+        public const string pubDocumentosURLDocumento = "http://w3id.org/roh/hasFile";
+        public const string pubDocumentosOpenAccess = "http://w3id.org/roh/openAccess";
+        public const string pubDocumentosAreasTematicasExternas = "http://w3id.org/roh/externalKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
+        public const string pubDocumentosTextosExternosTitulo = "http://w3id.org/roh/externalKeywords";
+        public const string pubDocumentosPublicationMetricName = "http://w3id.org/roh/hasMetric@@@http://w3id.org/roh/PublicationMetric|http://w3id.org/roh/metricName";
+        public const string pubDocumentosPublicationMetricCitas = "http://w3id.org/roh/hasMetric@@@http://w3id.org/roh/PublicationMetric|http://w3id.org/roh/citationCount";
+        public const string pubDocumentosBiblioDOI = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/ontology/bibo/doi";
+        public const string pubDocumentosBiblioURL = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|https://www.w3.org/2006/vcard/ns#url";
+        public const string pubDocumentosBiblioAnioPub = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://purl.org/dc/terms/issued";
+        public const string pubDocumentosBiblioTitulo = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/title";
+        public const string pubDocumentosBiblioRevista = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/hasPublicationVenueText";
+        public const string pubDocumentosBiblioAutoresNombre = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://xmlns.com/foaf/0.1/name";
+        public const string pubDocumentosBiblioAutoresScholarID = "http://w3id.org/roh/references@@@http://w3id.org/roh/Reference|http://w3id.org/roh/authorList@@@http://w3id.org/roh/ReferenceAuthor|http://w3id.org/roh/semanticScholarId";
+        public const string pubDocumentosOrigenFuentes = "http://w3id.org/roh/dataOrigin";
+        public const string pubDocumentosIDNombre = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic";
+        public const string pubDocumentosIDValor = "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title";
+
         /// <summary>
         /// Trabajos presentados en congresos nacionales o internacionales - 060.010.020.000
         /// <summary>
