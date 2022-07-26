@@ -266,14 +266,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     ?document a <http://purl.org/ontology/bibo/Document>.
                                     OPTIONAL{{
                                         {{
-                                            ?document <http://w3id.org/roh/hasMetric> ?metric.
-                                            ?metric  <http://w3id.org/roh/citationCount> ?numCitas.
-                                        }}UNION
-                                        {{
                                             ?document <http://w3id.org/roh/wosCitationCount> ?numCitas.
-                                        }}
-                                        UNION{{
-                                            ?document <http://w3id.org/roh/inrecsCitationCount> ?numCitas.
                                         }}
                                         UNION{{
                                             ?document <http://w3id.org/roh/scopusCitationCount> ?numCitas.

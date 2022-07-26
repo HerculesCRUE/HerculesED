@@ -164,7 +164,7 @@ namespace EditorCV.Models.API.Response
         /// <summary>
         /// Indica si la propiedad pertenece al CV y no a la entidad
         /// </summary>
-        public bool entity_cv { get; set; }
+        public bool entity_cv { get; set; }        
     }
         
     /// <summary>

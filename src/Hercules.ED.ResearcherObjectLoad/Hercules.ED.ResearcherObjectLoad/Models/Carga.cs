@@ -1831,13 +1831,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         document.Roh_scopusCitationCount = int.Parse(itemMetric.citationCount);
                     }
 
-                    //if (itemMetric.metricName.ToLower() == "semanticscholar")
-                    //{
-                    //    document.Roh_semanticScholarCitationCount = int.Parse(itemMetric.citationCount);
-                    //}
+                    if (itemMetric.metricName.ToLower() == "semanticscholar")
+                    {
+                        document.Roh_semanticScholarCitationCount = int.Parse(itemMetric.citationCount);
+                    }
                 }
             }
-            if (document.Roh_wosCitationCount == null || (document.Roh_hasMetric == null || document.Roh_hasMetric.Count == 0))
+            if (document.Roh_wosCitationCount == null)
             {
                 if (pPublicacionB != null && pPublicacionB.hasMetric != null && pPublicacionB.hasMetric.Count > 0)
                 {
@@ -1850,7 +1850,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if (document.Roh_scopusCitationCount == null || (document.Roh_hasMetric == null || document.Roh_hasMetric.Count == 0))
+            if (document.Roh_scopusCitationCount == null)
             {
                 if (pPublicacionB != null && pPublicacionB.hasMetric != null && pPublicacionB.hasMetric.Count > 0)
                 {

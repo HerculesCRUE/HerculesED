@@ -3880,8 +3880,9 @@ var edicionCV = {
     },
     guardarEntidad: function(pFormulario) {
         var that = this;
-
-        //Los modales son de 3 tipos
+		$('#modal-editar-entidad .modal-body>.form-actions>.ko').remove();
+        
+		//Los modales son de 3 tipos
         //Modal principal (item del CV)
         //Entidad auxiliar
         //Entidad principal
@@ -4110,7 +4111,14 @@ var edicionCV = {
 						}
 
 					} else {
-						alert("Error: " + data.error);
+						if(data.error.startsWith("PROPREPETIDA"))
+						{
+							var msg= GetText("CV_PROPIEDADIDENTIFICADORREPETIDA",data.error.replace("PROPREPETIDA|",""));
+							$('#modal-editar-entidad .modal-body>.form-actions').append('<p class="ko" style="display:block">'+msg+'</p>');
+						}else
+						{
+							alert("Error: " + data.error);
+						}
 						OcultarUpdateProgress();
 					}					
 				});
