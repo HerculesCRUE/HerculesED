@@ -96,6 +96,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 return null;
             }
+
             //Actualizo el estado de los recursos tratados
             petitionStatus.actualWork++;
 
