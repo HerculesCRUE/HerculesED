@@ -14,7 +14,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     public class DatosIdentificacion : SeccionBase
     {
-        public DatosIdentificacion(cvnRootResultBean cvn, string cvID,ConfigService configuracion) : base(cvn, cvID,configuracion)
+        public DatosIdentificacion(cvnRootResultBean cvn, string cvID, ConfigService configuracion) : base(cvn, cvID, configuracion)
         {
         }
 
@@ -27,12 +27,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            //Actualizo el estado de los recursos tratados
-            petitionStatus.actualWork++;
-
             //Si procesar es false, no hago nada.
             if (!procesar)
-            { 
+            {
                 return null;
             }
 
@@ -46,13 +43,20 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityXML = ObtenerDatosPersonales(entityBBDD, listadoDatosIdentificacion);
 
             if (preimportar)
-            {                
+            {
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
-                listaAux.Add( new SubseccionItem(0, entityBBDD.id, entityXML.properties));
+                listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
+
+                //Actualizo el estado de los recursos tratados
+                petitionStatus.actualWork++;
+
                 return listaAux;
             }
             else
             {
+                //Actualizo el estado de los recursos tratados
+                petitionStatus.actualWork++;
+
                 //4º Actualizamos la entidad.
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { entityBBDD.id }, entityBBDD, entityXML);
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/PersonalData_"))
@@ -115,11 +119,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     new Property(Variables.DatosIdentificacion.nie, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.110")),
                     new Property(Variables.DatosIdentificacion.pasaporte, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.120")),
                     new Property(Variables.DatosIdentificacion.imagenDigital, listadoDatosIdentificacion.GetImagenPorIDCampo("000.010.000.130")),
-                    new Property(Variables.DatosIdentificacion.email, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.230")),                    
+                    new Property(Variables.DatosIdentificacion.email, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.230")),
                     new Property(Variables.DatosIdentificacion.paginaWeb, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.250")),
                     new Property(Variables.DatosIdentificacion.ORCID, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetORCID()),
                     new Property(Variables.DatosIdentificacion.scopus, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetScopus()),
-                    new Property(Variables.DatosIdentificacion.researcherId, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetResearcherID())                
+                    new Property(Variables.DatosIdentificacion.researcherId, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetResearcherID())
                 );
                 GetDireccionNacimiento(listadoDatosIdentificacion, entity, entityBBDD);
                 GetDireccionContacto(listadoDatosIdentificacion, entity, entityBBDD);

@@ -64,6 +64,7 @@ $(document).ready(function () {
 });
 
 function GuardarDatos() {
+    MostrarUpdateProgress();
     var url = "http://serviciosedma.gnoss.com/servicioexterno/RedesUsuario/SetDatosRedesUsuario"
     if (depuracion) {
         url = localUrlBase + "RedesUsuario/SetDatosRedesUsuario"
@@ -85,11 +86,12 @@ function GuardarDatos() {
     var arg = {};
     arg.pIdGnossUser = $('#inpt_usuarioID').val();
     arg.dataUser = lista;
-    $.post(url, arg, function (data) {
-        OcultarUpdateProgress();
+    $.post(url, arg, function (data) {  
     }).done(function (data) {
+        OcultarUpdateProgress();
         mostrarNotificacion("success", "Datos guardados correctamente");
     }).fail(function (data) {
+        OcultarUpdateProgress();
         mostrarNotificacion("error", "Error al guardar los datos");
     });
 }
