@@ -33,6 +33,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return null;
             }
 
+            //Actualizo el estado de los recursos tratados
+            petitionStatus.actualWork++;
+
             //1º Recuperamos los elementos necesarios del cv, del archivo xml.
             List<CvnItemBean> listadoDatosIdentificacion = mCvn.GetListadoBloque("000");
 
@@ -47,9 +50,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
                 listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
 
-                //Actualizo el estado de los recursos tratados
-                petitionStatus.actualWork++;
-
                 return listaAux;
             }
             else
@@ -58,9 +58,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { entityBBDD.id }, entityBBDD, entityXML);
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/PersonalData_"))
                 {
-                    //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
-
                     listadoIdBBDD.RemoveAt(0);
                 }
                 return null;
