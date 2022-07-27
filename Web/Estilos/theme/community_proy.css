@@ -404,6 +404,21 @@ body.homeComunidad #col01 {
 .grafico-wrap .chartLegend {
     top: 10px;
 }
+.grafico-wrap .chart-publicaciones {
+    height: 400px;
+}
+.grafico-wrap .chartLegend .dataSetLabels {
+    background-color: var(--c-gris-fondo);
+}
+@media (min-width: 1200px) {
+    header .row .col.col03 > ul li.buscar a span {
+        display: none;
+    }
+    .listado.scrolling header .col03 ul li:not(.nuevo) {
+        display: flex;
+        margin:0;
+    }
+}
 
 /**
  * End Home MA

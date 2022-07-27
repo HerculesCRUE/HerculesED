@@ -115,8 +115,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 petitionStatus[petitionID].actualWork = 0;
                 petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
 
-                preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true));
-                preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true, petitionStatus:petitionStatus[petitionID]));
+                preimportar.secciones.AddRange(sincro.SincroDatosIdentificacion(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                preimportar.secciones.AddRange(sincro.SincroDatosSituacionProfesional(Secciones, true, petitionStatus: petitionStatus[petitionID]));
                 preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
                 preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true, petitionStatus: petitionStatus[petitionID]));
                 preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
