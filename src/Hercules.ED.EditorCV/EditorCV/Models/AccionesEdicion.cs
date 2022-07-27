@@ -287,7 +287,6 @@ namespace EditorCV.Models
         /// </returns>
         public List<SimilarityResponse> GetItemsDuplicados(string pCVId)
         {
-            //TODO seleccionar el principal
             List<SimilarityResponse> listSimilarity = new List<SimilarityResponse>();
 
             float minSimilarity = 0.9f;
@@ -301,25 +300,28 @@ namespace EditorCV.Models
                         {
                             List<HashSet<string>> similars = new List<HashSet<string>>();
 
-                            Dictionary<string, string> itemsTitleSection = GetItemsTitleParaDuplicados(pCVId, tab.property, tabSection.property, tabSection.presentation.listItemsPresentation.listItemEdit.graph, tabSection.presentation.listItemsPresentation.listItemEdit.proptitle);
+                            Dictionary<string,KeyValuePair<string,bool>> itemsTitleValidatedSection = GetItemsTitleParaDuplicados(pCVId, tab.property, tabSection.property, tabSection.presentation.listItemsPresentation.listItemEdit.graph, tabSection.presentation.listItemsPresentation.listItemEdit.proptitle);
 
-                            List<KeyValuePair<string, string>> itemsTitleSectionList = itemsTitleSection.ToList();
-                            for (int i = 0; i < itemsTitleSection.Count; i++)
+                            List<KeyValuePair<string, KeyValuePair<string, bool>>> itemsTitleSectionList = itemsTitleValidatedSection.ToList();
+                            for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
                             {
-                                HashSet<string> similarsin = new HashSet<string>();
-                                similarsin.Add(itemsTitleSectionList[i].Key);
-                                for (int j = i + 1; j < itemsTitleSection.Count; j++)
+                                Dictionary<string,bool> similarsin = new Dictionary<string, bool>();
+                                similarsin[itemsTitleSectionList[i].Key]= itemsTitleSectionList[i].Value.Value;
+                                for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
                                 {
-                                    double similitud = Similarity(itemsTitleSectionList[i].Value, itemsTitleSectionList[j].Value, minSimilarity);
+                                    double similitud = Similarity(itemsTitleSectionList[i].Value.Key, itemsTitleSectionList[j].Value.Key, minSimilarity);
                                     if (similitud > minSimilarity)
                                     {
-                                        similarsin.Add(itemsTitleSectionList[j].Key);
+                                        similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Value;
                                     }
                                 }
-                                if (similarsin.Count > 1)
+                                //Ordenamos primero con los validados
+                                similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                if (similarsin.Count > 1 && similarsin.ToList().Exists(x=>x.Value==false))
                                 {
-                                    similars.Add(similarsin);
+                                    similars.Add(new HashSet<string>(similarsin.Keys));
                                 }
+                                
                             }
                             foreach(HashSet<string> sim in similars)
                             {
@@ -338,25 +340,37 @@ namespace EditorCV.Models
             return listSimilarity;
         }
 
-        public Dictionary<string, string> GetItemsTitleParaDuplicados(string pCV, string pTabProperty, string pSectionProperty, string pGraph, string pPropTitle)
+
+        public JsonResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
         {
-            Dictionary<string, string> itemTitle = new Dictionary<string, string>();
+            return new JsonResult() { ok = true };
+        }
+
+        public Dictionary<string, KeyValuePair<string, bool>> GetItemsTitleParaDuplicados(string pCV, string pTabProperty, string pSectionProperty, string pGraph, string pPropTitle)
+        {
+            Dictionary<string, KeyValuePair<string, bool>> itemTitle = new Dictionary<string, KeyValuePair<string, bool>>();
             int limit = 10000;
             int offset = 0;
             while (true)
             {
-                string select = $@"SELECT distinct ?itemSection ?title from <{mResourceApi.GraphsUrl}{pGraph}.owl>";
+                string select = $@"SELECT distinct ?itemSection ?title ?validated from <{mResourceApi.GraphsUrl}{pGraph}.owl>";
                 string where = $@"where
                             {{ 
                                 <{pCV}> <{pTabProperty}> ?tab.
                                 ?tab <{pSectionProperty}> ?itemSection.
                                 ?itemSection <http://vivoweb.org/ontology/core#relatedBy> ?item .
                                 ?item <{pPropTitle}> ?title.
+                                OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
                             }}order by desc (?o) LIMIT {limit} OFFSET {offset}";
                 SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
-                    itemTitle[fila["itemSection"].value] = fila["title"].value.ToLower();
+                    bool validated = false;
+                    if(fila.ContainsKey("validated")&&fila["validated"].value.ToLower()=="true")
+                    {
+                        validated = true;
+                    }
+                    itemTitle[fila["itemSection"].value] = new KeyValuePair<string, bool>( fila["title"].value.ToLower(),validated);
                 }
                 offset += limit;
                 if (sparqlObject.results.bindings.Count < limit)
@@ -389,8 +403,9 @@ namespace EditorCV.Models
             }
             if (maxLength > 0)
             {
+                int maxEditDistance = (int)(maxLength-(min*maxLength));
                 // opcionalmente ignora el caso si es necesario
-                return (maxLength - GetEditDistance(x, y)) / maxLength;
+                return (maxLength - GetEditDistance(x, y, maxEditDistance)) / maxLength;
             }
             return 1.0;
         }
@@ -401,7 +416,7 @@ namespace EditorCV.Models
         /// <param name="X">string A</param>
         /// <param name="Y">string B</param>
         /// <returns></returns>
-        public static int GetEditDistance(string X, string Y)
+        public static int GetEditDistance(string X, string Y, int maxEditDistance)
         {
             int m = X.Length;
             int n = Y.Length;
@@ -428,6 +443,10 @@ namespace EditorCV.Models
                     cost = X[i - 1] == Y[j - 1] ? 0 : 1;
                     T[i][j] = Math.Min(Math.Min(T[i - 1][j] + 1, T[i][j - 1] + 1),
                             T[i - 1][j - 1] + cost);
+                    if(T[i][j]>maxEditDistance)
+                    {
+                        return Math.Min(X.Length,Y.Length);
+                    }
                 }
             }
             return T[m][n];

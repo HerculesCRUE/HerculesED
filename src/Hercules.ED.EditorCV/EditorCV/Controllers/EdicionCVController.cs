@@ -8,6 +8,7 @@ using EditorCV.Models;
 using EditorCV.Models.API.Input;
 using EditorCV.Models.Utils;
 using System.Collections.Generic;
+using EditorCV.Models.Similarity;
 
 namespace GuardadoCV.Controllers
 {
@@ -76,6 +77,20 @@ namespace GuardadoCV.Controllers
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetItemsDuplicados(pCVId));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        [HttpPost("ProcesarItemsDuplicados")]
+        public IActionResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.ProcesarItemsDuplicados(pProcessSimilarity));
             }
             catch (Exception ex)
             {

@@ -1608,6 +1608,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "checkDuplicates": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedWorkSubmittedConferencesCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV",
@@ -3114,6 +3115,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "checkDuplicates": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV",
