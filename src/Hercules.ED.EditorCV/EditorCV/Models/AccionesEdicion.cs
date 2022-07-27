@@ -315,6 +315,15 @@ namespace EditorCV.Models
                                         similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Value;
                                     }
                                 }
+                                //Eliminamos si hay alguno duplicado
+                                foreach(string duplicado in similars.SelectMany(x=>x))
+                                {
+                                    if( similarsin.ContainsKey(duplicado))
+                                    {
+                                        similarsin.Remove(duplicado);
+                                    }
+                                }
+
                                 //Ordenamos primero con los validados
                                 similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                                 if (similarsin.Count > 1 && similarsin.ToList().Exists(x=>x.Value==false))
@@ -338,12 +347,6 @@ namespace EditorCV.Models
             }
 
             return listSimilarity;
-        }
-
-
-        public JsonResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
-        {
-            return new JsonResult() { ok = true };
         }
 
         public Dictionary<string, KeyValuePair<string, bool>> GetItemsTitleParaDuplicados(string pCV, string pTabProperty, string pSectionProperty, string pGraph, string pPropTitle)
@@ -403,7 +406,7 @@ namespace EditorCV.Models
             }
             if (maxLength > 0)
             {
-                int maxEditDistance = (int)(maxLength-(min*maxLength));
+                int maxEditDistance = ((int)(maxLength-(min*maxLength)))+1;
                 // opcionalmente ignora el caso si es necesario
                 return (maxLength - GetEditDistance(x, y, maxEditDistance)) / maxLength;
             }
@@ -443,9 +446,9 @@ namespace EditorCV.Models
                     cost = X[i - 1] == Y[j - 1] ? 0 : 1;
                     T[i][j] = Math.Min(Math.Min(T[i - 1][j] + 1, T[i][j - 1] + 1),
                             T[i - 1][j - 1] + cost);
-                    if(T[i][j]>maxEditDistance)
+                    if(i==j && T[i][j]>maxEditDistance)
                     {
-                        return Math.Min(X.Length,Y.Length);
+                       return Math.Min(X.Length,Y.Length);
                     }
                 }
             }
