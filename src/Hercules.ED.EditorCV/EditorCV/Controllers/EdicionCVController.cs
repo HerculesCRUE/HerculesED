@@ -84,20 +84,6 @@ namespace GuardadoCV.Controllers
             }
         }
 
-        [HttpPost("ProcesarItemsDuplicados")]
-        public IActionResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
-        {
-            try
-            {
-                AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.ProcesarItemsDuplicados(pProcessSimilarity));
-            }
-            catch (Exception ex)
-            {
-                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
-            }
-        }
-
 
         /// <summary>
         /// Obtiene los datos de una pestaña dentro del editor
