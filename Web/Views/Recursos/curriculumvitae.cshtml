@@ -392,7 +392,7 @@ $(function() {
 <div class="modal-dialog" role="document">
 	<div class="modal-content">
 		<div class="modal-header">
-			<p class="modal-title"><span class="material-icons">send</span>@Html.Translate("GESTIONAR_DUPLICADOS")</p>
+			<p class="modal-title"><span class="material-icons">send</span>@Html.Translate("GESTIONAR_DUPLICADOS")<span class="numpasos"></span></p>
 			<span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
 		</div>
 		<div class="modal-body">
@@ -414,8 +414,8 @@ $(function() {
 					</div>
 				</div>
 				<div class="form-actions">
-					<a class="btn btn-primary uppercase btn-fusionar">@Html.Translate("CONTINUAR")</a>
-					<a class="btn btn-primary uppercase">@Html.Translate("OMITIR_Y_CONTINUAR")</a>
+					<a class="btn btn-primary uppercase btn-continuar">@Html.Translate("CONTINUAR")</a>
+					<a class="btn btn-primary uppercase btn-omitir">@Html.Translate("OMITIR_Y_CONTINUAR")</a>
 				</div>
 			</div>
 		</div>
