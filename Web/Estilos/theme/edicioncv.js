@@ -4374,11 +4374,70 @@ var edicionCV = {
     }
 };
 
-$(document).ready(function () {
 
+var duplicadosCV = {
+	idCV:null,
+    items: null,
+	pasoActual:0,
+	pasosTotales:0,
+    init: function() {
+        this.config();
+        this.idCV = $('.contenido-cv').attr('about');
+		this.cargarDuplicados();
+        return;
+    },
+    config: function() {
+        
+	},
+    cargarDuplicados: function() {
+		var that=this;
+        var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV;
+		MostrarUpdateProgress();
+		$.get(url, null, function (data) {
+			that.items=data;
+			pasosTotales=that.items.length;
+			that.pintarItemsDuplicados();
+		});
+	}
+	,
+    pintarItemsDuplicados: function() {
+		if(this.items.length>0)
+		{
+			var modal = $("#modal-posible-duplicidad");
+			modal.modal('show');
+			this.pintarAgrupacionDuplicados();
+		}
+	}
+	,
+    pintarAgrupacionDuplicados: function() {
+		var that=this;
+		$('#modal-posible-duplicidad .resource-list-wrap').empty();
+		var principal=true;
+		for( var itemIn in this.items[this.pasoActual].items){
+			$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) {
+				var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+				if(principal)
+				{
+					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
+				}else
+				{
+					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
+				}
+			});
+			principal=false;
+		}
+		
+		
+	}
+}
+
+
+$(document).ready(function () {
+	duplicadosCV.init();
+
+/*
 	//TODO DUPLICIDAD	
-	var userID = $("#inpt_usuarioID").val();
-	var url = urlEdicionCV + "getPublicacionesDuplicadas?usuarioID=" + userID;
+	var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + $('.contenido-cv').attr('about');;
 	MostrarUpdateProgress();
 	$.get(url, null, function (data) {
 		console.log(data);
@@ -4436,7 +4495,7 @@ $(document).ready(function () {
 				);		
 			});
 		}
-	});
+	});*/
 });
 
 //Métodos auxiliares
