@@ -135,6 +135,17 @@ class StepsOffer {
 			"colaboracion",
 			"observaciones",
 		]
+		this.objectsTextEditor = {
+			"descripcion": null,
+			"aplicaciones": null,
+			"destinatarios": null,
+			"ventajasBeneficios": null,
+			"origen": null,
+			"innovacion": null,
+			"socios": null,
+			"colaboracion": null,
+			"observaciones": null,
+		}
 		
 
 		// STEP 5
@@ -226,6 +237,8 @@ class StepsOffer {
 				// Load the pffer
 				_self.loadOffer().then((res) => {
 
+
+
 					// Carga los usuarios del grupo al que perteneces 
 					_self.LoadUsersGroup().then(() => {
 						OcultarUpdateProgress()
@@ -254,6 +267,7 @@ class StepsOffer {
 		return new Promise((resolve, reject) => {
 			this.callLoadOffer().then((res) => {
 				_self.data = res
+				_self.ofertaId = res.entityID
 				_self.editDataSave = res
 				var nameInput = document.getElementById('nombreofertainput')
 				// var descInput = document.getElementById('txtDescripcion')
@@ -1379,7 +1393,7 @@ class StepsOffer {
 			_self.divTesListaCats = lineResearchs
 
 
-			// Estado de madurez y sencores de encuadre
+			// Estado de madurez y sectores de encuadre
 			// Comprueba si existen y los carga si no se han rellenado ya
 			if (!_self.maturesStates || !_self.framingsectors) {
 
@@ -1459,7 +1473,7 @@ class StepsOffer {
 					item.innerHTML = _self.data.objectFieldsHtml[e]
 					// Inicio el editor
 					let parent = item.parentElement
-					new TextField(parent);
+					_self.objectsTextEditor[e] = new TextField(parent);
 				}
 			})
 
@@ -1468,11 +1482,34 @@ class StepsOffer {
 
 
 		this.crearOfertaStep4.find('.edmaTextEditor').each((i, el) => {
+			let dataId = el.dataset.id
+			let cId = el.id
+
+			// Inicializo el editor
 			$(el).off('click').on('click', (event) => {
 				if (!el.classList.contains("inicilized")) {
-					new TextField(el);
+					_self.objectsTextEditor[dataId] = new TextField(el);
 				}
 			})
+
+
+			// Detecta si se ha hecho click fuera del editor
+			document.addEventListener("click", (evt) => {
+
+				let targetEl = evt.target; // clicked element
+			  	if (targetEl.closest('#' + cId)) return
+
+
+				if (el.querySelector('.visuell-view').innerHTML == "")
+				{
+					if (_self.objectsTextEditor[dataId] != undefined && _self.objectsTextEditor[dataId] != null) {
+
+						// Eliminamos el objeto del textArea
+						_self.objectsTextEditor[dataId].removeTextAreaOfertas()
+						delete _self.objectsTextEditor[dataId]
+					}
+				}
+			});
 		})
 
 	}
@@ -1555,6 +1592,7 @@ class StepsOffer {
 
 	/** 
 	 * Devuelve los sectores de encaje de las ofertas
+	 * ACTUALMENTE NO SE USA
 	 */
 	loadFramingSectors() {
 		let _self = this
@@ -3102,7 +3140,7 @@ var comportamientoPopupOferta = {
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", "searcherPersonsOffers=" + paramsCl, null, "rdf:type=person|roh:isActive=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val(), paramsClUrl);
-		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", null, null, "rdf:type=person|roh:isActive=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val(), paramsClUrl);
+		buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListUsers", null, null, "rdf:type=person|roh:isActive=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val(), paramsClUrl);
 		
 		// Agregamos los ordenes
 		// $('.searcherResults .h1-container').after(
@@ -3226,7 +3264,7 @@ var comportamientoProyectosOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListProyectos", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(stepsOffer.txtProyectos, "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(stepsOffer.txtProyectos, "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		//Enganchamos comportamiento grafica seleccionados
@@ -3270,7 +3308,7 @@ var comportamientoPublicacionesOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(stepsOffer.txtPublicaciones, "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(stepsOffer.txtPublicaciones, "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		return;
@@ -3309,7 +3347,7 @@ var comportamientoPIIOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(ofertaObj.txtPii, "#ofertaListPII", "searcherPIIPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(ofertaObj.txtPii, "#ofertaListPII", "searcherPIIPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		return;
@@ -3359,7 +3397,7 @@ var comportamientoMisOfertas = {
 		buscadorPersonalizado.profile=null;
 
 		// Iniciar el listado de ofertas
-		buscadorPersonalizado.init(document.getElementById(idPrint).dataset.title, "#"+idPrint, "searchOwnOffers=" + pIdUser, null, "rdf:type=offer", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(document.getElementById(idPrint).dataset.title, "#"+idPrint, "searchOwnOffers=" + pIdUser, null, "rdf:type=offer", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 
 		return;
 	}
@@ -3496,7 +3534,15 @@ class OfferList {
 	        
 	        htmlRes = estados.map(e => {
 
-	            if (e.targetModalId) {
+	            if (e.idEstadoOFerta == "editar") {
+	                return `
+	                    <li>
+                            <a class="item-dropdown" href="${document.getElementById("inpt_baseUrlBusqueda").value}/nueva-oferta-tecnologica?id=${idDocument}">
+                                <span class="material-icons">${e.icono}</span>
+                                <span>${e.txtEnviar}</span>
+                            </a>
+                        </li>`
+	            } else if (e.targetModalId) {
 	                return `
 	                    <li>
 	                        <a class="item-dropdown" href="javascript: void(0)">
@@ -3625,6 +3671,15 @@ class OfferList {
 	            }
 	            break;
 
+	    }
+
+	    if (typeUser == "own" && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))
+	    {
+	        idEstadoOFerta = "editar";
+	        txtEnviar = this.arrLang["EDITAR"]
+	        icono = "edit"
+	        targetModalId = ""
+	        estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
 	    }
 
 	    if ((typeUser == "own" || typeUser == "otri" || typeuser == "ip") && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))

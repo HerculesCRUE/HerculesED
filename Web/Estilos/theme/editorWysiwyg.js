@@ -11,27 +11,27 @@ class TextField {
     let _self = this;
     this.editor = editor
     // const button = editor.querySelector('.editor-btn');
-    const toolbar = editor.getElementsByClassName('toolbar')[0];
-    const visuellView = editor.getElementsByClassName('visuell-view')[0];
+    this.toolbar = editor.getElementsByClassName('toolbar')[0];
+    this.visuellView = editor.getElementsByClassName('visuell-view')[0];
 
     // Comprueba si existe un textArea
     if (editor.getElementsByTagName('textarea').length > 0) {
 
-      const textarea = editor.getElementsByTagName('textarea')[0];
+      this.textarea = editor.getElementsByTagName('textarea')[0];
       // Oculta el textarea para sustutir la edición por el div
-      textarea.classList.add('d-none');
+      this.textarea.classList.add('d-none');
       // Oculta el textarea para sustutir la edición por el div
-      toolbar.classList.remove('d-none');
+      this.toolbar.classList.remove('d-none');
       // Oculta el textarea para sustutir la edición por el div
-      visuellView.classList.remove('d-none');
-      visuellView.focus();
+      this.visuellView.classList.remove('d-none');
+      this.visuellView.focus();
 
     }
 	
-	editor.addEventListener("dragover", event => {
-	  // prevent default to allow drop
-	  event.preventDefault();
-	});
+  	editor.addEventListener("dragover", event => {
+  	  // prevent default to allow drop
+  	  event.preventDefault();
+  	});
 
     if (editor.getElementsByTagName('content-area').length > 0) {
       const contentArea = editor.getElementsByClassName('content-area')[0];
@@ -42,18 +42,18 @@ class TextField {
     // Add class inicilized to the element
     editor.classList.add("inicilized")
 
-    this.buttons = toolbar.querySelectorAll('.editor-btn');
+    this.buttons = this.toolbar.querySelectorAll('.editor-btn');
     //Evita que el tab salte a otro elemento
-    visuellView.removeEventListener('keydown', this.keyEvent);
-    visuellView.addEventListener('keydown', this.keyEvent);
+    this.visuellView.removeEventListener('keydown', this.keyEvent);
+    this.visuellView.addEventListener('keydown', this.keyEvent);
 
 
     // add active tag event
-    visuellView.addEventListener('selectionchange', this.selectionChange);
+    this.visuellView.addEventListener('selectionchange', this.selectionChange);
 
     // add paste event
-    visuellView.removeEventListener('paste', this.pasteEvent);
-    visuellView.addEventListener('paste', this.pasteEvent);
+    this.visuellView.removeEventListener('paste', this.pasteEvent);
+    this.visuellView.addEventListener('paste', this.pasteEvent);
 
 
     // add toolbar button actions
@@ -72,6 +72,27 @@ class TextField {
     }
 
   }
+
+  /**
+   * Método que destruye el textArea
+   */
+  removeTextAreaOfertas() {
+    // Comprueba si existe un textArea
+    if (this.editor.getElementsByTagName('textarea').length > 0) {
+
+      // Muestra el textarea
+      this.textarea.classList.remove('d-none');
+      // Oculta el toolbar
+      this.toolbar.classList.add('d-none');
+      // Oculta el editor
+      this.visuellView.classList.add('d-none');
+      // Delete the inicilized class to the element
+      this.editor.classList.remove("inicilized")
+
+    }
+  }
+
+
 
   /**
    * Método para añadir los eventos de los botones del editor
