@@ -287,7 +287,6 @@ namespace EditorCV.Models
         /// </returns>
         public List<SimilarityResponse> GetItemsDuplicados(string pCVId)
         {
-            //TODO seleccionar el principal
             List<SimilarityResponse> listSimilarity = new List<SimilarityResponse>();
 
             float minSimilarity = 0.9f;
@@ -404,8 +403,9 @@ namespace EditorCV.Models
             }
             if (maxLength > 0)
             {
+                int maxEditDistance = (int)(maxLength-(min*maxLength));
                 // opcionalmente ignora el caso si es necesario
-                return (maxLength - GetEditDistance(x, y)) / maxLength;
+                return (maxLength - GetEditDistance(x, y, maxEditDistance)) / maxLength;
             }
             return 1.0;
         }
@@ -416,7 +416,7 @@ namespace EditorCV.Models
         /// <param name="X">string A</param>
         /// <param name="Y">string B</param>
         /// <returns></returns>
-        public static int GetEditDistance(string X, string Y)
+        public static int GetEditDistance(string X, string Y, int maxEditDistance)
         {
             int m = X.Length;
             int n = Y.Length;
@@ -443,6 +443,10 @@ namespace EditorCV.Models
                     cost = X[i - 1] == Y[j - 1] ? 0 : 1;
                     T[i][j] = Math.Min(Math.Min(T[i - 1][j] + 1, T[i][j - 1] + 1),
                             T[i - 1][j - 1] + cost);
+                    if(T[i][j]>maxEditDistance)
+                    {
+                        return Math.Min(X.Length,Y.Length);
+                    }
                 }
             }
             return T[m][n];
