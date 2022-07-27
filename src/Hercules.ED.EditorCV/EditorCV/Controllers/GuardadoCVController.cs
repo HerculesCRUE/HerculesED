@@ -3,6 +3,7 @@ using System;
 using Microsoft.AspNetCore.Cors;
 using EditorCV.Models;
 using EditorCV.Models.API.Input;
+using EditorCV.Models.Similarity;
 
 namespace GuardadoCV.Controllers
 {
@@ -61,7 +62,6 @@ namespace GuardadoCV.Controllers
 
         /// <summary>
         /// Crea o actualiza una entidad
-        /// TODO
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -109,8 +109,18 @@ namespace GuardadoCV.Controllers
         }
 
 
-        //Añadir entidad
-
-        //Eliminar entidad
+        [HttpPost("ProcesarItemsDuplicados")]
+        public IActionResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
+        {
+            try
+            {
+                AccionesGuardado accionesGuardado = new AccionesGuardado();
+                return Ok(accionesGuardado.ProcesarItemsDuplicados(pProcessSimilarity));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
     }
 }
