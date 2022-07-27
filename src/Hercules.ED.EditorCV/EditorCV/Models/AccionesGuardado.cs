@@ -4,6 +4,7 @@ using EditorCV.Models.API.Input;
 using EditorCV.Models.API.Response;
 using EditorCV.Models.API.Templates;
 using EditorCV.Models.ORCID;
+using EditorCV.Models.Similarity;
 using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
@@ -136,7 +137,7 @@ namespace EditorCV.Models
                     }
 
                     Thread thread = new Thread(() => ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion));
-                    thread.Start();                    
+                    thread.Start();
                 }
             }
 
@@ -163,7 +164,8 @@ namespace EditorCV.Models
                 try
                 {
                     mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(entityDestino), true);
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
 
                 }
@@ -176,7 +178,7 @@ namespace EditorCV.Models
             tiposDesnormalizar.Add("Group_", DenormalizerItemQueue.ItemType.group);
             tiposDesnormalizar.Add("Project_", DenormalizerItemQueue.ItemType.project);
             string claveDiccionario = tiposDesnormalizar.Keys.Where(x => entityDestino.Contains(x)).FirstOrDefault();
-            if (claveDiccionario!=null && tiposDesnormalizar.ContainsKey(claveDiccionario))
+            if (claveDiccionario != null && tiposDesnormalizar.ContainsKey(claveDiccionario))
             {
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[claveDiccionario], new HashSet<string> { entityDestino }));
             }
@@ -233,19 +235,20 @@ namespace EditorCV.Models
                         if (!string.IsNullOrEmpty(pEntity.id) && !Guid.TryParse(pEntity.id, out Guid xx))
                         {
                             loadedEntity = GetLoadedEntity(pEntity.id, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
-                        }                        
+                        }
 
                         foreach (ItemEditSectionRowProperty prop in propsUnique)
                         {
                             //Si se ha cambiado la propiedad comprobamos que no exista otra entidad con esa propiedad
                             bool cambiado = false;
                             string valorCargar = pEntity.properties.Where(x => x.prop == prop.property).SelectMany(x => x.values).ToList().FirstOrDefault();
-                            if (loadedEntity==null)
+                            if (loadedEntity == null)
                             {
                                 cambiado = true;
-                            }else
+                            }
+                            else
                             {
-                                string valorCargado = loadedEntity.properties.Where(x => x.prop == prop.property).SelectMany(x => x.values).ToList().FirstOrDefault();                                
+                                string valorCargado = loadedEntity.properties.Where(x => x.prop == prop.property).SelectMany(x => x.values).ToList().FirstOrDefault();
                                 cambiado = valorCargado?.ToLower() != valorCargar?.ToLower();
                             }
 
@@ -253,7 +256,7 @@ namespace EditorCV.Models
                             {
                                 //Comprobamos que no exista otra entidad con esta propiedad
                                 string select = "select ?s";
-                                string where = $@"where{{?s <{prop.property}> ?id. FILTER(lcase(?id)='{valorCargar.Replace("'","\\'").ToLower()}')}}";
+                                string where = $@"where{{?s <{prop.property}> ?id. FILTER(lcase(?id)='{valorCargar.Replace("'", "\\'").ToLower()}')}}";
                                 var existe = mResourceApi.VirtuosoQuery(select, where, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
                                 if (existe.results.bindings.Count > 0)
                                 {
@@ -2007,6 +2010,27 @@ namespace EditorCV.Models
                     }
                 }
             }
+        }
+
+        public JsonResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
+        {
+            API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pProcessSimilarity.rdfTypeTab);
+            API.Templates.TabSection templateSection = template.sections.First(x => x.property == pProcessSimilarity.idSection);
+            Entity loadedEntity = GetLoadedEntity(pProcessSimilarity.principal, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
+
+            foreach (string idSecundario in pProcessSimilarity.secundarios.Keys)
+            {
+                switch (pProcessSimilarity.secundarios[idSecundario])
+                {
+                    case ProcessSimilarity.ProcessSimilarityAction.fusionar:
+                        break;
+                    case ProcessSimilarity.ProcessSimilarityAction.eliminar:
+                        break;
+                    case ProcessSimilarity.ProcessSimilarityAction.noduplicado:
+                        break;
+                }
+            }
+            return new JsonResult() { ok = true };
         }
     }
 }

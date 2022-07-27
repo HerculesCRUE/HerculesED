@@ -11,8 +11,10 @@ namespace EditorCV.Models.Similarity
         {
             fusionar=0,
             eliminar=1,
-            noduplicado2
+            noduplicado=2
         }
+        public string idSection { get; set; }
+        public string rdfTypeTab { get; set; }
         public string principal { get; set; }
         public Dictionary<string, ProcessSimilarityAction> secundarios { get; set; }
     }
