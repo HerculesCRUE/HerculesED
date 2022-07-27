@@ -7,7 +7,7 @@ var depuracion = false;
 
 $(document).ready(function () {
     const localUrlBase = "https://localhost:44347/";
-    var url = "http://serviciosedma.gnoss.com/servicioexterno/RedesUsuario/GetDatosRedesUsuario"
+    var url = url_servicio_externo + "RedesUsuario/GetDatosRedesUsuario"
     if (depuracion) {
         url = localUrlBase + "RedesUsuario/GetDatosRedesUsuario"
     }
@@ -70,7 +70,7 @@ $(document).ready(function () {
 
 function GuardarDatos() {
     MostrarUpdateProgress();
-    var url = "http://serviciosedma.gnoss.com/servicioexterno/RedesUsuario/SetDatosRedesUsuario"
+    var url = url_servicio_externo + "RedesUsuario/SetDatosRedesUsuario"
     if (depuracion) {
         url = localUrlBase + "RedesUsuario/SetDatosRedesUsuario"
     }
@@ -78,14 +78,17 @@ function GuardarDatos() {
     $("form.formulario-edicion fieldset").children('div').each(function () {
         var div = $(this);
         var valorData = "";
+        var obj;
         if (div.children()[div.children().length - 1].value != "") {
             valorData = div.children()[div.children().length - 1].value;
         }
-        if(div.children()[0].innerHTML == "Matching")
-        {
+        if(div.find('.matchingTooltip label')[0] && div.find('.matchingTooltip label')[0].innerHTML == "Matching") {
             valorData = $('input[name=radioMatching]:checked').attr("value");
+            obj = { nombre: div.find('.matchingTooltip label')[0].innerHTML, id: div.find('.matchingTooltip label')[0].id, valor: valorData };
+        } else {
+            obj = { nombre: div.children()[0].innerHTML, id: div.children()[0].id, valor: valorData };
         }
-        var obj = { nombre: div.children()[0].innerHTML, id: div.children()[0].id, valor: valorData };
+        
         lista.push(obj);
     });
     var arg = {};
