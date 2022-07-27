@@ -54,13 +54,13 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             else
             {
-                //Actualizo el estado de los recursos tratados
-                petitionStatus.actualWork++;
-
                 //4º Actualizamos la entidad.
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { entityBBDD.id }, entityBBDD, entityXML);
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/PersonalData_"))
                 {
+                    //Actualizo el estado de los recursos tratados
+                    petitionStatus.actualWork++;
+
                     listadoIdBBDD.RemoveAt(0);
                 }
                 return null;
