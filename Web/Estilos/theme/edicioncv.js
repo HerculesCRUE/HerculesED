@@ -4396,6 +4396,8 @@ var duplicadosCV = {
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
 		});
+		accionesPlegarDesplegarModal.init();	
+		tooltipsAccionesRecursos.init();
 	},
     cargarDuplicados: function() {
 		if(this.idCV!=null)
