@@ -318,7 +318,7 @@ namespace EditorCV.Models
                                 }
                                 //Ordenamos primero con los validados
                                 similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                                if (similarsin.Count > 1)
+                                if (similarsin.Count > 1 && similarsin.ToList().Exists(x=>x.Value==false))
                                 {
                                     similars.Add(new HashSet<string>(similarsin.Keys));
                                 }
