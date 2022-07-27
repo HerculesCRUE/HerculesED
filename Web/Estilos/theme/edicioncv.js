@@ -4374,11 +4374,101 @@ var edicionCV = {
     }
 };
 
-$(document).ready(function () {
 
+var duplicadosCV = {
+	idCV:null,
+    items: null,
+	pasoActual:0,
+	pasosTotales:0,
+    init: function() {
+        this.config();
+        this.idCV = $('.contenido-cv').attr('about');
+		this.cargarDuplicados();
+        return;
+    },
+    config: function() {
+        
+	},
+	engancharComportamientos: function() {
+		var that=this;
+		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
+		{
+            that.pasoActual++;
+			that.pintarAgrupacionDuplicados();
+		});
+		accionesPlegarDesplegarModal.init();	
+		tooltipsAccionesRecursos.init();
+	},
+    cargarDuplicados: function() {
+		if(this.idCV!=null)
+		{
+			var that=this;
+			var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV;
+			MostrarUpdateProgress();
+			$.get(url, null, function (data) {
+				that.items=data;
+				that.pasosTotales=that.items.length;
+				that.pintarItemsDuplicados();
+			});
+		}
+	}
+	,
+    pintarItemsDuplicados: function() {
+		if(this.items.length>0)
+		{
+			var modal = $("#modal-posible-duplicidad");
+			modal.modal('show');
+			this.pintarAgrupacionDuplicados();
+		}
+	}
+	,
+    pintarAgrupacionDuplicados: function() {
+		var that=this;
+		$('#modal-posible-duplicidad .resource-list-wrap').empty();
+		var principal=true;
+		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
+		MostrarUpdateProgress();
+		var numActual=0;
+		for( var itemIn in this.items[this.pasoActual].items){			
+			if(principal)
+			{
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
+				{
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
+					numActual++;
+					if(numActual==that.items[that.pasoActual].items.length)
+					{
+						OcultarUpdateProgress();
+					}
+					that.engancharComportamientos();
+				});				
+			}else
+			{
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
+				{
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
+					numActual++;
+					if(numActual==that.items[that.pasoActual].items.length)
+					{
+						OcultarUpdateProgress();
+					}
+					that.engancharComportamientos();
+				});
+			}			
+			principal=false;
+		}		
+	}
+}
+
+
+$(document).ready(function () {
+	duplicadosCV.init();
+
+/*
 	//TODO DUPLICIDAD	
-	var userID = $("#inpt_usuarioID").val();
-	var url = urlEdicionCV + "getPublicacionesDuplicadas?usuarioID=" + userID;
+	var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + $('.contenido-cv').attr('about');;
 	MostrarUpdateProgress();
 	$.get(url, null, function (data) {
 		console.log(data);
@@ -4436,7 +4526,7 @@ $(document).ready(function () {
 				);		
 			});
 		}
-	});
+	});*/
 });
 
 //Métodos auxiliares

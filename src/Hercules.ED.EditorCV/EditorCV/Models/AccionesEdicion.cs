@@ -18,6 +18,7 @@ using static EditorCV.Models.Enrichment.EnrichmentResponse;
 using Hercules.ED.DisambiguationEngine.Models;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using EditorCV.Models.Similarity;
 
 namespace EditorCV.Models
 {
@@ -278,62 +279,19 @@ namespace EditorCV.Models
             }
         }
 
-
-
-
-        //public TabSectionItem getPublicationMiniData(ConfigService conf, string entityID, string tipo, string usuarioID, string lang)
-        //{
-        //    try
-        //    {
-        //        string pCVId = UtilityCV.GetCVFromUser(usuarioID);
-        //        if (string.IsNullOrEmpty(pCVId))
-        //        {
-        //            throw new Exception("Usuario no encontrado " + usuarioID);
-        //        }
-        //        string rdf;
-        //        string section;
-
-        //        rdf = "http://w3id.org/roh/ScientificActivity";
-        //        switch (tipo)
-        //        {
-        //            case "http://gnoss.com/items/scientificactivitydocument_SAD1":
-        //                section = "http://w3id.org/roh/scientificPublications";
-        //                break;
-        //            case "http://gnoss.com/items/scientificactivitydocument_SAD2":
-        //                section = "http://w3id.org/roh/worksSubmittedConferences";
-        //                break;
-        //            case "http://gnoss.com/items/scientificactivitydocument_SAD3":
-        //                section = "http://w3id.org/roh/worksSubmittedSeminars";
-        //                break;
-        //            default:
-        //                throw new Exception("Tipo de documento no reconocido");
-        //        }
-
-
-
-        //        return GetItemMini(conf, pCVId, section, rdf, entityID, lang);
-
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        mResourceApi.Log.Error(e.Message);
-        //    }
-        //    return null;
-
-        //}
-
-
         /// <summary>
         /// Funcion para obtener los elementos con duplicidad.
         /// </summary>
         /// <returns>
         /// Un diccionario que tiene el titulo como llave y una lista contiendo las ids de todas las veces que aparece ese titulo.
         /// </returns>
-        public Dictionary<string, Dictionary<string, List<string>>> GetItemsDuplicados(string pCVId)
+        public List<SimilarityResponse> GetItemsDuplicados(string pCVId)
         {
+            //TODO seleccionar el principal
+            List<SimilarityResponse> listSimilarity = new List<SimilarityResponse>();
 
-            foreach(API.Templates.Tab tab in UtilityCV.TabTemplates)
+            float minSimilarity = 0.9f;
+            foreach (API.Templates.Tab tab in UtilityCV.TabTemplates)
             {
                 if (tab.sections != null)
                 {
@@ -341,106 +299,124 @@ namespace EditorCV.Models
                     {
                         if (tabSection.presentation.listItemsPresentation != null && tabSection.presentation.listItemsPresentation.checkDuplicates)
                         {
+                            List<HashSet<string>> similars = new List<HashSet<string>>();
+
+                            Dictionary<string,KeyValuePair<string,bool>> itemsTitleValidatedSection = GetItemsTitleParaDuplicados(pCVId, tab.property, tabSection.property, tabSection.presentation.listItemsPresentation.listItemEdit.graph, tabSection.presentation.listItemsPresentation.listItemEdit.proptitle);
+
+                            List<KeyValuePair<string, KeyValuePair<string, bool>>> itemsTitleSectionList = itemsTitleValidatedSection.ToList();
+                            for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
+                            {
+                                Dictionary<string,bool> similarsin = new Dictionary<string, bool>();
+                                similarsin[itemsTitleSectionList[i].Key]= itemsTitleSectionList[i].Value.Value;
+                                for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
+                                {
+                                    double similitud = Similarity(itemsTitleSectionList[i].Value.Key, itemsTitleSectionList[j].Value.Key, minSimilarity);
+                                    if (similitud > minSimilarity)
+                                    {
+                                        similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Value;
+                                    }
+                                }
+                                //Ordenamos primero con los validados
+                                similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                if (similarsin.Count > 1 && similarsin.ToList().Exists(x=>x.Value==false))
+                                {
+                                    similars.Add(new HashSet<string>(similarsin.Keys));
+                                }
+                                
+                            }
+                            foreach(HashSet<string> sim in similars)
+                            {
+                                SimilarityResponse similarityResponse = new SimilarityResponse();
+                                similarityResponse.idSection = tabSection.property;
+                                similarityResponse.rdfTypeTab = tab.rdftype;
+                                similarityResponse.items = sim;
+                                listSimilarity.Add(similarityResponse);
+                            }
 
                         }
                     }
                 }
             }
 
-            Dictionary<string, Dictionary<string, List<string>>> publicaciones = new Dictionary<string, Dictionary<string, List<string>>>();
+            return listSimilarity;
+        }
+
+
+        public JsonResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
+        {
+            return new JsonResult() { ok = true };
+        }
+
+        public Dictionary<string, KeyValuePair<string, bool>> GetItemsTitleParaDuplicados(string pCV, string pTabProperty, string pSectionProperty, string pGraph, string pPropTitle)
+        {
+            Dictionary<string, KeyValuePair<string, bool>> itemTitle = new Dictionary<string, KeyValuePair<string, bool>>();
             int limit = 10000;
             int offset = 0;
             while (true)
             {
-                string select = $@"SELECT distinct ?s ?tipoDoc ?o ?doc
-                                    from <{mResourceApi.GraphsUrl}person.owl>
-                                    from <{mResourceApi.GraphsUrl}curriculumvitae.owl>";
+                string select = $@"SELECT distinct ?itemSection ?title ?validated from <{mResourceApi.GraphsUrl}{pGraph}.owl>";
                 string where = $@"where
                             {{ 
-                                ?s <http://vivoweb.org/ontology/core#relatedBy> ?doc .
-                                ?doc a <http://purl.org/ontology/bibo/Document> .
-                                ?doc  <http://w3id.org/roh/title> ?o .
-                                ?doc <http://w3id.org/roh/scientificActivityDocument> ?tipoDoc .
-                                ?doc <http://purl.org/ontology/bibo/authorList> ?autores .
-                                ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
-                                ?person <http://w3id.org/roh/gnossUser> ?gnossUser FILTER(?gnossUser = <http://gnoss/{pCVId.ToUpper()}>) .
+                                <{pCV}> <{pTabProperty}> ?tab.
+                                ?tab <{pSectionProperty}> ?itemSection.
+                                ?itemSection <http://vivoweb.org/ontology/core#relatedBy> ?item .
+                                ?item <{pPropTitle}> ?title.
+                                OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
                             }}order by desc (?o) LIMIT {limit} OFFSET {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
-                offset += limit;
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
-                    string titulo = fila["o"].value;
-                    string id = fila["s"].value;
-                    string docId = fila["doc"].value;
-                    string tipo = fila["tipoDoc"].value;
-                    if (!publicaciones.ContainsKey(tipo))
+                    bool validated = false;
+                    if(fila.ContainsKey("validated")&&fila["validated"].value.ToLower()=="true")
                     {
-                        publicaciones[tipo] = new Dictionary<string, List<string>>();
+                        validated = true;
                     }
-                    Dictionary<string, List<string>> publicacionesTipo = publicaciones[tipo];
-                    string similar = null;
-
-                    foreach (KeyValuePair<string, List<string>> entry in publicacionesTipo)
-                    {                        
-                        double similitud = calcSimilititud(entry.Key, titulo.ToLower().Trim());
-                        if (similitud > 0.90)
-                        {
-                            similar = entry.Key;
-                            break;
-                        }
-
-                    }
-                    if (similar != null && publicacionesTipo.ContainsKey(similar))
-                    {
-                        publicacionesTipo[similar].Add(id);                        
-                    }
-                    else
-                    {
-                        publicacionesTipo[titulo] = new List<string>();
-                        publicacionesTipo[titulo].Add(id);
-                    }
+                    itemTitle[fila["itemSection"].value] = new KeyValuePair<string, bool>( fila["title"].value.ToLower(),validated);
                 }
+                offset += limit;
                 if (sparqlObject.results.bindings.Count < limit)
                 {
                     break;
                 }
             }
-
-
-            foreach (KeyValuePair<string, Dictionary<string, List<string>>> entry in publicaciones)
-            {
-                foreach (KeyValuePair<string, List<string>> entry2 in entry.Value)
-                {
-                    if (entry2.Value.Count == 1)
-                    {
-                        entry.Value.Remove(entry2.Key);
-                    }
-                }
-
-            }
-
-            return publicaciones;
+            return itemTitle;
         }
 
-        int i = 0;
-        private double calcSimilititud(string x, string y)
+        /// <summary>
+        /// Similaridad entre dos string
+        /// </summary>
+        /// <param name="x">string A</param>
+        /// <param name="y">string B</param>
+        /// <param name="min">Similitud minima</param>
+        /// <returns></returns>
+        private double Similarity(string x, string y, float min)
         {
-            i++;
             if (x == null || y == null)
             {
                 throw new ArgumentException("Strings must not be null");
             }
 
             double maxLength = Math.Max(x.Length, y.Length);
+            double minLength = Math.Min(x.Length, y.Length);
+            if (1 - ((maxLength - minLength) / maxLength) < min)
+            {
+                return 0;
+            }
             if (maxLength > 0)
             {
                 // opcionalmente ignora el caso si es necesario
-                return (maxLength - getEditDistance(x, y)) / maxLength;
+                return (maxLength - GetEditDistance(x, y)) / maxLength;
             }
             return 1.0;
         }
 
-        public static int getEditDistance(string X, string Y)
+        /// <summary>
+        /// Distancia de edición entre dos string
+        /// </summary>
+        /// <param name="X">string A</param>
+        /// <param name="Y">string B</param>
+        /// <returns></returns>
+        public static int GetEditDistance(string X, string Y)
         {
             int m = X.Length;
             int n = Y.Length;
