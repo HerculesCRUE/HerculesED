@@ -2084,20 +2084,16 @@ function tooltipMatching (pTextoMesh, pUrlMesh, pDicSnomed, pElemento) {
 comportamientoVerMasVerMenosTags.comportamiento = function() {
     $('.list-wrap .moreResults .ver-mas').off('click').on('click', function () {
         var list = $(this).closest('.list-wrap');
-        list.find('ul > .ocultar').show(200);
-        setTimeout(function(){        	
-		  	list.find('.ver-mas').css('display', 'none');
-        	list.find('.ver-menos').css('display', 'flex');    
-        	//$('ul > .ocultar').attr('style',"display:flex");    	
-		}, 300);        
+        list.find('ul > .ocultar').show(300);
+        list.find('ul > .ocultar').css('display', 'flex');
+        list.find('.ver-mas').hide();
+        list.find('.ver-menos').show();
     });
 
     $('.list-wrap .moreResults .ver-menos').off('click').on('click', function () {
         var list = $(this).closest('.list-wrap');
-        list.find('ul > .ocultar').hide(200);
-        setTimeout(function(){
-		  	list.find('.ver-menos').css('display', 'none');
-        	list.find('.ver-mas').css('display', 'flex');
-		}, 300);         
+        list.find('ul > .ocultar').hide(300);
+        list.find('.ver-menos').hide();
+        list.find('.ver-mas').show();
     });    
 };
