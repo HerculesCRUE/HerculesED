@@ -4389,15 +4389,26 @@ var duplicadosCV = {
     config: function() {
         
 	},
-    cargarDuplicados: function() {
+	engancharComportamientos: function() {
 		var that=this;
-        var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV;
-		MostrarUpdateProgress();
-		$.get(url, null, function (data) {
-			that.items=data;
-			pasosTotales=that.items.length;
-			that.pintarItemsDuplicados();
+		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
+		{
+            that.pasoActual++;
+			that.pintarAgrupacionDuplicados();
 		});
+	},
+    cargarDuplicados: function() {
+		if(this.idCV!=null)
+		{
+			var that=this;
+			var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV;
+			MostrarUpdateProgress();
+			$.get(url, null, function (data) {
+				that.items=data;
+				that.pasosTotales=that.items.length;
+				that.pintarItemsDuplicados();
+			});
+		}
 	}
 	,
     pintarItemsDuplicados: function() {
@@ -4413,21 +4424,39 @@ var duplicadosCV = {
 		var that=this;
 		$('#modal-posible-duplicidad .resource-list-wrap').empty();
 		var principal=true;
-		for( var itemIn in this.items[this.pasoActual].items){
-			$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) {
-				var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
-				if(principal)
+		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
+		MostrarUpdateProgress();
+		var numActual=0;
+		for( var itemIn in this.items[this.pasoActual].items){			
+			if(principal)
+			{
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
-				}else
+					numActual++;
+					if(numActual==that.items[that.pasoActual].items.length)
+					{
+						OcultarUpdateProgress();
+					}
+					that.engancharComportamientos();
+				});				
+			}else
+			{
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
-				}
-			});
+					numActual++;
+					if(numActual==that.items[that.pasoActual].items.length)
+					{
+						OcultarUpdateProgress();
+					}
+					that.engancharComportamientos();
+				});
+			}			
 			principal=false;
-		}
-		
-		
+		}		
 	}
 }
 
