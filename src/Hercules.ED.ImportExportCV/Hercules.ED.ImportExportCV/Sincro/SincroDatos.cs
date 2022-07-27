@@ -188,12 +188,12 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Datos de identificacion y contacto.
         /// Con el codigo identificativo 000.000.000.000
         /// </summary>
-        public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar, listadoIdBBDD)));
+            listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
 
             return listadoSecciones;
         }

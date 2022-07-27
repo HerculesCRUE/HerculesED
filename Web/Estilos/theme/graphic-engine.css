@@ -324,8 +324,8 @@
  ul.listadoMenuPaginas li.nav-item:hover .nav-link {
      background-color: #f3f3f3;
  }
- .modal-ampliar-mapa {
-    overflow: hidden;
+ .modal-ampliar-mapa .modal-body {
+    overflow: hidden !important;
  }
  .listado.vista-grafico.facetas-abiertas .topbar-container a.btn-filtrar-movil::before {
      content: '';

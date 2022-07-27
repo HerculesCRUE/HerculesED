@@ -8,6 +8,7 @@ using EditorCV.Models;
 using EditorCV.Models.API.Input;
 using EditorCV.Models.Utils;
 using System.Collections.Generic;
+using EditorCV.Models.Similarity;
 
 namespace GuardadoCV.Controllers
 {
@@ -83,19 +84,6 @@ namespace GuardadoCV.Controllers
             }
         }
 
-        //[HttpGet("getPublicationMiniData")]
-        //public IActionResult getPublicationMiniData(string usuarioID,string entityID,string tipo,string lang)
-        //{
-        //    try
-        //    {
-        //        AccionesEdicion accionesEdicion = new AccionesEdicion();
-        //        return Ok(accionesEdicion.getPublicationMiniData(_Configuracion, entityID, tipo, usuarioID, lang));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
-        //    }
-        //}
 
         /// <summary>
         /// Obtiene los datos de una pestaña dentro del editor

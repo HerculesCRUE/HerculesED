@@ -165,7 +165,7 @@ namespace Hercules.ED.ImportExportCV
                     }
                     if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
                     {
-                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().guid + "@@@so");
+                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
                     }
 
                     //Actualizo el estado de los recursos tratados
@@ -184,7 +184,7 @@ namespace Hercules.ED.ImportExportCV
                     }
                     if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
                     {
-                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().guid + "@@@so");
+                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
                     }
 
                     //Actualizo el estado de los recursos tratados
@@ -208,7 +208,7 @@ namespace Hercules.ED.ImportExportCV
                             {
                                 listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
                             }
-                            listadoTextoLibreBBDD.Add(listaIndicadoresAux.First().guid + "@@@" + contadorTexto);
+                            listadoTextoLibreBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@" + contadorTexto);
                         }
                     }
 
@@ -247,19 +247,19 @@ namespace Hercules.ED.ImportExportCV
                     if (opcionSeleccionada.Equals("du"))
                     {
                         listadoDuplicar.Add(listaItemsAux[int.Parse(ordenOpcion)]);
-                        listadoDuplicarBBDD.Add(subseccionItem.guid + "@@@du");
+                        listadoDuplicarBBDD.Add(subseccionItem.idBBDD + "@@@du");
                     }
                     //Fusion
                     if (opcionSeleccionada.Equals("fu"))
                     {
                         listadoFusionar.Add(listaItemsAux[int.Parse(ordenOpcion)]);
-                        listadoFusionarBBDD.Add(subseccionItem.guid + "@@@fu");
+                        listadoFusionarBBDD.Add(subseccionItem.idBBDD + "@@@fu");
                     }
                     //Sobrescribir
                     if (opcionSeleccionada.Equals("so"))
                     {
                         listadoSobrescribir.Add(listaItemsAux[int.Parse(ordenOpcion)]);
-                        listadoSobrescribirBBDD.Add(subseccionItem.guid + "@@@so");
+                        listadoSobrescribirBBDD.Add(subseccionItem.idBBDD + "@@@so");
                     }
 
                     //Actualizo el estado de los recursos tratados
@@ -306,7 +306,7 @@ namespace Hercules.ED.ImportExportCV
             petitionStatus.totalWorks = listadoSobrescribir.Count();
             petitionStatus.actualWork = 0;
 
-            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD);
+            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);

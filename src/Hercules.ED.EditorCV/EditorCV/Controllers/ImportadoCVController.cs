@@ -115,6 +115,7 @@ namespace EditorCV.Controllers
                             HttpClient httpClientEstado = new HttpClient();
                             HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
                             PetitionStatus estadoRespuesta = JsonConvert.DeserializeObject<PetitionStatus>(responseEstado.Content.ReadAsStringAsync().Result);
+                                                        
                             if (estadoRespuesta != null && accion == "PREIMPORTAR")
                             {
                                 if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_LECTURA")
@@ -162,6 +163,10 @@ namespace EditorCV.Controllers
                                 }
                             }
 
+                            if (petitionStatus[petitionID].subActualWork > petitionStatus[petitionID].subTotalWorks)
+                            {
+                                petitionStatus[petitionID].subActualWork = petitionStatus[petitionID].subTotalWorks;
+                            }
                         }
                         catch (Exception ex)
                         {

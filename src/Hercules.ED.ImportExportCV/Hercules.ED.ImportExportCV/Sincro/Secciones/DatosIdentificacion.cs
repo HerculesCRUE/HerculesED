@@ -14,7 +14,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     public class DatosIdentificacion : SeccionBase
     {
-        public DatosIdentificacion(cvnRootResultBean cvn, string cvID,ConfigService configuracion) : base(cvn, cvID,configuracion)
+        public DatosIdentificacion(cvnRootResultBean cvn, string cvID, ConfigService configuracion) : base(cvn, cvID, configuracion)
         {
         }
 
@@ -25,13 +25,16 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// El cual comprende los subapartados "Identificación CVN" (000.010.000.000)
         /// e Identificación de currículo (000.020.000.000).
         /// </summary>
-        public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
-            { 
+            {
                 return null;
             }
+
+            //Actualizo el estado de los recursos tratados
+            petitionStatus.actualWork++;
 
             //1º Recuperamos los elementos necesarios del cv, del archivo xml.
             List<CvnItemBean> listadoDatosIdentificacion = mCvn.GetListadoBloque("000");
@@ -43,9 +46,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityXML = ObtenerDatosPersonales(entityBBDD, listadoDatosIdentificacion);
 
             if (preimportar)
-            {                
+            {
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
-                listaAux.Add( new SubseccionItem(0, entityBBDD.id, entityXML.properties));
+                listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
+
                 return listaAux;
             }
             else
@@ -112,11 +116,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     new Property(Variables.DatosIdentificacion.nie, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.110")),
                     new Property(Variables.DatosIdentificacion.pasaporte, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.120")),
                     new Property(Variables.DatosIdentificacion.imagenDigital, listadoDatosIdentificacion.GetImagenPorIDCampo("000.010.000.130")),
-                    new Property(Variables.DatosIdentificacion.email, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.230")),                    
+                    new Property(Variables.DatosIdentificacion.email, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.230")),
                     new Property(Variables.DatosIdentificacion.paginaWeb, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.250")),
                     new Property(Variables.DatosIdentificacion.ORCID, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetORCID()),
                     new Property(Variables.DatosIdentificacion.scopus, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetScopus()),
-                    new Property(Variables.DatosIdentificacion.researcherId, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetResearcherID())                
+                    new Property(Variables.DatosIdentificacion.researcherId, listadoDatosIdentificacion.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetResearcherID())
                 );
                 GetDireccionNacimiento(listadoDatosIdentificacion, entity, entityBBDD);
                 GetDireccionContacto(listadoDatosIdentificacion, entity, entityBBDD);

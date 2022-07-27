@@ -21,22 +21,13 @@ var numPagina = 0;
 var isPersonalized = false;
 var opcionesDropdown = [];
 const { jsPDF } = window.jspdf;
-String.prototype.width = function (font) {
-    var f = font || '12px arial',
-        o = $('<div></div>')
-            .text(this)
-            .css({ 'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden', 'font': f })
-            .appendTo($('body')),
-        w = o.width();
-    o.remove();
-    return w;
-}
+
 var metricas = {
     // Inicializar
     init: async function () {
         // Estilos bugfix
         $('.block').addClass('no-cms-style');
-        
+
         if ($('div').hasClass('indicadoresPersonalizados')) {
             isPersonalized = true;
             opcionEditar = {};
