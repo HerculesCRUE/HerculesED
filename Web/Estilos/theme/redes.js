@@ -30,7 +30,7 @@ $(document).ready(function () {
                 var help = "Haz click aquí para generar un token de acceso a tu cuenta de FigShare";
                 var tokenPage = "https://figshare.com/account/applications"
             } else if (valor.id == "useMatching") {
-                var html = `<div class="form-group mb-4"><label id="${valor.id}" class="control-label d-block">${label}</label><div class="form-check form-check-inline" style="flex-flow: nowrap column"><div><input type="radio" name="radioMatching" id="check-si" value="true" class="form-check-input form-control not-outline"> <label for="html">Sí</label></div> <div><input type="radio" name="radioMatching" id="check-no" value="false" class="form-check-input form-control not-outline"> <label for="html">No</label></div> </div></div>`;
+                var html = `<div class="form-group mb-4"><label id="${valor.id}" class="control-label d-block">${label}</label><div class="form-check form-check-inline" style="flex-flow: nowrap column"><div style="width:100%"><input type="radio" name="radioMatching" id="check-si" value="true" class="form-check-input form-control not-outline"> <label for="html">Sí</label></div> <div style="width:100%"><input type="radio" name="radioMatching" id="check-no" value="false" class="form-check-input form-control not-outline"> <label for="html">No</label></div> </div></div>`;
             }
 
             $('form.formulario-edicion fieldset').append(html);
