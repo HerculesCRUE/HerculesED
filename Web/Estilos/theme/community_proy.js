@@ -2079,6 +2079,7 @@ function tooltipMatching (pTextoMesh, pUrlMesh, pDicSnomed, pElemento) {
                 </div>`
 
     montarTooltip.lanzar($(pElemento), info, 'background-blanco link');
+    $(pElemento).tooltip('show');
 }
 
 comportamientoVerMasVerMenosTags.comportamiento = function() {
