@@ -27,10 +27,6 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            //Actualizo el estado de los recursos tratados
-            petitionStatus.actualWork++;
-
-
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
@@ -50,10 +46,17 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
                 listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
+
+                //Actualizo el estado de los recursos tratados
+                petitionStatus.actualWork++;
+
                 return listaAux;
             }
             else
             {
+                //Actualizo el estado de los recursos tratados
+                petitionStatus.actualWork++;
+
                 //4º Actualizamos la entidad.
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { entityBBDD.id }, entityBBDD, entityXML);
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/PersonalData_"))
