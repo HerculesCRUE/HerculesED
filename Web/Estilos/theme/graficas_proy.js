@@ -5,9 +5,7 @@ String.prototype.width = function (font) {
             .css({ 'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden', 'font': f })
             .appendTo($('body')),
         w = o.width();
-
     o.remove();
-
     return w;
 }
 var paginas = [];
