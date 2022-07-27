@@ -350,7 +350,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         i--;
                     }
                     //Fusionar
-                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu") && string.IsNullOrEmpty(idBBDD))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu") && !string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoAux.RemoveAt(i);
@@ -358,7 +358,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         i--;
                     }
                     //Sobrescribir
-                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so") && string.IsNullOrEmpty(idBBDD))
+                    else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so") && !string.IsNullOrEmpty(idBBDD))
                     {
                         bool res = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoAux.RemoveAt(i);

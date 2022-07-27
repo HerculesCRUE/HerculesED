@@ -25,8 +25,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// El cual comprende los subapartados "Identificación CVN" (000.010.000.000)
         /// e Identificación de currículo (000.020.000.000).
         /// </summary>
-        public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<SubseccionItem> SincroDatosIdentificacion(bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
+            //Actualizo el estado de los recursos tratados
+            petitionStatus.actualWork++;
+
             //Si procesar es false, no hago nada.
             if (!procesar)
             { 

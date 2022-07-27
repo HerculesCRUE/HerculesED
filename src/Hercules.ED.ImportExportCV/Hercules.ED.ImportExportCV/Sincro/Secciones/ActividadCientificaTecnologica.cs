@@ -1529,6 +1529,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 && publicationFE.typeOfPublication.Equals("Journal Article") || publicationFE.typeOfPublication.Equals("Chapter")
                                 || publicationFE.typeOfPublication.Equals("Book"))
                                 {
+                                    //Indico que la entidad viene de fuentes externas
+                                    entidadAux.isBlocked = true;
                                     //Añadir valores especificos
                                     entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                                         new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD1"),
