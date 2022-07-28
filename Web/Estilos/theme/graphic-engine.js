@@ -204,6 +204,7 @@ var metricas = {
         };
         opcionesDropdown.push(opcionGuardar);
         paginas = await getPages($(".resource-list.graphView .resource-list-wrap"), $('.inpt_usuarioID').attr('value'), ObtenerHash2());
+
         paginas[numPagina].pintarPagina(opcionesDropdown);
         $(`li[num="${numPagina}"] a`).addClass('active');
         this.crearFacetas(paginas[numPagina]);
@@ -543,16 +544,6 @@ var metricas = {
     engancharComportamientos: function (cyto = null) {
         var that = this;
         numPagina = $('.listadoMenuPaginas').find('a.active').parent().attr('num');
-        
-        // Toggle
-        $(".toggleGraficas").each((index, menu) => {
-            var listItems = $(menu).find("ul").children();
-            listItems.detach().sort(function (a, b) {
-                return $(a).attr("order") < $(b).attr("order") ? -1 : 1;
-            }).appendTo($(menu).find("ul"));
-            var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica");
-            $(menu).find("a[value='" + "grafica_" + idPaginaActual + "_" + selectedID + "']").addClass("active");
-        });
 
         // Comportamientos facetas
         $(".faceta-date-range .ui-slider").slider({
