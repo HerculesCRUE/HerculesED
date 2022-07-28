@@ -510,7 +510,6 @@ var metricas = {
         } else {
             var paginas = await getPagesUser($(".resource-list-wrap")[0], userId);
             // Petición para obtener los datos de la página.
-
             if (paginas.length == 0) {
                 $('div.row-content').append(`
                         <div class="container">
@@ -1243,7 +1242,28 @@ var metricas = {
                     $(this).parents('ul').find('a.active').removeClass('active');
                     $(this).find('a').addClass('active');
                     metricas.clearPage();
-                    paginas[numero].pintarPagina(opcionesDropdown);
+                    if (paginas[numero].data.length != 0) {
+                        paginas[numero].pintarPagina(opcionesDropdown);
+                    } else {
+                        if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                            $('div.row-content').append(`
+                            <div class="sin-graficas">
+                                <div class="container">
+                                    <div class="row-content">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form panel-centrado">
+                                                    <h1>${metricas.GetText("NO_HAY_GRAFICAS")}</h1>
+                                                    <p>${metricas.GetText("PUEDES")} <a href="#" onclick="$('.delete-page').click()">${metricas.GetText("BORRAR_LA_PAGINA")}</a> ${metricas.GetText("O")} <a href="${metricas.GetText("URL_INDICADORES")}">${metricas.GetText("ANIADIR_NUEVAS_GRAFICAS")}</a>.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `);
+                        }
+                    }
                     metricas.engancharComportamientos();
                 } else {
                     $('.admin-page').removeAttr('style');
