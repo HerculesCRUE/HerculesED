@@ -10,6 +10,10 @@ namespace EditorCV.Models.PreimportModels
     public class EntityPreimport
     {
         /// <summary>
+        /// Propiedad usada para comprobar si un archivo es de Fuentes externas
+        /// </summary>
+        public bool isBlocked { get; set; }
+        /// <summary>
         /// Propiedad
         /// </summary>
         public class Property
