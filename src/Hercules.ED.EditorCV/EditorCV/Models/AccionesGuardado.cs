@@ -1273,12 +1273,12 @@ namespace EditorCV.Models
         }
 
         /// <summary>
-        /// Fusiona dos entidades
+        /// Fusiona dos entidades, sobreescribe en pLoadedEntity las propiedades que están en pUpdatedEntity
         /// </summary>
         /// <param name="pLoadedEntity">Entidad cargada en BBDD</param>
         /// <param name="pUpdatedEntity">Nueva entidad</param>
         /// <returns>Devuelve true si ha detetado cambios</returns>
-        private bool MergeLoadedEntity(Entity pLoadedEntity, Entity pUpdatedEntity)
+        private bool MergeLoadedEntity(Entity pLoadedEntity, Entity pUpdatedEntity, bool pModificarPropiedadesOriginal = true)
         {
             bool change = false;
 
@@ -1294,22 +1294,25 @@ namespace EditorCV.Models
                 Entity.Property propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
                 if (propertyLoadedEntity != null)
                 {
-                    if (remove)
+                    if (pModificarPropiedadesOriginal)
                     {
-                        change = true;
-                        pLoadedEntity.properties.Remove(propertyLoadedEntity);
-                    }
-                    else
-                    {
-                        int numLoaded = propertyLoadedEntity.values.Count;
-                        int numNew = property.values.Count;
-                        int numIntersect = propertyLoadedEntity.values.Intersect(property.values).Count();
-                        if (numLoaded != numNew || numLoaded != numIntersect)
+                        if (remove)
                         {
                             change = true;
+                            pLoadedEntity.properties.Remove(propertyLoadedEntity);
                         }
-                        propertyLoadedEntity.values = property.values;
+                        else
+                        {
+                            int numLoaded = propertyLoadedEntity.values.Count;
+                            int numNew = property.values.Count;
+                            int numIntersect = propertyLoadedEntity.values.Intersect(property.values).Count();
+                            if (numLoaded != numNew || numLoaded != numIntersect)
+                            {
+                                change = true;
+                            }
+                            propertyLoadedEntity.values = property.values;
 
+                        }
                     }
                 }
                 else if (!remove)
@@ -1323,11 +1326,14 @@ namespace EditorCV.Models
                 }
                 else if (remove)
                 {
-                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop == property.prop || x.prop.StartsWith(property.prop + "|") || x.prop.StartsWith(property.prop + "@@@")).ToList();
-                    foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
+                    if (pModificarPropiedadesOriginal)
                     {
-                        pLoadedEntity.properties.Remove(propertyToRemove);
-                        change = true;
+                        List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop == property.prop || x.prop.StartsWith(property.prop + "|") || x.prop.StartsWith(property.prop + "@@@")).ToList();
+                        foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
+                        {
+                            pLoadedEntity.properties.Remove(propertyToRemove);
+                            change = true;
+                        }
                     }
                 }
             }
@@ -1959,6 +1965,34 @@ namespace EditorCV.Models
             return null;
         }
 
+        private string GetEntityIdWithAux(string pId)
+        {
+            string select = "select ?id";
+            string where = @$"where{{<{pId}> <http://vivoweb.org/ontology/core#relatedBy> ?id.}}";
+            SparqlObject response = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            if (response.results.bindings.Count > 0)
+            {
+                return response.results.bindings[0]["id"].value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private Entity GetLoadedEntityWithAux(string pId, string pGraph)
+        {
+            string entityID = GetEntityIdWithAux(pId);
+            if (!string.IsNullOrEmpty(entityID))
+            {
+                return GetLoadedEntity(entityID, pGraph);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// Carga los datos en el objeto entidad con los datos obtenidos
         /// </summary>
@@ -2012,25 +2046,215 @@ namespace EditorCV.Models
             }
         }
 
-        public JsonResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
+        public JsonResult ProcesarItemsDuplicados(ConfigService pConfigService, ProcessSimilarity pProcessSimilarity)
         {
-            API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pProcessSimilarity.rdfTypeTab);
-            API.Templates.TabSection templateSection = template.sections.First(x => x.property == pProcessSimilarity.idSection);
-            Entity loadedEntity = GetLoadedEntity(pProcessSimilarity.principal, templateSection.presentation.listItemsPresentation.listItemEdit.graph);
-
+            API.Templates.Tab tab = UtilityCV.TabTemplates.First(x => x.rdftype == pProcessSimilarity.rdfTypeTab);
+            API.Templates.TabSection tabSection = tab.sections.First(x => x.property == pProcessSimilarity.idSection);
+            HashSet<string> modificados = new HashSet<string>();
             foreach (string idSecundario in pProcessSimilarity.secundarios.Keys)
             {
                 switch (pProcessSimilarity.secundarios[idSecundario])
                 {
                     case ProcessSimilarity.ProcessSimilarityAction.fusionar:
+                        FusionarEntidadesDuplicadas(pConfigService, pProcessSimilarity.idCV, pProcessSimilarity.principal, idSecundario, tab, tabSection);
+                        modificados.Add(pProcessSimilarity.principal);
                         break;
                     case ProcessSimilarity.ProcessSimilarityAction.eliminar:
+                        //Eliminamos la secundaria del usuario
+                        RemoveItem(pConfigService, idSecundario);
                         break;
                     case ProcessSimilarity.ProcessSimilarityAction.noduplicado:
+                        Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>();
+                        string idAux = $"{mResourceApi.GraphsUrl}items/NoDuplicateGroup_" + mResourceApi.GetShortGuid(pProcessSimilarity.idCV) + "_" + Guid.NewGuid();
+                        triplesInclude[mResourceApi.GetShortGuid(pProcessSimilarity.idCV)] = new List<TriplesToInclude>();
+
+                        triplesInclude[mResourceApi.GetShortGuid(pProcessSimilarity.idCV)].Add(new TriplesToInclude()
+                        {
+
+                            Predicate = "http://w3id.org/roh/noDuplicateGroup|http://w3id.org/roh/noDuplicateId",
+                            NewValue = idAux + "|" + GetEntityIdWithAux(pProcessSimilarity.principal)
+                        });
+                        triplesInclude[mResourceApi.GetShortGuid(pProcessSimilarity.idCV)].Add(new TriplesToInclude()
+                        {
+
+                            Predicate = "http://w3id.org/roh/noDuplicateGroup|http://w3id.org/roh/noDuplicateId",
+                            NewValue = idAux + "|" + GetEntityIdWithAux(idSecundario)
+                        });
+                        mResourceApi.InsertPropertiesLoadedResources(triplesInclude);
                         break;
                 }
             }
+
+            foreach (string id in modificados)
+            {
+                Entity mainEntity = GetLoadedEntityWithAux(id, tabSection.presentation.listItemsPresentation.listItemEdit.graph);
+
+                //Insertamos en la cola del desnormalizador
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+                Dictionary<string, DenormalizerItemQueue.ItemType> tiposDesnormalizar = new Dictionary<string, DenormalizerItemQueue.ItemType>();
+                tiposDesnormalizar.Add("http://purl.org/ontology/bibo/Document", DenormalizerItemQueue.ItemType.document);
+                tiposDesnormalizar.Add("http://w3id.org/roh/ResearchObject", DenormalizerItemQueue.ItemType.researchobject);
+                tiposDesnormalizar.Add("http://xmlns.com/foaf/0.1/Group", DenormalizerItemQueue.ItemType.group);
+                tiposDesnormalizar.Add("http://vivoweb.org/ontology/core#Project", DenormalizerItemQueue.ItemType.project);
+                if (tiposDesnormalizar.ContainsKey(mainEntity.rdfType))
+                {
+                    rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[mainEntity.rdfType], new HashSet<string> { mainEntity.id }));
+                }
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { UtilityCV.GetPersonFromCV(pProcessSimilarity.idCV) }));
+            }
+
             return new JsonResult() { ok = true };
+        }
+
+        public void FusionarEntidadesDuplicadas(ConfigService pConfigService, string pCVId, string pIdPrincipal, string pIdSecundaria, API.Templates.Tab pTab, API.Templates.TabSection pTabSection)
+        {
+            Entity mainEntity = GetLoadedEntityWithAux(pIdPrincipal, pTabSection.presentation.listItemsPresentation.listItemEdit.graph);
+            Entity secEntity = GetLoadedEntityWithAux(pIdSecundaria, pTabSection.presentation.listItemsPresentation.listItemEdit.graph);
+            //Fusionamos los datos de la entidad principal
+            if (!mainEntity.IsValidated() && !secEntity.IsValidated())
+            {
+                bool cambios = MergeLoadedEntity(mainEntity, secEntity, false);
+                if (cambios)
+                {
+                    ComplexOntologyResource resource = ToGnossApiResource(mainEntity);
+                    mResourceApi.ModifyComplexOntologyResource(resource, false, true);
+                }                
+            }
+
+            //Fusionamos los datos de la entidad auxiliar
+            if (pTabSection.presentation.listItemsPresentation != null
+                    && !string.IsNullOrEmpty(pTabSection.presentation.listItemsPresentation.property_cv)
+                    && !string.IsNullOrEmpty(pTabSection.presentation.listItemsPresentation.rdftype_cv))
+            {
+                //Datos de la secundaria de la entidad principal
+                string selectP = "select ?s ?p ?o ";
+                string whereP = @$"where
+{{
+    <{ pIdPrincipal}> <{pTabSection.presentation.listItemsPresentation.property_cv}> ?s. 
+    ?s a <{pTabSection.presentation.listItemsPresentation.rdftype_cv}>.
+    ?s ?p ?o.
+}}";
+
+                SparqlObject auxP = mResourceApi.VirtuosoQuery(selectP, whereP, "curriculumvitae");
+
+                //Datos de la secundaria de la entidad sexcundaria
+                string selectS = "select ?s ?p ?o ";
+                string whereS = @$"where
+{{
+    <{ pIdSecundaria}> <{pTabSection.presentation.listItemsPresentation.property_cv}> ?s. 
+    ?s a <{pTabSection.presentation.listItemsPresentation.rdftype_cv}>.
+    ?s ?p ?o.
+}}";
+
+                SparqlObject auxS = mResourceApi.VirtuosoQuery(selectS, whereS, "curriculumvitae");
+
+                if (auxS.results.bindings.Count > 0)
+                {
+                    //Si la auxiliar de la secundaria tiene cosas hay que intentar pasarlas a la principal
+
+                    List<string> propsOmitir = new List<string>();
+                    propsOmitir.Add("http://www.w3.org/2000/01/rdf-schema#label");
+                    propsOmitir.Add("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+
+
+                    Dictionary<string, List<string>> datosSecundaria = new Dictionary<string, List<string>>();
+                    foreach (Dictionary<string, SparqlObject.Data> fila in auxS.results.bindings)
+                    {
+                        if (!propsOmitir.Contains(fila["p"].value))
+                        {
+                            if (!datosSecundaria.ContainsKey(fila["p"].value))
+                            {
+                                datosSecundaria[fila["p"].value] = new List<string>();
+                            }
+                            datosSecundaria[fila["p"].value].Add(fila["o"].value);
+                        }
+                    }
+
+                    Dictionary<string, List<string>> datosPrincipal = new Dictionary<string, List<string>>();
+                    if (auxP.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in auxP.results.bindings)
+                        {
+                            if (!propsOmitir.Contains(fila["p"].value))
+                            {
+                                if (!datosPrincipal.ContainsKey(fila["p"].value))
+                                {
+                                    datosPrincipal[fila["p"].value] = new List<string>();
+                                }
+                                datosPrincipal[fila["p"].value].Add(fila["o"].value);
+                            }
+                        }
+                    }
+
+                    Dictionary<string, List<string>> datosAniadir = new Dictionary<string, List<string>>();
+                    foreach (string prop in datosSecundaria.Keys)
+                    {
+                        if (!datosPrincipal.ContainsKey(prop))
+                        {
+                            datosAniadir[prop] = datosSecundaria[prop];
+                        }
+                    }
+
+                    if (datosAniadir.Count > 0)
+                    {
+                        SparqlObject tab = mResourceApi.VirtuosoQuery("select *", "where{<" + pCVId + "> ?s ?o. ?o a <" + pTab.rdftype + "> }", "curriculumvitae");
+                        string idTab = tab.results.bindings[0]["o"].value;
+
+                        SparqlObject entityCV = mResourceApi.VirtuosoQuery("select *", "where{<" + pIdPrincipal + "> <" + pTabSection.presentation.listItemsPresentation.property_cv + "> ?o. ?o a <" + pTabSection.presentation.listItemsPresentation.rdftype_cv + "> }", "curriculumvitae");
+                        string entityCVID = "";
+                        if (entityCV.results.bindings.Count > 0)
+                        {
+                            //existe
+                            entityCVID = entityCV.results.bindings[0]["o"].value;
+                        }
+                        else
+                        {
+                            //no existe
+                            string rdfTypePrefix = UtilityCV.AniadirPrefijo(pTabSection.presentation.listItemsPresentation.rdftype_cv);
+                            rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
+                            entityCVID = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCVId) + "_" + Guid.NewGuid();
+                        }
+
+                        List<string> propertyIDs = new List<string>()
+                            {
+                                pTab.property,
+                                pTabSection.property,
+                                pTabSection.presentation.listItemsPresentation.property_cv
+                            };
+                        List<string> entityIDs = new List<string>()
+                            {
+                                idTab,
+                                pIdPrincipal,
+                                entityCVID
+                            };
+
+
+                        Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>();
+                        triplesInclude[mResourceApi.GetShortGuid(pCVId)] = new List<TriplesToInclude>();
+                        foreach (string prop in datosAniadir.Keys)
+                        {
+                            foreach (string value in datosAniadir[prop])
+                            {
+                                triplesInclude[mResourceApi.GetShortGuid(pCVId)].Add(new TriplesToInclude()
+                                {
+
+                                    Predicate = string.Join("|", propertyIDs) + "|" + prop,
+                                    NewValue = string.Join("|", entityIDs) + "|" + value
+                                });
+                            }
+                        }
+                        mResourceApi.InsertPropertiesLoadedResources(triplesInclude);
+                    }
+                }
+            }
+
+
+            //Eliminamos del CV del usuario la secundaria
+            if (!secEntity.IsValidated())
+            {
+                //Eliminamos la secundaria del usuario si no está validada
+                RemoveItem(pConfigService, pIdSecundaria);
+            }
         }
     }
 }
