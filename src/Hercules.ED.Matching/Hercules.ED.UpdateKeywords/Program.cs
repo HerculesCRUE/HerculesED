@@ -18,7 +18,7 @@ namespace Hercules.ED.UpdateKeywords
         private static ConfigService configService = new ConfigService();
 
         static void Main(string[] args)
-        {            
+        {
             UtilKeywords utilKeywords = new UtilKeywords(mResourceApi, mCommunityApi, configService);
 
             while (true)
@@ -115,7 +115,7 @@ namespace Hercules.ED.UpdateKeywords
                             foreach (Data itemSnomed in listaSnomed)
                             {
                                 Dictionary<string, string> dicAux = new Dictionary<string, string>();
-                                dicAux.Add(itemSnomed.snomedTerm.ui, "");
+                                dicAux.Add(itemSnomed.snomedTerm.ui, string.Empty);
                                 dicIds[item.Key].Add(dicAux);
                             }
                         }
