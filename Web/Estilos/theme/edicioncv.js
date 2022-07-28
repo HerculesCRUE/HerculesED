@@ -29,6 +29,7 @@ var edicionCV = {
     idCV: null,
     idPerson: null,
     init: function() {
+		duplicadosCV.init();
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
@@ -4376,6 +4377,8 @@ var edicionCV = {
 
 
 var duplicadosCV = {
+	itemPrincipal:null,
+	isPrincipalEditable:true,
 	idCV:null,
     items: null,
 	pasoActual:0,
@@ -4391,8 +4394,28 @@ var duplicadosCV = {
 	},
 	engancharComportamientos: function() {
 		var that=this;
+		$('#modal-posible-duplicidad .formulario-edicion .dropdown').remove();
+		
+		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
+			var secundario = $(this).parents("article.resource");
+			if(that.itemPrincipal!=null){
+				//that.items[that.pasoActual].items.push(that.itemPrincipal);
+			}
+
+			console.log($(secundario).data('item'));
+			that.itemPrincipal = $(secundario).data('item');
+			//var index = that.items[that.pasoActual].items.indexOf(that.itemPrincipal);
+			//that.items[that.pasoActual].items.splice(index, 1);
+			that.pintarAgrupacionDuplicados();
+			/*var principal = $("#modal-posible-duplicidad div.principal article.resource");
+			var containerSecundario = secundario.parent();
+			var containerPrincipal = principal.parent();
+			containerSecundario.append(principal);
+			containerPrincipal.append(secundario);*/
+		});
 		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
 		{
+			that.itemPrincipal = null;
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
 		});
@@ -4418,116 +4441,76 @@ var duplicadosCV = {
 		{
 			var modal = $("#modal-posible-duplicidad");
 			modal.modal('show');
+			
 			this.pintarAgrupacionDuplicados();
 		}
 	}
 	,
-    pintarAgrupacionDuplicados: function() {
+    pintarAgrupacionDuplicados: async function() {
 		var that=this;
 		$('#modal-posible-duplicidad .resource-list-wrap').empty();
-		var principal=true;
-		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
+		
+		$('#modal-posible-duplicidad .numpasos').html(' ('+(this.pasoActual+1)+"/"+this.pasosTotales+')');
 		MostrarUpdateProgress();
 		var numActual=0;
+		//this.pasoActual=3;
+		
+
+		if (this.itemPrincipal ==null){
+			this.itemPrincipal=this.items[this.pasoActual].items[0];
+		}
+		await $.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.itemPrincipal + "&pLang=" + lang, null, function(data) {
+			var htmlItem=edicionCV.printHtmlListItem(that.itemPrincipal, data);
+			$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
+			that.engancharComportamientos();
+			that.isPrincipalEditable=data.iseditable;
+			numActual++;
+
+			that.engancharComportamientos();
+		});
+
+	
 		for( var itemIn in this.items[this.pasoActual].items){			
-			if(principal)
+
 			{
-				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
+				if(this.items[this.pasoActual].items[itemIn]==this.itemPrincipal){
+					continue;
+				}
+				await $.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
 					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
-					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
-					numActual++;
-					if(numActual==that.items[that.pasoActual].items.length)
-					{
-						OcultarUpdateProgress();
-					}
-					that.engancharComportamientos();
-				});				
-			}else
-			{
-				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
-				{
-					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+					
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
-					numActual++;
-					if(numActual==that.items[that.pasoActual].items.length)
-					{
-						OcultarUpdateProgress();
+					var articulo = $('#modal-posible-duplicidad .resource-list-wrap.secundarios article.resource').last();
+					var titulo = $('#modal-posible-duplicidad .formulario-edicion .resource-title').last();
+					var id = titulo.find("a").data("id");
+					$(articulo).data('item',id);
+					
+				
+	
+					titulo.after(`
+					   <select name="itemConflict" data-original-title="" title="" aria-describedby="tooltip258481">
+							<option value="" selected ></option>	
+							<option value="ignorar" >No es duplicado</option>
+							<option value="fusionar">Fusionar</option>
+							<option value="eliminar">Eliminar</option>
+						</select>
+					`);
+					if(that.isPrincipalEditable) {
+					titulo.after(`
+						<a class="btn btn-primary uppercase btn-principal">Cambiar a Principal</a>`)
 					}
+					numActual++;
+
 					that.engancharComportamientos();
 				});
 			}			
+			OcultarUpdateProgress();
 			principal=false;
 		}		
 	}
 }
 
-
-$(document).ready(function () {
-	duplicadosCV.init();
-
-/*
-	//TODO DUPLICIDAD	
-	var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + $('.contenido-cv').attr('about');;
-	MostrarUpdateProgress();
-	$.get(url, null, function (data) {
-		console.log(data);
-		console.log(Object.entries(data).length);
-
-		var modal = $("#modal-posible-duplicidad");
-		modal.modal('show');
-		var numDuplicdad = Object.values(Object.values(data)[0]).length;
-		var titulo = $(modal).find(".alert-title").text();
-		modal.find(".alert-title").text(titulo + " (" + (i+1) + "/" + numDuplicdad + ")");
-		var first = Object.values(Object.values(data)[0])[0];
-		console.log(first);
-
-
-
-		for (var i = 0; i < first.length; i++) {
-			console.log(first[i]);
-			url = urlEdicionCV + "getPublicationMiniData?usuarioID=" + userID + "&entityID=" + first[i]+ "&tipo=" +Object.entries(data)[0][0] + "&lang=" + "es";
-
-			$.get(url, null, function (data) {
-				console.log(data);
-
-	
-
-
-				modal.find(".formulario-publicacion div.resource-list-wrap").append(`
-				<article class="resource">
-					<div class="form-group">
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="publicacion" id="publicacion-1">
-							<label class="form-check-label" for="publicacion-1"></label>
-						</div>
-					</div>
-					<div class="wrap">
-						<div class="middle-wrap">
-							<div class="title-wrap">
-								<h2 class="resource-title">
-								<a href="javascript: void(0);">${data.title}</a>
-								</h2>
-								<div class="block-wrapper" data-original-title="" title="">
-									<span class="material-icons">block</span>
-								</div>
-								<div class="visibility-wrapper">
-									<div class="con-icono-before eye" data-original-title="" title=""></div>
-								</div>
-								<span class="material-icons arrow">keyboard_arrow_down</span>
-							</div>
-
-						
-
-						</div>
-					</div>
-				</article>
-				`
-				);		
-			});
-		}
-	});*/
-});
 
 //Métodos auxiliares
 function EliminarAcentos(texto) {
