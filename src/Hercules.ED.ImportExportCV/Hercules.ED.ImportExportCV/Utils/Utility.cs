@@ -1897,7 +1897,7 @@ namespace Utils
             Person persona = new Person();
             try
             {
-                string select = $@"select distinct ?person ";
+                string select = $@"select distinct ?person ?nombre ?orcid from <http://gnoss.com/person.owl>";
                 string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     ?person <http://w3id.org/roh/ORCID> ?orcid .
@@ -1907,6 +1907,7 @@ namespace Utils
                 SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
+                    persona.name = new Name();
                     persona.name.nombre_completo = new List<string>() { fila["nombre"].value };
                     persona.ORCID = fila["orcid"].value;
                 }

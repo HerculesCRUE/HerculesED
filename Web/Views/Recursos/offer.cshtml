@@ -779,14 +779,16 @@
 
 <!-- JAVASCRIPT -->
 @if (ownUser) {
-    <script type="text/javascript">2021
+    <script type="text/javascript">
 
         // Datos gráfica áreas temáticas
         function borrarOferta() {
             var url = url_servicio_externo + "Ofertas/BorrarOferta"
             var arg = {};
+
             arg.pIdOfferId = "@pOffer.GNOSSID"
-            $.get(url, arg, function (data) {
+            arg.pIdGnossUser = "@currentId"
+            $.post(url, arg, function (data) {
                 window.location = "@Comunidad.Url/@Html.Translate("OFERTA_URL")"
             });
         }
@@ -1195,10 +1197,10 @@
             this.Roh_partnerType = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/partnerType"));
             this.Qb_observation = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/linked-data/cube#observation"));
             this.Bibo_recipient = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/recipient"));
-var item0 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-if(item0.HasValue){
-            this.Dct_issued = item0.Value;
-}
+            var item0 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+            if(item0.HasValue){
+                        this.Dct_issued = item0.Value;
+            }
             SemanticPropertyModel propSchema_offeredBy = pSemCmsModel.GetPropertyByPath("http://www.schema.org/offeredBy");
             if(propSchema_offeredBy != null && propSchema_offeredBy.PropertyValues.Count > 0)
             {
@@ -1333,10 +1335,10 @@ if(item0.HasValue){
             this.Roh_partnerType = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/partnerType"));
             this.Qb_observation = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/linked-data/cube#observation"));
             this.Bibo_recipient = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/recipient"));
-var item1 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
-if(item1.HasValue){
-            this.Dct_issued = item1.Value;
-}
+            var item1 = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
+            if(item1.HasValue){
+                        this.Dct_issued = item1.Value;
+            }
             SemanticPropertyModel propSchema_offeredBy = pSemCmsModel.GetPropertyByPath("http://www.schema.org/offeredBy");
             if(propSchema_offeredBy != null && propSchema_offeredBy.PropertyValues.Count > 0)
             {

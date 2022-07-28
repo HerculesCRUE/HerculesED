@@ -3425,7 +3425,7 @@ cambiarEstadoOfertas = {
         };
     },
     borrarOferta() {
-        $.get(urlBorrarOferta, this.arg, function (data) {
+        $.post(urlBorrarOferta, this.arg, function (data) {
             location.reload()
         });
     },
