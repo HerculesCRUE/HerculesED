@@ -4444,17 +4444,28 @@ var duplicadosCV = {
 		//Botón fusionar
 		$('#modal-posible-duplicidad .btn-continuar').unbind("click").bind("click", function(){
 			var validar = true;
+			var url = urlGuardadoCV + 'ProcesarItemsDuplicados';
+			var args = {};
+			args.idCV = that.idCV;
+			args.idSection = "";
+			args.rdfTypeTab="";
+			args.principal = "";
+			args.secundarios = {};
+
 			$("#modal-posible-duplicidad .secundarios article.resource").each(function(index) {
 				var opcion = $(this).find('.itemConflict').val();
+				var id = $(this).find('h2 a').attr('data-id');
 				if(opcion===""){
 					validar=false;
 					return false;
+				}else{
+					args.secundarios[id] = opcion;
 				}
 			});			
 			if (!validar){
 				mostrarNotificacion("error","Debe selecionar una opcion para todos los items");
 			}else{
-				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {
+				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {});
 
 			}
 		});
