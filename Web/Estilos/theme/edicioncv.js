@@ -4411,9 +4411,9 @@ var duplicadosCV = {
 		$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
 					   <select class="itemConflict" name="itemConflict">
 							<option value="" selected ></option>	
-							<option value="0">Fusionar</option>
-							<option value="1">Eliminar</option>
-							<option value="2" >No es duplicado</option>							
+							<option value="0">${GetText("CV_DUPLICADO_FUSIONAR")}</option>
+							<option value="1">${GetText("CV_DUPLICADO_ELIMINAR")}</option>
+							<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>							
 						</select>
 					`);
 		
@@ -4444,6 +4444,25 @@ var duplicadosCV = {
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
 		});
+
+		//Botón fusionar
+		$('#modal-posible-duplicidad .btn-continuar').unbind("click").bind("click", function(){
+			var validar = true;
+			$("#modal-posible-duplicidad .secundarios article.resource").each(function(index) {
+				var opcion = $(this).find('.itemConflict').val();
+				if(opcion===""){
+					validar=false;
+					return false;
+				}
+			});			
+			if (!validar){
+				mostrarNotificacion("error","Debe selecionar una opcion para todos los items");
+			}else{
+				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {
+
+			}
+		});
+
 		accionesPlegarDesplegarModal.init();	
 		tooltipsAccionesRecursos.init();
 	},
