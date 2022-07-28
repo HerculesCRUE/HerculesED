@@ -115,7 +115,7 @@ namespace GuardadoCV.Controllers
             try
             {
                 AccionesGuardado accionesGuardado = new AccionesGuardado();
-                return Ok(accionesGuardado.ProcesarItemsDuplicados(pProcessSimilarity));
+                return Ok(accionesGuardado.ProcesarItemsDuplicados(_Configuracion,pProcessSimilarity));
             }
             catch (Exception ex)
             {
