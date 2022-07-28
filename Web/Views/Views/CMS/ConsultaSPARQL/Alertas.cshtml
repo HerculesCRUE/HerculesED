@@ -97,9 +97,9 @@
 									}
                                     else
                                     {
-                                        if (notification.entidad != null && notification.entidad.Split('_').Length > 2 && notification.cv.Split('_').Length > 2)
+                                        if (notification.entidad != null && notification.entidad.Split('_').Length > 2 && notification.cv.Split('_').Length > 2 && notification.cvnCode != null)
                                         {
-                                            string url = Comunidad.Url + "/" + @Html.Translate("NOTIFICACION_RECURSO_URL") + "/cv/" + notification.cv.Split('_')[1] + "?tab=" + notification.propiedadCV + "&id=" + notification.entidad.Split('_')[1];
+                                            string url = Comunidad.Url + "/" + @Html.Translate("NOTIFICACION_RECURSO_URL") + "/cv/" + notification.cv.Split('_')[1] + "?tab=" + notification.propiedadCV + "&id=" + notification.entidad.Split('_')[1] + "&section=" + notification.seccionCV;
                                             if (notification.tipoNotificacion == "create")
                                             {
                                                 @Html.Raw(InicioArticle)
@@ -171,6 +171,7 @@
         public string cv { get; set; }
         public string cvnCode { get; set; }
         public string tipoPublicacion { get; set; }
+        public string seccionCV { get; set; }
 
         public Notification()
         {
@@ -187,6 +188,7 @@
             cv = "";
             cvnCode = "";
             tipoPublicacion = "";
+			seccionCV = "";
         }
 
         public Notification(System.Data.DataRow fila)
@@ -204,6 +206,7 @@
             this.cv = fila["cv"].ToString();
             this.cvnCode = fila["cvnCode"].ToString();
             this.tipoPublicacion = TipoPublicacion(fila["propiedadCV"].ToString());
+            this.seccionCV = GetSeccionNotificationCvnCode(fila["cvnCode"].ToString());
         }
 
         private string GetFecha(string fecha)
@@ -234,6 +237,23 @@
             return null;
         }
 
+		private string GetSeccionNotificationCvnCode(string cvnCode)
+        {	
+			if (cvnCode.Equals("060.010.010.000"))
+            {
+                return "http://w3id.org/roh/scientificPublications";
+            }
+            else if (cvnCode.Equals("060.010.020.000"))
+            {
+                return "http://w3id.org/roh/worksSubmittedConferences";
+            }
+            else if (cvnCode.Equals("060.010.030.000"))
+            {
+                return "http://w3id.org/roh/worksSubmittedSeminars";
+            }
+
+            return "";            
+		}
 
         public static string GetTextNotificationCvnCode(IHtmlHelper Html, string cvnCode)
         {
@@ -241,11 +261,11 @@
             {
                 return Html.Translate("NOTIFICACION_PUBLICACION");
             }
-            else if (cvnCode.Equals("060.010.010.000"))
+            else if (cvnCode.Equals("060.010.020.000"))
             {
                 return Html.Translate("NOTIFICACION_CONGRESO");
             }
-            else if (cvnCode.Equals("060.010.010.000"))
+            else if (cvnCode.Equals("060.010.030.000"))
             {
                 return Html.Translate("NOTIFICACION_JORNADA");
             }
