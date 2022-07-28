@@ -1714,19 +1714,22 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private void PublicacionesDocumentosFEMetricas(List<PublicationMetric> hasMetric, Entity entidadAux)
         {
-            foreach (PublicationMetric metrica in hasMetric)
+            if (hasMetric != null)
             {
-                if (metrica.metricName.ToLower().Equals("wos"))
+                foreach (PublicationMetric metrica in hasMetric)
                 {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
-                    ));
-                }
-                else if (metrica.metricName.ToLower().Equals("scopus"))
-                {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
-                    ));
+                    if (metrica.metricName.ToLower().Equals("wos"))
+                    {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS, metrica.citationCount)
+                        ));
+                    }
+                    else if (metrica.metricName.ToLower().Equals("scopus"))
+                    {
+                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus, metrica.citationCount)
+                        ));
+                    }
                 }
             }
         }
@@ -1744,7 +1747,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void PublicacionesDocumentosFEPublicationVenue(Source hasPublicationVenue, Entity entidadAux)
         {
             //Si el tipo de publicacion no es una revista no hago nada
-            if (hasPublicationVenue.type==null || !hasPublicationVenue.type.ToLower().Equals("journal"))
+            if (hasPublicationVenue==null || hasPublicationVenue.type==null || !hasPublicationVenue.type.ToLower().Equals("journal"))
             {
                 return;
             }
@@ -1763,48 +1766,51 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private void PublicacionesDocumentosFEIdentificadores(List<string> ids, Entity entidadAux)
         {
-            foreach (string identificador in ids)
+            if (ids != null)
             {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                string fuente = identificador.Split(":").First().ToLower();
-                string valor = identificador.Split(":").Last();
-                string fuenteAux = "";
-                switch (fuente.ToLower())
+                foreach (string identificador in ids)
                 {
-                    case "wos":
-                        fuenteAux = "WoS";
-                        break;
-                    case "semanticscholar":
-                        fuenteAux = "SemanticScholar";
-                        break;
-                    case "mag":
-                        fuenteAux = "MAG";
-                        break;
-                    case "pubmedcentral":
-                        fuenteAux = "PubMedCentral";
-                        break;
-                    case "scopus_id":
-                        fuenteAux = "Scopus";
-                        break;
-                    case "arxiv":
-                        fuenteAux = "ArXiv";
-                        break;
-                    case "medline":
-                        fuenteAux = "Medline";
-                        break;
-                }
-                //Si no encuentro la fuente no inserto nada
-                if (string.IsNullOrEmpty(fuenteAux))
-                {
-                    continue;
-                }
+                    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                    string fuente = identificador.Split(":").First().ToLower();
+                    string valor = identificador.Split(":").Last();
+                    string fuenteAux = "";
+                    switch (fuente.ToLower())
+                    {
+                        case "wos":
+                            fuenteAux = "WoS";
+                            break;
+                        case "semanticscholar":
+                            fuenteAux = "SemanticScholar";
+                            break;
+                        case "mag":
+                            fuenteAux = "MAG";
+                            break;
+                        case "pubmedcentral":
+                            fuenteAux = "PubMedCentral";
+                            break;
+                        case "scopus_id":
+                            fuenteAux = "Scopus";
+                            break;
+                        case "arxiv":
+                            fuenteAux = "ArXiv";
+                            break;
+                        case "medline":
+                            fuenteAux = "Medline";
+                            break;
+                    }
+                    //Si no encuentro la fuente no inserto nada
+                    if (string.IsNullOrEmpty(fuenteAux))
+                    {
+                        continue;
+                    }
 
-                string nombreFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, fuenteAux);
-                string valorFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, valor);
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDNombre, nombreFuenteInsert),
-                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDValor, valorFuenteInsert)
-                ));
+                    string nombreFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, fuenteAux);
+                    string valorFuenteInsert = UtilitySecciones.StringGNOSSID(entityPartAux, valor);
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDNombre, nombreFuenteInsert),
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDValor, valorFuenteInsert)
+                    ));
+                }
             }
         }
 
@@ -1940,13 +1946,16 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             HashSet<string> listadoEtiquetas = new HashSet<string>();
             //Agrupo todas las etiquetas y posteriormente las añado
-            foreach (FreetextKeywords freetextKeyword in freetextKeywords)
+            if (freetextKeywords != null)
             {
-                foreach (string keyword in freetextKeyword.freetextKeyword)
+                foreach (FreetextKeywords freetextKeyword in freetextKeywords)
                 {
-                    if (!listadoEtiquetas.Contains(keyword.ToLower()))
+                    foreach (string keyword in freetextKeyword.freetextKeyword)
                     {
-                        listadoEtiquetas.Add(keyword.ToLower());
+                        if (!listadoEtiquetas.Contains(keyword.ToLower()))
+                        {
+                            listadoEtiquetas.Add(keyword.ToLower());
+                        }
                     }
                 }
             }
