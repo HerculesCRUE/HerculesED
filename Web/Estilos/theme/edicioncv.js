@@ -29,7 +29,6 @@ var edicionCV = {
     idCV: null,
     idPerson: null,
     init: function() {
-		duplicadosCV.init();
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
@@ -739,7 +738,7 @@ var edicionCV = {
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
 		
-		if(mostrarSoloConflictos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarConflictos'))
+		if(mostrarSoloConflictos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarSimilitudes'))
 		{
 			mostrarSoloConflictos = true;
 		}		
@@ -4380,8 +4379,8 @@ var edicionCV = {
 
 
 var duplicadosCV = {
-	itemPrincipal:null,
-	isPrincipalEditable:true,
+	//itemPrincipal:null,
+	//isPrincipalEditable:true,
 	idCV:null,
     items: null,
 	pasoActual:0,
@@ -4397,28 +4396,46 @@ var duplicadosCV = {
 	},
 	engancharComportamientos: function() {
 		var that=this;
-		$('#modal-posible-duplicidad .formulario-edicion .dropdown').remove();
+		//Eliminamos desplegable acciones-curriculum
+		$('#modal-posible-duplicidad .acciones-recurso-listado').remove();
+		$('#modal-posible-duplicidad .itemConflict').remove();
+		$('#modal-posible-duplicidad .btn-principal').remove();
 		
-		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
-			var secundario = $(this).parents("article.resource");
-			if(that.itemPrincipal!=null){
-				//that.items[that.pasoActual].items.push(that.itemPrincipal);
-			}
 
-			console.log($(secundario).data('item'));
-			that.itemPrincipal = $(secundario).data('item');
-			//var index = that.items[that.pasoActual].items.indexOf(that.itemPrincipal);
-			//that.items[that.pasoActual].items.splice(index, 1);
+		//Agregamos desplegable en items
+		$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
+					   <select class="itemConflict" name="itemConflict">
+							<option value="" selected ></option>	
+							<option value="0">Fusionar</option>
+							<option value="1">Eliminar</option>
+							<option value="2" >No es duplicado</option>							
+						</select>
+					`);
+		
+		//Agregamos botón de convertir en principal	en items si el primero no está bloqueado
+		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
+		{
+			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
+						<a class="btn btn-primary uppercase btn-principal">Cambiar a Principal</a>`);
+		}
+					
+		
+		//Botón convertir en principal	
+		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
+			var idActual=$(this).closest('.title-wrap').find('h2 a').attr('data-id')
+			//Elimina del array
+			var index = that.items[that.pasoActual].items.indexOf(idActual);
+			if (index !== -1) {
+			  that.items[that.pasoActual].items.splice(index, 1);
+			}
+			//Introduce en primer lugar
+			that.items[that.pasoActual].items.splice(0, 0, idActual);
 			that.pintarAgrupacionDuplicados();
-			/*var principal = $("#modal-posible-duplicidad div.principal article.resource");
-			var containerSecundario = secundario.parent();
-			var containerPrincipal = principal.parent();
-			containerSecundario.append(principal);
-			containerPrincipal.append(secundario);*/
 		});
+		
+		//Botón omitir
 		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
 		{
-			that.itemPrincipal = null;
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
 		});
@@ -4456,7 +4473,7 @@ var duplicadosCV = {
 		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
 		MostrarUpdateProgress();
 		var numActual=0;
-		for( var itemIn in this.items[this.pasoActual].items)ç
+		for( var itemIn in this.items[this.pasoActual].items)
 		{			
 			if(principal)
 			{
@@ -4479,31 +4496,14 @@ var duplicadosCV = {
 				{
 					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
-					var articulo = $('#modal-posible-duplicidad .resource-list-wrap.secundarios article.resource').last();
-					var titulo = $('#modal-posible-duplicidad .formulario-edicion .resource-title').last();
-					var id = titulo.find("a").data("id");
-					$(articulo).data('item',id);
-					
-				
-	
-					titulo.after(`
-					   <select name="itemConflict" data-original-title="" title="" aria-describedby="tooltip258481">
-							<option value="" selected ></option>	
-							<option value="ignorar" >No es duplicado</option>
-							<option value="fusionar">Fusionar</option>
-							<option value="eliminar">Eliminar</option>
-						</select>
-					`);
-					if(that.isPrincipalEditable) {
-					titulo.after(`
-						<a class="btn btn-primary uppercase btn-principal">Cambiar a Principal</a>`)
-					}
 					numActual++;
-
+					if(numActual==that.items[that.pasoActual].items.length)
+					{
+						OcultarUpdateProgress();
+					}
 					that.engancharComportamientos();
 				});
 			}			
-			OcultarUpdateProgress();
 			principal=false;
 		}		
 	}
