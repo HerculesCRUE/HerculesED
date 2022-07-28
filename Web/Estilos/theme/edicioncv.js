@@ -48,6 +48,7 @@ var edicionCV = {
         $('#navegacion-cv li.nav-item a').click(function(e) {
             var entityID = $($(this).attr('href')).find('.cvTab').attr('about');
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
+			$(this).tooltip('hide');
             that.loadTab(entityID, rdfType);
         });
 		
@@ -72,7 +73,6 @@ var edicionCV = {
         $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
             OcultarUpdateProgress();
-			$('a#actividad-tab.nav-link.active').tooltip('hide');
 			for(var key in tooltips.section) {
 				var value = tooltips.section[key];
 				$(key).tooltip({
