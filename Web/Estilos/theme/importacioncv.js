@@ -419,6 +419,7 @@ function checkAllWrappersCV(check){
 			$(this).find('option[value="so"]').attr("selected", false);
 			$(this).find('option[value="ig"]').attr("selected", true);
 		});
+		$('input[type=checkbox]').prop('checked', false);
 	}
 	else{
 		for(var i = 0; i< wrappersUnchecked.length; i++)
