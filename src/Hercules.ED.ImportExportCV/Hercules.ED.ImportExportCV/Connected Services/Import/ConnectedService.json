@@ -1,7 +1,7 @@
 {
   "ExtendedData": {
     "inputs": [
-      "https://integraciones.cvnet.es/cvn2RootBean_v1_4/services/Cvn2RootBean?wsdl"
+      "https://integraciones.cvnet.es/cvn2RootBean_v1_4_3/services/Cvn2RootBean?wsdl"
     ],
     "collectionTypes": [
       "System.Array",

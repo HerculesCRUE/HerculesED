@@ -13,6 +13,7 @@ namespace EditorCV.Models.Similarity
             eliminar=1,
             noduplicado=2
         }
+        public string idCV { get; set; }
         public string idSection { get; set; }
         public string rdfTypeTab { get; set; }
         public string principal { get; set; }

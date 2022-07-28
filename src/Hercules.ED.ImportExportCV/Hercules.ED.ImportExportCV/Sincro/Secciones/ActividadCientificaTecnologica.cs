@@ -1522,6 +1522,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
                         else if (!string.IsNullOrEmpty(doi))
                         {
+                            //Elimino la url en caso de que esté
+                            doi = doi.Replace("http://dx.doi.org/", "");
                             //Compruebo si encuentra algún dato en Fuentes Externas
                             Publication publicationFE = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
                             if (publicationFE != null)
@@ -1531,7 +1533,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 || publicationFE.typeOfPublication.Equals("Book"))
                                 {
                                     //Indico que la entidad viene de fuentes externas
-                                    entidadAux.isBlocked = true;
+                                    entidadAux.isBlockedFE = true;
                                     //Añadir valores especificos
                                     entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                                         new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD1"),

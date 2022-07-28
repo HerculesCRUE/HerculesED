@@ -204,6 +204,7 @@ var metricas = {
         };
         opcionesDropdown.push(opcionGuardar);
         paginas = await getPages($(".resource-list.graphView .resource-list-wrap"), $('.inpt_usuarioID').attr('value'), ObtenerHash2());
+
         paginas[numPagina].pintarPagina(opcionesDropdown);
         $(`li[num="${numPagina}"] a`).addClass('active');
         this.crearFacetas(paginas[numPagina]);
@@ -510,7 +511,6 @@ var metricas = {
         } else {
             var paginas = await getPagesUser($(".resource-list-wrap")[0], userId);
             // Petición para obtener los datos de la página.
-
             if (paginas.length == 0) {
                 $('div.row-content').append(`
                         <div class="container">
@@ -544,16 +544,6 @@ var metricas = {
     engancharComportamientos: function (cyto = null) {
         var that = this;
         numPagina = $('.listadoMenuPaginas').find('a.active').parent().attr('num');
-        
-        // Toggle
-        $(".toggleGraficas").each((index, menu) => {
-            var listItems = $(menu).find("ul").children();
-            listItems.detach().sort(function (a, b) {
-                return $(a).attr("order") < $(b).attr("order") ? -1 : 1;
-            }).appendTo($(menu).find("ul"));
-            var selectedID = $(menu).parents("article div.wrap").find("div.show.grafica").attr("idgrafica");
-            $(menu).find("a[value='" + "grafica_" + idPaginaActual + "_" + selectedID + "']").addClass("active");
-        });
 
         // Comportamientos facetas
         $(".faceta-date-range .ui-slider").slider({
@@ -1243,7 +1233,28 @@ var metricas = {
                     $(this).parents('ul').find('a.active').removeClass('active');
                     $(this).find('a').addClass('active');
                     metricas.clearPage();
-                    paginas[numero].pintarPagina(opcionesDropdown);
+                    if (paginas[numero].data.length != 0) {
+                        paginas[numero].pintarPagina(opcionesDropdown);
+                    } else {
+                        if ($('div.row-content').find('div.sin-graficas').length == 0) {
+                            $('div.row-content').append(`
+                            <div class="sin-graficas">
+                                <div class="container">
+                                    <div class="row-content">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form panel-centrado">
+                                                    <h1>${metricas.GetText("NO_HAY_GRAFICAS")}</h1>
+                                                    <p>${metricas.GetText("PUEDES")} <a href="#" onclick="$('.delete-page').click()">${metricas.GetText("BORRAR_LA_PAGINA")}</a> ${metricas.GetText("O")} <a href="${metricas.GetText("URL_INDICADORES")}">${metricas.GetText("ANIADIR_NUEVAS_GRAFICAS")}</a>.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `);
+                        }
+                    }
                     metricas.engancharComportamientos();
                 } else {
                     $('.admin-page').removeAttr('style');

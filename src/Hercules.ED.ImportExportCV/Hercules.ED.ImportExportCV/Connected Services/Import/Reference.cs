@@ -1613,7 +1613,7 @@ namespace Import
         {
             if ((endpointConfiguration == EndpointConfiguration.Cvn2RootBeanPort))
             {
-                return new System.ServiceModel.EndpointAddress("https://integraciones.cvnet.es/cvn2RootBean_v1_4/services/Cvn2RootBean");
+                return new System.ServiceModel.EndpointAddress("https://integraciones.cvnet.es/cvn2RootBean_v1_4_3/services/Cvn2RootBean");
             }
             throw new System.InvalidOperationException(string.Format("No se pudo encontrar un punto de conexión con el nombre \"{0}\".", endpointConfiguration));
         }

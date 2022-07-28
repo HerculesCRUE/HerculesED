@@ -62,6 +62,11 @@ namespace EditorCV.Models.API.Input
         /// Lista de propiedades pra guardar dentro del CV
         /// </summary>
         public List<Property> properties_cv { get; set; }
+        public bool IsValidated()
+        {
+            bool? respuesta = properties.FirstOrDefault(x => x.prop == "http://w3id.org/roh/isValidated")?.values.Contains("true");
+            return respuesta.HasValue && respuesta.Value;
+        }
 
     }
 }

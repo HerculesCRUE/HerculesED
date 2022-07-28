@@ -6,7 +6,7 @@
   },
   "ExtendedData": {
     "inputs": [
-      "https://integraciones.cvnet.es/generadorPdfWS_v1_4/services/GenerarPDFWS?wsdl"
+      "https://integraciones.cvnet.es/generadorPdfWS_v1_4_3/services/GenerarPDFWS?wsdl"
     ],
     "collectionTypes": [
       "System.Array",

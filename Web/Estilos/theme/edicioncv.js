@@ -32,6 +32,7 @@ var edicionCV = {
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
+		duplicadosCV.init();
         return;
     },
     config: function() {
@@ -47,6 +48,7 @@ var edicionCV = {
         $('#navegacion-cv li.nav-item a').click(function(e) {
             var entityID = $($(this).attr('href')).find('.cvTab').attr('about');
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
+			$(this).tooltip('hide');
             that.loadTab(entityID, rdfType);
         });
 		
@@ -370,16 +372,17 @@ var edicionCV = {
 			}
 			
             //TODO texto ver items
+			// TODO Esperar a la maqueta de Félix para el tooltip (i)
             var htmlSection = `
 			<div class="panel-group pmd-accordion ${notLoaded}" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
 				<div class="panel">
 					<div class="panel-heading" role="tab" id="publicaciones-tab">
 						<p class="panel-title">
-							<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+							<a style="display: flex;" data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
-								<span class="material-icons-outlined" id="${idTooltipSection}">information</span>
+								<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}">information</span>
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -398,7 +401,7 @@ var edicionCV = {
 											</a>
 										</li>
 									</ul>
-									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
+									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
 											<div class="textoBusquedaPrincipalInput">
@@ -737,7 +740,7 @@ var edicionCV = {
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
 		
-		if(mostrarSoloConflictos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarConflictos'))
+		if(mostrarSoloConflictos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarSimilitudes'))
 		{
 			mostrarSoloConflictos = true;
 		}		
@@ -751,7 +754,7 @@ var edicionCV = {
 		}
 		
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
-		var ordenItem=sectionItem.find(' .ordenar.dropdown .texto');
+		var ordenItem=sectionItem.find(' .ordenar.dropdown.orders .texto');
         var ordenProperty = ordenItem.attr('property');
         var ordenAsc = ordenItem.attr('asc');
 		
@@ -1001,9 +1004,9 @@ var edicionCV = {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers li a[page="1"]').parent().addClass('actual');
 		if(dropdown==null){
-			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').text(text);
-			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').attr('property', property);
-			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown .dropdown-toggle .texto').attr('asc', asc);
+			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown.orders .dropdown-toggle .texto').text(text);
+			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown.orders .dropdown-toggle .texto').attr('property', property);
+			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown.orders .dropdown-toggle .texto').attr('asc', asc);
 		}
 		else{			
 			dropdown.text(text);
@@ -1184,8 +1187,7 @@ var edicionCV = {
         var css = "";
 		//Tooltip
 		// TODO esperar a la maqueta de Felix del tooltip de la sección
-		var spanTooltip = property.information ? `(i)` : '';
-		var idTooltip = property.information ? `id="tooltip${index}"` : '';
+		var spanTooltip = property.information ? `<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="tooltip${index}">information</span>` : '';
         switch (property.width) {
             case 0:
                 css = 'oculto';
@@ -1345,7 +1347,10 @@ var edicionCV = {
 				htmlInput+=`<input propertyorigin="${property.property}_aux" propertyrdf="${property.property}" value="${value}" type="hidden" class="form-control not-outline ${cssDependency} " ${htmlDependency} >`;
 			}
             return `<div class="form-group ${css}" ${rdftype}>
-					<label class="control-label d-block" ${idTooltip}>${property.title}${required}${spanTooltip}</label>
+					<div style="display: flex;">
+						<label class="control-label d-block">${property.title}${required}</label>
+						${spanTooltip}
+					</div> 
 					${htmlInput}
 				</div>`;
         } else {
@@ -1540,8 +1545,10 @@ var edicionCV = {
 				
 			}
             return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
-					<label class="control-label d-block" ${idTooltip}>
-					${property.title}${required}${spanTooltip}</label>
+						<div style="display: flex; width:fit-content;">
+						<label class="control-label d-block"></label>
+						${spanTooltip}
+						</div>
 					${htmlMultiple}
 				</div>`;
         }
@@ -2874,9 +2881,9 @@ var edicionCV = {
             that.buscarListado(sectionID);
         });
         //Ordenar
-        $('.panel-group .ordenar.dropdown .dropdown-menu a').off('click').on('click', function(e) {
+        $('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
             var sectionID = $(this).closest('.panel-group').attr('section');
-			var dropdown = $(this).closest('.ordenar.dropdown').find('.dropdown-toggle .texto');
+			var dropdown = $(this).closest('.ordenar.dropdown.orders').find('.dropdown-toggle .texto');
             that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'), dropdown);
         });
         //Publicar/despublicar
@@ -4378,6 +4385,8 @@ var edicionCV = {
 
 
 var duplicadosCV = {
+	//itemPrincipal:null,
+	//isPrincipalEditable:true,
 	idCV:null,
     items: null,
 	pasoActual:0,
@@ -4393,11 +4402,81 @@ var duplicadosCV = {
 	},
 	engancharComportamientos: function() {
 		var that=this;
+		//Eliminamos desplegable acciones-curriculum
+		$('#modal-posible-duplicidad .acciones-recurso-listado').remove();
+		$('#modal-posible-duplicidad .itemConflict').remove();
+		$('#modal-posible-duplicidad .btn-principal').remove();
+		
+
+		//Agregamos desplegable en items
+		$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
+					   <select class="itemConflict" name="itemConflict">
+							<option value="" selected ></option>	
+							<option value="0">${GetText("CV_DUPLICADO_FUSIONAR")}</option>
+							<option value="1">${GetText("CV_DUPLICADO_ELIMINAR")}</option>
+							<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>							
+						</select>
+					`);
+		
+		//Agregamos botón de convertir en principal	en items si el primero no está bloqueado
+		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
+		{
+			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
+						<a class="btn btn-primary uppercase btn-principal">Cambiar a Principal</a>`);
+		}
+					
+		
+		//Botón convertir en principal	
+		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
+			var idActual=$(this).closest('.title-wrap').find('h2 a').attr('data-id')
+			//Elimina del array
+			var index = that.items[that.pasoActual].items.indexOf(idActual);
+			if (index !== -1) {
+			  that.items[that.pasoActual].items.splice(index, 1);
+			}
+			//Introduce en primer lugar
+			that.items[that.pasoActual].items.splice(0, 0, idActual);
+			that.pintarAgrupacionDuplicados();
+		});
+		
+		//Botón omitir
 		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
 		{
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
 		});
+
+		//Botón fusionar
+		$('#modal-posible-duplicidad .btn-continuar').unbind("click").bind("click", function(){
+			var validar = true;
+			var url = urlGuardadoCV + 'ProcesarItemsDuplicados';
+			var args = {};
+			args.idCV = that.idCV;
+			args.idSection = that.items[that.pasoActual].idSection;
+			args.rdfTypeTab= that.items[that.pasoActual].rdfTypeTab;
+			args.principal = $("#modal-posible-duplicidad .resource-list-wrap.principal article h2 a").attr("data-id");
+			args.secundarios = {};
+
+			$("#modal-posible-duplicidad .secundarios article.resource").each(function(index) {
+				var opcion = $(this).find('.itemConflict').val();
+				var id = $(this).find('h2 a').attr('data-id');
+				if(opcion===""){
+					validar=false;
+					return false;
+				}else{
+					args.secundarios[id] = opcion;
+				}
+			});			
+			if (!validar){
+				mostrarNotificacion("error","Debe selecionar una opcion para todos los items");
+			}else{
+				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {});
+				$.post(url, args, function(data) {});
+				that.pasoActual++;
+				that.pintarAgrupacionDuplicados();
+			}
+		});
+
 		accionesPlegarDesplegarModal.init();	
 		tooltipsAccionesRecursos.init();
 	},
@@ -4420,23 +4499,26 @@ var duplicadosCV = {
 		{
 			var modal = $("#modal-posible-duplicidad");
 			modal.modal('show');
+			
 			this.pintarAgrupacionDuplicados();
 		}
 	}
 	,
-    pintarAgrupacionDuplicados: function() {
+    pintarAgrupacionDuplicados: async function() {
 		var that=this;
 		$('#modal-posible-duplicidad .resource-list-wrap').empty();
 		var principal=true;
 		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
 		MostrarUpdateProgress();
 		var numActual=0;
-		for( var itemIn in this.items[this.pasoActual].items){			
+		for( var itemIn in this.items[this.pasoActual].items)
+		{			
 			if(principal)
 			{
+				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
@@ -4447,9 +4529,10 @@ var duplicadosCV = {
 				});				
 			}else
 			{
+				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
@@ -4464,72 +4547,6 @@ var duplicadosCV = {
 	}
 }
 
-
-$(document).ready(function () {
-	duplicadosCV.init();
-
-/*
-	//TODO DUPLICIDAD	
-	var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + $('.contenido-cv').attr('about');;
-	MostrarUpdateProgress();
-	$.get(url, null, function (data) {
-		console.log(data);
-		console.log(Object.entries(data).length);
-
-		var modal = $("#modal-posible-duplicidad");
-		modal.modal('show');
-		var numDuplicdad = Object.values(Object.values(data)[0]).length;
-		var titulo = $(modal).find(".alert-title").text();
-		modal.find(".alert-title").text(titulo + " (" + (i+1) + "/" + numDuplicdad + ")");
-		var first = Object.values(Object.values(data)[0])[0];
-		console.log(first);
-
-
-
-		for (var i = 0; i < first.length; i++) {
-			console.log(first[i]);
-			url = urlEdicionCV + "getPublicationMiniData?usuarioID=" + userID + "&entityID=" + first[i]+ "&tipo=" +Object.entries(data)[0][0] + "&lang=" + "es";
-
-			$.get(url, null, function (data) {
-				console.log(data);
-
-	
-
-
-				modal.find(".formulario-publicacion div.resource-list-wrap").append(`
-				<article class="resource">
-					<div class="form-group">
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="publicacion" id="publicacion-1">
-							<label class="form-check-label" for="publicacion-1"></label>
-						</div>
-					</div>
-					<div class="wrap">
-						<div class="middle-wrap">
-							<div class="title-wrap">
-								<h2 class="resource-title">
-								<a href="javascript: void(0);">${data.title}</a>
-								</h2>
-								<div class="block-wrapper" data-original-title="" title="">
-									<span class="material-icons">block</span>
-								</div>
-								<div class="visibility-wrapper">
-									<div class="con-icono-before eye" data-original-title="" title=""></div>
-								</div>
-								<span class="material-icons arrow">keyboard_arrow_down</span>
-							</div>
-
-						
-
-						</div>
-					</div>
-				</article>
-				`
-				);		
-			});
-		}
-	});*/
-});
 
 //Métodos auxiliares
 function EliminarAcentos(texto) {
