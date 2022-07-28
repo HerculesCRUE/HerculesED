@@ -1586,7 +1586,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, publicationFE.title),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosDescripcion, publicationFE.@abstract),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI, publicationFE.doi),
-                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
+                                        //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First()),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosURLDocumento, publicationFE.pdf),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, publicationFE.pageEnd),
@@ -1595,6 +1595,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, publicationFE.articleNumber),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosOpenAccess, isOpenAccess)
                                     ));
+
+                                    if(publicationFE.dataIssued!=null)
+                                    {
+                                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime))));
+                                    }
 
                                     listado.Add(entidadAux);
                                     continue;
@@ -1728,7 +1733,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void PublicacionesDocumentosFEPublicationVenue(Source hasPublicationVenue, Entity entidadAux)
         {
             //Si el tipo de publicacion no es una revista no hago nada
-            if (!hasPublicationVenue.type.ToLower().Equals("journal"))
+            if (hasPublicationVenue.type==null || !hasPublicationVenue.type.ToLower().Equals("journal"))
             {
                 return;
             }
@@ -1867,26 +1872,28 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             HashSet<string> listadoAreas = new HashSet<string>();
             List<string> topicList = new List<string>();
-
-            foreach (KnowledgeAreas knowledgeAreas in hasKnowledgeAreas)
+            if (hasKnowledgeAreas != null)
             {
-                foreach (KnowledgeArea knowledgeArea in knowledgeAreas.knowledgeArea)
+                foreach (KnowledgeAreas knowledgeAreas in hasKnowledgeAreas)
                 {
-                    //Si el listado contiene el id del area no lo inserto, para eliminar repetidos
-                    if (listadoAreas.Contains(knowledgeArea.hasCode))
+                    foreach (KnowledgeArea knowledgeArea in knowledgeAreas.knowledgeArea)
                     {
-                        continue;
-                    }
+                        //Si el listado contiene el id del area no lo inserto, para eliminar repetidos
+                        if (listadoAreas.Contains(knowledgeArea.hasCode))
+                        {
+                            continue;
+                        }
 
-                    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                    listadoAreas.Add(knowledgeArea.hasCode);
-                    topicList.AddRange(UtilitySecciones.GetPadresTesauro(knowledgeArea.hasCode));
-                    foreach (string topicIn in topicList)
-                    {
-                        string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, topicIn);
-                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                           new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAreasTematicasExternas, topicInsert)
-                        ));
+                        string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                        listadoAreas.Add(knowledgeArea.hasCode);
+                        topicList.AddRange(UtilitySecciones.GetPadresTesauro(knowledgeArea.hasCode));
+                        foreach (string topicIn in topicList)
+                        {
+                            string topicInsert = UtilitySecciones.StringGNOSSID(entityPartAux, topicIn);
+                            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                               new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAreasTematicasExternas, topicInsert)
+                            ));
+                        }
                     }
                 }
             }
