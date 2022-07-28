@@ -371,16 +371,17 @@ var edicionCV = {
 			}
 			
             //TODO texto ver items
+			// TODO Esperar a la maqueta de Félix para el tooltip (i)
             var htmlSection = `
 			<div class="panel-group pmd-accordion ${notLoaded}" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
 				<div class="panel">
 					<div class="panel-heading" role="tab" id="publicaciones-tab">
 						<p class="panel-title">
-							<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+							<a style="display: flex;" data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
-								<span class="material-icons-outlined" id="${idTooltipSection}">information</span>
+								<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}">information</span>
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -4406,9 +4407,9 @@ var duplicadosCV = {
 		$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
 					   <select class="itemConflict" name="itemConflict">
 							<option value="" selected ></option>	
-							<option value="0">Fusionar</option>
-							<option value="1">Eliminar</option>
-							<option value="2" >No es duplicado</option>							
+							<option value="0">${GetText("CV_DUPLICADO_FUSIONAR")}</option>
+							<option value="1">${GetText("CV_DUPLICADO_ELIMINAR")}</option>
+							<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>							
 						</select>
 					`);
 		
@@ -4439,6 +4440,25 @@ var duplicadosCV = {
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
 		});
+
+		//Botón fusionar
+		$('#modal-posible-duplicidad .btn-continuar').unbind("click").bind("click", function(){
+			var validar = true;
+			$("#modal-posible-duplicidad .secundarios article.resource").each(function(index) {
+				var opcion = $(this).find('.itemConflict').val();
+				if(opcion===""){
+					validar=false;
+					return false;
+				}
+			});			
+			if (!validar){
+				mostrarNotificacion("error","Debe selecionar una opcion para todos los items");
+			}else{
+				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {
+
+			}
+		});
+
 		accionesPlegarDesplegarModal.init();	
 		tooltipsAccionesRecursos.init();
 	},
