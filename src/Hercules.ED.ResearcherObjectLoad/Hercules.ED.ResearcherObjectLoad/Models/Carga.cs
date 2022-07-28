@@ -574,6 +574,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificacion.Dct_issued = DateTime.Now;
                                             notificacion.Roh_type = "edit";
                                             notificacion.CvnCode = Utility.IdentificadorFECYT(listaDocumentosCargarEquivalencias.Where(x => x.Value.Contains(idBBDD)).FirstOrDefault().Key.IdRoh_scientificActivityDocument);
+                                            if (string.IsNullOrEmpty(notificacion.CvnCode))
+                                            {
+                                                notificacion.CvnCode = Utility.IdentificadorFECYT(documento.IdRoh_scientificActivityDocument);
+                                            }
 
                                             notificaciones.Add(notificacion);
                                         }

@@ -4452,9 +4452,9 @@ var duplicadosCV = {
 			var url = urlGuardadoCV + 'ProcesarItemsDuplicados';
 			var args = {};
 			args.idCV = that.idCV;
-			args.idSection = "";
-			args.rdfTypeTab="";
-			args.principal = "";
+			args.idSection = that.items[that.pasoActual].idSection;
+			args.rdfTypeTab= that.items[that.pasoActual].rdfTypeTab;
+			args.principal = $("#modal-posible-duplicidad .resource-list-wrap.principal article h2 a").attr("data-id");
 			args.secundarios = {};
 
 			$("#modal-posible-duplicidad .secundarios article.resource").each(function(index) {
@@ -4471,7 +4471,9 @@ var duplicadosCV = {
 				mostrarNotificacion("error","Debe selecionar una opcion para todos los items");
 			}else{
 				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {});
-
+				$.post(url, args, function(data) {});
+				that.pasoActual++;
+				that.pintarAgrupacionDuplicados();
 			}
 		});
 
