@@ -551,3 +551,14 @@ body.homeComunidad #col01 {
     padding-left: 5px;
     margin-bottom: 0;
 }
+.tab-paneles-alertas .nav-tabs .nav-item .nav-link .badge {
+    width: fit-content;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.tab-paneles-alertas .resource-list .resource .middle-wrap .title-wrap .resource-title a {
+    vertical-align: unset;
+}
+.resource-list .resource .middle-wrap .title-wrap .resource-title:before {
+    top: 0px;
+}
