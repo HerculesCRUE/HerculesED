@@ -951,7 +951,7 @@ class GraficaHorizontal extends GraficaBarras {
         }
         if (mainAxis) {
             var end = myChart.chartArea.top;
-            var start = end - 15;
+            var start = end - 25;
             drawAxis(mainAxis[0].getContext("2d"), myChart, start, end);
         }
 
