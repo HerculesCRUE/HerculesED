@@ -32,7 +32,7 @@ var edicionCV = {
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
-		duplicadosCV.init();
+		//duplicadosCV.init();
         return;
     },
     config: function() {
