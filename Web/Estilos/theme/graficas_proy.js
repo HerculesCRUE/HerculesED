@@ -1627,7 +1627,7 @@ function comportamientos() {
 
     };
 }
-*/
+
 
 function pintarAccionesMapa(pContenedor) {
 
