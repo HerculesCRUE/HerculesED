@@ -440,8 +440,6 @@ namespace EditorCV.Models
             List<string> valor = new List<string>();
             string graph = "";
 
-
-
             //Título
             PropertyDataTemplate configTitulo = tabSectionListItem.propertyTitle;
 
