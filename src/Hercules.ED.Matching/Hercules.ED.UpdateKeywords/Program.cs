@@ -18,7 +18,7 @@ namespace Hercules.ED.UpdateKeywords
         private static ConfigService configService = new ConfigService();
 
         static void Main(string[] args)
-        {
+        {            
             UtilKeywords utilKeywords = new UtilKeywords(mResourceApi, mCommunityApi, configService);
 
             while (true)
@@ -62,41 +62,41 @@ namespace Hercules.ED.UpdateKeywords
                             }
 
                             // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
-                            //if (dicResultados.Count() != 1 && partes.Count() >= 2)
-                            //{
-                            //    for (int i = 0; i < partes.Length; i++)
-                            //    {
-                            //        string parte1 = partes[i];
-                            //        if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
-                            //        {
-                            //            continue;
-                            //        }
+                            if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                            {
+                                for (int i = 0; i < partes.Length; i++)
+                                {
+                                    string parte1 = partes[i];
+                                    if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
+                                    {
+                                        continue;
+                                    }
 
-                            //        for (int x = i + 1; x < partes.Length; x++)
-                            //        {
-                            //            string parte2 = partes[x];
-                            //            if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
-                            //            {
-                            //                continue;
-                            //            }
+                                    for (int x = i + 1; x < partes.Length; x++)
+                                    {
+                                        string parte2 = partes[x];
+                                        if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
+                                        {
+                                            continue;
+                                        }
 
-                            //            List<string> lista = new List<string>() { parte1, parte2 };
-                            //            string[] arrayParte = lista.ToArray();
+                                        List<string> lista = new List<string>() { parte1, parte2 };
+                                        string[] arrayParte = lista.ToArray();
 
-                            //            dicResultados = ConsultarDatos(utilKeywords, arrayParte);
+                                        dicResultados = ConsultarDatos(utilKeywords, arrayParte);
 
-                            //            if (dicResultados.Count() == 1)
-                            //            {
-                            //                break;
-                            //            }
-                            //        }
+                                        if (dicResultados.Count() == 1)
+                                        {
+                                            break;
+                                        }
+                                    }
 
-                            //        if (dicResultados.Count() == 1)
-                            //        {
-                            //            break;
-                            //        }
-                            //    }
-                            //}
+                                    if (dicResultados.Count() == 1)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
                         }
 
                         // Obtencón de información de SNOMED.
@@ -105,6 +105,9 @@ namespace Hercules.ED.UpdateKeywords
                         foreach (KeyValuePair<string, string> item in dicResultados)
                         {
                             utilKeywords.InsertDataSnomed(item.Key, listaSnomed);
+
+                            // Borra los términos obsoletos.
+                            listaSnomed.RemoveAll(x => x.snomedTerm.obsolete == true);
 
                             // Relación IDs.
                             dicIds = new Dictionary<string, List<Dictionary<string, string>>>();
