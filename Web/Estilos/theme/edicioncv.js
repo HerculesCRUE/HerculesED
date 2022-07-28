@@ -32,6 +32,7 @@ var edicionCV = {
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
+		duplicadosCV.init();
         return;
     },
     config: function() {
@@ -4434,9 +4435,10 @@ var duplicadosCV = {
 		for( var itemIn in this.items[this.pasoActual].items){			
 			if(principal)
 			{
+				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
@@ -4447,9 +4449,10 @@ var duplicadosCV = {
 				});				
 			}else
 			{
+				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[itemIn], data);
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
@@ -4464,72 +4467,6 @@ var duplicadosCV = {
 	}
 }
 
-
-$(document).ready(function () {
-	duplicadosCV.init();
-
-/*
-	//TODO DUPLICIDAD	
-	var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + $('.contenido-cv').attr('about');;
-	MostrarUpdateProgress();
-	$.get(url, null, function (data) {
-		console.log(data);
-		console.log(Object.entries(data).length);
-
-		var modal = $("#modal-posible-duplicidad");
-		modal.modal('show');
-		var numDuplicdad = Object.values(Object.values(data)[0]).length;
-		var titulo = $(modal).find(".alert-title").text();
-		modal.find(".alert-title").text(titulo + " (" + (i+1) + "/" + numDuplicdad + ")");
-		var first = Object.values(Object.values(data)[0])[0];
-		console.log(first);
-
-
-
-		for (var i = 0; i < first.length; i++) {
-			console.log(first[i]);
-			url = urlEdicionCV + "getPublicationMiniData?usuarioID=" + userID + "&entityID=" + first[i]+ "&tipo=" +Object.entries(data)[0][0] + "&lang=" + "es";
-
-			$.get(url, null, function (data) {
-				console.log(data);
-
-	
-
-
-				modal.find(".formulario-publicacion div.resource-list-wrap").append(`
-				<article class="resource">
-					<div class="form-group">
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="publicacion" id="publicacion-1">
-							<label class="form-check-label" for="publicacion-1"></label>
-						</div>
-					</div>
-					<div class="wrap">
-						<div class="middle-wrap">
-							<div class="title-wrap">
-								<h2 class="resource-title">
-								<a href="javascript: void(0);">${data.title}</a>
-								</h2>
-								<div class="block-wrapper" data-original-title="" title="">
-									<span class="material-icons">block</span>
-								</div>
-								<div class="visibility-wrapper">
-									<div class="con-icono-before eye" data-original-title="" title=""></div>
-								</div>
-								<span class="material-icons arrow">keyboard_arrow_down</span>
-							</div>
-
-						
-
-						</div>
-					</div>
-				</article>
-				`
-				);		
-			});
-		}
-	});*/
-});
 
 //Métodos auxiliares
 function EliminarAcentos(texto) {
