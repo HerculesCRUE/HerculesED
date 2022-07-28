@@ -143,6 +143,7 @@ namespace EditorCV.Models.API.Response
         /// Indica si debe estar checkeado por defecto
         /// </summary>
         public bool isChecked { get; set; }
+        public bool isBlockedFE { get; set; }
         /// <summary>
         /// Indica si se ha de mostrar el botón de envío a producción cientifica
         /// </summary>
