@@ -1628,7 +1628,7 @@ namespace Export
         {
             if ((endpointConfiguration == EndpointConfiguration.GenerarPDFWSPort))
             {
-                return new System.ServiceModel.EndpointAddress("https://integraciones.cvnet.es/generadorPdfWS_v1_4/services/GenerarPDFWS");
+                return new System.ServiceModel.EndpointAddress("https://integraciones.cvnet.es/generadorPdfWS_v1_4_3/services/GenerarPDFWS");
             }
             throw new System.InvalidOperationException(string.Format("No se pudo encontrar un punto de conexión con el nombre \"{0}\".", endpointConfiguration));
         }

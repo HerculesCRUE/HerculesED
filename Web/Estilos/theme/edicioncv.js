@@ -371,16 +371,17 @@ var edicionCV = {
 			}
 			
             //TODO texto ver items
+			// TODO Esperar a la maqueta de Félix para el tooltip (i)
             var htmlSection = `
 			<div class="panel-group pmd-accordion ${notLoaded}" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
 				<div class="panel">
 					<div class="panel-heading" role="tab" id="publicaciones-tab">
 						<p class="panel-title">
-							<a data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
+							<a style="display: flex;" data-toggle="collapse" data-parent="#${id}" href="#${id2}" aria-expanded="${expanded}" aria-controls="${id2}" data-expandable="false">
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
-								<span class="material-icons-outlined" id="${idTooltipSection}">information</span>
+								<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}">information</span>
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
