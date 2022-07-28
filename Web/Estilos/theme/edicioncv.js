@@ -1186,8 +1186,7 @@ var edicionCV = {
         var css = "";
 		//Tooltip
 		// TODO esperar a la maqueta de Felix del tooltip de la sección
-		var spanTooltip = property.information ? `(i)` : '';
-		var idTooltip = property.information ? `id="tooltip${index}"` : '';
+		var spanTooltip = property.information ? `<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="tooltip${index}">information</span>` : '';
         switch (property.width) {
             case 0:
                 css = 'oculto';
@@ -1347,7 +1346,10 @@ var edicionCV = {
 				htmlInput+=`<input propertyorigin="${property.property}_aux" propertyrdf="${property.property}" value="${value}" type="hidden" class="form-control not-outline ${cssDependency} " ${htmlDependency} >`;
 			}
             return `<div class="form-group ${css}" ${rdftype}>
-					<label class="control-label d-block" ${idTooltip}>${property.title}${required}${spanTooltip}</label>
+					<div style="display: flex;">
+						<label class="control-label d-block">${property.title}${required}</label>
+						${spanTooltip}
+					</div> 
 					${htmlInput}
 				</div>`;
         } else {
@@ -1542,8 +1544,10 @@ var edicionCV = {
 				
 			}
             return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
-					<label class="control-label d-block" ${idTooltip}>
-					${property.title}${required}${spanTooltip}</label>
+						<div style="display: flex; width:fit-content;">
+						<label class="control-label d-block"></label>
+						${spanTooltip}
+						</div>
 					${htmlMultiple}
 				</div>`;
         }
