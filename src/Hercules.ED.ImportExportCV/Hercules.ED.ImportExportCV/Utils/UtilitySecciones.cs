@@ -116,7 +116,9 @@ namespace Utils
         public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista, [Optional] string issn)
         {
             //Si el nombre de la revista es nulo o vacio
-            if (string.IsNullOrEmpty(nombreRevista)) { return null; }
+            if (string.IsNullOrEmpty(nombreRevista)) { 
+                return null;
+            }
 
             int offsetInt = 0;
             int limit = 10000;

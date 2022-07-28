@@ -232,11 +232,21 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     if (bloqueados.ContainsKey(idBBDD))
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
+                        bool isBlockedFE = false;
+                        if (listadoAux != null && listadoAux.Count > 0 && listadoAux.ElementAt(i) != null)
+                        {
+                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
+                        }
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD], isBlockedFE: isBlockedFE));
                     }
                     else
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv));
+                        bool isBlockedFE = false;
+                        if (listadoAux != null && listadoAux.Count>0 && listadoAux.ElementAt(i) != null)
+                        {
+                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
+                        }
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false, isBlockedFE: isBlockedFE));
                     }
                 }
                 return listaAux;
@@ -1528,7 +1538,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             Publication publicationFE = UtilitySecciones.PublicacionFuentesExternasDOI(mConfiguracion, doi);
                             if (publicationFE != null)
                             {
-                                if (string.IsNullOrEmpty(publicationFE.title)
+                                if (!string.IsNullOrEmpty(publicationFE.title)
                                 && publicationFE.typeOfPublication.Equals("Journal Article") || publicationFE.typeOfPublication.Equals("Chapter")
                                 || publicationFE.typeOfPublication.Equals("Book"))
                                 {
@@ -1723,7 +1733,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return;
             }
             //Compruebo si existe alguna revista con ese nombre
-            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, hasPublicationVenue.name, hasPublicationVenue.issn.First());
+            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, hasPublicationVenue.name, hasPublicationVenue.issn.FirstOrDefault());
 
             //Si existe añado como tipo de soporte revista directamente.
             if (!string.IsNullOrEmpty(revista))
