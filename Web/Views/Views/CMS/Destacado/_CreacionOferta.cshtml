@@ -367,41 +367,41 @@
 									<legend>@Html.Translate("DATOS_DESCRIPTIVOS")</legend>
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("DESCRIPCION") (*)</label>
-										<div class="edmaTextEditor">
+										<div class="edmaTextEditor" data-id="descripcion" id="contEdDescripcion">
 											@Html.Raw(toolbar)
 											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="descripcion" ></div>
 											<div class="content-area">
-												<textarea placeholder="@Html.Translate("INTRODUCE_DESCRIPCION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+												<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_DESCRIPCION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 											</div>
 										</div>
 									</div>
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("APLICACIONES") (*)</label>
-										<div class="edmaTextEditor">
+										<div class="edmaTextEditor" data-id="aplicaciones" id="contEdAplicaciones">
 											@Html.Raw(toolbar)
 											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="aplicaciones" ></div>
 											<div class="content-area">
-												<textarea placeholder="@Html.Translate("INTRODUCE_PROBLEMAS_RESUELVE")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+												<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_PROBLEMAS_RESUELVE")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 											</div>
 										</div>
 									</div>
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("DESTINATARIOS") (*)</label>
-										<div class="edmaTextEditor">
+										<div class="edmaTextEditor" data-id="destinatarios" id="contEdDestinatarios">
 											@Html.Raw(toolbar)
 											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="destinatarios" ></div>
 											<div class="content-area">
-												<textarea placeholder="@Html.Translate("INTRODUCE_DESTINATARIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+												<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_DESTINATARIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 											</div>
 										</div>
 									</div>
 									<div class="form-group mb-3">
 										<label class="control-label d-block">@Html.Translate("VENTAJAS_BENEFICIOS") (*)</label>
-										<div class="edmaTextEditor">
+										<div class="edmaTextEditor" data-id="ventajasBeneficios" id="contEdVentajasBeneficios">
 											@Html.Raw(toolbar)
 											<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="ventajasBeneficios" ></div>
 											<div class="content-area">
-												<textarea placeholder="@Html.Translate("INTRODUCE_VENTAJAS_BENEFICIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+												<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_VENTAJAS_BENEFICIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 											</div>
 										</div>
 									</div>
@@ -410,51 +410,51 @@
 										<div class="background-gris p-4 mb-5">
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("ORIGEN")</label>
-												<div class="edmaTextEditor">
+												<div class="edmaTextEditor" data-id="origen" id="contEdOrigen">
 													@Html.Raw(toolbar)
 													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="origen" ></div>
 													<div class="content-area">
-														<textarea placeholder="@Html.Translate("INTRODUCE_ORIGEN")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+														<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_ORIGEN")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 													</div>
 												</div>
 											</div>
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("INNOVACION")</label>
-												<div class="edmaTextEditor">
+												<div class="edmaTextEditor" data-id="innovacion" id="contEdInnovacion">
 													@Html.Raw(toolbar)
 													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="innovacion" ></div>
 													<div class="content-area">
-														<textarea placeholder="@Html.Translate("INTRODUCE_INNOVACION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+														<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_INNOVACION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 													</div>
 												</div>
 											</div>
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("TIPO_SOCIO_BUSCADO")</label>
-												<div class="edmaTextEditor">
+												<div class="edmaTextEditor" data-id="socios" id="contEdSocios">
 													@Html.Raw(toolbar)
 													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="socios" ></div>
 													<div class="content-area">
-														<textarea placeholder="@Html.Translate("INTRODUCE_UNO_VARIOS_TIPOS_SOCIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+														<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_UNO_VARIOS_TIPOS_SOCIOS")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 													</div>
 												</div>
 											</div>
 											<div class="form-group mb-4">
 												<label class="control-label d-block">@Html.Translate("TIPO_COLABORADOR_BUSCADO")</label>
-												<div class="edmaTextEditor">
+												<div class="edmaTextEditor" data-id="colaboracion" id="contEdColaboracion">
 													@Html.Raw(toolbar)
 													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="colaboracion" ></div>
 													<div class="content-area">
-														<textarea placeholder="@Html.Translate("INTRODUCE_UNO_VARIOS_TIPOS_COLABORACION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+														<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_UNO_VARIOS_TIPOS_COLABORACION")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 													</div>
 												</div>
 											</div>
 											<div class="form-group">
 												<label class="control-label d-block">@Html.Translate("OBSERVACIONES")</label>
-												<div class="edmaTextEditor">
+												<div class="edmaTextEditor" data-id="observaciones" id="contEDobservaciones">
 													@Html.Raw(toolbar)
 													<div class="form-control not-outline visuell-view d-none" contenteditable type="text" id="observaciones" ></div>
 													<div class="content-area">
-														<textarea placeholder="@Html.Translate("INTRODUCE_OBSERVACIONES")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
+														<textarea placeholder="@Html.Translate("OFERTA_INTRODUCE_OBSERVACIONES")" class="form-control not-outline cke" rows="2" cols="20"></textarea>
 													</div>
 												</div>
 											</div>
