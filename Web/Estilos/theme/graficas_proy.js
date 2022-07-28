@@ -39,9 +39,11 @@ class Pagina {
         <div class="modal-backdrop fade" style="pointer-events: none;"></div>
         `);
     }
+    /**
+     * Agrupa las graficas de la pagina en grupos
+     */
     agrupar() {
         this.grupos = {};
-        //console.log(this.graficasConfig);
         this.graficasConfig.forEach(grafica => {
             if (grafica.idGrupo) {
                 if (this.grupos[grafica.idGrupo] == undefined) {
@@ -62,7 +64,6 @@ class Pagina {
                 this.grupos[id] = [grafica];
             }
         });
-        //console.log(grupos);
     }
     createGraphs(opcionesDropdown = []) {
         Object.entries(this.grupos).forEach(([idGrupo, grupo]) => {
@@ -85,7 +86,6 @@ class Pagina {
         if (!grafica.idRecurso) {
             var graph = await getGrafica2(this.id, grafica.id, this.filtroFacetas);
         } else {
-            //console.log(grafica);
             var graph = await getGrafica2(grafica.idPagina, grafica.idGrafica, grafica.filtro, 50, grafica.escalas, grafica.titulo)
             graph.data.groupId = null;
         }
@@ -134,7 +134,6 @@ class GraficaBase {
             this.accionesMapaCallBack(ctx);
         }
 
-        //this.pluginsCallback();
     }
     pluginsCallback() {
         if (this.data.plugins) {
@@ -157,7 +156,6 @@ class GraficaBase {
         }
     }
     pintarGrafica(canvas, cambiarFont = true) {
-        //this.accionesMapaCallback($(canvas).parents(".grafica")[0]);
         this.addPlugin("legend", {
                 onHover: (e) => {
                     e.chart.canvas.style.cursor = 'pointer';
@@ -522,47 +520,9 @@ class GraficaNodos extends GraficaBase {
         ctx = this.pintarContenedores(ctx);
 
         var controls = $(ctx).parent().find(".graph-controls");
-        var download = $(ctx).parent().parent().find('a.descargar');
         this.data.container = ctx;
         this.data.ready = function () { window.cy = this };
         this.cy = cytoscape(this.data);
-        //var combo = $(ctx).parents("article").find(".toggleGraficas ul.no-list-style");
-        var titulo = this.titulo;
-
-        /*
-         if (combo) { //para graficas agrupadas 
-             /*
-             var option = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
-             var canvasOrder = combo.parents('.wrap').find("canvas#grafica_" + pIdPagina + "_" + pIdGrafica);
-             var parent = canvasOrder.parents('div.grafica');
-             if (option.length === 0) {
-                 combo.append(`
-                     <a order=${parent.attr("order")} value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
-                         <span class="material-icons">${tipo}</span>
-                         <span class="texto">${titulo}</span>
-                     </a>
-                 `)
-             }
-            
-             //find the option with the value of the selected value of the combo
- 
-             var selectedOption = combo.find('a[value="' + "grafica_" + pIdPagina + "_" + pIdGrafica + '"]');
-             var canvasOrder = combo.parents('.wrap').find("div#grafica_" + pIdPagina + "_" + pIdGrafica);
-             var parent = canvasOrder.parents('div.grafica');
-             if (selectedOption.length == 0) {
-                 combo.append(`
-                 <a order=${parent.attr("order")} value="${"grafica_" + pIdPagina + "_" + pIdGrafica}" class="item-dropdown">
-                         <span class="material-icons">bubble_chart</span>
-                         <span class="texto">${titulo}</span>
-                     </a>
-             `)
-             }
-         }
-        */
-
-        //TODO MEJORAR
-        //document.getElementById('titulo_grafica_' + pIdRecurso).textContent = titulo;
-
 
         var arrayNodes = [];
         var nodos = this.cy.nodes();
@@ -615,24 +575,7 @@ class GraficaNodos extends GraficaBase {
                     renderedPosition: { x: grafica.cy.width() / 2, y: grafica.cy.height() / 2 }
                 });
             })
-        /*if ($(this).hasClass('descargar')) {
-                    return;
-                }
-                var image = cy.jpg(
-                    {
-                        full: true,
-                        quality: 1,
-                    }
-                );
-                var a = document.createElement('a');
-                a.href = image;
-    
-    
-                a.download = this.titulo + '.jpg';
-                a.click();
-            });
-    
-        ;*/
+
     }
 }
 class GraficaBarras extends GraficaBase {
@@ -698,7 +641,7 @@ class GraficaBarras extends GraficaBase {
         //esto modifica el tamaño de las barras 
         this.data.data.datasets.forEach((item) => {
             item['barThickness'] = ancho;
-        }) //todo mover a json
+        }) 
 
         this.data.options.scale = {
             ticks: {
@@ -706,13 +649,7 @@ class GraficaBarras extends GraficaBase {
             }
         }
         return canvasSize;
-        /*
-        if ((canvasSize < 318)) { // TODO SIMPLIFICAR
-            this.drawSmallChart(ctx);
-        } else {
-            this.drawScrollChart(ctx);
-
-        }*/
+   
     }
     drawSmallChart(ctx) {
 
@@ -733,16 +670,12 @@ class GraficaBarras extends GraficaBase {
 
     }
     drawLegend(ctx) {
-
-
         //Se revela el modal de zoom
-        //$(ctx).parents(".modal-content").css("display", "block");
 
-        //super.pintarGrafica(ctx);
         // Se comprueba si tiene eje principal/secundario.
         var scrollContainer = $(ctx).parents(".chartScroll")[0];
         var chartAreaWrapper = $(ctx).parents(".chartAreaWrapper")[0];
-        // Leyenda con titulo y contenedor para datasets. style="text-align: center; position: absolute; top: 0px; background-color: white;
+        // Leyenda con titulo y contenedor para datasets. 
         var legend = $(`<div class="chartLegend">
                 <h4 id="legendTitle">${this.titulo}</h4>
                 </div>`);
@@ -757,31 +690,7 @@ class GraficaBarras extends GraficaBase {
                     <div style="background-color: ${dataset.backgroundColor[0]};"></div>
                     <p class="dataSetLabel">${dataset.label}</p>
                     </div>`);
-            /*$('div.labelContainer')
-            .unbind()
-            .click(function (e) {
-                // Se obtiene el chart desde el canvas.
-                var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
-                var chart = Chart.getChart(canvas);
-                // El ID del dataset está en el ID del contenedor del label.
-                var id = $(this).attr('id').split('-')[1];
-                var label = $(this).find('p.dataSetLabel');
 
-                // Si el label no está tachado se tacha y oculta el dataset.
-                if (label.css('text-decoration').indexOf("line-through") == -1) {
-                    label.css("text-decoration", "line-through");
-                    chart.setDatasetVisibility(id, false);
-                } else {
-                    label.css("text-decoration", "none");
-                    chart.setDatasetVisibility(id, true);
-                }
-
-                try { // Hay problemas con el gráfico de líneas + grafico de barras stackeado, si falla se repinta el chart.
-                    chart.update();
-                } catch (e) {
-                    chart.draw();
-                }
-            });*/
             labelContainer.unbind().click(function (e) {
                 // Se obtiene el chart desde el canvas.
                 var canvas = $(this).parents('div.chartWrapper').find('div.chartAreaWrapper canvas');
@@ -865,7 +774,7 @@ class GraficaHorizontal extends GraficaBarras {
     pintarGrafica(ctx) {
         $(ctx).addClass("horizontal");
         var canvas = super.pintarContenedores(ctx);
-        this.drawChart(canvas); // meter metodo aqui
+        this.drawChart(canvas);
         super.callbacks(ctx);
     }
 
@@ -894,7 +803,7 @@ class GraficaHorizontal extends GraficaBarras {
         } else { // a partir de aqui se prepara el scroll
             this.drawScrollChart(ctx);
         }
-        //comportamientos();
+
     }
     drawScrollChart(ctx) {
         var legend = super.drawLegend(ctx);
@@ -932,13 +841,9 @@ class GraficaHorizontal extends GraficaBarras {
 
         });
     }
-    reDrawChart(myChart, mainAxis, secondaryAxis) {// TODO HACER PLUGIN
+    reDrawChart(myChart, mainAxis, secondaryAxis) {
         var legend = $(myChart.canvas).parents(".chartWrapper").find(".chartLegend")[0];
-        /* TODO - Actualizar el tamaño de las barras dependiendo de los datasets visibles.
-        myChart.data.datasets.forEach((dataset, index) => { // esto casi funciona, pero hace cosas raras
-            dataset['barThickness'] = 50/(myChart.getVisibleDatasetCount());
-        })
-        */
+
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
         // Preparamos el eje superior.
@@ -961,7 +866,7 @@ class GraficaHorizontal extends GraficaBarras {
             try {
                 ctx.drawImage(myChart.canvas, 0, start * scale, myChart.width * scale, (end - start) * scale, 0, 0, myChart.width, end - start);
             } catch (e) {
-                //console.log(e);
+                console.log(e);
             }
         }
 
@@ -991,7 +896,7 @@ class GraficaVertical extends GraficaBarras {
     constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50) {
         super(idPagina, idGrafica, data, filtroFacetas, titulo, escalas, barSize, "vertical");
         this.escalas = escalas;
-        // console.log(maxScales);
+       
     }
     pintarGrafica(ctx) {
         $(ctx).addClass("vertical");
@@ -1005,15 +910,13 @@ class GraficaVertical extends GraficaBarras {
             return;
         }
 
-        //console.log(this.maxScales);
-
         var canvasSize = super.getCanvasSize();
         ctx.parentNode.style.width = canvasSize + 'px'; //se establece la altura del eje falso
         if (this.escalas) {
             //console.log(this.escalas);
             //if contains ","
             if (this.escalas.indexOf(",") > -1) {
-                //parse maxScales to int
+              
                 this.data.options.scales.y1['max'] = parseInt(this.escalas.split(",")[0]);
                 this.data.options.scales.y2['max'] = parseInt(this.escalas.split(",")[1]);
             } else {
@@ -1028,7 +931,7 @@ class GraficaVertical extends GraficaBarras {
         } else { // a partir de aqui se prepara el scroll
             this.drawScrollChart(ctx);
         }
-        //comportamientos();
+
     }
     drawScrollChart(ctx) {
         var legend = super.drawLegend(ctx);
@@ -1063,20 +966,12 @@ class GraficaVertical extends GraficaBarras {
             $(legend).append(secondaryAxis);
         }
 
-        // mover
+
         this.data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, legend);
-        /*$(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
-            reDrawChart(myChart, mainAxis, secondaryAxis, canvasSize, legend, true);
 
-        });*/
     }
-    reDrawChart(myChart, mainAxis, secondaryAxis, legend) {// TODO HACER PLUGIN
+    reDrawChart(myChart, mainAxis, secondaryAxis, legend) {
 
-        /* TODO - Actualizar el tamaño de las barras dependiendo de los datasets visibles.
-        myChart.data.datasets.forEach((dataset, index) => { // esto casi funciona, pero hace cosas raras
-            dataset['barThickness'] = 50/(myChart.getVisibleDatasetCount());
-        })
-        */
         // Se obtiene la escala del navegador (afecta cuando el usuario hace zoom).
         var scale = window.devicePixelRatio;
         // Preparamos el eje superior.
@@ -1094,12 +989,12 @@ class GraficaVertical extends GraficaBarras {
         }
 
         function drawAxis(ctx, myChart, start, end) {
-            ctx.canvas.width = end - start;// * scale;
+            ctx.canvas.width = end - start;
             ctx.canvas.height = myChart.height;
             try {
                 ctx.drawImage(myChart.canvas, start * scale, 0, (end - start) * scale, myChart.height * scale, 0, 0, end - start, myChart.height);
             } catch (e) {
-                //console.log(e);
+                console.log(e);
             }
         }
 
@@ -1121,12 +1016,12 @@ class GraficaVertical extends GraficaBarras {
             .click({}, function (e) {
                 var parent = $(this).parents('.acciones-mapa').parent().find(".grafica:not(.hide)");
                 var grafica = parent.data("grafica");
-                //grafica.accionesMapaCallBack = () => { };
+
                 var canvas = parent.find(".chartAreaWrapper canvas");
                 var myChart = Chart.getChart(canvas[0]);
 
                 //plugin para que el color de fondo sea blanco.
-                var plugin = {//TODO HACER PLUGIN
+                var plugin = {
                     id: 'custom_canvas_background_color',
                     beforeDraw: (chart) => {
                         chart.ctx.save();
@@ -1156,7 +1051,6 @@ class GraficaVertical extends GraficaBarras {
                     //Elimino el callback que llama a reDrawChart
                     delete myChart.config.options.animation['onProgress'];
 
-                    //Remake the chart with the data obtained from the previous chart
                     var newChart = new Chart(canvas[0].getContext('2d'), {
                         type: 'bar',
                         data: grafica.data.data,
@@ -1171,8 +1065,7 @@ class GraficaVertical extends GraficaBarras {
 
                     myChart.destroy();
                     parent.empty();
-                    //$(parent).find(".grafica").empty();
-                    //$(parent).find(".acciones-mapa").empty();
+
                     grafica.pintarGrafica(parent);
 
 
@@ -1231,8 +1124,7 @@ class GraficaCircular extends GraficaBase {
                                         dataBack[i] = {
                                             "inner": data.datasets[1].data[i],
                                             "outer": {}
-                                            /* 0: data.datasets[0].data[i * 2],
-                                             1: data.datasets[0].grupos[i * 2 + 1] == grupo ? data.datasets[0].data[i * 2 + 1] : 0,*/
+
                                         };
                                         var itemsGrupo = 0;
                                         var grupoStart = -1;
@@ -1251,7 +1143,6 @@ class GraficaCircular extends GraficaBase {
                                             }
                                         }
                                         for (var j = 0; j < itemsGrupo; j++) {
-                                            //dataBack[i]["outer"][j] = data.datasets[0].data[j]; CANNOT SET PROPRETIES OF UNDEFINED
                                             dataBack[i].outer[j] = data.datasets[0].data[grupoStart + j];
                                         }
                                     }
@@ -1273,7 +1164,7 @@ class GraficaCircular extends GraficaBase {
                                         grupos: data.datasets[0].grupos,
                                         data: dataBack[i]
                                     };
-                                });//.reverse();
+                                });
                             }
                             return [];
                         }
@@ -1283,7 +1174,6 @@ class GraficaCircular extends GraficaBase {
                             if (meta.data[index]) {
                                 if (meta.data[index].hidden) {
                                     meta.data[index].hidden = false;
-                                    //this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= 2 ? index % 2 : index] : legendItem.data.inner;
                                     this.chart.data.datasets[meta.index].data[index] = meta.index == 0 ? legendItem.data.outer[index >= numGrupo ? index % numGrupo : index] : legendItem.data.inner;
                                 }
                                 else {
@@ -1296,7 +1186,6 @@ class GraficaCircular extends GraficaBase {
                         const innerMeta = this.chart.getDatasetMeta(1);
                         toggleMeta(innerMeta, legendItem.index);
 
-                        //TOOD implementar grupo
                         const outerMeta = this.chart.getDatasetMeta(0);
                         var numItemsGrupo = 0;
                         var grupoStart = -1;
@@ -1346,7 +1235,7 @@ async function getGrafica2(pIdPagina, pIdGrafica, pFiltroFacetas, barSize = 50, 
     arg.pFiltroFacetas = pFiltroFacetas;
     arg.pLang = lang; //"es";
     var data = await $.get(url, arg, function (data) { });
-    //console.log(maxScales);
+
     if (data.isNodes) {
         return new GraficaNodos(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo);
     } else if (data.isVertical) {
@@ -1367,8 +1256,8 @@ async function getPages(pContenedor, userId, pFiltroFacetas = "") {
     var listaData = await $.get(url, arg, function (listaData) {
 
     });
-    //console.log(listaData);
-    for (let i = 0; i < listaData.length; i++) { //TODO  MOVER EL APPEND
+
+    for (let i = 0; i < listaData.length; i++) {
         $(".listadoMenuPaginas").append(`
                 <li class="nav-item" id="${listaData[i].id}" num="${i}">
                     <a class="nav-link uppercase">${listaData[i].nombre}</a>
@@ -1376,10 +1265,7 @@ async function getPages(pContenedor, userId, pFiltroFacetas = "") {
             `);
         paginas.push(new Pagina(listaData[i].nombre, listaData[i].id, pContenedor, listaData[i], userId, pFiltroFacetas));
     }
-    //constructor(pContenedor, data, userId, pFiltroFacetas = null, barSize = 50) {
 
-    //that.createEmptyPage(listaData[numPagina].id);
-    //that.fillPage(listaData[numPagina]);
 
     listaPaginas = listaData;
     return paginas;
@@ -1404,7 +1290,6 @@ async function pintarGraficaIndividual(pContenedor, pIdPagina, idGrafica = "") {
     if (!$(pContenedor).hasClass("grafica")) {
         $(pContenedor).addClass("grafica");
     }
-    //pintarContenedoresGraficas(pContenedor, pIdPagina);
     var grafica = await getGrafica2(pIdPagina, idGrafica, "");
     grafica.data.groupId = null;
     grafica.pintarGrafica(pContenedor);
@@ -1642,7 +1527,7 @@ function pintarAccionesMapa(pContenedor) {
         return $(pContenedor).parent().find("div.acciones-mapa");
     }
 }
-//TODO MOVER A METRICAS
+//TODO MOVER A GRAPHIC ENGINE
 function cerrarModal() {
     $('#modal-ampliar-mapa').find('div.graph-container').empty();
     $('#modal-ampliar-mapa').find('div.acciones-mapa').empty();
