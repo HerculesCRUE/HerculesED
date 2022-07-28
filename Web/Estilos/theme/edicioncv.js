@@ -48,6 +48,7 @@ var edicionCV = {
         $('#navegacion-cv li.nav-item a').click(function(e) {
             var entityID = $($(this).attr('href')).find('.cvTab').attr('about');
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
+			$(this).tooltip('hide');
             that.loadTab(entityID, rdfType);
         });
 		

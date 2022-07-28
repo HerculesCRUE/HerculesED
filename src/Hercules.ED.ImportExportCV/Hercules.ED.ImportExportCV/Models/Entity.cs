@@ -13,7 +13,7 @@ namespace Models
         /// <summary>
         /// Propiedad usada para comprobar si un archivo es de Fuentes externas
         /// </summary>
-        public bool isBlocked { get; set; }
+        public bool isBlockedFE { get; set; }
         /// <summary>
         /// Propiedad
         /// </summary>
