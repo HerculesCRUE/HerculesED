@@ -728,7 +728,7 @@ edicionCV.printTabSection= function(data, isLast5Years) {
 									</div>
 								</div>
 								<div class="wrap">
-									<div class="ordenar dropdown">${this.printOrderTabSection(data.orders)}</div>
+									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
 											<div class="textoBusquedaPrincipalInput">
