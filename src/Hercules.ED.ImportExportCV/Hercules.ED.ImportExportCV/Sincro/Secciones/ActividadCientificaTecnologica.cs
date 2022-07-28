@@ -1587,7 +1587,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosDescripcion, publicationFE.@abstract),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalDOI, publicationFE.doi),
                                         //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime)),
-                                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First()),
+                                        //new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First()),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosURLDocumento, publicationFE.pdf),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, publicationFE.pageEnd),
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, publicationFE.pageStart),
@@ -1596,7 +1596,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosOpenAccess, isOpenAccess)
                                     ));
 
-                                    if(publicationFE.dataIssued!=null)
+                                    if (publicationFE.url != null)
+                                    {
+                                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, publicationFE.url.First())));
+                                    }
+
+                                    if (publicationFE.dataIssued!=null)
                                     {
                                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, Utility.DatetimeFE(publicationFE.dataIssued.datimeTime))));
                                     }
@@ -1668,37 +1673,40 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private void PublicacionesDocumentosFEBibliografia(List<Bibliografia> bibliografias, Entity entidadAux)
         {
-            foreach (Bibliografia bibliografia in bibliografias)
+            if (bibliografias != null)
             {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                string biblioDOIInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.doi);
-                string biblioURLInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.url);
-
-                string anioPub = bibliografia.anyoPublicacion != null ? bibliografia.anyoPublicacion.ToString() : "";
-                string biblioAnioPubInsert = UtilitySecciones.StringGNOSSID(entityPartAux, anioPub);
-                string biblioTituloInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.titulo);
-                string biblioRevistaInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.revista);
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioDOI, biblioDOIInsert),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioURL, biblioURLInsert),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAnioPub, biblioAnioPubInsert),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioTitulo, biblioTituloInsert),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioRevista, biblioRevistaInsert)
-                ));
-
-                //Añado los autores de la bibliografia
-                if (bibliografia.autores != null)
+                foreach (Bibliografia bibliografia in bibliografias)
                 {
-                    for (int i = 0; i < bibliografia.autores.Count; i++)
-                    {
-                        string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux + "@@@";
-                        string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Key);
-                        string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Value);
+                    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                    string biblioDOIInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.doi);
+                    string biblioURLInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.url);
 
-                        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresNombre, biblioAutorNombreInsert),
-                            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresScholarID, biblioAutorScholarIdInsert)
-                        ));
+                    string anioPub = bibliografia.anyoPublicacion != null ? bibliografia.anyoPublicacion.ToString() : "";
+                    string biblioAnioPubInsert = UtilitySecciones.StringGNOSSID(entityPartAux, anioPub);
+                    string biblioTituloInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.titulo);
+                    string biblioRevistaInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.revista);
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioDOI, biblioDOIInsert),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioURL, biblioURLInsert),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAnioPub, biblioAnioPubInsert),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioTitulo, biblioTituloInsert),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioRevista, biblioRevistaInsert)
+                    ));
+
+                    //Añado los autores de la bibliografia
+                    if (bibliografia.autores != null)
+                    {
+                        for (int i = 0; i < bibliografia.autores.Count; i++)
+                        {
+                            string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux + "@@@";
+                            string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Key);
+                            string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Value);
+
+                            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresNombre, biblioAutorNombreInsert),
+                                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresScholarID, biblioAutorScholarIdInsert)
+                            ));
+                        }
                     }
                 }
             }
@@ -1906,22 +1914,25 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private void PublicacionesDocumentosFEEtiquetasEnriquecidas(HashSet<string> listadoEtiquetasExternas, List<Knowledge_enriquecidos> freetextKeywords, Entity entidadAux)
         {
-            foreach (Knowledge_enriquecidos freetextKeyword in freetextKeywords)
+            if (freetextKeywords != null)
             {
-                //Si la etiqueta se encuentra en el listado no la inserto de nuevo
-                if (listadoEtiquetasExternas.Contains(freetextKeyword.word.ToLower()))
+                foreach (Knowledge_enriquecidos freetextKeyword in freetextKeywords)
                 {
-                    continue;
+                    //Si la etiqueta se encuentra en el listado no la inserto de nuevo
+                    if (listadoEtiquetasExternas.Contains(freetextKeyword.word.ToLower()))
+                    {
+                        continue;
+                    }
+
+                    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
+                    string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.word);
+                    string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.porcentaje);
+
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosTitulo, etiquetasValor),
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosScore, etiquetasScore)
+                    ));
                 }
-
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-                string etiquetasValor = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.word);
-                string etiquetasScore = UtilitySecciones.StringGNOSSID(entityPartAux, freetextKeyword.porcentaje);
-
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosTitulo, etiquetasValor),
-                   new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTextosEnriquecidosScore, etiquetasScore)
-                ));
             }
         }
 
