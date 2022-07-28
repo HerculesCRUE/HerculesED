@@ -351,3 +351,4 @@ MigrationBackup/
 ObjetosDeConocimiento/Document/document.pprj
 src/DesnormalizadorHercules/Config/OAuthV3.config
 src/Hercules.ED.Desnormalizador/Config/OAuthV3.config
+src/Hercules.ED.EditorCV/EditorCV/Config/configOAuth/OAuthV3.config

@@ -281,11 +281,12 @@ namespace EditorCV.Models
                 tabSection.last5Years = last5Years;
             }
 
-            //Órdenes sección
+            //Órdenes e items de sección
             tabSection.orders = new List<TabSectionPresentationOrder>();
             if (section.presentation != null && section.presentation.listItemsPresentation != null &&
                 section.presentation.listItemsPresentation.listItem != null && section.presentation.listItemsPresentation.listItem.orders != null)
             {
+                //Órdenes sección
                 foreach (TabSectionListItemOrder listItemOrder in section.presentation.listItemsPresentation.listItem.orders)
                 {
                     TabSectionPresentationOrder presentationOrderTabSection = new TabSectionPresentationOrder()
@@ -483,6 +484,7 @@ namespace EditorCV.Models
             }
             sectionItem.properties = new List<TabSectionItemProperty>();
             sectionItem.iseditable = !subseccionItem.isBlocked;
+            sectionItem.isBlockedFE = subseccionItem.isBlockedFE;
             sectionItem.idBBDD = subseccionItem.idBBDD;
             sectionItem.identifier = subseccionItem.guid;
             sectionItem.orderProperties = new List<TabSectionItemOrderProperty>();
