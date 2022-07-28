@@ -4452,29 +4452,13 @@ var duplicadosCV = {
     pintarAgrupacionDuplicados: async function() {
 		var that=this;
 		$('#modal-posible-duplicidad .resource-list-wrap').empty();
-		
-		$('#modal-posible-duplicidad .numpasos').html(' ('+(this.pasoActual+1)+"/"+this.pasosTotales+')');
+		var principal=true;
+		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
 		MostrarUpdateProgress();
 		var numActual=0;
-		//this.pasoActual=3;
-		
-
-		if (this.itemPrincipal ==null){
-			this.itemPrincipal=this.items[this.pasoActual].items[0];
-		}
-		await $.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.itemPrincipal + "&pLang=" + lang, null, function(data) {
-			var htmlItem=edicionCV.printHtmlListItem(that.itemPrincipal, data);
-			$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
-			that.engancharComportamientos();
-			that.isPrincipalEditable=data.iseditable;
-			numActual++;
-
-			that.engancharComportamientos();
-		});
-
-	
-		for( var itemIn in this.items[this.pasoActual].items){			
-
+		for( var itemIn in this.items[this.pasoActual].items)ç
+		{			
+			if(principal)
 			{
 				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
