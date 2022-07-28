@@ -97,7 +97,7 @@
 									}
                                     else
                                     {
-                                        if (notification.entidad != null && notification.entidad.Split('_').Length > 2 && notification.cv.Split('_').Length > 2 && notification.cvnCode != null)
+                                        if (notification.entidad != null && notification.entidad.Split('_').Length > 2 && notification.cv.Split('_').Length > 2)
                                         {
                                             string url = Comunidad.Url + "/" + @Html.Translate("NOTIFICACION_RECURSO_URL") + "/cv/" + notification.cv.Split('_')[1] + "?tab=" + notification.propiedadCV + "&id=" + notification.entidad.Split('_')[1] + "&section=" + notification.seccionCV;
                                             if (notification.tipoNotificacion == "create")
