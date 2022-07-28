@@ -29,6 +29,7 @@ var edicionCV = {
     idCV: null,
     idPerson: null,
     init: function() {
+		duplicadosCV.init();
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
@@ -4379,6 +4380,8 @@ var edicionCV = {
 
 
 var duplicadosCV = {
+	itemPrincipal:null,
+	isPrincipalEditable:true,
 	idCV:null,
     items: null,
 	pasoActual:0,
@@ -4394,8 +4397,28 @@ var duplicadosCV = {
 	},
 	engancharComportamientos: function() {
 		var that=this;
+		$('#modal-posible-duplicidad .formulario-edicion .dropdown').remove();
+		
+		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
+			var secundario = $(this).parents("article.resource");
+			if(that.itemPrincipal!=null){
+				//that.items[that.pasoActual].items.push(that.itemPrincipal);
+			}
+
+			console.log($(secundario).data('item'));
+			that.itemPrincipal = $(secundario).data('item');
+			//var index = that.items[that.pasoActual].items.indexOf(that.itemPrincipal);
+			//that.items[that.pasoActual].items.splice(index, 1);
+			that.pintarAgrupacionDuplicados();
+			/*var principal = $("#modal-posible-duplicidad div.principal article.resource");
+			var containerSecundario = secundario.parent();
+			var containerPrincipal = principal.parent();
+			containerSecundario.append(principal);
+			containerPrincipal.append(secundario);*/
+		});
 		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
 		{
+			that.itemPrincipal = null;
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
 		});
@@ -4421,19 +4444,37 @@ var duplicadosCV = {
 		{
 			var modal = $("#modal-posible-duplicidad");
 			modal.modal('show');
+			
 			this.pintarAgrupacionDuplicados();
 		}
 	}
 	,
-    pintarAgrupacionDuplicados: function() {
+    pintarAgrupacionDuplicados: async function() {
 		var that=this;
 		$('#modal-posible-duplicidad .resource-list-wrap').empty();
-		var principal=true;
-		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
+		
+		$('#modal-posible-duplicidad .numpasos').html(' ('+(this.pasoActual+1)+"/"+this.pasosTotales+')');
 		MostrarUpdateProgress();
 		var numActual=0;
+		//this.pasoActual=3;
+		
+
+		if (this.itemPrincipal ==null){
+			this.itemPrincipal=this.items[this.pasoActual].items[0];
+		}
+		await $.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.itemPrincipal + "&pLang=" + lang, null, function(data) {
+			var htmlItem=edicionCV.printHtmlListItem(that.itemPrincipal, data);
+			$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
+			that.engancharComportamientos();
+			that.isPrincipalEditable=data.iseditable;
+			numActual++;
+
+			that.engancharComportamientos();
+		});
+
+	
 		for( var itemIn in this.items[this.pasoActual].items){			
-			if(principal)
+
 			{
 				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
@@ -4454,14 +4495,31 @@ var duplicadosCV = {
 				{
 					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
-					numActual++;
-					if(numActual==that.items[that.pasoActual].items.length)
-					{
-						OcultarUpdateProgress();
+					var articulo = $('#modal-posible-duplicidad .resource-list-wrap.secundarios article.resource').last();
+					var titulo = $('#modal-posible-duplicidad .formulario-edicion .resource-title').last();
+					var id = titulo.find("a").data("id");
+					$(articulo).data('item',id);
+					
+				
+	
+					titulo.after(`
+					   <select name="itemConflict" data-original-title="" title="" aria-describedby="tooltip258481">
+							<option value="" selected ></option>	
+							<option value="ignorar" >No es duplicado</option>
+							<option value="fusionar">Fusionar</option>
+							<option value="eliminar">Eliminar</option>
+						</select>
+					`);
+					if(that.isPrincipalEditable) {
+					titulo.after(`
+						<a class="btn btn-primary uppercase btn-principal">Cambiar a Principal</a>`)
 					}
+					numActual++;
+
 					that.engancharComportamientos();
 				});
 			}			
+			OcultarUpdateProgress();
 			principal=false;
 		}		
 	}
