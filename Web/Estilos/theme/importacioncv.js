@@ -991,6 +991,7 @@ edicionCV.printHtmlListItem= function(id, data) {
 	let openAccess="";
 	let isCheck ="";
 	let isConflict = false;
+	let isBlockedFE = false;
 	if (data.isopenaccess) {
 		openAccess = "open-access";
 	}
@@ -1004,6 +1005,11 @@ edicionCV.printHtmlListItem= function(id, data) {
 	{
 		isConflict = false;
 	}
+	if(data.isBlockedFE)
+	{
+		isBlockedFE = true 
+	}
+	
 	var htmlListItem = ``;
 	if(data.title!= null){
 		htmlListItem = `<article class="resource success ${openAccess} conflict-${isConflict}" >
@@ -1023,10 +1029,13 @@ edicionCV.printHtmlListItem= function(id, data) {
 				htmlListItem += selectorConflictoBloqueado;
 			}	
 		}
-		else
+		else if(!isBlockedFE)
 		{
 			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
-		}			
+		}
+		else if(isBlockedFE){
+			htmlListItem += `<span class="material-icons-outlined new">block</span>`;
+		}
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>
 									<div class="content-wrap">
