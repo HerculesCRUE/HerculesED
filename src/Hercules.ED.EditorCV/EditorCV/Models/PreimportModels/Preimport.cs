@@ -82,6 +82,7 @@ namespace EditorCV.Models.PreimportModels
         /// Indica si el objeto esta bloqueado o se puede editar.
         /// </summary>
         public bool isBlocked { get; set; }
+        public bool isBlockedFE { get; set; }
 
         /// <summary>
         /// Bloques pertenecientes al subapartado
@@ -92,35 +93,35 @@ namespace EditorCV.Models.PreimportModels
         /// </summary>
         public List<EntityPreimport.Property> propiedadesCV { get; set; }
 
-        public SubseccionItem(int id, string idBBDD, List<EntityPreimport.Property> propiedades, List<EntityPreimport.Property> propiedadesCV, bool isBlocked = false)
-        {
-            this.id = id;
-            this.idBBDD = idBBDD;
-            this.isBlocked = isBlocked;
-            this.propiedades = propiedades;
-            this.propiedadesCV = propiedadesCV;
-        }
+        //public SubseccionItem(int id, string idBBDD, List<EntityPreimport.Property> propiedades, List<EntityPreimport.Property> propiedadesCV, bool isBlocked = false)
+        //{
+        //    this.id = id;
+        //    this.idBBDD = idBBDD;
+        //    this.isBlocked = isBlocked;
+        //    this.propiedades = propiedades;
+        //    this.propiedadesCV = propiedadesCV;
+        //}
         
-        public SubseccionItem(int id, string idBBDD, List<EntityPreimport.Property> propiedades, bool isBlocked = false)
-        {
-            this.id = id;
-            this.idBBDD = idBBDD;
-            this.isBlocked = isBlocked;
-            this.propiedades = propiedades;
-            this.propiedadesCV = new List<EntityPreimport.Property>();
-        }
+        //public SubseccionItem(int id, string idBBDD, List<EntityPreimport.Property> propiedades, bool isBlocked = false)
+        //{
+        //    this.id = id;
+        //    this.idBBDD = idBBDD;
+        //    this.isBlocked = isBlocked;
+        //    this.propiedades = propiedades;
+        //    this.propiedadesCV = new List<EntityPreimport.Property>();
+        //}
 
-        public SubseccionItem(int id, string idBBDD)
-        {
-            this.id = id;
-            this.idBBDD = idBBDD;
-            this.isBlocked = true;
-            this.propiedades = new List<EntityPreimport.Property>();
-            this.propiedadesCV = new List<EntityPreimport.Property>();
-        }
+        //public SubseccionItem(int id, string idBBDD)
+        //{
+        //    this.id = id;
+        //    this.idBBDD = idBBDD;
+        //    this.isBlocked = true;
+        //    this.propiedades = new List<EntityPreimport.Property>();
+        //    this.propiedadesCV = new List<EntityPreimport.Property>();
+        //}
 
-        public SubseccionItem()
-        {
-        }
+        //public SubseccionItem()
+        //{
+        //}
     }
 }
