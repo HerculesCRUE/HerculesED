@@ -1034,7 +1034,8 @@ edicionCV.printHtmlListItem= function(id, data) {
 			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
 		}
 		else if(isBlockedFE){
-			htmlListItem += `<span class="material-icons-outlined new">block</span>`;
+			//TODO añadir tooltip fuentes externas
+			htmlListItem += `<span class="material-icons-outlined new">mediation</span>`;
 		}
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>
