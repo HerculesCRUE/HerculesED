@@ -1694,20 +1694,20 @@ namespace ImportadorWebCV.Sincro.Secciones
                     ));
 
                     //Añado los autores de la bibliografia
-                    if (bibliografia.autores != null)
-                    {
-                        for (int i = 0; i < bibliografia.autores.Count; i++)
-                        {
-                            string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux + "@@@";
-                            string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Key);
-                            string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Value);
+                    //if (bibliografia.autores != null)
+                    //{
+                    //    for (int i = 0; i < bibliografia.autores.Count; i++)
+                    //    {
+                    //        string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux;
+                    //        string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux2, bibliografia.autores.ElementAt(i).Key);
+                    //        string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux2, bibliografia.autores.ElementAt(i).Value);
 
-                            entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresNombre, biblioAutorNombreInsert),
-                                new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresScholarID, biblioAutorScholarIdInsert)
-                            ));
-                        }
-                    }
+                    //        entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    //            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresNombre, biblioAutorNombreInsert),
+                    //            new Property(Variables.ActividadCientificaTecnologica.pubDocumentosBiblioAutoresScholarID, biblioAutorScholarIdInsert)
+                    //        ));
+                    //    }
+                    //}
                 }
             }
         }
@@ -2394,17 +2394,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 ));
 
                 //Añado los autores de la bibliografia
-                for (int i = 0; i < bibliografia.autores.Count; i++)
-                {
-                    string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux + "@@@";
-                    string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Key);
-                    string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux, bibliografia.autores.ElementAt(i).Value);
+                //for (int i = 0; i < bibliografia.autores.Count; i++)
+                //{
+                //    string entityPartAux2 = Guid.NewGuid().ToString() + "@@@" + entityPartAux;
+                //    string biblioAutorNombreInsert = UtilitySecciones.StringGNOSSID(entityPartAux2, bibliografia.autores.ElementAt(i).Key);
+                //    string biblioAutorScholarIdInsert = UtilitySecciones.StringGNOSSID(entityPartAux2, bibliografia.autores.ElementAt(i).Value);
 
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioAutoresNombre, biblioAutorNombreInsert),
-                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioAutoresScholarID, biblioAutorScholarIdInsert)
-                    ));
-                }
+                //    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                //        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioAutoresNombre, biblioAutorNombreInsert),
+                //        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosBiblioAutoresScholarID, biblioAutorScholarIdInsert)
+                //    ));
+                //}
             }
         }
 
