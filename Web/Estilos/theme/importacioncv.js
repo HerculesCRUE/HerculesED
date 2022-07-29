@@ -1005,10 +1005,6 @@ edicionCV.printHtmlListItem= function(id, data) {
 	{
 		isConflict = false;
 	}
-	if(data.isBlockedFE)
-	{
-		isBlockedFE = true 
-	}
 	
 	var htmlListItem = ``;
 	if(data.title!= null){
@@ -1029,13 +1025,9 @@ edicionCV.printHtmlListItem= function(id, data) {
 				htmlListItem += selectorConflictoBloqueado;
 			}	
 		}
-		else if(!isBlockedFE)
+		else 
 		{
 			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
-		}
-		else if(isBlockedFE){
-			//TODO añadir tooltip fuentes externas
-			htmlListItem += `<span class="material-icons-outlined new">mediation</span>`;
 		}
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>

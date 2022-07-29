@@ -231,22 +231,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                     string idBBDD = !Guid.TryParse(x.Key, out Guid aux) ? x.Key : "";
 
                     if (bloqueados.ContainsKey(idBBDD))
-                    {
-                        bool isBlockedFE = false;
-                        if (listadoAux != null && listadoAux.Count > 0 && listadoAux.ElementAt(i) != null)
-                        {
-                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
-                        }
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD], isBlockedFE: isBlockedFE));
+                    {                        
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
                     }
                     else
-                    {
-                        bool isBlockedFE = false;
-                        if (listadoAux != null && listadoAux.Count > 0 && listadoAux.ElementAt(i) != null)
-                        {
-                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
-                        }
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false, isBlockedFE: isBlockedFE));
+                    {                        
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false));
                     }
                 }
                 return listaAux;
