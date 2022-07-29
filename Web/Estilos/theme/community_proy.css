@@ -567,3 +567,8 @@ body.homeComunidad #col01 {
 	height: 23px;
 	margin-right: 15px;
 }
+
+.acciones-listado.acciones-curriculum .gestionar-duplicados{
+	height: 30px;
+	margin-right: 15px;
+}
