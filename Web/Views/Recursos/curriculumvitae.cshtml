@@ -106,6 +106,8 @@
 <input type="hidden" id="CV_DUPLICADO_FUSIONAR" value="@Html.Translate("CV_DUPLICADO_FUSIONAR")"/>
 <input type="hidden" id="CV_DUPLICADO_ELIMINAR" value="@Html.Translate("CV_DUPLICADO_ELIMINAR")"/>
 <input type="hidden" id="CV_DUPLICADO_NO_DUPLICADO" value="@Html.Translate("CV_DUPLICADO_NO_DUPLICADO")"/>
+<input type="hidden" id="CV_CAMBIAR_A_PRINCIPAL" value="@Html.Translate("CV_CAMBIAR_A_PRINCIPAL")"/>
+
 
 <script>
 $(function() {
@@ -261,15 +263,6 @@ $(function() {
 										<span class="textoAlternativo">@Html.Translate("CV_TRADUCCIONES")</span>
 										<span class="texto">FR</span>
 									</a>
-                                </div>
-                            </div>
-                            <div class="plegar dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="texto">@Html.Translate("CV_PLEGARTODAS")</span>
-                                </a>
-                                <div class="dropdown-menu basic-dropdown dropdown-menu-right">
-                                    <a href="javascript: void(0)" class="item-dropdown" data-target=".pmd-accordion" id="collapseAll">@Html.Translate("CV_PLEGARTODAS")</a>
-                                    <a href="javascript: void(0)" class="item-dropdown" data-target=".pmd-accordion" id="expandAll">@Html.Translate("CV_DESPLEGARTODAS")</a>
                                 </div>
                             </div>
                         </div>
