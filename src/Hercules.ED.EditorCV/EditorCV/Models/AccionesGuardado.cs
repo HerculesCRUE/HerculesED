@@ -2109,7 +2109,11 @@ namespace EditorCV.Models
         public void FusionarEntidadesDuplicadas(ConfigService pConfigService, string pCVId, string pIdPrincipal, string pIdSecundaria, API.Templates.Tab pTab, API.Templates.TabSection pTabSection)
         {
             Entity mainEntity = GetLoadedEntityWithAux(pIdPrincipal, pTabSection.presentation.listItemsPresentation.listItemEdit.graph);
+            mainEntity.propTitle = pTabSection.presentation.listItemsPresentation.listItemEdit.proptitle;
+            mainEntity.propDescription = pTabSection.presentation.listItemsPresentation.listItemEdit.propdescription;
             Entity secEntity = GetLoadedEntityWithAux(pIdSecundaria, pTabSection.presentation.listItemsPresentation.listItemEdit.graph);
+            secEntity.propTitle = pTabSection.presentation.listItemsPresentation.listItemEdit.proptitle;
+            secEntity.propDescription = pTabSection.presentation.listItemsPresentation.listItemEdit.propdescription;
             //Fusionamos los datos de la entidad principal
             if (!mainEntity.IsValidated() && !secEntity.IsValidated())
             {
