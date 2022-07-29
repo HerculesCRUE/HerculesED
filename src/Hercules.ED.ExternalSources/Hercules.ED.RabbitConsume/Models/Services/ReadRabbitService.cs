@@ -205,6 +205,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
                     FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    return false;
+                }
                 catch (Exception e)
                 {
                     FileLogger.Log($@"{DateTime.Now} - {e}");
@@ -233,6 +239,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
                     FileLogger.Log($@"{fecha} - fichero JSON creado.");
+                }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    return false;
                 }
                 catch (Exception e)
                 {
@@ -263,6 +275,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
                     FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    return false;
+                }
                 catch (Exception e)
                 {
                     FileLogger.Log($@"{DateTime.Now} - {e}");
@@ -292,6 +310,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                     FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    return false;
+                }
                 catch (Exception e)
                 {
                     FileLogger.Log($@"{DateTime.Now} - {e}");
@@ -320,6 +344,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                     FileLogger.Log($@"{fecha} - fichero JSON creado.");
+                }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    return false;
                 }
                 catch (Exception e)
                 {
