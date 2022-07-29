@@ -1922,6 +1922,11 @@ namespace Utils
 
         public static string DatetimeFE(string dateTime)
         {
+            if (string.IsNullOrEmpty(dateTime))
+            {
+                return null;
+            }
+
             try
             {
                 //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
