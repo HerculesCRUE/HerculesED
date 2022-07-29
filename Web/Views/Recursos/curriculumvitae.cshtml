@@ -101,6 +101,12 @@
 <input type="hidden" id="CV_PENDIENTE" value="@Html.Translate("CV_PENDIENTE")"/>
 <input type="hidden" id="CV_VALIDADO" value="@Html.Translate("CV_VALIDADO")"/>
 <input type="hidden" id="CV_PROPIEDADIDENTIFICADORREPETIDA" value="@Html.Translate("CV_PROPIEDADIDENTIFICADORREPETIDA")"/>
+<input type="hidden" id="DUPLICADOS_SELECCIONAR_TODAS_OPCIONES" value="@Html.Translate("DUPLICADOS_SELECCIONAR_TODAS_OPCIONES")"/>
+<input type="hidden" id="DUPLICADOS_DUPLICIDAD_RESUELTA" value="@Html.Translate("DUPLICADOS_DUPLICIDAD_RESUELTA")"/>
+<input type="hidden" id="CV_DUPLICADO_FUSIONAR" value="@Html.Translate("CV_DUPLICADO_FUSIONAR")"/>
+<input type="hidden" id="CV_DUPLICADO_ELIMINAR" value="@Html.Translate("CV_DUPLICADO_ELIMINAR")"/>
+<input type="hidden" id="CV_DUPLICADO_NO_DUPLICADO" value="@Html.Translate("CV_DUPLICADO_NO_DUPLICADO")"/>
+
 <script>
 $(function() {
     edicionCV.init();
@@ -400,6 +406,7 @@ $(function() {
 				<p class="alert-title">
 					<span class="material-icons">warning</span>
 					@Html.Translate("POSIBLE_DUPLICIDAD")
+					@Html.Raw(Html.Translate("POSIBLE_DUPLICIDAD_MENSAJE"))
 				</p>
 			</div>
 			<div class="resource-list listView">
