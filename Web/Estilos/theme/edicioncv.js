@@ -1544,8 +1544,8 @@ var edicionCV = {
 				
 			}
             return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
-						<div style="display: flex; width:fit-content;">
-						<label class="control-label d-block"></label>
+						<div style="display: flex;">
+						<label class="control-label d-block">${property.title}${required}</label>
 						${spanTooltip}
 						</div>
 					${htmlMultiple}
