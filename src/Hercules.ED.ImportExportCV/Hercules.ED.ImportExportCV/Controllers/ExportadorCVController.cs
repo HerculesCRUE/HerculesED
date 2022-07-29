@@ -40,7 +40,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="pCVID">ID curriculum</param>
         /// <returns></returns>
         [HttpPost("Exportar")]
-        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion, [FromForm][Required] string versionExportacion)
+        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -98,7 +98,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="listaId">Listado de identificadores de los recursos a devolver</param>
         /// <returns></returns>
         [HttpPost("ExportarLimitado")]
-        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion, [FromForm][Required] string versionExportacion, [FromForm][Optional] List<string> listaId)
+        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion, [FromForm][Optional] List<string> listaId)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
