@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ServiceReference1
+namespace Export140
 {
     
     
@@ -113,33 +113,33 @@ namespace ServiceReference1
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanBytesRequest", ReplyAction="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanBytesResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(ServiceReference1.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanBytes/Fault/GenerarPDFWSExcepti" +
+        [System.ServiceModel.FaultContractAttribute(typeof(Export140.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanBytes/Fault/GenerarPDFWSExcepti" +
             "on", Name="GenerarPDFWSException")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanBytesResponse> crearPDFBeanBytesAsync(ServiceReference1.crearPDFBeanBytesRequest request);
+        System.Threading.Tasks.Task<Export140.crearPDFBeanBytesResponse> crearPDFBeanBytesAsync(Export140.crearPDFBeanBytesRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanRequest", ReplyAction="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanResponse")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         [return: System.ServiceModel.MessageParameterAttribute(Name="return")]
-        System.Threading.Tasks.Task<ServiceReference1.PdfGeneratorBean> crearPDFBeanAsync(string user, string passwd, string nameCVN, string sXmlIn, string tipoPlantilla);
+        System.Threading.Tasks.Task<Export140.PdfGeneratorBean> crearPDFBeanAsync(string user, string passwd, string nameCVN, string sXmlIn, string tipoPlantilla);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanZipRequest", ReplyAction="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanZipResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(ServiceReference1.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanZip/Fault/GenerarPDFWSException" +
+        [System.ServiceModel.FaultContractAttribute(typeof(Export140.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanZip/Fault/GenerarPDFWSException" +
             "", Name="GenerarPDFWSException")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanZipResponse> crearPDFBeanZipAsync(ServiceReference1.crearPDFBeanZipRequest request);
+        System.Threading.Tasks.Task<Export140.crearPDFBeanZipResponse> crearPDFBeanZipAsync(Export140.crearPDFBeanZipRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanCvnRootBeanRequest", ReplyAction="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanCvnRootBeanResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(ServiceReference1.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanCvnRootBean/Fault/GenerarPDFWSE" +
+        [System.ServiceModel.FaultContractAttribute(typeof(Export140.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFBeanCvnRootBean/Fault/GenerarPDFWSE" +
             "xception", Name="GenerarPDFWSException")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanCvnRootBeanResponse> crearPDFBeanCvnRootBeanAsync(ServiceReference1.crearPDFBeanCvnRootBeanRequest request);
+        System.Threading.Tasks.Task<Export140.crearPDFBeanCvnRootBeanResponse> crearPDFBeanCvnRootBeanAsync(Export140.crearPDFBeanCvnRootBeanRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFXmlBeanCvnRootBeanRequest", ReplyAction="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFXmlBeanCvnRootBeanResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(ServiceReference1.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFXmlBeanCvnRootBean/Fault/GenerarPDF" +
+        [System.ServiceModel.FaultContractAttribute(typeof(Export140.GenerarPDFWSException), Action="http://ws.cvnet.fecyt.es/GenerarPDFWS/crearPDFXmlBeanCvnRootBean/Fault/GenerarPDF" +
             "WSException", Name="GenerarPDFWSException")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFXmlBeanCvnRootBeanResponse> crearPDFXmlBeanCvnRootBeanAsync(ServiceReference1.crearPDFXmlBeanCvnRootBeanRequest request);
+        System.Threading.Tasks.Task<Export140.crearPDFXmlBeanCvnRootBeanResponse> crearPDFXmlBeanCvnRootBeanAsync(Export140.crearPDFXmlBeanCvnRootBeanRequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -197,13 +197,13 @@ namespace ServiceReference1
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://ws.cvnet.fecyt.es", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public ServiceReference1.PdfGeneratorBean @return;
+        public Export140.PdfGeneratorBean @return;
         
         public crearPDFBeanBytesResponse()
         {
         }
         
-        public crearPDFBeanBytesResponse(ServiceReference1.PdfGeneratorBean @return)
+        public crearPDFBeanBytesResponse(Export140.PdfGeneratorBean @return)
         {
             this.@return = @return;
         }
@@ -264,13 +264,13 @@ namespace ServiceReference1
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://ws.cvnet.fecyt.es", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public ServiceReference1.PdfGeneratorBean @return;
+        public Export140.PdfGeneratorBean @return;
         
         public crearPDFBeanZipResponse()
         {
         }
         
-        public crearPDFBeanZipResponse(ServiceReference1.PdfGeneratorBean @return)
+        public crearPDFBeanZipResponse(Export140.PdfGeneratorBean @return)
         {
             this.@return = @return;
         }
@@ -1359,7 +1359,7 @@ namespace ServiceReference1
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://ws.cvnet.fecyt.es", Order=3)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute(Namespace="http://codes.cvn.fecyt.es/beans", IsNullable=false)]
-        public ServiceReference1.CvnItemBean[] cvnRootBean;
+        public ImportadorWebCV.CvnItemBean[] cvnRootBean;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://ws.cvnet.fecyt.es", Order=4)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -1373,7 +1373,7 @@ namespace ServiceReference1
         {
         }
         
-        public crearPDFBeanCvnRootBeanRequest(string user, string passwd, string nameCVN, ServiceReference1.CvnItemBean[] cvnRootBean, string tipoPlantilla, string language)
+        public crearPDFBeanCvnRootBeanRequest(string user, string passwd, string nameCVN, ImportadorWebCV.CvnItemBean[] cvnRootBean, string tipoPlantilla, string language)
         {
             this.user = user;
             this.passwd = passwd;
@@ -1393,13 +1393,13 @@ namespace ServiceReference1
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://ws.cvnet.fecyt.es", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public ServiceReference1.PdfGeneratorBean @return;
+        public Export140.PdfGeneratorBean @return;
         
         public crearPDFBeanCvnRootBeanResponse()
         {
         }
         
-        public crearPDFBeanCvnRootBeanResponse(ServiceReference1.PdfGeneratorBean @return)
+        public crearPDFBeanCvnRootBeanResponse(Export140.PdfGeneratorBean @return)
         {
             this.@return = @return;
         }
@@ -1460,26 +1460,26 @@ namespace ServiceReference1
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://ws.cvnet.fecyt.es", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public ServiceReference1.PdfGeneratorBean @return;
+        public Export140.PdfGeneratorBean @return;
         
         public crearPDFXmlBeanCvnRootBeanResponse()
         {
         }
         
-        public crearPDFXmlBeanCvnRootBeanResponse(ServiceReference1.PdfGeneratorBean @return)
+        public crearPDFXmlBeanCvnRootBeanResponse(Export140.PdfGeneratorBean @return)
         {
             this.@return = @return;
         }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    public interface GenerarPDFWSChannel : ServiceReference1.GenerarPDFWS, System.ServiceModel.IClientChannel
+    public interface GenerarPDFWSChannel : Export140.GenerarPDFWS, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    public partial class GenerarPDFWSClient : System.ServiceModel.ClientBase<ServiceReference1.GenerarPDFWS>, ServiceReference1.GenerarPDFWS
+    public partial class GenerarPDFWSClient : System.ServiceModel.ClientBase<Export140.GenerarPDFWS>, Export140.GenerarPDFWS
     {
         
         /// <summary>
@@ -1523,80 +1523,80 @@ namespace ServiceReference1
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanBytesResponse> ServiceReference1.GenerarPDFWS.crearPDFBeanBytesAsync(ServiceReference1.crearPDFBeanBytesRequest request)
+        System.Threading.Tasks.Task<Export140.crearPDFBeanBytesResponse> Export140.GenerarPDFWS.crearPDFBeanBytesAsync(Export140.crearPDFBeanBytesRequest request)
         {
             return base.Channel.crearPDFBeanBytesAsync(request);
         }
         
-        public System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanBytesResponse> crearPDFBeanBytesAsync(string user, string passwd, string nameCVN, byte[] bXmlIn, string tipoPlantilla, string language)
+        public System.Threading.Tasks.Task<Export140.crearPDFBeanBytesResponse> crearPDFBeanBytesAsync(string user, string passwd, string nameCVN, byte[] bXmlIn, string tipoPlantilla, string language)
         {
-            ServiceReference1.crearPDFBeanBytesRequest inValue = new ServiceReference1.crearPDFBeanBytesRequest();
+            Export140.crearPDFBeanBytesRequest inValue = new Export140.crearPDFBeanBytesRequest();
             inValue.user = user;
             inValue.passwd = passwd;
             inValue.nameCVN = nameCVN;
             inValue.bXmlIn = bXmlIn;
             inValue.tipoPlantilla = tipoPlantilla;
             inValue.language = language;
-            return ((ServiceReference1.GenerarPDFWS)(this)).crearPDFBeanBytesAsync(inValue);
+            return ((Export140.GenerarPDFWS)(this)).crearPDFBeanBytesAsync(inValue);
         }
         
-        public System.Threading.Tasks.Task<ServiceReference1.PdfGeneratorBean> crearPDFBeanAsync(string user, string passwd, string nameCVN, string sXmlIn, string tipoPlantilla)
+        public System.Threading.Tasks.Task<Export140.PdfGeneratorBean> crearPDFBeanAsync(string user, string passwd, string nameCVN, string sXmlIn, string tipoPlantilla)
         {
             return base.Channel.crearPDFBeanAsync(user, passwd, nameCVN, sXmlIn, tipoPlantilla);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanZipResponse> ServiceReference1.GenerarPDFWS.crearPDFBeanZipAsync(ServiceReference1.crearPDFBeanZipRequest request)
+        System.Threading.Tasks.Task<Export140.crearPDFBeanZipResponse> Export140.GenerarPDFWS.crearPDFBeanZipAsync(Export140.crearPDFBeanZipRequest request)
         {
             return base.Channel.crearPDFBeanZipAsync(request);
         }
         
-        public System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanZipResponse> crearPDFBeanZipAsync(string user, string passwd, string nameCVN, byte[] bXmlIn, string tipoPlantilla, string language)
+        public System.Threading.Tasks.Task<Export140.crearPDFBeanZipResponse> crearPDFBeanZipAsync(string user, string passwd, string nameCVN, byte[] bXmlIn, string tipoPlantilla, string language)
         {
-            ServiceReference1.crearPDFBeanZipRequest inValue = new ServiceReference1.crearPDFBeanZipRequest();
+            Export140.crearPDFBeanZipRequest inValue = new Export140.crearPDFBeanZipRequest();
             inValue.user = user;
             inValue.passwd = passwd;
             inValue.nameCVN = nameCVN;
             inValue.bXmlIn = bXmlIn;
             inValue.tipoPlantilla = tipoPlantilla;
             inValue.language = language;
-            return ((ServiceReference1.GenerarPDFWS)(this)).crearPDFBeanZipAsync(inValue);
+            return ((Export140.GenerarPDFWS)(this)).crearPDFBeanZipAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanCvnRootBeanResponse> ServiceReference1.GenerarPDFWS.crearPDFBeanCvnRootBeanAsync(ServiceReference1.crearPDFBeanCvnRootBeanRequest request)
+        System.Threading.Tasks.Task<Export140.crearPDFBeanCvnRootBeanResponse> Export140.GenerarPDFWS.crearPDFBeanCvnRootBeanAsync(Export140.crearPDFBeanCvnRootBeanRequest request)
         {
             return base.Channel.crearPDFBeanCvnRootBeanAsync(request);
         }
         
-        public System.Threading.Tasks.Task<ServiceReference1.crearPDFBeanCvnRootBeanResponse> crearPDFBeanCvnRootBeanAsync(string user, string passwd, string nameCVN, ServiceReference1.CvnItemBean[] cvnRootBean, string tipoPlantilla, string language)
+        public System.Threading.Tasks.Task<Export140.crearPDFBeanCvnRootBeanResponse> crearPDFBeanCvnRootBeanAsync(string user, string passwd, string nameCVN, ImportadorWebCV.CvnItemBean[] cvnRootBean, string tipoPlantilla, string language)
         {
-            ServiceReference1.crearPDFBeanCvnRootBeanRequest inValue = new ServiceReference1.crearPDFBeanCvnRootBeanRequest();
+            Export140.crearPDFBeanCvnRootBeanRequest inValue = new Export140.crearPDFBeanCvnRootBeanRequest();
             inValue.user = user;
             inValue.passwd = passwd;
             inValue.nameCVN = nameCVN;
             inValue.cvnRootBean = cvnRootBean;
             inValue.tipoPlantilla = tipoPlantilla;
             inValue.language = language;
-            return ((ServiceReference1.GenerarPDFWS)(this)).crearPDFBeanCvnRootBeanAsync(inValue);
+            return ((Export140.GenerarPDFWS)(this)).crearPDFBeanCvnRootBeanAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<ServiceReference1.crearPDFXmlBeanCvnRootBeanResponse> ServiceReference1.GenerarPDFWS.crearPDFXmlBeanCvnRootBeanAsync(ServiceReference1.crearPDFXmlBeanCvnRootBeanRequest request)
+        System.Threading.Tasks.Task<Export140.crearPDFXmlBeanCvnRootBeanResponse> Export140.GenerarPDFWS.crearPDFXmlBeanCvnRootBeanAsync(Export140.crearPDFXmlBeanCvnRootBeanRequest request)
         {
             return base.Channel.crearPDFXmlBeanCvnRootBeanAsync(request);
         }
         
-        public System.Threading.Tasks.Task<ServiceReference1.crearPDFXmlBeanCvnRootBeanResponse> crearPDFXmlBeanCvnRootBeanAsync(string user, string passwd, string nameCVN, string cvnRootBean, string tipoPlantilla, string language)
+        public System.Threading.Tasks.Task<Export140.crearPDFXmlBeanCvnRootBeanResponse> crearPDFXmlBeanCvnRootBeanAsync(string user, string passwd, string nameCVN, string cvnRootBean, string tipoPlantilla, string language)
         {
-            ServiceReference1.crearPDFXmlBeanCvnRootBeanRequest inValue = new ServiceReference1.crearPDFXmlBeanCvnRootBeanRequest();
+            Export140.crearPDFXmlBeanCvnRootBeanRequest inValue = new Export140.crearPDFXmlBeanCvnRootBeanRequest();
             inValue.user = user;
             inValue.passwd = passwd;
             inValue.nameCVN = nameCVN;
             inValue.cvnRootBean = cvnRootBean;
             inValue.tipoPlantilla = tipoPlantilla;
             inValue.language = language;
-            return ((ServiceReference1.GenerarPDFWS)(this)).crearPDFXmlBeanCvnRootBeanAsync(inValue);
+            return ((Export140.GenerarPDFWS)(this)).crearPDFXmlBeanCvnRootBeanAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
@@ -1628,7 +1628,7 @@ namespace ServiceReference1
         {
             if ((endpointConfiguration == EndpointConfiguration.GenerarPDFWSPort))
             {
-                return new System.ServiceModel.EndpointAddress("https://integraciones.cvnet.es/generadorPdfWS_v1_4_3/services/GenerarPDFWS");
+                return new System.ServiceModel.EndpointAddress("https://integraciones.cvnet.es/generadorPdfWS_v1_4/services/GenerarPDFWS");
             }
             throw new System.InvalidOperationException(string.Format("No se pudo encontrar un punto de conexión con el nombre \"{0}\".", endpointConfiguration));
         }
