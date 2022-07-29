@@ -1544,8 +1544,8 @@ var edicionCV = {
 				
 			}
             return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
-						<div style="display: flex; width:fit-content;">
-						<label class="control-label d-block"></label>
+						<div style="display: flex;">
+						<label class="control-label d-block">${property.title}${required}</label>
 						${spanTooltip}
 						</div>
 					${htmlMultiple}
@@ -4418,8 +4418,7 @@ var duplicadosCV = {
 		//Agregamos botón de convertir en principal	en items si el primero no está bloqueado
 		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
 		{
-			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
-						<a style="height:23px" class="btn btn-secondary uppercase btn-principal">${GetText("DUPLICADOS_CAMBIAR_PRINCIPAL")}</a>`);
+			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		}
 					
 		
