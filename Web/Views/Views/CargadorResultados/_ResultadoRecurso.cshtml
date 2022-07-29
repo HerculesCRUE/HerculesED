@@ -148,15 +148,15 @@
                                             {
                                                 impactIndex.impactIndexInYear=float.Parse(row["impactIndexInYear"].Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
                                             }
-											if (row.ContainsKey("publicationPosition"))
+											if (row.ContainsKey("publicationPosition") && !string.IsNullOrEmpty(row["publicationPosition"]))
                                             {
                                                 impactIndex.publicationPosition=int.Parse(row["publicationPosition"]);
                                             }
-											if (row.ContainsKey("journalNumberInCat"))
+											if (row.ContainsKey("journalNumberInCat") && !string.IsNullOrEmpty(row["journalNumberInCat"]))
                                             {
                                                 impactIndex.journalNumberInCat=int.Parse(row["journalNumberInCat"]);
                                             }
-											if (row.ContainsKey("quartile"))
+											if (row.ContainsKey("quartile") && !string.IsNullOrEmpty(row["quartile"]))
                                             {
                                                 impactIndex.quartile=int.Parse(row["quartile"]);
                                             }
