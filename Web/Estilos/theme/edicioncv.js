@@ -4476,7 +4476,7 @@ var duplicadosCV = {
 			}else{
 				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {});
 				$.post(url, args, function(data) {});
-				if (that.pasoActual < that.pasosTotales) {
+				if (that.pasoActual+1 < that.pasosTotales) {
 					that.pasoActual++;
 					that.pintarAgrupacionDuplicados();
 					}else{
@@ -4499,12 +4499,15 @@ var duplicadosCV = {
 				that.items=data;
 				that.pasoActual=0;
 				that.pasosTotales=that.items.length;
-				if (that.pasosTotales>0) {
-				that.pintarItemsDuplicados();}else{
+				if (that.pasosTotales>0) 
+				{
+					that.pintarItemsDuplicados();
+				}else
+				{
 					if(botonPulsado){
-						mostrarNotificacion("info","No hay duplicados");
+						mostrarNotificacion("info",GetText("DUPLICADOS_NO_HAY_DUPLICADOS"));
+						OcultarUpdateProgress();
 					}
-
 				}
 			});
 		}
