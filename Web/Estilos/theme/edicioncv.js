@@ -32,7 +32,7 @@ var edicionCV = {
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
-		//duplicadosCV.init();
+		duplicadosCV.init();
         return;
     },
     config: function() {
@@ -4384,8 +4384,6 @@ var edicionCV = {
 
 
 var duplicadosCV = {
-	//itemPrincipal:null,
-	//isPrincipalEditable:true,
 	idCV:null,
     items: null,
 	pasoActual:0,
@@ -4421,7 +4419,7 @@ var duplicadosCV = {
 		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
 		{
 			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
-						<a class="btn btn-primary uppercase btn-principal">Cambiar a Principal</a>`);
+						<a style="height:23px" class="btn btn-secondary uppercase btn-principal">Cambiar a Principal</a>`);
 		}
 					
 		
@@ -4507,7 +4505,7 @@ var duplicadosCV = {
 		var that=this;
 		$('#modal-posible-duplicidad .resource-list-wrap').empty();
 		var principal=true;
-		$('#modal-posible-duplicidad .numpasos').html(' ('+this.pasoActual+"/"+this.pasosTotales+')');
+		$('#modal-posible-duplicidad .numpasos').html(' ('+(this.pasoActual+1)+"/"+this.pasosTotales+')');
 		MostrarUpdateProgress();
 		var numActual=0;
 		for( var itemIn in this.items[this.pasoActual].items)
