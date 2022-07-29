@@ -4497,6 +4497,7 @@ var duplicadosCV = {
 			MostrarUpdateProgress();
 			$.get(url, null, function (data) {
 				that.items=data;
+				that.pasoActual=0;
 				that.pasosTotales=that.items.length;
 				if (that.pasosTotales>0) {
 				that.pintarItemsDuplicados();}else{
