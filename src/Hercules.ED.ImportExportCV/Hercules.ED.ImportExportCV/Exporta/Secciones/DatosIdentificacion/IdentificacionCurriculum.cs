@@ -35,7 +35,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
             //Idioma del curriculum
             UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "000.020.000.070", "spa");
             //Version
-            UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "000.020.000.080", version);
+            UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "000.020.000.080", version.Replace("_","."));
         }
     }
 }
