@@ -29,7 +29,7 @@ var exportacionCV = {
 					data.lang= $('#ddlIdioma').val();
 					data.nombreCV= $('#exportCvName').val();
 					data.tipoCVNExportacion = $('#ddlTipoExportacion').find("option:selected").val();
-					
+					data.versionExportacion = $('#ddlVersionExportacion').find("option:selected").val();
 					$.post(urlExportacionCV + 'GetCV', data, function(data) {
 						OcultarUpdateProgress();
 						mostrarNotificacion('success', GetText('CV_EXPORTAR_COMPLETO_COMPLETADO'));
@@ -70,7 +70,7 @@ var exportacionCV = {
 			data.listaId= listaId;
 			data.nombreCV= $('#exportCvName').val();
 			data.tipoCVNExportacion = tipoCVNExportacion;
-			
+			data.versionExportacion = $('#ddlVersionExportacion').find("option:selected").val();
 			MostrarUpdateProgress();
 			$.post(urlExportacionCV + 'GetCV', data, function(data) {
 				OcultarUpdateProgress();

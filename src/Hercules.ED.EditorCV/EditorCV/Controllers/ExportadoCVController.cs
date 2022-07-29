@@ -39,7 +39,7 @@ namespace EditorCV.Controllers
         /// <param name="lang"></param>
         /// <param name="listaId">listado de Identificadores concatenados por "@@@"</param>
         [HttpPost("GetCV")]
-        public IActionResult GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Required][FromForm] string nombreCV, [Required][FromForm] string tipoCVNExportacion, [Optional][FromForm] string listaId)
+        public IActionResult GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Required][FromForm] string nombreCV, [Required][FromForm] string tipoCVNExportacion, [FromForm][Required] string versionExportacion, [Optional][FromForm] string listaId)
         {
             try
             {
