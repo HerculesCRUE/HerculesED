@@ -110,7 +110,7 @@ namespace GuardadoCV.Controllers
 
 
         [HttpPost("ProcesarItemsDuplicados")]
-        public IActionResult ProcesarItemsDuplicados(ProcessSimilarity pProcessSimilarity)
+        public IActionResult ProcesarItemsDuplicados([FromForm] ProcessSimilarity pProcessSimilarity)
         {
             try
             {
