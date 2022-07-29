@@ -4439,8 +4439,13 @@ var duplicadosCV = {
 		//Botón omitir
 		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
 		{
+			if (that.pasoActual+1 < that.pasosTotales) {
             that.pasoActual++;
 			that.pintarAgrupacionDuplicados();
+			}else{
+				$('#modal-posible-duplicidad').modal('hide');
+				mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+			}
 		});
 
 		//Botón fusionar
@@ -4465,12 +4470,17 @@ var duplicadosCV = {
 				}
 			});			
 			if (!validar){
-				mostrarNotificacion("error","Debe selecionar una opcion para todos los items");
+				mostrarNotificacion("error",GetText("DUPLICADOS_SELECCIONAR_TODAS_OPCIONES"));
 			}else{
 				$("#modal-posible-duplicidad .secundarios article.resource .itemConflict").each(function(index) {});
 				$.post(url, args, function(data) {});
-				that.pasoActual++;
-				that.pintarAgrupacionDuplicados();
+				if (that.pasoActual < that.pasosTotales) {
+					that.pasoActual++;
+					that.pintarAgrupacionDuplicados();
+					}else{
+						$('#modal-posible-duplicidad').modal('hide');
+						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+					}
 			}
 		});
 
