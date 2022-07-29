@@ -4418,8 +4418,7 @@ var duplicadosCV = {
 		//Agregamos botón de convertir en principal	en items si el primero no está bloqueado
 		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
 		{
-			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
-						<a style="height:23px" class="btn btn-secondary uppercase btn-principal">Cambiar a Principal</a>`);
+			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		}
 					
 		
