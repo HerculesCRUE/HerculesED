@@ -4419,7 +4419,7 @@ var duplicadosCV = {
 		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
 		{
 			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
-						<a style="height:23px" class="btn btn-secondary uppercase btn-principal">Cambiar a Principal</a>`);
+						<a style="height:23px" class="btn btn-secondary uppercase btn-principal">${GetText("DUPLICADOS_CAMBIAR_PRINCIPAL")}</a>`);
 		}
 					
 		
