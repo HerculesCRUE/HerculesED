@@ -11,10 +11,6 @@ namespace Models
     public class Entity
     {
         /// <summary>
-        /// Propiedad usada para comprobar si un archivo es de Fuentes externas
-        /// </summary>
-        public bool isBlockedFE { get; set; }
-        /// <summary>
         /// Propiedad
         /// </summary>
         public class Property
