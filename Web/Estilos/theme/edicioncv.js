@@ -1544,8 +1544,8 @@ var edicionCV = {
 				
 			}
             return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
-						<div style="display: flex; width:fit-content;">
-						<label class="control-label d-block"></label>
+						<div style="display: flex;">
+						<label class="control-label d-block">${property.title}${required}</label>
 						${spanTooltip}
 						</div>
 					${htmlMultiple}
@@ -2829,7 +2829,10 @@ var edicionCV = {
 		edicionListaAutorCV.init();
         var that = this;
 
-        //Tesauros
+		//Boton duplicados 
+		$('.btn.gestionar-duplicados').unbind().click(function() {
+			duplicadosCV.init(true);
+		});
         $('.listadoTesauro .faceta:not(.last-level)').unbind("click").bind("click", function() {
             $(this).find('.desplegarSubFaceta .material-icons').trigger('click');
         });
@@ -4388,10 +4391,10 @@ var duplicadosCV = {
     items: null,
 	pasoActual:0,
 	pasosTotales:0,
-    init: function() {
+    init: function(botonPulsado = false) {
         this.config();
         this.idCV = $('.contenido-cv').attr('about');
-		this.cargarDuplicados();
+		this.cargarDuplicados(botonPulsado);
         return;
     },
     config: function() {
@@ -4418,8 +4421,7 @@ var duplicadosCV = {
 		//Agregamos botón de convertir en principal	en items si el primero no está bloqueado
 		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
 		{
-			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
-						<a style="height:23px" class="btn btn-secondary uppercase btn-principal">Cambiar a Principal</a>`);
+			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		}
 					
 		
@@ -4487,7 +4489,7 @@ var duplicadosCV = {
 		accionesPlegarDesplegarModal.init();	
 		tooltipsAccionesRecursos.init();
 	},
-    cargarDuplicados: function() {
+    cargarDuplicados: function(botonPulsado) {
 		if(this.idCV!=null)
 		{
 			var that=this;
@@ -4495,8 +4497,15 @@ var duplicadosCV = {
 			MostrarUpdateProgress();
 			$.get(url, null, function (data) {
 				that.items=data;
+				that.pasoActual=0;
 				that.pasosTotales=that.items.length;
-				that.pintarItemsDuplicados();
+				if (that.pasosTotales>0) {
+				that.pintarItemsDuplicados();}else{
+					if(botonPulsado){
+						mostrarNotificacion("info","No hay duplicados");
+					}
+
+				}
 			});
 		}
 	}
@@ -4506,7 +4515,6 @@ var duplicadosCV = {
 		{
 			var modal = $("#modal-posible-duplicidad");
 			modal.modal('show');
-			
 			this.pintarAgrupacionDuplicados();
 		}
 	}
