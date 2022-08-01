@@ -51,8 +51,16 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
             UtilityExportar.AddCvnItemBeanNumericValue(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nacionalidad), "000.010.000.040", entity);
             UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.fechaNacimiento), "000.010.000.050", entity);
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.dni), "000.010.000.100", entity);
-            UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nie), "000.010.000.110", entity);
-            UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.pasaporte), "000.010.000.120", entity);
+
+            //Si no he insertado el DNI busco NIE
+            if (itemBean.Items.Where(x => x.Code.Equals("000.010.000.100")).Any()) {
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nie), "000.010.000.110", entity);
+
+                //Si no he insertado DNI o NIE busco el pasaporte
+                if (itemBean.Items.Where(x => x.Code.Equals("000.010.000.110")).Any()) {
+                    UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.pasaporte), "000.010.000.120", entity);
+                }
+            }
             UtilityExportar.AddCvnItemBeanCvnPhotoBean(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.imagenDigital), "000.010.000.130", entity);
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.email), "000.010.000.230", entity);
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.paginaWeb), "000.010.000.250", entity);
