@@ -458,10 +458,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             string personID = "";
 
+            // TODO: isActive en teoría todas las personas que se pidan por el ORCID han de ser personal activo.
             string selectOut = "SELECT DISTINCT ?personID";
             string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
                                     ?personID <http://w3id.org/roh/ORCID> ""{orcid}"" .
+                                    ?persona <http://w3id.org/roh/isActive> 'true'.
                                     }}";
             SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
@@ -531,12 +533,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             listaORCID.Add(idAutor);
             if (true)
             {
+                // TODO: isActive en teoría todas las personas que se pidan por el ORCID han de ser personal activo.
                 string select = "SELECT DISTINCT ?persona ?nombreCompleto ";
                 string where = $@"WHERE {{
-                                ?persona a <http://xmlns.com/foaf/0.1/Person> .
-                                ?persona <http://w3id.org/roh/ORCID> ""{idAutor}"". 
-                                ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
-                            }}";
+                                    ?persona a <http://xmlns.com/foaf/0.1/Person> .
+                                    ?persona <http://w3id.org/roh/ORCID> ""{idAutor}"". 
+                                    ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                                    ?persona <http://w3id.org/roh/isActive> 'true'.
+                                }}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)

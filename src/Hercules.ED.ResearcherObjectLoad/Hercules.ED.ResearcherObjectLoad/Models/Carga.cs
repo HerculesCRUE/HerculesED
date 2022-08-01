@@ -1000,6 +1000,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             while (true)
             {
                 //TODO  from
+                // TODO: isActive en teoría todas las personas que se pidan por el ORCID han de ser personal activo.
                 string select = $@"SELECT * 
                                    WHERE {{ 
                                        SELECT DISTINCT ?documento ?doi ?titulo 
@@ -1011,6 +1012,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
                                 ?persona <http://w3id.org/roh/ORCID> ?orcid. 
+                                ?persona <http://w3id.org/roh/isActive> 'true'.
                                 FILTER(?orcid = '{pOrcid}') 
                             }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
 
@@ -1395,7 +1397,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                 if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.titulo) && string.IsNullOrEmpty(document.Bibo_presentedAt))
                 {
-                    document.Roh_title = pPublicacionB.conferencia.titulo;
+                    document.Bibo_presentedAt = pPublicacionB.conferencia.titulo;
                 }
             }
 
