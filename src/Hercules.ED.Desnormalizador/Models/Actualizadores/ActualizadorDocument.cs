@@ -1246,11 +1246,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         ?impactIndex <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
         ?impactIndex <http://w3id.org/roh/year> ?anio.     
         ?impactIndex  <http://w3id.org/roh/impactSource> ?impactSource.   
-        MINUS{{
-            ?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.        
-            ?impactIndexDoc  <http://w3id.org/roh/impactSource> ?impactSource.
-            ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
-        }}
     }}
 }}order by (?document) limit {limit}";
 
