@@ -35,10 +35,8 @@ namespace EditorCV
                 options.AddPolicy(name: "_myAllowSpecificOrigins",
                                   builder =>
                                   {
-                                      builder.SetIsOriginAllowed(ComprobarDominioEnBD);
-                                      builder.AllowAnyHeader();
+                                      builder.AllowAnyOrigin();
                                       builder.AllowAnyMethod();
-                                      builder.AllowCredentials();
                                   });
             });
             services.AddControllers();
