@@ -96,7 +96,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="ID"></param>
         /// <param date="year-month-day"></param>
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string date = "1500-01-01", string pDoi = null)
+        public List<Publication> getPublications(string name, string date = "1500-01-01", string pDoi = null, string pNombreCompletoAutor = null)
         {
             // Diccionario con las peticiones.
             Tuple<string, Dictionary<Publication, List<PubReferencias>>> dicSemanticScholar;
@@ -666,6 +666,33 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 Log.Error(e.Message);
             }
             Log.Information($@"[OpenAire] Publicaciones procesadas");
+
+            // Comprobar si está el nombre entre los autores.
+            if (!string.IsNullOrEmpty(pNombreCompletoAutor))
+            {
+                float umbral = 0.7f;
+                bool valido = false;
+
+                foreach (Publication publicacion in resultado)
+                {
+                    foreach (Person persona in publicacion.seqOfAuthors)
+                    {
+                        string nombreCompleto = persona.name.nombre_completo[0];
+                        float resultadoSimilaridad = GetNameSimilarity(pNombreCompletoAutor, nombreCompleto);
+                        if (resultadoSimilaridad >= umbral)
+                        {
+                            valido = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Si no supera el umbral, es que no hemos reconocido a la persona por el nombre.
+                if (!valido)
+                {
+                    resultado = new List<Publication>();
+                }
+            }
 
             //string info = JsonConvert.SerializeObject(resultado);
             //string path = _Configuracion.GetRutaJsonSalida();
@@ -1319,6 +1346,17 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     else
                     {
                         pub.presentedAt = pub_2.presentedAt;
+                        pub2 = true;
+                    }
+
+                    if (pub_1.conferencia != null)
+                    {
+                        pub.conferencia = pub_1.conferencia;
+                        pub1 = true;
+                    }
+                    else
+                    {
+                        pub.conferencia = pub_2.conferencia;
                         pub2 = true;
                     }
 

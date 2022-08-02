@@ -45,6 +45,18 @@ namespace OAI_PMH
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                                  builder =>
+                                  {
+                                      builder.SetIsOriginAllowed(ComprobarDominioEnBD);
+                                      builder.AllowAnyHeader();
+                                      builder.AllowAnyMethod();
+                                      builder.AllowCredentials();
+                                  });
+            });
+
             // Configuración.
             services.AddSingleton(typeof(ConfigService));
 
@@ -55,6 +67,10 @@ namespace OAI_PMH
 
             services.AddSingleton(typeof(OAI_PMHConfig));
 
+        }
+        private bool ComprobarDominioEnBD(string dominio)
+        {
+            return true;
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -67,7 +83,7 @@ namespace OAI_PMH
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

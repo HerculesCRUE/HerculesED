@@ -47,7 +47,7 @@ namespace PublicationConnect.Controllers
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
             Log.Information("Leyendo Configuración...");
-            ROPublicationLogic PublicationObject = new ROPublicationLogic( _Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
+            ROPublicationLogic PublicationObject = new ROPublicationLogic(_Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
             Log.Information("Obteniendo datos de publicación...");
             List<Publication> publication = PublicationObject.getPublications(orcid, date);
             return publication;
@@ -57,12 +57,12 @@ namespace PublicationConnect.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public List<Publication> GetRoPublication([FromQuery][Required] string pDoi)
+        public List<Publication> GetRoPublication([FromQuery][Required] string pDoi, string pNombreCompletoAutor = null)
         {
             Log.Information("Leyendo Configuración...");
             ROPublicationLogic PublicationObject = new ROPublicationLogic(_Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
             Log.Information("Obteniendo datos de publicación...");
-            List<Publication> publication = PublicationObject.getPublications("", pDoi:pDoi);
+            List<Publication> publication = PublicationObject.getPublications("", pDoi: pDoi, pNombreCompletoAutor: pNombreCompletoAutor);
             return publication;
         }
     }

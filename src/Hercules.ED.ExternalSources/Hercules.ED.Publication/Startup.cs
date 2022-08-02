@@ -28,7 +28,7 @@ namespace PublicationConnect
         {
             Configuration = configuration;
         }
-        
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -36,6 +36,17 @@ namespace PublicationConnect
         {
             services.AddMvc();
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                                  builder =>
+                                  {
+                                      builder.SetIsOriginAllowed(ComprobarDominioEnBD);
+                                      builder.AllowAnyHeader();
+                                      builder.AllowAnyMethod();
+                                      builder.AllowCredentials();
+                                  });
+            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
@@ -55,6 +66,11 @@ namespace PublicationConnect
             CreateLoggin(CreateTimeStamp());
         }
 
+        private bool ComprobarDominioEnBD(string dominio)
+        {
+            return true;
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -68,6 +84,7 @@ namespace PublicationConnect
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseCors();
 
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 

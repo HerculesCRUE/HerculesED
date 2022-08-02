@@ -35,8 +35,10 @@ namespace EditorCV
                 options.AddPolicy(name: "_myAllowSpecificOrigins",
                                   builder =>
                                   {
-                                      builder.AllowAnyOrigin();
+                                      builder.SetIsOriginAllowed(ComprobarDominioEnBD);
+                                      builder.AllowAnyHeader();
                                       builder.AllowAnyMethod();
+                                      builder.AllowCredentials();
                                   });
             });
             services.AddControllers();
@@ -47,6 +49,11 @@ namespace EditorCV
 
             // Configuración.
             services.AddSingleton(typeof(ConfigService));
+        }
+
+        private bool ComprobarDominioEnBD(string dominio)
+        {
+            return true;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

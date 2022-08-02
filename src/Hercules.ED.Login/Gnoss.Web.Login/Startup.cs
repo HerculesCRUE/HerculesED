@@ -89,9 +89,11 @@ namespace Gnoss.Web.Login
                 options.AddPolicy(name: "_myAllowSpecificOrigins",
                 builder =>
                 {
-                    builder.AllowAnyOrigin();
+                    builder.SetIsOriginAllowed(ComprobarDominioEnBD);
+                    //builder.AllowAnyOrigin();
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
+                    builder.AllowCredentials();
                 });
             });
             string bdType = "";
@@ -208,6 +210,11 @@ namespace Gnoss.Web.Login
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private bool ComprobarDominioEnBD(string dominio)
+        {
+            return true;
         }
 
         /// <summary>
