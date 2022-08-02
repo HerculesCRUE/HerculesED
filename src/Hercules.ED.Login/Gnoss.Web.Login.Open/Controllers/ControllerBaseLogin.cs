@@ -377,7 +377,7 @@ namespace Gnoss.Web.Login
             //Cabeceras para poder recibir cookies de terceros
             mHttpContextAccessor.HttpContext.Response.Headers.Add("p3p", "CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");
 
-            if (!string.IsNullOrEmpty(pDominio) && UtilCookies.FromLegacyCookieString(Request.Cookies["_Dominios"]).ContainsKey("pDominio"))
+            if (!string.IsNullOrEmpty(pDominio) && UtilCookies.FromLegacyCookieString(Request.Cookies["_Dominios"], mEntityContext).ContainsKey("pDominio"))
             {
                 //Quito www.
                 if (pDominio.Contains("//www."))
@@ -390,7 +390,7 @@ namespace Gnoss.Web.Login
 
             //establezco la validez de la cookie que será de 1 día
             options.Expires = DateTime.Now.AddDays(1);
-            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_Dominios", UtilCookies.ToLegacyCookieString(cookieValues), options);
+            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_Dominios", UtilCookies.ToLegacyCookieString(cookieValues, mEntityContext), options);
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace Gnoss.Web.Login
             cookieUsuarioOptions.Expires = caduca;
             cookieUsuarioOptions.SameSite = SameSiteMode.None;
             cookieUsuarioOptions.Secure = true;
-            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_UsuarioActual", UtilCookies.ToLegacyCookieString(cookieUsuarioValues), cookieUsuarioOptions);
+            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_UsuarioActual", UtilCookies.ToLegacyCookieString(cookieUsuarioValues, mEntityContext), cookieUsuarioOptions);
 
             CookieOptions usuarioLogueadoOptions = new CookieOptions();
 
@@ -502,7 +502,7 @@ namespace Gnoss.Web.Login
             sw = null;
 
             //Actualizo la cookie de rewrite
-            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_rewrite", UtilCookies.ToLegacyCookieString(cookieRewriteValues), cookieRewriteoptions);
+            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_rewrite", UtilCookies.ToLegacyCookieString(cookieRewriteValues, mEntityContext), cookieRewriteoptions);
         }
 
         /// <summary>

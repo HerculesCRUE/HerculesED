@@ -38,8 +38,8 @@ namespace Gnoss.Web.Login.Open.Controllers
                 DateTime caduca = ObtenerValidezCookieUsuario();
 
                 //obtengo las cookies
-                Dictionary<string, string> cookie = UtilCookies.FromLegacyCookieString(Request.Cookies["_UsuarioActual"]);
-                Response.Cookies.Append("_UsuarioActual", UtilCookies.ToLegacyCookieString(cookie), new CookieOptions { Expires = caduca });
+                Dictionary<string, string> cookie = UtilCookies.FromLegacyCookieString(Request.Cookies["_UsuarioActual"], mEntityContext);
+                Response.Cookies.Append("_UsuarioActual", UtilCookies.ToLegacyCookieString(cookie, mEntityContext), new CookieOptions { Expires = caduca });
 
             }
         }

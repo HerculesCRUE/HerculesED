@@ -157,7 +157,7 @@ namespace Gnoss.Web.Login
         private bool EliminarCookieRestoDominios(string pDominio)
         {
             bool hayIframes = false;
-            Dictionary<string, string> dominios = (Dictionary<string, string>)UtilCookies.FromLegacyCookieString(Request.Cookies["_Dominios"]);
+            Dictionary<string, string> dominios = (Dictionary<string, string>)UtilCookies.FromLegacyCookieString(Request.Cookies["_Dominios"], mEntityContext);
 
             if (pDominio.Contains("//www."))
             {

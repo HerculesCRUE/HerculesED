@@ -45,8 +45,8 @@ namespace Gnoss.Web.Login
             string url = Request.Headers["urlVuelta"];
 
             //obtengo las cookies
-            Dictionary<string, string> cookie = UtilCookies.FromLegacyCookieString(Request.Cookies["_UsuarioActual"]);
-            Dictionary<string, string> cookieRewrite = UtilCookies.FromLegacyCookieString(Request.Cookies["_rewrite"]);
+            Dictionary<string, string> cookie = UtilCookies.FromLegacyCookieString(Request.Cookies["_UsuarioActual"], mEntityContext);
+            Dictionary<string, string> cookieRewrite = UtilCookies.FromLegacyCookieString(Request.Cookies["_rewrite"], mEntityContext);
 
             DateTime caduca = DateTime.Now.AddDays(1);
             List<ParametroAplicacion> filas = ParametrosAplicacionDS.Where(parametroApp => parametroApp.Parametro.Equals("TiposParametrosAplicacion.DuracionCookieUsuario")).ToList();
@@ -85,13 +85,13 @@ namespace Gnoss.Web.Login
                         //Así la cookie nunca caduca
                         caduca = DateTime.MaxValue;
                     }
-                    Response.Cookies.Append("_UsuarioActual", UtilCookies.ToLegacyCookieString(cookie), new CookieOptions { Expires = caduca });
+                    Response.Cookies.Append("_UsuarioActual", UtilCookies.ToLegacyCookieString(cookie, mEntityContext), new CookieOptions { Expires = caduca });
                 }
             }
 
             if (cookieRewrite != null && extenderFechaCookie)
             {
-                Response.Cookies.Append("_rewrite", UtilCookies.ToLegacyCookieString(cookieRewrite), new CookieOptions { Expires = caduca });
+                Response.Cookies.Append("_rewrite", UtilCookies.ToLegacyCookieString(cookieRewrite, mEntityContext), new CookieOptions { Expires = caduca });
             }
 
             if (Request.Cookies.ContainsKey("_Envio") && extenderFechaCookie)
