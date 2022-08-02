@@ -48,6 +48,8 @@ namespace PublicationConnect.ROs.Publications.Models
         
         public HashSet<string> dataOriginList { get; set; }
 
+        public Conferencia conferencia { get; set; }
+
         public string dataOrigin { get; set; }
 
 
@@ -58,7 +60,15 @@ namespace PublicationConnect.ROs.Publications.Models
         public List<string> freetextKeyword { get; set; }
     }
 
-
+    public class Conferencia
+    {
+        public int id { get; set; }
+        public string titulo { get; set; }
+        public string fechaInicio { get; set; }
+        public string fechaFin { get; set; }
+        public string pais { get; set; }
+        public string ciudad { get; set; }
+    }
 
     public class PublicationMetric
     {
