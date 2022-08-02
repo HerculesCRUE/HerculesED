@@ -81,7 +81,7 @@ namespace Gnoss.Web.Login
                         bool existeCookie = CrearCookieUsuarioActual(usuarioID, login, idioma, DominioAplicacion);
 
                         //Creo la cookie de perfiles y rewrite
-                        CrearCookiePerfiles(personaID, nombreCorto, DominioAplicacion);
+                        CrearCookiePerfiles(personaID, nombreCorto, "");
 
                         if (hashQuery.ContainsKey("redirect"))
                         {

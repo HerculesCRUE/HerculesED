@@ -35,6 +35,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using System.Web.UI;
 
 namespace Gnoss.Web.Login
 {
@@ -228,11 +229,11 @@ namespace Gnoss.Web.Login
 
                                 ValidarUsuario(loginUsuario, "", null, true);
 
-                                if (Request.Cookies.ContainsKey(DominioAplicacion + "_Envio"))
+                                if (Request.Cookies.ContainsKey("_Envio"))
                                 {
                                     CookieOptions options = new CookieOptions();
                                     options.Expires = DateTime.Now.AddDays(-1);
-                                    Response.Cookies.Append(DominioAplicacion + "_Envio", "0", options);
+                                    Response.Cookies.Append("_Envio", "0", options);
                                 }
                                 string dominioDeVuelta = UtilDominios.ObtenerDominioUrl(new Uri(redirect1), true);
 
@@ -280,11 +281,11 @@ namespace Gnoss.Web.Login
                     {
                         InvalidarTokenCaptcha(token1);
 
-                        if (Request.Cookies.ContainsKey(DominioAplicacion + "_Envio"))
+                        if (Request.Cookies.ContainsKey("_Envio"))
                         {
                             CookieOptions options = new CookieOptions();
                             options.Expires = DateTime.Now.AddDays(-1);
-                            Response.Cookies.Append(DominioAplicacion + "_Envio", "0", options);
+                            Response.Cookies.Append("_Envio", "0", options);
                         }
 
                         if (Request.Form.ContainsKey("clausulasRegistro"))
@@ -500,8 +501,8 @@ namespace Gnoss.Web.Login
         private bool ComprobarMismoUsuarioLogueado(string pLoginUsuario)
         {
             //Compruebo si se está logueando el mismo usuario que ya estaba logueado
-            string cookieValue = Request.Cookies[DominioAplicacion + "_UsuarioActual"];
-            return Request.Cookies.ContainsKey(DominioAplicacion + "_UsuarioActual") && pLoginUsuario.ToLower().Equals(cookieValue);
+            string cookieValue = Request.Cookies["_UsuarioActual"];
+            return Request.Cookies.ContainsKey("_UsuarioActual") && pLoginUsuario.ToLower().Equals(cookieValue);
         }
 
         #endregion
@@ -802,11 +803,11 @@ namespace Gnoss.Web.Login
 
                         ValidarUsuario(pLogin, pPasswd, null, true);
 
-                        if (Request.Cookies.ContainsKey(DominioAplicacion + "_Envio"))
+                        if (Request.Cookies.ContainsKey("_Envio"))
                         {
                             CookieOptions options = new CookieOptions();
                             options.Expires = DateTime.Now.AddDays(-1);
-                            Response.Cookies.Append(DominioAplicacion + "_Envio", "0", options);
+                            Response.Cookies.Append("_Envio", "0", options);
                         }
                         string dominioDeVuelta = UtilDominios.ObtenerDominioUrl(new Uri(pRedirect), true);
 
