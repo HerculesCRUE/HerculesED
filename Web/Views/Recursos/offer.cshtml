@@ -115,7 +115,7 @@
                                         </a>
                                         <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right" aria-labelledby="dropdownMasOpciones">
                                             <p class="dropdown-title">@Html.Translate("Acciones")</p>
-                                            <ul class="no-list-style">
+                                            <ul class="no-list-style" id="menuAccionesOffer">
                                                 @if (ownUser) {
 
                                                     <li>
@@ -744,8 +744,11 @@
 
 
 
-    @if (ownUser) 
+    @if (!IdentidadActual.IsGuestUser) 
     {
+        
+
+
         <div id="modal-eliminar-oferta-confirmacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -759,7 +762,7 @@
                                 <div class="form-group full-group">
                                     <label class="control-label d-block">@Html.Translate("CONFIRMACION_BORRAR_OFERTA")</label>
                                     <div class="form-actions">
-                                        <a href="javascript: borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
+                                        <a href="javascript: cambiarEstadoOfertas.borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
                                     </div>
                                 </div>
                             </div>
@@ -768,6 +771,34 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div id="modal-enviar-comentario" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("COMENTARIO")</p>
+                        <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="formulario-edicion">
+                            <div class="custom-form-row">
+                                <div class="form-group full-group">
+                                    <label class="control-label d-block">@Html.Translate("INTRODUCE_UN_COMENTARIO")</label>
+                                    <textarea class="w-100" id="areaTextoComentario"> </textarea>
+                                    <div class="form-actions">
+                                        <a href="javascript: cambiarEstadoOfertas.sendModal(document.getElementById('areaTextoComentario').value)" class="btn btn-primary uppercase">@Html.Translate("ENVIAR")</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     }
 
 }
@@ -795,6 +826,41 @@
 
     </script>
 }
+
+@if (!IdentidadActual.IsGuestUser) {
+    <script type="text/javascript">
+
+        const pIdGnossUser = "@IdentidadActual.KeyUser"
+        const ERROR_IDS_VACIO = "@Html.Translate("ERROR_IDS_VACIO")"
+
+        var urlGUPIO = url_servicio_externo + "Ofertas/GetUserProfileInOffer"
+            var arg = {};
+
+            arg.pIdOfertaId = "@pOffer.GNOSSID"
+            arg.userId = "@currentId"
+
+        // Langs para el constructor
+        const arrLang = {
+            "ENVIAR_REVISION": "@Html.Translate("ENVIAR_REVISION")",
+            "ENVIAR_BORRADOR": "@Html.Translate("ENVIAR_BORRADOR")",
+            "MEJORAR": "@Html.Translate("MEJORAR")",
+            "VALIDAR": "@Html.Translate("VALIDAR")",
+            "DENEGAR": "@Html.Translate("DENEGAR")",
+            "ARCHIVAR": "@Html.Translate("ARCHIVAR")",
+            "BORRAR": "@Html.Translate("BORRAR")",
+            "EDITAR": "@Html.Translate("EDITAR")",
+        }
+
+        var offerList = new OfferList(arrLang)
+
+        $.post(urlGUPIO, arg, function (data) {
+            let typeUsers = Object.keys(data).map(e => {if (data[e]) { return e }})
+            let html = offerList.printMenu("@pOffer.GNOSSID", "@pOffer.Schema_availability.mGNOSSID", typeUsers)
+            $("#menuAccionesOffer").html(html)
+        });
+
+    </script>
+} 
 
 
 
