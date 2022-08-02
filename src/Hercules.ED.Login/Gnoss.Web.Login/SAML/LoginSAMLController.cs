@@ -32,11 +32,13 @@ using ApiWrapper::Gnoss.ApiWrapper;
 using ApiWrapper::Gnoss.ApiWrapper.ApiModel;
 using ApiWrapper::Gnoss.ApiWrapper.Model;
 using Gnoss.Web.Login.Open.SAML;
+using Microsoft.AspNetCore.Cors;
 
 namespace Gnoss.Web.Login.SAML
 {
     [Controller]
     [Route("[controller]")]
+    [EnableCors("_myAllowSpecificOrigins")]
     public class LoginSAMLController : ControllerBaseLogin
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
