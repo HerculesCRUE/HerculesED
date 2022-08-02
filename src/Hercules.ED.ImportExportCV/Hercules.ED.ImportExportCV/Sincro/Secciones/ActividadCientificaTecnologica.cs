@@ -231,11 +231,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     string idBBDD = !Guid.TryParse(x.Key, out Guid aux) ? x.Key : "";
 
                     if (bloqueados.ContainsKey(idBBDD))
-                    {                        
+                    {
                         listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
                     }
                     else
-                    {                        
+                    {
                         listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false));
                     }
                 }
@@ -1552,6 +1552,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         PublicacionesDocumentosTraducciones(item, entidadAux);
                         PublicacionesDocumentosIDPublicacion(item, entidadAux);
                         PublicacionesDocumentosISBN(item, entidadAux);
+                        PublicacionesDocumentosCitasINRECS(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1565,6 +1566,28 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
        
+        /// <summary>
+        /// Añade el valor de las citas Inrecs del documento
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
+        private void PublicacionesDocumentosCitasINRECS(CvnItemBean item, Entity entidadAux)
+        {
+            List<CvnItemBeanCvnCodeGroup> listadoCitas = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("060.010.010.310");
+            foreach (CvnItemBeanCvnCodeGroup codeGroup in listadoCitas)
+            {
+                if (codeGroup.CvnString != null && codeGroup.CvnString.Length > 0 && codeGroup.CvnDouble != null && codeGroup.CvnDouble.Length > 0
+                    && codeGroup.CvnString.First().Value.Equals("020") && codeGroup.CvnString.First().Code.Equals("060.010.010.320")
+                    && codeGroup.CvnDouble.First().Code.Equals("060.010.010.310"))
+                {
+                    string valueInrecs = codeGroup.CvnDouble.First().Value;
+                    entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosCitasInrecs, valueInrecs)
+                    ));
+                }
+            }
+        }
+
         /// <summary>
         /// Añade los topics/categorias enriquecidos del documento.
         /// </summary>
@@ -1764,7 +1787,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entidadAux.properties_cv = new List<Property>();
                     entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.030")))
-                    {                        
+                    {
                         // Añado las etiquetas enriquecidas
                         string tituloPublicacion = item.GetStringPorIDCampo("060.010.020.030");
                         tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
@@ -1820,6 +1843,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         TrabajosCongresosISSN(item, entidadAux);
                         TrabajosCongresosISBN(item, entidadAux);
                         TrabajosCongresosEntidadOrganizadora(item, entidadAux);
+                        TrabajosCongresosCitasINRECS(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1831,6 +1855,28 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
+        }
+
+        /// <summary>
+        /// Añade el valor de las citas Inrecs del documento
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="entidadAux"></param>
+        private void TrabajosCongresosCitasINRECS(CvnItemBean item, Entity entidadAux)
+        {
+            List<CvnItemBeanCvnCodeGroup> listadoCitas = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("060.010.020.430");
+            foreach (CvnItemBeanCvnCodeGroup codeGroup in listadoCitas)
+            {
+                if (codeGroup.CvnString != null && codeGroup.CvnString.Length > 0 && codeGroup.CvnDouble != null && codeGroup.CvnDouble.Length > 0
+                    && codeGroup.CvnString.First().Value.Equals("020") && codeGroup.CvnString.First().Code.Equals("060.010.020.430")
+                    && codeGroup.CvnDouble.First().Code.Equals("060.010.020.440"))
+                {
+                    string valueInrecs = codeGroup.CvnDouble.First().Value;
+                    entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosCitasInrecs, valueInrecs)
+                    ));
+                }
+            }
         }
 
         /// <summary>

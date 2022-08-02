@@ -40,7 +40,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="pCVID">ID curriculum</param>
         /// <returns></returns>
         [HttpPost("Exportar")]
-        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion)
+        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion, [FromForm][Required] string versionExportacion)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -55,33 +55,61 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 return Content("El CV no se ha encontrado");
             }
 
-            exporta.ExportaDatosIdentificacion(entity, _Configuracion.GetVersion());
+            exporta.ExportaDatosIdentificacion(entity, versionExportacion);
             exporta.ExportaSituacionProfesional(entity);
             exporta.ExportaFormacionAcademica(entity);
             exporta.ExportaActividadDocente(entity);
             exporta.ExportaExperienciaCientificaTecnologica(entity);
-            exporta.ExportaActividadCientificaTecnologica(entity);
+            exporta.ExportaActividadCientificaTecnologica(entity, versionExportacion);
             exporta.ExportaTextoLibre(entity);
 
             try
             {
-                Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
-
-                //Aumento el tiempo de espera a 2 hora como maximo
-                client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-                client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-
-                var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
-                var resp = peticion.Result.@return;
-                client.Close();
-
-                if (resp.returnCode != "00")
+                if (versionExportacion.Equals("1_4_0"))
                 {
-                    _logger.LogError("Error code " + resp.returnCode);
-                    return NotFound();
-                }
+                    Export140.GenerarPDFWSClient client = new Export140.GenerarPDFWSClient();
 
-                return File(resp.dataHandler, "application/pdf", resp.filename);
+                    //Aumento el tiempo de espera a 2 hora como maximo
+                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
+                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+
+                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
+                    var resp = peticion.Result.@return;
+                    client.Close();
+
+                    if (resp.returnCode != "00")
+                    {
+                        _logger.LogError("Error code " + resp.returnCode);
+                        return NotFound();
+                    }
+
+                    return File(resp.dataHandler, "application/pdf", resp.filename);
+                }
+                else if (versionExportacion.Equals("1_4_3")) 
+                {
+                    Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
+
+                    //Aumento el tiempo de espera a 2 hora como maximo
+                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
+                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+
+                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
+                    var resp = peticion.Result.@return;
+                    client.Close();
+
+                    if (resp.returnCode != "00")
+                    {
+                        _logger.LogError("Error code " + resp.returnCode);
+                        return NotFound();
+                    }
+
+                    return File(resp.dataHandler, "application/pdf", resp.filename);
+                }
+                else
+                {
+                    throw new Exception("La versión de exportación no es correcta");
+                }
+                   
             }
             catch (Exception e)
             {
@@ -98,7 +126,8 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="listaId">Listado de identificadores de los recursos a devolver</param>
         /// <returns></returns>
         [HttpPost("ExportarLimitado")]
-        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion, [FromForm][Optional] List<string> listaId)
+        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion,
+            [FromForm][Required] string versionExportacion, [FromForm][Optional] List<string> listaId)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
@@ -122,29 +151,58 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             exporta.ExportaFormacionAcademica(entity, listaId);
             exporta.ExportaActividadDocente(entity, listaId);
             exporta.ExportaExperienciaCientificaTecnologica(entity, listaId);
-            exporta.ExportaActividadCientificaTecnologica(entity, listaId);
+            exporta.ExportaActividadCientificaTecnologica(entity, versionExportacion, listaId);
             exporta.ExportaTextoLibre(entity, listaId);
 
             try
             {
-                Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
-
-                //Aumento el tiempo de espera a 2 hora como máximo
-                client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-                client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-
-                var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
-                var resp = peticion.Result.@return;
-                client.Close();
-
-
-                if (resp.returnCode != "00")
+                if (versionExportacion.Equals("1_4_0")) 
                 {
-                    _logger.LogError("Error code " + resp.returnCode);
-                    return NotFound();
-                }
+                    Export140.GenerarPDFWSClient client = new Export140.GenerarPDFWSClient();
 
-                return File(resp.dataHandler, "application/pdf", resp.filename);
+                    //Aumento el tiempo de espera a 2 hora como máximo
+                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
+                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+
+                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
+                    var resp = peticion.Result.@return;
+                    client.Close();
+
+
+                    if (resp.returnCode != "00")
+                    {
+                        _logger.LogError("Error code " + resp.returnCode);
+                        return NotFound();
+                    }
+
+                    return File(resp.dataHandler, "application/pdf", resp.filename);
+                }
+                else if(versionExportacion.Equals("1_4_3"))
+                {
+                    Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
+
+                    //Aumento el tiempo de espera a 2 hora como máximo
+                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
+                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+
+                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
+                    var resp = peticion.Result.@return;
+                    client.Close();
+
+
+                    if (resp.returnCode != "00")
+                    {
+                        _logger.LogError("Error code " + resp.returnCode);
+                        return NotFound();
+                    }
+
+                    return File(resp.dataHandler, "application/pdf", resp.filename);
+                }
+                else
+                {
+                    throw new Exception("La versión de exportación no es correcta");
+                }
+                
             }
             catch (Exception e)
             {
