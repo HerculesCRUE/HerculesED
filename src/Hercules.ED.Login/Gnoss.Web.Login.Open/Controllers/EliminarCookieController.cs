@@ -6,6 +6,7 @@ using Es.Riam.Gnoss.CL;
 using Es.Riam.Gnoss.Util.Configuracion;
 using Es.Riam.Gnoss.Util.General;
 using Es.Riam.Web.Util;
+using Gnoss.Web.Login.Open.SAML;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +23,11 @@ namespace Gnoss.Web.Login
     [Route("[controller]")]
     public class EliminarCookieController : ControllerBaseLogin
     {
-
-        public EliminarCookieController(LoggingService loggingService, IHttpContextAccessor httpContextAccessor, EntityContext entityContext, ConfigService configService, RedisCacheWrapper redisCacheWrapper, GnossCache gnossCache, VirtuosoAD virtuosoAD, IHostingEnvironment env, EntityContextBASE entityContextBASE, IServicesUtilVirtuosoAndReplication servicesUtilVirtuosoAndReplication)
+        readonly ConfigServiceSAML mConfigServiceSAML;
+        public EliminarCookieController(LoggingService loggingService, IHttpContextAccessor httpContextAccessor, EntityContext entityContext, ConfigService configService, RedisCacheWrapper redisCacheWrapper, GnossCache gnossCache, VirtuosoAD virtuosoAD, IHostingEnvironment env, EntityContextBASE entityContextBASE, IServicesUtilVirtuosoAndReplication servicesUtilVirtuosoAndReplication, ConfigServiceSAML configServiceSAML)
             : base(loggingService, httpContextAccessor, entityContext, configService, redisCacheWrapper, gnossCache, virtuosoAD, env, entityContextBASE, servicesUtilVirtuosoAndReplication)
         {
+            mConfigServiceSAML = configServiceSAML;
         }
 
         #region Métodos de eventos
@@ -38,8 +40,8 @@ namespace Gnoss.Web.Login
         [HttpGet, HttpPost]
         public void Index()
         {
-            string cookieUsuarioKey = "_UsuarioActual";
-            string cookieEnvioKey = "_Envio";
+            string cookieUsuarioKey = DominioAplicacion + "_UsuarioActual";
+            string cookieEnvioKey = DominioAplicacion + "_Envio";
             bool hayIframes = false;
             if (!Request.Headers.ContainsKey("eliminar") && !Request.Query.ContainsKey("eliminar"))
             {
@@ -72,7 +74,7 @@ namespace Gnoss.Web.Login
                     Response.Cookies.Append(cookieUsuarioKey, "0", new CookieOptions { Expires = DateTime.Now.AddDays(-1) });
                 }
 
-                string cookieRewriteKey = "_rewrite";
+                string cookieRewriteKey = DominioAplicacion + "_rewrite";
 
                 //Elimino la cookie de rewrite
                 if (Request.Cookies.ContainsKey(cookieRewriteKey))
@@ -132,18 +134,19 @@ namespace Gnoss.Web.Login
                 hayIframes = EliminarCookieRestoDominios(dominioPeticion);
             }
 
-            if ((Request.Query.ContainsKey("redirect") || Request.Headers.ContainsKey("redirect") )&& !hayIframes)
-            {
-                if (Request.Headers.ContainsKey("redirect"))
-                {
-                    Response.Redirect(Request.Headers["redirect"]);
-                }
-                else if (Request.Query.ContainsKey("redirect"))
-                {
-                    Response.Redirect(Request.Query["redirect"]);
-                }
+            Response.Redirect(Url.Content(@$"~/{mConfigServiceSAML.GetUrlServiceInDomain()}Auth/Logout"));
+            //if ((Request.Query.ContainsKey("redirect") || Request.Headers.ContainsKey("redirect") )&& !hayIframes)
+            //{
+            //    if (Request.Headers.ContainsKey("redirect"))
+            //    {
+            //        Response.Redirect(Request.Headers["redirect"]);
+            //    }
+            //    else if (Request.Query.ContainsKey("redirect"))
+            //    {
+            //        Response.Redirect(Request.Query["redirect"]);
+            //    }
                 
-            }
+            //}
         }
 
         #endregion
@@ -157,7 +160,7 @@ namespace Gnoss.Web.Login
         private bool EliminarCookieRestoDominios(string pDominio)
         {
             bool hayIframes = false;
-            Dictionary<string, string> dominios = (Dictionary<string, string>)UtilCookies.FromLegacyCookieString(Request.Cookies["_Dominios"], mEntityContext);
+            Dictionary<string, string> dominios = (Dictionary<string, string>)UtilCookies.FromLegacyCookieString(Request.Cookies[DominioAplicacion + "_Dominios"]);
 
             if (pDominio.Contains("//www."))
             {
@@ -181,7 +184,7 @@ namespace Gnoss.Web.Login
 
             if (Request.Headers.ContainsKey("eliminar") && Request.Headers["eliminar"].Equals("true"))
             {
-                string cookieDominioLogoutExternoKey = "_DominioLogoutExterno";
+                string cookieDominioLogoutExternoKey = DominioAplicacion + "_DominioLogoutExterno";
                 if (Request.Cookies.ContainsKey(cookieDominioLogoutExternoKey) && !string.IsNullOrEmpty(Request.Cookies[cookieDominioLogoutExternoKey]) && Uri.IsWellFormedUriString(Request.Cookies[cookieDominioLogoutExternoKey], UriKind.Absolute))
                 {
                     // Si hay un dominio externo de login, la redirección se hará cuando se finalice la desconexión en este dominio
