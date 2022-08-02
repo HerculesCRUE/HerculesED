@@ -32,7 +32,7 @@ namespace EditorCV.Models
         /// <param name="lang"></param>
         /// <param name="listaId"></param>
         /// <param name="tipoCVNExportacion"></param>
-        public void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId, string tipoCVNExportacion)
+        public void AddFile(ConfigService _Configuracion, string pCVID, string nombreCV, string lang, List<string> listaId, string tipoCVNExportacion, string versionExportacion)
         {
             Guid guidCortoCVID = mResourceApi.GetShortGuid(pCVID);
 
@@ -57,7 +57,7 @@ namespace EditorCV.Models
 
             var inserted = mResourceApi.InsertPropertiesLoadedResources(new Dictionary<Guid, List<TriplesToInclude>>() { { guidCortoCVID, listaTriples } });
 
-            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado, listaId, tipoCVNExportacion));
+            Thread thread = new Thread(() => AddPDFFile(_Configuracion, pCVID, lang, idEntityAux, PDFFilePDF, guidCortoCVID, filePredicateEstado, listaId, tipoCVNExportacion, versionExportacion));
             thread.Start();
         }
 
@@ -73,8 +73,8 @@ namespace EditorCV.Models
         /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
-        void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux,
-            string PDFFilePDF, Guid guidCortoCVID, string filePredicateEstado, List<string> listaId, string tipoCVNExportacion)
+        void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux, string PDFFilePDF,
+            Guid guidCortoCVID, string filePredicateEstado, List<string> listaId, string tipoCVNExportacion, string versionExportacion)
         {
             try
             {
@@ -82,6 +82,7 @@ namespace EditorCV.Models
                 List<KeyValuePair<string, string>> parametros = new List<KeyValuePair<string, string>>();
                 parametros.Add(new KeyValuePair<string, string>("pCVID", pCVID));
                 parametros.Add(new KeyValuePair<string, string>("lang", lang));
+                parametros.Add(new KeyValuePair<string, string>("versionExportacion", versionExportacion));
                 parametros.Add(new KeyValuePair<string, string>("tipoCVNExportacion", tipoCVNExportacion));
 
                 string urlExportador = "";
