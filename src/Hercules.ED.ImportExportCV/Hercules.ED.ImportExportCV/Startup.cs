@@ -23,6 +23,17 @@ namespace Hercules.ED.ImportExportCV
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                                  builder =>
+                                  {
+                                      builder.SetIsOriginAllowed(ComprobarDominioEnBD);
+                                      builder.AllowAnyHeader();
+                                      builder.AllowAnyMethod();
+                                      builder.AllowCredentials();
+                                  });
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -36,6 +47,10 @@ namespace Hercules.ED.ImportExportCV
             {
                 options.ValueCountLimit = int.MaxValue;
             });
+        }
+        private bool ComprobarDominioEnBD(string dominio)
+        {
+            return true;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +68,8 @@ namespace Hercules.ED.ImportExportCV
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors();
 
             // Middleware.
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
