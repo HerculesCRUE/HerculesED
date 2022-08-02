@@ -394,7 +394,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
 
                             //Datos de los objetos encontrados en la BBDD
-                            List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);                      
+                            List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);
 
                             #region 1º PERSONAS Procesamos las personas, actualizando las que corresponda
                             Dictionary<Person, HashSet<string>> listaPersonasCargarEquivalencias = new Dictionary<Person, HashSet<string>>();
@@ -1441,11 +1441,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // País de celebración de la Conferencia
             if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.pais))
             {
-                document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacion.conferencia.pais.ToLower()]}";
+                if (dicPaises.ContainsKey(pPublicacion.conferencia.pais.ToLower()))
+                {
+                    document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacion.conferencia.pais.ToLower()]}";
+                }
 
                 if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.pais) && string.IsNullOrEmpty(document.IdRoh_presentedAtHasCountryName))
                 {
-                    document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacionB.conferencia.pais.ToLower()]}";
+                    if (dicPaises.ContainsKey(pPublicacionB.conferencia.pais.ToLower()))
+                    {
+                        document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacionB.conferencia.pais.ToLower()]}";
+                    }
                 }
             }
 
@@ -1568,7 +1574,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             document.Roh_enrichedKeywords = etiquetasEnriquecidas.ToList();
 
             // Etiquetas del Usuario (UserKeyWords)
-            if(pDocCargado != null && pDocCargado.etiquetas != null && pDocCargado.etiquetas.Any())
+            if (pDocCargado != null && pDocCargado.etiquetas != null && pDocCargado.etiquetas.Any())
             {
                 document.Roh_userKeywords = pDocCargado.etiquetas.ToList();
             }
@@ -1606,7 +1612,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
 
             // PDF
-            if(pDocCargado != null && !string.IsNullOrEmpty(pDocCargado.urlPdf) && string.IsNullOrEmpty(pPublicacion.pdf))
+            if (pDocCargado != null && !string.IsNullOrEmpty(pDocCargado.urlPdf) && string.IsNullOrEmpty(pPublicacion.pdf))
             {
                 document.Roh_hasFile = pDocCargado.urlPdf;
             }
