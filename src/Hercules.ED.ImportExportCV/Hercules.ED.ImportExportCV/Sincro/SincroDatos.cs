@@ -1,6 +1,5 @@
 ﻿using Hercules.ED.ImportExportCV.Controllers;
 using Hercules.ED.ImportExportCV.Models;
-using Import;
 using ImportadorWebCV.Sincro.Secciones;
 using Microsoft.AspNetCore.Http;
 using Models;
@@ -133,24 +132,52 @@ namespace ImportadorWebCV.Sincro
             byte[] bytes = new byte[length];
             fileStream.Read(bytes, 0, (int)pInput.Length);
 
-            Cvn2RootBeanClient cvnRootBeanClient = new Cvn2RootBeanClient();
-            //Aumento el tiempo de espera a 2 hora como máximo
-            cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-            cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-            var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
-            Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
-
-            XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
-            MemoryStream memoryStream = new MemoryStream();
-
-            xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
-
-            FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+            if (_Configuracion.GetVersion().Equals("1_4_3"))
             {
-                Headers = new HeaderDictionary(),
-                ContentType = "application/xml"
-            };
-            return file;
+                Import.Cvn2RootBeanClient cvnRootBeanClient = new Import.Cvn2RootBeanClient();
+                
+                //Aumento el tiempo de espera a 2 hora como máximo
+                cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
+                cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+                var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
+                Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
+
+                XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
+                MemoryStream memoryStream = new MemoryStream();
+
+                xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
+
+                FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = "application/xml"
+                };
+                return file;
+            }
+            else if(_Configuracion.GetVersion().Equals("1_4_0"))
+            {
+                Import140.Cvn2RootBeanClient cvnRootBeanClient = new Import140.Cvn2RootBeanClient();
+                cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+                var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
+                Import140.cvnRootResultBean cvnRootResultBean = x.Result.@return;
+
+                XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
+                MemoryStream memoryStream = new MemoryStream();
+
+                xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
+
+                FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = "application/xml"
+                };
+                return file;
+            }
+            else
+            {
+                throw new Exception("La versión de exportación no es correcta");
+            }
+            
         }
 
         public byte[] GuardarXMLFiltrado()

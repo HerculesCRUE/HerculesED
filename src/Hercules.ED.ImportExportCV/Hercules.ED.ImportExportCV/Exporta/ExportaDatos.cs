@@ -133,7 +133,7 @@ namespace ImportadorWebCV.Exporta
             resultadosTecnologicos.ExportaResultadosTecnologicos(MultilangProp, listaId);
 
         }
-        public void ExportaActividadCientificaTecnologica(Entity entity, [Optional] List<string> listaId)
+        public void ExportaActividadCientificaTecnologica(Entity entity, string versionExportacion, [Optional] List<string> listaId)
         {
             string seccion = "http://w3id.org/roh/scientificActivity";
 
@@ -147,7 +147,7 @@ namespace ImportadorWebCV.Exporta
             publicacionesDocumentos.ExportaPublicacionesDocumentos(seccion, MultilangProp, listaId);
 
             TrabajosCongresos trabajosCongresos = new TrabajosCongresos(cvn, cvID);
-            trabajosCongresos.ExportaTrabajosCongresos(seccion, MultilangProp, listaId);
+            trabajosCongresos.ExportaTrabajosCongresos(seccion, MultilangProp, versionExportacion, listaId);
 
             TrabajosJornadasSeminarios trabajosJornadasSeminarios = new TrabajosJornadasSeminarios(cvn, cvID);
             trabajosJornadasSeminarios.ExportaTrabajosJornadasSeminarios(MultilangProp, listaId);
