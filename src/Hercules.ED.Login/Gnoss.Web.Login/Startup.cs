@@ -90,7 +90,7 @@ namespace Gnoss.Web.Login
                 builder =>
                 {
                     builder.SetIsOriginAllowed(ComprobarDominioEnBD);
-                    builder.AllowAnyOrigin();
+                    //builder.AllowAnyOrigin();
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
                     builder.AllowCredentials();
