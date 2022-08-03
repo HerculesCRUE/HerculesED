@@ -1844,7 +1844,7 @@ var edicionCV = {
                             </div>   
                         </div>
                     </div>
-                    <input class="form-control not-outline visuell-view ${css}" propertyrdf="${property}" ${disabled.length == 0 ? "contenteditable":""} placeholder="${placeholder}" type="text">${value}</input>
+                    <div class="form-control not-outline visuell-view ${css}" propertyrdf="${property}" ${disabled.length == 0 ? "contenteditable":""} placeholder="${placeholder}" type="text">${value}</div>
                 </div>`;
             
 		//html+=`<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
