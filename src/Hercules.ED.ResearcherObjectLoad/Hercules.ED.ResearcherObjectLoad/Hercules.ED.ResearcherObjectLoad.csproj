@@ -40,6 +40,9 @@
     <None Update="Config\configOAuth\OAuthV3.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Config\estados-usa.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Config\paises.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
