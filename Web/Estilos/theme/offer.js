@@ -2200,7 +2200,7 @@ class ModalCategoryCreator {
 											<div class="divTesArbol divCategorias clearfix">
 												<div class="buscador-categorias">
 													<div class="form-group">
-														<input class="filtroRapido form-control not-outline" placeholder="${traducciones.buscar}" type="text" onkeydown="javascript:if(event.which || event.keyCode){if ((event.which == 13) || (event.keyCode == 13)) {return false;}}" onkeyup="javascript:MVCFiltrarListaSelCatArbol(this, 'panDesplegableSelCat');">
+														<input class="filtroRapido form-control not-outline" placeholder="${traducciones.buscar}" type="text" onkeydown="javascript:if(event.which || event.keyCode){if ((event.which == 13) || (event.keyCode == 13)) {return false;}}" onkeyup="javascript:MVCFiltrarListaSelCatArbol(this, 'panDesplegableSelCat_${this.id}');">
 													</div>
 												</div>
 											</div>
@@ -3512,62 +3512,81 @@ class OfferList {
 	* @param ids, Array con los ids sobre los que pintar el menú
 	* @param typeUser, String con el tipo de usuario que accede a la oferta 
 	*/
-	loadActionsOffer(ids, typeUser = "otri") {
+	loadActionsOffer(ids, typeUser = ["otri"]) {
 
 	    ids.forEach(idDocument => {
 
 	        // Obtiene el recurso en el dom
 	        let item = document.getElementById("resource_" + idDocument)
-	        // Obtiene el estado del recurso
-	        let itemState = item.dataset.estadores
-	        // Obtiene el listado de opciones en el menu
-	        let selector = item.querySelector(".acciones-recurso-listado .dropdown-menu ul")
+
+	        // Comprueba si existe la oferta
+	        if (item) {
+	        	// Obtiene el estado del recurso
+		        let itemState = item.dataset.estadores
+		        // Obtiene el listado de opciones en el menu
+		        let selector = item.querySelector(".acciones-recurso-listado .dropdown-menu ul")
 
 
-	        let htmlRes = "";
-	        let estados = [];
-	        let idEstadoOFerta = "";
-	        let txtEnviar = "";
+		        let htmlRes = "";
+		        let estados = [];
+		        let idEstadoOFerta = "";
+		        let txtEnviar = "";
 
-	        estados = this.setActionsOffer(itemState, typeUser)
-
+		        selector.innerHTML = this.printMenu(idDocument, itemState, typeUser).join("")
+	        }
 	        
-	        htmlRes = estados.map(e => {
-
-	            if (e.idEstadoOFerta == "editar") {
-	                return `
-	                    <li>
-                            <a class="item-dropdown" href="${document.getElementById("inpt_baseUrlBusqueda").value}/nueva-oferta-tecnologica?id=${idDocument}">
-                                <span class="material-icons">${e.icono}</span>
-                                <span>${e.txtEnviar}</span>
-                            </a>
-                        </li>`
-	            } else if (e.targetModalId) {
-	                return `
-	                    <li>
-	                        <a class="item-dropdown" href="javascript: void(0)">
-	                            <span class="material-icons">${e.icono}</span>
-	                            <span class="texto" onclick="javascript:cambiarEstadoOfertas.setModal('${idDocument}','${e.idEstadoOFerta}', '${itemState}', '${e.targetModalId}')" >${e.txtEnviar}</span>
-	                        </a>
-	                    </li>`
-	            } else {
-
-	                return `
-	                    <li>
-	                        <a class="item-dropdown" href="javascript:cambiarEstadoOfertas.send('${idDocument}','${e.idEstadoOFerta}', '${itemState}')">
-	                            <span class="material-icons">${e.icono}</span>
-	                            <span class="texto">${e.txtEnviar}</span>
-	                        </a>
-	                    </li>`
-	            }
-
-	        })
-
-	        selector.innerHTML = htmlRes.join("")
 	            
 	    })
 
 	}
+
+
+
+	/** 
+	* Método que obtiene el html de los menús en un elemento
+	* @param idDocument, id del documento
+	* @param itemState, Estado del elemento en cuestión
+	* @param typeUser, tipo/s de usuarios actuales 
+	*/
+	printMenu(idDocument, itemState, typeUser) {
+
+		let estados = this.setActionsOffer(itemState, typeUser)
+
+	    let htmlRes = estados.map(e => {
+
+            if (e.idEstadoOFerta == "editar") {
+                return `
+                    <li>
+                        <a class="item-dropdown" href="${document.getElementById("inpt_baseUrlBusqueda").value}/nueva-oferta-tecnologica?id=${idDocument}">
+                            <span class="material-icons">${e.icono}</span>
+                            <span>${e.txtEnviar}</span>
+                        </a>
+                    </li>`
+            } else if (e.targetModalId) {
+                return `
+                    <li>
+                        <a class="item-dropdown" href="javascript: void(0)">
+                            <span class="material-icons">${e.icono}</span>
+                            <span class="texto" onclick="javascript:cambiarEstadoOfertas.setModal('${idDocument}','${e.idEstadoOFerta}', '${itemState}', '${e.targetModalId}')" >${e.txtEnviar}</span>
+                        </a>
+                    </li>`
+            } else {
+
+                return `
+                    <li>
+                        <a class="item-dropdown" href="javascript:cambiarEstadoOfertas.send('${idDocument}','${e.idEstadoOFerta}', '${itemState}')">
+                            <span class="material-icons">${e.icono}</span>
+                            <span class="texto">${e.txtEnviar}</span>
+                        </a>
+                    </li>`
+            }
+
+        })
+
+        return htmlRes
+
+	}
+
 
 
 	/** 
@@ -3576,7 +3595,7 @@ class OfferList {
 	* @param typeUser, String con el tipo de usuario que accede a la oferta 
 	* @return Array, Array de objetos para construir el menú de opciones
 	*/
-	setActionsOffer(estado, typeUser = "other") {
+	setActionsOffer(estado, typeUser = ["other"]) {
 
 	    /**
 	    * typeUser es el usuario actual, puede contener:
@@ -3586,110 +3605,150 @@ class OfferList {
 	    * other, es otro usuario que no coincide con ninguno de los anteriores
 	    */
 
-	    let estados = [];
-	    let idEstadoOFerta = "";
-	    let txtEnviar = "";
-	    let icono = "send";
-	    let targetModalId = "";
+	    let estados = []
+	    let idEstadoOFerta = ""
+	    let txtEnviar = ""
+	    let icono = "send"
+	    let targetModalId = ""
 
-	    switch (estado) 
-	    {
-	        case "http://gnoss.com/items/offerstate_001":
-	            // Es el creador de la oferta
-	            // Puede pasar la oferta a revisión
-	            if (typeUser == "own") 
-	            {
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_002"
-	                txtEnviar = this.arrLang["ENVIAR_REVISION"]
-	                targetModalId = ""
-	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+	    if (typeUser.constructor == Array) {
 
-	            }
-	            break;
-	        case "http://gnoss.com/items/offerstate_002":
-	            // Es el creador de la oferta
-	            // Puede pasar la oferta a borrador
-	            if (typeUser == "own" || typeUser == "otri") 
-	            {
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_001"
-	                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
-	                targetModalId = ""
-	                estados.push({ idEstadoOFerta, txtEnviar, icono })
 
-	            }
-	            // Es el gestor otri
-	            // Puede pasar la oferta a borrador
-	            if (typeUser == "otri")
-	            {
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_002";
-	                txtEnviar = this.arrLang["MEJORAR"]
-	                targetModalId = "modal-enviar-comentario"
-	                estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+	    	typeUser.forEach(ut => {
 
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_003";
-	                txtEnviar = this.arrLang["VALIDAR"]
-	                targetModalId = ""
-	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+			    switch (estado) 
+			    {
+			        case "http://gnoss.com/items/offerstate_001":
+			            // Es el creador de la oferta
+			            // Puede pasar la oferta a revisión
+			            if (ut == "own") 
+			            {
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_002"
+			                txtEnviar = this.arrLang["ENVIAR_REVISION"]
+			                targetModalId = ""
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["ENVIAR_REVISION"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                }
 
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_004";
-	                txtEnviar = this.arrLang["DENEGAR"]
-	                targetModalId = "modal-enviar-comentario"
-	                estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+			            }
+			            break;
+			        case "http://gnoss.com/items/offerstate_002":
+			            // Es el creador de la oferta
+			            // Puede pasar la oferta a borrador
+			            if (ut == "own" || ut == "otri" || ut == "ip") 
+			            {
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_001"
+			                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
+			                targetModalId = ""
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["ENVIAR_BORRADOR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                }
 
-	            }
-	            break;
-	        case "http://gnoss.com/items/offerstate_003":
-	            if (typeUser == "otri")
-	            {
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
-	                txtEnviar = this.arrLang["ARCHIVAR"]
-	                targetModalId = "modal-enviar-comentario"
-	                estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+			            }
+			            // Es el gestor otri
+			            // Puede pasar la oferta a borrador
+			            if (ut == "otri")
+			            {
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_002";
+			                txtEnviar = this.arrLang["MEJORAR"]
+			                targetModalId = "modal-enviar-comentario"
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["MEJORAR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+			                }
 
-	                targetModalId = ""
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
-	                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
-	                estados.push({ idEstadoOFerta, txtEnviar, icono })
-	            }
-	            break;
-	        case "http://gnoss.com/items/offerstate_004":
-	            if (typeUser == "own") 
-	            {
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
-	                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
-	                targetModalId = ""
-	                estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_003";
+			                txtEnviar = this.arrLang["VALIDAR"]
+			                targetModalId = ""
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["VALIDAR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                }
 
-	            }
-	            if (typeUser == "otri")
-	            {
-	                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
-	                txtEnviar = this.arrLang["ARCHIVAR"]
-	                targetModalId = ""
-	                icono = "delete"
-	                estados.push({ idEstadoOFerta, txtEnviar, icono })
-	            }
-	            break;
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_004";
+			                txtEnviar = this.arrLang["DENEGAR"]
+			                targetModalId = "modal-enviar-comentario"
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["DENEGAR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+			                }
 
+			            }
+			            break;
+			        case "http://gnoss.com/items/offerstate_003":
+			            if (ut == "otri")
+			            {
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+			                txtEnviar = this.arrLang["ARCHIVAR"]
+			                targetModalId = "modal-enviar-comentario"
+			                icono = "delete"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["ARCHIVAR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+			                }
+
+			                targetModalId = ""
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
+			                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["ENVIAR_BORRADOR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                }
+			            }
+			            break;
+			        case "http://gnoss.com/items/offerstate_004":
+			            if (ut == "own") 
+			            {
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
+			                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
+			                targetModalId = ""
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["ENVIAR_BORRADOR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                }
+
+			            }
+			            if (ut == "otri")
+			            {
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+			                txtEnviar = this.arrLang["ARCHIVAR"]
+			                targetModalId = ""
+			                icono = "delete"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["ARCHIVAR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                }
+			            }
+			            break;
+
+			    }
+
+			    if (ut == "own" && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))
+			    {
+			        idEstadoOFerta = "editar";
+			        txtEnviar = this.arrLang["EDITAR"]
+			        icono = "edit"
+			        targetModalId = ""
+	                if (!estados.find(e => e.txtEnviar == this.arrLang["EDITAR"])) {
+	                	estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+	                }
+			    }
+
+			    if ((ut == "own" || ut == "otri" || ut == "ip") && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))
+			    {
+			        idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
+			        txtEnviar = this.arrLang["BORRAR"]
+			        icono = "delete"
+			        targetModalId = "modal-eliminar-oferta-confirmacion"
+			        if (!estados.find(e => e.txtEnviar == this.arrLang["BORRAR"])) {
+			        	console.log("borrar menu añadido", estados.find(e => e.txtEnviar == this.arrLang["BORRAR"]))
+	                	estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
+	                }
+			    } 
+
+	    	})
 	    }
 
-	    if (typeUser == "own" && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))
-	    {
-	        idEstadoOFerta = "editar";
-	        txtEnviar = this.arrLang["EDITAR"]
-	        icono = "edit"
-	        targetModalId = ""
-	        estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
-	    }
-
-	    if ((typeUser == "own" || typeUser == "otri" || typeuser == "ip") && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))
-	    {
-	        idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
-	        txtEnviar = this.arrLang["BORRAR"]
-	        icono = "delete"
-	        targetModalId = "modal-eliminar-oferta-confirmacion"
-	        estados.push({ idEstadoOFerta, txtEnviar, icono, targetModalId })
-	    } 
 
 	    return estados
 
