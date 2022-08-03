@@ -3812,16 +3812,16 @@ var edicionCV = {
         $(formulario).find('input.obligatorio, select.obligatorio, div.visuell-view.obligatorio').each(function(index) {
             if ($(this).closest('.entityauxcontainer,.entitycontainer,.multiple').length == 0) {
                 if ($(this).val() == null || $(this).val() == '') {
-					if($(this).is('input')||$(this).is('div.visuell-view'))
+					if($(this).is('input') || $(this).is('div.visuell-view'))
 					{						
 						//Si es un input o textarea sólo es obligatorio si no tiene idioma y está visible
-						if(
-							($(this).closest('.form-group').attr('style')==null || $(this).closest('.form-group').attr('style').replaceAll(' ','').replaceAll(';','')!='display:none') && $(this).attr('multilang')==null
-						)
+						if(($(this).closest('.form-group').attr('style')==null || $(this).closest('.form-group').attr('style').replaceAll(' ','').replaceAll(';','')!='display:none') 
+							&& $(this).attr('multilang')==null && $(this).closest('div.visuell-view').length == 0)
 						{
 							camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
 						}
-					}else
+					}
+					else
 					{
 						camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
 					}
