@@ -4392,14 +4392,10 @@ var duplicadosCV = {
 	pasoActual:0,
 	pasosTotales:0,
     init: function(botonPulsado = false) {
-        this.config();
         this.idCV = $('.contenido-cv').attr('about');
 		this.cargarDuplicados(botonPulsado);
         return;
     },
-    config: function() {
-        
-	},
 	engancharComportamientos: function() {
 		var that=this;
 		//Eliminamos desplegable acciones-curriculum
@@ -4450,7 +4446,7 @@ var duplicadosCV = {
 			}
 		});
 
-		//Botón fusionar
+		//Botón aplicar y siguiente
 		$('#modal-posible-duplicidad .btn-continuar').unbind("click").bind("click", function(){
 			var validar = true;
 			var url = urlGuardadoCV + 'ProcesarItemsDuplicados';
