@@ -57,7 +57,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 if (publicacion.typeOfPublication != null)
                 {
                     publicacion.scopusID = getIDs(objInicial);
-                    publicacion.title = getTitle(objInicial);
+                    publicacion.title = getTitle(objInicial);                    
                     publicacion.doi = getDoi(objInicial);
                     publicacion.url = getLinks(objInicial);
                     publicacion.datimeTime = getDate(objInicial);

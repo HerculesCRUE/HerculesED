@@ -870,7 +870,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         continue;
                     }
                 }
-                FileLogger.Log($@"{DateTime.Now} - Sleep (1min) ...");
+
                 Thread.Sleep(60000);
             }
         }

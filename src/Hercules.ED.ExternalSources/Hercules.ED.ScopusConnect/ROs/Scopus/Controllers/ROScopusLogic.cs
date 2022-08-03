@@ -165,5 +165,30 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
             return publicacionFinal;
         }
+    
+        public float getHIndex(string pOrcid)
+        {    
+            try
+            {
+                // Clase.
+                ROScopusControllerJSON info = new ROScopusControllerJSON(this);
+
+                // Petición.
+                Uri url = new Uri($@"https://api.elsevier.com/analytics/scival/author/orcid/{pOrcid}?apikey={apiKey}&httpAccept=application/json");
+                string result = httpCall(url.ToString(), "GET", headers).Result;
+
+                // Obtención de datos.
+                if (!string.IsNullOrEmpty(result) && !result.StartsWith("{\"service-error\":"))
+                {
+                    
+                }
+            }
+            catch (Exception error)
+            {
+                return 0;
+            }
+
+            return 0;
+        }
     }
 }

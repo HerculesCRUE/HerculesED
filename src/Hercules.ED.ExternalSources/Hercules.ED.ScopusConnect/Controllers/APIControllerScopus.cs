@@ -73,6 +73,16 @@ namespace ScopusConnect.Controllers
             Publication publication = ScopusObject.getPublicationDoi(pDoi);
             return publication;
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public float GetIndiceH([FromQuery][Required] string pOrcid)
+        {
+            ROScopusLogic ScopusObject = new ROScopusLogic();
+            return ScopusObject.getHIndex(pOrcid);
+        }
     }
 }
 
