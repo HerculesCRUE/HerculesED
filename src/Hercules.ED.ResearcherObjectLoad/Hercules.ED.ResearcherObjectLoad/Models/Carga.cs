@@ -45,12 +45,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public const int NUM_HILOS = 6;
 
         private static string RUTA_PAISES = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/paises.json";
+        private static string RUTA_ESTADOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/estados-usa.json";
         #endregion
 
         private static Dictionary<string, string> ISSN_Revista = new Dictionary<string, string>();
         private static Dictionary<string, string> Titulo_Revista = new Dictionary<string, string>();
         private static Dictionary<string, string> EISSN_Revista = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPaises = new Dictionary<string, string>();
+        private static Dictionary<string, string> dicEstados = new Dictionary<string, string>();
 
         public static void CargaMain()
         {
@@ -62,6 +64,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             DirectoryInfo directorio = new DirectoryInfo(pRutaLectura);
             Disambiguation.mResourceApi = mResourceApi;
             IniciadorDiccionarioPaises();
+            IniciadorDiccionarioEstadosUSA();
 
             // Obtención de las categorías.
             // TODO: Falta la asignación por ID y no por nombre. A la espera que elhuyar nos envíe los IDs, en lugar de los nombres.
@@ -882,6 +885,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 dicPaises.Add(pais.name.ToLower(), pais.country_code);
             }
+        }
+
+        public static void IniciadorDiccionarioEstadosUSA()
+        {
+            dicEstados = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(RUTA_ESTADOS));
         }
 
         /// <summary>
