@@ -670,7 +670,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             // Comprobar si está el nombre entre los autores.
             if (!string.IsNullOrEmpty(pNombreCompletoAutor))
             {
-                float umbral = 0.7f;
+                float umbral = 0.7f; // TODO: ¿Cuanto asignamos?
                 bool valido = false;
 
                 foreach (Publication publicacion in resultado)

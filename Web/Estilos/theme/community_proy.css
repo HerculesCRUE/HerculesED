@@ -317,8 +317,15 @@ body.listado.vista-grafico #navegacion-recurso-fixed, body.homeComunidad #navega
     margin-top: 15px;
 }
 
-/* Ocultar faceta "estado de la oferta" en el listado */
-body.comunidad.listado.buscador-ofertas-tecnologicas #in_schema_availability---dc_title {
+/* Ocultar faceta "estado de la oferta" y "responsable de la oferta" en el listado */
+body.comunidad.listado.buscador-ofertas-tecnologicas #in_schema_availability---dc_title,
+body.comunidad.listado.buscador-ofertas-tecnologicas #in_schema_offeredBy---foaf_name {
+    display: none;
+}
+
+/* Ocultar estado "estado de la oferta" en el listado */
+body.comunidad.listado.buscador-ofertas-tecnologicas .resource-list.resource-list-buscador .resource .middle-wrap .title-wrap .indicador,
+body.comunidad.listado.buscador-ofertas-tecnologicas .resource-list.resource-list-buscador .resource .middle-wrap .title-wrap .acciones-recurso-listado {
     display: none;
 }
 
