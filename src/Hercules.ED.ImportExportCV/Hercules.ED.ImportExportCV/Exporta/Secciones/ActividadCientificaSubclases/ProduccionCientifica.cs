@@ -23,7 +23,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// </summary>
         /// <param name="MultilangProp"></param>
         /// <param name="listaId"></param>
-        public void ExportaProduccionCientifica(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
+        public void ExportaProduccionCientifica(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, string versionExportacion, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
@@ -46,10 +46,15 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 {
                     itemBean.Items = new List<CVNObject>();
                 }
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH),
-                    "060.010.000.030", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros),
-                    "060.010.000.040", keyValue.Value);
+
+                //En la versión 1.4 no se envía, en la 1.4.3 sí.
+                if (!versionExportacion.Equals("1_4_0")) {
+                    UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH),
+                        "060.010.000.030", keyValue.Value);
+                    UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros),
+                        "060.010.000.040", keyValue.Value);
+                }
+
                 string indiceH = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.prodCientificaIndiceH))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ActividadCientificaTecnologica.prodCientificaIndiceH)).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
                     : null;

@@ -138,7 +138,7 @@ namespace ImportadorWebCV.Exporta
             string seccion = "http://w3id.org/roh/scientificActivity";
 
             ProduccionCientifica produccionCientifica = new ProduccionCientifica(cvn, cvID);
-            produccionCientifica.ExportaProduccionCientifica(MultilangProp, listaId);
+            produccionCientifica.ExportaProduccionCientifica(MultilangProp, versionExportacion, listaId);
 
             IndicadoresGenerales indicadoresGenerales = new IndicadoresGenerales(cvn, cvID);
             indicadoresGenerales.ExportaIndicadoresGenerales(entity, MultilangProp, listaId);
