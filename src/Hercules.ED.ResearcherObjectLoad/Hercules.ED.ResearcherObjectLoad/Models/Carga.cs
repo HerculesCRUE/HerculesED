@@ -2099,6 +2099,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 int? ordenAux = pPublicacion.seqOfAuthors.Max(x => x.orden);
                 document.Bibo_authorList = new List<BFO_0000023>();
+                int contador = 0;
                 foreach (PersonaPub personaPub in pPublicacion.seqOfAuthors)
                 {                    
                     BFO_0000023 bfo_0000023 = new BFO_0000023();
@@ -2124,9 +2125,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                     else
                     {
-                        // Si el orden es nulo, le asigna un orden aleatorio entre 1000 y 2000.
-                        Random rng = new Random();
-                        bfo_0000023.Rdf_comment = rng.Next(1000, 2001);
+                        // Si el orden es nulo, le asignamos un orden a parte.
+                        contador++;
+                        bfo_0000023.Rdf_comment = contador;
                     }
 
                     bfo_0000023.IdRdf_member = personaPub.ID;

@@ -52,6 +52,7 @@ namespace OpenAireConnect.ROs.OpenAire.Models
         public Name name { get; set; }
         public string ORCID { get; set; }
         public string fuente { get; set; }
+        public int? orden { get; set; }
     }
     public class Name
     {
