@@ -3485,7 +3485,7 @@ var edicionCV = {
 					lista.push($(this).attr('propertyrdf'));
 				}
 				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyactcombo',lista.join(','));
-				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
+				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]:not([style])').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
 					var valorSeleccionado = $(this).val();
 					var that2=this;
 					$.each($(this).attr('dependencyactcombo').split(','), function (ind, elem) { 
