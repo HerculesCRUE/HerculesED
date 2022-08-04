@@ -512,6 +512,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
 
                     Person person = new Person();
+                    if (item.seq_no != null)
+                    {
+                        person.orden = item.seq_no;
+                    }
                     person.fuente = "WoS";
                     person.name = new Models.Name();
                     person.name.given = new List<string>() { item.first_name };
