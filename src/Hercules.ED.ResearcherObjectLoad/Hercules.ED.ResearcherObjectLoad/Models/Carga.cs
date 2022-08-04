@@ -558,7 +558,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificacion.Dct_issued = DateTime.Now;
                                             notificacion.Roh_type = "create";
                                             notificacion.CvnCode = Utility.IdentificadorFECYT(documento.IdRoh_scientificActivityDocument);
-
                                             notificaciones.Add(notificacion);
                                         }
 
@@ -1438,25 +1437,39 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Ciudad de celebración de la Conferencia
             if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.ciudad))
             {
-                document.Roh_presentedAtLocality = pPublicacion.conferencia.ciudad;
+                if (dicEstados.ContainsKey(pPublicacion.conferencia.pais.ToUpper()))
+                {
+                    document.Roh_presentedAtLocality = pPublicacion.conferencia.ciudad + ", " + dicEstados[pPublicacion.conferencia.pais.ToUpper()];
+                }
 
                 if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.ciudad) && string.IsNullOrEmpty(document.Roh_presentedAtLocality))
                 {
-                    document.Roh_presentedAtLocality = pPublicacionB.conferencia.ciudad;
+                    if (dicEstados.ContainsKey(pPublicacionB.conferencia.pais.ToUpper()))
+                    {
+                        document.Roh_presentedAtLocality = pPublicacionB.conferencia.ciudad + ", " + dicEstados[pPublicacionB.conferencia.pais.ToUpper()];
+                    }
                 }
             }
 
             // País de celebración de la Conferencia
             if (pPublicacion.conferencia != null && !string.IsNullOrEmpty(pPublicacion.conferencia.pais))
             {
-                if (dicPaises.ContainsKey(pPublicacion.conferencia.pais.ToLower()))
+                if (dicEstados.ContainsKey(pPublicacion.conferencia.pais.ToUpper()))
+                {
+                    document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_840"; // Estados Unidos de América
+                }
+                else if (dicPaises.ContainsKey(pPublicacion.conferencia.pais.ToLower()))
                 {
                     document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacion.conferencia.pais.ToLower()]}";
                 }
 
                 if (pPublicacionB != null && pPublicacionB.conferencia != null && !string.IsNullOrEmpty(pPublicacionB.conferencia.pais) && string.IsNullOrEmpty(document.IdRoh_presentedAtHasCountryName))
                 {
-                    if (dicPaises.ContainsKey(pPublicacionB.conferencia.pais.ToLower()))
+                    if (dicEstados.ContainsKey(pPublicacionB.conferencia.pais.ToUpper()))
+                    {
+                        document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_840"; // Estados Unidos de América
+                    }
+                    else if (dicPaises.ContainsKey(pPublicacionB.conferencia.pais.ToLower()))
                     {
                         document.IdRoh_presentedAtHasCountryName = $@"{mResourceApi.GraphsUrl}items/feature_PCLD_{dicPaises[pPublicacionB.conferencia.pais.ToLower()]}";
                     }
