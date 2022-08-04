@@ -869,6 +869,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     catch (Exception ex)
                     {
                         FileLogger.Log($@"ERROR - {ex.Message}");
+                        FileLogger.Log($@"{DateTime.Now} - Borrando json inválido...");
+                        File.Delete(fichero.FullName);
                         continue;
                     }
                 }
