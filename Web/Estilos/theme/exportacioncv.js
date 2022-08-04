@@ -787,6 +787,8 @@ edicionCV.printHtmlListItems = function(items, isLast5Years) {
 edicionCV.printHtmlListItem = function(id, data, isLast5Years) {
 	let openAccess = "";
 	let isChecked = "";
+	let identifierItem = data.identifier;
+	
 	if (data.isopenaccess) {
 		openAccess = "open-access";
 	}
@@ -795,10 +797,14 @@ edicionCV.printHtmlListItem = function(id, data, isLast5Years) {
 		isChecked = "checked";
 	}
 	
+	if(data.identifier="00000000-0000-0000-0000-000000000000"){
+		identifierItem = "x" + RandomGuid();
+	}
+	
 	var htmlListItem = `<article class="resource success ${openAccess}" >
 							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="check_resource_${data.identifier}"  value="${id}" ${isChecked}>
-								<label class="custom-control-label" for="check_resource_${data.identifier}"></label>
+								<input type="checkbox" class="custom-control-input" id="check_resource_${identifierItem}"  value="${id}" ${isChecked}>
+								<label class="custom-control-label" for="check_resource_${identifierItem}"></label>
 							</div>
 							<div class="wrap">
 								<div class="middle-wrap">
