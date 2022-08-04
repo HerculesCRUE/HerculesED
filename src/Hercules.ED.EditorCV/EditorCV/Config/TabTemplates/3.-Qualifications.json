@@ -312,11 +312,11 @@
                   {
                     "properties": [
                       {
-                        "information": {
-                          "es": "Nivel académico de los estudios cursados por el titular del CV dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' disponible en este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
-                        },
                         "title": {
                           "es": "Titulación universitaria"
+                        },
+                        "information": {
+                          "es": "Nivel académico de los estudios cursados por el titular del CV dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Otros' disponible en este campo, ya que automáticamente despliega el campo adicional 'Otros' donde se podrá consignar dicha circunstancia en texto libre."
                         },
                         "property": "http://w3id.org/roh/universityDegreeType",
                         "combo": {
@@ -331,11 +331,11 @@
                         "width": 1
                       },
                       {
-                        "information": {
-                          "es": "Nivel académico de los estudios cursados por el titular del CV. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
-                        },
                         "title": {
                           "es": "Otros"
+                        },
+                        "information": {
+                          "es": "Nivel académico de los estudios cursados por el titular del CV. Este campo se utilizará en el supuesto de que la categoría requerida no se encuentre entre las opciones mostradas por defecto en el campo anterior."
                         },
                         "property": "http://w3id.org/roh/universityDegreeTypeOther",
                         "required": true,
@@ -352,12 +352,12 @@
                   {
                     "properties": [
                       {
-                        "information": {
-                          "es": "Nombre oficial de la institución que ha expedido el título. En el caso de que se trate de una institución de educación superior extranjera, el nombre de ésta deberá consignarse en la lengua del país de origen, seguido, en su caso, del término equivalente en castellano entre paréntesis."
-                        },
                         "title": {
                           "es": "Entidad de titulación"
                         },
+                        "information": {
+                          "es": "Nombre oficial de la institución que ha expedido el título. En el caso de que se trate de una institución de educación superior extranjera, el nombre de ésta deberá consignarse en la lengua del país de origen, seguido, en su caso, del término equivalente en castellano entre paréntesis."
+                        },                        
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad de titulación"
@@ -376,11 +376,11 @@
                         "width": 1
                       },
                       {
-                        "information": {
-                          "es": "Carácter de la institución que ha expedido el título dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
-                        },
                         "title": {
                           "es": "Tipo de entidad"
+                        },
+                        "information": {
+                          "es": "Carácter de la institución que ha expedido el título dentro de las opciones ofrecidas en el desplegable. En el supuesto de que la categoría requerida no se encuentre entre las mostradas por defecto, se recomienda seleccionar la opción 'Organismo, Otros' dentro de este campo, ya que automáticamente despliega el campo adicional 'Otro' donde se podrá consignar dicha circunstancia en texto libre."
                         },
                         "property": "http://w3id.org/roh/conductedByType",
                         "combo": {
