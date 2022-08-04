@@ -40,7 +40,7 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
 
     public class Name
     {
-        public int seq_no { get; set; }
+        public int? seq_no { get; set; }
         public string orcid_id { get; set; }
         public string role { get; set; }
         public string full_name { get; set; }
@@ -254,7 +254,7 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
 
     public class NameContributor
     {
-        public int seq_no { get; set; }
+        public int? seq_no { get; set; }
         public string orcid_id { get; set; }
         public string role { get; set; }
         public string full_name { get; set; }

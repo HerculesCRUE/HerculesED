@@ -2097,10 +2097,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Autores
             if (pPublicacion.seqOfAuthors != null && pPublicacion.seqOfAuthors.Any())
             {
+                int? ordenAux = pPublicacion.seqOfAuthors.Max(x => x.orden);
                 document.Bibo_authorList = new List<BFO_0000023>();
-                int orden = 1;
                 foreach (PersonaPub personaPub in pPublicacion.seqOfAuthors)
-                {
+                {                    
                     BFO_0000023 bfo_0000023 = new BFO_0000023();
                     if (!string.IsNullOrEmpty(personaPub.nick))
                     {
@@ -2110,10 +2110,27 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         bfo_0000023.Foaf_nick = personaPub.name.nombre_completo.FirstOrDefault();
                     }
-                    bfo_0000023.Rdf_comment = orden;
+
+                    if (personaPub.orden.HasValue)
+                    {
+                        // Orden no nulo.
+                        bfo_0000023.Rdf_comment = personaPub.orden.Value;
+                    }
+                    else if (ordenAux.HasValue)
+                    {
+                        // Si el orden es nulo, coge el orden máximo y le suma uno.
+                        ordenAux++;
+                        bfo_0000023.Rdf_comment = ordenAux.Value;
+                    }
+                    else
+                    {
+                        // Si el orden es nulo, le asigna un orden aleatorio entre 1000 y 2000.
+                        Random rng = new Random();
+                        bfo_0000023.Rdf_comment = rng.Next(1000, 2001);
+                    }
+
                     bfo_0000023.IdRdf_member = personaPub.ID;
                     document.Bibo_authorList.Add(bfo_0000023);
-                    orden++;
                 }
             }
 

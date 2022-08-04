@@ -126,7 +126,7 @@ namespace PublicationConnect.ROs.Publications.Models
         public string fuente { get; set; }
         public string researcherID { get; set; }
         public string nick { get; set; }
-
+        public int? orden { get; set; }
     }
 
     public class Name

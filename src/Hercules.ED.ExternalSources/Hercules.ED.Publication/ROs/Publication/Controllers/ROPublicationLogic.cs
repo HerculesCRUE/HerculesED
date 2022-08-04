@@ -2995,6 +2995,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 pPersonaFinal.ORCID = pPersonaAUnir.ORCID;
             }
 
+            // Orden
+            if (pPersonaFinal.orden == null)
+            {
+                pPersonaFinal.orden = pPersonaAUnir.orden;
+            }
+
             // Fuente
             //pPersonaFinal.fuente = "Hércules"; // Fuente de unificación.
 
