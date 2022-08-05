@@ -26,7 +26,7 @@ class CargarAnotaciones {
 	 * @param rdfType, string con el rdfType de la ontología
 	 * @param ontology,
 	 */
-	constructor(idRO, idUser, rdfType, ontology) {
+	constructor (idRO, idUser, rdfType, ontology) {
 		var _self = this
 		this.body = $('body')
 		this.data = undefined

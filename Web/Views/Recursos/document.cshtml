@@ -884,7 +884,7 @@
                             <div class="form-group full-group">
                                 <label class="control-label d-block">@Html.Translate("CONFIRMACION_BORRAR_ANOTACIONES")</label>
                                 <div class="form-actions">
-                                    <a href="javascript: cambiarEstadoOfertas.borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
+                                    <a href="javascript: borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
                                 </div>
                             </div>
                         </div>
@@ -934,7 +934,7 @@
                                 <label class="control-label d-block">@Html.Translate("INTRODUCE_UNA_ANOTACION")</label>
                                 <textarea class="w-100 textareaInput" id="areaTextoComentarioEditar"> </textarea>
                                 <div class="form-actions">
-                                    <a href="javascript:void(0)" data-dismiss="modal" class="btn btn-primary uppercase">@Html.Translate("ENVIAR")</a>
+                                    <a href="javascript:void(0)" id="btn-modal-editar-anotacion" data-dismiss="modal" class="btn btn-primary uppercase">@Html.Translate("ENVIAR")</a>
                                 </div>
                             </div>
                         </div>
@@ -946,6 +946,103 @@
 
 
 }
+
+
+@if (!IdentidadActual.IsGuestUser)
+{
+    <script type="text/javascript">
+
+        // Constantes
+        var annIdRO = "@pDocument.GNOSSID";
+        var annIdUser = "@currentId";
+        var annRdfType = "@pDocument.RdfType";
+        var annOntology = "document";
+
+        // Variable que servirá para indicar qué anotación se va a modificar / borrar
+        let idCurrentAnnotation = null;
+
+        // Creamos el objeto de las anotaciones
+        var anotaciones = new CargarAnotaciones(annIdRO, annIdUser, annRdfType, annOntology);
+
+        /**
+         * Función que crea la notificación 
+         * param idEle, string con el id del textArea para obtener el texto introducido
+         */
+        function nuevaAnotacion(idEle) {
+
+            // Obtenemos el texto
+            let texto = document.getElementById(idEle).value
+
+            $("#modal-nueva-anotacion").modal("hide")
+
+            if (texto != "") {
+                anotaciones.newUpdateAnnotation(texto).then((data) => {
+                    document.getElementById(idEle).value = ""
+                    anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
+                        // Comportamiento Ver Más / Ver Menos
+                        comportamientoVerMasVerMenosTags.init();
+                    })
+                })
+            }
+        }
+
+        /**
+         * Función que modifica la notificación 
+         * param idEle, string con el id del textArea para obtener el texto introducido
+         * param idCurrentAnnotation, string con el id de la anotación para modificar la misma
+         */
+        function updateAnotacion(idCurrentAnnotation, oldText) {
+
+            let modal = document.getElementById("modal-editar-anotacion")
+            let modalTextArea = modal.getElementsByClassName("textareaInput")
+            modalTextArea[0].value = oldText
+
+            $(modal).modal("show")
+
+            console.log("modalTextArea", modalTextArea[0])
+            console.log("modalTextArea.value", modalTextArea[0].value)
+
+            // Evento para el botón de guardado
+            $(modal).find("#btn-modal-editar-anotacion").off("click").on("click", function () {
+
+                // modal.getElementsByClassName("textareaInput")
+                $(modal).modal("hide")
+                // Obtenemos el texto
+                let texto = modal.getElementsByClassName("textareaInput")[0].value
+
+                if (texto != "") {
+                    anotaciones.newUpdateAnnotation(texto, idCurrentAnnotation).then((data) => {
+                        modal.getElementsByClassName("textareaInput")[0].value = ""
+                        anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
+                            // Comportamiento Ver Más / Ver Menos
+                            comportamientoVerMasVerMenosTags.init();
+                        })
+                    })
+                }
+            });
+
+        }
+
+
+        $(function () {
+            // Obtiene las notas y las pinta
+            anotaciones.loadInRo().then((data) => {
+                if (data.Length > 0) {
+                    // Ahora pintamos los datos si hay elementos
+                    anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
+                        // Comportamiento Ver Más / Ver Menos
+                        comportamientoVerMasVerMenosTags.init();
+                    })
+                }
+            })
+        });
+
+
+    </script>
+}
+
+
+
 
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
@@ -1247,9 +1344,9 @@
                     }
 
 
-                    buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", filterSearch, "", "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()",null, function() {
-                    $('#panNumResultados').hide();
-                });
+                    buscadorPersonalizado.init("@Html.Translate("RELACIONADOS")", "#contenedorBuscadorRelacionados", filterSearch, null, "rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()",null, function() {
+                        $('#panNumResultados').hide();
+                    });
 
                 });
 
@@ -1302,98 +1399,6 @@
 
 
 </script>
-
-@if (!IdentidadActual.IsGuestUser)
-{
-    <script type="text/javascript">
-
-        // Constantes
-        const idRO = "@pDocument.GNOSSID"
-        const idUser = "@currentId"
-        const rdfType = "@pDocument.RdfType"
-        const ontology = "document"
-
-        // Variable que servirá para indicar qué anotación se va a modificar / borrar
-        let idCurrentAnnotation = null
-
-        // Creamos el objeto de las anotaciones
-        var anotaciones = new CargarAnotaciones(idRO, idUser, rdfType, ontology)
-
-        /**
-         * Función que crea la notificación 
-         * param idEle, string con el id del textArea para obtener el texto introducido
-         */
-        function nuevaAnotacion(idEle) {
-
-            // Obtenemos el texto
-            let texto = document.getElementById(idEle).value
-
-            $("#modal-nueva-anotacion").modal("hide")
-
-            if (texto != "") {
-                anotaciones.newUpdateAnnotation(texto).then((data) => {
-                    document.getElementById(idEle).value = ""
-                    anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
-                        // Comportamiento Ver Más / Ver Menos
-                        comportamientoVerMasVerMenosTags.init();
-                    })
-                })
-            }
-        }
-
-        /**
-         * Función que modifica la notificación 
-         * param idEle, string con el id del textArea para obtener el texto introducido
-         * param idCurrentAnnotation, string con el id de la anotación para modificar la misma
-         */
-        function updateAnotacion(idCurrentAnnotation, oldText) {
-
-            let modal = document.getElementById("modal-editar-anotacion")
-            let modalTextArea = modal.getElementsByClassName("textareaInput")
-            modalTextArea[0].value = oldText
-
-            $(modal).modal("show")
-
-            console.log("modalTextArea", modalTextArea[0])
-            console.log("modalTextArea.value", modalTextArea[0].value)
-
-            $(modal).off("hidden.bs.modal").on("hidden.bs.modal", function () {
-
-                // modal.getElementsByClassName("textareaInput")
-
-                // Obtenemos el texto
-                let texto = modal.getElementsByClassName("textareaInput")[0].value
-
-                if (texto != "") {
-                    anotaciones.newUpdateAnnotation(texto, idCurrentAnnotation).then((data) => {
-                        modal.getElementsByClassName("textareaInput")[0].value = ""
-                        anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
-                            // Comportamiento Ver Más / Ver Menos
-                            comportamientoVerMasVerMenosTags.init();
-                        })
-                    })
-                }
-            });
-
-        }
-
-
-        $(function () {
-            // Obtiene las notas y las pinta
-            anotaciones.loadInRo().then((data) => {
-                if (data.Length > 0) {
-                    // Ahora pintamos los datos si hay elementos
-                    anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
-                        // Comportamiento Ver Más / Ver Menos
-                        comportamientoVerMasVerMenosTags.init();
-                    })
-                }
-            })
-        });
-
-
-    </script>
-}
 
 @functions {
     public class RDFPropertyAttribute : Attribute
