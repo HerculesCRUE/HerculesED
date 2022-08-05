@@ -437,6 +437,10 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                 foreach (Creator author_fOriginal in pPublicacionIn.metadata.OafEntity.OafResult.creator)
                 {
                     Person author = new Person();
+                    if (!string.IsNullOrEmpty(author_fOriginal.Rank))
+                    {
+                        author.orden = Int32.Parse(author_fOriginal.Rank);
+                    }
                     author.fuente = "OpenAire";
 
                     if (author_fOriginal.Orcid != null && !string.IsNullOrEmpty(author_fOriginal.Orcid))

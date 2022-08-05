@@ -30,6 +30,7 @@ namespace DesnormalizadorHercules.Models
             ActualizadorProject actualizadorProject = new(resourceApi);
             ActualizadorRO actualizadorRO = new(resourceApi);
             ActualizadorPatent actualizadorPatent = new(resourceApi);
+            ActualizadorNotification actualizadorNotification = new(resourceApi);
 
             //Ejecuciones ordenadas en función de sus dependencias
 
@@ -113,6 +114,9 @@ namespace DesnormalizadorHercules.Models
             actualizadorGrupos.ActualizarNumeroAreasTematicas();
             actualizadorGrupos.ActualizarAreasGrupos();
             actualizadorGrupos.ActualizarNumeroProyectos();
+
+            //Notificaciones
+            actualizadorNotification.ActualizarNotificaciones();
 
             if (!string.IsNullOrEmpty(pConfigService.GetUrlSimilarity()))
             {

@@ -1005,23 +1005,27 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             int limit = 10000;
             int offset = 0;
 
+            Dictionary<string, Publication> dicDocAux = new Dictionary<string, Publication>();
+
             // Consulta sparql.
             while (true)
             {
                 //TODO  from
-                // TODO: isActive en teoría todas las personas que se pidan por el ORCID han de ser personal activo.
                 string select = $@"SELECT * 
                                    WHERE {{ 
-                                       SELECT DISTINCT ?documento ?doi ?titulo 
+                                       SELECT DISTINCT ?documento ?doi ?titulo ?id ?fuenteId
                                        FROM <{mResourceApi.GraphsUrl}person.owl> ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 OPTIONAL{{?documento <http://purl.org/ontology/bibo/doi> ?doi. }}
+                                OPTIONAL{{?documento <http://purl.org/ontology/bibo/identifier> ?identificadores. 
+                                ?identificadores <http://xmlns.com/foaf/0.1/topic> ?fuenteId.
+                                ?identificadores <http://purl.org/dc/elements/1.1/title> ?id.
+                                }}
                                 ?documento <http://w3id.org/roh/title> ?titulo. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
                                 ?persona <http://w3id.org/roh/ORCID> ?orcid. 
-                                ?persona <http://w3id.org/roh/isActive> 'true'.
                                 FILTER(?orcid = '{pOrcid}') 
                             }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
 
@@ -1037,10 +1041,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             publicacion.doi = fila["doi"].value;
                         }
                         publicacion.title = fila["titulo"].value;
-                        DisambiguationPublication pub = GetDisambiguationPublication(publicacion);
-                        pub.ID = fila["documento"].value;
-                        pub.autores = new HashSet<string>();
-                        listaDocumentos.Add(fila["documento"].value, pub);
+                        if (fila.ContainsKey("id") && fila.ContainsKey("fuenteId"))
+                        {
+                            publicacion.iDs = new List<string>();
+                            publicacion.iDs.Add(fila["fuenteId"].value + ":" + fila["id"].value);
+                        }                                               
+
+                        if (!dicDocAux.ContainsKey(fila["documento"].value))
+                        {
+                            dicDocAux.Add(fila["documento"].value, publicacion);
+                        }
+                        else
+                        {
+                            dicDocAux[fila["documento"].value].iDs.Add(fila["fuenteId"].value + ":" + fila["id"].value);
+                        }
                     }
                     if (resultadoQuery.results.bindings.Count < limit)
                     {
@@ -1052,6 +1066,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     break;
                 }
             };
+
+            foreach(KeyValuePair<string, Publication> item in dicDocAux)
+            {
+                DisambiguationPublication pub = GetDisambiguationPublication(item.Value);
+                pub.ID = item.Key;
+                pub.autores = new HashSet<string>();
+                listaDocumentos.Add(item.Key, pub);
+            }            
 
             //Añado los documentos por DOI
             while (true)
@@ -2099,8 +2121,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 int? ordenAux = pPublicacion.seqOfAuthors.Max(x => x.orden);
                 document.Bibo_authorList = new List<BFO_0000023>();
+                int contador = 0;
                 foreach (PersonaPub personaPub in pPublicacion.seqOfAuthors)
-                {                    
+                {
                     BFO_0000023 bfo_0000023 = new BFO_0000023();
                     if (!string.IsNullOrEmpty(personaPub.nick))
                     {
@@ -2124,9 +2147,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                     else
                     {
-                        // Si el orden es nulo, le asigna un orden aleatorio entre 1000 y 2000.
-                        Random rng = new Random();
-                        bfo_0000023.Rdf_comment = rng.Next(1000, 2001);
+                        // Si el orden es nulo, le asignamos un orden a parte.
+                        contador++;
+                        bfo_0000023.Rdf_comment = contador;
                     }
 
                     bfo_0000023.IdRdf_member = personaPub.ID;
@@ -2577,12 +2600,32 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         private static DisambiguationPublication GetDisambiguationPublication(Publication pPublicacion)
         {
             pPublicacion.ID = Guid.NewGuid().ToString();
+            string wosIdValue = "";
+            string scopusIdValue = "";
+            //Compruebo que los IDs no son nulos
+            if (pPublicacion.iDs != null)
+            {
+                //Compruebo que contiene identificador wos
+                if (pPublicacion.iDs.FirstOrDefault(x => x.ToLower().Contains("wos")) != null
+                    && pPublicacion.iDs.FirstOrDefault(x => x.ToLower().Contains("wos")).Any())
+                {
+                    wosIdValue = pPublicacion.iDs.FirstOrDefault(x => x.ToLower().Contains("wos")).Split(":")[1].Trim();
+                }
+                //compruebo que contiene identificador scopus
+                if (pPublicacion.iDs.FirstOrDefault(x => x.ToLower().Contains("scopus")) != null
+                    && pPublicacion.iDs.FirstOrDefault(x => x.ToLower().Contains("scopus")).Any())
+                {
+                    scopusIdValue = pPublicacion.iDs.FirstOrDefault(x => x.ToLower().Contains("scopus")).Split(":")[1].Trim();
+                }
+            }
 
             DisambiguationPublication pub = new DisambiguationPublication()
             {
                 ID = pPublicacion.ID,
                 doi = pPublicacion.doi,
-                title = pPublicacion.title
+                title = pPublicacion.title,
+                wosId = wosIdValue,
+                scopusId = scopusIdValue
             };
 
             return pub;
