@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
@@ -805,6 +806,21 @@ namespace Utils
                 return entityAux + valor;
             }
             return null;
+        }
+
+        public static bool IsEmailValid(string emailAddress)
+        {
+            try
+            {
+                MailAddress mail = new MailAddress(emailAddress);
+
+                return true;
+            }
+            catch (FormatException e)
+            {
+                mResourceApi.Log.Error("Fallo al convertir el email");
+                return false;
+            }
         }
 
     }
