@@ -32,123 +32,130 @@ namespace Hercules.ED.UpdateKeywords
                 // Obtención del ID de MESH.
                 foreach (string id in listaIds)
                 {
-                    FileLogger.Log($@"{DateTime.Now} ---------- Procesando publicación {contadorPub}/{listaIds.Count}");
-                    Dictionary<string, string> dicEtiquetas = utilKeywords.GetKeywords(id);
-
-                    foreach (KeyValuePair<string, string> etiquetaTag in dicEtiquetas)
+                    try
                     {
-                        string idEtiquetaAux = etiquetaTag.Key;
+                        FileLogger.Log($@"{DateTime.Now} ---------- Procesando publicación {contadorPub}/{listaIds.Count}");
+                        Dictionary<string, string> dicEtiquetas = utilKeywords.GetKeywords(id);
 
-                        // 1.- Probamos con el término en "Exact Match".
-                        List<string> listaAux = new List<string>() { etiquetaTag.Value.Replace(")", "").Replace("(", "") };
-                        Dictionary<string, string> dicResultados = new Dictionary<string, string>();
-
-                        if (!utilKeywords.ComprobarCaracteres(etiquetaTag.Value))
+                        foreach (KeyValuePair<string, string> etiquetaTag in dicEtiquetas)
                         {
-                            dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
-                        }
+                            string idEtiquetaAux = etiquetaTag.Key;
 
-                        // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
-                        if (dicResultados.Count() == 0 && etiquetaTag.Value.Contains(" "))
-                        {
-                            // 2.1.- Buscamos por el término en "All fragments".
-                            string[] partes = etiquetaTag.Value.Split(" ");
+                            // 1.- Probamos con el término en "Exact Match".
+                            List<string> listaAux = new List<string>() { etiquetaTag.Value.Replace(")", "").Replace("(", "") };
+                            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
-                            // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
-                            // debido al excesivo tamaño de la query. 
-                            if (partes.Count() <= 3)
+                            if (!utilKeywords.ComprobarCaracteres(etiquetaTag.Value))
                             {
-                                dicResultados = ConsultarDatos(utilKeywords, partes);
+                                dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
                             }
 
-                            // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
-                            if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                            // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
+                            if (dicResultados.Count() == 0 && etiquetaTag.Value.Contains(" "))
                             {
-                                for (int i = 0; i < partes.Length; i++)
-                                {
-                                    string parte1 = partes[i];
-                                    if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
-                                    {
-                                        continue;
-                                    }
+                                // 2.1.- Buscamos por el término en "All fragments".
+                                string[] partes = etiquetaTag.Value.Split(" ");
 
-                                    for (int x = i + 1; x < partes.Length; x++)
+                                // Si la etiqueta tiene más de 3 palabras, la consideramos inválida para esta búsqueda
+                                // debido al excesivo tamaño de la query. 
+                                if (partes.Count() <= 3)
+                                {
+                                    dicResultados = ConsultarDatos(utilKeywords, partes);
+                                }
+
+                                // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
+                                if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                                {
+                                    for (int i = 0; i < partes.Length; i++)
                                     {
-                                        string parte2 = partes[x];
-                                        if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
+                                        string parte1 = partes[i];
+                                        if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
                                         {
                                             continue;
                                         }
 
-                                        List<string> lista = new List<string>() { parte1, parte2 };
-                                        string[] arrayParte = lista.ToArray();
+                                        for (int x = i + 1; x < partes.Length; x++)
+                                        {
+                                            string parte2 = partes[x];
+                                            if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
+                                            {
+                                                continue;
+                                            }
 
-                                        dicResultados = ConsultarDatos(utilKeywords, arrayParte);
+                                            List<string> lista = new List<string>() { parte1, parte2 };
+                                            string[] arrayParte = lista.ToArray();
+
+                                            dicResultados = ConsultarDatos(utilKeywords, arrayParte);
+
+                                            if (dicResultados.Count() == 1)
+                                            {
+                                                break;
+                                            }
+                                        }
 
                                         if (dicResultados.Count() == 1)
                                         {
                                             break;
                                         }
                                     }
-
-                                    if (dicResultados.Count() == 1)
-                                    {
-                                        break;
-                                    }
                                 }
                             }
-                        }
 
-                        // Obtencón de información de SNOMED.
-                        List<Data> listaSnomed = new List<Data>();
-                        Dictionary<string, List<Dictionary<string, string>>> dicIds = new Dictionary<string, List<Dictionary<string, string>>>();
-                        foreach (KeyValuePair<string, string> item in dicResultados)
-                        {
-                            utilKeywords.InsertDataSnomed(item.Key, listaSnomed);
-
-                            // Borra los términos obsoletos.
-                            listaSnomed.RemoveAll(x => x.snomedTerm.obsolete == true);
-
-                            // Relación IDs.
-                            dicIds = new Dictionary<string, List<Dictionary<string, string>>>();
-                            dicIds.Add(item.Key, new List<Dictionary<string, string>>());
-                            foreach (Data itemSnomed in listaSnomed)
+                            // Obtencón de información de SNOMED.
+                            List<Data> listaSnomed = new List<Data>();
+                            Dictionary<string, List<Dictionary<string, string>>> dicIds = new Dictionary<string, List<Dictionary<string, string>>>();
+                            foreach (KeyValuePair<string, string> item in dicResultados)
                             {
-                                Dictionary<string, string> dicAux = new Dictionary<string, string>();
-                                dicAux.Add(itemSnomed.snomedTerm.ui, string.Empty);
-                                dicIds[item.Key].Add(dicAux);
+                                utilKeywords.InsertDataSnomed(item.Key, listaSnomed);
+
+                                // Borra los términos obsoletos.
+                                listaSnomed.RemoveAll(x => x.snomedTerm.obsolete == true);
+
+                                // Relación IDs.
+                                dicIds = new Dictionary<string, List<Dictionary<string, string>>>();
+                                dicIds.Add(item.Key, new List<Dictionary<string, string>>());
+                                foreach (Data itemSnomed in listaSnomed)
+                                {
+                                    Dictionary<string, string> dicAux = new Dictionary<string, string>();
+                                    dicAux.Add(itemSnomed.snomedTerm.ui, string.Empty);
+                                    dicIds[item.Key].Add(dicAux);
+                                }
+                            }
+
+                            // Cambio de modelo con los datos necesarios.                    
+                            List<DataConcept> listaSnomedConcepts = utilKeywords.GetDataConcepts(listaSnomed);
+
+                            // Carga de etiquetas.
+                            if (listaSnomedConcepts != null)
+                            {
+                                foreach (DataConcept tag in listaSnomedConcepts)
+                                {
+                                    utilKeywords.CargarDataConceptCompleto(tag, dicIds);
+                                }
+                            }
+
+                            // Obtención de información de MESH.
+                            List<DataConcept> listaMesh = new List<DataConcept>();
+                            foreach (KeyValuePair<string, string> itemAux in dicResultados)
+                            {
+                                utilKeywords.InsertDataMesh(itemAux.Key, itemAux.Value, listaMesh);
+                            }
+
+                            // Carga de etiquetas.
+                            foreach (DataConcept tag in listaMesh)
+                            {
+                                string idRecursoMesh = utilKeywords.CargarDataConceptCompleto(tag, dicIds);
+                                utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
                             }
                         }
 
-                        // Cambio de modelo con los datos necesarios.                    
-                        List<DataConcept> listaSnomedConcepts = utilKeywords.GetDataConcepts(listaSnomed);
-
-                        // Carga de etiquetas.
-                        if (listaSnomedConcepts != null)
-                        {
-                            foreach (DataConcept tag in listaSnomedConcepts)
-                            {
-                                utilKeywords.CargarDataConceptCompleto(tag, dicIds);
-                            }
-                        }
-
-                        // Obtención de información de MESH.
-                        List<DataConcept> listaMesh = new List<DataConcept>();
-                        foreach (KeyValuePair<string, string> itemAux in dicResultados)
-                        {
-                            utilKeywords.InsertDataMesh(itemAux.Key, itemAux.Value, listaMesh);
-                        }
-
-                        // Carga de etiquetas.
-                        foreach (DataConcept tag in listaMesh)
-                        {
-                            string idRecursoMesh = utilKeywords.CargarDataConceptCompleto(tag, dicIds);
-                            utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
-                        }
+                        // Borrar triple de obtención de etiquetas.
+                        utilKeywords.ModificarGetKeywordDocument(id);                        
                     }
-
-                    // Borrar triple de obtención de etiquetas.
-                    utilKeywords.ModificarGetKeywordDocument(id);
+                    catch (Exception e)
+                    {
+                        FileLogger.Log($@"{DateTime.Now} ---------- {e}");
+                    }
 
                     contadorPub++;
                 }
