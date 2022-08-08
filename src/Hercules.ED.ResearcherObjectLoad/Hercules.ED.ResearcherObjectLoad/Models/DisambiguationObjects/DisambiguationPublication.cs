@@ -49,6 +49,46 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mWosId { get; set; }
+        public string wosId
+        {
+            get
+            {
+                return mWosId;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mWosId = string.Empty;
+                }
+                else
+                {
+                    mWosId = value;
+                }
+            }
+        }
+
+        private string mScopusId { get; set; }
+        public string scopusId
+        {
+            get
+            {
+                return mScopusId;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mScopusId = string.Empty;
+                }
+                else
+                {
+                    mScopusId = value;
+                }
+            }
+        }
+
         private HashSet<string> mAutores { get; set; }
         public HashSet<string> autores
         {
@@ -80,6 +120,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
+        private static readonly DisambiguationDataConfig configWosId = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static readonly DisambiguationDataConfig configScopusId = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
         private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
@@ -104,6 +154,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 value = doi
             });
 
+            data.Add(new DisambiguationData()
+            {
+                property = "wosId",
+                config = configWosId,
+                value = wosId
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "scopusId",
+                config = configScopusId,
+                value = scopusId
+            });
 
             data.Add(new DisambiguationData()
             {

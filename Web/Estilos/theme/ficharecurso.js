@@ -1004,29 +1004,36 @@ MontarResultadosScroll.peticionScrollResultados = function () {
 	filtros += "|pagina=" + this.pagActual;
 	var params = {};
 
-	params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
-	params['pProyectoID'] = $('input.inpt_proyID').val();
-	params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
-	params['pIdentidadID'] = $('input.inpt_identidadID').val();
-	params['pParametros'] = '' + filtros.replace('#', '');
-	params['pLanguageCode'] = $('input.inpt_Idioma').val();
-	params['pPrimeraCarga'] = false;
-	params['pAdministradorVeTodasPersonas'] = false;
-	params['pTipoBusqueda'] = tipoBusqeda;
-	params['pNumeroParteResultados'] = 1;
-	params['pGrafo'] = grafo;
-	params['pFiltroContexto'] = filtroContexto;
-	params['pParametros_adiccionales'] = parametros_adiccionales;
-	params['cont'] = contResultados;
-	$.post(obtenerUrl($('input.inpt_UrlServicioResultados').val()) + "/CargarResultados", params, function (response) {
-		if (params['cont'] == contResultados) {
-			var data = response
-			if (response.Value != null) {
-				data = response.Value;
+
+
+    try {
+		params['pUsarMasterParaLectura'] = bool_usarMasterParaLectura;
+		params['pProyectoID'] = $('input.inpt_proyID').val();
+		params['pEsUsuarioInvitado'] = $('input.inpt_bool_esUsuarioInvitado').val() == 'True';
+		params['pIdentidadID'] = $('input.inpt_identidadID').val();
+		params['pParametros'] = '' + filtros.replace('#', '');
+		params['pLanguageCode'] = $('input.inpt_Idioma').val();
+		params['pPrimeraCarga'] = false;
+		params['pAdministradorVeTodasPersonas'] = false;
+		params['pTipoBusqueda'] = tipoBusqeda;
+		params['pNumeroParteResultados'] = 1;
+		params['pGrafo'] = grafo;
+		params['pFiltroContexto'] = filtroContexto;
+		params['pParametros_adiccionales'] = parametros_adiccionales;
+		params['cont'] = contResultados;
+		$.post(obtenerUrl($('input.inpt_UrlServicioResultados').val()) + "/CargarResultados", params, function (response) {
+			if (params['cont'] == contResultados) {
+				var data = response
+				if (response.Value != null) {
+					data = response.Value;
+				}
+				defr.resolve(data);
 			}
-			defr.resolve(data);
-		}
-	}, "json");
+		}, "json");
+	}
+	catch(err) {
+
+	}
 	return defr;
 }
 
