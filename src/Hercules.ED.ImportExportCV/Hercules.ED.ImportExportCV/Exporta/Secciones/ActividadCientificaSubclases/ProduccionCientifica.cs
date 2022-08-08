@@ -25,6 +25,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaProduccionCientifica(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, string versionExportacion, [Optional] List<string> listaId)
         {
+            int contador = 0;
+
             List<CvnItemBean> listado = new List<CvnItemBean>();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
@@ -40,6 +42,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
+                //solo se permite 1 valor en la exportación de la version 1.4.0
+                if(versionExportacion.Equals("1_4_0") && contador > 0)
+                {
+                    break;
+                }
+
                 CvnItemBean itemBean = new CvnItemBean();
                 itemBean.Code = "060.010.000.000";
                 if (itemBean.Items == null)
@@ -66,6 +74,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.000.020", keyValue.Value);
 
                 listado.Add(itemBean);
+
+                //Aumento el contador para solo insertar 1 valor para la version 1.4.0
+                contador++;
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado
