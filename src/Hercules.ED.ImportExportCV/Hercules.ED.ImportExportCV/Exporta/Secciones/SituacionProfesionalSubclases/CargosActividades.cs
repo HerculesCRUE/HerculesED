@@ -126,11 +126,14 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                 : null;
 
                 //Compruebo que los correo tienen el formato correcto
-                foreach(string correo in listadoCorreos)
+                if (listadoCorreos != null && listadoCorreos.Count > 0)
                 {
-                    if (!UtilitySecciones.IsEmailValid(correo))
+                    foreach (string correo in listadoCorreos)
                     {
-                        listadoCorreos.Remove(correo);
+                        if (!UtilitySecciones.IsEmailValid(correo))
+                        {
+                            listadoCorreos.Remove(correo);
+                        }
                     }
                 }
 
