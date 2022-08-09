@@ -23,7 +23,7 @@
         <div class="wrapCol">
             <div class="header-contenido">
                 <div class="h1-container">
-                    <h1>@Html.Translate("NOTIFICACION_ALERTA") <span class="numResultados">@listaNotificaciones.Count</span></h1>
+                    <h1>@Html.Translate("NOTIFICACION_ALERTA") <span class="numResultados">@listaNotificaciones.Count(x => !string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje))</span></h1>
                 </div>
             </div>
             <div class="tab-paneles-alertas">
@@ -33,7 +33,7 @@
                            href="#externas-panel" role="tab" aria-controls="externas-panel"
                            aria-selected="false">
                             Novedades de fuentes externas <span class="badge">
-                                @listaNotificaciones.Count(x => string.IsNullOrEmpty(x.desencadenante))
+                                @listaNotificaciones.Count(x => string.IsNullOrEmpty(x.desencadenante) && (!string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje)))
                             </span>
                         </a>
                     </li>
@@ -42,7 +42,8 @@
                            href="#otras-panel" role="tab" aria-controls="otras-panel"
                            aria-selected="true">
                             Otras notificaciones <span class="badge">
-                                @listaNotificaciones.Count(x => !string.IsNullOrEmpty(x.desencadenante) && x.desencadenante != @Html.Translate("NOTIFICACION_SE"))
+                                @listaNotificaciones.Count(x => !string.IsNullOrEmpty(x.desencadenante) && x.desencadenante != @Html.Translate("NOTIFICACION_SE")
+								 && (!string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje)))
                             </span>
                         </a>
                     </li>
@@ -54,6 +55,10 @@
 
                                 @foreach (Notification notification in listaNotificaciones.Where(x => string.IsNullOrEmpty(x.desencadenante)))
                                 {
+									//Si no tiene titulo o mensaje no la muestro
+									if(string.IsNullOrEmpty(notification.titulo) && string.IsNullOrEmpty(notification.mensaje)){
+										continue;
+									}
                                     notification.desencadenante = Html.Translate("NOTIFICACION_SE");
                                     
                                     if (!string.IsNullOrEmpty(notification.trigger) && notification.trigger.Split('_').Length > 2)
@@ -154,6 +159,10 @@
 
                                 @foreach (Notification notification in listaNotificaciones.Where(x => !string.IsNullOrEmpty(x.desencadenante) && x.desencadenante != Html.Translate("NOTIFICACION_SE")))
                                 {
+									//Si no tiene titulo o mensaje no la muestro
+									if(string.IsNullOrEmpty(notification.titulo) && string.IsNullOrEmpty(notification.mensaje)){
+										continue;
+									}
                                     if (!string.IsNullOrEmpty(notification.trigger) && notification.trigger.Split('_').Length > 2)
                                     {
                                         notification.trigger = Comunidad.Url + "/" + Html.Translate("NOTIFICACION_RECURSO_URL") + "/" + Html.Translate("NOTIFICACION_PERSONA") + "/" + notification.trigger.Split('_')[1];
