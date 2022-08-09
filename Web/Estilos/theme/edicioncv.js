@@ -539,7 +539,7 @@ var edicionCV = {
 		if (data.isopenaccess) {
             openAccess = "open-access";
         }
-        var htmlListItem = `<article class="resource success ${openAccess}" >									
+        var htmlListItem = `<article class="resource success ${openAccess}" >
 									<div class="wrap">
 										<div class="middle-wrap">
 											${this.printHtmlListItemOrders(data)}
@@ -547,13 +547,44 @@ var edicionCV = {
 											</div>
 											<div class="title-wrap">
 												<h2 class="resource-title">
-													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>													
+													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
 												</h2>
 												${this.printHtmlListItemValidacion(data)}
 												${this.printHtmlListItemEditable(data)}
-												${this.printHtmlListItemVisibilidad(data)}		
-												${this.printHtmlListItemIdiomas(data)}		
-												${this.printHtmlListItemAcciones(data, id)}                        
+												${this.printHtmlListItemVisibilidad(data)}
+												${this.printHtmlListItemIdiomas(data)}
+												${this.printHtmlListItemAcciones(data, id)}
+												<span class="material-icons arrow">keyboard_arrow_down</span>
+											</div>
+											<div class="content-wrap">
+												<div class="description-wrap">
+												${this.printHtmlListItemPropiedades(data)}
+												</div>
+											</div>
+										</div>
+									</div>
+								</article>`;
+        return htmlListItem;
+    },
+    printHtmlListItemDuplicate: function(id, data) {
+		let openAccess="";
+		if (data.isopenaccess) {
+            openAccess = "open-access";
+        }
+        var htmlListItem = `<article class="resource success ${openAccess}" >
+									<div class="wrap">
+										<div class="middle-wrap">
+											${this.printHtmlListItemOrders(data)}
+											<div class="title-wrap">
+											</div>
+											<div class="title-wrap">
+												<h2 class="resource-title">
+													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
+												</h2>
+												${this.printHtmlListItemValidacion(data)}
+												${this.printHtmlListItemEditable(data)}
+												${this.printHtmlListItemIdiomas(data)}
+												${this.printHtmlListItemAcciones(data, id)}
 												<span class="material-icons arrow">keyboard_arrow_down</span>
 											</div>
 											<div class="content-wrap">
@@ -4419,7 +4450,7 @@ var duplicadosCV = {
 		{
 			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		}
-					
+
 		
 		//Botón convertir en principal	
 		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
@@ -4532,7 +4563,7 @@ var duplicadosCV = {
 				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
+					var htmlItem=edicionCV.printHtmlListItemDuplicate(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
@@ -4546,7 +4577,7 @@ var duplicadosCV = {
 				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
+					var htmlItem=edicionCV.printHtmlListItemDuplicate(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
