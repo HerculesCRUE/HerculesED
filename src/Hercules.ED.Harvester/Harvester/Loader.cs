@@ -477,7 +477,7 @@ namespace Harvester
                             }
 
                             // TODO: Crear método para las patentes.
-                            PatentOntology.Patent patentOntology = null;
+                            PatentOntology.Patent patentOntology = CrearInvencionesOntology(invencion);
 
                             resource = patentOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicInvenciones.ContainsKey(patentOntology.Roh_crisIdentifier))
