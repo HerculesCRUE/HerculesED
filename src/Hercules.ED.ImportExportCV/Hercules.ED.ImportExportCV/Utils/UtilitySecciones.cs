@@ -117,7 +117,8 @@ namespace Utils
         public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista, [Optional] string issn)
         {
             //Si el nombre de la revista es nulo o vacio
-            if (string.IsNullOrEmpty(nombreRevista)) { 
+            if (string.IsNullOrEmpty(nombreRevista))
+            {
                 return null;
             }
 
@@ -357,6 +358,16 @@ namespace Utils
                     CheckProperty(propertyCodUnesco, entidadAux, valorCodigo, propiedadCodUnesco);
                 }
             }
+        }
+
+        public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string userId, string orcid)
+        {
+            string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "FuentesExternas/InsertDoiToQueue/?pDoi=" + doi + "&pNombreCompletoAutor=" + userId + "&pOrcid=" + orcid;
+            HttpClient httpClientEstado = new HttpClient();
+            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+            bool status = responseEstado.IsSuccessStatusCode;
+
+            return false;
         }
 
         public static Publication PublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
