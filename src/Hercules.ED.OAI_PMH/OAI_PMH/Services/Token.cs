@@ -22,6 +22,7 @@ namespace OAI_PMH.Services
         {
             _ConfigService = pConfig;
             return GetToken(pConfig, pTokenGestor, pTokenPii);
+            // TODO: Revisar por qué no actualiza bien el token si aparentemente parece que el código está correcto.
             //if (lastUpdate != default)
             //{
             //    TimeSpan diff = DateTime.UtcNow.Subtract(lastUpdate);

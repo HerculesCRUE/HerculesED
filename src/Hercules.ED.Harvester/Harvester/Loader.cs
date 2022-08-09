@@ -3,7 +3,6 @@ using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester.Models;
 using Harvester.Models.SGI.Autorizaciones;
-using Harvester.Models.SGI.ProteccionIndustrialIntelectual;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI;
@@ -11,6 +10,7 @@ using OAI_PMH.Models.SGI.Grupos;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
+using OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual;
 using ProjectauthorizationOntology;
 using System;
 using System.Collections.Generic;
@@ -65,56 +65,60 @@ namespace Harvester
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
             //Compruebo que no hay ficheros pendientes de procesar
-            //mResourceApi.ChangeOntoly("organization");
-            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
-            //mResourceApi.ChangeOntoly("person");
-            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
-            //mResourceApi.ChangeOntoly("project");
-            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
-            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
-            //mResourceApi.ChangeOntoly("projectauthorization");
-            //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
-            //mResourceApi.ChangeOntoly("group");
-            //ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
-            //mResourceApi.ChangeOntoly("patent");
-            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            mResourceApi.ChangeOntoly("project");
+            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+            mResourceApi.ChangeOntoly("projectauthorization");
+            ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
+            mResourceApi.ChangeOntoly("patent");
+            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
             string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
-            fecha = "1900-01-01T00:00:00Z";
+            //fecha = "1900-01-01T00:00:00Z";
 
             //Genero los ficheros con los datos a procesar desde la fecha
-            //GuardarIdentificadores(_Config, "Organizacion", fecha);
-            //GuardarIdentificadores(_Config, "Persona", fecha);
+            GuardarIdentificadores(_Config, "Organizacion", fecha);
+            GuardarIdentificadores(_Config, "Persona", fecha);
             GuardarIdentificadores(_Config, "Proyecto", fecha);
-            //GuardarIdentificadores(_Config, "PRC", fecha, true);
-            //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            //GuardarIdentificadores(_Config, "Grupo", fecha);
-            //GuardarIdentificadores(_Config, "Invencion", fecha);
+            GuardarIdentificadores(_Config, "PRC", fecha, true);
+            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+            GuardarIdentificadores(_Config, "Grupo", fecha);
+            GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
 
-            //Proceso los ficheros
-
+            // Procesamiento de ficheros.
             // Organizaciones. Terminado
-            //mResourceApi.ChangeOntoly("organization");
-            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
 
             // Personas. Datos no usables, revisar propiedades de las personas.
-            //mResourceApi.ChangeOntoly("person");
-            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
 
             // Proyectos.
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
 
-            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
-            //mResourceApi.ChangeOntoly("projectauthorization");
-            //ProcesarFichero(_Config, "AutorizacionProyecto");
-            //mResourceApi.ChangeOntoly("group");
-            //ProcesarFichero(_Config, "Grupo");
-            //mResourceApi.ChangeOntoly("patent");
-            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            // Autorizaciones
+            mResourceApi.ChangeOntoly("projectauthorization");
+            ProcesarFichero(_Config, "AutorizacionProyecto");
+
+            // Grupos
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo");
+
+            // Patentes TODO: Falta crear método de crear objetos.
+            mResourceApi.ChangeOntoly("patent");
+            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
         }
 
         /// <summary>
@@ -145,7 +149,8 @@ namespace Harvester
         /// <param name="dicPersonas"></param>
         public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] Dictionary<string, Tuple<string, string>> dicOrganizaciones,
             [Optional] Dictionary<string, Tuple<string, string>> dicProyectos, [Optional] Dictionary<string, Tuple<string, string>> dicPersonas,
-            [Optional] Dictionary<string, Tuple<string, string>> dicAutorizaciones, [Optional] Dictionary<string, Tuple<string, string>> dicGrupos)
+            [Optional] Dictionary<string, Tuple<string, string>> dicAutorizaciones, [Optional] Dictionary<string, Tuple<string, string>> dicGrupos,
+            [Optional] Dictionary<string, Tuple<string, string>> dicInvenciones)
         {
             string directorioPendientes = $@"{pConfig.GetLogCargas()}\{pSet}\pending\";
             string directorioProcesados = $@"{pConfig.GetLogCargas()}\{pSet}\processed";
@@ -253,7 +258,7 @@ namespace Harvester
                             // Cambio de modelo. TODO: Mirar propiedades.
                             PersonOntology.Person personOntology = CrearPersona(persona);
 
-                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
                             if (string.IsNullOrEmpty(personOntology.Roh_crisIdentifier) && string.IsNullOrEmpty(personOntology.Foaf_name)
                                 && string.IsNullOrEmpty(personOntology.Foaf_firstName) && string.IsNullOrEmpty(personOntology.Foaf_lastName))
                             {
@@ -266,13 +271,13 @@ namespace Harvester
                             if (dicPersonas.ContainsKey(personOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                //dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
                             // Guardamos el ID cargado.
@@ -316,13 +321,13 @@ namespace Harvester
                             if (dicProyectos.ContainsKey(projectOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                //    dicProyectos[projectOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicProyectos[projectOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
                             // Guardamos el ID cargado.
@@ -344,21 +349,21 @@ namespace Harvester
                                 {
                                     if (item.Key == "projectAux")
                                     {
-                                        //Borrado(guid, "http://w3id.org/roh/projectAux", item.Value);
+                                        Borrado(guid, "http://w3id.org/roh/projectAux", item.Value);
                                     }
                                     else if (item.Key == "status")
                                     {
-                                        //Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", estado, item.Value);
+                                        Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", estado, item.Value);
                                     }
                                     else
                                     {
                                         switch (estado)
                                         {
                                             case "VALIDADO":
-                                                //Modificacion(guid, "http://w3id.org/roh/isValidated", "true", item.Value);
+                                                Modificacion(guid, "http://w3id.org/roh/isValidated", "true", item.Value);
                                                 break;
                                             default:
-                                                //Modificacion(guid, "http://w3id.org/roh/isValidated", "false", item.Value);
+                                                Modificacion(guid, "http://w3id.org/roh/isValidated", "false", item.Value);
                                                 break;
                                         }
                                     }
@@ -412,7 +417,7 @@ namespace Harvester
                             if (dicAutorizaciones.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
@@ -463,7 +468,7 @@ namespace Harvester
                                 invencion = (Invencion)xmlSerializer.Deserialize(sr);
                             }
 
-                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
                             if (string.IsNullOrEmpty(invencion.id.ToString()))
                             {
                                 // Guardamos el ID cargado.
@@ -471,21 +476,21 @@ namespace Harvester
                                 continue;
                             }
 
-                            //Cambio de modelo.TODO: Mirar propiedades.
-                            //ProjectAuthorization projectAuthOntology = CrearProyecto(proyecto);
+                            // TODO: Crear método para las patentes.
+                            PatentOntology.Patent patentOntology = null;
 
-                            //resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
-                            //if (pDicRecursosCargados.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
-                            //{
-                            //    // Modificación.
-                            //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            //}
-                            //else
-                            //{
-                            //    // Carga.                   
-                            //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                            //    dicInvencion[projectAuthOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
-                            //}
+                            resource = patentOntology.ToGnossApiResource(mResourceApi, null);
+                            if (dicInvenciones.ContainsKey(patentOntology.Roh_crisIdentifier))
+                            {
+                                // Modificación.
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                            }
+                            else
+                            {
+                                // Carga.                   
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicInvenciones[patentOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                            }
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
@@ -510,7 +515,7 @@ namespace Harvester
                                 grupo = (Grupo)xmlSerializer.Deserialize(sr);
                             }
 
-                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
                             if (string.IsNullOrEmpty(grupo.id.ToString()) && string.IsNullOrEmpty(grupo.nombre))
                             {
                                 // Guardamos el ID cargado.
@@ -525,13 +530,13 @@ namespace Harvester
                             if (dicGrupos.ContainsKey(group.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //    mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                //    mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                //    dicGrupos[group.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicGrupos[group.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
                             // Guardamos el ID cargado.
@@ -599,14 +604,13 @@ namespace Harvester
                 dicGrupos.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
             }
 
-            //TODO - No tiene crisIdentifier
-            ////Invenciones (Propiedad industrial, intelectual)
-            //dicInvenciones = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, string> dicInvencionesAux = GetEntityBBDD("http://purl.org/ontology/bibo/Patent", "patent");
-            //foreach (KeyValuePair<string, string> keyValue in dicInvencionesAux)
-            //{
-            //    dicInvenciones.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
-            //}
+            //Invenciones
+            dicInvenciones = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, string> dicInvencionesAux = UtilidadesLoader.GetEntityBBDD("http://purl.org/ontology/bibo/Patent", "patent", mResourceApi);
+            foreach (KeyValuePair<string, string> keyValue in dicInvencionesAux)
+            {
+                dicInvenciones.Add(keyValue.Key, new Tuple<string, string>(keyValue.Value, ""));
+            }
         }
 
 
@@ -1722,6 +1726,24 @@ namespace Harvester
             //TODO insertar
 
             return organizationAux.GNOSSID;//TODO asignar si no se autoasigna
+        }
+
+        private static PatentOntology.Patent CrearInvencionesOntology(Invencion pInvencion)
+        {
+            PatentOntology.Patent patente = new PatentOntology.Patent();
+
+            // CrisIdentifier
+            patente.Roh_crisIdentifier = pInvencion.id.ToString();
+
+            // Título
+            patente.Roh_title = pInvencion.titulo;
+
+            // Fecha
+            patente.Dct_issued = pInvencion.fechaComunicacion;
+
+            // TODO: REVISAR DATOS FALTANTES
+
+            return patente;
         }
 
         /// <summary>
