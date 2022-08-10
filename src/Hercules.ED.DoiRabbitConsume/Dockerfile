@@ -5,14 +5,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Hercules.ED.DoiRabbitConsume/Hercules.ED.DoiRabbitConsume.csproj", "./Hercules.ED.DoiRabbitConsume/"]
-RUN dotnet restore "./Hercules.ED.DoiRabbitConsume/Hercules.ED.DoiRabbitConsume.csproj"
+COPY ["Hercules.ED.DoiRabbitConsume.csproj", ""]
+RUN dotnet restore "./Hercules.ED.DoiRabbitConsume.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "Hercules.ED.DoiRabbitConsume/Hercules.ED.DoiRabbitConsume.csproj" -c Release -o /app/build
+RUN dotnet build "Hercules.ED.DoiRabbitConsume.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Hercules.ED.DoiRabbitConsume/Hercules.ED.DoiRabbitConsume.csproj" -c Release -o /app/publish
+RUN dotnet publish "Hercules.ED.DoiRabbitConsume.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
