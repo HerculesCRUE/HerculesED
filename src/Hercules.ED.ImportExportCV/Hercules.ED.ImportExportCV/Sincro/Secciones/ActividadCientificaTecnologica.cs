@@ -1298,6 +1298,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos();
                     acreditacionesReconocimientos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesDescripcion)?.values.FirstOrDefault();
                     acreditacionesReconocimientos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesFechaObtencion)?.values.FirstOrDefault();
+                    acreditacionesReconocimientos.nombreEntAcreditante = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesEntidadNombre)?.values.FirstOrDefault();
                     acreditacionesReconocimientos.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(acreditacionesReconocimientos.ID, acreditacionesReconocimientos);
                 }
