@@ -61,9 +61,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     ProduccionCientifica produccionCientifica = new ProduccionCientifica();
-                    produccionCientifica.indiceH = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaIndiceH)?.values.FirstOrDefault();
                     produccionCientifica.fuenteH = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH)?.values.FirstOrDefault();
-                    produccionCientifica.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion)?.values.FirstOrDefault();
+                    produccionCientifica.fuenteHOtros = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros)?.values.FirstOrDefault();
                     produccionCientifica.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(produccionCientifica.ID, produccionCientifica);
                 }
