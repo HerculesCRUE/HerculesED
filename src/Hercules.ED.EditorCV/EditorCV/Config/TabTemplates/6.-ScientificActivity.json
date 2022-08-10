@@ -8912,7 +8912,7 @@
               "property": "http://vivoweb.org/ontology/core#relatedBy",
               "graph": "stay",
               "child": {
-                "property": "http://w3id.org/roh/performedTasks"
+                "property": "http://w3id.org/roh/entityTitle"
               }
             },
             "orders": [
