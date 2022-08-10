@@ -10,24 +10,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class ProduccionCientifica : DisambiguableEntity
     {
-        public string indiceH { get; set; }
         public string fuenteH { get; set; }
-        public string fecha { get; set; }
+        public string fuenteHOtros { get; set; }
 
-        private static readonly DisambiguationDataConfig configIndiceH = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFuenteH = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static readonly DisambiguationDataConfig configFuenteH = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFuenteHOtros = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -40,13 +32,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             {
                 new DisambiguationData()
                 {
-                    property = "indiceH",
-                    config = configIndiceH,
-                    value = indiceH
-                },
-
-                new DisambiguationData()
-                {
                     property = "fuenteIndiceH",
                     config = configFuenteH,
                     value = fuenteH
@@ -54,9 +39,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
                 new DisambiguationData()
                 {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
+                    property = "fuenteIndiceHOtros",
+                    config = configFuenteHOtros,
+                    value = fuenteHOtros
                 }
             };
 
@@ -83,11 +68,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemFuenteH ?itemDate";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemFuenteH ?itemFuenteHOtros";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.prodCientificaIndiceH}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH}> ?itemFuenteH }}. 
-                                        OPTIONAL{{ ?item <{Variables.ActividadCientificaTecnologica.prodCientificaFechaAplicacion}> ?itemDate }} .
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros}> ?itemFuenteHOtros }}. 
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -97,9 +82,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     ProduccionCientifica produccionCientifica = new ProduccionCientifica
                     {
                         ID = fila["item"].value,
-                        indiceH = fila["itemTitle"].value,
                         fuenteH = fila.ContainsKey("itemFuenteH") ? fila["itemFuenteH"].value : "",
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fuenteHOtros = fila.ContainsKey("itemFuenteHOtros") ? fila["itemFuenteHOtros"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), produccionCientifica);
