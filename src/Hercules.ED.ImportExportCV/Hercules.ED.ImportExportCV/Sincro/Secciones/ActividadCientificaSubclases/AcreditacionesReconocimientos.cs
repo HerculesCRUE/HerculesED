@@ -12,6 +12,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
     {
         public string descripcion { get; set; }
         public string fecha { get; set; }
+        public string nombreEntAcreditante { get; set; }
 
         private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
         {
@@ -20,6 +21,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         };
 
         private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+        private static readonly DisambiguationDataConfig configEA = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItem,
             score = 0.5f,
@@ -42,6 +49,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     property = "fecha",
                     config = configFecha,
                     value = fecha
+                },
+
+                new DisambiguationData()
+                {
+                    property = "entidadAcreditante",
+                    config = configEA,
+                    value = nombreEntAcreditante
                 }
             };
             return data;
@@ -67,10 +81,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 
             foreach (List<string> lista in listaListas)
             {
-                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ";
+                string select = $@"SELECT distinct ?item ?itemTitle ?itemDate ?itemEA ";
                 string where = $@"where {{
                                         ?item <{Variables.ActividadCientificaTecnologica.acreditacionesDescripcion}> ?itemTitle . 
                                         OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.acreditacionesFechaObtencion}> ?itemDate }}.
+                                        OPTIONAL{{?item <{Variables.ActividadCientificaTecnologica.acreditacionesEntidadNombre}> ?itemEA }}.
                                         FILTER(?item in (<{string.Join(">,<", lista)}>))
                                     }}";
 
@@ -81,7 +96,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        nombreEntAcreditante = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), acreditacionesReconocimientos);
