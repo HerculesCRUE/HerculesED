@@ -61,6 +61,7 @@ namespace Harvester
             Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicInvenciones = new Dictionary<string, Tuple<string, string>>();
             IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
+            
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
