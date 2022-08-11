@@ -40,13 +40,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <param name="configService"></param>
         public ReadRabbitService(ConfigService configService)
         {
-            _configService = configService;
-            FileLogger.Log($@"Cadena Rabbit: {_configService.GetrabbitConnectionString()}");
+            _configService = configService;            
             connectionFactory = new ConnectionFactory
             {
                 Uri = new Uri(_configService.GetrabbitConnectionString())
             };
-            FileLogger.Log($@"Cadena Rabbit Obtenida: {connectionFactory.Uri}");
+
             try
             {
                 connection = connectionFactory.CreateConnection();
@@ -183,7 +182,6 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         public bool ProcessItem(string pMessage)
         {
             // Listado con los datos.
-            FileLogger.Log($@"Obtención de datos de la cola...");
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
             if (message != null && message.Count() == 3)
