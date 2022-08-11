@@ -694,14 +694,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            //string info = JsonConvert.SerializeObject(resultado);
-            //string path = _Configuracion.GetRutaJsonSalida();
-            //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}___{date}.json", info);
-
             // TODO: ÑAPA. Solución temporal hasta que encontremos el error de la carga de las publicaciones con DOI duplicado.
             // Borra aquellas publicaciones que no tengan DOI.
             resultado.RemoveAll(x => string.IsNullOrEmpty(x.doi));
+
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/{name}___{date}.json", info);            
 
             return resultado;
         }

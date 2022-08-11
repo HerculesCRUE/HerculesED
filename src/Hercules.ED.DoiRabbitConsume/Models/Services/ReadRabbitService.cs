@@ -40,7 +40,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <param name="configService"></param>
         public ReadRabbitService(ConfigService configService)
         {
-            _configService = configService;            
+            _configService = configService;
             connectionFactory = new ConnectionFactory
             {
                 Uri = new Uri(_configService.GetrabbitConnectionString())
@@ -49,7 +49,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             try
             {
                 connection = connectionFactory.CreateConnection();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 FileLogger.Log($@"{DateTime.Now} - {ex.Message}");
             }
