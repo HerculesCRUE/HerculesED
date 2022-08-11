@@ -76,7 +76,8 @@ namespace Hercules.ED.UpdateKeywords
                 catch (Exception error)
                 {
                     FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
             }
 
@@ -120,7 +121,8 @@ namespace Hercules.ED.UpdateKeywords
                 catch (Exception error)
                 {
                     FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
             }
 
@@ -179,7 +181,8 @@ namespace Hercules.ED.UpdateKeywords
                 catch (Exception error)
                 {
                     FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
             }
 
@@ -904,6 +907,7 @@ namespace Hercules.ED.UpdateKeywords
                 catch (Exception error)
                 {
                     FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                     if (contadorDownload == MAX_NUM_INTENTOS)
                     {
@@ -1029,7 +1033,8 @@ namespace Hercules.ED.UpdateKeywords
                 catch (Exception error)
                 {
                     FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
 
                 if (!string.IsNullOrEmpty(data))
@@ -1068,7 +1073,8 @@ namespace Hercules.ED.UpdateKeywords
                 catch (Exception error)
                 {
                     FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                     string tgt = GetTGT();
                     url = new Uri($@"{_Configuracion.GetUrlTicket()}/{tgt}");
                 }
@@ -1094,7 +1100,8 @@ namespace Hercules.ED.UpdateKeywords
             }
             catch (Exception error)
             {
-                FileLogger.Log($@"{DateTime.Now} ---------- {erro.Messager}");
+                FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
                 return;
             }
 
@@ -1175,7 +1182,8 @@ namespace Hercules.ED.UpdateKeywords
                     catch (Exception error)
                     {
                         FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                        Thread.Sleep(10000);
+                        FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                        Thread.Sleep(1000);
                         contador++;
                     }
                 }

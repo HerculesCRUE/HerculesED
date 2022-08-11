@@ -152,9 +152,9 @@ namespace Hercules.ED.UpdateKeywords
                         // Borrar triple de obtención de etiquetas.
                         utilKeywords.ModificarGetKeywordDocument(id);                        
                     }
-                    catch (Exception e)
+                    catch (Exception error)
                     {
-                        FileLogger.Log($@"{DateTime.Now} ---------- {e}");
+                        FileLogger.Log($@"{DateTime.Now} ---------- {error}");
                     }
 
                     contadorPub++;
