@@ -46,8 +46,14 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             {
                 Uri = new Uri(_configService.GetrabbitConnectionString())
             };
-
-            connection = connectionFactory.CreateConnection();
+            FileLogger.Log($@"Cadena Rabbit Obtenida: {connectionFactory.Uri}");
+            try
+            {
+                connection = connectionFactory.CreateConnection();
+            }catch (Exception ex)
+            {
+                FileLogger.Log($@"{ex.Message}");
+            }
         }
 
         /// <summary>
