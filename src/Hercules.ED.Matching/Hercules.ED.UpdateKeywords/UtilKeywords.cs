@@ -656,8 +656,6 @@ namespace Hercules.ED.UpdateKeywords
             }
             if (exception != null)
             {
-                FileLogger.Log($@"{DateTime.Now} ---------- {exception.Message}");
-                FileLogger.Log($@"{DateTime.Now} ---------- {exception.StackTrace}");
                 return dicResultados;
             }
 
@@ -735,8 +733,6 @@ namespace Hercules.ED.UpdateKeywords
             }
             if (exception != null)
             {
-                FileLogger.Log($@"{DateTime.Now} ---------- {exception.Message}");
-                FileLogger.Log($@"{DateTime.Now} ---------- {exception.StackTrace}");
                 return dicResultados;
             }
 
