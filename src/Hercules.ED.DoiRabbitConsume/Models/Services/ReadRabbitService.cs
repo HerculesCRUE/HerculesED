@@ -41,6 +41,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         public ReadRabbitService(ConfigService configService)
         {
             _configService = configService;
+            FileLogger.Log($@"Cadena Rabbit: {_configService.GetrabbitConnectionString()}");
             connectionFactory = new ConnectionFactory
             {
                 Uri = new Uri(_configService.GetrabbitConnectionString())
