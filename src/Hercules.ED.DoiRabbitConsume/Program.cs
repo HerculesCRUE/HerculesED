@@ -13,8 +13,6 @@ namespace Hercules.ED.DoiRabbitConsume
 {
     public class Program
     {
-        private string _LogPath;
-
         /// <summary>
         /// Contructor.
         /// </summary>
