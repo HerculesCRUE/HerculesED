@@ -51,7 +51,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 connection = connectionFactory.CreateConnection();
             }catch (Exception ex)
             {
-                FileLogger.Log($@"{ex.Message}");
+                FileLogger.Log($@"{DateTime.Now} - {ex.Message}");
             }
         }
 
