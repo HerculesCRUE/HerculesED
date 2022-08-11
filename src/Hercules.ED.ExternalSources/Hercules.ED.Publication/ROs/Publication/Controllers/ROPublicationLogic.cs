@@ -670,14 +670,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
             // Comprobar si está el nombre entre los autores.
             if (!string.IsNullOrEmpty(pNombreCompletoAutor))
             {
-                float umbral = 0.7f; // TODO: ¿Cuanto asignamos?
+                float umbral = 0.6f; // TODO: ¿Cuanto asignamos?
                 bool valido = false;
 
                 foreach (Publication publicacion in resultado)
                 {
                     foreach (Person persona in publicacion.seqOfAuthors)
                     {
-                        string nombreCompleto = persona.name.nombre_completo[0];
+                        string nombreCompleto = persona.name.nombre_completo.First();
                         float resultadoSimilaridad = GetNameSimilarity(pNombreCompletoAutor, nombreCompleto);
                         if (resultadoSimilaridad >= umbral)
                         {
