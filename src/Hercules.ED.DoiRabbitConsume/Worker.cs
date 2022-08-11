@@ -44,8 +44,11 @@ namespace Hercules.ED.DoiRabbitConsume
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
+                FileLogger.Log($@"ConfigService...");
                 ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
+                FileLogger.Log($@"Rabbit...");
                 ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
+                FileLogger.Log($@"ListenToQueue...");
                 rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
             }
         }

@@ -176,6 +176,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         public bool ProcessItem(string pMessage)
         {
             // Listado con los datos.
+            FileLogger.Log($@"Obtención de datos de la cola...");
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
             if (message != null && message.Count() == 3)
