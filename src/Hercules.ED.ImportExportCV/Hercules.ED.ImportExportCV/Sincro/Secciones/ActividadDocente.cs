@@ -594,7 +594,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoDireccionTesis)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -738,7 +741,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoFormacionAcademica)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -900,7 +906,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoTutoriasAcademicas)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -991,7 +1000,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoCursosSeminarios)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -1114,7 +1126,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoPublicacionDocentes)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -1243,7 +1258,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoParticipacionProyectosInnovacionDocente)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -1393,7 +1411,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoParticipacionCongresosFormacionDocente)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -1535,7 +1556,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoPremiosInovacionDocente)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -1602,7 +1626,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoOtrasActividades)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -1695,7 +1722,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoAportacionesRelevantes)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
