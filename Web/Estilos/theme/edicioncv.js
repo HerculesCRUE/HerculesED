@@ -3582,7 +3582,7 @@ var edicionCV = {
 				lista.push($(this).attr('propertyrdf'));
 			}
             $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').attr('dependencyact',lista.join(','));
-            $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').unbind("change.dependency").bind("change.dependency", function() {
+            $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]:not([style])').unbind("change.dependency").bind("change.dependency", function() {
                 var valorSeleccionado = $(this).val();
 				var that2=this;
 				$.each($(this).attr('dependencyact').split(','), function (ind, elem) { 
@@ -4563,7 +4563,7 @@ var duplicadosCV = {
 				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItemDuplicate(that.items[that.pasoActual].items[aux], data);
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
@@ -4577,7 +4577,7 @@ var duplicadosCV = {
 				let aux=itemIn;
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
 				{
-					var htmlItem=edicionCV.printHtmlListItemDuplicate(that.items[that.pasoActual].items[aux], data);
+					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
 					numActual++;
 					if(numActual==that.items[that.pasoActual].items.length)
