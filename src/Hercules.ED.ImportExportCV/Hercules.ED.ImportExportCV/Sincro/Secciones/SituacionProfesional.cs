@@ -146,7 +146,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoSituacionProfesionalActual)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
@@ -333,7 +336,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (CvnItemBean item in listadoCargosActividades)
                 {
                     //Actualizo el estado de los recursos tratados
-                    petitionStatus.actualWork++;
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualWork++;
+                    }
 
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
