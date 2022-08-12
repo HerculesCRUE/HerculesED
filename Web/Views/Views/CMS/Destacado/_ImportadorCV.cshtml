@@ -84,6 +84,8 @@
 <input type="hidden" id="IGNORAR_TOOLTIP" value="@Html.Translate("IGNORAR_TOOLTIP")"/>
 <input type="hidden" id="CV_INDICADORES_GENERALES" value="@Html.Translate("CV_INDICADORES_GENERALES")"/>
 <input type="hidden" id="CV_DATOS_IDENTIFICACION" value="@Html.Translate("CV_DATOS_IDENTIFICACION")"/>
+<input type="hidden" id="INFORMACION_IMPORTACION" value="@Html.Translate("INFORMACION_IMPORTACION")"/>
+<input type="hidden" id="DETALLES_INFORMACION_IMPORTACION" value="@Html.Translate("DETALLES_INFORMACION_IMPORTACION")"/>
 
 <div id="containerCV">
 	<div class="row">
@@ -116,7 +118,6 @@
 					<div class="upper-wrap">
 						<div class="h1-container">
 							<h1>@Html.Translate("IMPORTA_TU_CVN")</h1>
-
 							<div id="dropdown_seleccion_cv" class="seleccionar dropdown dropdown-select">
 								<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
 									<span class="material-icons">done_all</span>
@@ -135,10 +136,16 @@
 									<a class="item-dropdown mostrarSimilitudes"><span class="texto">Mostrar similitudes</span></a>
 									<a class="item-dropdown mostrarNuevos"><span class="texto">Mostrar nuevos</span></a>
 								</div>
-							</div>
-							
-						</div>
+							</div>							
+						</div>						
 					</div>
+				</div>
+				<div class="alert">
+					<p class="alert-title">
+						<span class="material-icons">warning</span>
+						@Html.Translate("INFORMACION_IMPORTACION")
+						@Html.Raw(Html.Translate("DETALLES_INFORMACION_IMPORTACION"))
+					</p>
 				</div>
 				<div class="contenido-cv">
 				</div>
