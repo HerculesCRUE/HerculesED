@@ -73,29 +73,6 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         }
 
         /// <summary>
-        /// Obtiene la ruta del fichero de logs.
-        /// </summary>
-        /// <returns>Ruta del fichero de logs.</returns>
-        public string GetLogPath()
-        {
-            if (string.IsNullOrEmpty(LogPath))
-            {
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string logPath = string.Empty;
-                if (environmentVariables.Contains("LogPath"))
-                {
-                    logPath = environmentVariables["LogPath"] as string;
-                }
-                else
-                {
-                    logPath = _configuration["LogPath"];
-                }
-                LogPath = logPath;
-            }
-            return LogPath;
-        }
-
-        /// <summary>
         /// Obtiene la ruta de escritura de los ficheros.
         /// </summary>
         /// <returns>Ruta de escritura.</returns>

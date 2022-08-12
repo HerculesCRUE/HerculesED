@@ -670,14 +670,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
             // Comprobar si está el nombre entre los autores.
             if (!string.IsNullOrEmpty(pNombreCompletoAutor))
             {
-                float umbral = 0.7f; // TODO: ¿Cuanto asignamos?
+                float umbral = 0.6f; // TODO: ¿Cuanto asignamos?
                 bool valido = false;
 
                 foreach (Publication publicacion in resultado)
                 {
                     foreach (Person persona in publicacion.seqOfAuthors)
                     {
-                        string nombreCompleto = persona.name.nombre_completo[0];
+                        string nombreCompleto = persona.name.nombre_completo.First();
                         float resultadoSimilaridad = GetNameSimilarity(pNombreCompletoAutor, nombreCompleto);
                         if (resultadoSimilaridad >= umbral)
                         {
@@ -694,14 +694,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            //string info = JsonConvert.SerializeObject(resultado);
-            //string path = _Configuracion.GetRutaJsonSalida();
-            //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}___{date}.json", info);
-
             // TODO: ÑAPA. Solución temporal hasta que encontremos el error de la carga de las publicaciones con DOI duplicado.
             // Borra aquellas publicaciones que no tengan DOI.
             resultado.RemoveAll(x => string.IsNullOrEmpty(x.doi));
+
+            //string info = JsonConvert.SerializeObject(resultado);
+            //string path = _Configuracion.GetRutaJsonSalida();
+            //Log.Information("Escribiendo datos en fichero...");
+            //File.WriteAllText($@"Files/{name}___{date}.json", info);            
 
             return resultado;
         }

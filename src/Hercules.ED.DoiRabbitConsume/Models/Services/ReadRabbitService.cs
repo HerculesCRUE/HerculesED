@@ -46,7 +46,14 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 Uri = new Uri(_configService.GetrabbitConnectionString())
             };
 
-            connection = connectionFactory.CreateConnection();
+            try
+            {
+                connection = connectionFactory.CreateConnection();
+            }
+            catch (Exception ex)
+            {
+                FileLogger.Log($@"{DateTime.Now} - {ex.Message}");
+            }
         }
 
         /// <summary>

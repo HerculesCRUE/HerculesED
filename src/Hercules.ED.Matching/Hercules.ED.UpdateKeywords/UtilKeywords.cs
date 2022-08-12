@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Serialization;
+using static Hercules.ED.UpdateKeywords.Program;
 
 namespace Hercules.ED.UpdateKeywords
 {
@@ -72,9 +73,11 @@ namespace Hercules.ED.UpdateKeywords
                     resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
                     break;
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
             }
 
@@ -115,9 +118,11 @@ namespace Hercules.ED.UpdateKeywords
                     resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
                     break;
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
             }
 
@@ -173,9 +178,11 @@ namespace Hercules.ED.UpdateKeywords
                     resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "keywordconcept");
                     break;
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
             }
 
@@ -895,8 +902,10 @@ namespace Hercules.ED.UpdateKeywords
                         return;
                     }
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                     if (contadorDownload == MAX_NUM_INTENTOS)
                     {
@@ -1019,9 +1028,11 @@ namespace Hercules.ED.UpdateKeywords
                     doc.LoadHtml(result);
                     data = doc.DocumentNode.SelectSingleNode("//form").GetAttributeValue("action", "");
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                 }
 
                 if (!string.IsNullOrEmpty(data))
@@ -1057,9 +1068,11 @@ namespace Hercules.ED.UpdateKeywords
                     result = httpCall(url.ToString(), "POST", pBody: body).Result;
                     break;
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    Thread.Sleep(10000);
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    Thread.Sleep(1000);
                     string tgt = GetTGT();
                     url = new Uri($@"{_Configuracion.GetUrlTicket()}/{tgt}");
                 }
@@ -1083,8 +1096,10 @@ namespace Hercules.ED.UpdateKeywords
             {
                 result = httpCall(url.ToString(), "GET").Result;
             }
-            catch
+            catch (Exception error)
             {
+                FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
                 return;
             }
 
@@ -1123,8 +1138,10 @@ namespace Hercules.ED.UpdateKeywords
                     }
                 }
             }
-            catch
+            catch (Exception error)
             {
+                FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
                 return;
             }
         }
@@ -1161,9 +1178,11 @@ namespace Hercules.ED.UpdateKeywords
                         result = httpCall(url.ToString(), "GET").Result;
                         break;
                     }
-                    catch
+                    catch (Exception error)
                     {
-                        Thread.Sleep(10000);
+                        FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
+                        FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                        Thread.Sleep(1000);
                         contador++;
                     }
                 }
