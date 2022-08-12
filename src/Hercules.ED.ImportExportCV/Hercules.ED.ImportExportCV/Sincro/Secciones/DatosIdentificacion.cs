@@ -34,7 +34,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Actualizo el estado de los recursos tratados
-            petitionStatus.actualWork++;
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWork++;
+            }
 
             //1º Recuperamos los elementos necesarios del cv, del archivo xml.
             List<CvnItemBean> listadoDatosIdentificacion = mCvn.GetListadoBloque("000");
