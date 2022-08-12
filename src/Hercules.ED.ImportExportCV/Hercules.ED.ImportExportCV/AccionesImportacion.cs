@@ -54,7 +54,7 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="filePreimport"></param>
         /// <param name="listaId"></param>
         /// <param name="listaOpciones"></param>
-        public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones, [Optional] PetitionStatus petitionStatus)
+        public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones, PetitionStatus petitionStatus)
         {
             Dictionary<string, Dictionary<string, string>> dicOpciones = new Dictionary<string, Dictionary<string, string>>();
             List<Tuple<string, string>> filtrador = new List<Tuple<string, string>>();
