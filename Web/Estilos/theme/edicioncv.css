@@ -354,3 +354,17 @@ input.form-group-date {
 .tooltipEditor {
 	max-width: 600px;
 }
+
+.importar-exportar-cv .alert{
+	padding: 22px 60px;
+    background-color: #dcf4ff;
+    margin-bottom: 0;
+}
+.importar-exportar-cv .alert .alert-title{
+	font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    color: #03a1ff;
+}
