@@ -10,7 +10,7 @@
 |Cambios de la Versión|Versión inicial|
 
 # Introducción
-El servicio de procesamiento de CV, es el encargado de leer los archivos recibidos por FECYT y tratarlos datos leidos, para posteriormente insertarlos en base de datos (BBDD).
+El servicio de procesamiento de CV, es el encargado de leer los archivos recibidos por FECYT y tratar los datos leidos, para posteriormente insertarlos en base de datos (BBDD).
 Tambien es posible extraer los datos almacenados en BBDD, y recibir un CV en formato .pdf acorde a la normativa de FECYT.
 
 El análisis funcional relacionado con el CV se puede consultar en [Edición CV - CVN](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534628).
@@ -35,12 +35,23 @@ Dado un identificador del CV, el fichero de CV en formato XML asociado a la pers
 - Duplicar - "du"
 - Fusionar - "fu"
 - Sobrescribir - "so"
-- Ignorar - "ig".
+- Ignorar - "ig"
 
 Insertará en BBDD los datos leidos del documento que formen parte del listado de identificadores y les aplicará la opción seleccionada en cada uno de ellos, en caso de no tener ninguna se duplicará.
 
 ## Exportación de CVN
-El servicio de exportación devolverá un fichero PDF con los datos almacenados en BBDD, pertenecientes al usuario con identificador de CV pasado como parametro, en el lenguaje indicado. Los posibles lenguajes son:
+El servicio de exportación devolverá un fichero PDF con los datos almacenados en BBDD, pertenecientes al usuario con identificador de CV, en el tipo de formato de CV, la versión de exportación y en el lenguaje indicado.
+
+Los formatos de CV son:
+- CV - Curriculum Vitae - "PN2008"
+- CVA-ISCIII - Curriculum Vitae Abreviado (ISCIII) - "CVAISCIII"
+- CVA-AEI - Curriculum Vitae Abreviado (AEI) - "CVA2015"
+
+Las versiones de exportación soportadas son:
+- 1.4.0 - "1_4_0"
+- 1.4.3 - "1_4_3"
+
+Los posibles lenguajes son:
 - Español - "es"
 - Catalan - "ca"
 - Euskera - "eu"
@@ -68,6 +79,8 @@ El servicio de exportación limitada, es similar al de exportación, pero filtra
 		"ConnectionStrings": {
 			"RabbitMQ": ""
 		},
+		"UrlEnriquecimiento": "",
+		"UrlPublicationAPI": "",
 		"DenormalizerQueueRabbit": ""
 	}
 }
@@ -79,6 +92,8 @@ El servicio de exportación limitada, es similar al de exportación, pero filtra
 - PSS_PDF: Contraseña de autenticación para la conversión de ficheros en el endpoint de FECYT.
 - Version: Version del documento PDF.
 - ConnectionStrings.RabbitMQ: Cadena de conexión de Rabbit.
+- UrlEnriquecimiento: URL dónde está instalado el servicio de enriquecimiento.
+- UrlPublicationAPI: URL dónde está instalado el servicio de publicación.
 - DenormalizerQueueRabbit: Nombre de la cola de Rabbit.
 
 ## Dependencias
