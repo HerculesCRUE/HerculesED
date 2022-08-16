@@ -25,12 +25,13 @@ $(document).ready(function () {
             if (valor.id == "tokenGitHub") {
                 var help = "Haz click aquí para generar un token de acceso a tu cuenta de GitHub";
                 var tokenPage = "https://github.com/settings/tokens"
-
             } else if (valor.id == "tokenFigShare") {
                 var help = "Haz click aquí para generar un token de acceso a tu cuenta de FigShare";
                 var tokenPage = "https://figshare.com/account/applications"
             } else if (valor.id == "useMatching") {
                 var html = `<div class="form-group mb-4"><div class="d-flex matchingTooltip"><label id="${valor.id}" class="control-label d-block">${label}</label><span class="material-icons-outlined" style="margin-left: 10px; width: 24px"">information</span></div><div class="form-check form-check-inline" style="flex-flow: nowrap column"><div style="width:100%"><input type="radio" name="radioMatching" id="check-si" value="true" class="form-check-input form-control not-outline"> <label for="html">Sí</label></div> <div style="width:100%"><input type="radio" name="radioMatching" id="check-no" value="false" class="form-check-input form-control not-outline"> <label for="html">No</label></div> </div></div>`;
+            } else if (valor.id == "orcid" || valor.id == "researcherId" || valor.id == "scopusId" || valor.id == "semanticScholarId") {
+                var html = `<div class="form-group mb-4"><label id="${valor.id}" class="control-label d-block">${label}</label> <input disabled placeholder="" type="text" name="fname" id="" value="${valor.valor}" class="form-control not-outline"></div>`;
             }
 
             $('form.formulario-edicion fieldset').append(html);
