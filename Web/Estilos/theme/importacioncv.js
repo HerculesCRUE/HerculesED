@@ -49,20 +49,20 @@ var importarCVN = {
 									</div>
 								</div>`;
 
-		selectorConflictoNoBloqueado = `<select name="itemConflict" >
+		selectorConflictoNoBloqueado = `<select name="itemConflict" disabled >
 											<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 											<option value="fu">${GetText('CV_FUSIONAR')}</option>
 											<option value="so">${GetText('CV_SOBREESCRIBIR')}</option>
 											<option value="du">${GetText('CV_DUPLICAR')}</option>
 										</select>`;
 
-		selectorConflictoBloqueado = `<select name="itemConflict" >
+		selectorConflictoBloqueado = `<select name="itemConflict" disabled>
 										<option value="ig" selected="">${GetText('CV_IGNORAR')}</option>
 										<option value="fu">${GetText('CV_FUSIONAR')}</option>
 										<option value="du">${GetText('CV_DUPLICAR')}</option>
 									</select>`;
 
-		selectorCamposTexto = `<select hidden name="itemConflict" class="uniqueItemConflict">
+		selectorCamposTexto = `<select hidden name="itemConflict" class="uniqueItemConflict" disabled>
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 									<option value="ig">${GetText('CV_IGNORAR')}</option>
 								</select>`;
@@ -113,6 +113,7 @@ var importarCVN = {
 			return;
 		}
 		
+		$('#informacionImportacion').hide();
 		$('.col-contenido.paso1').hide();
 		$('.col-contenido.paso2').show();
 
@@ -182,8 +183,9 @@ var importarCVN = {
 			processData: false,
             enctype: 'multipart/form-data',
             contentType: false,
-			success: function ( response ) {
+			success: function ( response ) {				
 				clearInterval(intervalStatus);
+				$('#informacionImportacion').show();
 				$('#titleMascaraBlanca').remove();
 				$('#workMascaraBlanca').remove();
 				for(var i=0;i<7;i++){
@@ -254,11 +256,18 @@ var importarCVN = {
 				that.fileData = response[99].title;
 				that.filePreimport = response[100].title;
 				
+				$('article.resource input.custom-control-input').off('click').on('click', function(e) {
+					//e.preventDefault();
+					changeSelector($(this));
+				});
+				
 				checkAllCVWrapper();
 				checkAllConflict();
 				checkUniqueItems();
 				aniadirComportamientoWrapperSeccion();
-				aniadirTooltipsConflict();				
+				aniadirTooltipsConflict();
+				
+				
 				window.removeEventListener('beforeunload', preventBeforeUnload);
 				
 				
@@ -378,6 +387,19 @@ var importarCVN = {
 		
 	}
 };
+
+function changeSelector(selectItem, optionSelected){
+	var selectOption = selectItem.closest('article.resource').find('select').prop('disabled');
+	var selectIgnored = selectItem.closest('article.resource').find('.wrap option:selected').val();
+	if(optionSelected != null){
+		selectOption = optionSelected;
+	}
+	if(selectIgnored!="ig"){
+		selectItem.closest('article.resource').find('.wrap select').val(0).change();
+	}
+	var selector = selectItem.closest('article.resource').find('select');
+	selector.prop('disabled', !selectOption);
+}
 
 function dropdownVisibilityCV(tipo){
 	var dropdownVisibility = $('.seleccionar.dropdown.dropdown-select.seccion .dropdown-menu.basic-dropdown.dropdown-menu-right .'+tipo);
@@ -594,6 +616,7 @@ function checkAllCVWrapper(){
 		}
 		
 		$(this).closest('.panel-body').find('article' + conflictType + ' div.custom-checkbox input[type="checkbox"]').prop('checked',$(this).prop('checked'));
+		changeSelector($(this).closest('.panel-body').find('article' + conflictType + ' div.custom-checkbox input[type="checkbox"]'),$(this)[0].checked);
 	});
 	
 	$('.checkAllCVWrapper input[type="checkbox"]').closest('.panel-body').find('article div.custom-checkbox input[type="checkbox"]').off('change').on('change', function(e) {
