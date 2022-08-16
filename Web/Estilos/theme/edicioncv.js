@@ -2920,15 +2920,16 @@ var edicionCV = {
             that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'), dropdown);
         });
         //Publicar/despublicar
-        $('.panel-group .resource-list .publicaritem,.panel-group .resource-list .despublicaritem').off('click').on('click', function(e) {
-            var sectionID = $(this).closest('.panel-group').attr('section');
-            var rdfTypeTab = $(this).closest('.cvTab').attr('rdftype');
-            var entityID = $(this).attr('data-id');
+        $('.panel-group .resource-list .publicaritem,.panel-group .resource-list .despublicaritem').parents("li").off('click').on('click', function(e) {
+			var textoPublicar = $(this).find('.texto');
+            var sectionID = textoPublicar.closest('.panel-group').attr('section');
+            var rdfTypeTab = textoPublicar.closest('.cvTab').attr('rdftype');
+            var entityID = textoPublicar.attr('data-id');
             var isPublic = true;
-            if ($(this).hasClass('despublicaritem')) {
+            if (textoPublicar.hasClass('despublicaritem')) {
                 isPublic = false;
             }
-            var element = $(this);
+            var element = $(textoPublicar);
             that.cambiarPrivacidadItem(sectionID, rdfTypeTab, entityID, isPublic, element);
         });
 		//Publicar/despublicar icono
@@ -2936,11 +2937,12 @@ var edicionCV = {
 			$(this).parent().find('.publicaritem, .despublicaritem').click();
         });
         //Eliminar item
-        $('.panel-group .resource-list .eliminar').off('click').on('click', function(e) {
+        $('.panel-group .resource-list .eliminar').parents("li").off('click').on('click', function(e) {
             //Usa el popup
             $("#modal-eliminar").modal("show");
-            var sectionID = $(this).closest('.panel-group').attr('section');
-            var entityID = $(this).attr('data-id');
+			var textoEliminar = $(this).find('.texto');
+            var sectionID = textoEliminar.closest('.panel-group').attr('section');
+            var entityID = textoEliminar.attr('data-id');
             $('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:edicionCV.eliminarItem("' + sectionID + '","' + entityID + '");$("#modal-eliminar").modal("hide");');
         });
 
