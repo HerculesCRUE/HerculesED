@@ -2931,6 +2931,10 @@ var edicionCV = {
             var element = $(this);
             that.cambiarPrivacidadItem(sectionID, rdfTypeTab, entityID, isPublic, element);
         });
+		//Publicar/despublicar icono
+        $('.panel-group .resource-list .visibility-wrapper').off('click').on('click', function(e) {
+			$(this).parent().find('.publicaritem, .despublicaritem').click();
+        });
         //Eliminar item
         $('.panel-group .resource-list .eliminar').off('click').on('click', function(e) {
             //Usa el popup
@@ -4476,7 +4480,27 @@ var duplicadosCV = {
 				mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
 			}
 		});
-
+		//Publicar/despublicar duplicado
+        $('#modal-posible-duplicidad .resource-list .visibility-wrapper').off('click').on('click', function(e) {
+            var element = $(this);
+			var item = {};
+			var isPublic = !$(this).find('.con-icono-before').hasClass('eye');
+			item.pIdSection = that.items[that.pasoActual].idSection;
+			item.pRdfTypeTab = that.items[that.pasoActual].rdfTypeTab;
+			item.pEntity = $(this).parent().find('a[data-id]').attr('data-id');
+			item.pIsPublic = isPublic;
+			MostrarUpdateProgress();
+			if (isPublic) {
+				$(this).find('.con-icono-before').addClass('eye');
+				$(this).find('.con-icono-before').removeClass('visibility-activo');
+			} else {
+				$(this).find('.con-icono-before').addClass('visibility-activo');
+				$(this).find('.con-icono-before').removeClass('eye');
+			}
+			$.post(urlGuardadoCV + 'ChangePrivacityItem', item, function(data) {
+				OcultarUpdateProgress();
+			})
+        });
 		//Botón aplicar y siguiente
 		$('#modal-posible-duplicidad .btn-continuar').unbind("click").bind("click", function(){
 			var validar = true;
