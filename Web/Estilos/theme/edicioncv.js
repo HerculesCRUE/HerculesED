@@ -2934,7 +2934,7 @@ var edicionCV = {
         });
 		//Publicar/despublicar icono
         $('.panel-group .resource-list .visibility-wrapper').off('click').on('click', function(e) {
-			$(this).parent().find('.publicaritem, .despublicaritem').click();
+			$(this).parent().find('.publicaritem, .despublicaritem').closest('li').click();
         });
         //Eliminar item
         $('.panel-group .resource-list .eliminar').parents("li").off('click').on('click', function(e) {
