@@ -144,7 +144,7 @@ class CargarAnotaciones {
                     </article>`
 		})
 		let resourceItems = this.contenedor.getElementsByClassName('resource-list-wrap')[0]
-		resourceItems.innerHTML = html
+		resourceItems.innerHTML = html.join('');
 
 		// Llamamos al callback para realizar alguna acción una vez que se han pintado las notas
 		callback()
