@@ -126,7 +126,10 @@ En el caso de seleccionar la opción de exportación "Seleccionar" o "Últimos c
 
 Los elementos apareceran por defecto sin seleccionar a excepción de los Datos de identificación del usuario, en el caso de que la opción sea "Últimos cinco años" los elementos de los últimos 5 años estarán preseleccionados.
 
+Opción "Seleccionar":
 ![](../../Docs/media/ImportExportCV/exportacionPaso2Seleccionar.png)
+
+Opción "Últimos cinco años":
 ![](../../Docs/media/ImportExportCV/exportacionPaso2Ultimos.png)
 
 Aquí el usuario podrá guardar perfiles de exportación para guardar los elementos seleccionados para futuras exportaciones. El usuario podrá añadir nuevos perfiles, seleccionar la carga de uno guardado previamente o la eliminación de alguno de los perfiles guardados.
