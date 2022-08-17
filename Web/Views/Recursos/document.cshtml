@@ -1075,7 +1075,7 @@
         $(function () {
             // Obtiene las notas y las pinta
             anotaciones.loadInRo().then((data) => {
-                if (data.Length > 0) {
+                if (data.length > 0) {
                     // Ahora pintamos los datos si hay elementos
                     anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
                         // Comportamiento Ver Más / Ver Menos
