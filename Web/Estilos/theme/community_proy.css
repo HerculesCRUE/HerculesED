@@ -589,3 +589,6 @@ body.homeComunidad #col01 {
 .resource-list .resource.resource-annotation .middle-wrap .title-wrap .resource-title:before {
     content: 'edit_note';
 }
+.bloque-id{
+    padding-left: 10px;
+}
