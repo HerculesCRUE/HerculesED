@@ -436,7 +436,7 @@ function PintarGraficaArania(data,idContenedor) {
 		// Datos
 		elements: data
 	});
-
+	//cy.nodes(ele=>ele._private.edges.length == 0 && ele._private.data.type !="icon_ip")
 	var arrayNodes = [];
 	var nodos = cy.nodes();
 
@@ -473,7 +473,7 @@ function PintarGraficaArania(data,idContenedor) {
 				break;
 		}
 	};
-
+	cy.nodes(ele=>ele._private.edges.length == 0 && ele._private.data.type !="icon_ip").remove()
 	var arrayEdges = [];
 	var edges = cy.edges();
 
@@ -522,11 +522,16 @@ function PintarGraficaArania(data,idContenedor) {
 		}
 	});
 
+	
 	// Colocar los elementos huérfanos a la derecha
 	cy.ready(function(event) {
+
+		/* los elementos huerfanos son eliminados con cy.nodes(ele=>ele._private.edges.length == 0 && ele._private.data.type !="icon_ip").remove()
+		
 		let maxPos = 0;
 		let minYPos = 9999999;
 		let maxYPos = 0;
+		let xPos = 0;
 		let yPos = 0;
 		// Obtengo los elementos sin relación
 		let onlyItems = cy.nodes().filter(node => node._private.edges.length == 0);
@@ -542,13 +547,21 @@ function PintarGraficaArania(data,idContenedor) {
 		// Modifico las posiciones de los elementos que quiero recolocar
 		maxPos = maxPos + maxPos / 2;
 		for (i = 0; i < onlyItems.length; i++) { //starts loop
-			onlyItems[i].position({'x': maxPos, 'y': yPos});
-			
-			yPos = yPos + onlyItems[i]._private.style.height.value + 50;
-		};
 
-		if (repintar) {
-			setTimeout(function(){ PintarGraficaArania(currentData,idContenedor); }, 1000);
+			onlyItems[i].position({'x': maxPos + xPos, 'y': yPos});
+			if(onlyItems[i]._private.data.type != 'icon_ip'){
+				//currentData.splice(currentData.indexOf(currentData.find(d=>d.data.id == onlyItems[i]._private.data.id)),1);
+			}
+			if (!(onlyItems.length == 1 && onlyItems[i]._private.data.type == 'icon_ip')) {
+				//repintar=true;
+			}
+			//yPos = yPos + onlyItems[i]._private.style.height.value + 50;
+		};
+		*/
+
+		
+		if (repintar ) {
+			 PintarGraficaArania(currentData,idContenedor);
 		}
     });
 }
