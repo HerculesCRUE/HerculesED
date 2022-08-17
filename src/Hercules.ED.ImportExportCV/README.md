@@ -22,6 +22,10 @@ El análisis funcional relacionado con el CV se puede consultar en [Edición CV 
 - Exportación
 - Exportación limitada
 
+## Ejemplos
+- Ejemplo de importación(#ejemplo-de-importación)
+- Ejemplo de exportación(#ejemplo-de-exportación)
+
 ## Preimportación de CVN
 El servicio de preimportación devuelve los datos leidos de un Documento XML o PDF pasados como parametro, junto al identificador de CV de la persona, y como dato opcional las secciones que se desea leer, las cuales se deberá pasar el codigo CVN de FECYT.
 Los datos leidos se devolverán como un JSON, para posteriormente elegir cual de ellos importar, junto a un documento XML obtenido del fichero inicial pasado como parametro, ademas de un fichero XML el cual contendrá los datos de un objeto Preimport.
@@ -38,6 +42,40 @@ Dado un identificador del CV, el fichero de CV en formato XML asociado a la pers
 - Ignorar - "ig"
 
 Insertará en BBDD los datos leidos del documento que formen parte del listado de identificadores y les aplicará la opción seleccionada en cada uno de ellos, en caso de no tener ninguna se duplicará.
+
+## Ejemplo de importación
+En el caso de querer importar un CV por parte del usuario desde la pestaña de importar, adjuntaremos un archivo PDF con el CV asociado.
+
+![](../../Docs/media/ImportExportCV/importacionPaso1.png)
+
+![](../../Docs/media/ImportExportCV/importacionPaso2.png)
+
+Clicaremos en el botón de "PROCESAR" para que el fichero sea leido y procesado para su carga en el sistema.
+
+![](../../Docs/media/ImportExportCV/importacionPaso3.png)
+
+Tras el procesado del archivo necesitaremos seleccionar los ítems que el sistema haya detectado como similares sobre los que están cargados previamente en el CV del usuario, puesto que los ítems nuevos estarán preseleccionados por defecto, además de la sección de datos de identificación. 
+El usuario puede no cargar elementos nuevos quitando el check que estará por defecto seleccionado. Los ítems con similitudes tendrán un dropbox con diferentes opciones a seleccionar dependiendo de si el ítem con similaridad está validado o no, en el caso de estar validado se señalizará con el siguiente icono: 
+![](../../Docs/media/ImportExportCV/importacioniconoBloqueado.png)
+
+Si se desea cargar, modificar o duplicar algún ítem con similaridad se deberá hacer click para poder desbloquear el dropbox asociado al mismo.
+
+![](../../Docs/media/ImportExportCV/importacionDropboxBloqueado.png)
+![](../../Docs/media/ImportExportCV/importacionDropboxDesbloqueado.png)
+
+Las opciones que aparecererán en ambos casos serán:
+- Ignorar - Opción por defecto, si no se cambia no se cargará el ítem.
+- Fusionar - Añadirá a los valores vacios del ítem en BBDD, los valores del ítem cargado. 
+- Duplicar - Añadirá un ítem nuevo.
+
+![](../../Docs/media/ImportExportCV/importacionDropbox.png)
+
+En el caso de que el ítem no esté validado además aparecerá la opción:
+- Sobrescribir - El ítem cargado sobrescribirá los datos del que está actualmente en BBDD.
+
+![](../../Docs/media/ImportExportCV/importacionDropbox2.png)
+
+Tras seleccionar los ítems deseados por el usuario se debe hacer click en el botón "IMPORTAR" al final de la página para que el sistema empiece a cargar o modificar los datos.
 
 ## Exportación de CVN
 El servicio de exportación devolverá un fichero PDF con los datos almacenados en BBDD, pertenecientes al usuario con identificador de CV, en el tipo de formato de CV, la versión de exportación y en el lenguaje indicado.
@@ -61,6 +99,8 @@ Los posibles lenguajes son:
 
 ## Exportación limitada de CVN
 El servicio de exportación limitada, es similar al de exportación, pero filtrando mediante un listado de identificadores los recursos que se desean recibir de BBDD.
+
+## Ejemplo de exportación
 
 ## Configuración en el appsetting.json
 ```json{
