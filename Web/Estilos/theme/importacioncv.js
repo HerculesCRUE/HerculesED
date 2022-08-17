@@ -1040,7 +1040,8 @@ edicionCV.printHtmlListItem= function(id, data) {
 								<div class="middle-wrap">
 									${this.printHtmlListItemOrders(data)}
 									<div class="title-wrap">
-										<h2 class="resource-title">${data.title}</h2>`;
+										<h2 class="resource-title">${data.title}</h2>
+										${this.printHtmlListItemEditable(data)}	`;
 		if(data.idBBDD != ""){
 			if(data.iseditable){
 				htmlListItem += selectorConflictoNoBloqueado;
@@ -1056,7 +1057,6 @@ edicionCV.printHtmlListItem= function(id, data) {
 									</div>
 									<div class="content-wrap">
 										<div class="description-wrap">
-											${this.printHtmlListItemEditable(data)}	
 											${this.printHtmlListItemPropiedades(data)}
 										</div>
 									</div>

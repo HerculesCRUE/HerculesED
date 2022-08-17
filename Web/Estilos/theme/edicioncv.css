@@ -274,6 +274,7 @@ input.form-group-date {
     height: 45px;
     padding: 10px 20px;
 	width: 150px;
+	margin-left: 15px;
 }
 
 .importar-exportar-cv .acciones-listado-cv .checkAllCVWrapper {

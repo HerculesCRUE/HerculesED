@@ -258,6 +258,12 @@
                                                         <span class="texto">@Html.Translate("NUEVA_ANOTACION")</span>
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-citar-publicacion" class="item-dropdown">
+                                                        <span class="material-icons">format_quote</span>
+                                                        <span class="texto">@Html.Translate("CITAR_PUBLICACION")</span>
+                                                    </a>
+                                                </li>
 											</ul>
 										</div>
 									</div>
@@ -944,7 +950,49 @@
         </div>
     </div>
 
-
+    <div id="modal-citar-publicacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("CITA_ESTA_PUBLICACION")</p>
+                    <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                </div>
+                <div class="modal-body">
+                    <div class="formulario-edicion">
+                        <div class="custom-form-row">
+                            <div class="form-group full-group">
+                                <label class="control-label d-block">@Html.Translate("ELIGE_FORMATO_CITA")</label>
+                                <select id="idSelectorFormatoCita" class="js-select2 select2-hidden-accessible" dependency="" data-select-search="true" tabindex="-1" aria-hidden="true">
+                                    <option value="-">-</option>
+                                    <option value="APA">APA</option>
+                                    <option value="BIBTEX">BibTeX</option>
+                                    <option value="CHICAGO">Chicago</option>
+                                    <option value="CSE">CSE</option>
+                                    <option value="IEEE">IEEE</option>
+                                    <option value="MLA">MLA</option>
+                                </select>
+                                <div id="idContenedorResultadoCita" style="opacity: 0">
+                                    <div id="idTextoCita"></div>
+                                    <div class="form-actions">
+                                        <a class="btn btn-primary" id="btnCopiarCita">@Html.Translate("COPIAR")</a>
+                                    </div>
+                                </div>
+                                <label class="control-label d-block">@Html.Translate("ELIGE_DESCARGA_CITA")</label>
+                                <select id="idSelectorDescargaCita" class="js-select2 select2-hidden-accessible" dependency="" data-select-search="true" tabindex="-1" aria-hidden="true">
+                                    <option value="-">-</option>
+                                    <option value="BIBTEX">BibTeX (.bib)</option>
+                                    <option value="REFMAN">RefMan (.ris)</option>
+                                </select>
+                                <div class="form-actions" style="display: none">
+                                    <a class="btn btn-primary" id="btnDescargarCita">@Html.Translate("DESCARGAR")</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 
