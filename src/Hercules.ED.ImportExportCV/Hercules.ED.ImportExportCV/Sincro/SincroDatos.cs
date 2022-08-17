@@ -29,6 +29,11 @@ namespace ImportadorWebCV.Sincro
             return cvn.cvnRootBean.Length;
         }
 
+        public cvnRootResultBean getCVN()
+        {
+            return cvn;
+        }
+
         private List<string> listadoSecciones = new List<string>()
         {
             //Datos identificacion
@@ -99,6 +104,52 @@ namespace ImportadorWebCV.Sincro
                     }
                     this.cvID = cvID;
                     this.personID = Utility.PersonaCV(cvID);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        }
+
+        public SincroDatos(ConfigService Configuracion, IFormFile CVFile)
+        {
+            mConfiguracion = Configuracion;
+            string extensionFile = Path.GetExtension(CVFile.FileName);
+
+            //Si no es un XML o un PDF. No hago nada
+            if (!extensionFile.Equals(".xml") && !extensionFile.Equals(".pdf"))
+            {
+                throw new FileLoadException("Extensión de archivo invalida");
+            }
+            //Si es un PDF lo convierto a XML y lo inserto.
+            if (extensionFile.Equals(".pdf"))
+            {
+                try
+                {
+                    CVFileAsXML = GenerarRootBean(mConfiguracion, CVFile);
+
+                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                    using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
+                    {
+                        cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                    }
+                }
+                catch (Exception e)
+                {
+                    
+                }
+            }
+            else
+            {
+                try
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                    CVFileAsXML = (FormFile)CVFile;
+                    using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
+                    {
+                        cvn = (cvnRootResultBean)ser.Deserialize(reader);
+                    }
                 }
                 catch (Exception e)
                 {
