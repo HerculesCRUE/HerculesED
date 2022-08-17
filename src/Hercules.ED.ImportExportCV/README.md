@@ -23,8 +23,8 @@ El análisis funcional relacionado con el CV se puede consultar en [Edición CV 
 - Exportación limitada
 
 ## Ejemplos
-- Ejemplo de importación(#ejemplo-de-importación)
-- Ejemplo de exportación(#ejemplo-de-exportación)
+- [Ejemplo de importación ](#ejemplo-de-importación)
+- [Ejemplo de exportación](#ejemplo-de-exportación)
 
 ## Preimportación de CVN
 El servicio de preimportación devuelve los datos leidos de un Documento XML o PDF pasados como parametro, junto al identificador de CV de la persona, y como dato opcional las secciones que se desea leer, las cuales se deberá pasar el codigo CVN de FECYT.
