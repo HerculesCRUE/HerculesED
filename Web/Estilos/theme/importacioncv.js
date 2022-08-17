@@ -256,10 +256,6 @@ var importarCVN = {
 				that.fileData = response[99].title;
 				that.filePreimport = response[100].title;
 				
-				$('article.resource input.custom-control-input').off('click').on('click', function(e) {
-					//e.preventDefault();
-					changeSelector($(this));
-				});
 				
 				checkAllCVWrapper();
 				checkAllConflict();
@@ -591,7 +587,12 @@ function checkAllConflict(){
 	});	
 };
 
-function checkAllCVWrapper(){
+function checkAllCVWrapper(){	
+	$('article.resource input.custom-control-input').off('click').on('click', function(e) {
+		//e.preventDefault();
+		changeSelector($(this));
+	});
+				
 	$('.checkAllCVWrapper input[type="checkbox"]').off('click').on('click', function(e) {
 		var conflictType = $(this).attr('conflict') ? '.conflict-' + $(this).attr('conflict') : '';
 		var tipo = "";
