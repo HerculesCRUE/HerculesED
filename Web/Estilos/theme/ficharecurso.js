@@ -424,7 +424,8 @@ function PintarGraficaArania(data,idContenedor) {
 				"haystack-radius": "0.5",
 				"opacity": "0.5",
 				"line-color": "#E1E1E1",
-				"width": "mapData(weight, 0, 10, 0, 10)",
+				"width": "mapData(weight, 0, 10, 3, 13)",
+
 				"overlay-padding": "1px",
 				"z-index": "11"
 			}
