@@ -405,14 +405,9 @@ Quedando la visualización en la interfaz del siguiente modo:
 ![](../../Docs/media/EditorCV/EdicionCV9.png)
 
 ## Dependencias
-**GnossApiWrapper.NetCore**: v1.0.8
-
-**Microsoft.AspNet.WebApi.Client**: v5.2.7
-
-**Newtonsoft.Json**: v13.0.1
-
-**RabbitMQ.Client**: v6.2.4
-
-**RestSharp**: v106.15.0
-
-**Swashbuckle.AspNetCore**: v5.6.3
+- **GnossApiWrapper.NetCore**: v1.0.8
+- **Microsoft.AspNet.WebApi.Client**: v5.2.7
+- **Newtonsoft.Json**: v13.0.1
+- **RabbitMQ.Client**: v6.2.4
+- **RestSharp**: v106.15.0
+- **Swashbuckle.AspNetCore**: v5.6.3
