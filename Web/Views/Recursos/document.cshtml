@@ -1019,6 +1019,11 @@
             });
 
         }
+        function borrarAnotacion(idCurrentAnnotation) {
+            anotaciones.deleteAnnotation(idCurrentAnnotation).then((data) => {
+                console.log("data", data)
+            })
+        }
 
 
         $(function () {

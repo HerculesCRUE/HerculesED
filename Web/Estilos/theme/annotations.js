@@ -131,7 +131,7 @@ class CargarAnotaciones {
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript:borrarAnotacion('${e.id}')" data-toggle="modal" class="item-dropdown">
+                                                        <a onclick="borrarAnotacion('${e.id}')" data-toggle="modal" class="item-dropdown">
                                                             <span class="material-icons">delete</span>
                                                             <span class="texto">Borrar</span>
                                                         </a>
