@@ -42,7 +42,7 @@ Los ítems secundarios pueden tener diferentes acciones:
 - Eliminar - Se eliminará el ítem secundario del CV del usuario.
 - Marcar como no duplicado - El ítem se marcará como diferente sobre el ítem principal, para que no sea mostrado en el futuro.
 
-![](../../Docs/media/EditorCV/GestionDuplicadosPaso1.png)
+![](../../Docs/media/EditorCV/GestionDuplicadosPaso2.png)
 
 El usuario puede seleccionar dos opciones:
 
