@@ -4,10 +4,12 @@
 // Constantes para el listado de las ofertas
 const uriAnn = "Anotaciones/GetOwnAnnotationsInRO"
 const uriNA = "Anotaciones/CreateNewAnnotation"
+const uriDA = "Anotaciones/DeleteAnnotation"
 
 // Variables
 var urlAnn = "";
 var urlNA = "";
+var urlDA = "";
 
 /**
  * Crea las urls para las llamadas ajax
@@ -15,6 +17,7 @@ var urlNA = "";
 $(document).ready(function () {
 	urlAnn = new URL(url_servicio_externo +  uriAnn);
 	urlNA = new URL(url_servicio_externo +  uriNA);
+	urlDA = new URL(url_servicio_externo +  uriDA);
 })
 
 class CargarAnotaciones {
@@ -128,7 +131,7 @@ class CargarAnotaciones {
                                                     </li>
 
                                                     <li>
-                                                        <a href="javascript:borrarAnotacion('${e.id}') data-toggle="modal" class="item-dropdown">
+                                                        <a href="javascript:borrarAnotacion('${e.id}')" data-toggle="modal" class="item-dropdown">
                                                             <span class="material-icons">delete</span>
                                                             <span class="texto">Borrar</span>
                                                         </a>
@@ -187,6 +190,23 @@ class CargarAnotaciones {
 
 			// Realizamos la llamada
 			this.postCall(urlNA, args).then(data => {
+				resolve(data)
+			})
+		})
+	}
+	/**
+	 * Método que borra una anotación
+	 * @param idAnnotation, string con el id de la anotación a borrar
+	 */
+	deleteAnnotation (idAnnotation) {
+		return new Promise((resolve, reject) => {
+
+			// Variables para la petición
+			let args = {
+				idAnnotation: idAnnotation,
+			}
+			// Realizamos la llamada
+			this.postCall(urlDA, args).then(data => {
 				resolve(data)
 			})
 		})
