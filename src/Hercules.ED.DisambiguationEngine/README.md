@@ -26,9 +26,21 @@ En Hércules ED, dicho motor de desambiguación es utilizado en varios servicios
 
 ## Proceso de Carga Inicial
 TODO:
+En el proceso de carga inicial de datos, se cargarán los datos en el siguiente orden:
+- Datos de fuentes externas.
+- Importación inicial de CV.
 
 ## Importación de CVN
-TODO:
+En el proceso de carga de datos por medio de los curriculum vitae (CV) de los usuarios, se hace uso para obtener las equivalencias para todos los ítems propios del CV, además de las equivalencias entre las personas almacenadas en base de datos (BBDD) y las cargadas desde el CV. 
+Cada ítem tiene diferentes atributos de diferenciación, que se marcarán en el servicio de importación de CV y un score o valor que indicará la similaridad entre diferentes ítems. 
+Para considerar similares dos ítems se deberá alcanzar un valor minimo de score, que se conseguirá con la suma de scores de los diferentes atributos.
+ 
+En el caso del apartado de "Situación Profesional Actual" se tendrán en cuenta los siguientes:
+- Nombre (+)0.8
+- Categoría (+/-)0.5
+Siendo el score minimo a alcanzar 0.8, para considerar dos ítems similares. Este proceso puede encontrarse más desarrollado en el apartado de [Deduplicación](https://confluence.um.es/confluence/display/HERCULES/Proceso+de+carga+inicial+de+datos+para+la+UMU#ProcesodecargainicialdedatosparalaUMU-Deduplicaci%C3%B3n)
+
+Tras ello, por medio del metodo SimilarityBBDD de la clase Disambiguation, se compararán los ítems leidos del CV con los almacenados en BBDD y según los criterios descritos anteriormente se diferenciarán las similaridades, devolviendo un listado de equivalencias.
 
 ## Datos de Fuentes Externas
 En el proceso de obtención de datos de fuentes externas se hace uso para obtener las equivalencias de investigadores, publicaciones y research objects.
