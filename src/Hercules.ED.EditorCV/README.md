@@ -15,7 +15,7 @@
 
 [Gestión de duplicados](#gestión-de-duplicados)
 
-[Hércules ED. Configuración del Editor de CV](#configuración-editor-cv)
+[Hércules ED. Configuración del Editor de CV](#hércules-ed-configuración-del-editor-de-cv)
 
 [Dependencias](#dependencias)
 
