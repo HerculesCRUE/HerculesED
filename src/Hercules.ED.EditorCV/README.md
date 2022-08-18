@@ -9,6 +9,10 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
+# Apartados
+
+[Configuración](#hércules ed. configuración del editor de cv)
+
 # Hércules ED. Configuración del Editor de CV
 
 [Introducción](#introducción)
