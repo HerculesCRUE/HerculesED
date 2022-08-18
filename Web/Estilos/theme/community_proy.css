@@ -580,7 +580,12 @@ body.homeComunidad #col01 {
 	margin-right: 15px;
 }
 
-
+/* CITAS */
+div#idTextoCita {
+    border: 1px solid var(--c-gris-borde);
+    padding: 10px 20px;
+    margin-top: 5%;
+}
 
 /**
 * Anotaciones

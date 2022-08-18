@@ -48,10 +48,11 @@ El usuario puede seleccionar dos opciones:
 
 - "IGNORAR Y SIGUIENTE" - Se pasará al siguiente grupo de ítems detectados como similares sin realizar ninguna acción sobre los ítems mostrados.
 
-
 ## Hércules ED. Configuración del Editor de CV
 
 [Introducción](#introducción)
+
+[Controladores](#controladores)
 
 [Ejemplo de edición](#ejemplo-de-edición)
 
@@ -59,14 +60,13 @@ El usuario puede seleccionar dos opciones:
 
 * [Configuración de la edición](#configuración-de-la-edición)
 
-## Introducción
+### Introducción
 
 Este documento describe, mediante un ejemplo práctico, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
 La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta ./Config/TabTemplates/ que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
 
 ## Ejemplo de edición
-
 
 Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Actividad científica" en el editor del CV del investigador:
 
