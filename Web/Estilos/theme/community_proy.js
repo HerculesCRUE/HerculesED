@@ -2096,5 +2096,59 @@ comportamientoVerMasVerMenosTags.comportamiento = function() {
         list.find('ul > .ocultar').hide(300);
         list.find('.ver-menos').hide();
         list.find('.ver-mas').show();
-    });    
+    });
+    
+    $('#idSelectorFormatoCita').off('change.showcita').on('change.showcita', function () {
+        var valor = $(this).find('option:selected').val();
+        if (valor == '-') {
+            $('#idContenedorResultadoCita').css('display', 'none');
+        } else {
+            var urlQuote = url_servicio_externo + "Citas/GetQuoteText";
+            var argQuote = {};
+            argQuote.pIdRecurso = $('.ficha-title-wrap h1[about]').attr('about');
+            argQuote.pFormato = valor;
+            MostrarUpdateProgress();
+            $.get(urlQuote, argQuote, function (data) {
+                $('#idTextoCita').text(data);
+                $('#idContenedorResultadoCita').css('display', 'block');
+                OcultarUpdateProgress();
+            });
+        }
+    });
+    
+    $('#btnCopiarCita').off('click').on('click', function () {
+        var textoCita = $('#idTextoCita').text();
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(textoCita);
+        } else {
+            var temp = $("<input>");
+            $(this).append(temp);
+            temp.val(textoCita).select();
+            document.execCommand("copy");
+            temp.remove();
+        }
+        mostrarNotificacion('success', 'Cita copiada');
+    });
+
+    $('#idSelectorDescargaCita').off('change.showdescarga').on('change.showdescarga', function () {
+        var valor = $(this).find('option:selected').val();
+        if (valor == '-') {
+            $('#btnDescargarCita').parent().css('display', 'none');
+        } else {
+            $('#btnDescargarCita').parent().css('display', 'block');
+        }
+    });
+    $('#btnDescargarCita').off('click').on('click', function () {
+        var urlQuote = url_servicio_externo + "Citas/GetQuoteDownload";
+        var argQuote = {};
+        argQuote.pIdRecurso = $('.ficha-title-wrap h1[about]').attr('about');
+        var valor = $('#idSelectorDescargaCita').find('option:selected').val();
+        argQuote.pFormato = valor;
+        if (valor != '-') {
+            MostrarUpdateProgress();
+            urlQuote += "?pIdRecurso=" + argQuote.pIdRecurso + "&pFormato=" + argQuote.pFormato;
+            document.location.href = urlQuote;
+            OcultarUpdateProgress();
+        }
+    });
 };

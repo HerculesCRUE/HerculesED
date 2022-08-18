@@ -9,9 +9,50 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
-# Hércules ED. Configuración del Editor de CV
+# Apartados
+
+[Controladores](#controladores)
+
+[Gestión de duplicados](#gestión-de-duplicados)
+
+[Hércules ED. Configuración del Editor de CV](#configuración-editor-cv)
+
+## Controladores
+El servicio de editor de CV cuenta con varios controladores:
+
+- Edicion CV - Servicio encargado de la obtención de datos del curriculum vitae (CV) y tambien de la obtención de duplicados de los mismos.
+- Envio validación - Servicio encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
+- Exportado CV - Servicio encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
+- Guardado CV - Servicio encargado de la creación, modificación y eliminacion de un ítem.
+- Importado CV - Servicio encargado de la carga de datos y presentación de los mismos para la implementación de CV.
+
+## Gestión de duplicados
+El EditorCV cuenta con un servicio para la detección de duplicados, el cual se mostrará al usuario al acceder al área de edición de su curriculum vitae. Pero tambien podrá acceder al mismo seleccionando "GESTIONAR DUPLICADOS" en la esquina superior derecha.
+
+![](../../Docs/media/EditorCV/GestionDuplicadosPaso1.png)
+
+![](../../Docs/media/EditorCV/GestionDuplicadosBoton.png)
+
+La gestión de duplicados le indicará al propio usuario los ítems detectados como similares en su CV. Se le mostrará un ítem principal sobre el cual se le aplicarán las acciones de los ítems secundarios. 
+Los ítems secundarios pueden pasar a principal, al seleccionar el botón "CAMBIAR A PRINCIPAL". 
+Los ítems secundarios pueden tener diferentes acciones:
+- Fusionar - Los datos vacíos del ítem principal serán complementados por los datos del ítem secundario. El ítem principal no perderá datos ni serán rescritos en este proceso, unicamente se añadirán datos que estaban vacíos previamente.
+- Eliminar - Se eliminará el ítem secundario del CV del usuario.
+- Marcar como no duplicado - El ítem se marcará como diferente sobre el ítem principal, para que no sea mostrado en el futuro.
+
+![](../../Docs/media/EditorCV/GestionDuplicadosPaso1.png)
+
+El usuario puede seleccionar dos opciones:
+
+- "APLICAR Y SIGUIENTE" - Será necesario que los ítems secundarios tengan una acción asociada. Se aplicarán las acciones elegidas en los ítems secundarios y se mostrará los siguientes ítems detectados como similares.
+
+- "IGNORAR Y SIGUIENTE" - Se pasará al siguiente grupo de ítems detectados como similares sin realizar ninguna acción sobre los ítems mostrados.
+
+## Hércules ED. Configuración del Editor de CV
 
 [Introducción](#introducción)
+
+[Controladores](#controladores)
 
 [Ejemplo de edición](#ejemplo-de-edición)
 
@@ -19,15 +60,13 @@
 
 * [Configuración de la edición](#configuración-de-la-edición)
 
-Introducción
-============
+### Introducción
 
 Este documento describe, mediante un ejemplo práctico, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
 La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta ./Config/TabTemplates/ que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
 
-Ejemplo de edición
-==================
+## Ejemplo de edición
 
 Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Actividad científica" en el editor del CV del investigador:
 
@@ -55,7 +94,7 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 En primer lugar, se presenta el RDF y la propiedad que, en este caso, corresponden a la pestaña de actividad científica y tecnológica del investigador (roh:ScientificActivity). En un segundo nivel se sitúa el listado de secciones (ítems) que podemos editar. Como se observa en la imagen anterior, la primera sección corresponde a las publicaciones científicas (roh:scientificPublications), cuyo RDF, propiedad y presentación han sido establecidos. "presentation" contiene un tercer nivel en el que se ha definido el tipo (listado de ítems) y el título de la sección (Publicaciones, documentos científicos y técnicos).
 
 
-## Configuración de la presentación (listado y minificha)
+### Configuración de la presentación (listado y minificha)
 
 
 Para definir la presentación de cada una de las publicaciones que el titular del CV puede añadir en esta sección, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
@@ -230,7 +269,7 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 ![](../../Docs/media/EditorCV/EdicionCV4.png)
 
 
-## Configuración de la edición
+### Configuración de la edición
 
 Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
 
