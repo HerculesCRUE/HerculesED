@@ -38,7 +38,8 @@ Para considerar similares dos ítems se deberá alcanzar un valor minimo de scor
 En el caso del apartado de "Situación Profesional Actual" se tendrán en cuenta los siguientes:
 - Nombre (+)0.8
 - Categoría (+/-)0.5
-Siendo el score minimo a alcanzar 0.8, para considerar dos ítems similares. Este proceso puede encontrarse más desarrollado en el apartado de [Deduplicación](https://confluence.um.es/confluence/display/HERCULES/Proceso+de+carga+inicial+de+datos+para+la+UMU#ProcesodecargainicialdedatosparalaUMU-Deduplicaci%C3%B3n)
+
+Siendo el score minimo a alcanzar 0.8, para considerar dos ítems similares. Este proceso puede encontrarse más desarrollado en el apartado de [Deduplicación](https://confluence.um.es/confluence/display/HERCULES/Proceso+de+carga+inicial+de+datos+para+la+UMU#ProcesodecargainicialdedatosparalaUMU-Deduplicaci%C3%B3n).
 
 Tras ello, por medio del metodo SimilarityBBDD de la clase Disambiguation, se compararán los ítems leidos del CV con los almacenados en BBDD y según los criterios descritos anteriormente se diferenciarán las similaridades, devolviendo un listado de equivalencias.
 
