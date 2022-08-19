@@ -94,6 +94,18 @@ class CargarAnotaciones {
 
 		// Pintamos el html
 		let html = currentData.map(e => {
+		
+			var text = e.texto.substring(0, 100);
+
+			var index = text.indexOf("\n", text.indexOf("\n") + 1);
+			if (index != -1) {
+				text = text.substring(0, index-1);
+			}
+			console.log(text);
+			if (e.texto.length > text.length) {
+				text = text.substring(0,text.lastIndexOf("<br />")-1);
+				var readmore = "<a onclick='readMoreAnotacion(\""+e.id+"\",\""+e.texto+"\")' class='readmore'>Leer más</a>";
+			}
 			return `<article class="resource resource-annotation" id="${e.id}">
                         <div class="wrap">
                             <div class="row">
@@ -107,7 +119,8 @@ class CargarAnotaciones {
                                         <div class="content-wrap">
                                             <div class="description-wrap counted">
                                                 <div class="desc">
-                                                    <p>${e.texto}</p>
+                                                    <p>${text}${readmore}</p>
+												
                                                 </div>
                                             </div>
                                         </div>
