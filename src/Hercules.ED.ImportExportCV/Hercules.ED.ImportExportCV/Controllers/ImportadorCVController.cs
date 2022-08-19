@@ -40,11 +40,13 @@ namespace Hercules.ED.ImportExportCV.Controllers
         [HttpGet("LecturaDatos")]
         public ActionResult lecturaDatos()
         {
+                return Ok();
         }
 
         [HttpGet("LecturaCarpeta")]
         public ActionResult lecturaCarpeta()
         {
+                return Ok();
         }
 
         /// <summary>
