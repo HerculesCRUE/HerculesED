@@ -4474,13 +4474,28 @@ var duplicadosCV = {
 		//Botón omitir
 		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
 		{
-			if (that.pasoActual+1 < that.pasosTotales) {
-            that.pasoActual++;
-			that.pintarAgrupacionDuplicados();
-			}else{
+			if (that.pasoActual + 1 < that.pasosTotales) {
+				that.pasoActual++;
+				that.pintarAgrupacionDuplicados();
+			} else {
+				var minSimilarity = $('#modal-repetir-duplicidad').attr('minSimilarity');
 				$('#modal-posible-duplicidad').modal('hide');
-				mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+				if (!minSimilarity || minSimilarity > 0.7) {
+					$('#modal-repetir-duplicidad').modal('show');
+				}
 			}
+		});
+		// Botón para continuar la gestión de duplicados
+		$('.continuarduplicidad').unbind("click").bind("click", function(){
+			$('#modal-repetir-duplicidad').attr('minSimilarity', '0.7');
+			$('#modal-repetir-duplicidad').modal('hide');
+			that.cargarDuplicados(false, 0.7);
+		});
+		// Botón para cerrar la gestión de duplicados
+		$('a.btn.cerrarduplicidad').unbind("click").bind("click", function(){
+			$('#modal-repetir-duplicidad').modal('hide');
+			$('#modal-posible-duplicidad').modal('hide');
+			mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
 		});
 		//Publicar/despublicar duplicado
         $('#modal-posible-duplicidad .resource-list .visibility-wrapper').off('click').on('click', function(e) {
@@ -4542,11 +4557,12 @@ var duplicadosCV = {
 		accionesPlegarDesplegarModal.init();	
 		tooltipsAccionesRecursos.init();
 	},
-    cargarDuplicados: function(botonPulsado) {
+    cargarDuplicados: function(botonPulsado, minSimilarity = 0.9) {
 		if(this.idCV!=null)
 		{
 			var that=this;
-			var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV;
+			var url = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV + "&pMinSimilarity=" + minSimilarity;
+			$('#modal-repetir-duplicidad').attr('minSimilarity', minSimilarity);
 			MostrarUpdateProgress();
 			$.get(url, null, function (data) {
 				that.items=data;
@@ -4558,6 +4574,12 @@ var duplicadosCV = {
 				}else
 				{
 					if(botonPulsado){
+						$('#modal-repetir-duplicidad').modal('show');
+						$('.continuarduplicidad').unbind("click").bind("click", function(){
+							$('#modal-repetir-duplicidad').attr('minSimilarity', '0.7');
+							$('#modal-repetir-duplicidad').modal('hide');
+							that.cargarDuplicados(false, 0.7);
+						});
 						mostrarNotificacion("info",GetText("DUPLICADOS_NO_HAY_DUPLICADOS"));
 						OcultarUpdateProgress();
 					}
