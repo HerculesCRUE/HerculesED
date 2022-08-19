@@ -23,7 +23,7 @@ El análisis funcional relacionado con el CV se puede consultar en [Edición CV 
 - Exportación limitada
 
 ## Ejemplos
-- [Ejemplo de importación ](#ejemplo-de-importación)
+- [Ejemplo de importación](#ejemplo-de-importación)
 - [Ejemplo de exportación](#ejemplo-de-exportación)
 
 ## Preimportación de CVN

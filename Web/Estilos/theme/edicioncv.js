@@ -4483,7 +4483,7 @@ var duplicadosCV = {
 				if (minSimilarity > 0.7) {
 					$('#modal-repetir-duplicidad').modal('show');
 				} else {
-					mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+					mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 				}
 			}
 		});
@@ -6788,6 +6788,25 @@ function pintadoTesauro(elementoActual, edit, mostrarModal){
 		$(modalPopUp).removeClass('modal-con-buscador');
 		$(modalPopUp).removeClass('modal-tesauro');
 	}
+}
+
+theme.mostrarNotificacion= function(tipo, contenido, time){
+	var timeO = 5000;
+	if(time != null){
+		timeO = time;
+	}
+	var mostrarNotificacion = function (tipo, contenido) {
+		toastr[tipo](contenido, 'Mensaje de la plataforma', {
+			toastClass: 'toast themed',
+			positionClass: "toast-bottom-center",
+			target: 'body',
+			closeHtml: '<span class="material-icons">close</span>',
+			showMethod: 'slideDown',
+			timeOut: timeO,
+			escapeHtml: false,
+			closeButton: true,
+		});
+	};
 }
 
 function pintadoEtiquetas(that, data){
