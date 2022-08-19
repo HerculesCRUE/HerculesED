@@ -2127,7 +2127,7 @@ comportamientoVerMasVerMenosTags.comportamiento = function() {
             document.execCommand("copy");
             temp.remove();
         }
-        mostrarNotificacion('success', 'Cita copiada');
+        mostrarNotificacion('info', 'Cita copiada');
     });
 
     $('#idSelectorDescargaCita').off('change.showdescarga').on('change.showdescarga', function () {
