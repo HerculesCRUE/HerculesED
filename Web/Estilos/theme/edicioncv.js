@@ -4480,7 +4480,7 @@ var duplicadosCV = {
 			} else {
 				var minSimilarity = $('#modal-repetir-duplicidad').attr('minSimilarity');
 				$('#modal-posible-duplicidad').modal('hide');
-				if (!minSimilarity || minSimilarity > 0.7) {
+				if (minSimilarity > 0.7) {
 					$('#modal-repetir-duplicidad').modal('show');
 				} else {
 					mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
@@ -4489,14 +4489,12 @@ var duplicadosCV = {
 		});
 		// Botón para continuar la gestión de duplicados
 		$('.continuarduplicidad').unbind("click").bind("click", function(){
-			$('#modal-repetir-duplicidad').attr('minSimilarity', '0.7');
 			$('#modal-repetir-duplicidad').modal('hide');
 			that.cargarDuplicados(false, 0.7);
 		});
 		// Botón para cerrar la gestión de duplicados
 		$('a.btn.cerrarduplicidad').unbind("click").bind("click", function(){
 			$('#modal-repetir-duplicidad').modal('hide');
-			$('#modal-posible-duplicidad').modal('hide');
 			mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
 		});
 		//Publicar/despublicar duplicado
@@ -4578,12 +4576,16 @@ var duplicadosCV = {
 					if(botonPulsado){
 						$('#modal-repetir-duplicidad').modal('show');
 						$('.continuarduplicidad').unbind("click").bind("click", function(){
-							$('#modal-repetir-duplicidad').attr('minSimilarity', '0.7');
 							$('#modal-repetir-duplicidad').modal('hide');
 							that.cargarDuplicados(false, 0.7);
 						});
-						mostrarNotificacion("info",GetText("DUPLICADOS_NO_HAY_DUPLICADOS"));
+						$('.cerrarduplicidad').unbind("click").bind("click", function(){
+							$('#modal-repetir-duplicidad').modal('hide');
+							mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+						});
 						OcultarUpdateProgress();
+					} else if (minSimilarity == 0.7) {
+						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
 					}
 				}
 			});

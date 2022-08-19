@@ -282,6 +282,8 @@ namespace EditorCV.Models
         /// <summary>
         /// Funcion para obtener los elementos con duplicidad.
         /// </summary>
+        /// <param name="pCVId">ID del CV a tratar</param>
+        /// <param name="minSimilarity">Indica el porcentaje de similitud que tienen los items duplicados</param>
         /// <returns>
         /// Un diccionario que tiene el titulo como llave y una lista contiendo las ids de todas las veces que aparece ese titulo.
         /// </returns>

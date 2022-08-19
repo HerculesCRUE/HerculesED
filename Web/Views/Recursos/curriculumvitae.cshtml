@@ -435,8 +435,12 @@ $(function() {
             </div>
             <div class="modal-body">
                 <div class="formulario-edicion">
-                    <div class="form-group">
-                        <label class="control-label">@Html.Translate("CONTINUAR_DUPLICIDAD")</label>
+                    <div class="alert">
+                        <p class="alert-title">
+                            <span class="material-icons">warning</span>
+                            @Html.Translate("CONTINUAR_DUPLICIDAD")
+                            <p>@Html.Translate("CONTINUAR_DUPLICIDAD_MENSAJE")</p>
+                        </p>
                     </div>
                     <div class="form-actions">
                         <a data-dismiss="modal" class="btn btn-primary cerrarduplicidad">@Html.Translate("NO")</a>
