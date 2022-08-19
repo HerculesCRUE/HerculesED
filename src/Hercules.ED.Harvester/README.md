@@ -40,4 +40,4 @@ El programa se quedará leyendo los archivos pendientes de carga, tratando los d
 
 ## Dependencias
 - **GnossApiWrapper.NetCore**: v1.0.6
-- **GnossApiWrapper.NetCore**: v1.0.8
+- **Newtonsoft.Json**: 13.0.1

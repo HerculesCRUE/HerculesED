@@ -391,40 +391,65 @@ $(function() {
     </div>
 </div>
 <div id="modal-posible-duplicidad" class="modal modal-top modal-wide fade show duplicidades" data-backdrop="static" tabindex="-1" role="dialog">
-<div class="modal-dialog" role="document">
-	<div class="modal-content">
-		<div class="modal-header">
-			<p class="modal-title"><span class="material-icons">send</span>@Html.Translate("GESTIONAR_DUPLICADOS")<span class="numpasos"></span></p>
-			<span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
-		</div>
-		<div class="modal-body">
-			<div class="alert">
-				<p class="alert-title">
-					<span class="material-icons">warning</span>
-					@Html.Translate("POSIBLE_DUPLICIDAD")
-					@Html.Raw(Html.Translate("POSIBLE_DUPLICIDAD_MENSAJE"))
-				</p>
-			</div>
-			<div class="resource-list listView">
-				<div class="resource-list-wrap principal">					
-				</div>
-			</div>
-			<div class="formulario-edicion formulario-publicacion">
-				<div class="select-resource-list">
-					<div class="resource-list listView list-con-checks">
-						<div class="resource-list-wrap secundarios">
-						</div>
-					</div>
-				</div>
-				<div class="form-actions">
-					<a class="btn btn-primary uppercase btn-continuar">@Html.Translate("CONTINUAR")</a>
-					<a class="btn btn-primary uppercase btn-omitir">@Html.Translate("OMITIR_Y_CONTINUAR")</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("GESTIONAR_DUPLICADOS")<span class="numpasos"></span></p>
+                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="alert">
+                    <p class="alert-title">
+                        <span class="material-icons">warning</span>
+                        @Html.Translate("POSIBLE_DUPLICIDAD")
+                        @Html.Raw(Html.Translate("POSIBLE_DUPLICIDAD_MENSAJE"))
+                    </p>
+                </div>
+                <div class="resource-list listView">
+                    <div class="resource-list-wrap principal">					
+                    </div>
+                </div>
+                <div class="formulario-edicion formulario-publicacion">
+                    <div class="select-resource-list">
+                        <div class="resource-list listView list-con-checks">
+                            <div class="resource-list-wrap secundarios">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <a class="btn btn-primary uppercase btn-continuar">@Html.Translate("CONTINUAR")</a>
+                        <a class="btn btn-primary uppercase btn-omitir">@Html.Translate("OMITIR_Y_CONTINUAR")</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
 </div>
+<div id="modal-repetir-duplicidad" class="modal modal-top modal-wide fade show duplicidades" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("GESTIONAR_DUPLICADOS")</p>
+                <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+            </div>
+            <div class="modal-body">
+                <div class="formulario-edicion">
+                    <div class="alert">
+                        <p class="alert-title">
+                            <span class="material-icons">warning</span>
+                            @Html.Translate("CONTINUAR_DUPLICIDAD")
+                            <p>@Html.Translate("CONTINUAR_DUPLICIDAD_MENSAJE")</p>
+                        </p>
+                    </div>
+                    <div class="form-actions">
+                        <a data-dismiss="modal" class="btn btn-primary cerrarduplicidad">@Html.Translate("NO")</a>
+                        <a class="btn btn-outline-primary continuarduplicidad">@Html.Translate("SI")</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="modal-editar-entidad" class="modal modal-top modal-wide fade" data-backdrop="static" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">

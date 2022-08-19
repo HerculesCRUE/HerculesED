@@ -282,10 +282,12 @@ namespace EditorCV.Models
         /// <summary>
         /// Funcion para obtener los elementos con duplicidad.
         /// </summary>
+        /// <param name="pCVId">ID del CV a tratar</param>
+        /// <param name="minSimilarity">Indica el porcentaje de similitud que tienen los items duplicados</param>
         /// <returns>
         /// Un diccionario que tiene el titulo como llave y una lista contiendo las ids de todas las veces que aparece ese titulo.
         /// </returns>
-        public List<SimilarityResponse> GetItemsDuplicados(string pCVId)
+        public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity)
         {
             Dictionary<string, HashSet<string>> itemsNoDuplicados = new Dictionary<string, HashSet<string>>();
             string select = $@"SELECT distinct ?group ?id";
@@ -307,7 +309,6 @@ namespace EditorCV.Models
 
             List<SimilarityResponse> listSimilarity = new List<SimilarityResponse>();
 
-            float minSimilarity = 0.9f;
             foreach (API.Templates.Tab tab in UtilityCV.TabTemplates)
             {
                 if (tab.sections != null)

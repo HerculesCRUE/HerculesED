@@ -15,7 +15,9 @@
 
 [Gestión de duplicados](#gestión-de-duplicados)
 
-[Hércules ED. Configuración del Editor de CV](#configuración-editor-cv)
+[Hércules ED. Configuración del Editor de CV](#hércules-ed-configuración-del-editor-de-cv)
+
+[Dependencias](#dependencias)
 
 ## Controladores
 El servicio de editor de CV cuenta con varios controladores:
@@ -27,7 +29,7 @@ El servicio de editor de CV cuenta con varios controladores:
 - Importado CV - Servicio encargado de la carga de datos y presentación de los mismos para la implementación de CV.
 
 ## Gestión de duplicados
-El EditorCV cuenta con un servicio para la detección de duplicados, el cual se mostrará al usuario al acceder al área de edición de su curriculum vitae. Pero tambien podrá acceder al mismo seleccionando "GESTIONAR DUPLICADOS" en la esquina superior derecha.
+El EditorCV cuenta con un servicio para la detección de duplicados, el cual se mostrará al usuario al acceder al área de edición de su curriculum vitae. Pero también podrá acceder al mismo seleccionando "GESTIONAR DUPLICADOS" en la esquina superior derecha.
 
 ![](../../Docs/media/EditorCV/GestionDuplicadosPaso1.png)
 
@@ -36,11 +38,11 @@ El EditorCV cuenta con un servicio para la detección de duplicados, el cual se 
 La gestión de duplicados le indicará al propio usuario los ítems detectados como similares en su CV. Se le mostrará un ítem principal sobre el cual se le aplicarán las acciones de los ítems secundarios. 
 Los ítems secundarios pueden pasar a principal, al seleccionar el botón "CAMBIAR A PRINCIPAL". 
 Los ítems secundarios pueden tener diferentes acciones:
-- Fusionar - Los datos vacíos del ítem principal serán complementados por los datos del ítem secundario. El ítem principal no perderá datos ni serán rescritos en este proceso, unicamente se añadirán datos que estaban vacíos previamente.
+- Fusionar - Los datos vacíos del ítem principal serán complementados por los datos del ítem secundario. El ítem principal no perderá datos ni serán rescritos en este proceso, únicamente se añadirán datos que estaban vacíos previamente.
 - Eliminar - Se eliminará el ítem secundario del CV del usuario.
 - Marcar como no duplicado - El ítem se marcará como diferente sobre el ítem principal, para que no sea mostrado en el futuro.
 
-![](../../Docs/media/EditorCV/GestionDuplicadosPaso1.png)
+![](../../Docs/media/EditorCV/GestionDuplicadosPaso2.png)
 
 El usuario puede seleccionar dos opciones:
 
@@ -401,3 +403,11 @@ Para establecer el campo de la autoría se ha realizado una configuración a med
 Quedando la visualización en la interfaz del siguiente modo:
 
 ![](../../Docs/media/EditorCV/EdicionCV9.png)
+
+## Dependencias
+- **GnossApiWrapper.NetCore**: v1.0.8
+- **Microsoft.AspNet.WebApi.Client**: v5.2.7
+- **Newtonsoft.Json**: v13.0.1
+- **RabbitMQ.Client**: v6.2.4
+- **RestSharp**: v106.15.0
+- **Swashbuckle.AspNetCore**: v5.6.3

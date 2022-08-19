@@ -71,12 +71,12 @@ namespace GuardadoCV.Controllers
         }
 
         [HttpGet("GetItemsDuplicados")]
-        public IActionResult GetItemsDuplicados(string pCVId)
+        public IActionResult GetItemsDuplicados(string pCVId, float pMinSimilarity = 0.9f)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetItemsDuplicados(pCVId));
+                return Ok(accionesEdicion.GetItemsDuplicados(pCVId, pMinSimilarity));
             }
             catch (Exception ex)
             {
@@ -209,6 +209,12 @@ namespace GuardadoCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Devuelve el tesauro pedido <paramref name="tesaurus"/> en el idioma marcado <paramref name="pLang"/>
+        /// </summary>
+        /// <param name="tesaurus"></param>
+        /// <param name="pLang"></param>
+        /// <returns></returns>
         [HttpGet("GetTesaurus")]
         public IActionResult GetTesaurus(string tesaurus, string pLang)
         {
