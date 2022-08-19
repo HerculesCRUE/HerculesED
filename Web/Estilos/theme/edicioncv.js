@@ -4482,6 +4482,8 @@ var duplicadosCV = {
 				$('#modal-posible-duplicidad').modal('hide');
 				if (!minSimilarity || minSimilarity > 0.7) {
 					$('#modal-repetir-duplicidad').modal('show');
+				} else {
+					mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
 				}
 			}
 		});
