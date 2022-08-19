@@ -3741,7 +3741,7 @@ var edicionCV = {
 				enctype: 'multipart/form-data',
 				contentType: false,
 				success: function ( response ) {				
-					mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'));
+					mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'), 10000);
 					$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + section + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + idrecurso + "&pLang=" + lang, null, function(data) {
 						$('a[data-id="' + idrecurso + '"]').closest('article').replaceWith(that.printHtmlListItem(idrecurso, data));
 						that.repintarListadoTab(section);
@@ -3833,7 +3833,7 @@ var edicionCV = {
             enctype: 'multipart/form-data',
             contentType: false,
 			success: function(response){
-				mostrarNotificacion('success', GetText('CV_DOCUMENTO_VALIDACION'));
+				mostrarNotificacion('success', GetText('CV_DOCUMENTO_VALIDACION'), 10000);
 			},
 			error: function(response){
 				mostrarNotificacion('error', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
@@ -4498,7 +4498,7 @@ var duplicadosCV = {
 		// Botón para cerrar la gestión de duplicados
 		$('a.btn.cerrarduplicidad').unbind("click").bind("click", function(){
 			$('#modal-repetir-duplicidad').modal('hide');
-			mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+			mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"),10000);
 		});
 		//Publicar/despublicar duplicado
         $('#modal-posible-duplicidad .resource-list .visibility-wrapper').off('click').on('click', function(e) {
@@ -4584,11 +4584,11 @@ var duplicadosCV = {
 						});
 						$('.cerrarduplicidad').unbind("click").bind("click", function(){
 							$('#modal-repetir-duplicidad').modal('hide');
-							mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+							mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 						});
 						OcultarUpdateProgress();
 					} else if (minSimilarity == 0.7) {
-						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"));
+						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 					}
 				}
 			});
