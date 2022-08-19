@@ -6790,7 +6790,7 @@ function pintadoTesauro(elementoActual, edit, mostrarModal){
 	}
 }
 
-theme.mostrarNotificacion= function(tipo, contenido, time){
+function mostrarNotificacion(tipo, contenido, time){
 	var timeO = 5000;
 	if(time != null){
 		timeO = time;
