@@ -3697,7 +3697,7 @@ var edicionCV = {
         });
 				
 		//Obtener datos envio PRC
-		$('.texto.prodCientItem').off('click').on('click', function(e) {
+		$('.texto.prodCientItem').closest('li').off('click').on('click', function(e) {
 			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 			$('#modal-enviar-produccion-cientifica .resource-list.listView .resource-list-wrap').empty();
 			
