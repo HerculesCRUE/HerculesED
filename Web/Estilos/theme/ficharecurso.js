@@ -888,13 +888,15 @@ function filtrarSearch(callback = () => {}) {
 	let input = document.getElementById('buscadorPersonalizadoSearchForm').getElementsByClassName('finderSectionText');
 
 	let parameterVal = input[0].value
-	let filtro = "search="+parameterVal
+	let filtro = "?search="+parameterVal
 	input[0].value = ""
 
 	var url = new URL(location.href)
 	let params = url.searchParams
 	params.delete('search');
-	params.append('search', parameterVal); 
+	// necesario el interrgante para que realize bien la llamada
+	params.delete('?search');
+	params.append('?search', parameterVal); 
 
 	let resultsParamsArr = []
 	params.forEach(function(value, key) {
