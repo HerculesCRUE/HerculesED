@@ -14,7 +14,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         private string PSS_PDF { get; set; }
         private string Version { get; set; }
         private string UrlEnriquecimiento { get; set; }
-        private string UrlPublicationAPI { get; set; }
+        private string UrlServicioExterno { get; set; }
 
         //Configuración Rabbit para el desnormalizador
         private string RabbitConnectionString { get; set; }
@@ -119,24 +119,24 @@ namespace Hercules.ED.ImportExportCV.Controllers
             return UrlEnriquecimiento;
         }
         
-        public string GetUrlPublicationAPI() {
-            if (string.IsNullOrEmpty(UrlPublicationAPI))
+        public string GetUrlServicioExterno() {
+            if (string.IsNullOrEmpty(UrlServicioExterno))
             {
                 string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("UrlPublicationAPI"))
+                if (environmentVariables.Contains("UrlServicioExterno"))
                 {
-                    connectionString = environmentVariables["UrlPublicationAPI"] as string;
+                    connectionString = environmentVariables["UrlServicioExterno"] as string;
                 }
                 else
                 {
-                    connectionString = configuracion["UrlPublicationAPI"];
+                    connectionString = configuracion["UrlServicioExterno"];
                 }
 
-                UrlPublicationAPI = connectionString;
+                UrlServicioExterno = connectionString;
             }
 
-            return UrlPublicationAPI;
+            return UrlServicioExterno;
         }
 
         /// <summary>

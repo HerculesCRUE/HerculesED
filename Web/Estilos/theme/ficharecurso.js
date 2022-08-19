@@ -38,6 +38,10 @@ var buscadorPersonalizado = {
 		tiempoEsperaResultados = 0;
 		suplementoFiltros = '';
 		primeraCargaDeFacetas = false;
+		// TODO ¿De donde viene PestanyaActualID? Da error al hacer scroll y cargar resultados en proyectos. Con esta porción de código elimino el bug.
+		if (parametrosadicionales.includes('PestanyaActualID=')) {
+			parametrosadicionales = parametrosadicionales.split('|')[1];
+		}
 		parametros_adiccionales = parametrosadicionales;
 		mostrarFacetas = true;
 		mostrarCajaBusqueda = true;
