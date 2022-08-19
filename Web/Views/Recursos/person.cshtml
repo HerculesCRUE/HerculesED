@@ -233,19 +233,43 @@
                     }
                 </div>
             }
+            <div class="list-wrap tags">
+           
+                @if (!string.IsNullOrEmpty(pPerson.Roh_ORCID) && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                {
+                      <div class="bloque bloque-id">
+                            <div class="label">ORCID</div>
+                            <a href="https://orcid.org/@pPerson.Roh_ORCID" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_ORCID))" class="nombre">@pPerson.Roh_ORCID</a>
 
-            @if (!string.IsNullOrEmpty(pPerson.Roh_ORCID) && !string.IsNullOrEmpty(pPerson.GNOSSID))
-            {
-                <div class="list-wrap tags">
-                    <div class="bloque">
-                        <div class="label">ORCID</div>
-
-                        <a href="https://orcid.org/@pPerson.Roh_ORCID" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_ORCID))" class="nombre">@pPerson.Roh_ORCID</a>
-
+                        </div>
+    
+                }
+          
+                @if (!string.IsNullOrEmpty(pPerson.Vivo_scopusId) && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                {
+                    <div class="bloque bloque-id">
+                        <div class="label">Scopus</div>
+                        <a href="https://www.scopus.com/authid/detail.uri?authorId=@pPerson.Vivo_scopusId" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Vivo_scopusId))" class="nombre">@pPerson.Vivo_scopusId</a>
                     </div>
-                </div>
-            }
+                    }
+                
 
+                @if (!string.IsNullOrEmpty(pPerson.Vivo_researcherId) && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                {
+                    <div class="bloque bloque-id">
+                        <div class="label">WoS</div>
+                        <a href="https://publons.com/wos-op/researcher/@pPerson.Vivo_researcherId" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Vivo_researcherId))" class="nombre">@pPerson.Vivo_researcherId</a>
+                    </div>
+                }
+          
+                @if (!string.IsNullOrEmpty(pPerson.Roh_semanticScholarId) && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                {
+                    <div class="bloque bloque-id">
+                        <div class="label">SemanticScholar</div>
+                        <a href="https://https://www.semanticscholar.org/author/@pPerson.Roh_semanticScholarId" target="_blank" about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_semanticScholarId))" class="nombre">@pPerson.Roh_semanticScholarId</a>
+                    </div>
+                }
+            </div>
             @if (!string.IsNullOrEmpty(pPerson.GNOSSID) && pPerson.Foaf_homepage != null && pPerson.Foaf_homepage.Count > 0)
             {
                 <div class="tags">
@@ -784,6 +808,7 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
 
+    
     // Datos Garfica Colaboradores
     var dataCB = {};
     var idContenedorCB = "";
@@ -1564,6 +1589,7 @@
                     this.Roh_lineResearch.Add(propValue.Value);
                 }
             }
+
             this.Roh_isActive = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isActive"));
             this.Roh_isSynchronized = GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/isSynchronized"));
             this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
