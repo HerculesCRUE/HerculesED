@@ -4430,7 +4430,10 @@ var duplicadosCV = {
 	pasosTotales:0,
     init: function(botonPulsado = false) {
         this.idCV = $('.contenido-cv').attr('about');
-		this.cargarDuplicados(botonPulsado);
+		if (!(window.location.href.indexOf('?tab=') > -1)) {
+			// Si viene redireccionado de alertas, no carga duplicados.
+			this.cargarDuplicados(botonPulsado);
+		}
         return;
     },
 	engancharComportamientos: function() {

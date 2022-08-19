@@ -984,6 +984,14 @@
         }
 
         /**
+         * Funcion que muestra todo el texto de la descripcion de una anotacion
+         * param id, id de la anotacion
+         * param text, texto de la anotacion
+         */
+        function readMoreAnotacion(idAnnotation,text){
+            $(document.getElementById(idAnnotation)).find("div.desc p").html(text);  
+        }
+        /**
          * Función que modifica la notificación 
          * param idEle, string con el id del textArea para obtener el texto introducido
          * param idCurrentAnnotation, string con el id de la anotación para modificar la misma
