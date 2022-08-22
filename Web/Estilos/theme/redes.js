@@ -17,7 +17,6 @@ $(document).ready(function () {
     var datos = null;
     MostrarUpdateProgress();
     $.get(url, arg, function (data) {
-        console.log(data);
         data.forEach(function (valor, indice, data) {
             var placeholder = $('#PLACEHOLDER_' + valor.id.toUpperCase()).val();
             var label = $('#' + valor.id.toUpperCase()).val();
