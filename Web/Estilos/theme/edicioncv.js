@@ -6539,7 +6539,7 @@ montarTooltip.lanzar= function (elem, title, classes) {
 	elem.tooltip({
 		html: true,
 		placement: 'bottom',
-		template: '<div class="tooltip ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+		template: '<div class="tooltip infoTooltipMargin ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
 		title: title
 	});
 	this.comportamiento(elem);
