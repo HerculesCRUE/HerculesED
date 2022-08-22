@@ -72,7 +72,9 @@ var edicionCV = {
 		
         $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
-            OcultarUpdateProgress();
+            if (!$('div#modal-posible-duplicidad').hasClass('show')) {
+				OcultarUpdateProgress();
+			}
 			for(var key in tooltips.section) {
 				var value = tooltips.section[key];
 				$(key).tooltip({
