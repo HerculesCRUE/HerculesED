@@ -95,17 +95,17 @@ class CargarAnotaciones {
 		// Pintamos el html
 		let html = currentData.map(e => {
 		
-			var text = e.texto.substring(0, 100);
-
-			var index = text.indexOf("\n", text.indexOf("\n") + 1);
+			/*var text = e.texto.substring(0, 100).replace("\n", "<br />");
+			var readmore = "";
+			var index = text.indexOf("<br />", text.indexOf("<br />") + "<br />".length);
 			if (index != -1) {
 				text = text.substring(0, index-1);
 			}
 			console.log(text);
 			if (e.texto.length > text.length) {
-				text = text.substring(0,text.lastIndexOf("<br />")-1);
-				var readmore = "<a onclick='readMoreAnotacion(\""+e.id+"\",\""+e.texto+"\")' class='readmore'>Leer más</a>";
-			}
+				//text = text.substring(0,text.lastIndexOf("<br />")-1);
+				readmore = "<a onclick='readMoreAnotacion(\""+e.id+"\",\""+e.texto+"\")' class='readmore'>Leer más</a>";
+			}*/
 			return `<article class="resource resource-annotation" id="${e.id}">
                         <div class="wrap">
                             <div class="row">
@@ -118,10 +118,13 @@ class CargarAnotaciones {
                                         </div>
                                         <div class="content-wrap">
                                             <div class="description-wrap counted">
-                                                <div class="desc">
-                                                    <p>${text}${readmore}</p>
-												
+                                                <div class="desc" style="overflow-wrap:anywhere; display: -webkit-box; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-overflow: ellipsis;">
+                                                    <p>${e.texto}</p>
                                                 </div>
+											<p class="moreResults showMore" style="display:none">
+												<a href="javascript: void(0);" class="ver-mas" style="display: flex;">Ver más</a>
+												<a href="javascript: void(0);" class="ver-menos" style="display: none;">Ver menos</a>
+											</p>
                                             </div>
                                         </div>
                                     </div>
@@ -161,7 +164,22 @@ class CargarAnotaciones {
 		})
 		let resourceItems = this.contenedor.getElementsByClassName('resource-list-wrap')[0]
 		resourceItems.innerHTML = html.join('');
-
+		$("#annotations-tab").off("click").on("click", function() {
+			// calcula las lineas que tiene la anotacion para saber si hay que mostart el boton de ver mas o menos
+			$("#annotations-panel").find(".description-wrap.counted").each(function(e) {
+				var containerWidth =  $("#paneles-recurso").width()-144 //tamaño del panel - tamaño del padding hasta el contenedor de la anotacion
+				var saltosDeLinea = $(this).find(".desc p")[0].innerHTML.split("<br>");
+				var lineas = saltosDeLinea.length-1;
+				for (var i = 0; i < saltosDeLinea.length; i++) {
+					lineas+=saltosDeLinea[i].width("0.933rem sans-serif")/containerWidth; //calculo de lineas que ocupa cada linea
+				}
+				if(lineas > 2) {
+					$(this).parent().find(".moreResults").show();
+				}
+		
+			})
+		});
+		
 		// Llamamos al callback para realizar alguna acción una vez que se han pintado las notas
 		callback()
 	}
