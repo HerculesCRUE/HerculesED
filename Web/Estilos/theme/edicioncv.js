@@ -381,7 +381,7 @@ var edicionCV = {
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
-								<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}">information</span>
+								<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}"></span>
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -1217,7 +1217,7 @@ var edicionCV = {
         var css = "";
 		//Tooltip
 		// TODO esperar a la maqueta de Felix del tooltip de la sección
-		var spanTooltip = property.information ? `<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="tooltip${index}">information</span>` : '';
+		var spanTooltip = property.information ? `<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="tooltip${index}"></span>` : '';
         switch (property.width) {
             case 0:
                 css = 'oculto';
