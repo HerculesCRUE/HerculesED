@@ -28,6 +28,41 @@ namespace Utils
 
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
+        /// <summary>
+        /// Devuelve el identificador de CV a partir del crisIdentifier
+        /// </summary>
+        /// <param name="crisID"></param>
+        /// <returns></returns>
+        public static string GetID(string crisID)
+        {
+            string select = $@"select distinct ?cv ?person ?cris
+from <http://gnoss.com/person.owl>";
+            string where = $@"
+where{{
+    ?cv a <http://w3id.org/roh/CV> .
+    ?cv ?p ?person.
+    ?person a <http://xmlns.com/foaf/0.1/Person> .
+    ?person <http://w3id.org/roh/crisIdentifier> ?cris .
+    FILTER(?cris='{crisID}')
+}} ";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("cv"))
+                {
+                    return fila["cv"].value;
+                }
+            }
+
+
+            return "";
+        }
+
+        /// <summary>
+        /// Inicializa el listado de Lenguajes.
+        /// </summary>
+        /// <param name="pResourceApi"></param>
         public static void GetLenguajes(ResourceApi pResourceApi)
         {
             string select = $@"select distinct ?title ?ident";
@@ -213,7 +248,6 @@ namespace Utils
             return valor.Value;
         }
 
-
         /// <summary>
         /// Método para dividir listas
         /// </summary>
@@ -360,34 +394,26 @@ namespace Utils
             }
         }
 
-        public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string userId, string orcid)
+        /// <summary>
+        /// Llamada al servicio de Fuentes externas para la inserción de la publicación con doi <paramref name="doi"/> del autor <paramref name="userId"/>
+        /// </summary>
+        /// <param name="mConfiguracion"></param>
+        /// <param name="doi"></param>
+        /// <param name="nombreAutor"></param>
+        /// <param name="orcid"></param>
+        /// <returns>True si se inserta, false en caso contrario</returns>
+        public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string nombreAutor, string orcid)
         {
-            string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "FuentesExternas/InsertDoiToQueue/?pDoi=" + doi + "&pNombreCompletoAutor=" + userId + "&pOrcid=" + orcid;
+            string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pDoi=" + doi + "&pNombreCompletoAutor=" + nombreAutor + "&pOrcid=" + orcid;
             HttpClient httpClientEstado = new HttpClient();
             HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
+
             bool status = responseEstado.IsSuccessStatusCode;
-
+            if (status)
+            {
+                return bool.Parse(responseEstado.Content.ReadAsStringAsync().Result);
+            }
             return false;
-        }
-
-        public static Publication PublicacionFuentesExternasDOI(ConfigService mConfiguracion, string doi)
-        {
-            try
-            {
-                string urlEstado = mConfiguracion.GetUrlPublicationAPI() + "Publication/GetRoPublication/?pDoi=" + doi + "";
-                HttpClient httpClientEstado = new HttpClient();
-                HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
-                List<Publication> publication = JsonConvert.DeserializeObject<List<Publication>>(responseEstado.Content.ReadAsStringAsync().Result);
-                if (publication != null && publication.Count != 0)
-                {
-                    return publication.First();
-                }
-            }
-            catch (Exception e)
-            {
-                mResourceApi.Log.Error(e.Message);
-            }
-            return null;
         }
 
         /// <summary>
@@ -819,6 +845,11 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Dado un string, devuelve si el string tiene un formato de email correcto.
+        /// </summary>
+        /// <param name="emailAddress"></param>
+        /// <returns></returns>
         public static bool IsEmailValid(string emailAddress)
         {
             try

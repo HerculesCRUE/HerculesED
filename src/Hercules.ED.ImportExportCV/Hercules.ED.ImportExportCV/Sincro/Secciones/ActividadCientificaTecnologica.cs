@@ -1517,6 +1517,53 @@ namespace ImportadorWebCV.Sincro.Secciones
                             petitionStatus.actualWork++;
                         }
 
+                        //Compruebo si está el DOI asociado a la publicación en BBDD
+                        string doi = PublicacionesDocumentosComprobarDOI(item);
+                        string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+
+                        if (!string.IsNullOrEmpty(idDOIBBDD))
+                        {
+                            //Si existe alguna publicación con ese DOI no la inserto
+                            listadoCvn.Remove(item);
+                            mCvn.cvnRootBean = listadoCvn.ToArray();
+
+                            continue;
+                        }
+                        //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
+                        else if (!string.IsNullOrEmpty(doi) && personaCV.name != null &&
+                            personaCV.name.nombre_completo != null && !string.IsNullOrEmpty(personaCV.name.nombre_completo.First()))
+                        {
+                            bool insertadoPorFE = false;
+
+                            //Elimino la url en caso de que esté
+                            doi = doi.Replace("http://dx.doi.org/", "");
+                            doi = doi.Replace("doi:", "");
+                            string nombreCompleto = personaCV.name.nombre_completo.FirstOrDefault();
+
+                            //Llamada al servicio de Fuentes externas para que cargue los datos.
+                            try
+                            {
+                                insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
+                            }
+                            catch (Exception e)
+                            {
+                                mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
+                            }
+
+                            //Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
+                            if (insertadoPorFE)
+                            {
+                                //TODO - confirmar comportamiento
+                                listadoCvn.Remove(item);
+                                mCvn.cvnRootBean = listadoCvn.ToArray();
+
+                                continue;
+                            }
+                        }
+
+
+                        //Carga normal de los datos
+
                         //Añado las etiquetas enriquecidas
                         string tituloPublicacion = item.GetStringPorIDCampo("060.010.010.030");
                         tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
@@ -1574,7 +1621,21 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             return listado;
         }
-       
+
+        private string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
+        {
+            string idDOIValue = "";
+            List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.400");
+            foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
+            {
+                if (identificador.Type.Equals("040"))
+                {
+                    idDOIValue = identificador.Value;
+                }
+            }
+            return idDOIValue;
+        }
+
         /// <summary>
         /// Añade el valor de las citas Inrecs del documento
         /// </summary>
@@ -1794,6 +1855,51 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualWork++;
                     }
 
+                    //Compruebo si está el DOI asociado a la publicación en BBDD
+                    string doi = TrabajosCongresosComprobarDOI(item);
+                    string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+
+                    if (!string.IsNullOrEmpty(idDOIBBDD))
+                    {
+                        //Si existe alguna publicación con ese DOI no la inserto
+                        listadoCvn.Remove(item);
+                        mCvn.cvnRootBean = listadoCvn.ToArray();
+
+                        continue;
+                    }
+                    //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
+                    else if (!string.IsNullOrEmpty(doi) && personaCV.name != null && personaCV.name.nombre_completo != null)
+                    {
+                        bool insertadoPorFE = false;
+
+                        //Elimino la url en caso de que esté
+                        doi = doi.Replace("http://dx.doi.org/", "");
+                        doi = doi.Replace("doi:", "");
+                        string nombreCompleto = personaCV.name.nombre_completo.FirstOrDefault();
+
+                        //Llamada al servicio de Fuentes externas para que cargue los datos.
+                        try
+                        {
+                            insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
+                        }
+                        catch (Exception e)
+                        {
+                            mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
+                        }
+
+
+                        //Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
+                        if (insertadoPorFE)
+                        {
+                            //TODO - confirmar comportamiento
+                            listadoCvn.Remove(item);
+                            mCvn.cvnRootBean = listadoCvn.ToArray();
+
+                            continue;
+                        }
+                    }
+
+                    //Carga normal de los datos
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
@@ -1867,6 +1973,20 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
+        }
+
+        private string TrabajosCongresosComprobarDOI(CvnItemBean item)
+        {
+            string idDOIValue = "";
+            List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
+            foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
+            {
+                if (identificador.Type.Equals("040"))
+                {
+                    idDOIValue = identificador.Value;
+                }
+            }
+            return idDOIValue;
         }
 
         /// <summary>

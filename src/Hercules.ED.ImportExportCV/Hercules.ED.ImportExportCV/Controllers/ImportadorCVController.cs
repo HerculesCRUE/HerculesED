@@ -16,6 +16,7 @@ using Gnoss.ApiWrapper.Model;
 using Models;
 using ImportadorWebCV.Exporta.Secciones;
 using Gnoss.ApiWrapper;
+using ImportadorWebCV;
 
 namespace Hercules.ED.ImportExportCV.Controllers
 {
@@ -34,6 +35,18 @@ namespace Hercules.ED.ImportExportCV.Controllers
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             _logger = logger;
             _Configuracion = pConfig;
+        }
+
+        [HttpGet("LecturaDatos")]
+        public ActionResult lecturaDatos()
+        {
+                return Ok();
+        }
+
+        [HttpGet("LecturaCarpeta")]
+        public ActionResult lecturaCarpeta()
+        {
+                return Ok();
         }
 
         /// <summary>

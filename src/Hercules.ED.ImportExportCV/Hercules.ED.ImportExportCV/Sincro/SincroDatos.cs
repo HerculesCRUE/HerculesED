@@ -107,11 +107,16 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception e)
                 {
-
+                    
                 }
             }
         }
 
+        /// <summary>
+        /// Construyo el cvnRootResultBean a partir de un archivo PDF o XML, en el caso del PDF lo transformo a XML.
+        /// </summary>
+        /// <param name="Configuracion"></param>
+        /// <param name="CVFile"></param>
         public SincroDatos(ConfigService Configuracion, IFormFile CVFile)
         {
             mConfiguracion = Configuracion;
@@ -158,6 +163,12 @@ namespace ImportadorWebCV.Sincro
             }
         }
 
+        /// <summary>
+        /// Construyo el cvnRootResultBean a partir de los datos recibidos.
+        /// </summary>
+        /// <param name="Configuracion"></param>
+        /// <param name="cvID"></param>
+        /// <param name="data"></param>
         public SincroDatos(ConfigService Configuracion, string cvID, string data)
         {
             mConfiguracion = Configuracion;
