@@ -975,10 +975,7 @@
             if (texto != "") {
                 anotaciones.newUpdateAnnotation(texto).then((data) => {
                     document.getElementById(idEle).value = ""
-                    anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
-                        // Comportamiento Ver Más / Ver Menos
-                        comportamientoVerMasVerMenosTags.init();
-                    })
+                    location.reload();
                 })
             }
         }
@@ -1018,10 +1015,7 @@
                 if (texto != "") {
                     anotaciones.newUpdateAnnotation(texto, idCurrentAnnotation).then((data) => {
                         modal.getElementsByClassName("textareaInput")[0].value = ""
-                        anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
-                            // Comportamiento Ver Más / Ver Menos
-                            comportamientoVerMasVerMenosTags.init();
-                        })
+                        location.reload();
                     })
                 }
             });
@@ -1030,6 +1024,7 @@
         function borrarAnotacion(idCurrentAnnotation) {
             anotaciones.deleteAnnotation(idCurrentAnnotation).then((data) => {
                 console.log("data", data)
+                location.reload();
             })
         }
 
@@ -1041,7 +1036,7 @@
                     // Ahora pintamos los datos si hay elementos
                     anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
                         // Comportamiento Ver Más / Ver Menos
-                        comportamientoVerMasVerMenosTags.init();
+                        comportamientoVerMasVerMenos.init();
                     })
                 }
             })
