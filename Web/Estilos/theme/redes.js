@@ -66,7 +66,7 @@ $(document).ready(function () {
             html: true,
             title: traducir.GetText('AYUDA_MATCHING'),
             placement: 'right',
-            template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+            template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
         });
         OcultarUpdateProgress();
     });

@@ -77,7 +77,7 @@ var edicionCV = {
 				$(key).tooltip({
 					html: true,
 					placement: 'bottom',
-					template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+					template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
 					title: value
 				});
 				montarTooltip.comportamiento($(key));
@@ -123,7 +123,7 @@ var edicionCV = {
 					$(key).tooltip({
 						html: true,
 						placement: 'bottom',
-						template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+						template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
 						title: value
 					});
 					montarTooltip.comportamiento($(key));
@@ -1076,7 +1076,7 @@ var edicionCV = {
 					$(key).tooltip({
 						html: true,
 						placement: 'bottom',
-						template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+						template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
 						title: value
 					});
 					montarTooltip.comportamiento($(key));
