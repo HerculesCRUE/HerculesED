@@ -890,24 +890,48 @@ function PintarGraficaAreasTematicas(data,idContenedor) {
 function filtrarSearch(callback = () => {}) {
 
 	let input = document.getElementById('buscadorPersonalizadoSearchForm').getElementsByClassName('finderSectionText');
+	let searchID = $('#buscadorPersonalizadoSearchForm').closest('.row').attr('id');
+	let search = '';
+	if(searchID === 'contenedorBuscadorPublicaciones')
+	{
+		search = 'searcherPublications';
+	}
+	else if(searchID === 'contenedorBuscadorProyectos')
+	{
+		search = 'searcherProjects';
+	}
+	else if(searchID === 'contenedorBuscadorMiembros')
+	{
+		search = 'searcherMembers';
+	}
+	else if(searchID === 'contenedorBuscadorMiembrosFuera')
+	{
+		search = 'searcherOutsideMembers';
+	}
+	else if(searchID === 'contenedorBuscadorParticipantes')
+	{
+		search = 'searcherParticipantes';
+	}
+	else if(searchID === 'contenedorBuscadorColaboradores')
+	{
+		search = 'searcherColaboradores';
+	}
+
 
 	let parameterVal = input[0].value
-	let filtro = "?search="+parameterVal
+	let filtro = search + "=" + parameterVal
 	input[0].value = ""
 
 	var url = new URL(location.href)
 	let params = url.searchParams
-	params.delete('search');
-	// necesario el interrgante para que realize bien la llamada
-	params.delete('?search');
-	params.append('?search', parameterVal); 
+	params.delete(search);
+	params.append(search, parameterVal); 
 
 	let resultsParamsArr = []
 	params.forEach(function(value, key) {
 		resultsParamsArr.push(key + '=' +  value)
 	});
-	// console.log("params.toString()", params.toString())
-
+	
 	history.pushState('','','?' + (resultsParamsArr.join('&')))
 	FiltrarPorFacetas(ObtenerHash2(), () => {
 		callback()

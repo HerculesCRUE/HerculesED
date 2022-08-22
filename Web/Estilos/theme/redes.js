@@ -17,7 +17,6 @@ $(document).ready(function () {
     var datos = null;
     MostrarUpdateProgress();
     $.get(url, arg, function (data) {
-        console.log(data);
         data.forEach(function (valor, indice, data) {
             var placeholder = $('#PLACEHOLDER_' + valor.id.toUpperCase()).val();
             var label = $('#' + valor.id.toUpperCase()).val();
@@ -29,7 +28,7 @@ $(document).ready(function () {
                 var help = "Haz click aquí para generar un token de acceso a tu cuenta de FigShare";
                 var tokenPage = "https://figshare.com/account/applications"
             } else if (valor.id == "useMatching") {
-                var html = `<div class="form-group mb-4" style="clear:both"><div class="d-flex matchingTooltip"><label id="${valor.id}" class="control-label d-block">${label}</label><span class="material-icons-outlined" style="margin-left: 10px; width: 24px"">information</span></div><div class="form-check form-check-inline" style="flex-flow: nowrap column"><div style="width:100%"><input type="radio" name="radioMatching" id="check-si" value="true" class="form-check-input form-control not-outline"> <label for="html">Sí</label></div> <div style="width:100%"><input type="radio" name="radioMatching" id="check-no" value="false" class="form-check-input form-control not-outline"> <label for="html">No</label></div> </div></div>`;
+                var html = `<div class="form-group mb-4" style="clear:both"><div class="d-flex matchingTooltip"><label id="${valor.id}" class="control-label d-block">${label}</label><span class="material-icons-outlined informationTooltip" style="margin-left: 10px; width: 24px"></span></div><div class="form-check form-check-inline" style="flex-flow: nowrap column"><div style="width:100%"><input type="radio" name="radioMatching" id="check-si" value="true" class="form-check-input form-control not-outline"> <label for="html">Sí</label></div> <div style="width:100%"><input type="radio" name="radioMatching" id="check-no" value="false" class="form-check-input form-control not-outline"> <label for="html">No</label></div> </div></div>`;
             } else if (valor.id == "orcid" || valor.id == "researcherId" || valor.id == "scopusId" || valor.id == "semanticScholarId") {
                 if ($('div.identificador').length % 2 == 0) {
                     var html = `<div class="form-group mb-4 identificador" style="width: 50%; float:left; padding-right:3%"><label id="${valor.id}" class="control-label d-block">${label}</label> <input disabled placeholder="" type="text" name="fname" id="" value="${valor.valor}" class="form-control not-outline"></div>`;
@@ -67,7 +66,7 @@ $(document).ready(function () {
             html: true,
             title: traducir.GetText('AYUDA_MATCHING'),
             placement: 'right',
-            template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+            template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
         });
         OcultarUpdateProgress();
     });

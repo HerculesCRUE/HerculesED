@@ -580,6 +580,13 @@ body.homeComunidad #col01 {
 	margin-right: 15px;
 }
 
+span.informationTooltip::after {
+    content: '\e88e';
+}
+.infoTooltipMargin {
+    margin: 5px;
+}
+
 /* CITAS */
 div#idTextoCita {
     border: 1px solid var(--c-gris-borde);
