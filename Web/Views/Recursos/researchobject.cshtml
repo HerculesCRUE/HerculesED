@@ -17,6 +17,10 @@
     ResourceModel FichaDocumento = Model.Resource;
     CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
+    Guid currentId = IdentidadActual.KeyUser;
+       // SemanticResourceModel semCmsModel = Model.SemanticFrom;
+
+
 	Html.AddBodyClass(" fichaRecurso ");
     Html.AddBodyClass(" fichaRecurso-publicacion ");
     if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
@@ -30,6 +34,8 @@
     // Javascript Markdown to HTML converter
     string urlJSMDReader = "https://unpkg.com/showdown/dist/showdown.min.js";
     Html.GetListaJS().Add(urlJSMDReader);
+    string urlJSAnnotation = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/annotations.js";
+    Html.GetListaJS().Add(urlJSAnnotation);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     ResearchObject pResearchObject = new ResearchObject(semCmsModel, idiomaUsuario);
@@ -132,6 +138,12 @@
 													</a>
 												</li>
 											}
+                                            <li>
+                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-nueva-anotacion" class="item-dropdown">
+                                                    <span class="material-icons">edit_note</span>
+                                                    <span class="texto">@Html.Translate("NUEVA_ANOTACION")</span>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -365,6 +377,7 @@
                     }
                 }
             </div>
+            
             @if (pResearchObject.Bibo_doi != null && pResearchObject.Bibo_doi != "")
             {
                 <div class="group-wrap">
@@ -447,17 +460,17 @@
                             </a>
                         </li>
                         @{
-                        /** 
+                        
                         <li class="nav-item" role="presentation">
                             <!-- anotaciones -->
-                            <a class="nav-link" id="anotaciones-tab" data-toggle="tab" href="#anotaciones-panel" role="tab" aria-controls="anotaciones-panel" >
+                            <a class="nav-link" id="annotations-tab" data-toggle="tab" href="#annotations-panel" role="tab" aria-controls="annotations-panel" >
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("ANOTACIONES")</div>
                                     <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_citationLoadedCount))">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
                          </li>
-                         */
+                         
                         }
                     </ul>
                 </div>
@@ -590,7 +603,6 @@
                             
                         </div>
                     </div>
-                    
                     <div class="tab-pane fade" id="relacionados-panel" role="tabpanel" aria-labelledby="relacionados-tab">
                         <div class="row" id="contenedorBuscadorRelacionados">
                             <div class="col col-12 col-section-title font-weight-bold searcherTitle">
@@ -629,35 +641,190 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- <div class="tab-pane fade" id="anotaciones-panel" role="tabpanel" aria-labelledby="anotaciones-tab">
-                        <div class="row" id="contenedorBuscadorAnotaciones">
-                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+
+                    <div class="tab-pane fade" id="annotations-panel" role="tabpanel" aria-labelledby="annotations-tab">
+                        <div class="row">
+                            <div class="col col-12 header-listado">
+                                <div class="h1-container">
+                                    <h2>@Html.Translate("MIS_NOTAS_PRIVADAS")
+                                        <span class="numResultados">0</span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="col col-12 col-contenido">
                                 <div class="wrapCol">
-                                    <p>@Html.Translate("ANOTACIONES")</p>
+                                    <div class="resource-list listView resource-list-buscador">
+                                        <div class="resource-list-wrap">
+                                            <p>
+                                                @Html.Translate("NO_HAY_NOTAS_PRIVADAS")
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 </div>
+@if (!IdentidadActual.IsGuestUser) 
+{
+    
 
+
+    <div id="modal-eliminar-anotacion-confirmacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title"><span class="material-icons">delete</span>@Html.Translate("BORRAR_ANOTACIONES")</p>
+                    <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                </div>
+                <div class="modal-body">
+                    <div class="formulario-edicion">
+                        <div class="custom-form-row">
+                            <div class="form-group full-group">
+                                <label class="control-label d-block">@Html.Translate("CONFIRMACION_BORRAR_ANOTACIONES")</label>
+                                <div class="form-actions">
+                                    <a href="javascript: borrarOferta()" class="btn btn-primary uppercase">@Html.Translate("BORRAR")</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="modal-nueva-anotacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("ANOTACION")</p>
+                    <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                </div>
+                <div class="modal-body">
+                    <div class="formulario-edicion">
+                        <div class="custom-form-row">
+                            <div class="form-group full-group">
+                                <label class="control-label d-block">@Html.Translate("INTRODUCE_UNA_ANOTACION")</label>
+                                <textarea class="w-100" id="areaTextoComentario"> </textarea>
+                                <div class="form-actions">
+                                    <a href="javascript: nuevaAnotacion('areaTextoComentario')" class="btn btn-primary uppercase">@Html.Translate("ENVIAR")</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-editar-anotacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title"><span class="material-icons">send</span>@Html.Translate("ANOTACION")</p>
+                    <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                </div>
+                <div class="modal-body">
+                    <div class="formulario-edicion">
+                        <div class="custom-form-row">
+                            <div class="form-group full-group">
+                                <label class="control-label d-block">@Html.Translate("INTRODUCE_UNA_ANOTACION")</label>
+                                <textarea class="w-100 textareaInput" id="areaTextoComentarioEditar"> </textarea>
+                                <div class="form-actions">
+                                    <a href="javascript:void(0)" id="btn-modal-editar-anotacion" data-dismiss="modal" class="btn btn-primary uppercase">@Html.Translate("ENVIAR")</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
     var depuracion = false;
+    var annIdRO = "@pResearchObject.mGNOSSID";
+    var annIdUser = "@currentId";
+    var annRdfType = "@pResearchObject.RdfType";
+    var annOntology = "researchobject";
+    var anotaciones = new CargarAnotaciones(annIdRO, annIdUser, annRdfType, annOntology);
 
     const localUrlBase = "https://localhost:44321/";
     const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/";
-
     const urlBase = "@Html.GetBaseUrl()";
     if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
         depuracion = true;
     }
 
+    function nuevaAnotacion(idEle) {
 
+        // Obtenemos el texto
+        let texto = document.getElementById(idEle).value
+
+        $("#modal-nueva-anotacion").modal("hide")
+
+        if (texto != "") {
+            anotaciones.newUpdateAnnotation(texto).then((data) => {
+                document.getElementById(idEle).value = ""
+                location.reload();
+            })
+        }
+    }
+    /**
+         * Funcion que muestra todo el texto de la descripcion de una anotacion
+         * param id, id de la anotacion
+         * param text, texto de la anotacion
+         */
+        function readMoreAnotacion(idAnnotation,text){
+            $(document.getElementById(idAnnotation)).find("div.desc p").html(text);  
+        }
+        /**
+         * Función que modifica la notificación 
+         * param idEle, string con el id del textArea para obtener el texto introducido
+         * param idCurrentAnnotation, string con el id de la anotación para modificar la misma
+         */
+        function updateAnotacion(idCurrentAnnotation, oldText) {
+
+            let modal = document.getElementById("modal-editar-anotacion")
+            let modalTextArea = modal.getElementsByClassName("textareaInput")
+            modalTextArea[0].value = oldText.replaceAll("<br />", "\n")
+
+            $(modal).modal("show")
+
+            console.log("modalTextArea", modalTextArea[0])
+            console.log("modalTextArea.value", modalTextArea[0].value)
+
+            // Evento para el botón de guardado
+            $(modal).find("#btn-modal-editar-anotacion").off("click").on("click", function () {
+
+                // modal.getElementsByClassName("textareaInput")
+                $(modal).modal("hide")
+                // Obtenemos el texto
+                let texto = modal.getElementsByClassName("textareaInput")[0].value
+
+                if (texto != "") {
+                    anotaciones.newUpdateAnnotation(texto, idCurrentAnnotation).then((data) => {
+                        modal.getElementsByClassName("textareaInput")[0].value = ""
+                        location.reload();
+                    })
+                }
+            });
+
+        }
+        function borrarAnotacion(idCurrentAnnotation) {
+            anotaciones.deleteAnnotation(idCurrentAnnotation).then((data) => {
+                console.log("data", data)
+                location.reload();
+            })
+        }
     // Comportamiento página proyecto
     var comportamientoPaginaDocumento = {
         tabActive: null,
@@ -686,8 +853,25 @@
                 that.tabActive = "referencias";
                 buscadorPersonalizado.init("@Html.Translate("REFERENCIAS")", "#contenedorBuscadorReferencias", "searchReferenciasDocumento=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
+
+
+            
+            $(function () {
+                // Obtiene las notas y las pinta
+                anotaciones.loadInRo().then((data) => {
+                    if (data.length > 0) {
+                        // Ahora pintamos los datos si hay elementos
+                        anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
+                            // Comportamiento Ver Más / Ver Menos
+                            comportamientoVerMasVerMenos.init();
+                        })
+                    }
+                })
+            });
             return;
         }
+
+        
     };
 
 

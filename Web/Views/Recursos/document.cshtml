@@ -114,7 +114,7 @@
                     //Factor de impacto
                     float? impactFactor = null;
                     Dictionary<string, float> impactFactors = new Dictionary<string, float>();
-                    foreach (ImpactIndex impactindex in pDocument.Roh_impactIndex)
+                    foreach (ImpactIndex impactindex in pDocument.Roh_impactIndex.OrderByDescending(x => x.Roh_impactIndexInYear))
                     {
                         if (impactindex.Roh_impactIndexInYear.HasValue)
                         {
@@ -134,7 +134,7 @@
                     List<string> quartiles = new List<string>();
                     foreach (ImpactIndex impactindex in pDocument.Roh_impactIndex.OrderBy(x => x.Roh_impactSource?.Dc_title?[idiomaUsuario]).ThenBy(x => x.Roh_quartile).ThenBy(x => x.Roh_impactIndexCategory))
                     {
-                        if (impactindex.Roh_quartile.HasValue)
+                        if (impactindex.Roh_quartile.HasValue && impactindex.Roh_quartile.Value != 0)
                         {
                             string fileCuartil = "<tr>";
                             if (impactindex.Roh_impactSource != null && impactindex.Roh_impactSource.Dc_title.ContainsKey(idiomaUsuario))
@@ -975,10 +975,7 @@
             if (texto != "") {
                 anotaciones.newUpdateAnnotation(texto).then((data) => {
                     document.getElementById(idEle).value = ""
-                    anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
-                        // Comportamiento Ver Más / Ver Menos
-                        comportamientoVerMasVerMenosTags.init();
-                    })
+                    location.reload();
                 })
             }
         }
@@ -1018,10 +1015,7 @@
                 if (texto != "") {
                     anotaciones.newUpdateAnnotation(texto, idCurrentAnnotation).then((data) => {
                         modal.getElementsByClassName("textareaInput")[0].value = ""
-                        anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
-                            // Comportamiento Ver Más / Ver Menos
-                            comportamientoVerMasVerMenosTags.init();
-                        })
+                        location.reload();
                     })
                 }
             });
@@ -1030,6 +1024,7 @@
         function borrarAnotacion(idCurrentAnnotation) {
             anotaciones.deleteAnnotation(idCurrentAnnotation).then((data) => {
                 console.log("data", data)
+                location.reload();
             })
         }
 
@@ -1041,7 +1036,7 @@
                     // Ahora pintamos los datos si hay elementos
                     anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
                         // Comportamiento Ver Más / Ver Menos
-                        comportamientoVerMasVerMenosTags.init();
+                        comportamientoVerMasVerMenos.init();
                     })
                 }
             })

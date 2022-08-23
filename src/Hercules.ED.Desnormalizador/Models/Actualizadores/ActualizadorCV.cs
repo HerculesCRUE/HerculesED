@@ -351,66 +351,66 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
         }
 
-        /// <summary>
-        /// Modifica la privacidad de las publicaciones de los CV en caso de que haya que hacerlo
-        /// (Solo convierte en públicos aquellos documentos que sean privados pero deberían ser públicos)
-        /// Depende de ActualizadorCV.CrearCVs
-        /// </summary>
-        /// <param name="pPersons">IDs de la persona</param>
-        /// <param name="pDocuments">IDs del documento</param>
-        /// <param name="pCVs">IDs del CV</param>
-        public void CambiarPrivacidadDocumentos(List<string> pPersons = null, List<string> pDocuments = null, List<string> pCVs = null)
-        {
-            HashSet<string> filters = new HashSet<string>();
-            if (pPersons != null && pPersons.Count > 0)
-            {
-                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
-            }
-            if (pDocuments != null && pDocuments.Count > 0)
-            {
-                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
-            }
-            if (pCVs != null && pCVs.Count > 0)
-            {
-                filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
-            }
-            if (filters.Count == 0)
-            {
-                filters.Add("");
-            }
+        ///// <summary>
+        ///// Modifica la privacidad de las publicaciones de los CV en caso de que haya que hacerlo
+        ///// (Solo convierte en públicos aquellos documentos que sean privados pero deberían ser públicos)
+        ///// Depende de ActualizadorCV.CrearCVs
+        ///// </summary>
+        ///// <param name="pPersons">IDs de la persona</param>
+        ///// <param name="pDocuments">IDs del documento</param>
+        ///// <param name="pCVs">IDs del CV</param>
+        //public void CambiarPrivacidadDocumentos(List<string> pPersons = null, List<string> pDocuments = null, List<string> pCVs = null)
+        //{
+        //    HashSet<string> filters = new HashSet<string>();
+        //    if (pPersons != null && pPersons.Count > 0)
+        //    {
+        //        filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
+        //    }
+        //    if (pDocuments != null && pDocuments.Count > 0)
+        //    {
+        //        filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+        //    }
+        //    if (pCVs != null && pCVs.Count > 0)
+        //    {
+        //        filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
+        //    }
+        //    if (filters.Count == 0)
+        //    {
+        //        filters.Add("");
+        //    }
 
-            foreach (string filter in filters)
-            {
+        //    foreach (string filter in filters)
+        //    {
 
-                while (true)
-                {
-                    //Publicamos los documentos
-                    int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?cv ?scientificActivity ?propItem ?item from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  ";
-                    String where = @$"where{{
-                                {filter}
-                                {{
-                                    ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
-                                    ?document a <http://purl.org/ontology/bibo/Document>.
-                                    ?document <http://w3id.org/roh/isValidated> 'true'.
-                                    ?cv a <http://w3id.org/roh/CV>.
-                                    ?cv <http://w3id.org/roh/cvOf> ?person.
-                                    ?cv <http://w3id.org/roh/scientificActivity> ?scientificActivity.                                        
-                                    ?scientificActivity ?propItem ?item.
-                                    ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
-                                    ?item <http://w3id.org/roh/isPublic> 'false'.
-                                }}
-                            }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                    PublicarDocumentosCV(resultado);
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
+        //        while (true)
+        //        {
+        //            //Publicamos los documentos
+        //            int limit = 500;
+        //            //TODO eliminar from
+        //            String select = @"select distinct ?cv ?scientificActivity ?propItem ?item from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  ";
+        //            String where = @$"where{{
+        //                        {filter}
+        //                        {{
+        //                            ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
+        //                            ?document a <http://purl.org/ontology/bibo/Document>.
+        //                            ?document <http://w3id.org/roh/isValidated> 'true'.
+        //                            ?cv a <http://w3id.org/roh/CV>.
+        //                            ?cv <http://w3id.org/roh/cvOf> ?person.
+        //                            ?cv <http://w3id.org/roh/scientificActivity> ?scientificActivity.                                        
+        //                            ?scientificActivity ?propItem ?item.
+        //                            ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
+        //                            ?item <http://w3id.org/roh/isPublic> 'false'.
+        //                        }}
+        //                    }}order by desc(?cv) limit {limit}";
+        //            SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+        //            PublicarDocumentosCV(resultado);
+        //            if (resultado.results.bindings.Count != limit)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
 
 
         /// <summary>       

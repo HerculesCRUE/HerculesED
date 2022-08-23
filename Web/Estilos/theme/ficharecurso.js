@@ -529,42 +529,7 @@ function PintarGraficaArania(data,idContenedor) {
 
 	
 	// Colocar los elementos huérfanos a la derecha
-	cy.ready(function(event) {
-
-		/* los elementos huerfanos son eliminados con cy.nodes(ele=>ele._private.edges.length == 0 && ele._private.data.type !="icon_ip").remove()
-		
-		let maxPos = 0;
-		let minYPos = 9999999;
-		let maxYPos = 0;
-		let xPos = 0;
-		let yPos = 0;
-		// Obtengo los elementos sin relación
-		let onlyItems = cy.nodes().filter(node => node._private.edges.length == 0);
-		// Selecciono las posiciones desde las que comenzar
-		for (i = 0; i < cy.nodes().length; i++) { //starts loop
-			maxPos = (nodos[i]._private.position.x > maxPos) ? nodos[i]._private.position.x : maxPos;
-			minYPos = (nodos[i]._private.position.y < minYPos) ? nodos[i]._private.position.y : minYPos;
-			maxYPos = (nodos[i]._private.position.y > maxYPos) ? nodos[i]._private.position.y : maxYPos;
-		};
-
-		yPos = minYPos;
-
-		// Modifico las posiciones de los elementos que quiero recolocar
-		maxPos = maxPos + maxPos / 2;
-		for (i = 0; i < onlyItems.length; i++) { //starts loop
-
-			onlyItems[i].position({'x': maxPos + xPos, 'y': yPos});
-			if(onlyItems[i]._private.data.type != 'icon_ip'){
-				//currentData.splice(currentData.indexOf(currentData.find(d=>d.data.id == onlyItems[i]._private.data.id)),1);
-			}
-			if (!(onlyItems.length == 1 && onlyItems[i]._private.data.type == 'icon_ip')) {
-				//repintar=true;
-			}
-			//yPos = yPos + onlyItems[i]._private.style.height.value + 50;
-		};
-		*/
-
-		
+	cy.ready(function(event) {		
 		if (repintar ) {
 			 PintarGraficaArania(currentData,idContenedor);
 		}
@@ -824,35 +789,6 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 		});
 
 	}
-		
-	// var bton= document.getElementById("layout");
-	// bton.addEventListener("click",hola);
-
- //    function hola(){
-	// 	var cy = window.cy
-	// 	let name = ["grid"]
-	// 	var item = name[Math.floor(Math.random()*name.length)];
-	// 	var layout = cy.layout({
-	// 		name: item
-	// 	});
-
-	// 	layout.run();
-	// }
-
-	// var bton= document.getElementById("layout");
-	// bton.addEventListener("click",hola);
-
- //    function hola(){
-	// 	var cy = window.cy
-	// 	let name = ["circular"]
-	// 	var item = name[Math.floor(Math.random()*name.length)];
-	// 	var layout = cy.layout({
-	// 		name: item
-	// 	});
-
-	// 	layout.run();
-	// }
-
 
 	cy.ready(function(event) {
 
@@ -890,24 +826,37 @@ function PintarGraficaAreasTematicas(data,idContenedor) {
 function filtrarSearch(callback = () => {}) {
 
 	let input = document.getElementById('buscadorPersonalizadoSearchForm').getElementsByClassName('finderSectionText');
+	let searchID = $('#buscadorPersonalizadoSearchForm').closest('.row').attr('id');
+	let search = '';
+	if(searchID === 'contenedorBuscadorPublicaciones' || searchID === 'contenedorBuscadorRelacionados' 
+		|| searchID === 'contenedorBuscadorResearchObjects')
+	{
+		search = 'searcherPublications';
+	}
+	else if(searchID === 'contenedorBuscadorProyectos')
+	{
+		search = 'searcherProjects';
+	}
+	else if(searchID === 'contenedorBuscadorMiembros' || searchID === 'contenedorBuscadorMiembrosFuera' 
+		|| searchID === 'contenedorBuscadorColaboradores' || searchID === 'contenedorBuscadorParticipantes')
+	{
+		search = 'searcherPersons';
+	}
 
-	let parameterVal = input[0].value
-	let filtro = "?search="+parameterVal
-	input[0].value = ""
+	let parameterVal = input[0].value;
+	let filtro = search + "=" + parameterVal;
+	input[0].value = "";
 
-	var url = new URL(location.href)
-	let params = url.searchParams
-	params.delete('search');
-	// necesario el interrgante para que realize bien la llamada
-	params.delete('?search');
-	params.append('?search', parameterVal); 
+	var url = new URL(location.href);
+	let params = url.searchParams;
+	params.delete(search);
+	params.append(search, parameterVal); 
 
 	let resultsParamsArr = []
 	params.forEach(function(value, key) {
 		resultsParamsArr.push(key + '=' +  value)
 	});
-	// console.log("params.toString()", params.toString())
-
+	
 	history.pushState('','','?' + (resultsParamsArr.join('&')))
 	FiltrarPorFacetas(ObtenerHash2(), () => {
 		callback()

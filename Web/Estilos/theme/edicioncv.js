@@ -48,6 +48,7 @@ var edicionCV = {
         $('#navegacion-cv li.nav-item a').click(function(e) {
             var entityID = $($(this).attr('href')).find('.cvTab').attr('about');
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
+			$(this).tooltip('hide');
             that.loadTab(entityID, rdfType);
         });
 		
@@ -71,13 +72,15 @@ var edicionCV = {
 		
         $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
-            OcultarUpdateProgress();
+            if (!$('div#modal-posible-duplicidad').hasClass('visible')) {
+				OcultarUpdateProgress();
+			}
 			for(var key in tooltips.section) {
 				var value = tooltips.section[key];
 				$(key).tooltip({
 					html: true,
 					placement: 'bottom',
-					template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+					template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
 					title: value
 				});
 				montarTooltip.comportamiento($(key));
@@ -123,7 +126,7 @@ var edicionCV = {
 					$(key).tooltip({
 						html: true,
 						placement: 'bottom',
-						template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+						template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
 						title: value
 					});
 					montarTooltip.comportamiento($(key));
@@ -381,7 +384,7 @@ var edicionCV = {
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
-								<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}">information</span>
+								<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}"></span>
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -697,7 +700,7 @@ var edicionCV = {
 									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
 								</a>
 							</li>`;
-        } else if (data.iseditable) {
+        } else {//if (data.iseditable) {
             //Si está publicado sólo se puede despublicar si es editable
             htmlAcciones += `<li>
 								<a class="item-dropdown">
@@ -1076,7 +1079,7 @@ var edicionCV = {
 					$(key).tooltip({
 						html: true,
 						placement: 'bottom',
-						template: '<div class="tooltip background-gris-oscuro" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
+						template: '<div class="tooltip background-gris-oscuro infoTooltipMargin" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltipEditor"></div></div>',
 						title: value
 					});
 					montarTooltip.comportamiento($(key));
@@ -1217,7 +1220,7 @@ var edicionCV = {
         var css = "";
 		//Tooltip
 		// TODO esperar a la maqueta de Felix del tooltip de la sección
-		var spanTooltip = property.information ? `<span class="material-icons-outlined" style="width:24px; float:left; margin-left: 5px" id="tooltip${index}">information</span>` : '';
+		var spanTooltip = property.information ? `<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="tooltip${index}"></span>` : '';
         switch (property.width) {
             case 0:
                 css = 'oculto';
@@ -4574,6 +4577,7 @@ var duplicadosCV = {
 				if (that.pasosTotales>0) 
 				{
 					that.pintarItemsDuplicados();
+					$('#modal-repetir-duplicidad').addClass('visible');
 				}else
 				{
 					if(botonPulsado){
@@ -4586,10 +4590,13 @@ var duplicadosCV = {
 							$('#modal-repetir-duplicidad').modal('hide');
 							mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 						});
-						OcultarUpdateProgress();
 					} else if (minSimilarity == 0.7) {
 						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
+					} else {
+						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 					}
+					$('#modal-repetir-duplicidad').removeClass('visible');
+					OcultarUpdateProgress();
 				}
 			});
 		}
@@ -6539,7 +6546,7 @@ montarTooltip.lanzar= function (elem, title, classes) {
 	elem.tooltip({
 		html: true,
 		placement: 'bottom',
-		template: '<div class="tooltip ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+		template: '<div class="tooltip infoTooltipMargin ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
 		title: title
 	});
 	this.comportamiento(elem);

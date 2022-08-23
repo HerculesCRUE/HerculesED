@@ -54,7 +54,6 @@ namespace DesnormalizadorHercules
             //Diana Castilla 27281387213879
             AltaUsuarioGnoss("Diana", "Castilla", "diana---castilla@pruebagnoss.com", "diana-castil", "27281387213879", "", "");
 
-
             //Felix Cesareo Gomez de Leon Hijes
             AltaUsuarioGnoss("Felix", "Cesareo", "Felix--Cesareo@pruebagnoss.com", "felix-cesare", "22463209", "", "");
 
