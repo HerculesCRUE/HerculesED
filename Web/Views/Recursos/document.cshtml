@@ -114,7 +114,7 @@
                     //Factor de impacto
                     float? impactFactor = null;
                     Dictionary<string, float> impactFactors = new Dictionary<string, float>();
-                    foreach (ImpactIndex impactindex in pDocument.Roh_impactIndex)
+                    foreach (ImpactIndex impactindex in pDocument.Roh_impactIndex.OrderByDescending(x => x.Roh_impactIndexInYear))
                     {
                         if (impactindex.Roh_impactIndexInYear.HasValue)
                         {
