@@ -72,7 +72,7 @@ var edicionCV = {
 		
         $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
-            if (!$('div#modal-posible-duplicidad').hasClass('show')) {
+            if (!$('div#modal-posible-duplicidad').hasClass('visible')) {
 				OcultarUpdateProgress();
 			}
 			for(var key in tooltips.section) {
@@ -4577,6 +4577,7 @@ var duplicadosCV = {
 				if (that.pasosTotales>0) 
 				{
 					that.pintarItemsDuplicados();
+					$('#modal-repetir-duplicidad').addClass('visible');
 				}else
 				{
 					if(botonPulsado){
@@ -4594,6 +4595,7 @@ var duplicadosCV = {
 					} else {
 						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 					}
+					$('#modal-repetir-duplicidad').removeClass('visible');
 					OcultarUpdateProgress();
 				}
 			});
