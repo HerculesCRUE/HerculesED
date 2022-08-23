@@ -182,7 +182,7 @@
 									}
 								}
 							}
-							string htmlTooltipImpactFactor="<p class=\"tooltip-title\">"+Html.Translate("FACTOR_DE_IMPACTO")+"</p><ul class=\"no-list-style\">"+string.Join("", impactFactors.Select(x=>"<li><span class=\"texto\">"+x.Key+"</span><span class=\"num-resultado\">"+x.Value+"</span></li>"))+"</ul>";
+							string htmlTooltipImpactFactor="<p class=\"tooltip-title\">"+Html.Translate("FACTOR_DE_IMPACTO")+"</p><ul class=\"no-list-style\">"+string.Join("", impactFactors.OrderByDescending(x => x.Value).Select(x=>"<li><span class=\"texto\">"+x.Key+"</span><span class=\"num-resultado\">"+x.Value+"</span></li>"))+"</ul>";
 						}
 						
 						@{
