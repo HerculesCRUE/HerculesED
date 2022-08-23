@@ -80,7 +80,7 @@ namespace DesnormalizadorHercules.Models
 
             //CV con dependencias 
             actualizadorCV.ModificarDocumentos();
-            actualizadorCV.CambiarPrivacidadDocumentos();
+            //actualizadorCV.CambiarPrivacidadDocumentos();
             actualizadorCV.ModificarResearchObjects();
             actualizadorCV.CambiarPrivacidadResearchObjects();
             actualizadorCV.ModificarProyectos();
@@ -136,7 +136,7 @@ namespace DesnormalizadorHercules.Models
             ActualizadorCV actualizadorCV = new(resourceApi);
             actualizadorCV.CrearCVs();
             actualizadorCV.ModificarDocumentos();
-            actualizadorCV.CambiarPrivacidadDocumentos();
+            //actualizadorCV.CambiarPrivacidadDocumentos();
             actualizadorCV.ModificarResearchObjects();
             actualizadorCV.CambiarPrivacidadResearchObjects();
             actualizadorCV.ModificarProyectos();
@@ -375,7 +375,7 @@ namespace DesnormalizadorHercules.Models
             ActualizadorCV actualizadorCV = new(resourceApi);
             actualizadorCV.CrearCVs(pPersons: pPersons);
             actualizadorCV.ModificarDocumentos(pPersons: pPersons);
-            actualizadorCV.CambiarPrivacidadDocumentos(pPersons: pPersons);
+            //actualizadorCV.CambiarPrivacidadDocumentos(pPersons: pPersons);
             actualizadorCV.ModificarResearchObjects(pPersons: pPersons);
             actualizadorCV.CambiarPrivacidadResearchObjects(pPersons: pPersons);
             actualizadorCV.ModificarProyectos(pPersons: pPersons);
@@ -415,7 +415,7 @@ namespace DesnormalizadorHercules.Models
             ActualizadorCV actualizadorCV = new(resourceApi);
             actualizadorCV.CrearCVs(pDocuments: pDocuments);
             actualizadorCV.ModificarDocumentos(pDocuments: pDocuments);
-            actualizadorCV.CambiarPrivacidadDocumentos(pDocuments: pDocuments);
+            //actualizadorCV.CambiarPrivacidadDocumentos(pDocuments: pDocuments);
         }
 
         /// <summary>
