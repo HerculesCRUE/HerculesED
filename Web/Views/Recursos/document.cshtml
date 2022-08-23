@@ -134,7 +134,7 @@
                     List<string> quartiles = new List<string>();
                     foreach (ImpactIndex impactindex in pDocument.Roh_impactIndex.OrderBy(x => x.Roh_impactSource?.Dc_title?[idiomaUsuario]).ThenBy(x => x.Roh_quartile).ThenBy(x => x.Roh_impactIndexCategory))
                     {
-                        if (impactindex.Roh_quartile.HasValue)
+                        if (impactindex.Roh_quartile.HasValue && impactindex.Roh_quartile.Value != 0)
                         {
                             string fileCuartil = "<tr>";
                             if (impactindex.Roh_impactSource != null && impactindex.Roh_impactSource.Dc_title.ContainsKey(idiomaUsuario))
