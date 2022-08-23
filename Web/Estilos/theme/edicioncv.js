@@ -6809,24 +6809,22 @@ function pintadoTesauro(elementoActual, edit, mostrarModal){
 	}
 }
 
-function mostrarNotificacion(tipo, contenido, time){
+var mostrarNotificacion = function (tipo, contenido, time) {
 	var timeO = 5000;
 	if(time != null){
 		timeO = time;
 	}
-	var mostrarNotificacion = function (tipo, contenido) {
-		toastr[tipo](contenido, 'Mensaje de la plataforma', {
-			toastClass: 'toast themed',
-			positionClass: "toast-bottom-center",
-			target: 'body',
-			closeHtml: '<span class="material-icons">close</span>',
-			showMethod: 'slideDown',
-			timeOut: timeO,
-			escapeHtml: false,
-			closeButton: true,
-		});
-	};
-}
+	toastr[tipo](contenido, 'Mensaje de la plataforma', {
+		toastClass: 'toast themed',
+		positionClass: "toast-bottom-center",
+		target: 'body',
+		closeHtml: '<span class="material-icons">close</span>',
+		showMethod: 'slideDown',
+		timeOut: timeO,
+		escapeHtml: false,
+		closeButton: true,
+	});
+};
 
 function pintadoEtiquetas(that, data){
 	$.post(urlEdicionCV + 'EnrichmentTopics', data, function(data) {
