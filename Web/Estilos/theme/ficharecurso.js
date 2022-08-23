@@ -892,7 +892,8 @@ function filtrarSearch(callback = () => {}) {
 	let input = document.getElementById('buscadorPersonalizadoSearchForm').getElementsByClassName('finderSectionText');
 	let searchID = $('#buscadorPersonalizadoSearchForm').closest('.row').attr('id');
 	let search = '';
-	if(searchID === 'contenedorBuscadorPublicaciones')
+	if(searchID === 'contenedorBuscadorPublicaciones' || searchID === 'contenedorBuscadorRelacionados' 
+		|| searchID === 'contenedorBuscadorResearchObjects')
 	{
 		search = 'searcherPublications';
 	}
@@ -900,30 +901,22 @@ function filtrarSearch(callback = () => {}) {
 	{
 		search = 'searcherProjects';
 	}
-	else if(searchID === 'contenedorBuscadorMiembros')
+	else if(searchID === 'contenedorBuscadorMiembros' || searchID === 'contenedorBuscadorMiembrosFuera' 
+		|| searchID === 'contenedorBuscadorColaboradores' || searchID === 'contenedorBuscadorParticipantes')
 	{
-		search = 'searcherMembers';
+		search = 'searcherPersons';
 	}
-	else if(searchID === 'contenedorBuscadorMiembrosFuera')
-	{
-		search = 'searcherOutsideMembers';
-	}
-	else if(searchID === 'contenedorBuscadorParticipantes')
-	{
-		search = 'searcherParticipantes';
-	}
-	else if(searchID === 'contenedorBuscadorColaboradores')
-	{
-		search = 'searcherColaboradores';
-	}
+	//else if(searchID === 'contenedorBuscadorParticipantes')
+	//{
+	//	search = 'searcherParticipantes';
+	//}
 
+	let parameterVal = input[0].value;
+	let filtro = search + "=" + parameterVal;
+	input[0].value = "";
 
-	let parameterVal = input[0].value
-	let filtro = search + "=" + parameterVal
-	input[0].value = ""
-
-	var url = new URL(location.href)
-	let params = url.searchParams
+	var url = new URL(location.href);
+	let params = url.searchParams;
 	params.delete(search);
 	params.append(search, parameterVal); 
 
