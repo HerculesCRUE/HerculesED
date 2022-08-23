@@ -22,20 +22,20 @@ namespace DesnormalizadorHercules
 
         public static void CrearPersonas()
         {
-            Dictionary<Guid, List<TriplesToInclude>> dic = new Dictionary<Guid, List<TriplesToInclude>>();
-            Guid idOtri = resourceApi.GetShortGuid("http://gnoss.com/items/Person_70582872-7f4f-4a76-a150-c0c4b8db1522_34a05e34-641a-4735-88f4-357cca8aaac6");
-            dic.Add(idOtri, new List<TriplesToInclude>() { new TriplesToInclude() { NewValue = "true", Predicate = "http://w3id.org/roh/isOtriManager" } });
-            var x = resourceApi.InsertPropertiesLoadedResources(dic);
+            //Dictionary<Guid, List<TriplesToInclude>> dic = new Dictionary<Guid, List<TriplesToInclude>>();
+            //Guid idOtri = resourceApi.GetShortGuid("http://gnoss.com/items/Person_70582872-7f4f-4a76-a150-c0c4b8db1522_34a05e34-641a-4735-88f4-357cca8aaac6");
+            //dic.Add(idOtri,new List<TriplesToInclude>() { new TriplesToInclude() { NewValue = "true", Predicate = "http://w3id.org/roh/isOtriManager" } });
+            //var x=resourceApi.InsertPropertiesLoadedResources(dic);
 
-            var resultado = resourceApi.VirtuosoQuery("select *", "where{?s <http://w3id.org/roh/generatedPDFFile> ?o}", "curriculumvitae");
-            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
-            {
-                Dictionary<Guid, List<RemoveTriples>> dic2 = new Dictionary<Guid, List<RemoveTriples>>();
-                string id = fila["s"].value;
-                string pdf = fila["o"].value;
-                dic2.Add(resourceApi.GetShortGuid(id), new List<RemoveTriples>() { new RemoveTriples() { Predicate = "http://w3id.org/roh/generatedPDFFile", Value = pdf } });
-                resourceApi.DeletePropertiesLoadedResources(dic2);
-            }
+            //var resultado = resourceApi.VirtuosoQuery("select *", "where{?s <http://w3id.org/roh/generatedPDFFile> ?o}","curriculumvitae");
+            //foreach(Dictionary<string,SparqlObject.Data> fila in resultado.results.bindings)
+            //{
+            //    Dictionary<Guid, List<RemoveTriples>> dic2 = new Dictionary<Guid, List<RemoveTriples>>();
+            //    string id = fila["s"].value;
+            //    string pdf = fila["o"].value;
+            //    dic2.Add(resourceApi.GetShortGuid(id), new List<RemoveTriples>() { new RemoveTriples() { Predicate = "http://w3id.org/roh/generatedPDFFile", Value = pdf } });
+            //    resourceApi.DeletePropertiesLoadedResources(dic2);
+            //}
 
 
 
@@ -309,6 +309,141 @@ namespace DesnormalizadorHercules
 
         }
 
+
+        public static void ElimnarDatosAdicionales()
+        {
+            List<Tuple<string, string, string, string>> listaEliminar = new List<Tuple<string, string, string, string>>();
+            //Eliminar publicaciones
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://purl.org/ontology/bibo/Document", "document", "", ""));
+            //Eliminar cvs
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/CV", "curriculumvitae", "", ""));
+            //Eliminar proyectos no validados
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://vivoweb.org/ontology/core#Project", "project", "http://w3id.org/roh/isValidated", "true"));
+            //Eliminar grupos no validados
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://xmlns.com/foaf/0.1/Group", "group", "http://w3id.org/roh/isValidated", "true"));
+            //Eliminar personas no activas
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://xmlns.com/foaf/0.1/Person", "person", "http://w3id.org/roh/isActive", "true"));
+
+            //Otros datos de CVs            
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://vivoweb.org/ontology/core#AcademicDegree", "academicdegree", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Accreditation", "accreditation", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Activity", "activity", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Collaboration", "collaboration", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Committee", "committee", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Council", "council", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://vivoweb.org/ontology/core#Grant", "grant", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/ImpartedAcademicTraining", "impartedacademictraining", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/ImpartedCoursesSeminars", "impartedcoursesseminars", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/LanguageCertificate", "languagecertificate", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Network", "network", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://vivoweb.org/ontology/core#Position", "position", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/ScientificProduction", "scientificproduction", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Society", "society", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Stay", "stay", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/SupervisedArtisticProject", "supervisedartisticproject", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/TeachingCongress", "teachingcongress", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/TeachingProject", "teachingproject", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/TeachingPublication", "teachingpublication", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/TechnologicalResult", "technologicalresult", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/ThesisSupervision", "thesissupervision", "", ""));
+            listaEliminar.Add(new Tuple<string, string, string, string>("http://w3id.org/roh/Tutorship", "tutorship", "", ""));
+
+
+            foreach (Tuple<string, string, string, string> item in listaEliminar)
+            {
+                string filterAux = "";
+                if (!string.IsNullOrEmpty(item.Item3) && !string.IsNullOrEmpty(item.Item4))
+                {
+                    filterAux = $"MINUS{{?s <{item.Item3}> '{item.Item4}'}} ";
+                }
+
+                String select = @"SELECT ?s";
+                String where = @$"  where{{
+                                            ?s a <{item.Item1}>.
+                                            {filterAux}
+                                        }}";
+
+                SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, item.Item2);
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 100 }, fila =>
+                {
+                    try
+                    {
+                        if (resultado.results.bindings.Last() == fila)
+                        {
+                            resourceApi.PersistentDelete(resourceApi.GetShortGuid(fila["s"].value), true, true);
+                        }
+                        else
+                        {
+                            resourceApi.PersistentDelete(resourceApi.GetShortGuid(fila["s"].value));
+                        }
+                        Console.WriteLine(item.Item2 + " : " + resultado.results.bindings.IndexOf(fila) + "/" + resultado.results.bindings.Count);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                });
+            };
+
+            foreach (Tuple<string, string, string, string> item in listaEliminar)
+            {
+                string filterAux = "";
+                if (!string.IsNullOrEmpty(item.Item3) && !string.IsNullOrEmpty(item.Item4))
+                {
+                    filterAux = $"MINUS{{?s <{item.Item3}> '{item.Item4}'}} ";
+                }
+
+                String select = @"SELECT ?s";
+                String where = @$"  where{{
+                                            ?s a '{item.Item2}'.
+                                            {filterAux}
+                                        }}";
+
+                SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, communityApi.GetCommunityId());
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 100 }, fila =>
+                {
+                    try
+                    {
+                        if (resultado.results.bindings.Last() == fila)
+                        {
+                            resourceApi.PersistentDelete(resourceApi.GetShortGuid(fila["s"].value), true, true);
+                        }
+                        else
+                        {
+                            resourceApi.PersistentDelete(resourceApi.GetShortGuid(fila["s"].value));
+                        }
+                        Console.WriteLine(item.Item2 + " : " + resultado.results.bindings.IndexOf(fila) + "/" + resultado.results.bindings.Count);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                });
+            };
+
+            //Actualizar fecha actualizacion personas
+            {
+                String select = @"SELECT ?s ?date";
+                String where = @$"  where{{
+                                            ?s a <http://xmlns.com/foaf/0.1/Person>.
+                                            ?s <http://w3id.org/roh/lastUpdatedDate> ?date 
+                                        }}";
+
+                SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, "person");
+                Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 100 }, fila =>
+                {
+                    Dictionary<Guid, List<RemoveTriples>> triplesElininar = new Dictionary<Guid, List<RemoveTriples>>();
+                    triplesElininar[resourceApi.GetShortGuid(fila["s"].value)] = new List<RemoveTriples>() {
+                        new RemoveTriples()
+                        {
+                             Predicate="http://w3id.org/roh/lastUpdatedDate",
+                             Value=fila["date"].value
+                        }
+                    };
+                    resourceApi.DeletePropertiesLoadedResources(triplesElininar);
+                });
+            }
+        }
 
         public static void InsertarColaDesnormalizador(RabbitServiceWriterDenormalizer rabbitService, string queue)
         {
