@@ -4591,6 +4591,8 @@ var duplicadosCV = {
 						});
 					} else if (minSimilarity == 0.7) {
 						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
+					} else {
+						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 					}
 					OcultarUpdateProgress();
 				}
