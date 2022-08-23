@@ -700,7 +700,7 @@ var edicionCV = {
 									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
 								</a>
 							</li>`;
-        } else if (data.iseditable) {
+        } else {//if (data.iseditable) {
             //Si está publicado sólo se puede despublicar si es editable
             htmlAcciones += `<li>
 								<a class="item-dropdown">
