@@ -24,11 +24,11 @@ namespace DesnormalizadorHercules
         {
             Dictionary<Guid, List<TriplesToInclude>> dic = new Dictionary<Guid, List<TriplesToInclude>>();
             Guid idOtri = resourceApi.GetShortGuid("http://gnoss.com/items/Person_70582872-7f4f-4a76-a150-c0c4b8db1522_34a05e34-641a-4735-88f4-357cca8aaac6");
-            dic.Add(idOtri,new List<TriplesToInclude>() { new TriplesToInclude() { NewValue = "true", Predicate = "http://w3id.org/roh/isOtriManager" } });
-            var x=resourceApi.InsertPropertiesLoadedResources(dic);
+            dic.Add(idOtri, new List<TriplesToInclude>() { new TriplesToInclude() { NewValue = "true", Predicate = "http://w3id.org/roh/isOtriManager" } });
+            var x = resourceApi.InsertPropertiesLoadedResources(dic);
 
-            var resultado = resourceApi.VirtuosoQuery("select *", "where{?s <http://w3id.org/roh/generatedPDFFile> ?o}","curriculumvitae");
-            foreach(Dictionary<string,SparqlObject.Data> fila in resultado.results.bindings)
+            var resultado = resourceApi.VirtuosoQuery("select *", "where{?s <http://w3id.org/roh/generatedPDFFile> ?o}", "curriculumvitae");
+            foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
             {
                 Dictionary<Guid, List<RemoveTriples>> dic2 = new Dictionary<Guid, List<RemoveTriples>>();
                 string id = fila["s"].value;
@@ -53,7 +53,6 @@ namespace DesnormalizadorHercules
 
             //Diana Castilla 27281387213879
             AltaUsuarioGnoss("Diana", "Castilla", "diana---castilla@pruebagnoss.com", "diana-castil", "27281387213879", "", "");
-
 
             //Felix Cesareo Gomez de Leon Hijes
             AltaUsuarioGnoss("Felix", "Cesareo", "Felix--Cesareo@pruebagnoss.com", "felix-cesare", "22463209", "", "");
@@ -111,9 +110,9 @@ namespace DesnormalizadorHercules
             AltaUsuarioGnoss("Aurelia", "Andres", "aurelia.andres@fecyt.es", "aurelia-and1", "579865434363", "", "");
 
             AltaUsuarioGnoss("Bernardo", "Canovas", "Bernardo.Canovas@pruebagnoss.es", "bernardo-can", "48487426", "", "");
-            
+
             AltaUsuarioGnoss("Jose", "Fernandez", "Jose.Fernandez@pruebagnoss.es", "jose-fernand", "29062423", "", "");
-            
+
             AltaUsuarioGnoss("Rafael", "Valencia", "Rafael.Valencia@pruebagnoss.es", "rafael-valen", "48392732", "", "");
 
 
