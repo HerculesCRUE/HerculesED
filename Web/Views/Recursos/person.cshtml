@@ -355,7 +355,7 @@
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("PUBLICACIONES")</div>
                                     @{
-                                        if (pPerson.Roh_publicPublicationsNumber != null && pPerson.Roh_publicPublicationsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                                        if (pPerson.Roh_publicPublicationsNumber != null && !string.IsNullOrEmpty(pPerson.GNOSSID))
                                         {
                                             <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_publicPublicationsNumber))" class="data">@pPerson.Roh_publicPublicationsNumber</div>
                                         }
@@ -372,7 +372,7 @@
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("PROYECTOS")</div>
                                     @{
-                                        if (pPerson.Roh_publicProjectsNumber != null && pPerson.Roh_publicProjectsNumber > 0 && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                                        if (pPerson.Roh_publicProjectsNumber != null && !string.IsNullOrEmpty(pPerson.GNOSSID))
                                         {
                                             <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_publicProjectsNumber))" class="data">@pPerson.Roh_publicProjectsNumber</div>
                                         }
