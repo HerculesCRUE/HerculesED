@@ -4457,12 +4457,21 @@ var duplicadosCV = {
 						</select>
 					`);
 		
-		//Agregamos botón de convertir en principal	en items si el primero no está bloqueado
-		if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
+		////Agregamos botón de convertir en principal	en items si el primero no está bloqueado
+		//if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
+		//{
+		//	$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
+		//}
+		
+		//Agregamos botón de convertir a todos los items si no hay ninguno bloqueado
+		//o es un item bloqueado
+		if(!$('#modal-posible-duplicidad .resource-list-wrap article .title-wrap .block-wrapper').length)
 		{
 			$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		}
-
+		$("#modal-posible-duplicidad .resource-list-wrap.secundarios article .title-wrap .block-wrapper").each(function(index) {
+			$(this).closest('article').find('h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
+		});
 		
 		//Botón convertir en principal	
 		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
