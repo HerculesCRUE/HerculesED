@@ -906,10 +906,6 @@ function filtrarSearch(callback = () => {}) {
 	{
 		search = 'searcherPersons';
 	}
-	//else if(searchID === 'contenedorBuscadorParticipantes')
-	//{
-	//	search = 'searcherParticipantes';
-	//}
 
 	let parameterVal = input[0].value;
 	let filtro = search + "=" + parameterVal;
