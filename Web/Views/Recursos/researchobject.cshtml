@@ -795,7 +795,9 @@
 
             let modal = document.getElementById("modal-editar-anotacion")
             let modalTextArea = modal.getElementsByClassName("textareaInput")
-            modalTextArea[0].value = oldText.replaceAll("<br />", "\n")
+            modalTextArea[0].value = oldText.replaceAll("<br />", "\n").replaceAll("&gt",">").replaceAll("&lt","<");
+
+            
 
             $(modal).modal("show")
 
