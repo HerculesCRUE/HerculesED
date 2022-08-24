@@ -469,42 +469,47 @@
                                             </div>
                                         </div>
                                         <div class="contenido-grafico container">
-                                            <div class="row">
-                                                <div class="col col-12 col-md-12">
-                                                    <div class="grafico-wrap">
-                                                        <p>@Html.Translate("GRAFICA_AREAS_GRUPO_ARANIA")</p>
-                                                        <div class="graph-controls">
-                                                            <div class="graph-controls-menu">
-                                                                <ul class="no-list-style d-flex align-items-center mb-2">
-                                                                    <li class="control remove-control" id="removeNodesAreas">
-                                                                        <span class="material-icons">remove</span>
-                                                                    </li>
-                                                                    <li class="control text-control">
-                                                                        <span id="numNodosArea">10</span>&nbsp;@Html.Translate("NODOS")
-                                                                    </li>
-                                                                    <li class="control add-control" id="addNodesAreas">
-                                                                        <span class="material-icons">add</span>
-                                                                    </li>
-                                                                </ul>
-                                                                <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
-                                                                    <li onclick="zoomCyOut()" class="control zoomout-control" id="zoomOut">
-                                                                        <span class="material-icons">remove</span>
-                                                                    </li>
-                                                                    <li class="control text-control">
-                                                                        <span class="material-icons">search</span>
-                                                                    </li>
-                                                                    <li onclick="zoomCyIn()" class="control zoomin-control" id="zoomIn">
-                                                                        <span class="material-icons">add</span>
-                                                                    </li>
-                                                                </ul>
+                                            @{
+                                                if (pProject.Roh_mainResearchers != null && pProject.Roh_mainResearchers.Count > 0)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col col-12 col-md-12">
+                                                            <div class="grafico-wrap">
+                                                                <p>@Html.Translate("GRAFICA_AREAS_GRUPO_ARANIA")</p>
+                                                                <div class="graph-controls">
+                                                                    <div class="graph-controls-menu">
+                                                                        <ul class="no-list-style d-flex align-items-center mb-2">
+                                                                            <li class="control remove-control" id="removeNodesAreas">
+                                                                                <span class="material-icons">remove</span>
+                                                                            </li>
+                                                                            <li class="control text-control">
+                                                                                <span id="numNodosArea">10</span>&nbsp;@Html.Translate("NODOS")
+                                                                            </li>
+                                                                            <li class="control add-control" id="addNodesAreas">
+                                                                                <span class="material-icons">add</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                        <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
+                                                                            <li onclick="zoomCyOut()" class="control zoomout-control" id="zoomOut">
+                                                                                <span class="material-icons">remove</span>
+                                                                            </li>
+                                                                            <li class="control text-control">
+                                                                                <span class="material-icons">search</span>
+                                                                            </li>
+                                                                            <li onclick="zoomCyIn()" class="control zoomin-control" id="zoomIn">
+                                                                                <span class="material-icons">add</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <input type="hidden" id="numAreas" value="10" />
+                                                                    <div id="areastematicasgrapharania" style="width: 100%; height: 500px;">
+                                                                    </div>
                                                             </div>
                                                         </div>
-                                                        <input type="hidden" id="numAreas" value="10" />
-                                                        <div id="areastematicasgrapharania" style="width: 100%; height: 500px;">
-                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                }
+                                            }
                                             <div class="row">
                                                 <div class="col col-12 col-md-12">
                                                     <div class="grafico-wrap">
@@ -723,11 +728,13 @@
         arg.pAnioInicio = $('#inicioAreas').val();
         arg.pAnioFin = $('#finAreas').val();
         arg.pNumAreas = $('#numAreas').val();
-        MostrarUpdateProgress();
-        $.get(url, arg, function (data) {
-            PintarGraficaArania(data, idContenedor);
-            OcultarUpdateProgress();
-        });
+        if ($('#' + idContenedor)[0]) {
+            MostrarUpdateProgress();
+            $.get(url, arg, function (data) {
+                PintarGraficaArania(data, idContenedor);
+                OcultarUpdateProgress();
+            });
+        }
     }
 
 
