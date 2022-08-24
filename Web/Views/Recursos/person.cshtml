@@ -1539,6 +1539,7 @@
             this.Roh_h_index = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/h-index"));
             this.Roh_publicPublicationsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicPublicationsNumber"));
             this.Roh_publicProjectsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicProjectsNumber"));
+            this.Roh_publicResearchObjectsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicResearchObjectsNumber"));
             this.Roh_publicCollaboratorsNumber = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicCollaboratorsNumber"));
             this.Vivo_researcherId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#researcherId"));
             this.Vivo_scopusId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#scopusId"));
@@ -1740,6 +1741,9 @@
 
         [RDFProperty("http://w3id.org/roh/publicProjectsNumber")]
         public int? Roh_publicProjectsNumber { get; set; }
+		
+        [RDFProperty("http://w3id.org/roh/publicResearchObjectsNumber")]
+        public int? Roh_publicResearchObjectsNumber { get; set; }
 
         [RDFProperty("http://w3id.org/roh/publicCollaboratorsNumber")]
         public int? Roh_publicCollaboratorsNumber { get; set; }
