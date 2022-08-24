@@ -387,7 +387,16 @@
                             <a class="nav-link" id="otros-tab" data-toggle="tab" href="#otros-panel" role="tab" aria-controls="otros-panel" aria-selected="false">
                                 <div class="bloque">
                                     <div class="label">@Html.Translate("OTROS_RESULTADOS")</div>
-                                    <div class="data">---</div>
+									@{
+                                        if (pPerson.Roh_publicResearchObjectsNumber != null && !string.IsNullOrEmpty(pPerson.GNOSSID))
+                                        {
+                                            <div about="@pPerson.GNOSSID" property="@pPerson.GetPropertyURI(nameof(pPerson.Roh_publicResearchObjectsNumber))" class="data">@pPerson.Roh_publicResearchObjectsNumber</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="data">---</div>
+                                        }
+                                    }
                                 </div>
                             </a>
                         </li>
