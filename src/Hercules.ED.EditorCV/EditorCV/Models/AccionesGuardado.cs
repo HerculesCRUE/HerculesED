@@ -2114,8 +2114,8 @@ namespace EditorCV.Models
             Entity secEntity = GetLoadedEntityWithAux(pIdSecundaria, pTabSection.presentation.listItemsPresentation.listItemEdit.graph);
             secEntity.propTitle = pTabSection.presentation.listItemsPresentation.listItemEdit.proptitle;
             secEntity.propDescription = pTabSection.presentation.listItemsPresentation.listItemEdit.propdescription;
-            //Fusionamos los datos de la entidad principal
-            if (!mainEntity.IsValidated() && !secEntity.IsValidated())
+            //Fusionamos los datos de la entidad principal si ninguna está validada o al menos lo está la primera
+            if ((!mainEntity.IsValidated() && !secEntity.IsValidated()) || mainEntity.IsValidated())
             {
                 bool cambios = MergeLoadedEntity(mainEntity, secEntity, false);
                 if (cambios)
@@ -2130,7 +2130,7 @@ namespace EditorCV.Models
                     && !string.IsNullOrEmpty(pTabSection.presentation.listItemsPresentation.property_cv)
                     && !string.IsNullOrEmpty(pTabSection.presentation.listItemsPresentation.rdftype_cv))
             {
-                //Datos de la secundaria de la entidad principal
+                //Datos auxiliares de la entidad principal
                 string selectP = "select ?s ?p ?o ";
                 string whereP = @$"where
 {{
@@ -2141,7 +2141,7 @@ namespace EditorCV.Models
 
                 SparqlObject auxP = mResourceApi.VirtuosoQuery(selectP, whereP, "curriculumvitae");
 
-                //Datos de la secundaria de la entidad sexcundaria
+                //Datos auxiliar de la entidad secundaria
                 string selectS = "select ?s ?p ?o ";
                 string whereS = @$"where
 {{
@@ -2253,12 +2253,12 @@ namespace EditorCV.Models
             }
 
 
-            //Eliminamos del CV del usuario la secundaria
-            if (!secEntity.IsValidated())
-            {
-                //Eliminamos la secundaria del usuario si no está validada
+            ////Eliminamos del CV del usuario la secundaria
+            //if (!secEntity.IsValidated())
+            //{
+            //    //Eliminamos la secundaria del usuario si no está validada
                 RemoveItem(pConfigService, pIdSecundaria);
-            }
+            //}
         }
     }
 }

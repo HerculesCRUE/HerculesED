@@ -345,17 +345,17 @@ namespace EditorCV.Models
 
                                 //Ordenamos primero con los validados
                                 similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                                //Sólo puede ser validado el primero
-                                if (similarsin.Count > 1)
-                                {
-                                    foreach (string id in similarsin.Keys.ToList().GetRange(1, similarsin.Keys.Count - 1))
-                                    {
-                                        if (similarsin[id])
-                                        {
-                                            similarsin.Remove(id);
-                                        }
-                                    }
-                                }
+                                ////Sólo puede ser validado el primero
+                                //if (similarsin.Count > 1)
+                                //{
+                                //    foreach (string id in similarsin.Keys.ToList().GetRange(1, similarsin.Keys.Count - 1))
+                                //    {
+                                //        if (similarsin[id])
+                                //        {
+                                //            similarsin.Remove(id);
+                                //        }
+                                //    }
+                                //}
                                 if (similarsin.Count > 1)
                                 {
                                     //Si hay mas de uno y hay alguno no validado lo añadimos
