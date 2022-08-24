@@ -583,14 +583,11 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                               Where{{
                                 ?person a <http://xmlns.com/foaf/0.1/Person>.
                                 OPTIONAL{{
-                                    ?researchObject a <http://w3id.org/roh/ResearchObject>.
-                                    {{
-			                            ?cv <http://w3id.org/roh/cvOf> ?person.
-			                            ?cv  <http://w3id.org/roh/researchObject> ?researchObjects.
-			                            ?researchObjects ?pAux ?oAux.
-			                            ?oAux <http://w3id.org/roh/isPublic> 'true'.
-			                            ?oAux <http://vivoweb.org/ontology/core#relatedBy> ?researchObject .
-		                            }}
+			                        ?cv <http://w3id.org/roh/cvOf> ?person.
+                                    ?cv  <http://w3id.org/roh/researchObject> ?researchObjects.
+                                    ?researchObjects ?pAux ?oAux.
+                                    ?oAux <http://w3id.org/roh/isPublic> 'true'.
+                                    ?oAux <http://vivoweb.org/ontology/core#relatedBy> ?researchObject .		                            
                                 }}
                               }}Group by ?person 
                             }}
