@@ -4,27 +4,6 @@ var urlGuardadoCV = url_servicio_editorcv+"GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];
 var tooltips = {section:{}, items:{}};
 
-function GetText(id, param1, param2, param3, param4) {
-    if ($('#' + id).length) {
-        var txt = $('#' + id).val();
-        if (param1 != null) {
-            txt = txt.replace("PARAM1", param1);
-        }
-        if (param2 != null) {
-            txt = txt.replace("PARAM2", param1);
-        }
-        if (param3 != null) {
-            txt = txt.replace("PARAM3", param1);
-        }
-        if (param4 != null) {
-            txt = txt.replace("PARAM4", param1);
-        }
-        return txt;
-    } else {
-        return id;
-    }
-}
-
 var edicionCV = {
     idCV: null,
     idPerson: null,
