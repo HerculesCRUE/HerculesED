@@ -36,6 +36,16 @@
 }
 
 <div class="row">
+	
+	<input type="hidden" id="PUBLICACIONES_URL" value="@Html.Translate("PUBLICACIONES_URL")"/>
+	<input type="hidden" id="PERSONAL_INVESTIGADOR_URL" value="@Html.Translate("PERSONAL_INVESTIGADOR_URL")"/>
+	<input type="hidden" id="PROYECTOS_URL" value="@Html.Translate("PROYECTOS_URL")"/>
+	<input type="hidden" id="GRUPOS_URL" value="@Html.Translate("GRUPOS_URL")"/>
+	<input type="hidden" id="RESEARCH_OBJECTS_URL" value="@Html.Translate("RESEARCH_OBJECTS_URL")"/>
+	<input type="hidden" id="OFERTAS_URL" value="@Html.Translate("OFERTAS_URL")"/>
+	<input type="hidden" id="ANOTACIONES_URL" value="@Html.Translate("ANOTACIONES_URL")"/>
+
+
     <!-- Ruta de páginas -->
     <div class="col col-12 col-breadcrumb">
         <ul>
@@ -180,6 +190,43 @@
                 });
             </text>
         }
+		
+		$(document).ready(function () {
+			$('#inputLupa').unbind().click(function (event) {				
+				var urlPaginaActual = $('.inpt_urlPaginaActual').val();
+				var search='search';
+				if(document.location.pathname.endsWith(GetText("PUBLICACIONES_URL")))
+				{
+					search='searcherPublications';
+				}
+				else if(document.location.pathname.endsWith(GetText("PERSONAL_INVESTIGADOR_URL")))
+				{
+					search='searcherPersons';
+				}
+				else if(document.location.pathname.endsWith(GetText("PROYECTOS_URL")))
+				{
+					search='searcherProjects';
+				}
+				else if(document.location.pathname.endsWith(GetText("GRUPOS_URL")))
+				{
+					search='searcherGroups';
+				}
+				else if(document.location.pathname.endsWith(GetText("RESEARCH_OBJECTS_URL")))
+				{
+					search='searcherPublications';
+				}
+				else if(document.location.pathname.endsWith(GetText("OFERTAS_URL")))
+				{
+					search='searcherOffers';
+				}
+				else if(document.location.pathname.endsWith(GetText("ANOTACIONES_URL")))
+				{
+					search='searcherAnnotations';
+				}
+								
+				window.location.href = urlPaginaActual + "?" + search + "=" + encodeURIComponent($('#finderSection').val()); 
+			});
+		});
 
 
 
