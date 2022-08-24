@@ -104,6 +104,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorPersonas.ActualizarNumeroPublicacionesPublicas();
             actualizadorPersonas.ActualizarNumeroProyectosValidados();
             actualizadorPersonas.ActualizarNumeroProyectosPublicos();
+            actualizadorPersonas.ActualizarNumeroResearchObjectsPublicos();
             actualizadorPersonas.ActualizarNumeroAreasTematicas();
 
             //Grupo con dependencias
@@ -174,6 +175,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorPersonas.ActualizarNumeroPublicacionesPublicas(pPersons: pPersons);
             actualizadorPersonas.ActualizarNumeroProyectosValidados(pPersons: pPersons);
             actualizadorPersonas.ActualizarNumeroProyectosPublicos(pPersons: pPersons);
+            actualizadorPersonas.ActualizarNumeroResearchObjectsPublicos(pPersons: pPersons);
             actualizadorPersonas.ActualizarNumeroAreasTematicas(pPersons: pPersons);
 
 
