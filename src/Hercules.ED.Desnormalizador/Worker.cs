@@ -93,6 +93,13 @@ namespace DesnormalizadorHercules
                 Temporal.EliminarEntidadesCV();
             }
 
+            //TODO 
+            bool elimnarDatosAdicionales = false;
+            if (elimnarDatosAdicionales)
+            {
+                Temporal.ElimnarDatosAdicionales();
+            }
+
 
             //TODO eliminar
             bool DesnormalizarTodo = false;
