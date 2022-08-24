@@ -510,11 +510,12 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 			                            ?scientificExperience ?pAux ?oAux.
 			                            ?oAux <http://w3id.org/roh/isPublic> 'true'.
 			                            ?oAux <http://vivoweb.org/ontology/core#relatedBy> ?proyecto
-		                            }}UNION
-                                    {{
-                                        ?proyecto <http://w3id.org/roh/isValidated> 'true'.
-                                        ?proyecto <http://w3id.org/roh/membersProject> ?person.
-                                    }}
+		                            }}
+                                    #UNION
+                                    #{{
+                                    #    ?proyecto <http://w3id.org/roh/isValidated> 'true'.
+                                    #    ?proyecto <http://w3id.org/roh/membersProject> ?person.
+                                    #}}
                                 }}
                               }}Group by ?person 
                             }}
@@ -540,6 +541,83 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     }
                 }
             }
+        }
+
+        public void ActualizarNumeroResearchObjectsPublicos(List<string> pPersons = null, List<string> pResearchObjects = null)
+        {
+            //Eliminamos los duplicados
+            EliminarDuplicados("person", "http://xmlns.com/foaf/0.1/Person", "http://w3id.org/roh/publicResearchObjectsNumber");
+
+            HashSet<string> filters = new HashSet<string>();
+            if (pPersons != null && pPersons.Count > 0)
+            {
+                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
+            }
+            if (pResearchObjects != null && pResearchObjects.Count > 0)
+            {
+                filters.Add($" ?project <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?project in (<{string.Join(">,<", pResearchObjects)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+                //Actualizamos los datos
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @"select ?person ?numResearchObjectsCargados ?numResearchObjectsACargar from <http://gnoss.com/curriculumvitae.owl> ";
+                    String where = @$"where{{
+                            ?person a <http://xmlns.com/foaf/0.1/Person>.
+                            {filter}
+                            OPTIONAL
+                            {{
+                              ?person <http://w3id.org/roh/publicResearchObjectsNumber> ?numResearchObjectsCargadosAux. 
+                              BIND(xsd:int( ?numResearchObjectsCargadosAux) as  ?numResearchObjectsCargados)
+                            }}
+                            {{
+                              select ?person count(distinct ?researchObject) as ?numResearchObjectsACargar
+                              Where{{
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                OPTIONAL{{
+                                    ?researchObject a <http://w3id.org/roh/ResearchObject>.
+                                    {{
+			                            ?cv <http://w3id.org/roh/cvOf> ?person.
+			                            ?cv  <http://w3id.org/roh/researchObject> ?researchObjects.
+			                            ?researchObjects ?pAux ?oAux.
+			                            ?oAux <http://w3id.org/roh/isPublic> 'true'.
+			                            ?oAux <http://vivoweb.org/ontology/core#relatedBy> ?researchObject .
+		                            }}
+                                }}
+                              }}Group by ?person 
+                            }}
+                        FILTER(?numResearchObjectsCargados!= ?numResearchObjectsACargar OR !BOUND(?numResearchObjectsCargados) )
+                        }}
+                        limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string person = fila["person"].value;
+                        string numResearchObjectsACargar = fila["numResearchObjectsACargar"].value;
+                        string numResearchObjectsCargados = "";
+                        if (fila.ContainsKey("numResearchObjectsCargados"))
+                        {
+                            numResearchObjectsCargados = fila["numResearchObjectsCargados"].value;
+                        }
+                        ActualizadorTriple(person, "http://w3id.org/roh/publicResearchObjectsNumber", numResearchObjectsCargados, numResearchObjectsACargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+
         }
 
         /// <summary>
