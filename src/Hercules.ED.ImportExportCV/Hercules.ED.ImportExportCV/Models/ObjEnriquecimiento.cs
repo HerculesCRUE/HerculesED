@@ -84,7 +84,7 @@ namespace Hercules.ED.ImportExportCV.Models
                 {
                     data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }

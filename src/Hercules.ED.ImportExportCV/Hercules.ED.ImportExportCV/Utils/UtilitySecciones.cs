@@ -858,7 +858,7 @@ where{{
 
                 return true;
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 mResourceApi.Log.Error("Fallo al convertir el email");
                 return false;

@@ -87,7 +87,7 @@ namespace ImportadorWebCV.Sincro
                     this.cvID = cvID;
                     this.personID = Utility.PersonaCV(cvID);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     
                 }
@@ -105,7 +105,7 @@ namespace ImportadorWebCV.Sincro
                     this.cvID = cvID;
                     this.personID = Utility.PersonaCV(cvID);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     
                 }
@@ -140,7 +140,7 @@ namespace ImportadorWebCV.Sincro
                         cvn = (cvnRootResultBean)ser.Deserialize(reader);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     
                 }
@@ -156,7 +156,7 @@ namespace ImportadorWebCV.Sincro
                         cvn = (cvnRootResultBean)ser.Deserialize(reader);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 
                 }
