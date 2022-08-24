@@ -367,6 +367,19 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="group-collapse anotaciones  hasCV" style="display:none">
+                        <a href="#cluster" data-toggle="collapse" aria-expanded="true">@Html.Translate("GESTION_ANOTACIONES")</a>
+                        <div id="cluster" class="collapse show">
+                            <ul class="pmd-sidebar-nav">
+                                <li class="liInicio">
+                                    @{
+                                        string urlListadoAnotaciones = Comunidad.Url + "/" + Html.Translate("ANOTACIONES_URL");
+                                    }
+                                    <a href="@urlListadoAnotaciones">@Html.Translate("LISTADO_ANOTACIONES")</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="group-collapse indicadores-personales hasCV" style="display:none">
                         <a href="#indicadores-personales" data-toggle="collapse" aria-expanded="true">@Html.Translate("INDICADORES")</a>
                         <div id="cluster" class="collapse show">
