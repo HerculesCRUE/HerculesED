@@ -1997,7 +1997,7 @@
                                     }
                                 }
                                 <p>
-                                    @dayDate/@monthDate/@yearDate - @hourDate:@minDate:@secDate
+                                    @dayDate/@monthDate/@yearDate - @hourDate:@minDate:@secDate + " UTC"
                                 </p>
                             }
                         }
@@ -2035,7 +2035,10 @@
                                         }
                                     }
                             </div>
-
+                            <p class="moreResults showMore">
+                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS") <span class="material-icons">expand_more</span></a>
+                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS") <span class="material-icons">expand_less</span></a>
+                            </p>
                         </div>
                     </div>
                 </div>
