@@ -2939,6 +2939,20 @@ var edicionCV = {
 			var textoEliminar = $(this).find('.texto');
             var sectionID = textoEliminar.closest('.panel-group').attr('section');
             var entityID = textoEliminar.attr('data-id');
+			
+			var message="";
+			$("#modal-eliminar").find(".ko").remove();
+			if(textoEliminar.closest('article').find('.block-wrapper').length && 
+				(
+					sectionID=="http://w3id.org/roh/scientificPublications"||
+					sectionID=="http://w3id.org/roh/worksSubmittedConferences"||
+					sectionID=="http://w3id.org/roh/worksSubmittedSeminars"
+				)
+			)
+			{
+				$("#modal-eliminar").find(".form-actions").before(`<div class="ko" style="display:block"><p>${GetText("CV_ALERTA_ELIMINACION_BLOQUEADO")}</p></div>`);
+			}
+			
             $('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:edicionCV.eliminarItem("' + sectionID + '","' + entityID + '");$("#modal-eliminar").modal("hide");');
         });
 
@@ -4467,6 +4481,13 @@ var duplicadosCV = {
 		$("#modal-posible-duplicidad .resource-list-wrap.secundarios article .title-wrap .block-wrapper").each(function(index) {
 			$(this).closest('article').find('h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		});
+		
+		//Si dentro de los items hay alguno bloquedao mostramos un texto adicional
+		$("#modal-posible-duplicidad .ko").remove();
+		if($('#modal-posible-duplicidad .resource-list-wrap.secundarios article .title-wrap .block-wrapper').length>0)
+		{
+			$("#modal-posible-duplicidad .form-actions").before(`<div class="ko" style="display:block"><p>${GetText("CV_ALERTA_FUSION_ELIMINACION_BLOQUEADO")}</p></div>`);
+		}
 		
 		//Botón convertir en principal	
 		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
