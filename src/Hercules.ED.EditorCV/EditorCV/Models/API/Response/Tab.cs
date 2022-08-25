@@ -136,6 +136,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public bool iseditable { get; set; }
         /// <summary>
+        /// Indica si se puede eliminar o no
+        /// </summary>
+        public bool iserasable { get; set; }
+        /// <summary>
         /// Indica si es openaccess
         /// </summary>
         public bool isopenaccess { get; set; }
