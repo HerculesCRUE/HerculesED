@@ -890,6 +890,57 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
         }
 
+
+        /// <summary>
+        /// Eliminamos los http://purl.org/ontology/bibo/Document que no tengan autores activos
+        /// </summary>
+        /// <param name="pDocuments">ID de documentos</param>
+        public void EliminarDocumentosSinAutoresActivos(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?document from <http://gnoss.com/person.owl> ";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                MINUS
+                                {{
+                                    ?document <http://purl.org/ontology/bibo/authorList> ?autores.
+                                    ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                    ?person <http://w3id.org/roh/isActive> 'true'.
+                                }}
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        try
+                        {
+                            mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(fila["document"].value));
+                        }
+                        catch (Exception) { }
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Actualiza indices de impacto
         /// </summary>
@@ -1449,7 +1500,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             t.NewValue = idAux + "|" + fila["quartile"].value;
                             triples[guid].Add(t);
                         }
-                        if(fila.ContainsKey("impactCategory"))
+                        if (fila.ContainsKey("impactCategory"))
                         {
                             TriplesToInclude t = new();
                             t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategoryEntity";
