@@ -313,6 +313,56 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 }
             }
         }
-               
+
+        /// <summary>
+        /// Eliminamos los http://purl.org/ontology/bibo/Document que no tengan autores activos
+        /// </summary>
+        /// <param name="pROs">ID de ROs</param>
+        public void EliminarROsSinAutoresActivos(List<string> pROs = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pROs != null && pROs.Count > 0)
+            {
+                filters.Add($" FILTER(?ro in (<{string.Join(">,<", pROs)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?ro from <http://gnoss.com/person.owl> ";
+                    String where = @$"where{{
+                                ?ro a <http://w3id.org/roh/ResearchObject>.
+                                {filter}
+                                MINUS
+                                {{
+                                    ?ro <http://purl.org/ontology/bibo/authorList> ?autores.
+                                    ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                    ?person <http://w3id.org/roh/isActive> 'true'.
+                                }}
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        try
+                        {
+                            mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(fila["ro"].value));
+                        }
+                        catch (Exception) { }
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 }
