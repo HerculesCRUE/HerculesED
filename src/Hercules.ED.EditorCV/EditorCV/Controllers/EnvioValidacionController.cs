@@ -54,7 +54,7 @@ namespace EditorCV.Controllers
             }
             catch (Exception e)
             {
-                return Ok(e.Message);
+                return Problem(e.Message);
             }
 
             return Ok();
