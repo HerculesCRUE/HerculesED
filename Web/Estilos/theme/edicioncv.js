@@ -688,8 +688,16 @@ var edicionCV = {
 								</a>
 							</li>`;
         }
-        //Si es editable se puede eliminar
-        if (data.iseditable) {
+        ////Si es editable se puede eliminar
+        //if (data.iseditable) {
+        //    htmlAcciones += `<li>
+		//						<a class="item-dropdown">
+		//							<span class="material-icons">delete</span>
+		//							<span class="texto eliminar" data-id="${id}">${GetText('CV_ELIMINAR')}</span>
+		//						</a>
+		//					</li>`
+        //}
+		if (data.iserasable) {
             htmlAcciones += `<li>
 								<a class="item-dropdown">
 									<span class="material-icons">delete</span>
