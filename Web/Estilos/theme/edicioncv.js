@@ -616,6 +616,9 @@ var edicionCV = {
 		return '';
     },
     printHtmlListItemVisibilidad: function(data) {
+		if (!data.isPublishable) {
+			return '';
+		}
         if (data.ispublic) {
             return `<div class="visibility-wrapper">
 						<div class="con-icono-before eye"></div>
@@ -671,23 +674,26 @@ var edicionCV = {
 							</li>`;
 		}
 
-        if (!data.ispublic) {
-            //Si no está publicado siempre se puede publicar
-            htmlAcciones += `<li>
-								<a class="item-dropdown">
-									<span class="material-icons">visibility</span>
-									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
-								</a>
-							</li>`;
-        } else {//if (data.iseditable) {
-            //Si está publicado sólo se puede despublicar si es editable
-            htmlAcciones += `<li>
-								<a class="item-dropdown">
-									<span class="material-icons">visibility_off</span>
-									<span class="texto despublicaritem" data-id="${id}">${GetText("CV_DESPUBLICAR")}</span>
-								</a>
-							</li>`;
-        }
+        // Si es publicable se muestra el botón de publicar o despublicar
+		if (data.isPublishable) {
+			if (!data.ispublic) {
+				//Si no está publicado siempre se puede publicar
+				htmlAcciones += `<li>
+									<a class="item-dropdown">
+										<span class="material-icons">visibility</span>
+										<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
+									</a>
+								</li>`;
+			} else {//if (data.iseditable) {
+				//Si está publicado sólo se puede despublicar si es editable
+				htmlAcciones += `<li>
+									<a class="item-dropdown">
+										<span class="material-icons">visibility_off</span>
+										<span class="texto despublicaritem" data-id="${id}">${GetText("CV_DESPUBLICAR")}</span>
+									</a>
+								</li>`;
+			}
+		}
         ////Si es editable se puede eliminar
         //if (data.iseditable) {
         //    htmlAcciones += `<li>

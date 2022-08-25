@@ -23,6 +23,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.010.010.000",
           "listItem": {
@@ -357,7 +358,7 @@
                         },
                         "information": {
                           "es": "Nombre oficial de la institución que ha expedido el título. En el caso de que se trate de una institución de educación superior extranjera, el nombre de ésta deberá consignarse en la lengua del país de origen, seguido, en su caso, del término equivalente en castellano entre paréntesis."
-                        },                        
+                        },
                         "autocomplete": true,
                         "placeholder": {
                           "es": "Introduce la entidad de titulación"
@@ -629,6 +630,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.010.020.000",
           "listItem": {
@@ -1471,6 +1473,7 @@
           "last5Years": {
             "always": true
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.060.000.000",
           "listItem": {
@@ -1760,6 +1763,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.010.030.000",
           "listItem": {
@@ -2253,6 +2257,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#end"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.020.000.000",
           "listItem": {
@@ -2804,6 +2809,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "020.050.000.000",
           "listItem": {

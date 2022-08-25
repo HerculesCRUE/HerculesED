@@ -24,6 +24,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedCompetitiveProjectCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedCompetitiveProjectCV",
@@ -1147,6 +1148,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedNonCompetitiveProjectCV",
@@ -2175,6 +2177,7 @@
             "always": false,
             "end": "http://w3id.org/roh/dateFiled"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "listItem": {
             "propertyTitle": {
@@ -3283,6 +3286,7 @@
             "always": false,
             "end": "http://w3id.org/roh/foundationDate"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedGroupCV",
           "rdftype_cv": "http://w3id.org/roh/RelatedGroupCV",
@@ -4049,6 +4053,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "050.020.030.000",
           "listItem": {
@@ -4646,6 +4651,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "050.030.020.000",
           "listItem": {

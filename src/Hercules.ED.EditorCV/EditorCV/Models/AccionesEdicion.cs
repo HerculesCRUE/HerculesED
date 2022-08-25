@@ -1402,7 +1402,12 @@ namespace EditorCV.Models
                     item.isopenaccess = true;
                 }
             }
-
+            //Publicable
+            item.isPublishable = false;
+            if (pListItemConfig.isPublishable)
+            {
+                item.isPublishable = true;
+            }
             //Visibilidad
             string valorVisibilidad = GetPropValues(pId, UtilityCV.PropertyIspublic, pData).FirstOrDefault();
             item.ispublic = false;
