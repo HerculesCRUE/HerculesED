@@ -205,6 +205,10 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         public bool checkDuplicates;
         /// <summary>
+        /// Propiedad para indicar si los items son publicables
+        /// </summary>
+        public bool isPublishable;
+        /// <summary>
         /// Rdf:type de ña entidad del cv 
         /// </summary>
         public string rdftype_cv;        
