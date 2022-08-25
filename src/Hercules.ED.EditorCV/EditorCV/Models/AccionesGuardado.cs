@@ -139,6 +139,65 @@ namespace EditorCV.Models
                     Thread thread = new Thread(() => ModificacionNotificacion(entityBBDD, template, templateSection, personCV, accion));
                     thread.Start();
                 }
+                //Si estaba validado añadimos en la persona que hay que ignorar el item
+                if (entityBBDD.properties.Exists(x => x.prop == "http://w3id.org/roh/isValidated" && x.values!=null && x.values.Select(x=>x.ToLower()).Contains("true")))
+                {
+                    Dictionary<string, string> ignorar = new Dictionary<string, string>();
+                    //DOI
+                    Entity.Property doi = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/doi");
+                    if(doi!=null)
+                    {
+                        ignorar["doi"] = doi.values[0];
+                    }
+                    //HANDLE
+                    Entity.Property handle = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/handle");
+                    if (handle != null)
+                    {
+                        ignorar["handle"] = handle.values[0];
+                    }
+                    //PMID
+                    Entity.Property pmid = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/pmid");
+                    if (pmid != null)
+                    {
+                        ignorar["pmid"] = pmid.values[0];
+                    }
+                    //Otros identificadores
+                    Entity.Property nombreIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic");
+                    Entity.Property valorIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title");
+                    if(nombreIdentificador!=null & valorIdentificador!=null && nombreIdentificador.values!=null && valorIdentificador.values!=null)
+                    {
+                        foreach(string identificador in nombreIdentificador.values)
+                        {
+                            string idbase = identificador.Split("@@@")[0];
+                            string nombreIdentificadorActual = identificador.Split("@@@")[1];
+                            string valor = valorIdentificador.values.FirstOrDefault(x => x.StartsWith(idbase + "@@@"));
+                            if(!string.IsNullOrEmpty(valor))
+                            {
+                                string valorIdentificadorActual = valor.Split("@@@")[1];
+                                ignorar[nombreIdentificadorActual] = valorIdentificadorActual;
+                            }
+                        }
+                    }
+
+
+                    Guid guid = mResourceApi.GetShortGuid(personCV);
+                    Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
+                    foreach (string nombreIdentificadorIgnorar in ignorar.Keys)
+                    {
+                        string idAux = mResourceApi.GraphsUrl + "items/IgnorePublication_" + guid.ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        TriplesToInclude t1 = new();
+                        t1.Predicate = "http://w3id.org/roh/ignorePublication|http://xmlns.com/foaf/0.1/topic";
+                        t1.NewValue = idAux + "|" + nombreIdentificadorIgnorar;
+                        triples[guid].Add(t1);
+                        TriplesToInclude t2 = new();
+                        t2.Predicate = "http://w3id.org/roh/ignorePublication|http://w3id.org/roh/title";
+                        t2.NewValue = idAux + "|" + ignorar[nombreIdentificadorIgnorar];
+                        triples[guid].Add(t2);
+                    }
+                    var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+
+                }
+
             }
 
             List<RemoveTriples> lista = new List<RemoveTriples>();
