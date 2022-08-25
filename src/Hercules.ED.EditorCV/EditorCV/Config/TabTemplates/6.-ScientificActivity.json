@@ -274,6 +274,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "checkDuplicates": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedScientificPublicationCV",
