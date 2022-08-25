@@ -1353,8 +1353,10 @@ namespace EditorCV.Models
             }
             item.identifier = mResourceApi.GetShortGuid(GetPropValues(pId, pListItemConfig.listItem.propertyTitle.property, pData).FirstOrDefault()).ToString().ToLower();
 
-            //Editabilidad
+            //Editable
             item.iseditable = true;
+            //Borrable (se comprueba lo mismo que si son editables excepto 'http://w3id.org/roh/isValidated')
+            item.iserasable = true;
             if (!string.IsNullOrEmpty(pId))
             {
                 foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
@@ -1374,10 +1376,18 @@ namespace EditorCV.Models
                     if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
+                        if(propEditabilidad!= "http://w3id.org/roh/isValidated")
+                        {
+                            item.iserasable = false;
+                        }
                     }
                     else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
+                        if (propEditabilidad != "http://w3id.org/roh/isValidated")
+                        {
+                            item.iserasable = false;
+                        }
                     }
                 }
             }
