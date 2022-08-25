@@ -68,10 +68,12 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarIndicesImpacto();
             actualizadorDocument.ActualizarGenderAutorPrincipal();
             actualizadorDocument.ActualizarPositionAutorPrincipal();
+            actualizadorDocument.EliminarDocumentosSinAutoresActivos();
 
             //ROs sin dependencias
             actualizadorRO.ActualizarAreasRO();
             actualizadorRO.ActualizarTagsRO();
+            actualizadorRO.EliminarROsSinAutoresActivos();
 
             //Patentes sin dependencias
             actualizadorPatent.ActualizarPatentesValidadas();
