@@ -483,38 +483,42 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
 
-            string selectOut = "SELECT DISTINCT ?personID ?orcid ?name";
-            string whereOut = $@"where{{
+            List<List<string>> listadoLista= Utility.SplitList(listado.Distinct().ToList(), 1000).ToList();
+            foreach (List<string> listaIn in listadoLista)
+            {
+                string selectOut = "SELECT DISTINCT ?personID ?orcid ?name";
+                string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
                                     ?personID <http://w3id.org/roh/ORCID> ?orcid .
                                     ?personID <http://xmlns.com/foaf/0.1/name> ?name .
+                                    FILTER(?orcid in ('{string.Join("','", listaIn)}'))
                                     }}";
 
-            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
 
-            foreach (string firma in listado)
-            {
-                HashSet<int> scores = new HashSet<int>();
-                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["orcid"].value == firma))
+                foreach (string firma in listado)
                 {
-                    string personID = fila["personID"].value;
-                    if (!diccionarioPersonas.ContainsKey(personID))
+                    HashSet<int> scores = new HashSet<int>();
+                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["orcid"].value == firma))
                     {
-                        diccionarioPersonas[personID] = new DisambiguationPerson();
-                    }
+                        string personID = fila["personID"].value;
+                        if (!diccionarioPersonas.ContainsKey(personID))
+                        {
+                            diccionarioPersonas[personID] = new DisambiguationPerson();
+                        }
 
-                    string orcid = fila["orcid"].value;
-                    string name = fila["name"].value;
-                    DisambiguationPerson persona = new DisambiguationPerson
-                    {
-                        orcid = orcid,
-                        ID = personID,
-                        completeName = name
-                    };
-                    diccionarioPersonas[personID] = persona;
+                        string orcid = fila["orcid"].value;
+                        string name = fila["name"].value;
+                        DisambiguationPerson persona = new DisambiguationPerson
+                        {
+                            orcid = orcid,
+                            ID = personID,
+                            completeName = name
+                        };
+                        diccionarioPersonas[personID] = persona;
+                    }
                 }
             }
-
             return diccionarioPersonas;
         }
 
@@ -584,130 +588,132 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
                 }
             });
-
-            //Divido la lista en listas de 10 elementos
-            List<List<string>> listaListaORCID = Utility.SplitList(listaORCID.ToList(), 10).ToList();
-            Parallel.ForEach(listaListaORCID, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
+                        
+            Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(listaORCID.ToList());
+            foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
             {
-                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(lista);
-                foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
-                {
-                    listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
-                }
-            });
-
+                listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
+            }
 
             Dictionary<string, DisambiguationPerson> listaPersonas = new Dictionary<string, DisambiguationPerson>();
             {
-                int limit = 10000;
-                int offset = 0;
-
-                // Consulta sparql.
-                while (true)
+                List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
+                foreach (List<string> listaIn in listaListasPersonas)
                 {
-                    //TODO from
-                    //Obtenemos todas las personas hasta con 2 niveles de coautoria tanto en researchObjects como en Documentos               
-                    string select = $@"SELECT *
+                    int limit = 10000;
+                    int offset = 0;
+
+                    // Consulta sparql.
+                    while (true)
+                    {
+                        //TODO from
+                        //Obtenemos todas las personas hasta con 2 niveles de coautoria tanto en researchObjects como en Documentos               
+                        string select = $@"SELECT *
                                       WHERE {{ 
-                                          SELECT DISTINCT ?persona3 ?orcid3 ?usuarioFigShare3 ?usuarioGitHub3 ?nombreCompleto 
+                                          SELECT DISTINCT ?persona ?orcid ?usuarioFigShare ?usuarioGitHub ?nombreCompleto 
                                           FROM <{mResourceApi.GraphsUrl}document.owl> 
                                           FROM <{mResourceApi.GraphsUrl}researchobject.owl> ";
-                    string where = $@"WHERE {{
-                                ?persona3 a <http://xmlns.com/foaf/0.1/Person>
-                                OPTIONAL{{?persona3 <http://w3id.org/roh/ORCID> ?orcid3. }}
-                                OPTIONAL{{?persona3 <http://w3id.org/roh/usuarioFigShare> ?usuarioFigShare3. }}
-                                OPTIONAL{{?persona3 <http://w3id.org/roh/usuarioGitHub> ?usuarioGitHub3. }}
-                                ?persona3 <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
-                            }} ORDER BY DESC(?persona3) }} LIMIT {limit} OFFSET {offset}";
+                        string where = $@"WHERE {{
+                                ?persona a <http://xmlns.com/foaf/0.1/Person>
+                                OPTIONAL{{?persona <http://w3id.org/roh/ORCID> ?orcid. }}
+                                OPTIONAL{{?persona <http://w3id.org/roh/usuarioFigShare> ?usuarioFigShare. }}
+                                OPTIONAL{{?persona <http://w3id.org/roh/usuarioGitHub> ?usuarioGitHub. }}
+                                ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                                FILTER(?persona in (<{string.Join(">,<", listaIn)}>))
+                            }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
 
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
-                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                    {
-                        offset += limit;
-                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                         {
-                            PersonaPub persona = new PersonaPub();
-                            if (fila.ContainsKey("orcid3"))
+                            offset += limit;
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                             {
-                                persona.orcid = fila["orcid3"].value;
+                                PersonaPub persona = new PersonaPub();
+                                if (fila.ContainsKey("orcid"))
+                                {
+                                    persona.orcid = fila["orcid"].value;
+                                }
+                                persona.name = new Name();
+                                persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                                DisambiguationPerson person = GetDisambiguationPerson(persona);
+                                person.ID = fila["persona"].value;
+                                if (fila.ContainsKey("usuarioFigShare"))
+                                {
+                                    person.figShareId = fila["usuarioFigShare"].value;
+                                }
+                                if (fila.ContainsKey("usuarioGitHub"))
+                                {
+                                    person.gitHubId = fila["usuarioGitHub"].value;
+                                }
+                                listaPersonas.Add(fila["persona"].value, person);
                             }
-                            persona.name = new Name();
-                            persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
-                            DisambiguationPerson person = GetDisambiguationPerson(persona);
-                            person.ID = fila["persona3"].value;
-                            if (fila.ContainsKey("usuarioFigShare3"))
+                            if (resultadoQuery.results.bindings.Count < limit)
                             {
-                                person.figShareId = fila["usuarioFigShare3"].value;
+                                break;
                             }
-                            if (fila.ContainsKey("usuarioGitHub3"))
-                            {
-                                person.gitHubId = fila["usuarioGitHub3"].value;
-                            }
-                            listaPersonas.Add(fila["persona3"].value, person);
                         }
-                        if (resultadoQuery.results.bindings.Count < limit)
+                        else
                         {
                             break;
                         }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                };
+                    };
+                }
             }
 
             Dictionary<string, HashSet<string>> autoresDocRos = new Dictionary<string, HashSet<string>>();
             {
-                int limit = 10000;
-                int offset = 0;
-
-                // Consulta sparql.
-                while (true)
+                List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
+                foreach (List<string> listaIn in listaListasPersonas)
                 {
-                    //TODO from
-                    //Obtenemos las coautorias
-                    string select = $@"SELECT * 
+
+                    int limit = 10000;
+                    int offset = 0;
+
+                    // Consulta sparql.
+                    while (true)
+                    {
+                        //TODO from
+                        //Obtenemos las coautorias
+                        string select = $@"SELECT * 
                                       WHERE {{
-                                          SELECT DISTINCT ?documento2 ?persona3
+                                          SELECT DISTINCT ?documento ?persona
                                           FROM <{mResourceApi.GraphsUrl}document.owl> 
                                           FROM <{mResourceApi.GraphsUrl}researchobject.owl> ";
-                    string where = $@"WHERE {{
+                        string where = $@"WHERE {{
                                 ?documento a ?rdfType. 
                                 FILTER(?rdfType in (<http://purl.org/ontology/bibo/Document>,<http://w3id.org/roh/ResearchObject>))
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores2. 
-                                ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2.
-                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
-                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona3. 
-                                ?documento2 <http://purl.org/ontology/bibo/authorList> ?listaAutores3. 
-                            }} ORDER BY DESC(?documento2) }} LIMIT {limit} OFFSET {offset}";
+                                ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personaList. 
+                                FILTER(?personaList in (<{string.Join(">,<",listaIn)}>))
+                            }} ORDER BY DESC(?documento) DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
 
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
-                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                    {
-                        offset += limit;
-                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                         {
-                            string persona = fila["persona3"].value;
-                            string documento = fila["documento2"].value;
-                            if (!autoresDocRos.ContainsKey(documento))
+                            offset += limit;
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                             {
-                                autoresDocRos[documento] = new HashSet<string>();
+                                string persona = fila["persona"].value;
+                                string documento = fila["documento"].value;
+                                if (!autoresDocRos.ContainsKey(documento))
+                                {
+                                    autoresDocRos[documento] = new HashSet<string>();
+                                }
+                                autoresDocRos[documento].Add(persona);
                             }
-                            autoresDocRos[documento].Add(persona);
+                            if (resultadoQuery.results.bindings.Count < limit)
+                            {
+                                break;
+                            }
                         }
-                        if (resultadoQuery.results.bindings.Count < limit)
+                        else
                         {
                             break;
                         }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                };
+                    };
+                }
 
                 foreach (string idDoc in autoresDocRos.Keys)
                 {
@@ -873,140 +879,143 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
                 }
             });
-            //Divido la lista en listas de 10 elementos
-            List<List<string>> listaListaGitHub = Utility.SplitList(listaGitHub.ToList(), 10).ToList();
-            Parallel.ForEach(listaListaGitHub, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
-            {
-                Dictionary<string, DisambiguationPerson> personasBBDD = UtilityGitHub.ObtenerPersonasGitHub(lista);
-                foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
-                {
-                    listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
-                }
-            });
 
-            //Divido la lista en listas de 10 elementos
-            List<List<string>> listaListaORCID = Utility.SplitList(listaORCID.ToList(), 10).ToList();
-            Parallel.ForEach(listaListaORCID, new ParallelOptions { MaxDegreeOfParallelism = 5 }, lista =>
             {
-                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(lista);
+                Dictionary<string, DisambiguationPerson> personasBBDD = UtilityGitHub.ObtenerPersonasGitHub(listaGitHub.ToList());
                 foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
                 {
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
                 }
-            });
+            }
+
+            {
+                Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(listaORCID.ToList());
+                foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
+                {
+                    listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
+                }
+            }
 
 
             Dictionary<string, DisambiguationPerson> listaPersonas = new Dictionary<string, DisambiguationPerson>();
             {
-                int limit = 10000;
-                int offset = 0;
-
-                // Consulta sparql.
-                while (true)
+                List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
+                foreach (List<string> listaIn in listaListasPersonas)
                 {
-                    //TODO from
-                    //Obtenemos todas las personas hasta con 2 niveles de coautoria tanto en researchObjects como en Documentos               
-                    string select = $@"SELECT * 
+                    int limit = 10000;
+                    int offset = 0;
+
+                    // Consulta sparql.
+                    while (true)
+                    {
+                        //TODO from
+                        //Obtenemos todas las personas hasta con 2 niveles de coautoria tanto en researchObjects como en Documentos               
+                        string select = $@"SELECT * 
                                        WHERE {{ 
                                            SELECT DISTINCT ?persona ?orcid ?usuarioFigShare ?usuarioGitHub ?nombreCompleto 
                                            FROM <{mResourceApi.GraphsUrl}document.owl> 
                                            FROM <{mResourceApi.GraphsUrl}researchobject.owl> ";
-                    string where = $@"WHERE {{
+                        string where = $@"WHERE {{
                                 ?persona a <http://xmlns.com/foaf/0.1/Person>
                                 OPTIONAL{{?persona <http://w3id.org/roh/ORCID> ?orcid. }}
                                 OPTIONAL{{?persona <http://w3id.org/roh/usuarioFigShare> ?usuarioFigShare. }}
                                 OPTIONAL{{?persona <http://w3id.org/roh/usuarioGitHub> ?usuarioGitHub. }}
                                 ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                                FILTER(?persona in (<{string.Join(">,<",listaIn)}>))
                             }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
 
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
-                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                    {
-                        offset += limit;
-                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                         {
-                            PersonaPub persona = new PersonaPub();
-                            if (fila.ContainsKey("orcid"))
+                            offset += limit;
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                             {
-                                persona.orcid = fila["orcid"].value;
+                                PersonaPub persona = new PersonaPub();
+                                if (fila.ContainsKey("orcid"))
+                                {
+                                    persona.orcid = fila["orcid"].value;
+                                }
+                                persona.name = new Name();
+                                persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                                DisambiguationPerson person = GetDisambiguationPerson(persona);
+                                person.ID = fila["persona"].value;
+                                if (fila.ContainsKey("usuarioFigShare"))
+                                {
+                                    person.figShareId = fila["usuarioFigShare"].value;
+                                }
+                                if (fila.ContainsKey("usuarioGitHub"))
+                                {
+                                    person.gitHubId = fila["usuarioGitHub"].value;
+                                }
+                                listaPersonas.Add(fila["persona"].value, person);
                             }
-                            persona.name = new Name();
-                            persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
-                            DisambiguationPerson person = GetDisambiguationPerson(persona);
-                            person.ID = fila["persona"].value;
-                            if (fila.ContainsKey("usuarioFigShare"))
+                            if (resultadoQuery.results.bindings.Count < limit)
                             {
-                                person.figShareId = fila["usuarioFigShare"].value;
+                                break;
                             }
-                            if (fila.ContainsKey("usuarioGitHub"))
-                            {
-                                person.gitHubId = fila["usuarioGitHub"].value;
-                            }
-                            listaPersonas.Add(fila["persona"].value, person);
                         }
-                        if (resultadoQuery.results.bindings.Count < limit)
+                        else
                         {
                             break;
                         }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                };
+                    };
+                }
             }
 
             Dictionary<string, HashSet<string>> autoresDocRos = new Dictionary<string, HashSet<string>>();
             {
-                int limit = 10000;
-                int offset = 0;
-
-                // Consulta sparql.
-                while (true)
+                List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
+                foreach (List<string> listaIn in listaListasPersonas)
                 {
-                    //TODO from
-                    //Obtenemos las coautorias
-                    string select = $@"SELECT * 
-                                       WHERE {{
-                                           SELECT DISTINCT ?documento2 ?persona3 
-                                           FROM <{mResourceApi.GraphsUrl}document.owl>
-                                           FROM <{mResourceApi.GraphsUrl}researchobject.owl> ";
-                    string where = $@"WHERE {{
+
+                    int limit = 10000;
+                    int offset = 0;
+
+                    // Consulta sparql.
+                    while (true)
+                    {
+                        //TODO from
+                        //Obtenemos las coautorias
+                        string select = $@"SELECT * 
+                                      WHERE {{
+                                          SELECT DISTINCT ?documento ?persona
+                                          FROM <{mResourceApi.GraphsUrl}document.owl> 
+                                          FROM <{mResourceApi.GraphsUrl}researchobject.owl> ";
+                        string where = $@"WHERE {{
                                 ?documento a ?rdfType. 
                                 FILTER(?rdfType in (<http://purl.org/ontology/bibo/Document>,<http://w3id.org/roh/ResearchObject>))
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores2. 
-                                ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2.
-                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona2. 
-                                ?listaAutores3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona3. 
-                                ?documento2 <http://purl.org/ontology/bibo/authorList> ?listaAutores3. 
-                            }} ORDER BY DESC(?documento2) }} LIMIT {limit} OFFSET {offset}";
+                                ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personaList. 
+                                FILTER(?personaList in (<{string.Join(">,<", listaIn)}>))
+                            }} ORDER BY DESC(?documento) DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
 
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
-                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                    {
-                        offset += limit;
-                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                         {
-                            string persona = fila["persona3"].value;
-                            string documento = fila["documento2"].value;
-                            if (!autoresDocRos.ContainsKey(documento))
+                            offset += limit;
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                             {
-                                autoresDocRos[documento] = new HashSet<string>();
+                                string persona = fila["persona"].value;
+                                string documento = fila["documento"].value;
+                                if (!autoresDocRos.ContainsKey(documento))
+                                {
+                                    autoresDocRos[documento] = new HashSet<string>();
+                                }
+                                autoresDocRos[documento].Add(persona);
                             }
-                            autoresDocRos[documento].Add(persona);
+                            if (resultadoQuery.results.bindings.Count < limit)
+                            {
+                                break;
+                            }
                         }
-                        if (resultadoQuery.results.bindings.Count < limit)
+                        else
                         {
                             break;
                         }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                };
+                    };
+                }
 
                 foreach (string idDoc in autoresDocRos.Keys)
                 {
