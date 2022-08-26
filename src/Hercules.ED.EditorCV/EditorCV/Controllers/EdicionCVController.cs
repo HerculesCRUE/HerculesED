@@ -107,6 +107,25 @@ namespace GuardadoCV.Controllers
                 return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
         }
+        /// <summary>
+        /// Obtiene todos los datos marcados como públicos de la persona
+        /// </summary>
+        /// <param name="pPersonID">Identificador de la persona</param>
+        /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <returns></returns>
+        [HttpGet("GetAllPublicData")]
+        public IActionResult GetAllPublicData(string pPersonID, string pLang)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetAllPublicData(_Configuracion, pPersonID, pLang));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
 
         /// <summary>
         /// Obtiene una minificha de una entidad de un listado de una pestaña

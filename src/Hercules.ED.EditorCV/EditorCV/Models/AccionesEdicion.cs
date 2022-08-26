@@ -384,7 +384,7 @@ namespace EditorCV.Models
                             {
                                 foreach (string idAux in sim.ToList())
                                 {
-                                    if(!procesado.Add(idAux))
+                                    if (!procesado.Add(idAux))
                                     {
                                         sim.Remove(idAux);
                                     }
@@ -543,6 +543,59 @@ namespace EditorCV.Models
             }
             respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
             return respuesta;
+        }
+
+        /// <summary>
+        /// Obtiene todas las secciones y pestañas públicas del usuario
+        /// </summary>
+        /// <param name="pPersonID">Identificador de la persona</param>
+        /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <returns></returns>
+        public List<API.Response.Tab> GetAllPublicData(ConfigService pConfig, string pPersonId, string pLang)
+        {
+            List<string> tabsPublic = new List<string>();
+            tabsPublic.Add("http://w3id.org/roh/professionalSituation");
+            tabsPublic.Add("http://w3id.org/roh/qualifications");
+            tabsPublic.Add("http://w3id.org/roh/teachingExperience");
+            tabsPublic.Add("http://w3id.org/roh/scientificExperience");
+            tabsPublic.Add("http://w3id.org/roh/scientificActivity");
+
+            //Obtenemos el template
+            List<API.Templates.Tab> templates = UtilityCV.TabTemplates.Where(x => tabsPublic.Contains(x.property)).ToList();
+            List<API.Response.Tab> respuestas = new List<API.Response.Tab>();
+            //Obtenemos los datos necesarios para el pintado
+            // Consigo el pId y el pCvId a partir del Id de la persona pPersonId
+            string pCVId = "";
+            Dictionary<string,string> pId = new Dictionary<string, string>();
+            string select = "SELECT ?cv ?property ?id";
+            string where = @$"WHERE {{
+                    ?cv<http://w3id.org/roh/cvOf> <{pPersonId}>.
+                    ?cv ?property ?id.
+                    FILTER(?property in (<{string.Join(">,<",tabsPublic)}>))
+                }}";
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+            {
+                pCVId = fila["cv"].value;
+                pId[fila["property"].value] = fila["id"].value;
+            }
+            if (!string.IsNullOrEmpty(pCVId))
+            {
+                foreach (API.Templates.Tab template in templates)
+                {
+                    API.Response.Tab respuesta = null;
+                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId[template.property], template, pLang, null, true);
+                    //Obtenemos el modelo para devolver
+                    respuesta = GetTabModel(pConfig, pCVId, pId[template.property], data, template, pLang, null, true);
+                    respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
+                    respuesta.sections.RemoveAll(x => x.items == null || x.items.Count == 0);
+                    if (respuesta.sections.Count > 0)
+                    {
+                        respuestas.Add(respuesta);
+                    }
+                }
+            }
+            return respuestas;
         }
 
         /// <summary>
@@ -1037,14 +1090,23 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublic = false)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             List<PropertyData> propertyDatasContadores = new List<PropertyData>();
+            List<PropertyData> propertyDatasContadoresPublicos = new List<PropertyData>();
             string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
-                if (string.IsNullOrEmpty(pSection))
+                if (onlyPublic)
+                {
+                    if (templateSection.presentation.listItemsPresentation != null && templateSection.presentation.listItemsPresentation.isPublishable
+                        && templateSection.presentation.listItemsPresentation.listItemEdit.rdftype != "http://vivoweb.org/ontology/core#Project" && templateSection.presentation.listItemsPresentation.listItemEdit.rdftype != "http://purl.org/ontology/bibo/Document")
+                    {
+                        propertyDatasContadoresPublicos.Add(templateSection.GenerarPropertyDataContadores(graph));
+                    }
+                }
+                else if (string.IsNullOrEmpty(pSection))
                 {
                     propertyDatas.Add(templateSection.GenerarPropertyData(graph));
                 }
@@ -1067,6 +1129,7 @@ namespace EditorCV.Models
 
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataPropiedades = UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataContadores = UtilityCV.GetPropertiesContadores(new HashSet<string>() { pId }, propertyDatasContadores);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataContadoresPublicos = UtilityCV.GetPropertiesContadores(new HashSet<string>() { pId }, propertyDatasContadoresPublicos, true);
             if (dataContadores.Count > 0)
             {
                 foreach (string key in dataContadores.Keys)
@@ -1076,6 +1139,17 @@ namespace EditorCV.Models
                         dataPropiedades[key] = new List<Dictionary<string, Data>>();
                     }
                     dataPropiedades[key].AddRange(dataContadores[key]);
+                }
+            }
+            if (dataContadoresPublicos.Count > 0)
+            {
+                foreach (string key in dataContadoresPublicos.Keys)
+                {
+                    if (!dataPropiedades.ContainsKey(key))
+                    {
+                        dataPropiedades[key] = new List<Dictionary<string, Data>>();
+                    }
+                    dataPropiedades[key].AddRange(dataContadoresPublicos[key]);
                 }
             }
             return dataPropiedades;
@@ -1194,7 +1268,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null)
+        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublic = false)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -1220,88 +1294,88 @@ namespace EditorCV.Models
                     switch (templateSection.presentation.type)
                     {
                         case TabSectionPresentationType.listitems:
+                        {
+                            if (templateSection.presentation.listItemsPresentation.listItem.orders != null)
                             {
-                                if (templateSection.presentation.listItemsPresentation.listItem.orders != null)
+                                foreach (TabSectionListItemOrder listItemOrder in templateSection.presentation.listItemsPresentation.listItem.orders)
                                 {
-                                    foreach (TabSectionListItemOrder listItemOrder in templateSection.presentation.listItemsPresentation.listItem.orders)
+                                    TabSectionPresentationOrder presentationOrderTabSection = new TabSectionPresentationOrder()
                                     {
-                                        TabSectionPresentationOrder presentationOrderTabSection = new TabSectionPresentationOrder()
-                                        {
-                                            name = UtilityCV.GetTextLang(pLang, listItemOrder.name),
-                                            properties = new List<TabSectionPresentationOrderProperty>()
-                                        };
+                                        name = UtilityCV.GetTextLang(pLang, listItemOrder.name),
+                                        properties = new List<TabSectionPresentationOrderProperty>()
+                                    };
 
-                                        if (listItemOrder.properties != null)
+                                    if (listItemOrder.properties != null)
+                                    {
+                                        foreach (TabSectionListItemOrderProperty listItemConfigOrderProperty in listItemOrder.properties)
                                         {
-                                            foreach (TabSectionListItemOrderProperty listItemConfigOrderProperty in listItemOrder.properties)
+                                            TabSectionPresentationOrderProperty presentationOrderTabSectionProperty = new TabSectionPresentationOrderProperty()
                                             {
-                                                TabSectionPresentationOrderProperty presentationOrderTabSectionProperty = new TabSectionPresentationOrderProperty()
-                                                {
-                                                    property = UtilityCV.GetPropComplete(listItemConfigOrderProperty),
-                                                    asc = listItemConfigOrderProperty.asc
-                                                };
-                                                presentationOrderTabSection.properties.Add(presentationOrderTabSectionProperty);
-                                            }
+                                                property = UtilityCV.GetPropComplete(listItemConfigOrderProperty),
+                                                asc = listItemConfigOrderProperty.asc
+                                            };
+                                            presentationOrderTabSection.properties.Add(presentationOrderTabSectionProperty);
                                         }
-                                        tabSection.orders.Add(presentationOrderTabSection);
                                     }
+                                    tabSection.orders.Add(presentationOrderTabSection);
                                 }
-
-                                tabSection.items = new Dictionary<string, TabSectionItem>();
-                                string propiedadIdentificador = templateSection.property;
-                                if (pData.ContainsKey(pId))
-                                {
-                                    bool soloID = false;
-                                    if (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0)
-                                    {
-                                        soloID = true;
-                                    }
-                                    foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
-                                    {
-                                        Dictionary<string, HashSet<string>> propiedadesMultiIdiomaCargadas = new Dictionary<string, HashSet<string>>();
-                                        List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
-                                        if (entidadesMultiidioma.ContainsKey(idEntity))
-                                        {
-                                            propiedadesMultiIdiomaCargadas = entidadesMultiidioma[idEntity];
-                                        }
-                                        if (soloID)
-                                        {
-                                            tabSection.items.Add(idEntity, null);
-                                        }
-                                        else
-                                        {
-                                            tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years));
-                                        }
-                                    }
-                                }
-                                tab.sections.Add(tabSection);
                             }
-                            break;
-                        case TabSectionPresentationType.item:
+
+                            tabSection.items = new Dictionary<string, TabSectionItem>();
+                            string propiedadIdentificador = templateSection.property;
+                            if (pData.ContainsKey(pId))
                             {
-                                string id = null;
-                                if (pData.ContainsKey(pId))
+                                bool soloID = false;
+                                if (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0)
                                 {
-                                    foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
+                                    soloID = true;
+                                }
+                                foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
+                                {
+                                    Dictionary<string, HashSet<string>> propiedadesMultiIdiomaCargadas = new Dictionary<string, HashSet<string>>();
+                                    List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
+                                    if (entidadesMultiidioma.ContainsKey(idEntity))
+                                    {
+                                        propiedadesMultiIdiomaCargadas = entidadesMultiidioma[idEntity];
+                                    }
+                                    if (soloID)
+                                    {
+                                        tabSection.items.Add(idEntity, null);
+                                    }
+                                    else
+                                    {
+                                        tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years));
+                                    }
+                                }
+                            }
+                            tab.sections.Add(tabSection);
+                        }
+                        break;
+                        case TabSectionPresentationType.item:
+                        {
+                            string id = null;
+                            if (pData.ContainsKey(pId))
+                            {
+                                foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
+                                {
+                                    id = idEntity;
+                                }
+                                if (id != null && pData.ContainsKey(id))
+                                {
+                                    foreach (string idEntity in pData[id].Where(x => x["p"].value == templateSection.presentation.itemPresentation.property).Select(x => x["o"].value).Distinct())
                                     {
                                         id = idEntity;
                                     }
-                                    if (id != null && pData.ContainsKey(id))
-                                    {
-                                        foreach (string idEntity in pData[id].Where(x => x["p"].value == templateSection.presentation.itemPresentation.property).Select(x => x["o"].value).Distinct())
-                                        {
-                                            id = idEntity;
-                                        }
-                                    }
                                 }
-                                tabSection.item = GetEditModel(pCVId, id, templateSection.presentation.itemPresentation.itemEdit, pLang);
-                                if (string.IsNullOrEmpty(tabSection.item.entityID))
-                                {
-                                    tabSection.item.entityID = Guid.NewGuid().ToString().ToLower();
-                                }
-                                tab.sections.Add(tabSection);
                             }
-                            break;
+                            tabSection.item = GetEditModel(pCVId, id, templateSection.presentation.itemPresentation.itemEdit, pLang);
+                            if (string.IsNullOrEmpty(tabSection.item.entityID))
+                            {
+                                tabSection.item.entityID = Guid.NewGuid().ToString().ToLower();
+                            }
+                            tab.sections.Add(tabSection);
+                        }
+                        break;
                         default:
                             throw new Exception("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
                     }
@@ -1376,7 +1450,7 @@ namespace EditorCV.Models
                     if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
-                        if(propEditabilidad!= "http://w3id.org/roh/isValidated")
+                        if (propEditabilidad != "http://w3id.org/roh/isValidated")
                         {
                             item.iserasable = false;
                         }
@@ -2317,7 +2391,7 @@ namespace EditorCV.Models
                                     string valor = "";
                                     if (j == 0)
                                     {
-                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault(); ;
+                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
                                     }
                                     else
                                     {
