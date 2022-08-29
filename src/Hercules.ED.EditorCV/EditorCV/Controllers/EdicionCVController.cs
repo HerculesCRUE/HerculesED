@@ -33,7 +33,7 @@ namespace GuardadoCV.Controllers
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        [HttpGet("GetCVUrl")]
+        [HttpGet("Test")]
         public IActionResult Test()
         {
             DateTime inicio = DateTime.Now;
