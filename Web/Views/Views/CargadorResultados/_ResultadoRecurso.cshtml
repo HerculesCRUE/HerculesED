@@ -1927,7 +1927,7 @@
                                                         if (row.ContainsKey(propiedadURL))
                                                         {
                                                       
-                                                            url = Comunidad.Url +"/"+ Html.GetText("URLSEM", "RECURSO")+"/5318008/" + (@row[propiedadURL].Split("/")[^1]);
+                                                            url = Comunidad.Url +"/"+ Html.GetText("URLSEM", "RECURSO")+"/publication/" + (@row[propiedadURL].Split("/")[^1])+"#annotations-panel";
                                                         }
 
                                                     }
@@ -1948,7 +1948,7 @@
                                                         if (row.ContainsKey(propiedadURL))
                                                         {
                                                       
-                                                            url = Comunidad.Url +"/"+ Html.GetText("URLSEM", "RECURSO")+"/5318008/" + (@row[propiedadURL].Split("/")[^1]);
+                                                            url = Comunidad.Url +"/"+ Html.GetText("URLSEM", "RECURSO")+"/ro/" + (@row[propiedadURL].Split("/")[^1])+"#annotations-panel";
                                                         }
 
                                                     }
@@ -1968,8 +1968,8 @@
                             if (Model.ViewSettings != null && Model.ViewSettings.CustomSemanticProperties != null && Model.ViewSettings.CustomSemanticProperties.Count > 0)
                             {
                                 string yearDate = string.Empty;
-                                string monthDate = string.Empty;
                                 string dayDate = string.Empty;
+                                string monthDate = string.Empty;
                                 string hourDate = string.Empty;
                                 string minDate = string.Empty;
                                 string secDate = string.Empty;
@@ -1997,7 +1997,7 @@
                                     }
                                 }
                                 <p>
-                                    @dayDate/@monthDate/@yearDate - @hourDate:@minDate:@secDate + " UTC"
+                                    @dayDate/@monthDate/@yearDate - @hourDate:@minDate:@secDate UTC
                                 </p>
                             }
                         }
@@ -2023,7 +2023,7 @@
                                                     {
                                                         if (row.ContainsKey(propiedadTexto))
                                                         {
-                                                            description ="Anotación: "+ @row[propiedadTexto];
+                                                            description ="Anotación: "+ @row[propiedadTexto].Replace("&gt",">").Replace("&lt","<").Replace("&quot","\"").Replace("&apos","\'").Replace("&amp","&");
                                                           
                                                         }
                                                     }
