@@ -431,6 +431,22 @@ namespace EditorCV.Models.API.Templates
         /// Configuración de Propiedades auxiliares para el autocompletar
         /// </summary>
         public ItemEditSectionRowPropertyAutocompleteConfigPropertyAux propertyAux;
+        /// <summary>
+        /// Configuración de propiedades a recuperar de la entidad del autocompletar
+        /// </summary>
+        public List<ItemEditSectionRowPropertyAutocompleteConfigSelectPropertyEntity> selectPropertyEntity;
+    }
+
+    public class ItemEditSectionRowPropertyAutocompleteConfigSelectPropertyEntity
+    {
+        /// <summary>
+        /// Propiedad de la entidad que se quiere recuperar
+        /// </summary>
+        public string propertyEntity;
+        /// <summary>
+        /// Propiedad de la entidad del CV en la que se va a cargar la propiedad
+        /// </summary>
+        public string propertyCV;
     }
 
     public class ItemEditSectionRowPropertyAutocompleteConfigPropertyAux
