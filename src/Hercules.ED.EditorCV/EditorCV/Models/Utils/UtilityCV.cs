@@ -241,7 +241,7 @@ namespace EditorCV.Models.Utils
                 }
             }
 
-            Parallel.ForEach(pProperties, new ParallelOptions { MaxDegreeOfParallelism = 1 }, property =>
+            Parallel.ForEach(pProperties, new ParallelOptions { MaxDegreeOfParallelism = 5 }, property =>
             {
                 if (property.childs != null && property.childs.Count() > 0 && sparqlObject != null)
                 {
