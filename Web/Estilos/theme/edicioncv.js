@@ -1357,10 +1357,11 @@ var edicionCV = {
 				if(property.propertyEntityGraph != null && property.propertyEntityGraph!='' && property.selectPropertyEntity!=null && property.selectPropertyEntity.length>0)
 				{
 					attrSelectPropertyEntity+=' graph="'+property.propertyEntityGraph+'"';
-					attrSelectPropertyEntity+=' propertyEntity="';
+					attrSelectPropertyEntity+=' propertyentity="';
 					property.selectPropertyEntity.forEach(function(par, index) {
 						attrSelectPropertyEntity+=  par.propertyEntity+"|"+par.propertyCV+"&";
 					});
+					attrSelectPropertyEntity=attrSelectPropertyEntity.substring(0, attrSelectPropertyEntity.length-1);
 					attrSelectPropertyEntity+='"';
 				}
 				htmlInput+=`<input ${attrSelectPropertyEntity} propertyorigin="${property.property}" propertyrdf="${property.propertyEntity}" value="${propertyEntityValue}" type="hidden" class="form-control not-outline ">`;
