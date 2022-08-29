@@ -94,6 +94,7 @@ class CargarAnotaciones {
 		let currentData = data != null ? data : this.data
 
 		// Pintamos el html
+		console.log(currentData);
 		let html = currentData.map(e => {
 
 			/*var text = e.texto.substring(0, 100).replace("\n", "<br />");
@@ -107,6 +108,11 @@ class CargarAnotaciones {
 				//text = text.substring(0,text.lastIndexOf("<br />")-1);
 				readmore = "<a onclick='readMoreAnotacion(\""+e.id+"\",\""+e.texto+"\")' class='readmore'>Leer más</a>";
 			}*/
+			var fecha = e.fecha.split(" ")[0].split("/");
+			var mes = fecha[0];
+			var dia = fecha[1];
+			var anyo = fecha[2];
+
 			return `<article class="resource resource-annotation" id="${e.id}">
                         <div class="wrap">
                             <div class="row">
@@ -114,7 +120,7 @@ class CargarAnotaciones {
                                     <div class="middle-wrap">
                                         <div class="title-wrap">
                                             <h2 class="resource-title">
-                                                <span> ${e.fecha} </span>
+                                                <span> ${dia}/${mes}/${anyo} ${e.fecha.split(" ")[1]} UTC</span>
                                             </h2>
                                         </div>
                                         <div class="content-wrap">
