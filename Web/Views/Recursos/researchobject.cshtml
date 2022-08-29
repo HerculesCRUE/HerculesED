@@ -69,6 +69,7 @@
 
 @*TODO:*@
 <div class="col col-12 col-xl-12 col-contenido">
+    <input type="hidden" id="NO_HAY_NOTAS_PRIVADAS">@Html.Translate('NO_HAY_NOTAS_PRIVADAS')</input>
     <div class="wrapCol">
         <div class="cabecera-ficha enCurso">
             <div class="ficha-upper-row">
@@ -655,9 +656,7 @@
                                 <div class="wrapCol">
                                     <div class="resource-list listView resource-list-buscador">
                                         <div class="resource-list-wrap">
-                                            <p>
-                                                @Html.Translate("NO_HAY_NOTAS_PRIVADAS")
-                                            </p>
+
                                         </div>
                                     </div>
                                 </div>
@@ -774,7 +773,15 @@
         if (texto != "") {
             anotaciones.newUpdateAnnotation(texto).then((data) => {
                 document.getElementById(idEle).value = ""
-                location.reload();
+                anotaciones.loadInRo().then((data) => {
+                
+                        // Ahora pintamos los datos si hay elementos
+                        anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
+                            // Comportamiento Ver Más / Ver Menos
+                            comportamientoVerMasVerMenos.init();
+                        })
+                    
+                })
             })
         }
     }
@@ -792,13 +799,10 @@
          * param idCurrentAnnotation, string con el id de la anotación para modificar la misma
          */
         function updateAnotacion(idCurrentAnnotation, oldText) {
-
+            
             let modal = document.getElementById("modal-editar-anotacion")
             let modalTextArea = modal.getElementsByClassName("textareaInput")
-            modalTextArea[0].value = oldText.replaceAll("<br />", "\n").replaceAll("&gt",">").replaceAll("&lt","<").replaceAll("&quot","\"").replaceAll("&squot","\'");
-
-
-            
+            modalTextArea[0].value = oldText.replaceAll("<br />", "\n").replaceAll("&gt",">").replaceAll("&lt","<").replaceAll("&quot","\"").replaceAll("&apos","\'").replaceAll("&amp","&");
 
             $(modal).modal("show")
 
@@ -816,16 +820,30 @@
                 if (texto != "") {
                     anotaciones.newUpdateAnnotation(texto, idCurrentAnnotation).then((data) => {
                         modal.getElementsByClassName("textareaInput")[0].value = ""
-                        location.reload();
+                        anotaciones.loadInRo().then((data) => {
+                            if (data.length > 0) {
+                                // Ahora pintamos los datos si hay elementos
+                                anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
+                                    // Comportamiento Ver Más / Ver Menos
+                                    comportamientoVerMasVerMenos.init();
+                                })
+                            }
+                        })
                     })
                 }
             });
-
         }
         function borrarAnotacion(idCurrentAnnotation) {
             anotaciones.deleteAnnotation(idCurrentAnnotation).then((data) => {
-                console.log("data", data)
-                location.reload();
+                anotaciones.loadInRo().then((data) => {
+                    
+                    // Ahora pintamos los datos si hay elementos
+                    anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
+                        // Comportamiento Ver Más / Ver Menos
+                        comportamientoVerMasVerMenos.init();
+                    })
+                
+                })
             })
         }
     // Comportamiento página proyecto
@@ -857,26 +875,34 @@
                 buscadorPersonalizado.init("@Html.Translate("REFERENCIAS")", "#contenedorBuscadorReferencias", "searchReferenciasDocumento=@pResearchObject.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject", "@Comunidad.Url", "@Comunidad.Key.ToString()");
             });
 
-
-            
             $(function () {
                 // Obtiene las notas y las pinta
                 anotaciones.loadInRo().then((data) => {
-                    if (data.length > 0) {
+
+                        // Para que se selecione la pestaña de anotaciones si esta seleccionada
+                        var hash = location.hash.replace(/^#/, '');  // ^ means starting, meaning only match the first hash
+                        if (hash) {
+                            $('.nav-tabs a[href="#' + hash + '"]').tab('show');
+
+                        } 
+
+                        // Change hash for page-reload
+                        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+                            window.location.hash = e.target.hash;
+                        })           
+                   
                         // Ahora pintamos los datos si hay elementos
                         anotaciones.printItems("annotations-tab", "annotations-panel", null, () => {
                             // Comportamiento Ver Más / Ver Menos
                             comportamientoVerMasVerMenos.init();
                         })
-                    }
+                    
                 })
             });
             return;
         }
-
         
     };
-
 
     $(function () {
         comportamientoPaginaDocumento.init();
