@@ -1352,7 +1352,15 @@ var edicionCV = {
 				{
 					propertyEntityValue=property.propertyEntityValue;
 				}
-				htmlInput+=`<input propertyorigin="${property.property}" propertyrdf="${property.propertyEntity}" value="${propertyEntityValue}" type="hidden" class="form-control not-outline ">`;
+				var attrSelectPropertyEntity="";
+				if(property.propertyEntityGraph != null && property.propertyEntityGraph!='' && property.selectPropertyEntity!=null && property.selectPropertyEntity.length>0)
+				{
+					attrSelectPropertyEntity+=' graph="'+property.propertyEntityGraph+'"';
+					property.selectPropertyEntity.forEach(function(par, index) {
+						attrSelectPropertyEntity+=par.propertyEntity+"|"+par.propertyCV+"&";
+					});
+				}
+				htmlInput+=`<input ${attrSelectPropertyEntity} propertyorigin="${property.property}" propertyrdf="${property.propertyEntity}" value="${propertyEntityValue}" type="hidden" class="form-control not-outline ">`;
 			}
 			if(property.type=="entityautocomplete")
 			{
