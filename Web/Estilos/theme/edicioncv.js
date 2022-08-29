@@ -315,7 +315,7 @@ var edicionCV = {
         return html;
     },
     //Métodos de secciones
-    printTabSection: function(data) {
+    printTabSection: function(data, onlyPublic = false) {
         //Pintado sección listado
         //css mas generico
         var id = 'x' + RandomGuid();
@@ -327,11 +327,11 @@ var edicionCV = {
         var show = "";
         if (data.items != null) {			
 			var tieneElementosCargados=Object.values(data.items).some(function (item) {				
-				return item!=null;				
+				return item!=null;
 			});
 			var tieneItems=Object.keys(data.items).length > 0;
             //if (Object.keys(data.items).length > 0) {
-			if(tieneElementosCargados){
+			if(tieneElementosCargados && !onlyPublic){
                 //Desplegado
                 expanded = "true";
                 show = "show";
@@ -343,7 +343,7 @@ var edicionCV = {
 			var htmlListItems='';
 			if(tieneElementosCargados)
 			{
-				htmlListItems=this.printHtmlListItems(data.items);
+				htmlListItems=this.printHtmlListItems(data.items, onlyPublic);
 			}
 			
 			var notLoaded='';
@@ -353,7 +353,15 @@ var edicionCV = {
 			}
 			
             //TODO texto ver items
-			// TODO Esperar a la maqueta de Félix para el tooltip (i)
+			let aniadirEntidad = `<ul class="no-list-style d-flex align-items-center">
+									<li>
+										<a class="btn btn-outline-grey aniadirEntidad">
+											<span class="texto">${GetText('CV_AGNADIR')}</span>
+											<span class="material-icons">post_add</span>
+										</a>
+									</li>
+								</ul>`;
+			let tooltip = `<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}"></span>`;
             var htmlSection = `
 			<div class="panel-group pmd-accordion ${notLoaded}" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
 				<div class="panel">
@@ -363,7 +371,7 @@ var edicionCV = {
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
-								<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}"></span>
+								${!onlyPublic ? tooltip : ''}
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -374,14 +382,7 @@ var edicionCV = {
 								<div class="wrap">								
 								</div>
 								<div class="wrap">
-									<ul class="no-list-style d-flex align-items-center">
-										<li>
-											<a class="btn btn-outline-grey aniadirEntidad">
-												<span class="texto">${GetText('CV_AGNADIR')}</span>
-												<span class="material-icons">post_add</span>
-											</a>
-										</li>
-									</ul>
+									${!onlyPublic ? aniadirEntidad : ''}
 									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
@@ -509,14 +510,14 @@ var edicionCV = {
         }
         return `<a href="javascript: void(0)" class="item-dropdown"  property="${prop}" asc="${asc}">${order.name}</a>`;
     },
-    printHtmlListItems: function(items) {
+    printHtmlListItems: function(items, onlyPublic = false) {
         var html = "";
         for (var item in items) {
-            html += this.printHtmlListItem(item, items[item]);
+            html += this.printHtmlListItem(item, items[item], onlyPublic);
         }
         return html;
     },
-    printHtmlListItem: function(id, data) {
+    printHtmlListItem: function(id, data, onlyPublic = false) {
 		let openAccess="";
 		if (data.isopenaccess) {
             openAccess = "open-access";
@@ -531,11 +532,11 @@ var edicionCV = {
 												<h2 class="resource-title">
 													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
 												</h2>
-												${this.printHtmlListItemValidacion(data)}
-												${this.printHtmlListItemEditable(data)}
-												${this.printHtmlListItemVisibilidad(data)}
-												${this.printHtmlListItemIdiomas(data)}
-												${this.printHtmlListItemAcciones(data, id)}
+												${!onlyPublic ? this.printHtmlListItemValidacion(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemEditable(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemVisibilidad(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemIdiomas(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemAcciones(data, id) : ''}
 												<span class="material-icons arrow">keyboard_arrow_down</span>
 											</div>
 											<div class="content-wrap">
@@ -2840,7 +2841,7 @@ var edicionCV = {
 		}
     },
     //Fin de métodos de edición
-    engancharComportamientosCV: function() {
+    engancharComportamientosCV: function(onlyPublic = false) {
 		 $('select').unbind("change.selectitem").bind("change.selectitem", function() {
 			var valor=$(this).val();
 			$(this).find('option[value="'+valor+'"]').attr('selected',''); 
@@ -2856,6 +2857,57 @@ var edicionCV = {
 		edicionListaAutorCV.init();
         var that = this;
 
+		if (onlyPublic) {
+			//LISTADOS		
+			//Paginación
+			$('.panel-group .panNavegador ul.pagination li a').off('click').on('click', function(e) {
+				if ($(this).attr('page') != null) {
+					var sectionID = $(this).closest('.panel-group').attr('section');
+					var pagina = $(this).attr('page');
+					that.paginarListado(sectionID, pagina);
+				}
+			});
+			//Cambiar tipo de paginación
+			$('.panel-group .panNavegador .item-dropdown').off('click').on('click', function(e) {
+				if ($(this).attr('items') != null) {
+					var sectionID = $(this).closest('.panel-group').attr('section');
+					var itemsPagina = parseInt($(this).attr('items'));
+					var texto = $(this).text();
+					that.cambiarTipoPaginacionListado(sectionID, itemsPagina, texto);
+				}
+			});
+			//Buscador
+			$('.panel-group input.txtBusqueda').off('keyup').on('keyup', function(e) {
+				var sectionID = $(this).closest('.panel-group').attr('section');
+				that.buscarListado(sectionID);
+			});
+			//Ordenar
+			$('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
+				var sectionID = $(this).closest('.panel-group').attr('section');
+				var dropdown = $(this).closest('.ordenar.dropdown.orders').find('.dropdown-toggle .texto');
+				that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'), dropdown);
+			});
+			//Fechas hidden
+			$('input.datepicker').off('change').on('change', function(e) {
+				if ($(this).val().length == 10) {
+					$(this).parent().children('input[type="hidden"]').val($(this).val().substring(6, 10) + $(this).val().substring(3, 5) + $(this).val().substring(0, 2) + "000000");
+				} else {
+					$(this).parent().children('input[type="hidden"]').val('');
+				}
+			});
+			//Seleccion combos
+			$('.entityauxcontainer>.simple-collapse-content input').off('change').on('change', function(e) {
+				$(this).closest('.entityauxcontainer').attr('selecteditem', $(this).closest('article').attr('about'));
+			});
+			//Comportamiento desplegar sección no cargada
+			$('div.panel-group.pmd-accordion.notLoaded').off('click').on('click', function(e) {
+				var about= $(this).parent().prev().attr('about');
+				var rdftype= $(this).parent().prev().attr('rdftype');
+				var section= $(this).attr('section');
+				that.completeTab(about,rdftype,section);
+			});
+			return;
+		}
 		//Boton duplicados 
 		$('.btn.gestionar-duplicados').unbind().click(function() {
 			duplicadosCV.init(true);
