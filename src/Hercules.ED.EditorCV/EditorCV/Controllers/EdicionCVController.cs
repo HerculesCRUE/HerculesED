@@ -24,6 +24,27 @@ namespace GuardadoCV.Controllers
             _Configuracion = pConfig;
         }
 
+
+        #region Eliminar
+        private static readonly Gnoss.ApiWrapper.ResourceApi mResourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+
+        /// <summary>
+        /// Obtiene la URL de un CV a partir de un usuario
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        [HttpGet("GetCVUrl")]
+        public IActionResult Test()
+        {
+            DateTime inicio = DateTime.Now;
+            mResourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
+            DateTime fin = DateTime.Now;
+
+            AccionesEdicion accionesEdicion = new AccionesEdicion();
+            return Ok((fin - inicio).TotalMilliseconds);
+        }
+        #endregion
+
         /// <summary>
         /// Obtiene la URL de un CV a partir de un usuario
         /// </summary>
@@ -63,6 +84,27 @@ namespace GuardadoCV.Controllers
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetAutocomplete(q.ToLower(), pProperty, pPropertiesAux, pPrint, pRdfType, pGraph, pGetEntityID, lista?.Split(',').ToList(), pLang, pCache));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        /// <summary>
+        /// Obtiene datos de una entidad
+        /// </summary>
+        /// <param name="pGraph">Grafo</param>
+        /// <param name="pEntity">Entidad de la que obtener datos</param>
+        /// <param name="pProperties">Propiedades a obtener</param>
+        /// <returns></returns>
+        [HttpPost("GetPropertyEntityData")]
+        public IActionResult GetPropertyEntityData([FromForm] string pGraph, [FromForm] string pEntity, [FromForm] List<string> pProperties)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetPropertyEntityData(pGraph, pEntity, pProperties));
             }
             catch (Exception ex)
             {
@@ -242,7 +284,7 @@ namespace GuardadoCV.Controllers
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetTesauros(accionesEdicion.ConseguirNombreTesauro(tesaurus), pLang).Values);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
