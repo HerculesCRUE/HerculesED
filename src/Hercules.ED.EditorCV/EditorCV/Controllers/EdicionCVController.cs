@@ -135,12 +135,12 @@ namespace GuardadoCV.Controllers
         /// <param name="pSection">Sección</param>
         /// <returns></returns>
         [HttpGet("GetTab")]
-        public IActionResult GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
+        public IActionResult GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null, bool pOnlyPublic = false)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection));
+                return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection, pOnlyPublic));
             }
             catch (Exception ex)
             {

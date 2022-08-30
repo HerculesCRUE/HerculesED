@@ -23,12 +23,20 @@
     }
     // string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
     // Html.GetListaJS().Add(urlJS);
+    string edicionCVJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
+    Html.GetListaJS().Add(edicionCVJS);
+
+    string edicionCVCSS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.css";
+    Html.GetListaCSS().Add(edicionCVCSS);
+
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
     Person pPerson = new Person(semCmsModel, idiomaUsuario);
     int anioInicioAreas = 1980;
     int anioFinAreas = DateTime.Now.Year;
 }
+
+<input type="hidden" id="CV_ESCRIBE_ALGO" value="@Html.Translate("CV_ESCRIBE_ALGO")"/>
 
 <div class="col col-12 col-breadcrumb">
     <ul>
@@ -796,15 +804,7 @@
                     </div>
 
                     <div class="tab-pane fade" id="otros-meritos-panel" role="tabpanel" aria-labelledby="otros-meritos-tab">
-                        <div class="row">
-                            <div class="col col-12 col-section-title font-weight-bold">
-                                <div class="wrapCol">
-                                </div>
-                            </div>
-                            <div class="col col-12 col-chart">
-                                <div class="wrapCol">
-                                </div>
-                            </div>
+                        <div class="row" id="contenedorOtrosMeritos">
                         </div>
                     </div>
                 </div>
@@ -931,7 +931,31 @@
             OcultarUpdateProgress();
         });
     }
-
+    // Otros méritos
+    function CargarOtrosMeritos(pPersonId, pLang) {
+        $("#contenedorOtrosMeritos").empty();
+        var url = url_servicio_editorcv + "EdicionCV/GetAllPublicData"
+        var arg = {};
+        arg.pPersonID = pPersonId;
+        arg.pLang = pLang;
+        MostrarUpdateProgress();
+        $.get(url, arg, function (data) {
+            PintarOtrosMeritos(data, "contenedorOtrosMeritos");
+            OcultarUpdateProgress();
+        });
+    }
+    function PintarOtrosMeritos(data, idContenedor) {
+        var that=this;
+        data.forEach((section, index) => {
+            $('#' + idContenedor).append('<div class="col col-12 col-section-title" rdftype="'+section.rdftype+'" about="'+section.entityid+'"><div class="wrapCol"><p>'+ (index + 1) +' - ' + section.title + '</p></div></div>');
+			$('#' + idContenedor).append('<div class="col col-12 col-contenido" id="section'+index+'"></div>');
+            for (var i = 0; i < section.sections.length; i++) {
+				$('#' + idContenedor + ' #section'+index+'.col-contenido').append(edicionCV.printTabSection(section.sections[i], true));
+                edicionCV.engancharComportamientosCV(true);
+			}
+        });
+    }
+    
     var comportamientoPaginaInvestigador = {
         filtroOculto: null,
         tabActive: null,
@@ -1076,6 +1100,11 @@
                 that.tabActive = "colaboradores";
 				buscadorPersonalizado.orders=null;
                 buscadorPersonalizado.init("Colaboradores", "#contenedorBuscadorColaboradores", "searchColaboradoresPersonPublic=http://gnoss/@pPerson.GNOSSID.Split('_')[1].ToUpper()", "", "rdf:type=person", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+            });
+            $('#otros-meritos-tab').unbind().click(function (e) {
+                e.preventDefault();
+                that.tabActive = "otrosmeritos";
+                CargarOtrosMeritos($('div.nombre-usuario-wrap p[about]').attr('about'), lang);
             });
             return;
         }

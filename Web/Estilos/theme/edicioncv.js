@@ -92,10 +92,10 @@ var edicionCV = {
         });
         return;
     },//Métodos de pestañas
-    completeTab: function(entityID, rdfType,section) {
+    completeTab: function(entityID, rdfType,section, pOnlyPublic = false) {
         var that = this;
 		MostrarUpdateProgress();
-        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection="+section, null, function(data) {
+        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection="+section+"&pOnlyPublic="+pOnlyPublic, null, function(data) {
 			if(rdfType==$('div.tab-pane.active>div.cvTab').attr('rdftype'))
 			{
 				that.printTab(entityID, data,section);
@@ -119,11 +119,26 @@ var edicionCV = {
 					$('a[internal-id="'+getParam('id')+'"]').click();
 					history.pushState(null, '', document.location.origin+document.location.pathname);
 				}
+			} else if (pOnlyPublic) {
+				that.printTabPublic(entityID, data, section);
+				OcultarUpdateProgress();
 			}
-				
         });
         return;
     },
+	printTabPublic: function(entityID, data, section) {
+		for (var i = 0; i < data.sections.length; i++) {	
+			if (data.sections[i].items.length == 0) {
+				continue;
+			}
+			if(data.sections[i].identifier==section)
+			{
+				$('div[about="' + entityID + '"]').next().find('div[section="'+data.sections[i].identifier+'"]').replaceWith(this.printTabSection(data.sections[i], true));
+				this.repintarListadoTab(data.sections[i].identifier,true);
+
+			}
+		}
+	},
     printTab: function(entityID, data,section) {
 		var that=this;
 		if (data.entityID != null) {
@@ -2915,7 +2930,7 @@ var edicionCV = {
 				var about= $(this).parent().prev().attr('about');
 				var rdftype= $(this).parent().prev().attr('rdftype');
 				var section= $(this).attr('section');
-				that.completeTab(about,rdftype,section);
+				that.completeTab(about,rdftype,section, true);
 			});
 			return;
 		}
