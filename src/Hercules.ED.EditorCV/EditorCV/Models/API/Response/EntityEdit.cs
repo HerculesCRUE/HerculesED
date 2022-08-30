@@ -74,6 +74,14 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string propertyEntity { get; set; }
         /// <summary>
+        /// Grafo de la propiedad (en caso de que se trate de un autocompletar con la entidad)
+        /// </summary>
+        public string propertyEntityGraph { get; set; }
+        /// <summary>
+        /// Configuración de propiedades a recuperar de la entidad del autocompletar
+        /// </summary>
+        public List<SelectPropertyEntity> selectPropertyEntity { get; set; }
+        /// <summary>
         /// Valor de la entidad (en caso de que se trate de un autocompletar con la entidad)
         /// </summary>
         public string propertyEntityValue { get; set; }
@@ -166,7 +174,19 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public bool entity_cv { get; set; }        
     }
-        
+
+    public class SelectPropertyEntity
+    {
+        /// <summary>
+        /// Propiedad de la entidad que se quiere recuperar
+        /// </summary>
+        public string propertyEntity { get; set; }
+        /// <summary>
+        /// Propiedad de la entidad del CV en la que se va a cargar la propiedad
+        /// </summary>
+        public string propertyCV { get; set; }
+    }
+
     /// <summary>
     /// Clase para la configuración del autocompletar
     /// </summary>

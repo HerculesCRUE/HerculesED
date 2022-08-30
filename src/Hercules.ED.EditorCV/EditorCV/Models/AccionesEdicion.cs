@@ -219,7 +219,7 @@ namespace EditorCV.Models
                     }
 
                 }
-                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
+                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }}ORDER BY ASC(strlen(?o)) ASC (?o)";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
@@ -277,6 +277,35 @@ namespace EditorCV.Models
                     return respuesta;
                 }
             }
+        }
+
+        /// <summary>
+        /// Obtiene datos de una entidad
+        /// </summary>
+        /// <param name="pGraph">Grafo</param>
+        /// <param name="pEntity">Entidad de la que obtener datos</param>
+        /// <param name="pProperties">Propiedades a obtener</param>
+        /// <returns></returns>
+        public Dictionary<string, string> GetPropertyEntityData(string pGraph, string pEntity, List<string> pProperties)
+        {
+            Dictionary<string, string> dicValores = new Dictionary<string, string>();
+
+            string select = "SELECT *  ";
+            string where = $@"WHERE {{
+                                        ?s a ?rdfType.  
+                                        ?s ?p ?o.
+                                        FILTER(?s=<{pEntity}>)
+                                        FILTER(?p in (<{string.Join(">,<", pProperties)}>))
+                                    }}";
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    dicValores[fila["p"].value] = fila["o"].value;
+                }
+            }
+            return dicValores;
         }
 
         /// <summary>
@@ -1297,92 +1326,88 @@ namespace EditorCV.Models
                     switch (templateSection.presentation.type)
                     {
                         case TabSectionPresentationType.listitems:
-                        {
-                            if (templateSection.presentation.listItemsPresentation.listItem.orders != null)
                             {
-                                foreach (TabSectionListItemOrder listItemOrder in templateSection.presentation.listItemsPresentation.listItem.orders)
+                                if (templateSection.presentation.listItemsPresentation.listItem.orders != null)
                                 {
-                                    TabSectionPresentationOrder presentationOrderTabSection = new TabSectionPresentationOrder()
+                                    foreach (TabSectionListItemOrder listItemOrder in templateSection.presentation.listItemsPresentation.listItem.orders)
                                     {
-                                        name = UtilityCV.GetTextLang(pLang, listItemOrder.name),
-                                        properties = new List<TabSectionPresentationOrderProperty>()
-                                    };
-
-                                    if (listItemOrder.properties != null)
-                                    {
-                                        foreach (TabSectionListItemOrderProperty listItemConfigOrderProperty in listItemOrder.properties)
+                                        TabSectionPresentationOrder presentationOrderTabSection = new TabSectionPresentationOrder()
                                         {
-                                            TabSectionPresentationOrderProperty presentationOrderTabSectionProperty = new TabSectionPresentationOrderProperty()
+                                            name = UtilityCV.GetTextLang(pLang, listItemOrder.name),
+                                            properties = new List<TabSectionPresentationOrderProperty>()
+                                        };
+
+                                        if (listItemOrder.properties != null)
+                                        {
+                                            foreach (TabSectionListItemOrderProperty listItemConfigOrderProperty in listItemOrder.properties)
                                             {
-                                                property = UtilityCV.GetPropComplete(listItemConfigOrderProperty),
-                                                asc = listItemConfigOrderProperty.asc
-                                            };
-                                            presentationOrderTabSection.properties.Add(presentationOrderTabSectionProperty);
+                                                TabSectionPresentationOrderProperty presentationOrderTabSectionProperty = new TabSectionPresentationOrderProperty()
+                                                {
+                                                    property = UtilityCV.GetPropComplete(listItemConfigOrderProperty),
+                                                    asc = listItemConfigOrderProperty.asc
+                                                };
+                                                presentationOrderTabSection.properties.Add(presentationOrderTabSectionProperty);
+                                            }
                                         }
+                                        tabSection.orders.Add(presentationOrderTabSection);
                                     }
-                                    tabSection.orders.Add(presentationOrderTabSection);
                                 }
-                            }
 
-                            tabSection.items = new Dictionary<string, TabSectionItem>();
-                            string propiedadIdentificador = templateSection.property;
-                            if (pData.ContainsKey(pId))
-                            {
-                                bool soloID = false;
-                                if (onlyPublic || (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0))
+                                tabSection.items = new Dictionary<string, TabSectionItem>();
+                                string propiedadIdentificador = templateSection.property;
+                                if (pData.ContainsKey(pId))
                                 {
-                                    soloID = true;
-                                }
-                                foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
-                                {
-                                    Dictionary<string, HashSet<string>> propiedadesMultiIdiomaCargadas = new Dictionary<string, HashSet<string>>();
-                                    List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
-                                    if (entidadesMultiidioma.ContainsKey(idEntity))
+                                    bool soloID = false;
+                                    if (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0)
                                     {
-                                        propiedadesMultiIdiomaCargadas = entidadesMultiidioma[idEntity];
+                                        soloID = true;
                                     }
-                                    if (soloID)
+                                    foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
                                     {
-                                        tabSection.items.Add(idEntity, null);
-                                    }
-                                    else
-                                    {
-                                        TabSectionItem item = GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years);
-                                        if (!(onlyPublicItems && item.ispublic))
+                                        Dictionary<string, HashSet<string>> propiedadesMultiIdiomaCargadas = new Dictionary<string, HashSet<string>>();
+                                        List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = templateSection.presentation.listItemsPresentation.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
+                                        if (entidadesMultiidioma.ContainsKey(idEntity))
                                         {
-                                            tabSection.items.Add(idEntity, item);
+                                            propiedadesMultiIdiomaCargadas = entidadesMultiidioma[idEntity];
+                                        }
+                                        if (soloID)
+                                        {
+                                            tabSection.items.Add(idEntity, null);
+                                        }
+                                        else
+                                        {
+                                            tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years));
                                         }
                                     }
                                 }
+                                tab.sections.Add(tabSection);
                             }
-                            tab.sections.Add(tabSection);
-                        }
-                        break;
+                            break;
                         case TabSectionPresentationType.item:
-                        {
-                            string id = null;
-                            if (pData.ContainsKey(pId))
                             {
-                                foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
+                                string id = null;
+                                if (pData.ContainsKey(pId))
                                 {
-                                    id = idEntity;
-                                }
-                                if (id != null && pData.ContainsKey(id))
-                                {
-                                    foreach (string idEntity in pData[id].Where(x => x["p"].value == templateSection.presentation.itemPresentation.property).Select(x => x["o"].value).Distinct())
+                                    foreach (string idEntity in pData[pId].Where(x => x["p"].value == templateSection.property).Select(x => x["o"].value).Distinct())
                                     {
                                         id = idEntity;
                                     }
+                                    if (id != null && pData.ContainsKey(id))
+                                    {
+                                        foreach (string idEntity in pData[id].Where(x => x["p"].value == templateSection.presentation.itemPresentation.property).Select(x => x["o"].value).Distinct())
+                                        {
+                                            id = idEntity;
+                                        }
+                                    }
                                 }
+                                tabSection.item = GetEditModel(pCVId, id, templateSection.presentation.itemPresentation.itemEdit, pLang);
+                                if (string.IsNullOrEmpty(tabSection.item.entityID))
+                                {
+                                    tabSection.item.entityID = Guid.NewGuid().ToString().ToLower();
+                                }
+                                tab.sections.Add(tabSection);
                             }
-                            tabSection.item = GetEditModel(pCVId, id, templateSection.presentation.itemPresentation.itemEdit, pLang);
-                            if (string.IsNullOrEmpty(tabSection.item.entityID))
-                            {
-                                tabSection.item.entityID = Guid.NewGuid().ToString().ToLower();
-                            }
-                            tab.sections.Add(tabSection);
-                        }
-                        break;
+                            break;
                         default:
                             throw new Exception("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
                     }
@@ -2368,7 +2393,7 @@ namespace EditorCV.Models
                         getEntityId = !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity),
                         mandatory = pItemEditSectionRowProperty.autocompleteConfig.mandatory,
                         propertiesAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.properties,
-                        printAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.print,
+                        printAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.print
                     };
                 }
 
@@ -2379,6 +2404,16 @@ namespace EditorCV.Models
                     {
                         entityEditSectionRowProperty.propertyEntityValue = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
                     }
+                    entityEditSectionRowProperty.propertyEntityGraph = pItemEditSectionRowProperty.autocompleteConfig.graph;
+                    if(pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity!=null && pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity.Count>0)
+                    {
+                        entityEditSectionRowProperty.selectPropertyEntity = new List<SelectPropertyEntity>();
+                        foreach(var item in pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity)
+                        {
+                            entityEditSectionRowProperty.selectPropertyEntity.Add(new SelectPropertyEntity() { propertyEntity = item.propertyEntity, propertyCV = item.propertyCV });
+                        }
+                    }
+                   
                 }
 
                 if (pItemEditSectionRowProperty.autocompleteConfig != null && pItemEditSectionRowProperty.type == DataTypeEdit.entityautocomplete)
