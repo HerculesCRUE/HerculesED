@@ -618,8 +618,8 @@ namespace EditorCV.Models
                     //Obtenemos el modelo para devolver
                     respuesta = GetTabModel(pConfig, pCVId, pId[template.property].Item1, data, template, pLang, null, true);
                     respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
-                    respuesta.rdftype = pId[template.property].Item2;
-                    respuesta.entityid = pId[template.property].Item1;
+                    respuesta.rdftypeTab = pId[template.property].Item2;
+                    respuesta.entityIDTab = pId[template.property].Item1;
                     respuesta.sections.RemoveAll(x => x.items == null || x.items.Count == 0);
                     if (respuesta.sections.Count > 0)
                     {
