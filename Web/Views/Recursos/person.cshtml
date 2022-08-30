@@ -947,7 +947,7 @@
     function PintarOtrosMeritos(data, idContenedor) {
         var that=this;
         data.forEach((section, index) => {
-            $('#' + idContenedor).append('<div class="col col-12 col-section-title" rdftype="'+section.rdftype+'" about="'+section.entityid+'"><div class="wrapCol"><p>'+ (index + 1) +' - ' + section.title + '</p></div></div>');
+            $('#' + idContenedor).append('<div class="col col-12 col-section-title" rdftype="'+section.rdftypeTab+'" about="'+section.entityIDTab+'"><div class="wrapCol"><p>'+ (index + 1) +' - ' + section.title + '</p></div></div>');
 			$('#' + idContenedor).append('<div class="col col-12 col-contenido" id="section'+index+'"></div>');
             for (var i = 0; i < section.sections.length; i++) {
 				$('#' + idContenedor + ' #section'+index+'.col-contenido').append(edicionCV.printTabSection(section.sections[i], true));
