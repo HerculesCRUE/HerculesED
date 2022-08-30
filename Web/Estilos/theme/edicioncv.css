@@ -369,3 +369,49 @@ input.form-group-date {
     margin-bottom: 0;
     color: #03a1ff;
 }
+div#contenedorOtrosMeritos div.col-section-title , div#contenedorOtrosMeritos div.col-contenido{
+	border-bottom: 1px solid var(--c-gris-borde);
+    padding: 12px 0px 12px 28px;
+}
+div#contenedorOtrosMeritos div.col-section-title div.wrapCol {
+	padding-left: 0;
+}
+div#contenedorOtrosMeritos div.col-section-title p {
+	font-size: 1.133rem;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+div#otros-meritos-panel {
+	padding: 0;
+}
+div#contenedorOtrosMeritos .panel-group .panel > .panel-heading .panel-title {
+    margin-bottom: 20px;
+    padding-right: 30px;
+}
+div#contenedorOtrosMeritos .panel-group .panel > .panel-heading a {
+	font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--c-negro);
+    padding: 0;
+}
+div#contenedorOtrosMeritos .panel-group .panel > .panel-collapse .panel-body {
+	padding-left: 45px;
+}
+div#contenedorOtrosMeritos .pmd-accordion-arrow, div#contenedorOtrosMeritos .arrow {
+	color: var(--c-texto-claro);
+    height: 30px;
+    width: 30px;
+    border: 1px solid var(--c-gris-borde);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+	position:absolute;
+	top:0;
+	right: 0;
+}
+div#contenedorOtrosMeritos .panel-group .panel {
+    margin: 22px 24px;
+}
