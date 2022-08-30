@@ -130,12 +130,14 @@ var edicionCV = {
 		for (var i = 0; i < data.sections.length; i++) {	
 			if (data.sections[i].items.length == 0) {
 				continue;
-			}
-			if(data.sections[i].identifier==section)
-			{
+			} else if(data.sections[i].identifier==section) {
 				$('div[about="' + entityID + '"]').next().find('div[section="'+data.sections[i].identifier+'"]').replaceWith(this.printTabSection(data.sections[i], true));
+				$(this).closest('.pmd-accordion').find('.panel-collapse').addClass('show');
 				this.repintarListadoTab(data.sections[i].identifier,true);
-
+				accionesPlegarDesplegarModal.init();
+				this.engancharComportamientosCV(true);
+				$('.resource-title a').removeAttr('href');
+				$('div[about="' + entityID + '"]').next().find('div[section="'+data.sections[i].identifier+'"] .panel .panel-collapse').addClass('show')
 			}
 		}
 	},
@@ -1019,7 +1021,7 @@ var edicionCV = {
 		}
 		if(noEngancharComportamientosCV==null || !noEngancharComportamientosCV)
 		{
-			this.engancharComportamientosCV();				
+			this.engancharComportamientosCV($('div#contenedorOtrosMeritos').length != 0);				
 		}
         accionesPlegarDesplegarModal.init();	
 		tooltipsAccionesRecursos.init();		
@@ -3781,7 +3783,9 @@ var edicionCV = {
 			var about= $(this).closest('.cvTab').attr('about');
 			var rdftype= $(this).closest('.cvTab').attr('rdftype');
 			var section= $(this).attr('section');
-			that.completeTab(about,rdftype,section);
+			if (rdftype && about) {
+				that.completeTab(about,rdftype,section);
+			}
         });
 				
 		//Obtener datos envio PRC

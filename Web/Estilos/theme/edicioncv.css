@@ -418,3 +418,9 @@ div#contenedorOtrosMeritos .panel-group .panel {
 div#contenedorOtrosMeritos .numResultados {
 	margin-left: 5px;
 }
+div#contenedorOtrosMeritos .resource-title a {
+	cursor: default;
+}
+div#contenedorOtrosMeritos .resource-title a:hover {
+	color: var(--c-texto);
+}
