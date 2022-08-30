@@ -422,5 +422,5 @@ div#contenedorOtrosMeritos .resource-title a {
 	cursor: default;
 }
 div#contenedorOtrosMeritos .resource-title a:hover {
-	color: var(--c-texto);
+	color: var(--c-texto)!important;
 }
