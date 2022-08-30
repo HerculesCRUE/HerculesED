@@ -39,8 +39,6 @@ namespace GuardadoCV.Controllers
             DateTime inicio = DateTime.Now;
             mResourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
             DateTime fin = DateTime.Now;
-
-            AccionesEdicion accionesEdicion = new AccionesEdicion();
             return Ok((fin - inicio).TotalMilliseconds);
         }
         #endregion
