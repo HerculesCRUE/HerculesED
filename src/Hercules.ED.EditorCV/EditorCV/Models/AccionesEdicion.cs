@@ -566,28 +566,31 @@ namespace EditorCV.Models
             //Obtenemos los datos necesarios para el pintado
             // Consigo el pId y el pCvId a partir del Id de la persona pPersonId
             string pCVId = "";
-            Dictionary<string,string> pId = new Dictionary<string, string>();
-            string select = "SELECT ?cv ?property ?id";
+            Dictionary<string,Tuple<string, string>> pId = new Dictionary<string, Tuple<string, string>>();
+            string select = "SELECT ?cv ?property ?id ?rdftype";
             string where = @$"WHERE {{
                     ?cv<http://w3id.org/roh/cvOf> <{pPersonId}>.
                     ?cv ?property ?id.
+                    ?id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?rdftype.
                     FILTER(?property in (<{string.Join(">,<",tabsPublic)}>))
                 }}";
             SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
             {
                 pCVId = fila["cv"].value;
-                pId[fila["property"].value] = fila["id"].value;
+                pId[fila["property"].value] = new Tuple<string, string>(fila["id"].value, fila["rdftype"].value);
             }
             if (!string.IsNullOrEmpty(pCVId))
             {
                 foreach (API.Templates.Tab template in templates)
                 {
                     API.Response.Tab respuesta = null;
-                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId[template.property], template, pLang, null, true);
+                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId[template.property].Item1, template, pLang, null, true);
                     //Obtenemos el modelo para devolver
-                    respuesta = GetTabModel(pConfig, pCVId, pId[template.property], data, template, pLang, null, true);
+                    respuesta = GetTabModel(pConfig, pCVId, pId[template.property].Item1, data, template, pLang,null, true);
                     respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
+                    respuesta.rdftype = pId[template.property].Item2;
+                    respuesta.entityid = pId[template.property].Item1;
                     respuesta.sections.RemoveAll(x => x.items == null || x.items.Count == 0);
                     if (respuesta.sections.Count > 0)
                     {
@@ -1090,7 +1093,7 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublic = false)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublicCounters = false)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             List<PropertyData> propertyDatasContadores = new List<PropertyData>();
@@ -1098,7 +1101,7 @@ namespace EditorCV.Models
             string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
-                if (onlyPublic)
+                if (onlyPublicCounters)
                 {
                     if (templateSection.presentation.listItemsPresentation != null && templateSection.presentation.listItemsPresentation.isPublishable
                         && templateSection.presentation.listItemsPresentation.listItemEdit.rdftype != "http://vivoweb.org/ontology/core#Project" && templateSection.presentation.listItemsPresentation.listItemEdit.rdftype != "http://purl.org/ontology/bibo/Document")
@@ -1268,7 +1271,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublic = false)
+        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublic = false, bool onlyPublicItems = false)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -1326,7 +1329,7 @@ namespace EditorCV.Models
                             if (pData.ContainsKey(pId))
                             {
                                 bool soloID = false;
-                                if (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0)
+                                if (onlyPublic || (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0))
                                 {
                                     soloID = true;
                                 }
@@ -1344,7 +1347,11 @@ namespace EditorCV.Models
                                     }
                                     else
                                     {
-                                        tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years));
+                                        TabSectionItem item = GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years);
+                                        if (!(onlyPublicItems && item.ispublic))
+                                        {
+                                            tabSection.items.Add(idEntity, item);
+                                        }
                                     }
                                 }
                             }
