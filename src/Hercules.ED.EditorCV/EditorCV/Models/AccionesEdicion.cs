@@ -554,7 +554,7 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Sección</param>
         /// <returns></returns>
-        public AuxTab GetTab(ConfigService pConfig, string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
+        public AuxTab GetTab(ConfigService pConfig, string pCVId, string pId, string pRdfType, string pLang, string pSection = null, bool pOnlyPublic = false)
         {
             //Obtenemos el template
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfType);
@@ -564,7 +564,7 @@ namespace EditorCV.Models
                 //Obtenemos los datos necesarios para el pintado
                 Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang, pSection);
                 //Obtenemos el modelo para devolver
-                respuesta = GetTabModel(pConfig, pCVId, pId, data, template, pLang, pSection);
+                respuesta = GetTabModel(pConfig, pCVId, pId, data, template, pLang, pSection, pOnlyPublic);
             }
             else
             {
@@ -616,7 +616,7 @@ namespace EditorCV.Models
                     API.Response.Tab respuesta = null;
                     Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId[template.property].Item1, template, pLang, null, true);
                     //Obtenemos el modelo para devolver
-                    respuesta = GetTabModel(pConfig, pCVId, pId[template.property].Item1, data, template, pLang,null, true);
+                    respuesta = GetTabModel(pConfig, pCVId, pId[template.property].Item1, data, template, pLang, null, true);
                     respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
                     respuesta.rdftype = pId[template.property].Item2;
                     respuesta.entityid = pId[template.property].Item1;
@@ -1300,7 +1300,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublic = false, bool onlyPublicItems = false)
+        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool pOnlyPublic = false)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -1358,7 +1358,7 @@ namespace EditorCV.Models
                                 if (pData.ContainsKey(pId))
                                 {
                                     bool soloID = false;
-                                    if (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0)
+                                    if ((pOnlyPublic && pSection == null) || (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0))
                                     {
                                         soloID = true;
                                     }
@@ -1377,6 +1377,10 @@ namespace EditorCV.Models
                                         else
                                         {
                                             tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years));
+                                            if (pOnlyPublic && !tabSection.items.Last().Value.ispublic)
+                                            {
+                                                tabSection.items.Remove(idEntity);
+                                            }
                                         }
                                     }
                                 }
@@ -1412,6 +1416,10 @@ namespace EditorCV.Models
                             throw new Exception("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
                     }
                 }
+            }
+            if (pOnlyPublic)
+            {
+                tab.sections.RemoveAll(x => x.items == null || x.items.Count == 0);
             }
             return tab;
         }

@@ -415,3 +415,6 @@ div#contenedorOtrosMeritos .pmd-accordion-arrow, div#contenedorOtrosMeritos .arr
 div#contenedorOtrosMeritos .panel-group .panel {
     margin: 22px 24px;
 }
+div#contenedorOtrosMeritos .numResultados {
+	margin-left: 5px;
+}
