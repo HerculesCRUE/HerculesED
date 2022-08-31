@@ -1,4 +1,4 @@
-![](../../Docs/media/CabeceraDocumentosMD.png)
+![](./media/CabeceraDocumentosMD.png)
 
 | Fecha         | 31/08/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
@@ -17,7 +17,7 @@
 
 [Funcionamiento de la edición del CV](#funcionamiento-de-la-edición-del-cv)
 
-## Introducción
+# Introducción
 Este documento comprende las distintas características sobre el funcionamiento de la edición de CV en Hércules.
 Se detallarán las distintas funcionalidades de la edición CV, la lógica que sigue, los controladores que utiliza y las vistas que se muestran.
 ### Información ontológica
@@ -101,12 +101,12 @@ Para estos items hay distintas acciones:
     - **Controlador:** EnvioValidacionController
     - **Función:** [GET]ObtenerDatosEnvioPRC
     - **Descripción:** Obtiene los datos para enviar un item a producción científica.
-    Al enviar el item, se mostrará un modal con los datos de la validación.
+- Al enviar el item, se mostrará un modal con los datos de la validación.
     - **API:** EdicionCV
     - **Controlador:** EnvioValidacionController
     - **Función:** [POST]EnvioPRC
     - **Descripción:** Envía los datos a producción científica.
-    Al ser enviado correctamente se actualizará el item
+- Al ser enviado correctamente se actualizará el item
     - **API:** EdicionCV
     - **Controlador:** EdicionCVController
     - **Función:** [GET]GetItemMini
@@ -117,108 +117,105 @@ En el archivo js se hacen peticiones a otros controladores:
 
 **EdicionCVController:**
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [GET]GetCVUrl
-- **Descripción:** Obtiene la URL de un CV a partir de un usuario
+    - **Controlador:** EdicionCVController
+    - **Función:** [GET]GetCVUrl
+    - **Descripción:** Obtiene la URL de un CV a partir de un usuario
+- **API:** EdicionCV
+    - **Controlador:** EdicionCVController
+    - **Función:** [POST]GetAutocomplete
+    - **Descripción:** Obtiene un listado de sugerencias con datos existentes para esa propiedad en algún item de CV
+- **API:** EdicionCV
+    - **Controlador:** EdicionCVController
+    - **Función:** [POST]GetPropertyEntityData
+    - **Descripción:** Obtiene datos de una entidad
+- **API:** EdicionCV
+    - **Controlador:** EdicionCVController
+    - **Función:** [GET]GetItemsDuplicados
+    - **Descripción:** Obtiene los datos de los posibles items duplicados del CV del usuario.
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [POST]GetAutocomplete
-- **Descripción:** Obtiene un listado de sugerencias con datos existentes para esa propiedad en algún item de CV
+    - **Controlador:** EdicionCVController
+    - **Función:** [GET]GetTab
+    - **Descripción:** Obtiene los datos de una pestaña dentro del editor
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [POST]GetPropertyEntityData
-- **Descripción:** Obtiene datos de una entidad
+    - **Controlador:** EdicionCVController
+    - **Función:** [GET]GetAllPublicData
+    - **Descripción:** Obtiene todos los datos marcados como públicos de la persona
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [GET]GetItemsDuplicados
-- **Descripción:** Obtiene los datos de los posibles items duplicados del CV del usuario.
+    - **Controlador:** EdicionCVController
+    - **Función:** [GET]GetItemMini
+    - **Descripción:** Obtiene una minificha de una entidad de un listado de una pestaña
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [GET]GetTab
-- **Descripción:** Obtiene los datos de una pestaña dentro del editor
+    - **Controlador:** EdicionCVController
+    - **Función:** [GET]GetEdit
+    - **Descripción:** Obtiene una ficha de edición de una entidad de un listado de una pestaña
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [GET]GetAllPublicData
-- **Descripción:** Obtiene todos los datos marcados como públicos de la persona
+    - **Controlador:** EdicionCVController
+    - **Función:** [POST]LoadProps
+    - **Descripción:** Obtiene una serie de propiedades de una serie de entidades
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [GET]GetItemMini
-- **Descripción:** Obtiene una minificha de una entidad de un listado de una pestaña
+    - **Controlador:** EdicionCVController
+    - **Función:** [POST]ValidateSignatures
+    - **Descripción:** Valida las firmas
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [GET]GetEdit
-- **Descripción:** Obtiene una ficha de edición de una entidad de un listado de una pestaña
+    - **Controlador:** EdicionCVController
+    - **Función:** [POST]EnrichmentTopics
+    - **Descripción:** Obtiene los descriptores específicos y temáticos haciendo una petición a un servicio
 
 - **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [POST]LoadProps
-- **Descripción:** Obtiene una serie de propiedades de una serie de entidades
-
-- **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [POST]ValidateSignatures
-- **Descripción:** Valida las firmas
-
-- **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [POST]EnrichmentTopics
-- **Descripción:** Obtiene los descriptores específicos y temáticos haciendo una petición a un servicio
-
-- **API:** EdicionCV
-- **Controlador:** EdicionCVController
-- **Función:** [GET]GetTesaurus
-- **Descripción:** Devuelve el tesauro pedido en el idioma marcado
+    - **Controlador:** EdicionCVController
+    - **Función:** [GET]GetTesaurus
+    - **Descripción:** Devuelve el tesauro pedido en el idioma marcado
 
 **GuardadoCVController:**
 - **API:** EdicionCV
-- **Controlador:** GuardadoCVController
-- **Función:** [POST]ChangePrivacityItem
-- **Descripción:** Cambia la privacidad de un item
+    - **Controlador:** GuardadoCVController
+    - **Función:** [POST]ChangePrivacityItem
+    - **Descripción:** Cambia la privacidad de un item
 
 - **API:** EdicionCV
-- **Controlador:** GuardadoCVController
-- **Función:** [POST]RemoveItem
-- **Descripción:** Elimina un item de un listado
+    - **Controlador:** GuardadoCVController
+    - **Función:** [POST]RemoveItem
+    - **Descripción:** Elimina un item de un listado
 
 - **API:** EdicionCV
-- **Controlador:** GuardadoCVController
-- **Función:** [POST]UpdateEntity
-- **Descripción:** Crea o actualiza una entidad
+    - **Controlador:** GuardadoCVController
+    - **Función:** [POST]UpdateEntity
+    - **Descripción:** Crea o actualiza una entidad
 
 - **API:** EdicionCV
-- **Controlador:** GuardadoCVController
-- **Función:** [POST]ValidateORCID
-- **Descripción:** Valida un ORCID
+    - **Controlador:** GuardadoCVController
+    - **Función:** [POST]ValidateORCID
+    - **Descripción:** Valida un ORCID
 
 - **API:** EdicionCV
-- **Controlador:** GuardadoCVController
-- **Función:** [POST]CreatePerson
-- **Descripción:** Crea una persona
+    - **Controlador:** GuardadoCVController
+    - **Función:** [POST]CreatePerson
+    - **Descripción:** Crea una persona
 
 - **API:** EdicionCV
-- **Controlador:** GuardadoCVController
-- **Función:** [POST]ProcesarItemsDuplicados
-- **Descripción:** Procesa los items duplicados
+    - **Controlador:** GuardadoCVController
+    - **Función:** [POST]ProcesarItemsDuplicados
+    - **Descripción:** Procesa los items duplicados
 
 **EnvioValidacionController:**
 - **API:** EdicionCV
-- **Controlador:** EnvioValidacionController
-- **Función:** [GET]ObtenerDatosEnvioPRC
-- **Descripción:** Servicio para obtener todos los proyectos de la persona, junto a su titulo, fecha de inicio, fecha de fin y organización.
+    - **Controlador:** EnvioValidacionController
+    - **Función:** [GET]ObtenerDatosEnvioPRC
+    - **Descripción:** Servicio para obtener todos los proyectos de la persona, junto a su titulo, fecha de inicio, fecha de fin y organización.
 
 - **API:** EdicionCV
-- **Controlador:** EnvioValidacionController
-- **Función:** [POST]EnvioPRC
-- **Descripción:** Servicio de envío a Producción Científica
+    - **Controlador:** EnvioValidacionController
+    - **Función:** [POST]EnvioPRC
+    - **Descripción:** Servicio de envío a Producción Científica
 
 - **API:** EdicionCV
-- **Controlador:** EnvioValidacionController
-- **Función:** [POST]EnvioProyecto
-- **Descripción:** Servicio de envío de un proyecto a validación.
+    - **Controlador:** EnvioValidacionController
+    - **Función:** [POST]EnvioProyecto
+    - **Descripción:** Servicio de envío de un proyecto a validación.
