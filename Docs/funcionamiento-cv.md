@@ -9,14 +9,6 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
-## Apartados
-
-[Introducción](#introducción)
-
-[Archivos de la edición del CV](#archivos-de-la-edición-del-cv)
-
-[Funcionamiento de la edición del CV](#funcionamiento-de-la-edición-del-cv)
-
 # Introducción
 Este documento comprende las distintas características sobre el funcionamiento de la edición de CV en Hércules.
 Se detallarán las distintas funcionalidades de la edición CV, la lógica que sigue, los controladores que utiliza y las vistas que se muestran.
@@ -24,7 +16,7 @@ Se detallarán las distintas funcionalidades de la edición CV, la lógica que s
 Los CV hacen referencia al objeto de conocimiento del currículum vitae (curriculumvitae.owl).
 ### Acceder a la edición del CV
 Para acceder al CV de tu usuario, tienes que acceder al menú lateral izquierdo y ahí encontrarás las opción de Editar curriculum vitae dentro de "Curriculum Vitae".
-![](../../Docs/media/EditorCV/menu_lateral.png)
+![](./media/EditorCV/menu_lateral.png)
 
 ## Archivos de la edición del CV
 Aquí se detallará la vista, el js y los controladores que se utilizan para la edición del CV.
@@ -51,14 +43,14 @@ Al entrar al editor CV se hacen dos peticiones:
 
 ## Gestión de duplicados
 Se puede acceder a la gestión de duplicados de dos formas, accediendo a la edición del CV directamente o dentro de la edición dándole al botón de "Gestionar duplicados".
-![](../../Docs/media/EditorCV/GestionDuplicadosBoton.png)
+![](./media/EditorCV/GestionDuplicadosBoton.png)
 Esto hará la petición anteriormente mencionada (GetItemsDuplicados) y se mostrará un modal si encuentra items duplicados, en caso contrario no mostraría ningún mensaje ni modal.
-![](../../Docs/media/EditorCV/GestionDuplicadosPaso1.png)
+![](./media/EditorCV/GestionDuplicadosPaso1.png)
 Dentro de este modal se mostrará el item principal y los items duplicados, con diferentes opciones:
 - **Fusionar:** Los datos vacíos del ítem principal serán complementados por los datos del ítem secundario. El ítem principal no perderá datos ni serán rescritos en este proceso, únicamente se añadirán datos que estaban vacíos previamente.
 - **Eliminar:** Se eliminará el ítem secundario del CV del usuario.
 - **Marcar como no duplicado:** El ítem se marcará como diferente sobre el ítem principal, para que no sea mostrado en el futuro.
-![](../../Docs/media/EditorCV/GestionDuplicadosPaso2.png)
+![](./media/EditorCV/GestionDuplicadosPaso2.png)
 El usuario puede seleccionar dos opciones:
 - **Aplicar y siguiente:** Será necesario que los ítems secundarios tengan una acción asociada. Se aplicarán las acciones elegidas en los ítems secundarios y se mostrará los siguientes ítems detectados como similares.
 - **Ignorar y siguiente:** Se pasará al siguiente grupo de ítems detectados como similares sin realizar ninguna acción sobre los ítems mostrados.
