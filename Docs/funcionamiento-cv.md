@@ -16,6 +16,7 @@ Se detallarán las distintas funcionalidades de la edición CV, la lógica que s
 Los CV hacen referencia al objeto de conocimiento del currículum vitae (curriculumvitae.owl).
 ### Acceder a la edición del CV
 Para acceder al CV de tu usuario, tienes que acceder al menú lateral izquierdo y ahí encontrarás las opción de Editar curriculum vitae dentro de "Curriculum Vitae".
+
 ![](./media/EditorCV/menu_lateral.png)
 
 ## Archivos de la edición del CV
