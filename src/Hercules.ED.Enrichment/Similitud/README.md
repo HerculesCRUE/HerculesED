@@ -186,7 +186,7 @@ Este método devuelve los diez RO más similares al RO de entrada. Se puede limi
 
 Comando curl:
 ```
-$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/query_similar?ro_id=2-s2.0-33846355632&ro_type_target=research_paper"
+$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/similar?ro_id=2-s2.0-33846355632&ro_type_target=research_paper"
 ```
 
 Respuesta:
