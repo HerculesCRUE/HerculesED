@@ -316,7 +316,7 @@ namespace EditorCV.Models
         /// <returns>
         /// Un diccionario que tiene el titulo como llave y una lista contiendo las ids de todas las veces que aparece ese titulo.
         /// </returns>
-        public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity)
+        public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity, string pItemId = null)
         {
             Dictionary<string, HashSet<string>> itemsNoDuplicados = new Dictionary<string, HashSet<string>>();
             string select = $@"SELECT distinct ?group ?id";
@@ -353,6 +353,10 @@ namespace EditorCV.Models
                             List<KeyValuePair<string, Tuple<string, string, bool>>> itemsTitleSectionList = itemsTitleValidatedSection.ToList();
                             for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
                             {
+                                if (pItemId != null && itemsTitleSectionList[i].Key != pItemId)
+                                {
+                                    continue;
+                                }
                                 Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
                                 similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
                                 for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
@@ -454,7 +458,7 @@ namespace EditorCV.Models
                                 ?itemSection <http://vivoweb.org/ontology/core#relatedBy> ?item .
                                 ?item <{pPropTitle}> ?title.
                                 OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
-                            }}order by desc (?o) LIMIT {limit} OFFSET {offset}";
+                            }} LIMIT {limit} OFFSET {offset}";
                 SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {

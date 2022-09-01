@@ -3880,69 +3880,77 @@ var edicionCV = {
 			}
 		});
 	},
-	GetDataPRC: function(dataId, idPerson, section, rdfTypeTab){
+	GetDataPRC: function(dataId, idPerson, section, rdfTypeTab, checkDuplicates = true){
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .form-actions .btn.btn-primary.uppercase.btnEnvioPRC').removeClass("disabled");
-
-		$.ajax({
-			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
-			type: 'GET',
-			data: {
-				pIdPersona: idPerson
-			},
-			success: function ( response ) {
-				var contador = 0;
-				var html = '';
-				for(const seccion in response){
-					html += `<article class="resource folder">
-								<div class="form-group">
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="checkbox" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
-										<label class="form-check-label" for="proyecto-${contador}"></label>
-									</div>
-								</div>
-								<div class="wrap">
-									<div class="middle-wrap">
-										<div class="title-wrap">
-											<h2 class="resource-title">
-												${response[seccion].titulo}
-											</h2>
+		let itemId = $('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap').find('a[data-id]').attr('data-id');
+		var urlDuplicados = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV + "&pMinSimilarity=0.9&pIdItem=" + itemId;
+		if (checkDuplicates) {
+			$.get(urlDuplicados, null, function (data) {
+				if (data) {
+				}
+			});
+		} else {
+			$.ajax({
+				url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
+				type: 'GET',
+				data: {
+					pIdPersona: idPerson
+				},
+				success: function ( response ) {
+					var contador = 0;
+					var html = '';
+					for(const seccion in response){
+						html += `<article class="resource folder">
+									<div class="form-group">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
+											<label class="form-check-label" for="proyecto-${contador}"></label>
 										</div>
-										<div class="content-wrap">
-											<div class="description-wrap counted">`;
-										if(response[seccion].fechaInicio!=null){
-										html+=`
-												<div class="group fecha">
-													<p class="title">Fecha inicio</p>
-													<p>${response[seccion].fechaInicio}</p>
-												</div>`;
-										}
-										if(response[seccion].fechaFin!=null){
-										html+=`<div class="group fecha">
-													<p class="title">Fecha fin</p>
-													<p>${response[seccion].fechaFin}</p>
-												</div>`;
-										}
-										if(response[seccion].organizacion!=null){
-										html+=`<div class="group publicacion">
-													<p class="title">Organización</p>
-													<p>${response[seccion].organizacion}</p>
-												</div>`;
-										}
-										html+=`
+									</div>
+									<div class="wrap">
+										<div class="middle-wrap">
+											<div class="title-wrap">
+												<h2 class="resource-title">
+													${response[seccion].titulo}
+												</h2>
+											</div>
+											<div class="content-wrap">
+												<div class="description-wrap counted">`;
+											if(response[seccion].fechaInicio!=null){
+											html+=`
+													<div class="group fecha">
+														<p class="title">Fecha inicio</p>
+														<p>${response[seccion].fechaInicio}</p>
+													</div>`;
+											}
+											if(response[seccion].fechaFin!=null){
+											html+=`<div class="group fecha">
+														<p class="title">Fecha fin</p>
+														<p>${response[seccion].fechaFin}</p>
+													</div>`;
+											}
+											if(response[seccion].organizacion!=null){
+											html+=`<div class="group publicacion">
+														<p class="title">Organización</p>
+														<p>${response[seccion].organizacion}</p>
+													</div>`;
+											}
+											html+=`
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</article>`;
-					contador++;
+								</article>`;
+						contador++;
+					}
+					
+					$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
+					operativaFormularioProduccionCientifica.formProyecto(section,rdfTypeTab);
+					
 				}
-				
-				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
-				operativaFormularioProduccionCientifica.formProyecto(section,rdfTypeTab);
-				
-			}
-		});
+			});
+		}
 	},
     EnvioValidacion: function(dataId, idPerson){
 		var formData = new FormData();

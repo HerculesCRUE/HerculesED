@@ -111,12 +111,12 @@ namespace GuardadoCV.Controllers
         }
 
         [HttpGet("GetItemsDuplicados")]
-        public IActionResult GetItemsDuplicados(string pCVId, float pMinSimilarity = 0.9f)
+        public IActionResult GetItemsDuplicados(string pCVId, float pMinSimilarity = 0.9f, string pItemId = null)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetItemsDuplicados(pCVId, pMinSimilarity));
+                return Ok(accionesEdicion.GetItemsDuplicados(pCVId, pMinSimilarity, pItemId));
             }
             catch (Exception ex)
             {
