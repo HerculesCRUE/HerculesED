@@ -5529,8 +5529,20 @@ $.Autocompleter = function(input, options) {
 				var sendData = {};
 				sendData.pGraph = graph;
 				sendData.pEntity = entidadDestino.val();
+				sendData.pProperties=[]
+				let propertyEntitySplit = propertyEntity.split('&');		            
+				for (var i = 0; i < propertyEntitySplit.length; i++) {
+					sendData.pProperties.push(propertyEntitySplit[i].split('|')[0]);
+				}
+				
 				$.post(urlEdicionCV + 'GetPropertyEntityData', sendData, function(data) {
-					
+					for (var i = 0; i < propertyEntitySplit.length; i++) {
+						let propEntity=propertyEntitySplit[i].split('|')[0];
+						let propCV=propertyEntitySplit[i].split('|')[1];
+						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').attr('disabled','disabled');
+						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);
+						
+					}
 				});
 			}			
 		}
