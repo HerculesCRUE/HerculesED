@@ -566,6 +566,37 @@ var edicionCV = {
 								</article>`;
         return htmlListItem;
     },
+	printHtmlListItemPRC: function(id, data) {
+		let openAccess="";
+		if (data.isopenaccess) {
+            openAccess = "open-access";
+        }
+        var htmlListItem = `<article class="resource success ${openAccess}" >
+									<div class="wrap">
+										<div class="middle-wrap">
+											${this.printHtmlListItemOrders(data)}
+											<div class="title-wrap">
+											</div>
+											<div class="title-wrap">
+												<h2 class="resource-title">
+													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
+												</h2>
+												${this.printHtmlListItemValidacion(data)}
+												${this.printHtmlListItemEditable(data)}
+												${this.printHtmlListItemVisibilidad(data)}
+												${this.printHtmlListItemIdiomas(data)}
+												<span class="material-icons arrow">keyboard_arrow_down</span>
+											</div>
+											<div class="content-wrap">
+												<div class="description-wrap">
+												${this.printHtmlListItemPropiedades(data)}
+												</div>
+											</div>
+										</div>
+									</div>
+								</article>`;
+        return htmlListItem;
+	},
     printHtmlListItemDuplicate: function(id, data) {
 		let openAccess="";
 		if (data.isopenaccess) {
@@ -3896,77 +3927,107 @@ var edicionCV = {
 			}
 		});
 	},
-	GetDataPRC: function(dataId, idPerson, section, rdfTypeTab, checkDuplicates = true){
+	GetDataPRC: function(dataId, idPerson, section, rdfTypeTab){
+		var that = this;
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .form-actions .btn.btn-primary.uppercase.btnEnvioPRC').removeClass("disabled");
 		let itemId = $('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap').find('a[data-id]').attr('data-id');
-		var urlDuplicados = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV + "&pMinSimilarity=0.9&pIdItem=" + itemId;
-		if (checkDuplicates) {
-			$.get(urlDuplicados, null, function (data) {
-				if (data) {
-				}
-			});
-		} else {
-			$.ajax({
-				url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
-				type: 'GET',
-				data: {
-					pIdPersona: idPerson
-				},
-				success: function ( response ) {
-					var contador = 0;
-					var html = '';
-					for(const seccion in response){
-						html += `<article class="resource folder">
-									<div class="form-group">
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
-											<label class="form-check-label" for="proyecto-${contador}"></label>
-										</div>
-									</div>
-									<div class="wrap">
-										<div class="middle-wrap">
-											<div class="title-wrap">
-												<h2 class="resource-title">
-													${response[seccion].titulo}
-												</h2>
-											</div>
-											<div class="content-wrap">
-												<div class="description-wrap counted">`;
-											if(response[seccion].fechaInicio!=null){
-											html+=`
-													<div class="group fecha">
-														<p class="title">Fecha inicio</p>
-														<p>${response[seccion].fechaInicio}</p>
-													</div>`;
-											}
-											if(response[seccion].fechaFin!=null){
-											html+=`<div class="group fecha">
-														<p class="title">Fecha fin</p>
-														<p>${response[seccion].fechaFin}</p>
-													</div>`;
-											}
-											if(response[seccion].organizacion!=null){
-											html+=`<div class="group publicacion">
-														<p class="title">Organización</p>
-														<p>${response[seccion].organizacion}</p>
-													</div>`;
-											}
-											html+=`
-												</div>
-											</div>
-										</div>
-									</div>
-								</article>`;
-						contador++;
+		var urlDuplicados = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV + "&pMinSimilarity=0.9&pItemId=" + itemId;
+		MostrarUpdateProgress();
+		$.get(urlDuplicados, null, function (data) {
+			if (data && data.length > 0) {
+				$('#modal-enviar-produccion-cientifica .modal-body > .alert').removeAttr('style');
+				$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-publicacion').removeAttr('style');
+				$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-proyecto').css('display', 'none');
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('dataId', dataId);
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('section', section);
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('rdfTypeTab', rdfTypeTab);
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('idPerson', idPerson);
+				var items = data;
+				duplicadosCV.items = data;
+				let principal = true;
+				for(var itemIn in items[0].items) {
+					if(!principal) {
+						let aux=itemIn;
+						$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + items[0].idSection + "&pRdfTypeTab=" + items[0].rdfTypeTab + "&pEntityID=" + items[0].items[itemIn] + "&pLang=" + lang, null, function(data) 
+						{
+							var htmlItem=edicionCV.printHtmlListItemPRC(items[0].items[aux], data);
+							$('#modal-enviar-produccion-cientifica .formulario-publicacion .resource-list-wrap').append(htmlItem);
+							duplicadosCV.engancharComportamientos(true);
+							OcultarUpdateProgress();
+						});
 					}
-					
-					$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
-					operativaFormularioProduccionCientifica.formProyecto(section,rdfTypeTab);
-					
+					principal=false;
 				}
-			});
-		}
+			} else {
+				edicionCV.PintarDataPRC(dataId, idPerson, section, rdfTypeTab);
+				OcultarUpdateProgress();
+			}
+		});
+	},
+	PintarDataPRC: function(dataId, idPerson, section, rdfTypeTab){
+		$('#modal-enviar-produccion-cientifica .modal-body > .alert').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-publicacion').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-proyecto').removeAttr('style');
+		$.ajax({
+			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
+			type: 'GET',
+			data: {
+				pIdPersona: idPerson
+			},
+			success: function ( response ) {
+				var contador = 0;
+				var html = '';
+				for(const seccion in response){
+					html += `<article class="resource folder">
+								<div class="form-group">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="proyecto" id="proyecto-${contador}" projectid="${seccion}">
+										<label class="form-check-label" for="proyecto-${contador}"></label>
+									</div>
+								</div>
+								<div class="wrap">
+									<div class="middle-wrap">
+										<div class="title-wrap">
+											<h2 class="resource-title">
+												${response[seccion].titulo}
+											</h2>
+										</div>
+										<div class="content-wrap">
+											<div class="description-wrap counted">`;
+										if(response[seccion].fechaInicio!=null){
+										html+=`
+												<div class="group fecha">
+													<p class="title">Fecha inicio</p>
+													<p>${response[seccion].fechaInicio}</p>
+												</div>`;
+										}
+										if(response[seccion].fechaFin!=null){
+										html+=`<div class="group fecha">
+													<p class="title">Fecha fin</p>
+													<p>${response[seccion].fechaFin}</p>
+												</div>`;
+										}
+										if(response[seccion].organizacion!=null){
+										html+=`<div class="group publicacion">
+													<p class="title">Organización</p>
+													<p>${response[seccion].organizacion}</p>
+												</div>`;
+										}
+										html+=`
+											</div>
+										</div>
+									</div>
+								</div>
+							</article>`;
+					contador++;
+				}
+				
+				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
+				operativaFormularioProduccionCientifica.formProyecto(section,rdfTypeTab);
+				
+			}
+		});
 	},
     EnvioValidacion: function(dataId, idPerson){
 		var formData = new FormData();
@@ -4586,8 +4647,86 @@ var duplicadosCV = {
 		}
         return;
     },
-	engancharComportamientos: function() {
+	engancharComportamientos: function(envioPRC = false) {
 		var that=this;
+		if (envioPRC) {
+			//Eliminamos desplegable acciones-curriculum
+			$('#modal-enviar-produccion-cientifica .acciones-recurso-listado').remove();
+			$('#modal-enviar-produccion-cientifica .itemConflict').remove();
+			$('#modal-enviar-produccion-cientifica .btn-principal').remove();
+			
+			//Agregamos desplegable en items
+			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-publicacion article h2').after(`
+				<select class="itemConflict" name="itemConflict">
+					<option value="" selected ></option>	
+					<option value="0">${GetText("CV_DUPLICADO_FUSIONAR")}</option>
+					<option value="1">${GetText("CV_DUPLICADO_ELIMINAR")}</option>
+					<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>							
+				</select>
+			`);
+			//Publicar/despublicar duplicado
+			$('#modal-enviar-produccion-cientifica .resource-list .visibility-wrapper').off('click').on('click', function(e) {
+				var element = $(this);
+				var item = {};
+				var isPublic = !$(this).find('.con-icono-before').hasClass('eye');
+				item.pIdSection = that.items[that.pasoActual].idSection;
+				item.pRdfTypeTab = that.items[that.pasoActual].rdfTypeTab;
+				item.pEntity = $(this).parent().find('a[data-id]').attr('data-id');
+				item.pIsPublic = isPublic;
+				MostrarUpdateProgress();
+				if (isPublic) {
+					$(this).find('.con-icono-before').addClass('eye');
+					$(this).find('.con-icono-before').removeClass('visibility-activo');
+				} else {
+					$(this).find('.con-icono-before').addClass('visibility-activo');
+					$(this).find('.con-icono-before').removeClass('eye');
+				}
+				$.post(urlGuardadoCV + 'ChangePrivacityItem', item, function(data) {
+					OcultarUpdateProgress();
+				})
+			});
+			// Botón continuar aplicando cambios
+			$('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').off('click').on('click', function(e) {
+				var validar = true;
+				var url = urlGuardadoCV + 'ProcesarItemsDuplicados';
+				var args = {};
+				args.idCV = that.idCV;
+				args.idSection = that.items[that.pasoActual].idSection;
+				args.rdfTypeTab= that.items[that.pasoActual].rdfTypeTab;
+				args.principal = $("#modal-enviar-produccion-cientifica .resource-list.listView .middle-wrap h2 a").attr("data-id");
+				args.secundarios = {};
+				$("#modal-enviar-produccion-cientifica .formulario-edicion.formulario-publicacion article.resource").each(function(index) {
+					var opcion = $(this).find('.itemConflict').val();
+					var id = $(this).find('h2 a').attr('data-id');
+					if(opcion===""){
+						validar=false;
+						return false;
+					}else{
+						args.secundarios[id] = opcion;
+					}
+				});
+				if (!validar){
+					mostrarNotificacion("error",GetText("DUPLICADOS_SELECCIONAR_TODAS_OPCIONES"));
+				}else{
+					$("#modal-enviar-produccion-cientifica .formulario-edicion.formulario-publicacion article.resource .itemConflict").each(function(index) {});
+					$.post(url, args, function(data) {});
+					let dataId = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('dataId');
+					let idPerson = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('idPerson');
+					let section = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('section');
+					let rdfTypeTab = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('rdfTypeTab');
+					edicionCV.PintarDataPRC(dataId, idPerson, section, rdfTypeTab);
+				}
+			});
+			// Botón continuar sin cambios
+			$('#modal-enviar-produccion-cientifica .form-actions .btn-continuar').off('click').on('click', function(e) {
+				let dataId = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('dataId');
+				let idPerson = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('idPerson');
+				let section = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('section');
+				let rdfTypeTab = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('rdfTypeTab');
+				edicionCV.PintarDataPRC(dataId, idPerson, section, rdfTypeTab);
+			});
+			return;
+		}
 		//Eliminamos desplegable acciones-curriculum
 		$('#modal-posible-duplicidad .acciones-recurso-listado').remove();
 		$('#modal-posible-duplicidad .itemConflict').remove();
