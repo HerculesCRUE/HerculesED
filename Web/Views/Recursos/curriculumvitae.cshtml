@@ -131,6 +131,7 @@ $(function() {
                     <p class="alert-title">
                         <span class="material-icons">warning</span>
                         @Html.Translate("POSIBLE_DUPLICIDAD")
+                        @Html.Raw(Html.Translate("POSIBLE_DUPLICIDAD_MENSAJE"))
                     </p>
                 </div>
                 <div class="resource-list listView">
@@ -145,15 +146,14 @@ $(function() {
                 </div>
                 <div class="formulario-edicion formulario-publicacion" style="display: none;">
                     <div class="select-resource-list">
-                        <p class="title">@Html.Translate("CV_SELECCIONA_PUBLICACION_FUSIONARLA")</p>
                         <div class="resource-list listView list-con-checks">
                             <div class="resource-list-wrap">
                             </div>
                         </div>
                     </div>
                     <div class="form-actions">
-                        <a class="btn btn-primary uppercase btn-fusionar">@Html.Translate("CV_FUSIONAR_CONTINUAR")</a>
-                        <a class="btn btn-primary uppercase">@Html.Translate("CV_CONTINUAR")</a>
+                        <a class="btn btn-primary uppercase btn-aplicar">@Html.Translate("CV_APLICAR_CONTINUAR")</a>
+                        <a class="btn btn-primary uppercase btn-continuar">@Html.Translate("CV_CONTINUAR")</a>
                     </div>
                 </div>
                 <div class="formulario-edicion formulario-proyecto" >
