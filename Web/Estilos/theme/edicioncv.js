@@ -1178,6 +1178,7 @@ var edicionCV = {
         }
         this.repintarListadoEntity();
         this.engancharComportamientosCV();
+		this.loadPropertiesEntitiesAutocomplete();
     },
     printEditEntity: function(modalContenedor, data, rdfType) {
         $(modalContenedor + ' form').empty();
@@ -3698,6 +3699,9 @@ var edicionCV = {
 							$(inputDestino).parent().hide();
 							$(inputDestino).val('');
 							$(inputDestino).trigger('change');
+							
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').val('');
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').trigger('change');
 						}
 					}
 					if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
@@ -3711,6 +3715,9 @@ var edicionCV = {
 							$(inputDestino).parent().hide();
 							$(inputDestino).val('');
 							$(inputDestino).trigger('change');
+							
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').val('');
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').trigger('change');
 						}
 					}
 				}); 
@@ -3814,39 +3821,48 @@ var edicionCV = {
 		});
 		
 		$('input[propertyentity][graph]').off('change').on('change', function(e) {
+			that.loadPropertiesEntitiesAutocomplete();	
+		});		
+		
+        return;
+    },
+	loadPropertiesEntitiesAutocomplete: function(){		
+		$('input[propertyentity][graph]').each(function() {
 			let graph=$(this).attr('graph');
 			let propertyEntity=$(this).attr('propertyentity');
 			let propertyOrigin=$(this).attr('propertyorigin');
 			if(graph!=null && propertyEntity!=null)
-			{
-				var sendData = {};
-				sendData.pGraph = graph;
-				sendData.pEntity = $(this).val();
-				sendData.pProperties=[]
-				let propertyEntitySplit = propertyEntity.split('&');		            
-				for (var i = 0; i < propertyEntitySplit.length; i++) {
-					sendData.pProperties.push(propertyEntitySplit[i].split('|')[0]);
-				}
-				
-				$.post(urlEdicionCV + 'GetPropertyEntityData', sendData, function(data) {
+			{				
+				let propertyEntitySplit = propertyEntity.split('&');	
+				if($(this).val()!=''){
+					var sendData = {};
+					sendData.pGraph = graph;
+					sendData.pEntity = $(this).val();
+					sendData.pProperties=[];
+					for (var i = 0; i < propertyEntitySplit.length; i++) {
+						sendData.pProperties.push(propertyEntitySplit[i].split('|')[0]);
+					}
+					$.post(urlEdicionCV + 'GetPropertyEntityData', sendData, function(data) {
+						for (var i = 0; i < propertyEntitySplit.length; i++) {
+							let propEntity=propertyEntitySplit[i].split('|')[0];
+							let propCV=propertyEntitySplit[i].split('|')[1];
+							if(propCV!=propertyOrigin)
+							{
+								$('.formulario-edicion input[propertyrdf="'+propCV+'"]').attr('disabled','disabled');
+							}
+							$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);							
+						}					
+					});
+				}else{
 					for (var i = 0; i < propertyEntitySplit.length; i++) {
 						let propEntity=propertyEntitySplit[i].split('|')[0];
 						let propCV=propertyEntitySplit[i].split('|')[1];
-						if(propCV!=propertyOrigin)
-						{
-							$('.formulario-edicion input[propertyrdf="'+propCV+'"]').attr('disabled','disabled');
-						}
-						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);
-						
-					}					
-				});
-			}			
-		});
-		
-		
-		
-        return;
-    },
+						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').removeAttr('disabled');							
+					}	
+				}
+			}
+		});		
+	},
 	sendPRC: function(idrecurso, idproyecto, section, rdfTypeTab){
 		var that=this;
 		var formData = new FormData();
@@ -4821,6 +4837,7 @@ function addAutocompletar(control) {
 			if($(e.target).attr('multilang')==null)
 			{
 				$(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').val('');
+				$(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').change();
 			}
 		}
 	});
@@ -5561,8 +5578,8 @@ $.Autocompleter = function(input, options) {
 		{
 			let entidadDestino=$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]');
 			entidadDestino.val(selected.value);					
-		}
-		
+			entidadDestino.change();
+		}		
 		hideResultsNow();
 		return true;
 	}
