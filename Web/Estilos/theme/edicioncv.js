@@ -5519,7 +5519,24 @@ $.Autocompleter = function(input, options) {
 	function selectCurrent() {
 		var selected = select.selected();
         pintarSeleccionado($input, selected.result);
-		$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]').val(selected.value)		;
+		if($input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]').length>0)
+		{
+			let entidadDestino=$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]');
+			entidadDestino.val(selected.value);
+			
+			let graph=entidadDestino.attr('graph');
+			let propertyEntity=entidadDestino.attr('propertyentity');
+			if(graph!=null && propertyEntity!=null)
+			{
+				var sendData = {};
+				sendData.pGraph = graph;
+				sendData.pEntity = entidadDestino.val();
+				$.post(urlEdicionCV + 'GetPropertyEntityData', sendData, function(data) {
+					
+				});
+			}			
+		}
+		
 		hideResultsNow();
 		return true;
 	}
