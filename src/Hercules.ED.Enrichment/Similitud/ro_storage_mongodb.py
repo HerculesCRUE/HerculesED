@@ -2,13 +2,16 @@ import similarity
 import pdb
 from pymongo import MongoClient
 
+MONGO_HOST = 'mongodb'
+MONGO_PORT = 27017
+
 class MongoROStorage(similarity.ROStorage):
 
     def __init__(self):
         pass
 
     def connect(self) -> None:
-        self.client = MongoClient('127.0.0.1', port=27017)
+        self.client = MongoClient(MONGO_HOST, port=MONGO_PORT)
         self.db = self.client.hercules_similarity
 
     def add_ro(self, ro: similarity.RO) -> None:
