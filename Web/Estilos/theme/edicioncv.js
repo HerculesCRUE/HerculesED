@@ -3813,6 +3813,38 @@ var edicionCV = {
 			that.EnvioValidacion(dataId, that.idPerson);			
 		});
 		
+		$('input[propertyentity][graph]').off('change').on('change', function(e) {
+			let graph=$(this).attr('graph');
+			let propertyEntity=$(this).attr('propertyentity');
+			let propertyOrigin=$(this).attr('propertyorigin');
+			if(graph!=null && propertyEntity!=null)
+			{
+				var sendData = {};
+				sendData.pGraph = graph;
+				sendData.pEntity = $(this).val();
+				sendData.pProperties=[]
+				let propertyEntitySplit = propertyEntity.split('&');		            
+				for (var i = 0; i < propertyEntitySplit.length; i++) {
+					sendData.pProperties.push(propertyEntitySplit[i].split('|')[0]);
+				}
+				
+				$.post(urlEdicionCV + 'GetPropertyEntityData', sendData, function(data) {
+					for (var i = 0; i < propertyEntitySplit.length; i++) {
+						let propEntity=propertyEntitySplit[i].split('|')[0];
+						let propCV=propertyEntitySplit[i].split('|')[1];
+						if(propCV!=propertyOrigin)
+						{
+							$('.formulario-edicion input[propertyrdf="'+propCV+'"]').attr('disabled','disabled');
+						}
+						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);
+						
+					}					
+				});
+			}			
+		});
+		
+		
+		
         return;
     },
 	sendPRC: function(idrecurso, idproyecto, section, rdfTypeTab){
@@ -5520,31 +5552,7 @@ $.Autocompleter = function(input, options) {
 		if($input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]').length>0)
 		{
 			let entidadDestino=$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]');
-			entidadDestino.val(selected.value);
-			
-			let graph=entidadDestino.attr('graph');
-			let propertyEntity=entidadDestino.attr('propertyentity');
-			if(graph!=null && propertyEntity!=null)
-			{
-				var sendData = {};
-				sendData.pGraph = graph;
-				sendData.pEntity = entidadDestino.val();
-				sendData.pProperties=[]
-				let propertyEntitySplit = propertyEntity.split('&');		            
-				for (var i = 0; i < propertyEntitySplit.length; i++) {
-					sendData.pProperties.push(propertyEntitySplit[i].split('|')[0]);
-				}
-				
-				$.post(urlEdicionCV + 'GetPropertyEntityData', sendData, function(data) {
-					for (var i = 0; i < propertyEntitySplit.length; i++) {
-						let propEntity=propertyEntitySplit[i].split('|')[0];
-						let propCV=propertyEntitySplit[i].split('|')[1];
-						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').attr('disabled','disabled');
-						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);
-						
-					}
-				});
-			}			
+			entidadDestino.val(selected.value);					
 		}
 		
 		hideResultsNow();
