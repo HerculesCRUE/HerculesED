@@ -3954,14 +3954,15 @@ var edicionCV = {
 							var htmlItem=edicionCV.printHtmlListItemPRC(items[0].items[aux], data);
 							$('#modal-enviar-produccion-cientifica .formulario-publicacion .resource-list-wrap').append(htmlItem);
 							duplicadosCV.engancharComportamientos(true);
+							OcultarUpdateProgress();
 						});
 					}
 					principal=false;
 				}
 			} else {
 				edicionCV.PintarDataPRC(dataId, idPerson, section, rdfTypeTab);
+				OcultarUpdateProgress();
 			}
-			OcultarUpdateProgress();
 		});
 	},
 	PintarDataPRC: function(dataId, idPerson, section, rdfTypeTab){
