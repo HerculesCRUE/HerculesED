@@ -5,6 +5,8 @@ var buscadorPersonalizado = {
 	contenedor: null,
 	filtro: null,
 	orden:null,
+	footer:"footer",
+	article:"article",
 	orders:null,
 	init: function (nombreelemento, contenedor, filtro, orden, parametrosadicionales, urlcomunidad, idcomunidad, urlPush = "", callback = () => {}) {
 		this.nombreelemento = nombreelemento;
@@ -47,7 +49,7 @@ var buscadorPersonalizado = {
 		mostrarCajaBusqueda = true;
 		// FiltrarPorFacetas("");
 		FiltrarPorFacetas(ObtenerHash2());
-		MontarResultadosScroll.init('footer', 'article', callback());
+		MontarResultadosScroll.init(this.footer, this.article, callback());
 		MontarResultadosScroll.CargarResultadosScroll = function (data) {
 			var htmlRespuesta = document.createElement("div");
 			htmlRespuesta.innerHTML = data;
@@ -61,6 +63,14 @@ var buscadorPersonalizado = {
 			}
 		}
 		return;
+	},
+	setScrollVars: function(footer, article) {
+		this.footer = footer
+		this.article  = article
+	},
+	resetScrollVars: function() {
+		this.footer = "footer"
+		this.article  = "article"
 	},
 	config: function (callback = () => {}) {
 		var that = this;

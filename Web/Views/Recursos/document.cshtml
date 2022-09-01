@@ -252,6 +252,12 @@
 															<span class="texto">@Html.GetText("COMMON", "EDITAR")</span>
 														</a>
 													</li>
+                                                    <li>
+                                                        <a href="javascript:startVincularRo()" class="item-dropdown">
+                                                            <span class="material-icons">edit</span>
+                                                            <span class="texto">@Html.Translate("VINCULAR_RO")</span>
+                                                        </a>
+                                                    </li>
 												}
                                                 <li>
                                                     <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-nueva-anotacion" class="item-dropdown">
@@ -849,8 +855,6 @@
         </div>
     </div>
 
-
-
     <div id="modal-nueva-anotacion" class="modal modal-top fade modal-edicion" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -937,6 +941,38 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-vinvular-ro" class="modal modal-top modal-wide fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title"><span class="material-icons">link</span>@Html.Translate("VINCULAR_RO")</p>
+                    <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="row" id="contenedorBuscadorResearchObjectsModal">
+                            <div class="col col-12 col-section-title font-weight-bold">
+                                <div class="wrapCol">
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="col col-12 col-section-title font-weight-bold searcherTitle">
+                                <div class="wrapCol">
+                                    <p>@Html.Translate("LISTADO_RESEARCHOBJECTS")</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer pb-2 w-100 mt-5 text-center">
+
+                            <a href="javascript:cargarMasRO()" class="btn btn-primary uppercase">@Html.Translate("CARGAR_MAS")</a>
+                        </div>
+                        <div class="pb-2 w-100"> </div>
                     </div>
                 </div>
             </div>
@@ -1086,11 +1122,56 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
 
-$( document ).ready(function() {
+
+
+    /**
+     * Funciones para cincular ROs
+     */
+
+    // Función para iniciar la vinculación de ROs 
+    function startVincularRo() {
+
+        $("#modal-vinvular-ro").modal("show")
+
+        buscadorPersonalizado.orders=null;
+        // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
+        buscadorPersonalizado.setScrollVars("#modal-vinvular-ro .footer", "article")
+        // Inicia
+        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsModal", "SelectRO&Document", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+        buscadorPersonalizado.resetScrollVars()
+
+        $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
+            cerrarVincularRO()
+        })
+
+    }
+
+
+    function cerrarVincularRO() {
+        $("#modal-vinvular-ro").modal("hide")
+        MontarResultadosScroll.destroyScroll()
+        $(document.querySelector('#navegacion-recurso .active')).click()
+        // $(document.querySelector('#navegacion-recurso .active')).tab('show')
+
+    }
+
+    function cargarMasRO() {
+        MostrarUpdateProgress();
+        MontarResultadosScroll.launchCallWaypoint(() => {
+            OcultarUpdateProgress()
+        })
+    }
 
 
 
-});
+
+
+    $( document ).ready(function() {
+
+
+
+    });
+
     tooltipsImpactFactor();
 
 
@@ -1373,7 +1454,8 @@ $( document ).ready(function() {
         config: function () {
             var that = this;
 
-            $('#relacionados-tab').unbind().click(function (e) {
+            // $('#relacionados-tab').unbind().click(function (e) {
+            $('#relacionados-tab').unbind().on('click', function (e) {
                 e.preventDefault();
                 that.tabActive = "relacionados";
 

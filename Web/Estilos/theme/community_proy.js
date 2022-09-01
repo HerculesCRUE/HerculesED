@@ -737,27 +737,31 @@ var MontarResultadosScroll = {
         };
 		contarLineasDescripcion.init();
         that.footer.waypoint(function (event, direction) {
-            that.peticionScrollResultados().done(function (data) {
-                that.destroyScroll();
-                var htmlRespuesta = document.createElement("div");
-                htmlRespuesta.innerHTML = data;
-                if ($(htmlRespuesta).find(that.item).length > 0) {
-                    that.CargarResultadosScroll(data);
-                    that.cargarScroll();
-                } else {
-                    that.CargarResultadosScroll('');
-                }
-                if ((typeof CompletadaCargaRecursos != 'undefined')) {
-                    CompletadaCargaRecursos();
-                }
-                if (typeof (urlCargarAccionesRecursos) != 'undefined') {
-                    ObtenerAccionesListadoMVC(urlCargarAccionesRecursos);
-                }
-                console.log("llegado cargarScroll");
-                callback();
-            });
+	        console.log("llegado cargarScroll");
+            that.launchCallWaypoint(callback())
         }, opts);
         return;
+    },
+    launchCallWaypoint: function(callback = () => {}) {
+    	var that = this;
+    	that.peticionScrollResultados().done(function (data) {
+	        that.destroyScroll();
+	        var htmlRespuesta = document.createElement("div");
+	        htmlRespuesta.innerHTML = data;
+	        if ($(htmlRespuesta).find(that.item).length > 0) {
+	            that.CargarResultadosScroll(data);
+	            that.cargarScroll();
+	        } else {
+	            that.CargarResultadosScroll('');
+	        }
+	        if ((typeof CompletadaCargaRecursos != 'undefined')) {
+	            CompletadaCargaRecursos();
+	        }
+	        if (typeof (urlCargarAccionesRecursos) != 'undefined') {
+	            ObtenerAccionesListadoMVC(urlCargarAccionesRecursos);
+	        }
+	        callback();
+	    });
     },
     destroyScroll: function () {
         this.footer.waypoint('destroy');
