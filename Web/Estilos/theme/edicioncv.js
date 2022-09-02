@@ -15,6 +15,9 @@ var edicionCV = {
         return;
     },
     config: function() {
+		// Quito los tooltips del panel de navegación
+		$('#navegacion-cv li.nav-item a').tooltip('dispose');
+
         $('*').on('shown.bs.modal', function(e) {
             $('.modal-backdrop').last().addClass($(this).attr('id'));
         });
@@ -27,7 +30,6 @@ var edicionCV = {
         $('#navegacion-cv li.nav-item a').click(function(e) {
             var entityID = $($(this).attr('href')).find('.cvTab').attr('about');
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
-			$(this).tooltip('hide');
             that.loadTab(entityID, rdfType);
         });
 		
@@ -86,8 +88,6 @@ var edicionCV = {
 						$('div.panel-group.pmd-accordion.notLoaded[section="'+getParam('section')+'"]').click();
 					}
 				}
-				
-				
 			}
         });
         return;
@@ -1055,8 +1055,9 @@ var edicionCV = {
 			this.engancharComportamientosCV($('div#contenedorOtrosMeritos').length != 0);				
 		}
         accionesPlegarDesplegarModal.init();	
-		tooltipsAccionesRecursos.init();		
+		tooltipsAccionesRecursos.init();
 		tooltipsCV.init();
+		$('#navegacion-cv li.nav-item a').tooltip('dispose');
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');

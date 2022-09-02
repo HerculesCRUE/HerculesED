@@ -424,3 +424,10 @@ div#contenedorOtrosMeritos .resource-title a {
 div#contenedorOtrosMeritos .resource-title a:hover {
 	color: var(--c-texto)!important;
 }
+#navegacion-cv li.nav-item a:not(.active):hover {
+	font-weight: 500;
+    color: var(--c-negro);
+	border-color: var(--c-negro);
+	border-bottom: 4px solid;
+	transition: .05s ease-in-out;
+}
