@@ -15,6 +15,9 @@ var edicionCV = {
         return;
     },
     config: function() {
+		// Quito los tooltips del panel de navegación
+		$('#navegacion-cv li.nav-item a').tooltip('dispose');
+
         $('*').on('shown.bs.modal', function(e) {
             $('.modal-backdrop').last().addClass($(this).attr('id'));
         });
@@ -27,7 +30,6 @@ var edicionCV = {
         $('#navegacion-cv li.nav-item a').click(function(e) {
             var entityID = $($(this).attr('href')).find('.cvTab').attr('about');
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
-			$(this).tooltip('hide');
             that.loadTab(entityID, rdfType);
         });
 		
@@ -86,8 +88,6 @@ var edicionCV = {
 						$('div.panel-group.pmd-accordion.notLoaded[section="'+getParam('section')+'"]').click();
 					}
 				}
-				
-				
 			}
         });
         return;
@@ -1055,8 +1055,9 @@ var edicionCV = {
 			this.engancharComportamientosCV($('div#contenedorOtrosMeritos').length != 0);				
 		}
         accionesPlegarDesplegarModal.init();	
-		tooltipsAccionesRecursos.init();		
+		tooltipsAccionesRecursos.init();
 		tooltipsCV.init();
+		$('#navegacion-cv li.nav-item a').tooltip('dispose');
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
@@ -3928,12 +3929,15 @@ var edicionCV = {
 		});
 	},
 	GetDataPRC: function(dataId, idPerson, section, rdfTypeTab){
+		MostrarUpdateProgress();
 		var that = this;
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .form-actions .btn.btn-primary.uppercase.btnEnvioPRC').removeClass("disabled");
+		$('#modal-enviar-produccion-cientifica .modal-body > .alert').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-publicacion').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-proyecto').removeAttr('style');
 		let itemId = $('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap').find('a[data-id]').attr('data-id');
 		var urlDuplicados = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV + "&pMinSimilarity=0.9&pItemId=" + itemId;
-		MostrarUpdateProgress();
 		$.get(urlDuplicados, null, function (data) {
 			if (data && data.length > 0) {
 				$('#modal-enviar-produccion-cientifica .modal-body > .alert').removeAttr('style');
@@ -3954,8 +3958,7 @@ var edicionCV = {
 							var htmlItem=edicionCV.printHtmlListItemPRC(items[0].items[aux], data);
 							$('#modal-enviar-produccion-cientifica .formulario-publicacion .resource-list-wrap').append(htmlItem);
 							duplicadosCV.engancharComportamientos(true);
-							OcultarUpdateProgress();
-						});
+						}).done(() => {OcultarUpdateProgress()});
 					}
 					principal=false;
 				}
