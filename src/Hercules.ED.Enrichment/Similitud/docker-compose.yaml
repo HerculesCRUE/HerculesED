@@ -7,7 +7,7 @@ services:
     image: hercules-similarity-api
     container_name: hercules-similarity-api
     ports:
-      - 5080:80
+      - 5081:80
 
   mongodb:
     image: mongo:6.0-focal
