@@ -254,7 +254,7 @@
 													</li>
                                                     <li>
                                                         <a href="javascript:startVincularRo()" class="item-dropdown">
-                                                            <span class="material-icons">edit</span>
+                                                            <span class="material-icons">link</span>
                                                             <span class="texto">@Html.Translate("VINCULAR_RO")</span>
                                                         </a>
                                                     </li>
@@ -696,6 +696,15 @@
                                 </a>
                             </li>
                         }
+                        <li class="nav-item d-none" role="presentation" id="linked-panel-li">
+                            <!-- Referencias -->
+                            <a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
+                                <div class="bloque">
+                                    <div class="label">@Html.Translate("ROS_VINCULADOS")</div>
+                                    <div class="data">0</div>
+                                </div>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="tab-content" id="paneles-recurso">
@@ -821,6 +830,32 @@
                             </div>
                         </div>
                     }
+
+                    <div class="tab-pane fade" id="linked-panel" role="tabpanel" aria-labelledby="linked-tab">
+                        <div class="row">
+                            <div class="col col-12 header-listado">
+                                <div class="h1-container">
+                                    <h2>@Html.Translate("ROS_VINCULADOS")
+                                        <span class="numResultados">0</span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="col col-12 col-contenido">
+                                <div class="wrapCol">
+                                    <div class="resource-list listView resource-list-buscador">
+                                        <div class="resource-list-wrap">
+                                     
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1122,13 +1157,17 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
 
+    var depuracion = true;
+    const localUrlBase = "https://localhost:44321/";
 
+
+    ///////////////////////////////////
+    //// Funciones para cincular ROs
+    ///////////////////////////////////
 
     /**
-     * Funciones para cincular ROs
+     * Función para iniciar la vinculación de ROs 
      */
-
-    // Función para iniciar la vinculación de ROs 
     function startVincularRo() {
 
         $("#modal-vinvular-ro").modal("show")
@@ -1137,24 +1176,29 @@
         // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
         buscadorPersonalizado.setScrollVars("#modal-vinvular-ro .footer", "article")
         // Inicia
-        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsModal", "SelectRO&Document", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsModal", "SelectRO&Document", "dct:issued", "rdf:type=researchobject|rdf:type=document|roh:isValidated=true", "@Comunidad.Url", "@Comunidad.Key.ToString()");
         buscadorPersonalizado.resetScrollVars()
 
         $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
             cerrarVincularRO()
         })
-
     }
 
 
+    /**
+     * Función para terminar de vincular los ROs
+     */
     function cerrarVincularRO() {
         $("#modal-vinvular-ro").modal("hide")
         MontarResultadosScroll.destroyScroll()
-        $(document.querySelector('#navegacion-recurso .active')).click()
+        $(document.querySelector("#navegacion-recurso .active")).click()
         // $(document.querySelector('#navegacion-recurso .active')).tab('show')
-
     }
 
+
+    /**
+     * Función que cargar más ROs
+     */
     function cargarMasRO() {
         MostrarUpdateProgress();
         MontarResultadosScroll.launchCallWaypoint(() => {
@@ -1163,20 +1207,140 @@
     }
 
 
+    /**
+     * Función para añadir los ROs vinculados y realizar la llamada ajax
+     */
+    function addROVinculado(id) {
+
+        // Datos cabeceras de las fichas.
+        let url = url_servicio_externo+"RosVinculados/AddLink"
+        if (depuracion) {
+            url = localUrlBase + "RosVinculados/AddLink"
+        }
+
+        let arg = {};
+        arg.resourceRO = "@pDocument.GNOSSID";
+        arg.pIdROId = id;
+        arg.pIdGnossUser = "@currentId";
+        $.post(url, arg, function (data) {
+            cargarROsVinculados()
+        });
+
+        console.log("añadido", id)
+
+        cerrarVincularRO()
+    }
+
+    /**
+     * Función que carga los ROs vinculados
+     */
+    function cargarROsVinculados() {
+        // Datos cabeceras de las fichas.
+        let url = url_servicio_externo+"RosVinculados/LoadRosLinked"
+        if (depuracion) {
+            url = localUrlBase + "RosVinculados/LoadRosLinked"
+        }
+
+        let arg = {};
+        arg.pIdROId = "@pDocument.GNOSSID";
+        arg.lang = "@idiomaUsuario";
+
+        MostrarUpdateProgress();
+        $.get(url, arg, function (data) {
+            console.log("data", data)
+            if (data.length > 0) 
+            {
+                printAllLinkedROs(data)
+                $("#linked-panel-li").removeClass("d-none")
+
+            }
+            OcultarUpdateProgress()
+        });
+    }
+
+    /**
+     * Función que carga los ROs vinculados
+     */
+    function printAllLinkedROs(data) {
+
+        var currentSec = "none!!!";
+        let ros = data.map(ro => {
+
+            let htmlRes = ""
+            if (currentSec != ro.roType) 
+            {
+                if (ro.roType == "") 
+                {
+                    htmlRes = `<h3>@Html.Translate("DOCUMENTOS")</h3><hr />`
+                } else {
+                    htmlRes = `<h3>${ro.roTypeTitle}</h3><hr />`
+                }
+                
+            }
+
+            htmlRes += `<article class="resource publicacion">
+                <div class="wrap">
+                    <div class="middle-wrap">
+                        <div class="title-wrap">
+                            <h4 class="resource-title">
+                                <span about="${ro.entityID}" property="http://w3id.org/roh/title">${ro.title}</span>
+                            </h4>
+                        </div>
+                        <div class="content-wrap">
+                            <div class="description-wrap counted">
+                                <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.issued}</b></div>
+                                <div class="description-wrap">
+                                    <div class="desc" style="display: -webkit-box;">
+                                        <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
+                                    </div>
+                                    <p class="moreResults showMore">
+                                        <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                        <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>`
+
+            return htmlRes
+
+
+        })
+
+        // Pinta el resultado
+        $("#linked-panel .col-contenido .resource-list-wrap").html(ros)
+
+        comportamientoVerMasVerMenos.init()
+
+    }
 
 
 
-    $( document ).ready(function() {
+    /**
+     * Función que se llama cuando se cargan los ROs
+     */
+    function CompletadaCargaRecursosDocumentosROsVincular()
+    {
+        $("#contenedorBuscadorResearchObjectsModal article.resource").each((i, e) => {
+            let id = e.id.split('_')[1]
+            $(e).find("h2.resource-title a").attr("href","javascript:addROVinculado('" + id + "')")
+        })
+    }
 
 
 
-    });
+
+
+
+    ////////////////////////////////////////////////
+    //// Funciones para la ficha del documento
+    ////////////////////////////////////////////////
+
 
     tooltipsImpactFactor();
 
-
-    var depuracion = false;
-    const localUrlBase = "https://localhost:44321/";
 
     // Datos cabeceras de las fichas.
     var url = url_servicio_externo+"Hercules/GetDatosCabeceraDocumento"
@@ -1520,6 +1684,15 @@
             //CargarGraficaCitas("@pDocument.GNOSSID.Split('_')[1].ToUpper()", parametros);
         }
     }
+
+
+    // Ejecuta cuando la página está cargada
+    $( document ).ready(function() {
+
+        cargarROsVinculados()
+
+    });
+
 
 
 

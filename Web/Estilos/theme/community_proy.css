@@ -604,3 +604,11 @@ div#idTextoCita {
 .bloque-id{
     padding-left: 10px;
 }
+
+/**
+* ROs vinculados
+*/
+
+.resource-list .resource.rolinked .middle-wrap .title-wrap .resource-title:before {
+    content: 'link';
+}
