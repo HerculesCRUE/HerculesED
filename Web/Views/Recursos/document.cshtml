@@ -293,10 +293,14 @@
                     }
                 }
                 @{
-                    if (pDocument.Vivo_hasPublicationVenue != null && !string.IsNullOrEmpty(pDocument.Vivo_hasPublicationVenue.Roh_title))
+                    if (pDocument.Vivo_hasPublicationVenue != null && !string.IsNullOrEmpty(pDocument.Roh_hasPublicationVenueJournalText))
                     {
-                        <span about="@pDocument.Vivo_hasPublicationVenue.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Vivo_hasPublicationVenue.Roh_title))">
-                            @pDocument.Vivo_hasPublicationVenue.Roh_title
+                        <span about="@pDocument.Vivo_hasPublicationVenue.GNOSSID" property="@pDocument.GetPropertyURI(nameof(pDocument.Roh_hasPublicationVenueJournalText))">
+                            @pDocument.Roh_hasPublicationVenueJournalText
+                        </span>
+                    } else if (!string.IsNullOrEmpty(pDocument.Roh_hasPublicationVenueJournalText)) {
+                        <span property="@pDocument.GetPropertyURI(nameof(pDocument.Roh_hasPublicationVenueJournalText))">
+                            @pDocument.Roh_hasPublicationVenueJournalText
                         </span>
                     }
                 }
@@ -2033,6 +2037,7 @@
             {
                 this.Vivo_hasPublicationVenue = new MainDocument(propVivo_hasPublicationVenue.PropertyValues[0].RelatedEntity, idiomaUsuario);
             }
+            this.Roh_hasPublicationVenueJournalText = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/hasPublicationVenueJournalText"));
             //this.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
             //SemanticPropertyModel propRoh_enrichedKnowledgeArea = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/enrichedKnowledgeArea");
             //if (propRoh_enrichedKnowledgeArea != null && propRoh_enrichedKnowledgeArea.PropertyValues.Count > 0)
@@ -2264,6 +2269,9 @@
         [RDFProperty("http://vivoweb.org/ontology/core#hasPublicationVenue")]
         public MainDocument Vivo_hasPublicationVenue { get; set; }
         public string IdVivo_hasPublicationVenue { get; set; }
+
+        [RDFProperty("http://w3id.org/roh/hasPublicationVenueJournalText")]
+        public string Roh_hasPublicationVenueJournalText { get; set; }
 
         //[RDFProperty("http://w3id.org/roh/enrichedKnowledgeArea")]
         //public List<CategoryPath> Roh_enrichedKnowledgeArea { get; set; }
