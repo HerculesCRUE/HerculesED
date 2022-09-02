@@ -1,0 +1,4 @@
+resources/
+venv/
+experiments/
+__pycache__/

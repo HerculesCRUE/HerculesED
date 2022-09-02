@@ -29,7 +29,25 @@ Se han observado los requisitos de hardware al procesar una serie de rankings de
 - Procesamiento en GPU:
   - Memoria RAM del sistema: 10 GB
   - Memoria del GPU: 2 GB
+  
+# Setting up with Docker
 
+This service uses MongoDB to store the contents of the ROs and the
+cache. The API is wrapped up in a single docker container, and the
+MongoDB database is served in a different docker container. The
+containers hold the dependencies and the models to perform the
+similarity analysis. It configures the service to run under Apache.
+
+To create and run the docker image you can use docker compose:
+```
+$ docker compose up
+```
+
+The statements to build the API's docker image are located in
+Dockerfile, while the definitions of the docker services (API and
+MongoDB) are located in docker-compose.yaml.
+
+By default, the service is mapped to the port 5081 on the host system.
 
 # Especificaciones de la API de similitud
 
@@ -186,7 +204,7 @@ Este método devuelve los diez RO más similares al RO de entrada. Se puede limi
 
 Comando curl:
 ```
-$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/query_similar?ro_id=2-s2.0-33846355632&ro_type_target=research_paper"
+$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/similar?ro_id=2-s2.0-33846355632&ro_type_target=research_paper"
 ```
 
 Respuesta:

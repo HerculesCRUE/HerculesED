@@ -390,11 +390,19 @@
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
                   "child": {
-                    "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
-                    "graph": "maindocument",
-                    "child": {
-                      "property": "http://w3id.org/roh/title"
-                    }
+                    "property": "http://w3id.org/roh/hasPublicationVenueJournalText"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Editorial"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/publisher"
                   }
                 }
               },
@@ -915,28 +923,13 @@
                           "propertyValueDistinct": "{GraphsUrl}items/documentformat_057"
                         },
                         "type": "text",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Editorial"
-                        },
-                        "information": {
-                          "es": "Nombre del responsable editorial de la publicación."
-                        },
-                        "property": "http://purl.org/ontology/bibo/publisher",
-                        "dependency": {
-                          "property": "http://w3id.org/roh/supportType",
-                          "propertyValueDistinct": "{GraphsUrl}items/documentformat_057"
-                        },
-                        "type": "text",
-                        "width": 1
+                        "width": 2
                       },
                       {
                         "title": {
                           "es": "Nombre de la revista"
                         },
-                        "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+                        "property": "http://w3id.org/roh/hasPublicationVenueJournalText",
                         "autocomplete": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/supportType",
@@ -949,12 +942,50 @@
                             "property": "http://w3id.org/roh/title"
                           },
                           "propertyAux": {
-                            "properties": [ "http://purl.org/ontology/bibo/issn", "http://purl.org/ontology/bibo/eissn" ],
-                            "print": "{0}| - ISSN: {1}| - EISSN: {2}"
-                          }
+                            "properties": [ "http://purl.org/ontology/bibo/editor", "http://purl.org/ontology/bibo/issn", "http://purl.org/ontology/bibo/eissn" ],
+                            "print": "{0}| - Editorial: {1}| - ISSN: {2}| - EISSN: {3}"
+                          },
+                          "propertyEntity": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+                          "selectPropertyEntity": [
+                            {
+                              "propertyEntity": "http://w3id.org/roh/title",
+                              "propertyCV": "http://w3id.org/roh/hasPublicationVenueJournalText"
+                            },
+                            {
+                              "propertyEntity": "http://purl.org/ontology/bibo/editor",
+                              "propertyCV": "http://purl.org/ontology/bibo/publisher"
+                            },
+                            {
+                              "propertyEntity": "http://purl.org/ontology/bibo/issn",
+                              "propertyCV": "http://purl.org/ontology/bibo/issn"
+                            }
+                          ]
                         },
-                        "type": "entityautocomplete",
+                        "type": "text",
                         "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Editorial"
+                        },
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
+                        },
+                        "property": "http://purl.org/ontology/bibo/publisher",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "ISSN"
+                        },
+                        "property": "http://purl.org/ontology/bibo/issn",
+                        "type": "text",
+                        "width": 1
                       }
                     ]
                   },

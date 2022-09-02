@@ -62,7 +62,7 @@
         public const string pubDocumentosCitasScholar = "http://w3id.org/roh/semanticScholarCitationCount";
         public const string pubDocumentosAutores = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
         public const string pubDocumentosAutoresFirma = "http://purl.org/ontology/bibo/authorList@@@http://purl.org/ontology/bibo/Document|http://xmlns.com/foaf/0.1/nick";
-        public const string pubDocumentosNombreRevista = "http://vivoweb.org/ontology/core#hasPublicationVenue@@@http://purl.org/ontology/bibo/Document|http://w3id.org/roh/title";
+        public const string pubDocumentosNombreRevista = "http://w3id.org/roh/hasPublicationVenueJournalText";
         public const string pubDocumentosAreasTematicasEnriquecidas = "http://w3id.org/roh/enrichedKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string pubDocumentosTextosEnriquecidosTitulo = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/title";
         public const string pubDocumentosTextosEnriquecidosScore = "http://w3id.org/roh/enrichedKeywords@@@http://w3id.org/roh/EnrichedKeyWord|http://w3id.org/roh/score";

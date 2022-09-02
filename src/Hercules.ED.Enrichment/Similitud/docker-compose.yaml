@@ -1,0 +1,17 @@
+version: "3.7"	
+
+services:
+  
+  api:
+    build: .
+    image: hercules-similarity-api
+    container_name: hercules-similarity-api
+    ports:
+      - 5081:80
+
+  mongodb:
+    image: mongo:6.0-focal
+    container_name: hercules-similarity-mongodb
+    volumes:
+      - ./mongodb-data:/data/db
+    

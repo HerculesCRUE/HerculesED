@@ -316,7 +316,7 @@ namespace EditorCV.Models
         /// <returns>
         /// Un diccionario que tiene el titulo como llave y una lista contiendo las ids de todas las veces que aparece ese titulo.
         /// </returns>
-        public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity)
+        public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity, string pItemId = null)
         {
             Dictionary<string, HashSet<string>> itemsNoDuplicados = new Dictionary<string, HashSet<string>>();
             string select = $@"SELECT distinct ?group ?id";
@@ -351,13 +351,13 @@ namespace EditorCV.Models
                             Dictionary<string, Tuple<string, string, bool>> itemsTitleValidatedSection = GetItemsTitleParaDuplicados(pCVId, tab.property, tabSection.property, tabSection.presentation.listItemsPresentation.listItemEdit.graph, tabSection.presentation.listItemsPresentation.listItemEdit.proptitle);
 
                             List<KeyValuePair<string, Tuple<string, string, bool>>> itemsTitleSectionList = itemsTitleValidatedSection.ToList();
-                            for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
+                            if (pItemId != null)
                             {
                                 Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
-                                similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
-                                for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
+                                similarsin[pItemId] = itemsTitleValidatedSection[pItemId].Item3;
+                                for (int j = 0; j < itemsTitleSectionList.Count; j++)
                                 {
-                                    double similitud = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                    double similitud = Similarity(itemsTitleValidatedSection[pItemId].Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
                                     if (similitud > minSimilarity)
                                     {
                                         similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
@@ -375,20 +375,53 @@ namespace EditorCV.Models
                                 //Ordenamos primero con los validados
                                 similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                                 ////Sólo puede ser validado el primero
-                                //if (similarsin.Count > 1)
-                                //{
-                                //    foreach (string id in similarsin.Keys.ToList().GetRange(1, similarsin.Keys.Count - 1))
-                                //    {
-                                //        if (similarsin[id])
-                                //        {
-                                //            similarsin.Remove(id);
-                                //        }
-                                //    }
-                                //}
                                 if (similarsin.Count > 1)
                                 {
                                     //Si hay mas de uno y hay alguno no validado lo añadimos
                                     similars.Add(new HashSet<string>(similarsin.Keys));
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
+                                {
+                                    Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
+                                    similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
+                                    for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
+                                    {
+                                        double similitud = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                        if (similitud > minSimilarity)
+                                        {
+                                            similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
+                                        }
+                                    }
+                                    //Eliminamos si hay alguno duplicado
+                                    foreach (string duplicado in similars.SelectMany(x => x))
+                                    {
+                                        if (similarsin.ContainsKey(duplicado))
+                                        {
+                                            similarsin.Remove(duplicado);
+                                        }
+                                    }
+
+                                    //Ordenamos primero con los validados
+                                    similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                    ////Sólo puede ser validado el primero
+                                    //if (similarsin.Count > 1)
+                                    //{
+                                    //    foreach (string id in similarsin.Keys.ToList().GetRange(1, similarsin.Keys.Count - 1))
+                                    //    {
+                                    //        if (similarsin[id])
+                                    //        {
+                                    //            similarsin.Remove(id);
+                                    //        }
+                                    //    }
+                                    //}
+                                    if (similarsin.Count > 1)
+                                    {
+                                        //Si hay mas de uno y hay alguno no validado lo añadimos
+                                        similars.Add(new HashSet<string>(similarsin.Keys));
+                                    }
                                 }
                             }
                             //Eliminamos de los similares aquellos que estén marcados como no duplicados
@@ -430,12 +463,18 @@ namespace EditorCV.Models
                                 similarityResponse.items = sim;
                                 listSimilarity.Add(similarityResponse);
                             }
-
+                            if (pItemId != null)
+                            {
+                                string item = listSimilarity.First(x => x.items.Contains(pItemId)).items.First(x => x == pItemId);
+                                HashSet<string> auxItems = listSimilarity.First(x => x.items.Contains(pItemId)).items;
+                                listSimilarity.First(x => x.items.Contains(pItemId)).items.Remove(item);
+                                listSimilarity.First(x => x.items == auxItems).items = auxItems.Prepend(item).ToHashSet();
+                                return listSimilarity;
+                            }
                         }
                     }
                 }
             }
-
             return listSimilarity;
         }
 
@@ -454,7 +493,7 @@ namespace EditorCV.Models
                                 ?itemSection <http://vivoweb.org/ontology/core#relatedBy> ?item .
                                 ?item <{pPropTitle}> ?title.
                                 OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
-                            }}order by desc (?o) LIMIT {limit} OFFSET {offset}";
+                            }} LIMIT {limit} OFFSET {offset}";
                 SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {

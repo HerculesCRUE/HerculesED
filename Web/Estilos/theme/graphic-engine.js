@@ -1444,7 +1444,7 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
             that.arrayTotales[i][0] = that.eliminarAcentos(item.nombre.toLowerCase());
             that.arrayTotales[i][1] = $(`<a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
                                 <span class="textoFaceta">${item.nombre == 'true' ? 'Sí' : (item.nombre == 'false' ? 'No' : item.nombre)}</span>
-                                <span class="num-resultados">(5)</span>
+                                <span class="num-resultados">(${item.numero})</span>
                             </a>`);
             i++;
         });
