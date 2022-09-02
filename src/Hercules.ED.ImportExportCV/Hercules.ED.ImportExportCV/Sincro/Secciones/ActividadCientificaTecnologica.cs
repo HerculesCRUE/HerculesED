@@ -1738,7 +1738,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (item.GetStringPorIDCampo("060.010.010.070") != null && item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
                 {
                     entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, mResourceApi.GraphsUrl + "items/documentformat_057"),
                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial, item.GetStringPorIDCampo("060.010.010.100")),
                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista, item.GetStringPorIDCampo("060.010.010.210"))
                    ));
