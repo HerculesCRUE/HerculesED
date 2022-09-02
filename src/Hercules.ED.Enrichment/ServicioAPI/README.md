@@ -10,6 +10,20 @@ These are the minimum hardware and software requirements to run this service:
 - Python 3.7
 ```
 
+# Setting up with Docker
+
+The API is wrapped up in a single container. The container holds the dependencies and the models to perform the enrichment. It configures the service to run under Apache.
+
+To create and run the docker image you can use docker compose:
+```
+$ docker compose up
+```
+
+The statements to build the docker image are located in Dockerfile,
+and the definition of the docker service in docker-compose.yaml.
+
+By default, the service is mapped to the port 5080 on the host system.
+
 # Installation and deployment
 
 Install Ubuntu dependencies:

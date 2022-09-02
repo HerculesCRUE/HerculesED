@@ -1,0 +1,11 @@
+version: "3.7"	
+
+services:
+  
+  api:
+    build: .
+    image: hercules-enrichment-api
+    container_name: hercules-enrichment-api
+    ports:
+      - 5080:80
+    
