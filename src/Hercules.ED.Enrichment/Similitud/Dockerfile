@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install python3 python3-pip apache2 libapache2-mod-wsgi-py3 emacs curl
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install python3 python3-pip apache2 libapache2-mod-wsgi-py3
 
 WORKDIR /hercules-similarity-api
 
