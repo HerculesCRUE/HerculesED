@@ -61,7 +61,7 @@ namespace Harvester
             Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicInvenciones = new Dictionary<string, Tuple<string, string>>();
             IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
-            
+
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
@@ -80,8 +80,8 @@ namespace Harvester
             mResourceApi.ChangeOntoly("patent");
             ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
-            string fecha = DateTime.Now.ToString("yyyy-MM-ddT00:00:00") + "Z";
-            //fecha = "1900-01-01T00:00:00Z";
+            // Fecha de la última actualización.
+            string fecha = "2022-04-01T00:00:00Z";
 
             //Genero los ficheros con los datos a procesar desde la fecha
             GuardarIdentificadores(_Config, "Organizacion", fecha);
@@ -96,11 +96,11 @@ namespace Harvester
             UpdateLastDate(_Config, fecha);
 
             // Procesamiento de ficheros.
-            // Organizaciones. Terminado
+            // Organizaciones. 
             mResourceApi.ChangeOntoly("organization");
             ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
 
-            // Personas. Datos no usables, revisar propiedades de las personas.
+            // Personas.
             mResourceApi.ChangeOntoly("person");
             ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
 
@@ -109,15 +109,15 @@ namespace Harvester
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
 
-            // Autorizaciones
+            // Autorizaciones.
             mResourceApi.ChangeOntoly("projectauthorization");
             ProcesarFichero(_Config, "AutorizacionProyecto");
 
-            // Grupos
+            // Grupos.
             mResourceApi.ChangeOntoly("group");
             ProcesarFichero(_Config, "Grupo");
 
-            // Patentes TODO: Falta crear método de crear objetos.
+            // Patentes.
             mResourceApi.ChangeOntoly("patent");
             ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
         }
@@ -215,16 +215,22 @@ namespace Harvester
                             // Cambio de modelo.
                             OrganizationOntology.Organization empresaOntology = CrearOrganizacionOntology(organization);
 
-                            resource = empresaOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicOrganizaciones.ContainsKey(empresaOntology.Roh_crisIdentifier))
                             {
+                                string[] idSplit = dicOrganizaciones[empresaOntology.Roh_crisIdentifier].Item1.Split('_');
+                                resource = empresaOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+
                                 // Modificación.
                                 mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //bool modificado = resource.Modified;
                             }
                             else
                             {
+                                resource = empresaOntology.ToGnossApiResource(mResourceApi, null);
+
                                 // Carga.                   
                                 mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //bool modificado = resource.Uploaded;
                                 dicOrganizaciones[empresaOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
