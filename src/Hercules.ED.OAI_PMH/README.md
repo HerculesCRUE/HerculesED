@@ -11,29 +11,46 @@
 
 
 # Hercules.ED.OAI_PMH
-Servicio OAI-PMH encargado de hacer las peticiones mediante la última fecha de modificación para la obtención de datos.
+OAI-PMH es un protocolo para la transmisión de metadatos por internet y su versión actual es la 2.0, de 2002.
+El protocolo OAI-PMH presenta las siguientes características:
+- Su funcionamiento se basa en una arquitectura cliente-servidor en la que un servicio recolector de metadatos pide información a un proveedor de datos.
+- Las peticiones se expresan en HTTP utilizando únicamente los métodos GET o POST.
+- Las respuestas tienen que ser documentos XML bien formados y codificados en UTF-8.
+- Las fechas y los tiempos se codifican en ISO 8601 y se expresan en UTC.
+- Soporta la difusión de registros en diversos formatos de metadatos.
+- Tiene control de flujo.
+- Cuando hay un error o una excepción los repositorios deben indicarlos distinguiéndolos de los códigos de estado HTTP.
+![](../../Docs/media/protocolo-peticiones.png)
 
-El servicio de OAI-PMH consta de varios métodos para obtener la información. Dichos métodos son:
-- **ListMetadataFormats**
-- **ListSets**
-- **ListIdentifiers**
-- **GetRecords**
+## Servicio OAI-PMH
+El servicio OAI-PMH consta de varios métodos para obtener la información:
+- **Identify**, para obtener información sobre el servidor.
+- **ListSets**, para obtener registros pertenecientes a una clase determinada creada por el servidor.
+- **ListMetadataFormats**, para obtener la lista de los formatos bibliográficos usados por el servidor.
+- **ListIdentifiers**, para obtener encabezamientos.
+- **GetRecords**, para obtener un registro determinado.
+- **ListRecords**, para obtener registros completos.
 
-Dichos métodos, por detrás hacen peticiones un API encargada de obtener y ofrecer los datos pedidos.
+Dichos métodos, por detrás hacen peticiones a un API encargada de obtener y ofrecer los datos pedidos.
 Los diversas peticiones a las que se hacen referencia están documentadas en ["Tratamiento de datos"](https://confluence.um.es/confluence/display/HERCULES/Tratamiento+de+datos)
 
-## Obtención del Token Bearer
+### Obtención del Token Bearer
 Antes de hacer las peticiones a los servicios correspondientes, es necesario el acceso por token. Dicho token se pedirá automaticamente, teniendo un tiempo de expiración de cinco minutos. Tras estos cinco minutos se volververá a hacer la petición de obtención de token para refrescarlo.
 
-## ListMetadataFormats
-Permite obtener el metadataPrefix utilizado para especificar los encabezados que deben devolverse.
-No requiere ningún parámetro adicional de uso.
+### Identify
+Permite recuperar información sobre un repositorio. Los repositorios también pueden emplear el verbo identificar para devolver información descriptiva adicional.
+**Argumentos:**
+- Sin argumentos.
 
-## ListSets
+### ListSets
 Obtiene el dato que especifica los criterios establecidos para la recolección selectiva.
 No requiere ningún parámetro adicional de uso.
 
-## ListIdentifiers
+### ListMetadataFormats
+Permite obtener el metadataPrefix utilizado para especificar los encabezados que deben devolverse.
+No requiere ningún parámetro adicional de uso.
+
+### ListIdentifiers
 Devuelve una lista de identificadores de los datos solicitados (setSpec_ID) junto a la hora de actualización y el setSpec del dato solicitado.
 Para la utilización de este método, es necesario los siguientes parámetros:
 - **metadataPrefix**: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
@@ -41,10 +58,18 @@ Para la utilización de este método, es necesario los siguientes parámetros:
 - **until**: Fecha de fin hasta la que se desean recuperar las cabeceras de las entidades (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2023-01-01
 - **set**: Argumento con un valor setSpec, que especifica los criterios establecidos para la recolección selectiva. Los formatos de sets admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListSets. Ejemplo: Persona
 
-## GetRecord
+### GetRecord
 Devuelve los datos con el ID obtenido por el método ListIdentifiers.
 Para la utilización de este método, es necesario los siguientes parámetros:
 - **identifier**: Identificador de la entidad a recuperar (los identificadores se obtienen con el metodo ListIdentifiers). Ejemplo: Persona_ID-PERSONA
+- **metadataPrefix**: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
+
+### ListRecords
+Es una combinación de ListIdentifiers y GetRecords. Obtiene un listado con todos los records solicitados y sus metadatos.
+Para la utilización de este método, es necesario los siguientes parámetros:
+- **from**: Fecha de inicio desde la que se desean recuperar los datos (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2022-01-01
+- **until**: Fecha de fin hasta la que se desean recuperar los datos (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2023-01-01
+- **set**: Argumento con un valor setSpec, que especifica los criterios establecidos para la recolección selectiva. Los formatos de sets admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListSets. Ejemplo: Persona
 - **metadataPrefix**: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
 
 ## Configuración en el appsettings.json
