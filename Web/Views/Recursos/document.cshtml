@@ -1161,7 +1161,7 @@
 <!-- JAVASCRIPT -->
 <script type="text/javascript">
 
-    var depuracion = true;
+    var depuracion = false;
     const localUrlBase = "https://localhost:44321/";
 
 
@@ -1263,12 +1263,28 @@
         });
     }
 
+    function short(a, b) {
+        return a - b
+    }
+
     /**
      * Función que carga los ROs vinculados
      */
     function printAllLinkedROs(data) {
 
         var currentSec = "none!!!";
+
+        data = data.sort((a, b) => {
+            if (a.roType < b.roType) {
+                return -1
+            }
+            if (a.roType > b.roType) {
+                return 1
+            }
+            return 0
+        })
+
+
         let ros = data.map(ro => {
 
             let htmlRes = ""
@@ -1283,30 +1299,84 @@
                 }
                 
             }
+            let htmlMenu = ""
+            let ownUser = false;
+            @if (!string.IsNullOrEmpty(urlCV))
+            {
+                Html.Raw("ownUser = true");
+            }
 
-            htmlRes += `<article class="resource publicacion">
-                <div class="wrap">
-                    <div class="middle-wrap">
-                        <div class="title-wrap">
-                            <h4 class="resource-title">
-                                <span about="${ro.entityID}" property="http://w3id.org/roh/title">${ro.title}</span>
-                            </h4>
-                        </div>
-                        <div class="content-wrap">
-                            <div class="description-wrap counted">
-                                <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div>
-                                <div class="description-wrap">
-                                    <div class="desc" style="display: -webkit-box;">
-                                        <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
-                                    </div>
-                                    <p class="moreResults showMore">
-                                        <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
-                                        <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                                    </p>
+            if (ro.idsGnoss && ro.idsGnoss.includes("http://gnoss/@currentId.ToString().ToUpper()") || ownUser)
+            {
+
+                // Creamos el método de borrado dependiendo de si el vínculo es desde el RO o está relacionado desde otro RO
+                let link = ""
+                if (ro.origin) 
+                {
+                    link = "javascript:deleteLink('"+ ro.entityID +"', '@pDocument.GNOSSID')"
+                } else {
+                    link = "javascript:deleteLink('@pDocument.GNOSSID', '"+ ro.entityID +"')"
+                }
+
+
+                htmlMenu = `
+                    <div class="col-auto">
+                        <div class="acciones-recurso-listado">
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle btn btn-outline-grey no-flecha px-1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="material-icons px-0">more_vert</span>
+                                </a>
+                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right">
+                                    <p class="dropdown-title">@Html.Translate("ACCIONES")</p>
+                                    <ul class="no-list-style">
+                                        <li>
+                                            <a href="`+ link +`" class="item-dropdown">
+                                                <span class="material-icons">delete</span>
+                                                <span class="texto">@Html.Translate("BORRAR")</span>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
+                `
+            }
+
+            let urlResource = "@Comunidad.Url/@Html.GetText("URLSEM", "RECURSO")/ro/" + ro.entityID.split("_")[1]
+
+
+            htmlRes += `<article class="resource rolinked">
+                <div class="wrap">
+                    <div class="row">
+
+                        <div class="col">
+                            <div class="middle-wrap">
+                                <div class="title-wrap">
+                                    <h4 class="resource-title">
+                                        <a href="${urlResource}" target="_blank" about="${ro.entityID}" property="http://w3id.org/roh/title">${ro.title}</a>
+                                    </h4>
+                                </div>
+                                <div class="content-wrap">
+                                    <div class="description-wrap counted">
+                                        <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div>
+                                        <div class="description-wrap">
+                                            <div class="desc" style="display: -webkit-box;">
+                                                <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
+                                            </div>
+                                            <p class="moreResults showMore">
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `+ htmlMenu +`
+                        
+                    </div>
+                    
                 </div>
             </article>`
 
@@ -1320,6 +1390,23 @@
 
         comportamientoVerMasVerMenos.init()
 
+    }
+
+    function deleteLink(idResource, idLink) {
+
+        // Datos cabeceras de las fichas.
+        let urlDel = url_servicio_externo+"RosVinculados/DeleteLinked"
+        if (depuracion) {
+            urlDel = localUrlBase + "RosVinculados/DeleteLinked"
+        }
+
+        let arg = {};
+        arg.resourceRO = idResource;
+        arg.pIdROId = idLink;
+        arg.pIdGnossUser = "@currentId";
+        $.post(urlDel, arg, function (data) {
+            cargarROsVinculados()
+        });
     }
 
 
