@@ -69,6 +69,9 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarGenderAutorPrincipal();
             actualizadorDocument.ActualizarPositionAutorPrincipal();
             actualizadorDocument.EliminarDocumentosSinAutoresActivos();
+            actualizadorDocument.ModificarNombreRevistaDesnormalizado();
+            actualizadorDocument.ModificarEditorialRevistaDesnormalizado();
+            actualizadorDocument.ModificarISSNRevistaDesnormalizado();
 
             //ROs sin dependencias
             actualizadorRO.ActualizarAreasRO();
@@ -299,6 +302,9 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarIndicesImpacto(pDocuments: pDocuments);
             actualizadorDocument.ActualizarPositionAutorPrincipal(pDocuments: pDocuments);
             actualizadorDocument.ActualizarGenderAutorPrincipal(pDocuments: pDocuments);
+            actualizadorDocument.ModificarNombreRevistaDesnormalizado(pDocuments: pDocuments);
+            actualizadorDocument.ModificarEditorialRevistaDesnormalizado(pDocuments: pDocuments);
+            actualizadorDocument.ModificarISSNRevistaDesnormalizado(pDocuments: pDocuments);
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas(pDocuments: pDocuments);
