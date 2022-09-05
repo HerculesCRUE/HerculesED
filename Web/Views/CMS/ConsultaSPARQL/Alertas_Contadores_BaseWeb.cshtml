@@ -8,7 +8,7 @@
     {
         versionCSS += "-" + Comunidad.VersionCSS.Value.ToString();
     }
-    string urlPersonalizacion = ViewBag.BaseURLContent + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+    string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
 
     Dictionary<string, int> dicNumAlertas = new Dictionary<string, int>();
     dicNumAlertas.Add("Publication", 0);
