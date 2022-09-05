@@ -51,7 +51,7 @@ Devuelve una lista de identificadores de los datos solicitados (setSpec_ID) junt
 Para la utilización de este método, es necesario los siguientes parámetros:
 - **metadataPrefix**: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
 - **from**: Fecha de inicio desde la que se desean recuperar las cabeceras de las entidades (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2022-01-01T00:00:00Z
-- **until**: Fecha de fin hasta la que se desean recuperar las cabeceras de las entidades (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2022-01-01T00:00:00Z
+- **until**: Fecha de fin hasta la que se desean recuperar las cabeceras de las entidades (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2023-01-01T00:00:00Z
 - **set**: Argumento con un valor setSpec, que especifica los criterios establecidos para la recolección selectiva. Los formatos de sets admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListSets. Ejemplo: Persona
 
 ### GetRecord
@@ -63,8 +63,8 @@ Para la utilización de este método, es necesario los siguientes parámetros:
 ### ListRecords
 Es una combinación de ListIdentifiers y GetRecords. Obtiene un listado con todos los records solicitados y sus metadatos.
 Para la utilización de este método, es necesario los siguientes parámetros:
-- **from**: Fecha de inicio desde la que se desean recuperar los datos (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2022-01-01
-- **until**: Fecha de fin hasta la que se desean recuperar los datos (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2023-01-01
+- **from**: Fecha de inicio desde la que se desean recuperar los datos (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2022-01-01T00:00:00Z
+- **until**: Fecha de fin hasta la que se desean recuperar los datos (Codificado con ISO8601 y expresado en UTC, YYYY-MM-DD o YYYY-MM-DDThh:mm:ssZ). Ejemplo: 2023-01-01T00:00:00Z
 - **set**: Argumento con un valor setSpec, que especifica los criterios establecidos para la recolección selectiva. Los formatos de sets admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListSets. Ejemplo: Persona
 - **metadataPrefix**: Especifica que los encabezados deben devolverse solo si el formato de metadatos que coincide con el metadataPrefix proporcionado está disponible. Los formatos de metadatos admitidos por un repositorio y para un elemento en particular se pueden recuperar mediante la solicitud ListMetadataFormats. Ejemplo: EDMA
 
