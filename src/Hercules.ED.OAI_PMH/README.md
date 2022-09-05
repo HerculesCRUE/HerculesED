@@ -27,8 +27,8 @@ El servicio OAI-PMH consta de varios métodos para obtener la información:
 - **Identify**, para obtener información sobre el servidor.
 - **ListSets**, para obtener registros pertenecientes a una clase determinada creada por el servidor.
 - **ListMetadataFormats**, para obtener la lista de los formatos bibliográficos usados por el servidor.
-- **ListIdentifiers**, para obtener encabezamientos.
-- **GetRecords**, para obtener un registro determinado.
+- **ListIdentifiers**, para obtener encabezamientos (IDs) de los registros..
+- **GetRecords**, para obtener un registro determinado mediante un encabezado (ID).
 - **ListRecords**, para obtener registros completos.
 
 Dichos métodos, por detrás hacen peticiones a un API encargada de obtener y ofrecer los datos pedidos.
