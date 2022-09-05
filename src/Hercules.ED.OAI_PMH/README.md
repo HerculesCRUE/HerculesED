@@ -38,17 +38,13 @@ Los diversas peticiones a las que se hacen referencia están documentadas en ["T
 Antes de hacer las peticiones a los servicios correspondientes, es necesario el acceso por token. Dicho token se pedirá automaticamente, teniendo un tiempo de expiración de cinco minutos. Tras estos cinco minutos se volververá a hacer la petición de obtención de token para refrescarlo.
 
 ### Identify
-Permite recuperar información sobre un repositorio. Los repositorios también pueden emplear el verbo identificar para devolver información descriptiva adicional.
-**Argumentos:**
-- Sin argumentos.
+Permite recuperar información sobre un repositorio. No requiere ningún parámetro adicional de uso.
 
 ### ListSets
-Obtiene el dato que especifica los criterios establecidos para la recolección selectiva.
-No requiere ningún parámetro adicional de uso.
+Obtiene el dato que especifica los criterios establecidos para la recolección selectiva. No requiere ningún parámetro adicional de uso.
 
 ### ListMetadataFormats
-Permite obtener el metadataPrefix utilizado para especificar los encabezados que deben devolverse.
-No requiere ningún parámetro adicional de uso.
+Permite obtener el metadataPrefix utilizado para especificar los encabezados que deben devolverse. No requiere ningún parámetro adicional de uso.
 
 ### ListIdentifiers
 Devuelve una lista de identificadores de los datos solicitados (setSpec_ID) junto a la hora de actualización y el setSpec del dato solicitado.
