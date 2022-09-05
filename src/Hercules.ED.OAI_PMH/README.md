@@ -20,7 +20,7 @@ El protocolo OAI-PMH presenta las siguientes características:
 - Soporta la difusión de registros en diversos formatos de metadatos.
 - Tiene control de flujo.
 - Cuando hay un error o una excepción los repositorios deben indicarlos distinguiéndolos de los códigos de estado HTTP.
-![](../../Docs/media/protocolo-peticiones.png)
+![](../../Docs/media/OAI-PMH/protocolo-peticiones.png)
 
 ## Servicio OAI-PMH
 El servicio OAI-PMH consta de varios métodos para obtener la información:
