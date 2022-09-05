@@ -16,7 +16,7 @@
     {
         versionCSS += "-" + Comunidad.VersionCSS.Value.ToString();
     }
-    string urlPersonalizacion = ViewBag.BaseURLContent + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+    string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
 }
 
 <footer id="footer">

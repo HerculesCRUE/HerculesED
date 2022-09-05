@@ -346,6 +346,10 @@ function CompletadaCargaRecursosComunidad()
 	if ((typeof CompletadaCargaRecursosPublicacionesOfertas != 'undefined')) {
 		CompletadaCargaRecursosPublicacionesOfertas();
 	}
+
+	if ((typeof CompletadaCargaRecursosDocumentosROsVincular != 'undefined')) {
+		CompletadaCargaRecursosDocumentosROsVincular();
+	}
 	
 	if ((typeof CompletadaCargaRecursosSimilitud != 'undefined')) {
 		CompletadaCargaRecursosSimilitud();

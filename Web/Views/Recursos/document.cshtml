@@ -1180,7 +1180,7 @@
         // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
         buscadorPersonalizado.setScrollVars("#modal-vinvular-ro .footer", "article")
         // Inicia
-        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsModal", "SelectRO&Document", "dct:issued", "rdf:type=researchobject|rdf:type=document|roh:isValidated=true", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsModal", "selectRODocument", "dct:issued", "rdf:type=researchobject|rdf:type=document|bibo:authorList@@@@@@rdf:member@@@@@@roh:gnossUser=http://gnoss/@currentId.ToString().ToUpper()", "@Comunidad.Url", "@Comunidad.Key.ToString()");
         buscadorPersonalizado.resetScrollVars()
 
         $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
@@ -1251,12 +1251,13 @@
 
         MostrarUpdateProgress();
         $.get(url, arg, function (data) {
-            console.log("data", data)
             if (data.length > 0) 
             {
                 printAllLinkedROs(data)
                 $("#linked-panel-li").removeClass("d-none")
-
+                let numItems = data.length
+                document.querySelector("#linked-panel .h1-container .numResultados").innerText = numItems
+                document.querySelector("#linked-tab .bloque .data").innerText = numItems
             }
             OcultarUpdateProgress()
         });
@@ -1273,6 +1274,7 @@
             let htmlRes = ""
             if (currentSec != ro.roType) 
             {
+                currentSec = ro.roType
                 if (ro.roType == "") 
                 {
                     htmlRes = `<h3>@Html.Translate("DOCUMENTOS")</h3><hr />`
@@ -1292,7 +1294,7 @@
                         </div>
                         <div class="content-wrap">
                             <div class="description-wrap counted">
-                                <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.issued}</b></div>
+                                <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div>
                                 <div class="description-wrap">
                                     <div class="desc" style="display: -webkit-box;">
                                         <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
