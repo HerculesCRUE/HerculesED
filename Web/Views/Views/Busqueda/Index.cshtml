@@ -1,13 +1,4 @@
 @*[security|||busqueda/index.cshtml|||hercules]*@
-@using Es.Riam.Gnoss.Web.MVC.Models
-@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
-@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
-@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
-@using Es.Riam.Gnoss.AD.ServiciosGenerales
-@using Es.Riam.Gnoss.Web.MVC.Controllers
-@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
-@using Es.Riam.Gnoss.Web.Controles
-@using Newtonsoft.Json
 @model SearchViewModel
 @{
     CommunityModel Comunidad = Html.GetComunidad();
@@ -71,10 +62,12 @@
                 {
                     if (string.IsNullOrEmpty(htmlFacetas) && Model.JSONFaceted != null)
                     {
+						//Usado para depurar vistas
                         @Html.PartialView("../CargadorFacetas/CargarFacetas", Model.JSONFaceted);
                     }
                     else
                     {
+						//Usado en el servidor
                         @Html.Raw(htmlFacetas);
                     }
                 }
@@ -161,10 +154,12 @@
                 <div id="panResultados" class="resource-list-wrap">
                     @if (string.IsNullOrEmpty(htmlResultados) && Model.JSONResourceList != null)
                     {
+						//Usado para depurar vistas
                         @Html.PartialView("../CargadorResultados/CargarResultados", Model.JSONResourceList);
                     }
                     else
                     {
+						//Usado en el servidor
                         @Html.Raw(htmlResultados)
                     }
                 </div>
@@ -178,18 +173,14 @@
 
         @Html.Raw(jsExtra)
 
-        @if (string.IsNullOrEmpty(htmlFacetas) && Model.JSONFaceted != null && string.IsNullOrEmpty(htmlResultados) && Model.JSONResourceList != null)
-        {
-
-        }
-        else
+		@if (htmlFacetas == null && htmlResultados == null)
         {
             <text>
-                $(document).ready(function () {
-                    FiltrarPorFacetas(filtrosDeInicio);
-                });
-            </text>
-        }
+					$(document).ready(function () {
+						FiltrarPorFacetas(filtrosDeInicio);
+					});
+			</text>
+		}
 		
 		$(document).ready(function () {
 			$('#inputLupa').unbind().click(function (event) {				

@@ -11,7 +11,7 @@
 
 # Introducción
 El servicio de carga de datos por parte del SGI se ocupa de recolectar los datos recibidos por medio del [servicio OAI-PMH](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.OAI_PMH) y cargarlos en base de datos (BBDD). 
-Este servicio automatiza la lectura de los ficheros recividos por medio del [servicio OAI-PMH](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.OAI_PMH) y la inserción de los datos en BBDD.
+Este servicio automatiza la lectura de los ficheros recibidos por medio del [servicio OAI-PMH](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.OAI_PMH) y la inserción de los datos en BBDD.
 
 El funcionamiento de los servicios de extracción está documentado en [ED y MA. Integraciones.](https://confluence.um.es/confluence/pages/viewpage.action?pageId=416055407)
 
@@ -30,11 +30,14 @@ El programa se quedará leyendo los archivos pendientes de carga, tratando los d
 
 
 ## Configuración en el appsetting.json
-```json{
+```json
+{
+  "Url_OAI-PMH": "",
   "LastUpdateDateFile": "",
   "DirLogCarga": ""
 }
 ```
+- Url_OAI-PMH: URL dónde está instalado el servicio OAI-PMH.
 - LastUpdateDateFile: Ruta del fichero dónde se va a almacenar la fecha de la última actualización
 - DirLogCarga: Directorio dónde se van a almacenar los ficheros de pendientes de carga y procesados
 
