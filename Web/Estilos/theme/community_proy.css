@@ -612,3 +612,6 @@ div#idTextoCita {
 .resource-list .resource.rolinked .middle-wrap .title-wrap .resource-title:before {
     content: 'link';
 }
+div.row.upper-row div.menu-logo-wrapper > div.menu-toggle > a.texto-blanco {
+    display: flex;
+}
