@@ -30,11 +30,14 @@ El programa se quedará leyendo los archivos pendientes de carga, tratando los d
 
 
 ## Configuración en el appsetting.json
-```json{
+```json
+{
+  "Url_OAI-PMH": "",
   "LastUpdateDateFile": "",
   "DirLogCarga": ""
 }
 ```
+- Url_OAI-PMH: URL dónde está instalado el servicio OAI-PMH.
 - LastUpdateDateFile: Ruta del fichero dónde se va a almacenar la fecha de la última actualización
 - DirLogCarga: Directorio dónde se van a almacenar los ficheros de pendientes de carga y procesados
 
