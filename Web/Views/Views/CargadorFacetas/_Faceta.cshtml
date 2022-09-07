@@ -1,5 +1,3 @@
-@using Es.Riam.Gnoss.Web.MVC.Models
-@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
 @using System.Text.RegularExpressions
 
 @model FacetModel
@@ -168,13 +166,13 @@
                                     <a name="@Model.FacetKey" class="searchButton" href="javascript:void(0);">Aplicar</a>
                                     <ul class="no-list-style">
                                         <li>
-                                            <a href="javascript: void(0);" class="last5Years">Últimos cinco años</a>
+                                            <a href="javascript: void(0);" class="last5Years">@Html.Translate("ULTIMOS_CINCO_ANIOS")</a>
                                         </li>
                                         <li>
-                                            <a href="javascript: void(0);" class="lastYear">Último año</a>
+                                            <a href="javascript: void(0);" class="lastYear">@Html.Translate("ULTIMO_ANIO")</a>
                                         </li>
                                         <li>
-                                            <a href="javascript: void(0);" class="allYears">Todos</a>
+                                            <a href="javascript: void(0);" class="allYears">@Html.Translate("TODOS")</a>
                                         </li>
                                     </ul>
                                 </div>

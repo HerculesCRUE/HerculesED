@@ -620,6 +620,11 @@ div#idTextoCita {
 }
 
 
+div.row.upper-row div.menu-logo-wrapper > div.menu-toggle > a.texto-blanco {
+    display: flex;
+}
+
+
 
 /** 
  * HOME ED 
@@ -661,6 +666,4 @@ div#idTextoCita {
     background-size: contain;
     background-repeat: no-repeat;
 }
-
-
 

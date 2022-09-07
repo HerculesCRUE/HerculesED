@@ -1,7 +1,4 @@
 ﻿@*[security|||cargadorresultados/_resultadorecurso.cshtml|||hercules]*@
-@using Es.Riam.Gnoss.Web.MVC.Models
-@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
-@using Microsoft.Extensions.Primitives
 @model ResourceModel
 
 @if (Model != null)
@@ -13,16 +10,6 @@
     string recursoVideo = "resource-video";
     string recursoPDF = "resource-pdf";
 
-    Dictionary<string, string> theAdiccionalParams = new();
-    if (Context.Request.Form.ContainsKey("pParametros_adiccionales"))
-    {
-        try
-        {
-            string pParametros_adiccionales = Context.Request.Form["pParametros_adiccionales"];
-            string[] theParamsArr = pParametros_adiccionales.Split('|');
-            theAdiccionalParams = theParamsArr.ToDictionary(keySelector: g => g.Split('=')[0], elementSelector: g => g.Split('=')[1]);
-        } catch (Exception e) {}
-    }
     string resoourceType = recursoDocumento;
     if (Model.TypeDocument.ToString().Equals("pdf") || Model.TypeDocument.ToString().Equals("Pdf"))
     {
@@ -1226,12 +1213,6 @@
     }
     else if (Model.RdfTypeName == "Person") // Persona
     {
-        // viewmode=cluster|rdf:type=person
-        if (theAdiccionalParams.ContainsKey("viewmode") && theAdiccionalParams["viewmode"] == "cluster" )
-        {
-            
-			
-        } 
 		<article class="resource investigador" id="@Model.Key">
 			<div class="wrap">
 				<div class="user-miniatura">
