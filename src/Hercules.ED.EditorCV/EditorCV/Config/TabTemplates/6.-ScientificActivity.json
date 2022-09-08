@@ -1749,6 +1749,19 @@
               },
               {
                 "name": {
+                  "es": "Congreso"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
+                  }
+                }
+              },
+              {
+                "name": {
                   "es": "Nombre de la publicación"
                 },
                 "child": {
@@ -1866,18 +1879,6 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/ontology/bibo/publisher"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Congreso"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://purl.org/ontology/bibo/presentedAt"
                   }
                 }
               },
@@ -3252,6 +3253,19 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre del evento"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
                   }
                 }
               },
