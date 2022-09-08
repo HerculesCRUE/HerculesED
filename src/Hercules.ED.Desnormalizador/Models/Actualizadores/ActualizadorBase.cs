@@ -18,7 +18,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
     public class ActualizadorBase
     {
         //TODO configurable
-        public static int numParallel = 2;
+        public static int numParallel = 10;
         public static int MAX_INTENTOS = 10;
 
         /// <summary>
