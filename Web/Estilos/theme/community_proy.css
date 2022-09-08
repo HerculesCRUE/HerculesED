@@ -608,10 +608,62 @@ div#idTextoCita {
 /**
 * ROs vinculados
 */
+.resource-list .resource.rolinked .middle-wrap .content-wrap .description-wrap .desc {
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+}
 
 .resource-list .resource.rolinked .middle-wrap .title-wrap .resource-title:before {
     content: 'link';
 }
+
+
 div.row.upper-row div.menu-logo-wrapper > div.menu-toggle > a.texto-blanco {
     display: flex;
 }
+
+
+
+/** 
+ * HOME ED 
+ */
+
+/* Default */
+.menuLateral.usuario .menuUsuario .group-collapse ul li.liDefault:after {
+    content: "\e2c8";
+}
+
+.menuLateral.usuario .menuUsuario .group-collapse ul li.liCluster:after {
+    content: 'workspaces';
+    font-family: 'Material Icons';
+    background: var(--c-texto-claro);
+    color: var(--c-blanco) !important;
+    border-radius: 50%;
+    font-size: 16px;
+    height: 20px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 1px;
+}
+
+.menuLateral.usuario .menuUsuario .group-collapse ul li.liConfiguracion:after {
+    content: "settings";
+}
+
+.menuLateral.usuario .menuUsuario .group-collapse ul li.liOffer:after {
+    content: "engineering";
+}
+
+.menuLateral.usuario .menuUsuario .group-collapse ul li.liIndicadores:after {
+    content: "bar_chart";
+}
+
+.menuLateral.usuario .cabeceraUsuario .imagen-usuario.default {
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+

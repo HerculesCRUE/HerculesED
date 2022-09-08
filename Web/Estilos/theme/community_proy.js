@@ -15,6 +15,7 @@ $(document).ready(function () {
 	montarTooltipCode.init();
 	cargarCVId.init();
 });
+var cvUrl = ""
 
 function GetText(id, param1, param2, param3, param4) {
     if ($('#' + id).length) {
@@ -52,6 +53,7 @@ var cargarCVId = {
 			var urlGetCVUrl = url_servicio_editorcv+'EdicionCV/GetCVUrl?userID='+$('#inpt_usuarioID').val()+ "&lang=" + lang;
 			$.get(urlGetCVUrl, null, function(data) {
 				that.CVId=data;
+				cvUrl = data;
 				that.printCVId();
 				setCacheWithExpiry(keyCache,data,60000);
 			});
@@ -62,6 +64,8 @@ var cargarCVId = {
 		{
 			$('#menuLateralUsuario .hasCV').show();
 			$('#menuLateralUsuario li.liEditarCV a').attr('href',this.CVId);
+			// HOME ED
+			$('#menuLateralUsuarioClonado #curriculumvitae a.editcv').attr('href',this.CVId);
 		}
 	}
 }
