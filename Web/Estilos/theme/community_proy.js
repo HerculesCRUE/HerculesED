@@ -44,7 +44,7 @@ var cargarCVId = {
 		this.loadCVId();
 		this.printCVId();
 	},
-	loadCVId:function(){
+	loadCVId: function(){
 		var that=this;
 		var keyCache='cv_'+lang+'_'+$('#inpt_usuarioID').val();
 		this.CVId=getCacheWithExpiry(keyCache);
@@ -55,17 +55,25 @@ var cargarCVId = {
 				that.CVId=data;
 				cvUrl = data;
 				that.printCVId();
+				that.printCVIdHomeEd();
 				setCacheWithExpiry(keyCache,data,60000);
 			});
 		}
 	},
-	printCVId:function(){
+	printCVId: function(){
 		if(this.CVId!=null && this.CVId!='')
 		{
 			$('#menuLateralUsuario .hasCV').show();
 			$('#menuLateralUsuario li.liEditarCV a').attr('href',this.CVId);
-			// HOME ED
+		}
+	},
+	printCVIdHomeEd: function(){
+		if(this.CVId!=null && this.CVId!='')
+		{
 			$('#menuLateralUsuarioClonado #curriculumvitae a.editcv').attr('href',this.CVId);
+			$('#menuLateralUsuarioClonado #trabajo a.editcvPub').attr('href',this.CVId + '?tab=http://w3id.org/roh/teachingExperience');
+			$('#menuLateralUsuarioClonado #trabajo a.editcvPV').attr('href',this.CVId + '?tab=http://w3id.org/roh/teachingExperience');
+			$('#menuLateralUsuarioClonado #trabajo a.editcvOR').attr('href',this.CVId + '?tab=http://w3id.org/roh/researchObject');
 		}
 	}
 }
@@ -2209,6 +2217,7 @@ function cleanStringUrlLikeGnoss (text) {
 function cleanStringUrl (text) {
 	return removeAccents(text).trim().toLowerCase().replace(/[^a-z0-9 ]+/g,'').replace(/[^a-z0-9]+/g,'-')
 }
+
 
 /**
  * Función que elimina los acentos
