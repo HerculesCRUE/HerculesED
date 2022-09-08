@@ -2185,3 +2185,44 @@ comportamientoVerMasVerMenosTags.comportamiento = function() {
         }
     });
 };
+
+
+/**
+ * Función que limpia un string como url a semejanza de GNOSS
+ */
+function cleanStringUrlLikeGnoss (text) {
+	let nameUrlRo = ""
+    let posToBreak = text.length > 50 ? text.lastIndexOf(" ", 50) : -1
+
+    if (posToBreak != -1) {
+        nameUrlRo = cleanStringUrl(text.substring(0, posToBreak))
+    } else {
+        nameUrlRo = cleanStringUrl(text)
+    }
+    return nameUrlRo
+}
+
+
+/**
+ * Función que limpia un string como un enlace
+ */
+function cleanStringUrl (text) {
+	return removeAccents(text).trim().toLowerCase().replace(/[^a-z0-9 ]+/g,'').replace(/[^a-z0-9]+/g,'-')
+}
+
+/**
+ * Función que elimina los acentos
+ */
+function removeAccents (text) {
+	var ts = '';
+	for (var i = 0; i < text.length; i++) {
+		var c = text.charCodeAt(i);
+		if (c >= 224 && c <= 230) { ts += 'a'; }
+		else if (c >= 232 && c <= 235) { ts += 'e'; }
+		else if (c >= 236 && c <= 239) { ts += 'i'; }
+		else if (c >= 242 && c <= 246) { ts += 'o'; }
+		else if (c >= 249 && c <= 252) { ts += 'u'; }
+		else { ts += text.charAt(i); }
+	}
+	return ts;
+}
