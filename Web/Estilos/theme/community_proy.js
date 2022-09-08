@@ -2188,10 +2188,26 @@ comportamientoVerMasVerMenosTags.comportamiento = function() {
 
 
 /**
+ * Función que limpia un string como url a semejanza de GNOSS
+ */
+function cleanStringUrlLikeGnoss (text) {
+	let nameUrlRo = ""
+    let posToBreak = text.length > 50 ? text.lastIndexOf(" ", 50) : -1
+
+    if (posToBreak != -1) {
+        nameUrlRo = cleanStringUrl(text.substring(0, posToBreak))
+    } else {
+        nameUrlRo = cleanStringUrl(text)
+    }
+    return nameUrlRo
+}
+
+
+/**
  * Función que limpia un string como un enlace
  */
 function cleanStringUrl (text) {
-	return removeAccents(text).toLowerCase().replace(/[^a-z0-9]+/g,'-')
+	return removeAccents(text).trim().toLowerCase().replace(/[^a-z0-9 ]+/g,'').replace(/[^a-z0-9]+/g,'-')
 }
 
 /**
