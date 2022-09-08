@@ -2199,14 +2199,14 @@ function cleanStringUrl (text) {
  */
 function removeAccents (text) {
 	var ts = '';
-	for (var i = 0; i < texto.length; i++) {
-		var c = texto.charCodeAt(i);
+	for (var i = 0; i < text.length; i++) {
+		var c = text.charCodeAt(i);
 		if (c >= 224 && c <= 230) { ts += 'a'; }
 		else if (c >= 232 && c <= 235) { ts += 'e'; }
 		else if (c >= 236 && c <= 239) { ts += 'i'; }
 		else if (c >= 242 && c <= 246) { ts += 'o'; }
 		else if (c >= 249 && c <= 252) { ts += 'u'; }
-		else { ts += texto.charAt(i); }
+		else { ts += text.charAt(i); }
 	}
 	return ts;
 }
