@@ -608,6 +608,36 @@ div#idTextoCita {
 /**
 * ROs vinculados
 */
+
+
+.contenedorBuscadorResearchObjectsModal .listadoRecursos .resource h2.resource-title::after {
+    display: flex;
+    content: "+";
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    left: -66px;
+    /* background: #28a745; */
+    border: 1px solid #6666;
+    color: #666;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    font-size: 1.3rem;
+    top: -2px;
+    transition: all ease 0.3;
+}
+
+.contenedorBuscadorResearchObjectsModal .resource-list.listView .resource .wrap {
+    margin-left: 70px;
+}
+
+.contenedorBuscadorResearchObjectsModal .listadoRecursos .resource h2.resource-title:hover::after {
+    border: 1px solid var(--c-primario);
+    color: var(--c-primario);
+}
+
+
 .resource-list .resource.rolinked .middle-wrap .content-wrap .description-wrap .desc {
     overflow: hidden;
     -webkit-line-clamp: 3;
@@ -615,9 +645,9 @@ div#idTextoCita {
     text-overflow: ellipsis;
 }
 
-.resource-list .resource.rolinked .middle-wrap .title-wrap .resource-title:before {
+/*.resource-list .resource.rolinked .middle-wrap .title-wrap .resource-title:before {
     content: 'link';
-}
+}*/
 
 
 div.row.upper-row div.menu-logo-wrapper > div.menu-toggle > a.texto-blanco {
@@ -666,4 +696,17 @@ div.row.upper-row div.menu-logo-wrapper > div.menu-toggle > a.texto-blanco {
     background-size: contain;
     background-repeat: no-repeat;
 }
+
+/**
+ * Alertas en general (También en la HomeED)
+ */
+
+.tab-paneles-alertas .resource-list .resource .middle-wrap .title-wrap .resource-title {
+    font-size: 1rem;
+}
+
+.tab-paneles-alertas .resource-list .resource .wrap {
+    padding-bottom: 0px;
+}
+
 
