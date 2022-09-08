@@ -839,7 +839,7 @@ function filtrarSearch(callback = () => {}) {
 	let searchID = $('#buscadorPersonalizadoSearchForm').closest('.row').attr('id');
 	let search = '';
 	if(searchID === 'contenedorBuscadorPublicaciones' || searchID === 'contenedorBuscadorRelacionados' 
-		|| searchID === 'contenedorBuscadorResearchObjects')
+		|| searchID === 'contenedorBuscadorResearchObjects' || searchID === 'contenedorBuscadorResearchObjectsModal')
 	{
 		search = 'searcherPublications';
 	}
