@@ -293,8 +293,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                         else
                         {
-                            string idAutor = fichero.Name.Split("___")[0];
-                            List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
+                            string idAutor = "http://gnoss.com/items/" + fichero.Name.Split("___")[0];
+                            List<string> lista = new List<string>() { idAutor };
                             DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
                             // Obtención de los datos del JSON.
@@ -354,11 +354,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     dicIdPublication.Add(idPub, ConstruirDocument(publication, tupla.Item1, tupla.Item2));
                                 }
                                 // Obtención de los datos cargados de BBDD.                        
-                                Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorOrcid(listadoDOI, idAutor);
+                                Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorGnossId(listadoDOI, idAutor);
                                 ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDD(listaPublicaciones, idAutor);
                                 listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
                                 listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-                                idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
+                                //idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
+                                idPersona = idAutor;
                             }
                         }
 
@@ -1099,7 +1100,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// </summary>
         /// <param name="pOrcid">Código ORCID de la persona a obtener los datos.</param>
         /// <returns>Diccionario con el ID del recurso cargado como clave, y el objeto desambiguable como valor.</returns>
-        private static Dictionary<string, DisambiguableEntity> ObtenerPublicacionesBBDDPorOrcid(HashSet<string> listadoDOI, string pOrcid)
+        private static Dictionary<string, DisambiguableEntity> ObtenerPublicacionesBBDDPorGnossId(HashSet<string> listadoDOI, string pGnossId)
         {
             Dictionary<string, DisambiguableEntity> listaDocumentos = new Dictionary<string, DisambiguableEntity>();
             int limit = 10000;
@@ -1124,9 +1125,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 }}
                                 ?documento <http://w3id.org/roh/title> ?titulo. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
-                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
-                                ?persona <http://w3id.org/roh/ORCID> ?orcid. 
-                                FILTER(?orcid = '{pOrcid}') 
+                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> <{pGnossId}>. 
                             }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");

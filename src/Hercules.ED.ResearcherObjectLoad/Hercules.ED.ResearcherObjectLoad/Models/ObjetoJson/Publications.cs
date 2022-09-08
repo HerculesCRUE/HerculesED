@@ -41,6 +41,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
 
     public class PersonaPub
     {
+        public string idGnoss { get; set; }
         public string ID { get; set; }
         public string id_persona { get; set; }
         public Name name { get; set; }
@@ -106,7 +107,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         public List<HasKnowledgeArea> hasKnowledgeAreas { get; set; }
         public string pageEnd { get; set; }
         public string pageStart { get; set; }
-        public  string volume { get; set; }
+        public string volume { get; set; }
         public string articleNumber { get; set; }
         public bool? openAccess { get; set; }
         public List<string> iDs { get; set; }
