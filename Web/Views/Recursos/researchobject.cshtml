@@ -898,8 +898,6 @@
             cargarROsVinculados()
         });
 
-        console.log("añadido", id)
-
         cerrarVincularRO()
     }
 
@@ -1163,9 +1161,6 @@
 
             $(modal).modal("show")
 
-            console.log("modalTextArea", modalTextArea[0])
-            console.log("modalTextArea.value", modalTextArea[0].value)
-
             // Evento para el botón de guardado
             $(modal).find("#btn-modal-editar-anotacion").off("click").on("click", function () {
 
@@ -1193,7 +1188,6 @@
         }
         function borrarAnotacion(idCurrentAnnotation) {
             anotaciones.deleteAnnotation(idCurrentAnnotation).then((data) => {
-                console.log("data", data);
                 anotaciones.loadInRo().then((data) => {
                 
                     // Ahora pintamos los datos si hay elementos
@@ -1443,7 +1437,6 @@
                             dataType: 'text',
                             success: function (readmeFileText) {
                             
-                                // console.log("readmeFileText", readmeFileText);
 
                                 var options = {
                                     "omitExtraWLInCodeBlocks": false,
@@ -1484,7 +1477,6 @@
                                 var converter = new showdown.Converter(options);
                                 
                                 var html = converter.makeHtml(readmeFileText);
-                                // console.log("html", html);
 
                                 // Set the HTML
                                 $('#gitHubReadmeMDFIle .file-text').html(html)
