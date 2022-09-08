@@ -1749,6 +1749,34 @@
               },
               {
                 "name": {
+                  "es": "Fecha de celebración"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
+                  }
+                }
+              },
+              {
+                "name": {
                   "es": "Congreso"
                 },
                 "showMini": true,
@@ -1879,32 +1907,6 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/ontology/bibo/publisher"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Fecha de celebración"
-                },
-                "type": "date",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/presentedAtStart"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Fecha de finalización"
-                },
-                "type": "date",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/presentedAtEnd"
                   }
                 }
               },
