@@ -986,7 +986,7 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <div class="row" id="contenedorBuscadorResearchObjectsModal">
+                        <div class="row contenedorBuscadorResearchObjectsModal" id="contenedorBuscadorResearchObjectsModal">
                             <div class="col col-12 col-section-title font-weight-bold">
                                 <div class="wrapCol">
                                     <p></p>
@@ -1157,7 +1157,7 @@
 
 
     ///////////////////////////////////
-    //// Funciones para cincular ROs
+    //// Funciones para vincular ROs
     ///////////////////////////////////
 
     /**
@@ -1282,14 +1282,19 @@
             if (currentSec != ro.roType) 
             {
                 currentSec = ro.roType
-                if (ro.roType == "") 
-                {
-                    htmlRes = `<h3>@Html.Translate("DOCUMENTOS")</h3><hr />`
-                } else {
-                    htmlRes = `<h3>${ro.roTypeTitle}</h3><hr />`
-                }
+                // if (ro.roType == "") 
+                // {
+                //     htmlRes = `<h3>@Html.Translate("PUBLICACIONES")</h3><hr />`
+                // } else {
+                //     htmlRes = `<h3>${ro.roTypeTitle}</h3><hr />`
+                // }
                 
             }
+            if (ro.roType == "") 
+            {
+                ro.roTypeTitle = "@Html.Translate("PUBLICACION")"
+            }
+
             let htmlMenu = ""
             let ownUser = false;
             @if (!string.IsNullOrEmpty(urlCV))
@@ -1334,9 +1339,21 @@
                 `
             }
 
-            let urlResource = "@Comunidad.Url/@Html.GetText("URLSEM", "RECURSO")/ro/" + ro.entityID.split("_")[1]
+            // Generamos la url
+            let nameUrlRo = cleanStringUrlLikeGnoss(ro.title)
+            let urlResource = "@Comunidad.Url/@Html.GetText("URLSEM", "RECURSO")/" + nameUrlRo + "/" + ro.entityID.split("_")[1]
 
 
+            // Pinto "mostrar más" si la descripción contiene un texto largo
+            let showMore = ""
+            if (ro.description.trim() != "" && ro.description.length > 60) {
+                showMore = `<p class="moreResults showMore">
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                            </p>`
+            }
+
+            // Genero el HTML final
             htmlRes += `<article class="resource rolinked">
                 <div class="wrap">
                     <div class="row">
@@ -1350,15 +1367,16 @@
                                 </div>
                                 <div class="content-wrap">
                                     <div class="description-wrap counted">
-                                        <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div>
+                                        <!-- <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div> -->
+                                        <h3>
+                                            <span about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</span> 
+                                            ${ro.roTypeTitle}
+                                        </h3>
                                         <div class="description-wrap">
                                             <div class="desc" style="display: -webkit-box;">
                                                 <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
                                             </div>
-                                            <p class="moreResults showMore">
-                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
-                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                                            </p>
+                                            ${showMore}
                                         </div>
                                     </div>
                                 </div>
@@ -1409,6 +1427,7 @@
     {
         $("#contenedorBuscadorResearchObjectsModal article.resource").each((i, e) => {
             let id = e.id.split('_')[1]
+            $(e).find("h2.resource-title").attr("onclick","addROVinculado('" + id + "')")
             $(e).find("h2.resource-title a").attr("href","javascript:addROVinculado('" + id + "')")
         })
     }
