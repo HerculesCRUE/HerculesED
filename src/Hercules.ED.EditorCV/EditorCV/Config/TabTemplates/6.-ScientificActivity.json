@@ -1749,6 +1749,47 @@
               },
               {
                 "name": {
+                  "es": "Fecha de celebración"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Congreso"
+                },
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
+                  }
+                }
+              },
+              {
+                "name": {
                   "es": "Nombre de la publicación"
                 },
                 "child": {
@@ -1866,44 +1907,6 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/ontology/bibo/publisher"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Congreso"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://purl.org/ontology/bibo/presentedAt"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Fecha de celebración"
-                },
-                "type": "date",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/presentedAtStart"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Fecha de finalización"
-                },
-                "type": "date",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/presentedAtEnd"
                   }
                 }
               },
@@ -3252,6 +3255,47 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de celebración"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre del evento"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
                   }
                 }
               },
