@@ -1779,7 +1779,7 @@
                 "name": {
                   "es": "Congreso"
                 },
-                "showMini": true,
+                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
@@ -3255,6 +3255,34 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de celebración"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
                   }
                 }
               },
