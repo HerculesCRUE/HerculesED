@@ -19,7 +19,7 @@ namespace Hercules.ED.RabbitConsume.Models.Services
         private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         private static Guid mCommunityID = mCommunityApi.GetCommunityId();
 
-        public static void ModifyDate(string pOrcid, DateTime pDate)
+        public static void ModifyDate(string pIdGnoss, DateTime pDate)
         {
             // Obtención de datos antiguos.
             string fechaAntigua = string.Empty;
@@ -32,7 +32,7 @@ namespace Hercules.ED.RabbitConsume.Models.Services
             select.Append(mPrefijos);
             select.Append("SELECT DISTINCT ?s ?fecha ");
             where.Append("WHERE { ");
-            where.Append($@"?s roh:ORCID '{pOrcid}'. ");
+            where.Append($@"FILTER(?s = <{pIdGnoss}>)");
             where.Append("OPTIONAL {?s roh:lastUpdatedDate ?fecha. } ");
             where.Append("} ");
             resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "person");

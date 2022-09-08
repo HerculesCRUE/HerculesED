@@ -160,7 +160,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 {
                     ID = pPersona.ID,
                     orcid = pPersona.orcid,
-                    completeName = nombreCompleto
+                    completeName = nombreCompleto,
+                    idGnoss = pPersona.idGnoss
                 };
 
                 return persona;
@@ -528,37 +529,41 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="pProperty">Propiedad para buscar en la persona</param>
         /// <param name="pPropertyValue">Valor de la propiedad para buscar en la persona</param>
         /// <returns>Diccionario con el ID del recurso cargado como clave, y el objeto desambiguable como valor.</returns>
-        public static ConcurrentDictionary<string, DisambiguationPerson> ObtenerPersonasRelacionaBBDD(List<Publication> listadoAux, string idAutor)
+        public static ConcurrentDictionary<string, DisambiguationPerson> ObtenerPersonasRelacionaBBDD(List<Publication> listadoAux, string pGnossId)
         {
             HashSet<string> listaNombres = new HashSet<string>();
             HashSet<string> listaORCID = new HashSet<string>();
             ConcurrentDictionary<string, DisambiguationPerson> listaPersonasAux = new ConcurrentDictionary<string, DisambiguationPerson>();
 
-            listaORCID.Add(idAutor);
+            
             if (true)
             {
                 // TODO: isActive en teoría todas las personas que se pidan por el ORCID han de ser personal activo.
-                string select = "SELECT DISTINCT ?persona ?nombreCompleto ";
+                string select = "SELECT DISTINCT ?persona ?nombreCompleto ?orcid ";
                 string where = $@"WHERE {{
-                                    ?persona a <http://xmlns.com/foaf/0.1/Person> .
-                                    ?persona <http://w3id.org/roh/ORCID> ""{idAutor}"". 
-                                    ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
-                                    ?persona <http://w3id.org/roh/isActive> 'true'.
+                                    <{pGnossId}> <http://w3id.org/roh/ORCID> ?orcid. 
+                                    <{pGnossId}> <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
+                                    <{pGnossId}> <http://w3id.org/roh/isActive> 'true'.
                                 }}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
                     PersonaPub persona = new PersonaPub();
-                    persona.orcid = idAutor;
+                    if(fila.ContainsKey("orcid") && !string.IsNullOrEmpty(fila["nombreCompleto"].value))
+                    {
+                        listaORCID.Add(fila["orcid"].value);
+                        persona.orcid = fila["orcid"].value;
+                    }                    
 
                     persona.name = new Name();
                     persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                    persona.idGnoss = pGnossId;
                     DisambiguationPerson person = GetDisambiguationPerson(persona);
-                    person.ID = fila["persona"].value;
+                    person.ID = pGnossId;
 
                     listaNombres.Add(fila["nombreCompleto"].value);
-                    listaPersonasAux.TryAdd(fila["persona"].value, person);
+                    listaPersonasAux.TryAdd(pGnossId, person);
                 }
             }
 
