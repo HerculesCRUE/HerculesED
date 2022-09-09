@@ -52,7 +52,24 @@
         </div>
         <div class="body">
             <div class="menuUsuario">
+                <div class="group-collapse resultados">
+                    <a href="#trabajo" data-toggle="collapse" aria-expanded="true" class="">@Html.Translate("RESULTADOS_INVESTIGACION")</a>
+                    <div id="trabajo" class="collapse show" style="">
+                        <ul class="pmd-sidebar-nav">
+                            <li class="liPublicacion">
+                                <a class="editcvPub" href="javascript: void(0);">@Html.Translate("PUBLICACIONES") <span class="numResultados">0</span></a>
+                            </li>
+                            <li class="liComentarios">
+                                <a class="editcvPV" href="javascript: void(0);">@Html.Translate("PENDIENTE_DE_VALIDACION") <span class="numResultados">0</span></a>
+                            </li>
+                            <li class="liOtros">
+                                <a class="editcvOR" href="javascript: void(0);">@Html.Translate("OTROS_RESULTADOS") <span class="numResultados">0</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="group-collapse alertas hasCV">
+                    <a href="#alertas-usuario" data-toggle="collapse" aria-expanded="true" class="">@Html.Translate("CONSULTAR")</a>
                     <div id="alertas-usuario" class="collapse show">
                         <ul class="pmd-sidebar-nav">
                             <li class="liNotificaciones nuevos">
@@ -95,7 +112,7 @@
 
                 <div class="group-collapse redes-investigacion hasCV">
                     <a href="#redes-investigacion" data-toggle="collapse" aria-expanded="true">@Html.Translate("REDES_INVESTIGACION")</a>
-                    <div id="recuperar-ros" class="collapse show">
+                    <div id="redes-investigacion" class="collapse show">
                         <ul class="pmd-sidebar-nav">
                             <li class="liPublicacion">
                                 <a href="#" onclick="PedirFuentesExternas()">@Html.Translate("RECUPERAR_ROS")</a>
@@ -131,8 +148,8 @@
                     </div>
                 </div>
                 <div class="group-collapse anotaciones  hasCV">
-                    <a href="#cluster" data-toggle="collapse" aria-expanded="true">@Html.Translate("GESTION_ANOTACIONES")</a>
-                    <div id="cluster" class="collapse show">
+                    <a href="#gestion-anotaciones" data-toggle="collapse" aria-expanded="true">@Html.Translate("GESTION_ANOTACIONES")</a>
+                    <div id="gestion-anotaciones" class="collapse show">
                         <ul class="pmd-sidebar-nav">
                             <li class="liComentarios">
                                 @{
@@ -145,7 +162,7 @@
                 </div>
                 <div class="group-collapse indicadores-personales hasCV">
                     <a href="#indicadores-personales" data-toggle="collapse" aria-expanded="true">@Html.Translate("INDICADORES")</a>
-                    <div id="cluster" class="collapse show">
+                    <div id="indicadores-personales" class="collapse show">
                         <ul class="pmd-sidebar-nav">
                             <li class="liIndicadores">
                                 @{
@@ -158,7 +175,7 @@
                 </div>
                 <div class="group-collapse oferta-tecnologica hasCV">
                     <a href="#oferta-tecnologica" data-toggle="collapse" aria-expanded="true">@Html.Translate("OFERTAS_TECNOLOGICAS")</a>
-                    <div id="cluster" class="collapse show">
+                    <div id="oferta-tecnologica" class="collapse show">
                         <ul class="pmd-sidebar-nav">
                             <li class="liOffer">
                                 @{

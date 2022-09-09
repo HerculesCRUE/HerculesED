@@ -26,13 +26,15 @@
 
     var numAlertasOtras = listaNotificaciones.Count(x => !string.IsNullOrEmpty(x.desencadenante) && x.desencadenante != Html.Translate("NOTIFICACION_SE") && (!string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje)));
 
+    int numMaxAlertas = 15;
+
     <div class="col col-12 col-xl-12 col-contenido izquierda">
         <div class="wrapCol">
             <div class="header-contenido">
                 <div class="h1-container">
                     <h1>@Html.Translate("NOTIFICACION_ALERTA") 
                         <span class="numResultados">
-                        @if (numAlertasT == 10 ) {
+                        @if (numAlertasT == numMaxAlertas ) {
                             <span>+</span>
                         }@numAlertasT</span></h1>
                 </div>
@@ -44,7 +46,7 @@
                            href="#externas-panel" role="tab" aria-controls="externas-panel"
                            aria-selected="false">
                             Novedades de fuentes externas <span class="badge">
-                                @if (numAlertas == 10 ) {
+                                @if (numAlertas == numMaxAlertas ) {
                                     <span>+</span>
                                 }@numAlertas
                             </span>
@@ -55,7 +57,7 @@
                            href="#otras-panel" role="tab" aria-controls="otras-panel"
                            aria-selected="true">
                             Otras notificaciones <span class="badge">
-                                @if (numAlertasOtras == 10 ) {
+                                @if (numAlertasOtras == numMaxAlertas ) {
                                     <span>+</span>
                                 }@numAlertasOtras
                             </span>

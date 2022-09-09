@@ -1114,7 +1114,11 @@ var metricas = {
 
                 var grafica = $("#grafica_" + paginas[numPagina].id + "_" + idGraficaActual);
                 var chart = Chart.getChart(grafica.attr('id'));
-                var scales = chart.scales;
+                if (chart) {
+                    var scales = chart.scales;
+                } else {
+                    var scales = "";
+                }
                 var isHorizontal = grafica.parents('div.grafica').data('grafica').orientacion == 'horizontal';
                 var max = [];
 

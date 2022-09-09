@@ -180,7 +180,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             // Listado con los datos.
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
-            if (message != null && message.Count() == 3 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
+            if (message != null && message.Count() == 4 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]) && !string.IsNullOrEmpty(message[3]))
             {
                 try
                 {
@@ -201,8 +201,9 @@ namespace Gnoss.Web.ReprocessData.Models.Services
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
-                    Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
+                    string id = message[3].Substring(message[3].LastIndexOf('/') + 1);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[3], fecha);
                     FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (System.Net.Sockets.SocketException e)
