@@ -43,8 +43,6 @@ Download the Spacy model:
 $ spacy download en_core_web_lg
 ```
 
-Change the ```installation_path``` variable in app.wsgi file according to your needs (default value is (```/mnt/ebs/gnoss_hercules_api```)
-
 Download the pretrained models and extract them:
 
 ```
@@ -67,6 +65,8 @@ Copy the provided apache configuration into /etc/apache2/sites-available:
 ```
 $ sudo cp gnoss_hercules_api.conf /etc/apache2/sites-available
 ```
+Change the ```installation_path``` variable in app.wsgi file according to your needs (default value is (```/mnt/ebs/gnoss_hercules_api```)
+
 Activate the site configuration and restart Apache
 ```
 $sudo a2ensite gnoss_hercules_api.conf
