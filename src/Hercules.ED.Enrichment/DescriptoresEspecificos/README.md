@@ -91,7 +91,7 @@ python3 eval_krapivin.py --single krapivin_single_model.sav --multi krapivin_mul
 In order to get the ranking of a single document contained in the test-set, execute the following script:
 
 ```
-python3 dump_doc_ranks.py krapivin_single_model.sav krapivin_multi_model.sav krapivin.test.tsv 608626.txt
+python3 dump_doc_ranks.py krapivin_single_model.sav krapivin_multi_model.sav krapivin.test.tsv 263883.txt
 ```
 
 Both models (fulltext and abstracts) will be used by the main API service to perform the keyword extraction from new text documents.
