@@ -13,6 +13,8 @@
     }
     UserProfileModel perfil = Html.GetPerfil();
 
+    Guid currentId = IdentidadActual.KeyUser;
+
 }
 
 
@@ -78,7 +80,7 @@
                                 }
                                 <a href="@urlAlertas">@Html.Translate("ALERTAS")</a>
                             </li>
-                            <li class="liDefault">
+                            <li class="liOtros">
                                 @{
                                     string urlROs = Comunidad.Url + "/" + Html.Translate("GESTIONROS_URL");
                                 }
@@ -206,6 +208,24 @@
         </div>
     </aside>
 
+
+    <script type="text/javascript">
+
+        // Datos cabeceras de las fichas.
+        let urlGIHEU = url_servicio_externo+"Hercules/GetInfoHomeEdUser"
+
+        let arg = {};
+        arg.pIdGnossUser = "@currentId";
+        $.get(urlGIHEU, arg, function (data) {
+            $("#menuLateralUsuarioClonado #trabajo a.editcvPub .numResultados").text(data.numPublicaciones);
+            $("#menuLateralUsuarioClonado #trabajo a.editcvPV .numResultados").text(data.numPV);
+            $("#menuLateralUsuarioClonado #trabajo a.editcvOR .numResultados").text(data.numOtrosR);
+        });
+        cargarCVId.init()
+
+    </script>
+
+
 }
 
 
@@ -221,6 +241,9 @@
         public string title { get; set; }
         public string tituloOrg { get; set; }
         public string foto { get; set; }
+        public string numPublicaciones { get; set; }
+        public string numPV { get; set; }
+        public string numOtrosR { get; set; }
 
         public CvUser()
         {
@@ -228,6 +251,9 @@
             title = "";
             tituloOrg = "";
             foto = "";
+            numPublicaciones = "";
+            numPV = "";
+            numOtrosR = "";
         }
 
         public CvUser(System.Data.DataRow fila)
@@ -241,15 +267,38 @@
             } catch (Exception e ) {}
 
 
+            // try
+            // {
+            //     if (!fila.IsNull("numPublicaciones"))
+            //     {
+            //         this.numPublicaciones = fila["numPublicaciones"].ToString();
+            //     }
 
-            try
-            {
-                if (!fila.IsNull("tituloOrg"))
-                {
-                    this.tituloOrg = fila["tituloOrg"].ToString();
-                }
+            // } catch (Exception e ) {
+            //     this.numPublicaciones = "0";
+            // }
 
-            } catch (Exception e ) {}
+            // try
+            // {
+            //     if (!fila.IsNull("numPV"))
+            //     {
+            //         this.numPV = fila["numPV"].ToString();
+            //     }
+
+            // } catch (Exception e ) {
+            //     this.numPV = "0";
+            // }
+
+            // try
+            // {
+            //     if (!fila.IsNull("numOtrosR"))
+            //     {
+            //         this.numOtrosR = fila["numOtrosR"].ToString();
+            //     }
+
+            // } catch (Exception e ) {
+            //     this.numOtrosR = "0";
+            // }
 
             try
             {
