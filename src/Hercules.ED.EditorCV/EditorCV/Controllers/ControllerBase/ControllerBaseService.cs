@@ -12,7 +12,7 @@ namespace EditorCV.Controllers
     public abstract class ControllerBaseService : ControllerBase
     {
         private static readonly Gnoss.ApiWrapper.UserApi mUserApi = new Gnoss.ApiWrapper.UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        protected bool HavePermission(HttpRequest pRequest, Guid pIdUsuario)
+        protected bool CheckUser(HttpRequest pRequest, Guid pIdUsuario)
         {
             try
             {
