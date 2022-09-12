@@ -9,13 +9,17 @@ using EditorCV.Models.API.Input;
 using EditorCV.Models.Utils;
 using System.Collections.Generic;
 using EditorCV.Models.Similarity;
+using System.Net.Http;
+using System.Net;
+using System.Web.Http;
+using Microsoft.AspNetCore.Http;
 
-namespace GuardadoCV.Controllers
+namespace EditorCV.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     [EnableCors("_myAllowSpecificOrigins")]
-    public class EdicionCVController : ControllerBase
+    public class EdicionCVController : ControllerBaseService
     {
         readonly ConfigService _Configuracion;
 
@@ -36,9 +40,15 @@ namespace GuardadoCV.Controllers
         [HttpGet("Test")]
         public IActionResult Test()
         {
+            //Guid usuarioID = Guid.Empty;
+            //if (!base.HavePermission(Request, usuarioID))
+            //{
+            //    return StatusCode(StatusCodes.Status401Unauthorized);
+            //}
             DateTime inicio = DateTime.Now;
             mResourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
             DateTime fin = DateTime.Now;
+            string response = (fin - inicio).TotalMilliseconds.ToString()+ Request.Cookies["_UsuarioActual"];
             return Ok((fin - inicio).TotalMilliseconds);
         }
         #endregion
