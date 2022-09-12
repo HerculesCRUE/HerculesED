@@ -331,9 +331,6 @@
             this.cvnCode = fila["cvnCode"].ToString();
             this.tipoPublicacion = TipoPublicacion(fila["propiedadCV"].ToString());
             this.seccionCV = GetSeccionNotificationCvnCode(fila["cvnCode"].ToString());
-            if(string.IsNullOrEmpty(this.seccionCV) && string.IsNullOrEmpty(this.trigger)){
-                this.seccionCV = "http://w3id.org/roh/scientificPublications";
-            }
         }
 
         private string GetFecha(string fecha)
