@@ -60,6 +60,10 @@ namespace Hercules.ED.ImportExportCV
             List<Tuple<string, string>> filtrador = new List<Tuple<string, string>>();
             foreach (string str in listaId)
             {
+                if (string.IsNullOrEmpty(str))
+                {
+                    continue;
+                }
                 filtrador.Add(new Tuple<string, string>(str.Split("_").First(), str.Split("_").Last()));
             }
             Preimport preimport = new Preimport();

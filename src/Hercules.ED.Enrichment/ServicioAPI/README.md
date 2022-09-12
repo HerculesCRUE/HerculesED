@@ -43,8 +43,6 @@ Download the Spacy model:
 $ spacy download en_core_web_lg
 ```
 
-Change the ```installation_path``` variable in app.wsgi file according to your needs (default value is (```/mnt/ebs/gnoss_hercules_api```)
-
 Download the pretrained models and extract them:
 
 ```
@@ -67,6 +65,8 @@ Copy the provided apache configuration into /etc/apache2/sites-available:
 ```
 $ sudo cp gnoss_hercules_api.conf /etc/apache2/sites-available
 ```
+Change the ```installation_path``` variable in app.wsgi file according to your needs (default value is (```/mnt/ebs/gnoss_hercules_api```)
+
 Activate the site configuration and restart Apache
 ```
 $sudo a2ensite gnoss_hercules_api.conf
@@ -121,51 +121,54 @@ Ejemplo CURL:
 - Solo con pdf_url:
 ```
 curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.eus/thematic' --data '{
-     "pdf_url":"https://www.researchgate.net/profile/Carballeira-A/publication/257673574_Physiological_Effects_of_Exposure_to_Arsenic_Mercury_Antimony_and_Selenium_in_the_Aquatic_Moss_Fontinalis_antipyretica_Hedw/links/004635375c21eaf991000000/Physiological-Effects-of-Exposure-to-Arsenic-Mercury-Antimony-and-Selenium-in-the-Aquatic-Moss-Fontinalis-antipyretica-Hedw.pdf",
+     "pdf_url":"https://arxiv.org/pdf/1808.06394",
      "rotype":"papers"
 }'
 ```
+Respuesta:
+```
+{
+   "pdf_url" : "https://arxiv.org/pdf/1808.06394",
+   "rotype" : "papers",
+   "topics" : [
+      {
+         "porcentaje" : "1.00",
+         "word" : "Artificial Intelligence"
+      },
+      {
+         "porcentaje" : "0.82",
+         "word" : "Statistics and Probability"
+      }
+   ]
+}
+```
 
-- Con todos los parámetros:
+- Sin pdf_url:
 ```
 curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.eus/thematic' --data '{
-     "abstract": "Laboratory experiments were carried out to determine the effects of exposure to different concentrations of As, Hg, Sb and Se on photosynthetic and respiratory rates and on photosynthetic efficiency in the aquatic bryophyte Fontinalis antipyretica Hedw. Specimens of the moss, collected from a clean site, were incubated in solutions of As, Hg, Sb and Se (at concentrations ranging from 0.1 μg l−1 to 10,000 μg l−1) for up to 22 days. The photosynthetic and respiratory rates were then determined by the light/dark bottle technique, and the photosynthetic efficiency was measured by the saturation pulse method. Although different responses were observed in relation to the concentration of the elements, clear responses in net photosynthesis and photosynthetic efficiency were generally only observed in the moss exposed to the highest concentrations of these elements in solution. Mercury was apparently the most toxic of the elements studied. Net photosynthesis and photosynthetic efficiency were also related to tissue concentrations of these elements in the moss. Despite the higher toxicity of Hg, this element can be accumulated at high concentrations in moss.",
-     "author_affiliation": "Díaz : A. Carballeira Ecología, Facultad de Biología, Universidad de Santiago de Compostela, Santiago de Compostela, Spain R. Villares (*) : M. D. Vázquez Ecología, Escuela Politécnica Superior, Universidad de Santiago de Compostela, Lugo, Spain",
-     "author_name": "Santiago Díaz & Rubén Villares & María D. Vázquez & Alejo Carballeira",
-     "journal": "Water Air Soil Pollut",
-     "pdf_url": "https://www.researchgate.net/profile/Carballeira-A/publication/257673574_Physiological_Effects_of_Exposure_to_Arsenic_Mercury_Antimony_and_Selenium_in_the_Aquatic_Moss_Fontinalis_antipyretica_Hedw/links/004635375c21eaf991000000/Physiological-Effects-of-Exposure-to-Arsenic-Mercury-Antimony-and-Selenium-in-the-Aquatic-Moss-Fontinalis-antipyretica-Hedw.pdf",
-     "rotype": "papers",
-     "title": "Physiological Effects of Exposure to Arsenic, Mercury, Antimony and Selenium in the Aquatic Moss Fontinalis antipyretica Hedw."
+    "title": "Faster Support Vector Machines",
+    "abstract": "The time complexity of support vector machines (SVMs) prohibits training on huge data sets with millions of data points. Recently, multilevel approaches to train SVMs have been developed to allow for time-efficient training on huge data sets. While regular SVMs perform the entire training in one -- time consuming -- optimization step, multilevel SVMs first build a hierarchy of problems decreasing in size that resemble the original problem and then train an SVM model for each hierarchy level, benefiting from the solved models of previous levels. We present a faster multilevel support vector machine that uses a label propagation algorithm to construct the problem hierarchy. Extensive experiments indicate that our approach is up to orders of magnitude faster than the previous fastest algorithm while having comparable classification quality. For example, already one of our sequential solvers is on average a factor 15 faster than the parallel ThunderSVM algorithm, while having similar classification quality.",
+    "author_affiliation": "Institute for Theoretical Informatics, Karlsruhe Institute of Technology, Karlsruhe, Germany. University of Vienna, Faculty of Computer Science, W ahringer Str. 29, 1080 Vienna, Austria.",
+    "author_name": "Sebastian Schlag & Matthias Schmitt & Christian Schulz",
+    "rotype": "papers"
 }'
 ```
 
-Repuesta para 'papers'
+Repuesta:
 ```
 {
-  "pdf_url": "https://www.researchgate.net/profile/Carballeira-A/publication/257673574_Physiological_Effects_of_Exposure_to_Arsenic_Mercury_Antimony_and_Selenium_in_the_Aquatic_Moss_Fontinalis_antipyretica_Hedw/links/004635375c21eaf991000000/Physiological-Effects-of-Exposure-to-Arsenic-Mercury-Antimony-and-Selenium-in-the-Aquatic-Moss-Fontinalis-antipyretica-Hedw.pdf",
-  "rotype": "papers",
-  "topics": [
-		{
-			"word": "Ecological Modeling",
-			"porcentaje": "0.76"
-		},
-		{
-			"word": "Environmental Chemistry",
-			"porcentaje": "0.99"
-		},
-		{
-			"word": "Environmental Engineering",
-			"porcentaje": "0.88"
-		},
-		{
-			"word": "Pollution",
-			"porcentaje": "1.00"
-		},
-		{
-			"word": "Water Science and Technology",
-			"porcentaje": "0.99"
-		}
-	]
+   ...
+   "title" : "Faster Support Vector Machines",
+   "topics" : [
+      {
+         "porcentaje" : "0.90",
+         "word" : "Artificial Intelligence"
+      },
+      {
+         "porcentaje" : "0.60",
+         "word" : "Distributed, Parallel, and Cluster Computing"
+      }
+   ]
 }
 ```
 
@@ -206,8 +209,8 @@ Respuesta para bio-protocol:
 Ejemplo CURL:
 ```
 curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.eus/thematic' --data '{
-    "title":"Command line HTML calendar generator.",
-    "abstract":"Python 3 based HTML calendar generator. Generates either a single calendar month or a set of 12 calendar months for a given year. Adjust for leap year and system file separator differences.",
+    "title":"Streamlink is a CLI utility which pipes video streams",
+    "abstract":"Streamlink is a command-line utility that pipes video streams from various services into a video player, such as VLC. The main purpose of Streamlink is to avoid resource-heavy and unoptimized websites, while still allowing the user to enjoy various streamed content. There is also an API available for developers who want access to the stream data. Streamlink is built upon a plugin system that allows support for new services to be easily added. Most of the big streaming services are supported. Streamlink is made up of two parts, a cli and a library API. See their respective sections for more information on how to use them. The default behavior of Streamlink is to playback streams in the VLC player. Please note that by using this application you are bypassing ads run by sites such as Twitch.tv. Please consider donating or paying for subscription services when they are available for the content you consume and enjoy.",
     "rotype":"sourceForge"
 }'
 ```
@@ -215,15 +218,19 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.
 Respuesta para sourceForge: 
 ```
 {
-    "title": "Command line HTML calendar generator.",
-    "abstract": "Python 3 based HTML calendar generator. Generates either a single calendar month or a set of 12 calendar months for a given year. Adjust for leap year and system file separator differences.",
-    "rotype": "sourceForge",
-    "topics": [
-		{
-			"porcentaje": "0.75",
-			"word":"Internet"
-		}
-	]
+   "abstract" : "Streamlink is a command-line utility that pipes video streams from various services into a video player, such as VLC. The main purpose of Streamlink is to avoid resource-heavy and unoptimized websites, while still allowing the user to enjoy various streamed content. There is also an API available for developers who want access to the stream data. Streamlink is built upon a plugin system that allows support for new services to be easily added. Most of the big streaming services are supported. Streamlink is made up of two parts, a cli and a library API. See their respective sections for more information on how to use them. The default behavior of Streamlink is to playback streams in the VLC player. Please note that by using this application you are bypassing ads run by sites such as Twitch.tv. Please consider donating or paying for subscription services when they are available for the content you consume and enjoy.",
+   "rotype" : "sourceForge",
+   "title" : "Streamlink is a CLI utility which pipes video streams",
+   "topics" : [
+      {
+         "porcentaje" : "0.85",
+         "word" : "Multimedia"
+      },
+      {
+         "porcentaje" : "0.58",
+         "word" : "Communications"
+      }
+   ]
 }
 ```
 
@@ -262,8 +269,8 @@ IMPORTANTE:
 Ejemplo CURL (sin body, se utiliza el extractor de textos cortos):
 ```
 curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.eus/specific' --data '{
-    "title":"Physiological Effects of Exposure to Arsenic, Mercury, Antimony and Selenium in the Aquatic Moss Fontinalis antipyretica Hedw.",
-    "abstract": "Laboratory experiments were carried out to determine the effects of exposure to different concentrations of As, Hg, Sb and Se on photosynthetic and respiratory rates and on photosynthetic efficiency in the aquatic bryophyte Fontinalis antipyretica Hedw. Specimens of the moss, collected from a clean site, were incubated in solutions of As, Hg, Sb and Se (at concentrations ranging from 0.1 μg l−1 to 10,000 μg l−1) for up to 22 days. The photosynthetic and respiratory rates were then determined by the light/dark bottle technique, and the photosynthetic efficiency was measured by the saturation pulse method. Although different responses were observed in relation to the concentration of the elements, clear responses in net photosynthesis and photosynthetic efficiency were generally only observed in the moss exposed to the highest concentrations of these elements in solution. Mercury was apparently the most toxic of the elements studied. Net photosynthesis and photosynthetic efficiency were also related to tissue concentrations of these elements in the moss. Despite the higher toxicity of Hg, this element can be accumulated at high concentrations in moss.",
+    "title":"Revisiting Dockerfiles in Open Source Software Over Time",
+    "abstract": "Docker is becoming ubiquitous with containerization for developing and deploying applications. Previous studies have analyzed Dockerfiles that are used to create container images in order to better understand how to improve Docker tooling. These studies obtain Dockerfiles using either Docker Hub or Github. In this paper, we revisit the findings of previous studies using the largest set of Dockerfiles known to date with over 9.4 million unique Dockerfiles found in the World of Code infrastructure spanning from 2013-2020. We contribute a historical view of the Dockerfile format by analyzing the Docker engine changelogs and use the history to enhance our analysis of Dockerfiles. We also reconfirm previous findings of a downward trend in using OS images and an upward trend of using language images. As well, we reconfirm that Dockerfile smell counts are slightly decreasing meaning that Dockerfile authors are likely getting better at following best practices. Based on these findings, it indicates that previous analyses from prior works have been correct in many of their findings and their suggestions to build better tools for Docker image creation are further substantiated.",
     "rotype":"papers"
 }'
 ```
@@ -271,22 +278,21 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://herculesapi.elhuyar.
 Respuesta para 'papers':
 ```
 {
-    "title":"Physiological Effects of Exposure to Arsenic, Mercury, Antimony and Selenium in the Aquatic Moss Fontinalis antipyretica Hedw.",
-    "abstract":"Laboratory experiments were carried out to determine the effects of exposure to different concentrations of As, Hg, Sb and Se on photosynthetic and respiratory rates and on photosynthetic efficiency in the aquatic bryophyte Fontinalis antipyretica Hedw. Specimens of the moss, collected from a clean site, were incubated in solutions of As, Hg, Sb and Se (at concentrations ranging from 0.1 \u03bcg l\u22121 to 10,000 \u03bcg l\u22121) for up to 22 days. The photosynthetic and respiratory rates were then determined by the light/dark bottle technique, and the photosynthetic efficiency was measured by the saturation pulse method. Although different responses were observed in relation to the concentration of the elements, clear responses in net photosynthesis and photosynthetic efficiency were generally only observed in the moss exposed to the highest concentrations of these elements in solution. Mercury was apparently the most toxic of the elements studied. Net photosynthesis and photosynthetic efficiency were also related to tissue concentrations of these elements in the moss. Despite the higher toxicity of Hg, this element can be accumulated at high concentrations in moss.",
-    "rotype":"papers","title":"Physiological Effects of Exposure to Arsenic, Mercury, Antimony and Selenium in the Aquatic Moss Fontinalis antipyretica Hedw.",
-    "topics":
-    [
-	{"porcentaje":"0.8644","word":"antipyretica hedw"},
-	{"porcentaje":"0.8269","word":"exposure"},
-	{"porcentaje":"0.8226","word":"antimony"},
-	{"porcentaje":"0.7968","word":"fontinalis antipyretica hedw"},
-	{"porcentaje":"0.7943","word":"photosynthetic efficiency"},
-	{"porcentaje":"0.7853","word":"photosynthesis"},
-	{"porcentaje":"0.7490","word":"Mercury"},
-	{"porcentaje":"0.7441","word":"concentrations"},
-	{"porcentaje":"0.6893","word":"Arsenic"},
-	{"porcentaje":"0.6720","word":"efficiency"}
-    ]
+   "abstract" : "Docker is becoming ubiquitous with containerization for developing and deploying applications. Previous studies have analyzed Dockerfiles that are used to create container images in order to better understand how to improve Docker tooling. These studies obtain Dockerfiles using either Docker Hub or Github. In this paper, we revisit the findings of previous studies using the largest set of Dockerfiles known to date with over 9.4 million unique Dockerfiles found in the World of Code infrastructure spanning from 2013-2020. We contribute a historical view of the Dockerfile format by analyzing the Docker engine changelogs and use the history to enhance our analysis of Dockerfiles. We also reconfirm previous findings of a downward trend in using OS images and an upward trend of using language images. As well, we reconfirm that Dockerfile smell counts are slightly decreasing meaning that Dockerfile authors are likely getting better at following best practices. Based on these findings, it indicates that previous analyses from prior works have been correct in many of their findings and their suggestions to build better tools for Docker image creation are further substantiated.",
+   "rotype" : "papers",
+   "title" : "Revisiting Dockerfiles in Open Source Software Over Time",
+   "topics" : [
+      {"porcentaje" : "0.7976", "word" : "dockerfiles"},
+      {"porcentaje" : "0.7970", "word" : "previous studies"},
+      {"porcentaje" : "0.7542", "word" : "containerization"},
+      {"porcentaje" : "0.6976", "word" : "findings"},
+      {"porcentaje" : "0.5717", "word" : "open source software"},
+      {"porcentaje" : "0.5684", "word" : "suggestions"},
+      {"porcentaje" : "0.5030", "word" : "Docker tooling"},
+      {"porcentaje" : "0.4986", "word" : "container images"},
+      {"porcentaje" : "0.4544", "word" : "dockerfile authors"},
+      {"porcentaje" : "0.4417", "word" : "dockerfile smell counts"}
+   ]
 }
 ```
 
