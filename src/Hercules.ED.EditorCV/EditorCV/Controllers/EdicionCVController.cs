@@ -149,6 +149,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                Guid usuarioCV = UtilityCV.GetUserFromCV(pCVId);
+                if (!base.HavePermission(Request, usuarioCV))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection, pOnlyPublic));
             }
