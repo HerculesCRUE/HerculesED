@@ -1723,7 +1723,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Compruebo si existe alguna revista con ese nombre
             string nombreRevista = item.GetStringPorIDCampo("060.010.010.210");
             string revista = UtilitySecciones.GetNombreRevista(mResourceApi, nombreRevista);
-            // Mario
+
             //Si existe añado como tipo de soporte revista directamente.
             if (!string.IsNullOrEmpty(revista))
             {
@@ -1745,7 +1745,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
                 else
                 {
-                    //Si el tipo de soporte es distinto a revista, añado los datos                    
+                    //Si el tipo de soporte es distinto a revista, añado los datos
                     entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
                         new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial, item.GetStringPorIDCampo("060.010.010.100")),
