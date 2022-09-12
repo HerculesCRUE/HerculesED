@@ -199,7 +199,7 @@
 									else if(notification.tipoNotificacion == "editOferta"){
 										string url = "";
 										if (notification.entidad != null && notification.entidad.Split('_').Length > 2){
-											url = Comunidad.Url + "/" + @Html.Translate("NOTIFICACION_RECURSO_URL") + "/oferta/" + notification.entidad.Split('_')[1] ;
+											url = Comunidad.Url + "/" + @Html.Translate("NOTIFICACION_RECURSO_URL") + "/oferta/" + notification.entidad.Split('_')[1];
 										}
                                         bool ponerUrl = true;
                                         if (string.IsNullOrEmpty(notification.entidad.Split('_')[1]))
