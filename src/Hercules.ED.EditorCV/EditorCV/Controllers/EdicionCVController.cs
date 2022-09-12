@@ -150,7 +150,7 @@ namespace EditorCV.Controllers
             try
             {
                 Guid usuarioCV = UtilityCV.GetUserFromCV(pCVId);
-                if (!base.HavePermission(Request, usuarioCV))
+                if (!base.CheckUser(Request, usuarioCV))
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
