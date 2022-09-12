@@ -405,12 +405,12 @@ function PintarGraficaArania(data,idContenedor) {
 		style: [{
 			"selector": "node",
 			"style": {
-				"width": "mapData(score, 0, 10, 45, 90)",
-				"height": "mapData(score, 0, 10, 45, 90)",
+				//"width": "mapData(score, 0, 10, 45, 90)",
+				//"height": "mapData(score, 0, 10, 45, 90)",
 				"content": "data(name)",
 				"font-size": "12px",
 				"font-family": 'Roboto',
-				"font-color": "#999999",
+				//"font-color": "#999999",
 				"background-color": "#b2cff7",
 				"text-outline-width": "0px",
 				"overlay-padding": "6px",
@@ -423,7 +423,7 @@ function PintarGraficaArania(data,idContenedor) {
 				"content": "data(name)",
 				"font-size": "24px",
 				"font-family": 'Roboto',
-				"font-color": "#999999",
+				//"font-color": "#999999",
 				"background-color": "#b2cff7",
 				"haystack-radius": "0.5",
 				"opacity": "0.5",
@@ -455,7 +455,7 @@ function PintarGraficaArania(data,idContenedor) {
 					'background-fit': 'cover',
 					'border-width': '0px',
 					'border-color': '#b2cff7',
-					'shape': 'circle'
+					'shape': 'ellipse'
 				})                        
 				break;
 			case 'icon_member':
@@ -465,7 +465,7 @@ function PintarGraficaArania(data,idContenedor) {
 					'background-fit': 'cover',
 					'border-width': '0px',
 					'border-color': '#b2cff7',
-					'shape': 'circle'
+					'shape': 'ellipse'
 				})
 				break;
 			default:
@@ -473,7 +473,7 @@ function PintarGraficaArania(data,idContenedor) {
 					'border-width': '0px',
 					'border-color': '#b2cff7',
 					'background-color': '#b2cff7',
-					'shape': 'circle'
+					'shape': 'ellipse'
 				});
 				break;
 		}
@@ -575,12 +575,12 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 			"selector": "node",
 			"style": {
 				"target-text-rotation": "auto",
-				"width": "mapData(score, 0, 10, 45, 90)",
-				"height": "mapData(score, 0, 10, 45, 90)",
+				//"width": "mapData(score, 0, 10, 45, 90)",
+				//"height": "mapData(score, 0, 10, 45, 90)",
 				"content": "data(name)",
 				"font-size": "12px",
 				"font-family": 'Roboto',
-				"font-color": "#999999",
+				//"font-color": "#999999",
 				"background-color": "#b2cff7",
 				"text-outline-width": "0px",
 				"overlay-padding": "6px",
@@ -593,7 +593,7 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 				"content": "",
 				"font-size": "24px",
 				"font-family": 'Roboto',
-				"font-color": "#999999",
+				//"font-color": "#999999",
 				"background-color": "#b2cff7",
 				"haystack-radius": "0.5",
 				"opacity": "0.5",
@@ -620,7 +620,7 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 					'background-fit': 'cover',
 					'border-width': '0px',
 					'border-color': '#b2cff7',
-					'shape': 'circle'
+					'shape': 'ellipse'
 				})                        
 				break;
 			case 'icon_member':
@@ -630,7 +630,7 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 					'background-fit': 'cover',
 					'border-width': '0px',
 					'border-color': '#b2cff7',
-					'shape': 'circle'
+					'shape': 'ellipse'
 				})
 				break;
 			default:
@@ -638,7 +638,7 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 					'border-width': '0px',
 					'border-color': '#b2cff7',
 					'background-color': '#b2cff7',
-					'shape': 'circle'
+					'shape': 'ellipse'
 				});
 				break;
 		}
@@ -785,7 +785,7 @@ function PintarGraficaAraniaVersionCircle(data,idContenedor) {
 			'background-color': 'white',
 			'border-width': '2px',
 			'border-color': 'rgb(4,184,209)',
-			'shape': 'circle'
+			'shape': 'ellipse'
 		});
 
 	}
