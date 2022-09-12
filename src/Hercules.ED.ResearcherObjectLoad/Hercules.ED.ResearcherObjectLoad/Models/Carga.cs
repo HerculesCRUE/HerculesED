@@ -293,8 +293,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                         else
                         {
-                            string idAutor = fichero.Name.Split("___")[0];
-                            List<string> lista = new List<string>() { UtilityPersona.ObtenerPersonaPorORCID(idAutor) };
+                            string idAutor = "http://gnoss.com/items/" + fichero.Name.Split("___")[0];
+                            List<string> lista = new List<string>() { idAutor };
                             DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
                             // Obtención de los datos del JSON.
@@ -354,16 +354,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     dicIdPublication.Add(idPub, ConstruirDocument(publication, tupla.Item1, tupla.Item2));
                                 }
                                 // Obtención de los datos cargados de BBDD.                        
-                                Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorOrcid(listadoDOI, idAutor);
+                                Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorGnossId(listadoDOI, idAutor);
                                 ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDD(listaPublicaciones, idAutor);
                                 listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
                                 listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
-                                idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
+                                //idPersona = personasBBDD.First(x => ((DisambiguationPerson)(x.Value)).orcid == idAutor).Key;
+                                idPersona = idAutor;
                             }
                         }
 
                         if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
                         {
+                            Dictionary<string, Dictionary<string, List<string>>> dicccionarioPersonaIgnorarPublicaciones = ObtenerPublicacionesIgnorarPersonas();
+
                             HashSet<string> idsPersonasActualizar = new HashSet<string>();
                             HashSet<string> idsDocumentosActualizar = new HashSet<string>();
                             HashSet<string> idsResearchObjectsActualizar = new HashSet<string>();
@@ -541,6 +544,55 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             mResourceApi.ChangeOntoly("document");
                             foreach (Document documento in listaDocumentosCargarEquivalencias.Keys)
                             {
+                                //Eliminamos del documento todos los autores que lo tengan dentro de 'dicccionarioPersonaIgnorarPublicaciones'
+                                foreach (BFO_0000023 autoria in documento.Bibo_authorList.ToList())
+                                {
+                                    string idAutor = autoria.IdRdf_member;
+                                    bool eliminarAutor = false;
+                                    if (dicccionarioPersonaIgnorarPublicaciones.ContainsKey(idAutor))
+                                    {
+                                        foreach (string idNombre in dicccionarioPersonaIgnorarPublicaciones[idAutor].Keys)
+                                        {
+                                            foreach (string idValor in dicccionarioPersonaIgnorarPublicaciones[idAutor][idNombre])
+                                            {
+                                                switch (idNombre)
+                                                {
+                                                    case "doi":
+                                                        if (documento.Bibo_doi == idValor)
+                                                        {
+                                                            eliminarAutor = true;
+                                                        }
+                                                        break;
+                                                    case "handle":
+                                                        if (documento.Bibo_handle == idValor)
+                                                        {
+                                                            eliminarAutor = true;
+                                                        }
+                                                        break;
+                                                    case "pmid":
+                                                        if (documento.Bibo_pmid == idValor)
+                                                        {
+                                                            eliminarAutor = true;
+                                                        }
+                                                        break;
+                                                    default:
+                                                        if (documento.Bibo_identifier != null && documento.Bibo_identifier.Exists(x => x.Foaf_topic == idNombre && x.Dc_title == idValor))
+                                                        {
+                                                            eliminarAutor = true;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (eliminarAutor)
+                                    {
+                                        documento.Bibo_authorList.Remove(autoria);
+                                    }
+                                }
+
+
+
                                 if (documento.Bibo_authorList.Exists(x => x.IdRdf_member == idPersona))
                                 {
                                     string idBBDD = listaDocumentosCargarEquivalencias[documento].Intersect(listaDocumentosCargados.Keys).FirstOrDefault();
@@ -879,6 +931,55 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
         }
 
+        private static Dictionary<string, Dictionary<string, List<string>>> ObtenerPublicacionesIgnorarPersonas()
+        {
+            Dictionary<string, Dictionary<string, List<string>>> dicccionarioPersonaIgnorarPublicaciones = new Dictionary<string, Dictionary<string, List<string>>>();
+            int limit = 10000;
+            int offset = 0;
+            while (true)
+            {
+                //Selecciono los RO de autor
+
+                string select = $"SELECT * WHERE {{ SELECT DISTINCT ?person ?idName ?idValue";
+                string where = $@"WHERE {{
+                                    ?person a <http://xmlns.com/foaf/0.1/Person> . 
+                                    ?person <http://w3id.org/roh/ignorePublication> ?ignorePublication. 
+                                    ?ignorePublication <http://xmlns.com/foaf/0.1/topic> ?idName. 
+                                    ?ignorePublication <http://w3id.org/roh/title> ?idValue. 
+                                }} ORDER BY DESC(?ro) }} LIMIT {limit} OFFSET {offset}";
+
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    offset += limit;
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        string person = fila["person"].value;
+                        string idName = fila["idName"].value;
+                        string idValue = fila["idValue"].value;
+                        if (!dicccionarioPersonaIgnorarPublicaciones.ContainsKey(person))
+                        {
+                            dicccionarioPersonaIgnorarPublicaciones.Add(person, new Dictionary<string, List<string>>());
+                        }
+                        if (!dicccionarioPersonaIgnorarPublicaciones[person].ContainsKey(idName))
+                        {
+                            dicccionarioPersonaIgnorarPublicaciones[person].Add(idName, new List<string>());
+                        }
+                        dicccionarioPersonaIgnorarPublicaciones[person][idName].Add(idValue);
+                    }
+                    if (resultadoQuery.results.bindings.Count < limit)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            };
+            return dicccionarioPersonaIgnorarPublicaciones;
+        }
+
         public static void IniciadorDiccionarioPaises()
         {
             List<Pais> listaPaises = JsonConvert.DeserializeObject<List<Pais>>(File.ReadAllText(RUTA_PAISES));
@@ -999,7 +1100,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// </summary>
         /// <param name="pOrcid">Código ORCID de la persona a obtener los datos.</param>
         /// <returns>Diccionario con el ID del recurso cargado como clave, y el objeto desambiguable como valor.</returns>
-        private static Dictionary<string, DisambiguableEntity> ObtenerPublicacionesBBDDPorOrcid(HashSet<string> listadoDOI, string pOrcid)
+        private static Dictionary<string, DisambiguableEntity> ObtenerPublicacionesBBDDPorGnossId(HashSet<string> listadoDOI, string pGnossId)
         {
             Dictionary<string, DisambiguableEntity> listaDocumentos = new Dictionary<string, DisambiguableEntity>();
             int limit = 10000;
@@ -1024,9 +1125,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 }}
                                 ?documento <http://w3id.org/roh/title> ?titulo. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
-                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
-                                ?persona <http://w3id.org/roh/ORCID> ?orcid. 
-                                FILTER(?orcid = '{pOrcid}') 
+                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> <{pGnossId}>. 
                             }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
@@ -1045,7 +1144,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         {
                             publicacion.iDs = new List<string>();
                             publicacion.iDs.Add(fila["fuenteId"].value + ":" + fila["id"].value);
-                        }                                               
+                        }
 
                         if (!dicDocAux.ContainsKey(fila["documento"].value))
                         {
@@ -1067,13 +1166,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 }
             };
 
-            foreach(KeyValuePair<string, Publication> item in dicDocAux)
+            foreach (KeyValuePair<string, Publication> item in dicDocAux)
             {
                 DisambiguationPublication pub = GetDisambiguationPublication(item.Value);
                 pub.ID = item.Key;
                 pub.autores = new HashSet<string>();
                 listaDocumentos.Add(item.Key, pub);
-            }            
+            }
 
             //Añado los documentos por DOI
             while (true)

@@ -129,46 +129,50 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         public static Dictionary<string, DisambiguationPerson> ObtenerPersonasGitHub(List<string> listado)
         {
             Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
+            List<List<string>> listadoLista = Utility.SplitList(listado.Distinct().ToList(), 1000).ToList();
+            foreach (List<string> listaIn in listadoLista)
+            {
 
-            string selectOut = "SELECT DISTINCT ?personID ?github ?name ?orcid ";
-            string whereOut = $@"where{{
+                string selectOut = "SELECT DISTINCT ?personID ?github ?name ?orcid ";
+                string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
                                     ?personID <http://w3id.org/roh/usuarioGitHub> ?github .
                                     OPTIONAL{{ ?personID <http://w3id.org/roh/ORCID> ?orcid }}
                                     ?personID <http://xmlns.com/foaf/0.1/name> ?name .
+                                    FILTER(?github in ('{string.Join("','",listaIn)}'))
                                     }}";
 
-            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
 
-            foreach (string firma in listado)
-            {
-                HashSet<int> scores = new HashSet<int>();
-                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["orcid"].value == firma))
+                foreach (string firma in listado)
                 {
-                    string personID = fila["personID"].value;
-                    if (!diccionarioPersonas.ContainsKey(personID))
+                    HashSet<int> scores = new HashSet<int>();
+                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["orcid"].value == firma))
                     {
-                        diccionarioPersonas[personID] = new DisambiguationPerson();
-                    }
+                        string personID = fila["personID"].value;
+                        if (!diccionarioPersonas.ContainsKey(personID))
+                        {
+                            diccionarioPersonas[personID] = new DisambiguationPerson();
+                        }
 
-                    string github = fila["github"].value;
-                    string orcid = "";
-                    if (fila.ContainsKey("orcid"))
-                    {
-                        orcid = fila["orcid"].value;
+                        string github = fila["github"].value;
+                        string orcid = "";
+                        if (fila.ContainsKey("orcid"))
+                        {
+                            orcid = fila["orcid"].value;
+                        }
+                        string name = fila["name"].value;
+                        DisambiguationPerson persona = new DisambiguationPerson
+                        {
+                            gitHubId = github,
+                            orcid = orcid,
+                            ID = personID,
+                            completeName = name
+                        };
+                        diccionarioPersonas[personID] = persona;
                     }
-                    string name = fila["name"].value;
-                    DisambiguationPerson persona = new DisambiguationPerson
-                    {
-                        gitHubId = github,
-                        orcid = orcid,
-                        ID = personID,
-                        completeName = name
-                    };
-                    diccionarioPersonas[personID] = persona;
                 }
             }
-
             return diccionarioPersonas;
         }
 

@@ -20,9 +20,9 @@ namespace Hercules.ED.Synchronization.Models
         /// Obtiene los ORCID de las personas activas.
         /// </summary>
         /// <returns>Lista de identificadores.</returns>
-        public List<string> GetPersons()
+        public Dictionary<string, string> GetPersons()
         {
-            HashSet<string> listaOrcid = new HashSet<string>();
+            Dictionary<string, string> dicOrcid = new Dictionary<string, string>();
             int limit = 10000;
             int offset = 0;
             bool salirBucle = false;
@@ -45,9 +45,9 @@ namespace Hercules.ED.Synchronization.Models
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
                         string orcid = fila["orcid"].value;
-                        if (!string.IsNullOrEmpty(orcid))
+                        if (!string.IsNullOrEmpty(orcid) && !dicOrcid.ContainsKey(fila["persona"].value))
                         {
-                            listaOrcid.Add(orcid);
+                            dicOrcid.Add(fila["persona"].value, orcid);
                         }
                     }
 
@@ -63,10 +63,7 @@ namespace Hercules.ED.Synchronization.Models
 
             } while (!salirBucle);
 
-            List<string> listaOrdenada = listaOrcid.ToList();
-            listaOrdenada.Sort();
-
-            return listaOrdenada;
+            return dicOrcid;
         }
 
         /// <summary>
@@ -74,14 +71,14 @@ namespace Hercules.ED.Synchronization.Models
         /// </summary>
         /// <param name="pOrcid">ORCID del usuario.</param>
         /// <returns></returns>
-        public string GetLastUpdatedDate(string pOrcid)
+        public string GetLastUpdatedDate(string pGnossId)
         {
             StringBuilder select = new StringBuilder(), where = new StringBuilder();
 
             // Consulta sparql.
             select.Append("SELECT ?fecha ");
             where.Append("WHERE { ");
-            where.Append($@"?s <http://w3id.org/roh/ORCID> '{pOrcid}'. ");
+            where.Append($@"FILTER(?s = <{pGnossId}>) ");
             where.Append("OPTIONAL{?s roh:lastUpdatedDate ?fecha. } ");
             where.Append("} ");
 
@@ -110,7 +107,7 @@ namespace Hercules.ED.Synchronization.Models
         /// </summary>
         /// <param name="pOrcid">ORCID del usuario.</param>
         /// <returns></returns>
-        public Dictionary<string, string> GetUsersIDs(string pOrcid)
+        public Dictionary<string, string> GetUsersIDs(string pGnossId)
         {
             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
             StringBuilder select = new StringBuilder(), where = new StringBuilder();
@@ -118,7 +115,7 @@ namespace Hercules.ED.Synchronization.Models
             // Consulta sparql.
             select.Append("SELECT ?usuarioFigshare ?tokenFigshare ?usuarioGitHub ?tokenGitHub ");
             where.Append("WHERE { ");
-            where.Append($@"?s <http://w3id.org/roh/ORCID> '{pOrcid}'. ");
+            where.Append($@"FILTER(?s = <{pGnossId}>) ");
             where.Append("OPTIONAL{?s <http://w3id.org/roh/usuarioFigShare> ?usuarioFigshare. } ");
             where.Append("OPTIONAL{?s <http://w3id.org/roh/tokenFigShare> ?tokenFigshare. } ");
             where.Append("OPTIONAL{?s <http://w3id.org/roh/usuarioGitHub> ?usuarioGitHub. } ");
@@ -174,18 +171,19 @@ namespace Hercules.ED.Synchronization.Models
                             Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
 
                             // Obtención de los ORCID de las personas.
-                            List<string> listaOrcids = GetPersons();
+                            Dictionary<string, string> listaOrcids = GetPersons();
 
-                            foreach (string orcid in listaOrcids)
+                            foreach (KeyValuePair<string, string> item in listaOrcids)
                             {
                                 // Obtención de la última fecha de modificación.
-                                string ultimaFechaMod = GetLastUpdatedDate(orcid);
+                                string ultimaFechaMod = GetLastUpdatedDate(item.Key);
+                                //string ultimaFechaMod = "1500-01-01";
 
                                 // Obtención de los datos necesarios de FigShare y GitHub.
-                                Dictionary<string, string> dicIDs = GetUsersIDs(orcid);
+                                Dictionary<string, string> dicIDs = GetUsersIDs(item.Key);
 
                                 // Inserción a la cola de Rabbit.
-                                colaRabbit.InsertToQueueFuentesExternas(orcid, colaRabbit, ultimaFechaMod, dicIDs);
+                                colaRabbit.InsertToQueueFuentesExternas(item.Value, colaRabbit, ultimaFechaMod, dicIDs, item.Key);
                             }
                         }
                     }

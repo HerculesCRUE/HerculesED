@@ -23,6 +23,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.010.000.000",
           "listItem": {
@@ -274,6 +275,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "checkDuplicates": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedScientificPublicationCV",
@@ -383,16 +385,24 @@
                 "name": {
                   "es": "Nombre de la revista"
                 },
-                "showMini": true,
+                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
                   "child": {
-                    "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
-                    "graph": "maindocument",
-                    "child": {
-                      "property": "http://w3id.org/roh/title"
-                    }
+                    "property": "http://w3id.org/roh/hasPublicationVenueJournalText"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Editorial"
+                },
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/publisher"
                   }
                 }
               },
@@ -913,28 +923,13 @@
                           "propertyValueDistinct": "{GraphsUrl}items/documentformat_057"
                         },
                         "type": "text",
-                        "width": 1
-                      },
-                      {
-                        "title": {
-                          "es": "Editorial"
-                        },
-                        "information": {
-                          "es": "Nombre del responsable editorial de la publicación."
-                        },
-                        "property": "http://purl.org/ontology/bibo/publisher",
-                        "dependency": {
-                          "property": "http://w3id.org/roh/supportType",
-                          "propertyValueDistinct": "{GraphsUrl}items/documentformat_057"
-                        },
-                        "type": "text",
-                        "width": 1
+                        "width": 2
                       },
                       {
                         "title": {
                           "es": "Nombre de la revista"
                         },
-                        "property": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+                        "property": "http://w3id.org/roh/hasPublicationVenueJournalText",
                         "autocomplete": true,
                         "dependency": {
                           "property": "http://w3id.org/roh/supportType",
@@ -947,12 +942,50 @@
                             "property": "http://w3id.org/roh/title"
                           },
                           "propertyAux": {
-                            "properties": [ "http://purl.org/ontology/bibo/issn", "http://purl.org/ontology/bibo/eissn" ],
-                            "print": "{0}| - ISSN: {1}| - EISSN: {2}"
-                          }
+                            "properties": [ "http://purl.org/ontology/bibo/editor", "http://purl.org/ontology/bibo/issn", "http://purl.org/ontology/bibo/eissn" ],
+                            "print": "{0}| - Editorial: {1}| - ISSN: {2}| - EISSN: {3}"
+                          },
+                          "propertyEntity": "http://vivoweb.org/ontology/core#hasPublicationVenue",
+                          "selectPropertyEntity": [
+                            {
+                              "propertyEntity": "http://w3id.org/roh/title",
+                              "propertyCV": "http://w3id.org/roh/hasPublicationVenueJournalText"
+                            },
+                            {
+                              "propertyEntity": "http://purl.org/ontology/bibo/editor",
+                              "propertyCV": "http://purl.org/ontology/bibo/publisher"
+                            },
+                            {
+                              "propertyEntity": "http://purl.org/ontology/bibo/issn",
+                              "propertyCV": "http://purl.org/ontology/bibo/issn"
+                            }
+                          ]
                         },
-                        "type": "entityautocomplete",
+                        "type": "text",
                         "width": 2
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "title": {
+                          "es": "Editorial"
+                        },
+                        "information": {
+                          "es": "Nombre del responsable editorial de la publicación."
+                        },
+                        "property": "http://purl.org/ontology/bibo/publisher",
+                        "type": "text",
+                        "width": 1
+                      },
+                      {
+                        "title": {
+                          "es": "ISSN"
+                        },
+                        "property": "http://purl.org/ontology/bibo/issn",
+                        "type": "text",
+                        "width": 1
                       }
                     ]
                   },
@@ -1608,6 +1641,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "checkDuplicates": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedWorkSubmittedConferencesCV",
@@ -1710,6 +1744,47 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de celebración"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "type": "date",
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Congreso"
+                },
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
                   }
                 }
               },
@@ -1832,44 +1907,6 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/ontology/bibo/publisher"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Congreso"
-                },
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://purl.org/ontology/bibo/presentedAt"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Fecha de celebración"
-                },
-                "type": "date",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/presentedAtStart"
-                  }
-                }
-              },
-              {
-                "name": {
-                  "es": "Fecha de finalización"
-                },
-                "type": "date",
-                "child": {
-                  "property": "http://vivoweb.org/ontology/core#relatedBy",
-                  "graph": "document",
-                  "child": {
-                    "property": "http://w3id.org/roh/presentedAtEnd"
                   }
                 }
               },
@@ -3115,6 +3152,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "checkDuplicates": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "property_cv": "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV",
@@ -3217,6 +3255,47 @@
                   "graph": "document",
                   "child": {
                     "property": "http://purl.org/dc/terms/issued"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de celebración"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtStart"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Fecha de finalización"
+                },
+                "showMiniBold": true,
+                "type": "date",
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/presentedAtEnd"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre del evento"
+                },
+                "showMini": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://purl.org/ontology/bibo/presentedAt"
                   }
                 }
               },
@@ -4453,6 +4532,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.010.040.000",
           "listItem": {
@@ -5524,6 +5604,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.010.000",
           "listItem": {
@@ -6111,6 +6192,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.030.000",
           "listItem": {
@@ -6824,6 +6906,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.040.000",
           "listItem": {
@@ -7617,6 +7700,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.050.000",
           "listItem": {
@@ -8294,6 +8378,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.060.000",
           "listItem": {
@@ -8905,6 +8990,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.010.050.000",
           "listItem": {
@@ -9769,6 +9855,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.010.000",
           "listItem": {
@@ -10377,6 +10464,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.020.020.000",
           "listItem": {
@@ -11107,6 +11195,7 @@
             "end": "http://vivoweb.org/ontology/core#end",
             "start": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.020.000",
           "listItem": {
@@ -11645,6 +11734,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.030.000",
           "listItem": {
@@ -12291,6 +12381,7 @@
             "always": false,
             "end": "http://vivoweb.org/ontology/core#start"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.040.000",
           "listItem": {
@@ -12990,10 +13081,11 @@
             "always": false,
             "end": "http://w3id.org/roh/dateIssued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.050.000",
           "listItem": {
-            "propertyTitle": {              
+            "propertyTitle": {
               "property": "http://vivoweb.org/ontology/core#relatedBy",
               "graph": "accreditation",
               "child": {
@@ -13362,6 +13454,7 @@
             "always": false,
             "end": "http://w3id.org/roh/dateIssued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.060.000",
           "listItem": {
@@ -13771,10 +13864,11 @@
             "always": false,
             "end": "http://w3id.org/roh/dateIssued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.070.000",
           "listItem": {
-            "propertyTitle": {              
+            "propertyTitle": {
               "auxTitle": {
                 "es": "Nº de tramos reconocidos:"
               },
@@ -14180,6 +14274,7 @@
             "always": false,
             "end": "http://purl.org/dc/terms/issued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.090.000",
           "listItem": {
@@ -14567,6 +14662,7 @@
             "always": false,
             "end": "http://w3id.org/roh/dateIssued"
           },
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "cvnsection": "060.030.100.000",
           "listItem": {

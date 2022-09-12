@@ -128,6 +128,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public string idBBDD { get; set; }
         /// <summary>
+        /// Indica si se puede publicar o despublicar
+        /// </summary>
+        public bool isPublishable { get; set; }
+        /// <summary>
         /// Indica si es público o no 
         /// </summary>
         public bool ispublic { get; set; }
@@ -135,6 +139,10 @@ namespace EditorCV.Models.API.Response
         /// Indica si es editable o no 
         /// </summary>
         public bool iseditable { get; set; }
+        /// <summary>
+        /// Indica si se puede eliminar o no
+        /// </summary>
+        public bool iserasable { get; set; }
         /// <summary>
         /// Indica si es openaccess
         /// </summary>

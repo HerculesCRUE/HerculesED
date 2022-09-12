@@ -24,6 +24,25 @@ namespace GuardadoCV.Controllers
             _Configuracion = pConfig;
         }
 
+
+        #region Eliminar
+        private static readonly Gnoss.ApiWrapper.ResourceApi mResourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+
+        /// <summary>
+        /// Obtiene la URL de un CV a partir de un usuario
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        [HttpGet("Test")]
+        public IActionResult Test()
+        {
+            DateTime inicio = DateTime.Now;
+            mResourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
+            DateTime fin = DateTime.Now;
+            return Ok((fin - inicio).TotalMilliseconds);
+        }
+        #endregion
+
         /// <summary>
         /// Obtiene la URL de un CV a partir de un usuario
         /// </summary>
@@ -70,13 +89,34 @@ namespace GuardadoCV.Controllers
             }
         }
 
-        [HttpGet("GetItemsDuplicados")]
-        public IActionResult GetItemsDuplicados(string pCVId, float pMinSimilarity = 0.9f)
+        /// <summary>
+        /// Obtiene datos de una entidad
+        /// </summary>
+        /// <param name="pGraph">Grafo</param>
+        /// <param name="pEntity">Entidad de la que obtener datos</param>
+        /// <param name="pProperties">Propiedades a obtener</param>
+        /// <returns></returns>
+        [HttpPost("GetPropertyEntityData")]
+        public IActionResult GetPropertyEntityData([FromForm] string pGraph, [FromForm] string pEntity, [FromForm] List<string> pProperties)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetItemsDuplicados(pCVId, pMinSimilarity));
+                return Ok(accionesEdicion.GetPropertyEntityData(pGraph, pEntity, pProperties));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+
+        [HttpGet("GetItemsDuplicados")]
+        public IActionResult GetItemsDuplicados(string pCVId, float pMinSimilarity = 0.9f, string pItemId = null)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetItemsDuplicados(pCVId, pMinSimilarity, pItemId));
             }
             catch (Exception ex)
             {
@@ -95,12 +135,31 @@ namespace GuardadoCV.Controllers
         /// <param name="pSection">Sección</param>
         /// <returns></returns>
         [HttpGet("GetTab")]
-        public IActionResult GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
+        public IActionResult GetTab(string pCVId, string pId, string pRdfType, string pLang, string pSection = null, bool pOnlyPublic = false)
         {
             try
             {
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection));
+                return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection, pOnlyPublic));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
+            }
+        }
+        /// <summary>
+        /// Obtiene todos los datos marcados como públicos de la persona
+        /// </summary>
+        /// <param name="pPersonID">Identificador de la persona</param>
+        /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <returns></returns>
+        [HttpGet("GetAllPublicData")]
+        public IActionResult GetAllPublicData(string pPersonID, string pLang)
+        {
+            try
+            {
+                AccionesEdicion accionesEdicion = new AccionesEdicion();
+                return Ok(accionesEdicion.GetAllPublicData(_Configuracion, pPersonID, pLang));
             }
             catch (Exception ex)
             {
@@ -223,7 +282,7 @@ namespace GuardadoCV.Controllers
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetTesauros(accionesEdicion.ConseguirNombreTesauro(tesaurus), pLang).Values);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }

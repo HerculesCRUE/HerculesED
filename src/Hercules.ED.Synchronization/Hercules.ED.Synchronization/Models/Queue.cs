@@ -37,10 +37,10 @@ namespace Hercules.ED.Synchronization.Models
         /// <param name="pRabbitMQService">Cola de Rabbit.</param>
         /// <param name="pUltimaFechaMod">Última fecha de modificación.</param>
         /// <param name="pDicIDs">Diccionario con los IDs necesarios de FigShare y GitHub.</param>
-        public void InsertToQueueFuentesExternas(string pOrcid, Queue pRabbitMQService, string pUltimaFechaMod, Dictionary<string, string> pDicIDs)
+        public void InsertToQueueFuentesExternas(string pOrcid, Queue pRabbitMQService, string pUltimaFechaMod, Dictionary<string, string> pDicIDs, string pGnossId)
         {
             // Publicaciones.
-            List<string> listaDatos = new List<string>() { "investigador", pOrcid, pUltimaFechaMod };
+            List<string> listaDatos = new List<string>() { "investigador", pOrcid, pUltimaFechaMod, pGnossId };
             pRabbitMQService.PublishMessage(listaDatos, configService.GetQueueRabbit());
 
             // Zenodo.

@@ -1,13 +1,4 @@
 @*[security|||curriculumvitae|||hercules]*@
-@using Es.Riam.Gnoss.Web.MVC.Models
-@using Es.Riam.Gnoss.Web.MVC.Controles.Helper
-@using Es.Riam.Gnoss.Web.MVC.Models.ViewModels
-@using Es.Riam.Gnoss.Web.MVC.Models.Administracion
-@using Es.Riam.Gnoss.AD.ServiciosGenerales
-@using Es.Riam.Gnoss.Web.MVC.Controllers
-@using Es.Riam.Gnoss.Web.MVC.Controllers.Administracion
-@using Es.Riam.Gnoss.Web.Controles
-@using Newtonsoft.Json
 @using System.Reflection;
 @model ResourceViewModel
 @{ 
@@ -108,8 +99,8 @@
 <input type="hidden" id="CV_DUPLICADO_NO_DUPLICADO" value="@Html.Translate("CV_DUPLICADO_NO_DUPLICADO")"/>
 <input type="hidden" id="CV_CAMBIAR_A_PRINCIPAL" value="@Html.Translate("CV_CAMBIAR_A_PRINCIPAL")"/>
 <input type="hidden" id="DUPLICADOS_NO_HAY_DUPLICADOS" value="@Html.Translate("DUPLICADOS_NO_HAY_DUPLICADOS")"/>
-
-
+<input type="hidden" id="CV_ALERTA_FUSION_ELIMINACION_BLOQUEADO" value="@Html.Translate("CV_ALERTA_FUSION_ELIMINACION_BLOQUEADO")"/>
+<input type="hidden" id="CV_ALERTA_ELIMINACION_BLOQUEADO" value="@Html.Translate("CV_ALERTA_ELIMINACION_BLOQUEADO")"/>
 
 
 <script>
@@ -131,6 +122,7 @@ $(function() {
                     <p class="alert-title">
                         <span class="material-icons">warning</span>
                         @Html.Translate("POSIBLE_DUPLICIDAD")
+                        @Html.Raw(Html.Translate("POSIBLE_DUPLICIDAD_MENSAJE"))
                     </p>
                 </div>
                 <div class="resource-list listView">
@@ -145,15 +137,14 @@ $(function() {
                 </div>
                 <div class="formulario-edicion formulario-publicacion" style="display: none;">
                     <div class="select-resource-list">
-                        <p class="title">@Html.Translate("CV_SELECCIONA_PUBLICACION_FUSIONARLA")</p>
                         <div class="resource-list listView list-con-checks">
                             <div class="resource-list-wrap">
                             </div>
                         </div>
                     </div>
                     <div class="form-actions">
-                        <a class="btn btn-primary uppercase btn-fusionar">@Html.Translate("CV_FUSIONAR_CONTINUAR")</a>
-                        <a class="btn btn-primary uppercase">@Html.Translate("CV_CONTINUAR")</a>
+                        <a class="btn btn-primary uppercase btn-aplicar">@Html.Translate("CV_APLICAR_CONTINUAR")</a>
+                        <a class="btn btn-primary uppercase btn-continuar">@Html.Translate("CV_CONTINUAR")</a>
                     </div>
                 </div>
                 <div class="formulario-edicion formulario-proyecto" >

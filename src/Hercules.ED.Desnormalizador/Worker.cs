@@ -146,6 +146,8 @@ namespace DesnormalizadorHercules
 
             ProcessItemsError();
 
+
+
             //TODO exporatciones pendientes que lleven mucho tiempo pasar a error
         }
 
@@ -174,7 +176,7 @@ namespace DesnormalizadorHercules
         private void ProcessComplete()
         {
             string denormalizerCronExpression = _configService.GetDenormalizerCronExpression();
-
+            bool ejecutado = false;
             new Thread(() =>
             {
                 while (true)
@@ -184,7 +186,11 @@ namespace DesnormalizadorHercules
 
                         var expression = new CronExpression(denormalizerCronExpression);
                         DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
-
+                        if (!ejecutado)
+                        {
+                            ActualizadorEDMA.DesnormalizarTodo(_configService);
+                            ejecutado = true;
+                        }
                         if (time.HasValue)
                         {
                             Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));

@@ -15,9 +15,9 @@ var urlDA = "";
  * Crea las urls para las llamadas ajax
  */
 $(document).ready(function () {
-	urlAnn = new URL(url_servicio_externo +  uriAnn);
-	urlNA = new URL(url_servicio_externo +  uriNA);
-	urlDA = new URL(url_servicio_externo +  uriDA);
+	urlAnn = new URL(url_servicio_externo + uriAnn);
+	urlNA = new URL(url_servicio_externo + uriNA);
+	urlDA = new URL(url_servicio_externo + uriDA);
 })
 
 class CargarAnotaciones {
@@ -29,7 +29,7 @@ class CargarAnotaciones {
 	 * @param rdfType, string con el rdfType de la ontología
 	 * @param ontology,
 	 */
-	constructor (idRO, idUser, rdfType, ontology) {
+	constructor(idRO, idUser, rdfType, ontology) {
 		var _self = this
 		this.body = $('body')
 		this.data = undefined
@@ -45,7 +45,7 @@ class CargarAnotaciones {
 	/**
 	 * Método que realiza la petición para obtener las notas de los investigadores actuales 
 	 */
-	loadInRo () {
+	loadInRo() {
 
 		let _self = this
 
@@ -73,7 +73,7 @@ class CargarAnotaciones {
 	 * @param data, array de objetos con los las notas a pintar
 	 * @param callback, función que se le pasa por parámetro para realizar alguna acción una vez que se realice el pintado
 	 */
-	printItems(idTab = null, idContenedor = null, data = null, callback = () => {}) {
+	printItems(idTab = null, idContenedor = null, data = null, callback = () => { }) {
 		// Establecemos los contenedores
 		if (idTab != null) {
 			this.tabItem = document.getElementById(idTab)
@@ -81,6 +81,7 @@ class CargarAnotaciones {
 		if (idContenedor != null) {
 			this.contenedor = document.getElementById(idContenedor)
 		}
+
 
 		// Establecer el número de items en el HTML
 		let dataSel = this.tabItem.getElementsByClassName('data')[0]
@@ -93,8 +94,9 @@ class CargarAnotaciones {
 		let currentData = data != null ? data : this.data
 
 		// Pintamos el html
+		console.log(currentData);
 		let html = currentData.map(e => {
-		
+
 			/*var text = e.texto.substring(0, 100).replace("\n", "<br />");
 			var readmore = "";
 			var index = text.indexOf("<br />", text.indexOf("<br />") + "<br />".length);
@@ -106,6 +108,11 @@ class CargarAnotaciones {
 				//text = text.substring(0,text.lastIndexOf("<br />")-1);
 				readmore = "<a onclick='readMoreAnotacion(\""+e.id+"\",\""+e.texto+"\")' class='readmore'>Leer más</a>";
 			}*/
+			var fecha = e.fecha.split(" ")[0].split("/");
+			var mes = fecha[0];
+			var dia = fecha[1];
+			var anyo = fecha[2];
+
 			return `<article class="resource resource-annotation" id="${e.id}">
                         <div class="wrap">
                             <div class="row">
@@ -113,7 +120,7 @@ class CargarAnotaciones {
                                     <div class="middle-wrap">
                                         <div class="title-wrap">
                                             <h2 class="resource-title">
-                                                <span> ${e.fecha} </span>
+                                                <span> ${dia}/${mes}/${anyo} ${e.fecha.split(" ")[1]} UTC</span>
                                             </h2>
                                         </div>
                                         <div class="content-wrap">
@@ -163,23 +170,29 @@ class CargarAnotaciones {
                     </article>`
 		})
 		let resourceItems = this.contenedor.getElementsByClassName('resource-list-wrap')[0]
+		$(resourceItems).empty();
 		resourceItems.innerHTML = html.join('');
-		$("#annotations-tab").off("click").on("click", function() {
-			// calcula las lineas que tiene la anotacion para saber si hay que mostart el boton de ver mas o menos
-			$("#annotations-panel").find(".description-wrap.counted").each(function(e) {
-				var containerWidth =  $("#paneles-recurso").width()-144 //tamaño del panel - tamaño del padding hasta el contenedor de la anotacion
-				var saltosDeLinea = $(this).find(".desc p")[0].innerHTML.split("<br>");
-				var lineas = saltosDeLinea.length-1;
-				for (var i = 0; i < saltosDeLinea.length; i++) {
-					lineas+=saltosDeLinea[i].width("0.933rem sans-serif")/containerWidth; //calculo de lineas que ocupa cada linea
-				}
-				if(lineas > 2) {
-					$(this).parent().find(".moreResults").show();
-				}
-		
-			})
-		});
-		
+		if (html.length == 0) {
+			$(resourceItems).append(`
+			<p>`
+				+ $("#NO_HAY_NOTAS_PRIVADAS").val() +
+				`</p>
+			`)
+		}
+		// calcula las lineas que tiene la anotacion para saber si hay que mostart el boton de ver mas o menos
+		$("#annotations-panel").find(".description-wrap.counted").each(function (e) {
+			var containerWidth = $("#paneles-recurso").width() - 144 //tamaño del panel - tamaño del padding hasta el contenedor de la anotacion
+			var saltosDeLinea = $(this).find(".desc p")[0].innerHTML.split("<br>");
+			var lineas = saltosDeLinea.length - 1;
+			for (var i = 0; i < saltosDeLinea.length; i++) {
+				lineas += saltosDeLinea[i].width("0.933rem sans-serif") / containerWidth; //calculo de lineas que ocupa cada linea
+			}
+			if (lineas > 2) {
+				$(this).parent().find(".moreResults").show();
+			}
+
+		})
+
 		// Llamamos al callback para realizar alguna acción una vez que se han pintado las notas
 		callback()
 	}
@@ -189,7 +202,7 @@ class CargarAnotaciones {
 	 * @param url, string con la url de la llamada
 	 * @param args, objeto con los parámetros post para la llamada
 	 */
-	postCall (url, args) {
+	postCall(url, args) {
 
 		return new Promise((resolve, reject) => {
 			$.post(url.toString(), args, function (data) {
@@ -203,7 +216,7 @@ class CargarAnotaciones {
 	 * @param texto, string con el texto de la anotación
 	 * @param idAnnotation, texto opcional con el id de la anotación
 	 */
-	newUpdateAnnotation (texto, idAnnotation = "") {
+	newUpdateAnnotation(texto, idAnnotation = "") {
 		return new Promise((resolve, reject) => {
 
 			// Variables para la petición
@@ -229,7 +242,7 @@ class CargarAnotaciones {
 	 * Método que borra una anotación
 	 * @param idAnnotation, string con el id de la anotación a borrar
 	 */
-	deleteAnnotation (idAnnotation) {
+	deleteAnnotation(idAnnotation) {
 		return new Promise((resolve, reject) => {
 
 			// Variables para la petición

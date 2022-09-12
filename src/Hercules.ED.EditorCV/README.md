@@ -13,8 +13,6 @@
 
 [Controladores](#controladores)
 
-[Gestión de duplicados](#gestión-de-duplicados)
-
 [Hércules ED. Configuración del Editor de CV](#hércules-ed-configuración-del-editor-de-cv)
 
 [Dependencias](#dependencias)
@@ -27,28 +25,6 @@ El servicio de editor de CV cuenta con varios controladores:
 - Exportado CV - Servicio encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
 - Guardado CV - Servicio encargado de la creación, modificación y eliminacion de un ítem.
 - Importado CV - Servicio encargado de la carga de datos y presentación de los mismos para la implementación de CV.
-
-## Gestión de duplicados
-El EditorCV cuenta con un servicio para la detección de duplicados, el cual se mostrará al usuario al acceder al área de edición de su curriculum vitae. Pero también podrá acceder al mismo seleccionando "GESTIONAR DUPLICADOS" en la esquina superior derecha.
-
-![](../../Docs/media/EditorCV/GestionDuplicadosPaso1.png)
-
-![](../../Docs/media/EditorCV/GestionDuplicadosBoton.png)
-
-La gestión de duplicados le indicará al propio usuario los ítems detectados como similares en su CV. Se le mostrará un ítem principal sobre el cual se le aplicarán las acciones de los ítems secundarios. 
-Los ítems secundarios pueden pasar a principal, al seleccionar el botón "CAMBIAR A PRINCIPAL". 
-Los ítems secundarios pueden tener diferentes acciones:
-- Fusionar - Los datos vacíos del ítem principal serán complementados por los datos del ítem secundario. El ítem principal no perderá datos ni serán rescritos en este proceso, únicamente se añadirán datos que estaban vacíos previamente.
-- Eliminar - Se eliminará el ítem secundario del CV del usuario.
-- Marcar como no duplicado - El ítem se marcará como diferente sobre el ítem principal, para que no sea mostrado en el futuro.
-
-![](../../Docs/media/EditorCV/GestionDuplicadosPaso2.png)
-
-El usuario puede seleccionar dos opciones:
-
-- "APLICAR Y SIGUIENTE" - Será necesario que los ítems secundarios tengan una acción asociada. Se aplicarán las acciones elegidas en los ítems secundarios y se mostrará los siguientes ítems detectados como similares.
-
-- "IGNORAR Y SIGUIENTE" - Se pasará al siguiente grupo de ítems detectados como similares sin realizar ninguna acción sobre los ítems mostrados.
 
 ## Hércules ED. Configuración del Editor de CV
 

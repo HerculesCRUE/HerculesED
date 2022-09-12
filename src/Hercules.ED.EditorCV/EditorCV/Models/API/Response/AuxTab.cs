@@ -11,5 +11,7 @@ namespace EditorCV.Models.API.Response
         /// Título del tab
         /// </summary>
         public string title { get; set; }
+        public string rdftypeTab { get; set; }
+        public string entityIDTab { get; set; }
     }
 }

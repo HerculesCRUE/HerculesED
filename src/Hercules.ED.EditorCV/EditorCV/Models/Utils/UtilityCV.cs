@@ -266,15 +266,21 @@ namespace EditorCV.Models.Utils
         /// </summary>
         /// <param name="pIds">Identificadores de las entidades de las que recuperar sus propiedades</param>
         /// <param name="pProperties">Propiedades a recuperar</param>   
+        /// <param name="pSoloPublicos">Obtiene los datos sólo de lo públicos</param>
         /// <returns></returns>
         public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetPropertiesContadores(HashSet<string> pIds,
-            List<PropertyData> pProperties)
+            List<PropertyData> pProperties,bool pSoloPublicos=false)
         {
             int paginacion = 10000;
             int maxIn = 1000;
 
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = new Dictionary<string, List<Dictionary<string, Data>>>();
 
+            string queryPublicos = "";
+            if (pSoloPublicos)
+            {
+                queryPublicos = $"?o <{PropertyIspublic}> 'true'. ";
+            }
 
             SparqlObject sparqlObject = null;
             if (pProperties.Count > 0)
@@ -296,6 +302,7 @@ namespace EditorCV.Models.Utils
                                                     FILTER(?p in(<{string.Join(">,<", pProperties.Select(x => x.property).ToList().OrderByDescending(x => x))}>))
                                                     ?o ?p2 ?o2.
                                                     FILTER(?p2=<http://vivoweb.org/ontology/core#relatedBy>)
+                                                    {queryPublicos}
                                                 }} 
                                                 order by asc(?o) asc(?p) asc(?s)
                                             }} limit {limit} offset {offset}";

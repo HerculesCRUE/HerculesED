@@ -204,12 +204,11 @@ var metricas = {
         };
         opcionesDropdown.push(opcionGuardar);
         paginas = await getPages($(".resource-list.graphView .resource-list-wrap"), $('.inpt_usuarioID').attr('value'), ObtenerHash2());
-
+        this.engancharComportamientosAdmin(true);
         paginas[numPagina].pintarPagina(opcionesDropdown);
         $(`li[num="${numPagina}"] a`).addClass('active');
         this.crearFacetas(paginas[numPagina]);
         this.engancharComportamientos();
-        this.engancharComportamientosAdmin();
         
         return;
     },
@@ -413,7 +412,7 @@ var metricas = {
         });
     },
     // Administrar gráficas
-    engancharComportamientosAdmin: function () {
+    engancharComportamientosAdmin: function (addOption = false) {
         var url = url_servicio_graphicengine + "IsAdmin"; //"https://localhost:44352/IsAdmin";
         var arg = {};
         arg.pLang = lang;
@@ -424,14 +423,64 @@ var metricas = {
             isAdmin = data;
         }).done(function () {
             if (isAdmin) {
-                $(".acciones-mapa .dropdown ul").append(`
+                opcionAdmin = {};
+                opcionAdmin.elemento = `
                     <li>
                         <a class="item-dropdown admin-config">
                             <span class="material-icons">settings</span>
-                            <span class="text">Configuración</span>
+                            <span class="text">${metricas.GetText("CONFIGURACION")}</span>
                         </a>
                     </li>
-                `);
+                `;
+                opcionAdmin.elementozoom = `
+                    <li>
+                        <a class="item-dropdown admin-configzoom">
+                            <span class="material-icons">settings</span>
+                            <span class="text">${metricas.GetText("CONFIGURACION")}</span>
+                        </a>
+                    </li>
+                `;
+                opcionAdmin.identificador = "admin-config";
+                opcionAdmin.comportamiento = function() {
+                    $('#modal-admin-config').css('display', 'block');
+                    $('#modal-admin-config').css('pointer-events', 'none');
+                    $('.modal-backdrop').addClass('show');
+                    $('.modal-backdrop').css('pointer-events', 'auto');
+                    $('#modal-admin-config').addClass('show');
+        
+                    var url = url_servicio_graphicengine + "ObtenerGraficaConfig"; //"https://localhost:44352/GetConfiguracion"
+                    var args = {}
+                    args.pLang = lang;
+                    args.pUserId = $('.inpt_usuarioID').attr('value');
+                    args.pGraphicId = $(this).closest('article').find('.grafica.show').data('grafica').idGrafica;
+                    args.pPageID = paginas[numPagina].id;
+                    var numGraficas = $(this).closest('article').parent().find('article').length;
+                    var idGrafica = $(this).closest('article').find('.grafica').data('grafica').idGrafica;
+                    var idBloque = '';
+                    if (args.pGraphicId != idGrafica) {
+                        idBloque = idGrafica;
+                        idGrafica = args.pGraphicId;
+                    }
+                    $("#modal-admin-config #idSelectorOrden").empty();
+                    for (var i = 0; i < numGraficas; i++) {
+                        $("#modal-admin-config #idSelectorOrden").append(`
+                            <option value="${i + 1}">${i + 1}</option>
+                        `)
+                    }
+                    var parent = $(this).parents('article');
+                    var index = parent.index();
+                    $("#idSelectorOrden").val(index + 1).change();
+                    $.get(url, args, function (listaData) {
+                        $("#modal-admin-config #labelTituloGraficaConfig").val(listaData.nombre[lang]);
+                        $("#modal-admin-config #idSelectorTamanyoConfig").val(listaData.anchura).change();
+                        $("#modal-admin-config #btnGuardarGraficaConfig").attr('idgrafica', idGrafica);
+                        if (idBloque != '') {
+                            $("#modal-admin-config #btnGuardarGraficaConfig").attr('idbloque', idBloque);
+                        }
+                })};
+                if (addOption) {
+                    opcionesDropdown.push(opcionAdmin);
+                }
                 if ($(".pageOptions .admin-page").length == 0) {
                     $('.pageOptions').append(`
                         <div class="admin-page">
@@ -445,7 +494,7 @@ var metricas = {
                     .click(function (e) {
                         metricas.clearPage();
                         metricas.createAdminPage();
-                    });
+                });
             }
         });
     },
@@ -866,46 +915,6 @@ var metricas = {
                 `)
             });
 
-        $('a.admin-config').unbind().click(function (e) {
-                $('#modal-admin-config').css('display', 'block');
-                $('#modal-admin-config').css('pointer-events', 'none');
-                $('.modal-backdrop').addClass('show');
-                $('.modal-backdrop').css('pointer-events', 'auto');
-                $('#modal-admin-config').addClass('show');
-    
-                var url = url_servicio_graphicengine + "ObtenerGraficaConfig"; //"https://localhost:44352/GetConfiguracion"
-                var args = {}
-                args.pLang = lang;
-                args.pUserId = $('.inpt_usuarioID').attr('value');
-                args.pGraphicId = $(this).closest('article').find('.grafica.show').data('grafica').idGrafica;
-                args.pPageID = paginas[numPagina].id;
-                var numGraficas = $(this).closest('article').parent().find('article').length;
-                var idGrafica = $(this).closest('article').find('.grafica').data('grafica').idGrafica;
-                var idBloque = '';
-                if (args.pGraphicId != idGrafica) {
-                    idBloque = idGrafica;
-                    idGrafica = args.pGraphicId;
-                }
-                $("#modal-admin-config #idSelectorOrden").empty();
-                for (var i = 0; i < numGraficas; i++) {
-                    $("#modal-admin-config #idSelectorOrden").append(`
-                        <option value="${i + 1}">${i + 1}</option>
-                    `)
-                }
-                var parent = $(this).parents('article');
-                var index = parent.index();
-                $("#idSelectorOrden").val(index + 1).change();
-                $.get(url, args, function (listaData) {
-                    $("#modal-admin-config #labelTituloGraficaConfig").val(listaData.nombre[lang]);
-                    $("#modal-admin-config #idSelectorTamanyoConfig").val(listaData.anchura).change();
-                    $("#modal-admin-config #btnGuardarGraficaConfig").attr('idgrafica', idGrafica);
-                    if (idBloque != '') {
-                        $("#modal-admin-config #btnGuardarGraficaConfig").attr('idbloque', idBloque);
-                    }
-                });
-    
-            });
-
         $('div.edit-page')
             .unbind()
             .click(function (e) {
@@ -1105,7 +1114,11 @@ var metricas = {
 
                 var grafica = $("#grafica_" + paginas[numPagina].id + "_" + idGraficaActual);
                 var chart = Chart.getChart(grafica.attr('id'));
-                var scales = chart.scales;
+                if (chart) {
+                    var scales = chart.scales;
+                } else {
+                    var scales = "";
+                }
                 var isHorizontal = grafica.parents('div.grafica').data('grafica').orientacion == 'horizontal';
                 var max = [];
 
@@ -1444,7 +1457,7 @@ comportamientoFacetasPopUp.cargarFaceta = function (pIdFaceta) {
             that.arrayTotales[i][0] = that.eliminarAcentos(item.nombre.toLowerCase());
             that.arrayTotales[i][1] = $(`<a href="javascript: void(0);" class="faceta filtroMetrica" filtro="${item.filtro}">
                                 <span class="textoFaceta">${item.nombre == 'true' ? 'Sí' : (item.nombre == 'false' ? 'No' : item.nombre)}</span>
-                                <span class="num-resultados">(5)</span>
+                                <span class="num-resultados">(${item.numero})</span>
                             </a>`);
             i++;
         });

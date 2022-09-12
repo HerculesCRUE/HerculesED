@@ -68,10 +68,15 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarIndicesImpacto();
             actualizadorDocument.ActualizarGenderAutorPrincipal();
             actualizadorDocument.ActualizarPositionAutorPrincipal();
+            actualizadorDocument.EliminarDocumentosSinAutoresActivos();
+            actualizadorDocument.ModificarNombreRevistaDesnormalizado();
+            actualizadorDocument.ModificarEditorialRevistaDesnormalizado();
+            actualizadorDocument.ModificarISSNRevistaDesnormalizado();
 
             //ROs sin dependencias
             actualizadorRO.ActualizarAreasRO();
             actualizadorRO.ActualizarTagsRO();
+            actualizadorRO.EliminarROsSinAutoresActivos();
 
             //Patentes sin dependencias
             actualizadorPatent.ActualizarPatentesValidadas();
@@ -89,6 +94,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
             actualizadorCV.EliminarDuplicados();
+            actualizadorCV.EliminarItemsEliminados();
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas();
@@ -127,6 +133,8 @@ namespace DesnormalizadorHercules.Models
                 UtilsSimilarity utilsSimilarityRos = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "code_project");
                 utilsSimilarityRos.SincroComplete();
             }
+
+            //TODO eliminar personas externas sin publicaciones
         }
 
         /// <summary>
@@ -146,6 +154,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
             actualizadorCV.EliminarDuplicados();
+            actualizadorCV.EliminarItemsEliminados();
         }
 
 
@@ -297,6 +306,9 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarIndicesImpacto(pDocuments: pDocuments);
             actualizadorDocument.ActualizarPositionAutorPrincipal(pDocuments: pDocuments);
             actualizadorDocument.ActualizarGenderAutorPrincipal(pDocuments: pDocuments);
+            actualizadorDocument.ModificarNombreRevistaDesnormalizado(pDocuments: pDocuments);
+            actualizadorDocument.ModificarEditorialRevistaDesnormalizado(pDocuments: pDocuments);
+            actualizadorDocument.ModificarISSNRevistaDesnormalizado(pDocuments: pDocuments);
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas(pDocuments: pDocuments);

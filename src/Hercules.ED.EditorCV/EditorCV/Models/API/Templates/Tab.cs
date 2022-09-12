@@ -140,12 +140,15 @@ namespace EditorCV.Models.API.Templates
 
             Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
             propertyDataListItems.property = this.property;
+            
             //Eliminamos 'ispublic'
             propertyDataListItems.childs.RemoveAll(x => x.property == "http://w3id.org/roh/isPublic");
+            
             //Nos quedamos sólo con el relatedBy
             propertyDataListItems.childs.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy").childs = null;
             return propertyDataListItems;
         }
+
     }
 
     /// <summary>
@@ -204,6 +207,10 @@ namespace EditorCV.Models.API.Templates
         /// Propiedad para indicar que se quieren revisar los duplicados
         /// </summary>
         public bool checkDuplicates;
+        /// <summary>
+        /// Propiedad para indicar si los items son publicables
+        /// </summary>
+        public bool isPublishable;
         /// <summary>
         /// Rdf:type de ña entidad del cv 
         /// </summary>

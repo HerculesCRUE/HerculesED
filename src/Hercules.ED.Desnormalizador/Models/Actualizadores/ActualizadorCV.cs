@@ -348,6 +348,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 }
 
                 EliminarDuplicados(pCVs);
+                EliminarItemsEliminados(pCVs);
             }
         }
 
@@ -527,6 +528,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 }
 
                 EliminarDuplicados(pCVs);
+                EliminarItemsEliminados(pCVs);
             }
         }
 
@@ -730,6 +732,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 }
 
                 EliminarDuplicados(pCVs);
+                EliminarItemsEliminados(pCVs);
             }
         }
 
@@ -852,6 +855,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 }
 
                 EliminarDuplicados(pCVs);
+                EliminarItemsEliminados(pCVs);
             }
         }
 
@@ -971,6 +975,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 }
 
                 EliminarDuplicados(pCVs);
+                EliminarItemsEliminados(pCVs);
             }
         }
 
@@ -1345,7 +1350,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// <param name="pCVs">IDs de cvs</param>
         public void EliminarDuplicados(List<string> pCVs = null)
         {
-            HashSet<string> filters = new HashSet<string>();            
+            HashSet<string> filters = new HashSet<string>();
             if (pCVs != null && pCVs.Count > 0)
             {
                 filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
@@ -1354,7 +1359,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add("");
             }
-            
+
             foreach (string filter in filters)
             {
                 while (true)
@@ -1383,13 +1388,108 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                             ?o2 <http://vivoweb.org/ontology/core#relatedBy> <{item}>.
                                         }}limit 10000 offset 1";
                         SparqlObject resultadoIn = mResourceApi.VirtuosoQuery(selectIn, whereIn, "curriculumvitae");
-                        foreach(Dictionary<string,SparqlObject.Data> filain in resultadoIn.results.bindings)
+                        foreach (Dictionary<string, SparqlObject.Data> filain in resultadoIn.results.bindings)
                         {
                             string predicado = filain["p1"].value + "|" + filain["p2"].value;
                             string valorAntiguo = filain["o1"].value + "|" + filain["o2"].value;
                             ActualizadorTriple(cv, predicado, valorAntiguo, "");
                         }
-                        
+
+                    });
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Elimina items eliminados de los CVs
+        /// </summary>
+        /// <param name="pCVs">IDs de cvs</param>
+        public void EliminarItemsEliminados(List<string> pCVs = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pCVs != null && pCVs.Count > 0)
+            {
+                filters.Add($" FILTER(?cv in (<{string.Join(">,<", pCVs)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            List<string> graphs = new List<string>();
+            graphs.Add("from <http://gnoss.com/document.owl>");
+            graphs.Add("from <http://gnoss.com/project.owl>");
+            graphs.Add("from <http://gnoss.com/tutorship.owl>");
+            graphs.Add("from <http://gnoss.com/thesissupervision.owl>");
+            graphs.Add("from <http://gnoss.com/teachingpublication.owl>");
+            graphs.Add("from <http://gnoss.com/teachingproject.owl>");
+            graphs.Add("from <http://gnoss.com/stay.owl>");
+            graphs.Add("from <http://gnoss.com/society.owl>");
+            graphs.Add("from <http://gnoss.com/position.owl>");
+            graphs.Add("from <http://gnoss.com/languagecertificate.owl>");
+            graphs.Add("from <http://gnoss.com/group.owl>");
+            graphs.Add("from <http://gnoss.com/grant.owl>");
+            graphs.Add("from <http://gnoss.com/activity.owl>");
+            graphs.Add("from <http://gnoss.com/impartedacademictraining.owl>");
+            graphs.Add("from <http://gnoss.com/accreditation.owl>");
+            graphs.Add("from <http://gnoss.com/academicdegree.owl>");
+            graphs.Add("from <http://gnoss.com/impartedcoursesseminars.owl>");
+            graphs.Add("from <http://gnoss.com/network.owl>");
+            graphs.Add("from <http://gnoss.com/council.owl>");
+            graphs.Add("from <http://gnoss.com/collaboration.owl>");
+            graphs.Add("from <http://gnoss.com/committee.owl>");
+            graphs.Add("from <http://gnoss.com/technologicalresult.owl>");
+            graphs.Add("from <http://gnoss.com/teachingcongress.owl>");
+            graphs.Add("from <http://gnoss.com/supervisedartisticproject.owl>");
+            graphs.Add("from <http://gnoss.com/scientificproduction.owl>");
+            graphs.Add("from <http://gnoss.com/patent.owl>");
+            graphs.Add("from <http://gnoss.com/researchobject.owl>");
+
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @$"select ?cv ?p1 ?o1 ?p2 ?o2 ?item {string.Join(" ", graphs)}";
+                    String where = @$"  where{{
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv ?p1 ?o1.
+                                            ?o1 ?p2 ?o2.
+                                            ?o2 <http://vivoweb.org/ontology/core#relatedBy> ?item.
+                                            MINUS{{?item a ?rdfType}}
+                                            {filter}
+                                        }}limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+
+                    Dictionary<Guid, List<RemoveTriples>> triplesEliminar = new Dictionary<Guid, List<RemoveTriples>>();
+                    foreach (var fila in resultado.results.bindings)
+                    {
+                        Guid cv = mResourceApi.GetShortGuid(fila["cv"].value);
+                        string p1 = fila["p1"].value;
+                        string o1 = fila["o1"].value;
+                        string p2 = fila["p2"].value;
+                        string o2 = fila["o2"].value;
+                        string predicado = p1 + "|" + p2;
+                        string objeto = o1 + "|" + o2;
+
+                        if (!triplesEliminar.ContainsKey(cv))
+                        {
+                            triplesEliminar[cv] = new List<RemoveTriples>();
+                        }
+                        RemoveTriples t = new();
+                        t.Predicate = predicado;
+                        t.Value = objeto;
+                        triplesEliminar[cv].Add(t);
+                    }
+
+                    Parallel.ForEach(triplesEliminar, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, item =>
+                    {
+                        mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<RemoveTriples>>() { { item.Key, item.Value } });
                     });
                     if (resultado.results.bindings.Count != limit)
                     {

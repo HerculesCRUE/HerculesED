@@ -219,7 +219,7 @@ namespace EditorCV.Models
                     }
 
                 }
-                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }} ORDER BY ?o";
+                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }}ORDER BY ASC(strlen(?o)) ASC (?o)";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
@@ -280,6 +280,35 @@ namespace EditorCV.Models
         }
 
         /// <summary>
+        /// Obtiene datos de una entidad
+        /// </summary>
+        /// <param name="pGraph">Grafo</param>
+        /// <param name="pEntity">Entidad de la que obtener datos</param>
+        /// <param name="pProperties">Propiedades a obtener</param>
+        /// <returns></returns>
+        public Dictionary<string, string> GetPropertyEntityData(string pGraph, string pEntity, List<string> pProperties)
+        {
+            Dictionary<string, string> dicValores = new Dictionary<string, string>();
+
+            string select = "SELECT *  ";
+            string where = $@"WHERE {{
+                                        ?s a ?rdfType.  
+                                        ?s ?p ?o.
+                                        FILTER(?s=<{pEntity}>)
+                                        FILTER(?p in (<{string.Join(">,<", pProperties)}>))
+                                    }}";
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    dicValores[fila["p"].value] = fila["o"].value;
+                }
+            }
+            return dicValores;
+        }
+
+        /// <summary>
         /// Funcion para obtener los elementos con duplicidad.
         /// </summary>
         /// <param name="pCVId">ID del CV a tratar</param>
@@ -287,7 +316,7 @@ namespace EditorCV.Models
         /// <returns>
         /// Un diccionario que tiene el titulo como llave y una lista contiendo las ids de todas las veces que aparece ese titulo.
         /// </returns>
-        public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity)
+        public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity, string pItemId = null)
         {
             Dictionary<string, HashSet<string>> itemsNoDuplicados = new Dictionary<string, HashSet<string>>();
             string select = $@"SELECT distinct ?group ?id";
@@ -322,13 +351,13 @@ namespace EditorCV.Models
                             Dictionary<string, Tuple<string, string, bool>> itemsTitleValidatedSection = GetItemsTitleParaDuplicados(pCVId, tab.property, tabSection.property, tabSection.presentation.listItemsPresentation.listItemEdit.graph, tabSection.presentation.listItemsPresentation.listItemEdit.proptitle);
 
                             List<KeyValuePair<string, Tuple<string, string, bool>>> itemsTitleSectionList = itemsTitleValidatedSection.ToList();
-                            for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
+                            if (pItemId != null)
                             {
                                 Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
-                                similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
-                                for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
+                                similarsin[pItemId] = itemsTitleValidatedSection[pItemId].Item3;
+                                for (int j = 0; j < itemsTitleSectionList.Count; j++)
                                 {
-                                    double similitud = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                    double similitud = Similarity(itemsTitleValidatedSection[pItemId].Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
                                     if (similitud > minSimilarity)
                                     {
                                         similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
@@ -346,20 +375,53 @@ namespace EditorCV.Models
                                 //Ordenamos primero con los validados
                                 similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                                 ////Sólo puede ser validado el primero
-                                //if (similarsin.Count > 1)
-                                //{
-                                //    foreach (string id in similarsin.Keys.ToList().GetRange(1, similarsin.Keys.Count - 1))
-                                //    {
-                                //        if (similarsin[id])
-                                //        {
-                                //            similarsin.Remove(id);
-                                //        }
-                                //    }
-                                //}
                                 if (similarsin.Count > 1)
                                 {
                                     //Si hay mas de uno y hay alguno no validado lo añadimos
                                     similars.Add(new HashSet<string>(similarsin.Keys));
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
+                                {
+                                    Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
+                                    similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
+                                    for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
+                                    {
+                                        double similitud = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                        if (similitud > minSimilarity)
+                                        {
+                                            similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
+                                        }
+                                    }
+                                    //Eliminamos si hay alguno duplicado
+                                    foreach (string duplicado in similars.SelectMany(x => x))
+                                    {
+                                        if (similarsin.ContainsKey(duplicado))
+                                        {
+                                            similarsin.Remove(duplicado);
+                                        }
+                                    }
+
+                                    //Ordenamos primero con los validados
+                                    similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                    ////Sólo puede ser validado el primero
+                                    //if (similarsin.Count > 1)
+                                    //{
+                                    //    foreach (string id in similarsin.Keys.ToList().GetRange(1, similarsin.Keys.Count - 1))
+                                    //    {
+                                    //        if (similarsin[id])
+                                    //        {
+                                    //            similarsin.Remove(id);
+                                    //        }
+                                    //    }
+                                    //}
+                                    if (similarsin.Count > 1)
+                                    {
+                                        //Si hay mas de uno y hay alguno no validado lo añadimos
+                                        similars.Add(new HashSet<string>(similarsin.Keys));
+                                    }
                                 }
                             }
                             //Eliminamos de los similares aquellos que estén marcados como no duplicados
@@ -384,7 +446,7 @@ namespace EditorCV.Models
                             {
                                 foreach (string idAux in sim.ToList())
                                 {
-                                    if(!procesado.Add(idAux))
+                                    if (!procesado.Add(idAux))
                                     {
                                         sim.Remove(idAux);
                                     }
@@ -401,12 +463,18 @@ namespace EditorCV.Models
                                 similarityResponse.items = sim;
                                 listSimilarity.Add(similarityResponse);
                             }
-
+                            if (pItemId != null)
+                            {
+                                string item = listSimilarity.First(x => x.items.Contains(pItemId)).items.First(x => x == pItemId);
+                                HashSet<string> auxItems = listSimilarity.First(x => x.items.Contains(pItemId)).items;
+                                listSimilarity.First(x => x.items.Contains(pItemId)).items.Remove(item);
+                                listSimilarity.First(x => x.items == auxItems).items = auxItems.Prepend(item).ToHashSet();
+                                return listSimilarity;
+                            }
                         }
                     }
                 }
             }
-
             return listSimilarity;
         }
 
@@ -425,7 +493,7 @@ namespace EditorCV.Models
                                 ?itemSection <http://vivoweb.org/ontology/core#relatedBy> ?item .
                                 ?item <{pPropTitle}> ?title.
                                 OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
-                            }}order by desc (?o) LIMIT {limit} OFFSET {offset}";
+                            }} LIMIT {limit} OFFSET {offset}";
                 SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
@@ -525,7 +593,7 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Sección</param>
         /// <returns></returns>
-        public AuxTab GetTab(ConfigService pConfig, string pCVId, string pId, string pRdfType, string pLang, string pSection = null)
+        public AuxTab GetTab(ConfigService pConfig, string pCVId, string pId, string pRdfType, string pLang, string pSection = null, bool pOnlyPublic = false)
         {
             //Obtenemos el template
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfType);
@@ -535,7 +603,7 @@ namespace EditorCV.Models
                 //Obtenemos los datos necesarios para el pintado
                 Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId, template, pLang, pSection);
                 //Obtenemos el modelo para devolver
-                respuesta = GetTabModel(pConfig, pCVId, pId, data, template, pLang, pSection);
+                respuesta = GetTabModel(pConfig, pCVId, pId, data, template, pLang, pSection, pOnlyPublic);
             }
             else
             {
@@ -543,6 +611,62 @@ namespace EditorCV.Models
             }
             respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
             return respuesta;
+        }
+
+        /// <summary>
+        /// Obtiene todas las secciones y pestañas públicas del usuario
+        /// </summary>
+        /// <param name="pPersonID">Identificador de la persona</param>
+        /// <param name="pLang">Idioma para recuperar los datos</param>
+        /// <returns></returns>
+        public List<API.Response.Tab> GetAllPublicData(ConfigService pConfig, string pPersonId, string pLang)
+        {
+            List<string> tabsPublic = new List<string>();
+            tabsPublic.Add("http://w3id.org/roh/professionalSituation");
+            tabsPublic.Add("http://w3id.org/roh/qualifications");
+            tabsPublic.Add("http://w3id.org/roh/teachingExperience");
+            tabsPublic.Add("http://w3id.org/roh/scientificExperience");
+            tabsPublic.Add("http://w3id.org/roh/scientificActivity");
+
+            //Obtenemos el template
+            List<API.Templates.Tab> templates = UtilityCV.TabTemplates.Where(x => tabsPublic.Contains(x.property)).ToList();
+            List<API.Response.Tab> respuestas = new List<API.Response.Tab>();
+            //Obtenemos los datos necesarios para el pintado
+            // Consigo el pId y el pCvId a partir del Id de la persona pPersonId
+            string pCVId = "";
+            Dictionary<string,Tuple<string, string>> pId = new Dictionary<string, Tuple<string, string>>();
+            string select = "SELECT ?cv ?property ?id ?rdftype";
+            string where = @$"WHERE {{
+                    ?cv<http://w3id.org/roh/cvOf> <{pPersonId}>.
+                    ?cv ?property ?id.
+                    ?id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?rdftype.
+                    FILTER(?property in (<{string.Join(">,<",tabsPublic)}>))
+                }}";
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+            {
+                pCVId = fila["cv"].value;
+                pId[fila["property"].value] = new Tuple<string, string>(fila["id"].value, fila["rdftype"].value);
+            }
+            if (!string.IsNullOrEmpty(pCVId))
+            {
+                foreach (API.Templates.Tab template in templates)
+                {
+                    API.Response.Tab respuesta = null;
+                    Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = GetTabData(pId[template.property].Item1, template, pLang, null, true);
+                    //Obtenemos el modelo para devolver
+                    respuesta = GetTabModel(pConfig, pCVId, pId[template.property].Item1, data, template, pLang, null, true);
+                    respuesta.title = UtilityCV.GetTextLang(pLang, template.title);
+                    respuesta.rdftypeTab = pId[template.property].Item2;
+                    respuesta.entityIDTab = pId[template.property].Item1;
+                    respuesta.sections.RemoveAll(x => x.items == null || x.items.Count == 0);
+                    if (respuesta.sections.Count > 0)
+                    {
+                        respuestas.Add(respuesta);
+                    }
+                }
+            }
+            return respuestas;
         }
 
         /// <summary>
@@ -1037,14 +1161,23 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null)
+        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublicCounters = false)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             List<PropertyData> propertyDatasContadores = new List<PropertyData>();
+            List<PropertyData> propertyDatasContadoresPublicos = new List<PropertyData>();
             string graph = "curriculumvitae";
             foreach (API.Templates.TabSection templateSection in pTemplate.sections)
             {
-                if (string.IsNullOrEmpty(pSection))
+                if (onlyPublicCounters)
+                {
+                    if (templateSection.presentation.listItemsPresentation != null && templateSection.presentation.listItemsPresentation.isPublishable
+                        && templateSection.presentation.listItemsPresentation.listItemEdit.rdftype != "http://vivoweb.org/ontology/core#Project" && templateSection.presentation.listItemsPresentation.listItemEdit.rdftype != "http://purl.org/ontology/bibo/Document")
+                    {
+                        propertyDatasContadoresPublicos.Add(templateSection.GenerarPropertyDataContadores(graph));
+                    }
+                }
+                else if (string.IsNullOrEmpty(pSection))
                 {
                     propertyDatas.Add(templateSection.GenerarPropertyData(graph));
                 }
@@ -1067,6 +1200,7 @@ namespace EditorCV.Models
 
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataPropiedades = UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataContadores = UtilityCV.GetPropertiesContadores(new HashSet<string>() { pId }, propertyDatasContadores);
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> dataContadoresPublicos = UtilityCV.GetPropertiesContadores(new HashSet<string>() { pId }, propertyDatasContadoresPublicos, true);
             if (dataContadores.Count > 0)
             {
                 foreach (string key in dataContadores.Keys)
@@ -1076,6 +1210,17 @@ namespace EditorCV.Models
                         dataPropiedades[key] = new List<Dictionary<string, Data>>();
                     }
                     dataPropiedades[key].AddRange(dataContadores[key]);
+                }
+            }
+            if (dataContadoresPublicos.Count > 0)
+            {
+                foreach (string key in dataContadoresPublicos.Keys)
+                {
+                    if (!dataPropiedades.ContainsKey(key))
+                    {
+                        dataPropiedades[key] = new List<Dictionary<string, Data>>();
+                    }
+                    dataPropiedades[key].AddRange(dataContadoresPublicos[key]);
                 }
             }
             return dataPropiedades;
@@ -1194,7 +1339,7 @@ namespace EditorCV.Models
         /// <param name="pTemplate">Plantilla para generar el template</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null)
+        private API.Response.Tab GetTabModel(ConfigService pConfig, string pCVId, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool pOnlyPublic = false)
         {
             //Obtenemos todas las entidades del CV con sus propiedades multiidioma
             Dictionary<string, Dictionary<string, HashSet<string>>> entidadesMultiidioma = GetMultilangDataCV(pCVId);
@@ -1252,7 +1397,7 @@ namespace EditorCV.Models
                                 if (pData.ContainsKey(pId))
                                 {
                                     bool soloID = false;
-                                    if (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0)
+                                    if ((pOnlyPublic && pSection == null) || (pSection == "0" && pTemplate.sections.IndexOf(templateSection) > 0))
                                     {
                                         soloID = true;
                                     }
@@ -1271,6 +1416,10 @@ namespace EditorCV.Models
                                         else
                                         {
                                             tabSection.items.Add(idEntity, GetItem(pConfig, idEntity, pData, templateSection.presentation.listItemsPresentation, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas, templateSection.presentation.listItemsPresentation.last5Years));
+                                            if (pOnlyPublic && !tabSection.items.Last().Value.ispublic)
+                                            {
+                                                tabSection.items.Remove(idEntity);
+                                            }
                                         }
                                     }
                                 }
@@ -1306,6 +1455,10 @@ namespace EditorCV.Models
                             throw new Exception("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
                     }
                 }
+            }
+            if (pOnlyPublic)
+            {
+                tab.sections.RemoveAll(x => x.items == null || x.items.Count == 0);
             }
             return tab;
         }
@@ -1353,8 +1506,10 @@ namespace EditorCV.Models
             }
             item.identifier = mResourceApi.GetShortGuid(GetPropValues(pId, pListItemConfig.listItem.propertyTitle.property, pData).FirstOrDefault()).ToString().ToLower();
 
-            //Editabilidad
+            //Editable
             item.iseditable = true;
+            //Borrable (se comprueba lo mismo que si son editables excepto 'http://w3id.org/roh/isValidated')
+            item.iserasable = true;
             if (!string.IsNullOrEmpty(pId))
             {
                 foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
@@ -1374,10 +1529,18 @@ namespace EditorCV.Models
                     if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
+                        if (propEditabilidad != "http://w3id.org/roh/isValidated")
+                        {
+                            item.iserasable = false;
+                        }
                     }
                     else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
+                        if (propEditabilidad != "http://w3id.org/roh/isValidated")
+                        {
+                            item.iserasable = false;
+                        }
                     }
                 }
             }
@@ -1392,7 +1555,12 @@ namespace EditorCV.Models
                     item.isopenaccess = true;
                 }
             }
-
+            //Publicable
+            item.isPublishable = false;
+            if (pListItemConfig.isPublishable)
+            {
+                item.isPublishable = true;
+            }
             //Visibilidad
             string valorVisibilidad = GetPropValues(pId, UtilityCV.PropertyIspublic, pData).FirstOrDefault();
             item.ispublic = false;
@@ -2272,7 +2440,7 @@ namespace EditorCV.Models
                         getEntityId = !string.IsNullOrEmpty(pItemEditSectionRowProperty.autocompleteConfig.propertyEntity),
                         mandatory = pItemEditSectionRowProperty.autocompleteConfig.mandatory,
                         propertiesAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.properties,
-                        printAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.print,
+                        printAux = pItemEditSectionRowProperty.autocompleteConfig.propertyAux?.print
                     };
                 }
 
@@ -2283,6 +2451,16 @@ namespace EditorCV.Models
                     {
                         entityEditSectionRowProperty.propertyEntityValue = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
                     }
+                    entityEditSectionRowProperty.propertyEntityGraph = pItemEditSectionRowProperty.autocompleteConfig.graph;
+                    if(pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity!=null && pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity.Count>0)
+                    {
+                        entityEditSectionRowProperty.selectPropertyEntity = new List<SelectPropertyEntity>();
+                        foreach(var item in pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity)
+                        {
+                            entityEditSectionRowProperty.selectPropertyEntity.Add(new SelectPropertyEntity() { propertyEntity = item.propertyEntity, propertyCV = item.propertyCV });
+                        }
+                    }
+                   
                 }
 
                 if (pItemEditSectionRowProperty.autocompleteConfig != null && pItemEditSectionRowProperty.type == DataTypeEdit.entityautocomplete)
@@ -2302,7 +2480,7 @@ namespace EditorCV.Models
                                     string valor = "";
                                     if (j == 0)
                                     {
-                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault(); ;
+                                        valor = pData[entity].Where(x => x["p"].value == pItemEditSectionRowProperty.autocompleteConfig.property.property).Select(x => x["o"].value).Distinct().FirstOrDefault();
                                     }
                                     else
                                     {

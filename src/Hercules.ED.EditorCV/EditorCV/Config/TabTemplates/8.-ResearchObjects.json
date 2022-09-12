@@ -14,6 +14,7 @@
           "es": "ResearchObjects"
         },
         "listItemsPresentation": {
+          "isPublishable": true,
           "property": "http://vivoweb.org/ontology/core#relatedBy",
           "listItem": {
             "propertyTitle": {

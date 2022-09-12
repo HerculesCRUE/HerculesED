@@ -189,7 +189,10 @@ class GraficaBase {
                 style: 'bold'
             }
         }
-        
+        // Título de la gráfica
+        if (this.titulo) {
+            this.data.options.plugins.title.text = this.titulo;
+        }
         return new Chart(canvas, this.data);
     }
     addAccionMapa(key, accion) {
@@ -797,6 +800,10 @@ class GraficaHorizontal extends GraficaBarras {
                 this.data.options.scales.x1['max'] = parseInt(this.escalas);
             }
         }
+        // Título de la gráfica
+        if (this.titulo) {
+            this.data.options.plugins.title.text = this.titulo;
+        }
         //si la grafica es horizontal y su altura es menor a (310 si no esta en zoom, tamaño de ventana - 270 si esta en zoom ) o si es vertical y su ancho es menor a (su contenedor si no tiene zoom, 1110 si tiene zoom) no necesita scroll 
         if ((canvasSize < 318)) {
             super.drawSmallChart(ctx);
@@ -924,6 +931,10 @@ class GraficaVertical extends GraficaBarras {
             }
 
 
+        }
+        // Título de la gráfica
+        if (this.titulo) {
+            this.data.options.plugins.title.text = this.titulo;
         }
         //si la grafica es horizontal y su altura es menor a (310 si no esta en zoom, tamaño de ventana - 270 si esta en zoom ) o si es vertical y su ancho es menor a (su contenedor si no tiene zoom, 1110 si tiene zoom) no necesita scroll 
         if ((canvasSize < $(ctx).parents(".chartWrapper").width())) {

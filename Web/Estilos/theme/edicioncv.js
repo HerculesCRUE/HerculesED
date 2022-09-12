@@ -15,6 +15,9 @@ var edicionCV = {
         return;
     },
     config: function() {
+		// Quito los tooltips del panel de navegación
+		$('#navegacion-cv li.nav-item a').tooltip('dispose');
+
         $('*').on('shown.bs.modal', function(e) {
             $('.modal-backdrop').last().addClass($(this).attr('id'));
         });
@@ -27,7 +30,6 @@ var edicionCV = {
         $('#navegacion-cv li.nav-item a').click(function(e) {
             var entityID = $($(this).attr('href')).find('.cvTab').attr('about');
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
-			$(this).tooltip('hide');
             that.loadTab(entityID, rdfType);
         });
 		
@@ -86,16 +88,14 @@ var edicionCV = {
 						$('div.panel-group.pmd-accordion.notLoaded[section="'+getParam('section')+'"]').click();
 					}
 				}
-				
-				
 			}
         });
         return;
     },//Métodos de pestañas
-    completeTab: function(entityID, rdfType,section) {
+    completeTab: function(entityID, rdfType,section, pOnlyPublic = false) {
         var that = this;
 		MostrarUpdateProgress();
-        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection="+section, null, function(data) {
+        $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection="+section+"&pOnlyPublic="+pOnlyPublic, null, function(data) {
 			if(rdfType==$('div.tab-pane.active>div.cvTab').attr('rdftype'))
 			{
 				that.printTab(entityID, data,section);
@@ -119,11 +119,28 @@ var edicionCV = {
 					$('a[internal-id="'+getParam('id')+'"]').click();
 					history.pushState(null, '', document.location.origin+document.location.pathname);
 				}
+			} else if (pOnlyPublic) {
+				that.printTabPublic(entityID, data, section);
+				OcultarUpdateProgress();
 			}
-				
         });
         return;
     },
+	printTabPublic: function(entityID, data, section) {
+		for (var i = 0; i < data.sections.length; i++) {	
+			if (data.sections[i].items.length == 0) {
+				continue;
+			} else if(data.sections[i].identifier==section) {
+				$('div[about="' + entityID + '"]').next().find('div[section="'+data.sections[i].identifier+'"]').replaceWith(this.printTabSection(data.sections[i], true));
+				$(this).closest('.pmd-accordion').find('.panel-collapse').addClass('show');
+				this.repintarListadoTab(data.sections[i].identifier,true);
+				accionesPlegarDesplegarModal.init();
+				this.engancharComportamientosCV(true);
+				$('.resource-title a').removeAttr('href');
+				$('div[about="' + entityID + '"]').next().find('div[section="'+data.sections[i].identifier+'"] .panel .panel-collapse').addClass('show')
+			}
+		}
+	},
     printTab: function(entityID, data,section) {
 		var that=this;
 		if (data.entityID != null) {
@@ -315,7 +332,7 @@ var edicionCV = {
         return html;
     },
     //Métodos de secciones
-    printTabSection: function(data) {
+    printTabSection: function(data, onlyPublic = false) {
         //Pintado sección listado
         //css mas generico
         var id = 'x' + RandomGuid();
@@ -327,11 +344,11 @@ var edicionCV = {
         var show = "";
         if (data.items != null) {			
 			var tieneElementosCargados=Object.values(data.items).some(function (item) {				
-				return item!=null;				
+				return item!=null;
 			});
 			var tieneItems=Object.keys(data.items).length > 0;
             //if (Object.keys(data.items).length > 0) {
-			if(tieneElementosCargados){
+			if(tieneElementosCargados && !onlyPublic){
                 //Desplegado
                 expanded = "true";
                 show = "show";
@@ -343,7 +360,7 @@ var edicionCV = {
 			var htmlListItems='';
 			if(tieneElementosCargados)
 			{
-				htmlListItems=this.printHtmlListItems(data.items);
+				htmlListItems=this.printHtmlListItems(data.items, onlyPublic);
 			}
 			
 			var notLoaded='';
@@ -353,7 +370,15 @@ var edicionCV = {
 			}
 			
             //TODO texto ver items
-			// TODO Esperar a la maqueta de Félix para el tooltip (i)
+			let aniadirEntidad = `<ul class="no-list-style d-flex align-items-center">
+									<li>
+										<a class="btn btn-outline-grey aniadirEntidad">
+											<span class="texto">${GetText('CV_AGNADIR')}</span>
+											<span class="material-icons">post_add</span>
+										</a>
+									</li>
+								</ul>`;
+			let tooltip = `<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}"></span>`;
             var htmlSection = `
 			<div class="panel-group pmd-accordion ${notLoaded}" section="${data.identifier}" id="${id}" role="tablist" aria-multiselectable="true">
 				<div class="panel">
@@ -363,7 +388,7 @@ var edicionCV = {
 								<span class="material-icons pmd-accordion-icon-left">folder_open</span>
 								<span class="texto">${data.title}</span>
 								<span class="numResultados">(${Object.keys(data.items).length})</span>
-								<span class="material-icons-outlined informationTooltip" style="width:24px; float:left; margin-left: 5px" id="${idTooltipSection}"></span>
+								${!onlyPublic ? tooltip : ''}
 								<span class="material-icons pmd-accordion-arrow">keyboard_arrow_up</span>
 							</a>
 						</p>
@@ -374,14 +399,7 @@ var edicionCV = {
 								<div class="wrap">								
 								</div>
 								<div class="wrap">
-									<ul class="no-list-style d-flex align-items-center">
-										<li>
-											<a class="btn btn-outline-grey aniadirEntidad">
-												<span class="texto">${GetText('CV_AGNADIR')}</span>
-												<span class="material-icons">post_add</span>
-											</a>
-										</li>
-									</ul>
+									${!onlyPublic ? aniadirEntidad : ''}
 									<div class="ordenar dropdown orders">${this.printOrderTabSection(data.orders)}</div>
 									<div class="buscador">
 										<div class="fieldsetGroup searchGroup">
@@ -509,14 +527,46 @@ var edicionCV = {
         }
         return `<a href="javascript: void(0)" class="item-dropdown"  property="${prop}" asc="${asc}">${order.name}</a>`;
     },
-    printHtmlListItems: function(items) {
+    printHtmlListItems: function(items, onlyPublic = false) {
         var html = "";
         for (var item in items) {
-            html += this.printHtmlListItem(item, items[item]);
+            html += this.printHtmlListItem(item, items[item], onlyPublic);
         }
         return html;
     },
-    printHtmlListItem: function(id, data) {
+    printHtmlListItem: function(id, data, onlyPublic = false) {
+		let openAccess="";
+		if (data.isopenaccess) {
+            openAccess = "open-access";
+        }
+        var htmlListItem = `<article class="resource success ${openAccess}" >
+									<div class="wrap">
+										<div class="middle-wrap">
+											${this.printHtmlListItemOrders(data)}
+											<div class="title-wrap">
+											</div>
+											<div class="title-wrap">
+												<h2 class="resource-title">
+													<a href="#" data-id="${id}" internal-id="${data.identifier}">${data.title}</a>
+												</h2>
+												${!onlyPublic ? this.printHtmlListItemValidacion(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemEditable(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemVisibilidad(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemIdiomas(data) : ''}
+												${!onlyPublic ? this.printHtmlListItemAcciones(data, id) : ''}
+												<span class="material-icons arrow">keyboard_arrow_down</span>
+											</div>
+											<div class="content-wrap">
+												<div class="description-wrap">
+												${this.printHtmlListItemPropiedades(data)}
+												</div>
+											</div>
+										</div>
+									</div>
+								</article>`;
+        return htmlListItem;
+    },
+	printHtmlListItemPRC: function(id, data) {
 		let openAccess="";
 		if (data.isopenaccess) {
             openAccess = "open-access";
@@ -535,7 +585,6 @@ var edicionCV = {
 												${this.printHtmlListItemEditable(data)}
 												${this.printHtmlListItemVisibilidad(data)}
 												${this.printHtmlListItemIdiomas(data)}
-												${this.printHtmlListItemAcciones(data, id)}
 												<span class="material-icons arrow">keyboard_arrow_down</span>
 											</div>
 											<div class="content-wrap">
@@ -547,7 +596,7 @@ var edicionCV = {
 									</div>
 								</article>`;
         return htmlListItem;
-    },
+	},
     printHtmlListItemDuplicate: function(id, data) {
 		let openAccess="";
 		if (data.isopenaccess) {
@@ -616,6 +665,9 @@ var edicionCV = {
 		return '';
     },
     printHtmlListItemVisibilidad: function(data) {
+		if (!data.isPublishable) {
+			return '';
+		}
         if (data.ispublic) {
             return `<div class="visibility-wrapper">
 						<div class="con-icono-before eye"></div>
@@ -671,25 +723,36 @@ var edicionCV = {
 							</li>`;
 		}
 
-        if (!data.ispublic) {
-            //Si no está publicado siempre se puede publicar
-            htmlAcciones += `<li>
-								<a class="item-dropdown">
-									<span class="material-icons">visibility</span>
-									<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
-								</a>
-							</li>`;
-        } else {//if (data.iseditable) {
-            //Si está publicado sólo se puede despublicar si es editable
-            htmlAcciones += `<li>
-								<a class="item-dropdown">
-									<span class="material-icons">visibility_off</span>
-									<span class="texto despublicaritem" data-id="${id}">${GetText("CV_DESPUBLICAR")}</span>
-								</a>
-							</li>`;
-        }
-        //Si es editable se puede eliminar
-        if (data.iseditable) {
+        // Si es publicable se muestra el botón de publicar o despublicar
+		if (data.isPublishable) {
+			if (!data.ispublic) {
+				//Si no está publicado siempre se puede publicar
+				htmlAcciones += `<li>
+									<a class="item-dropdown">
+										<span class="material-icons">visibility</span>
+										<span class="texto publicaritem" data-id="${id}" property="${data.propertyIspublic}">${GetText("CV_PUBLICAR")}</span>
+									</a>
+								</li>`;
+			} else {//if (data.iseditable) {
+				//Si está publicado sólo se puede despublicar si es editable
+				htmlAcciones += `<li>
+									<a class="item-dropdown">
+										<span class="material-icons">visibility_off</span>
+										<span class="texto despublicaritem" data-id="${id}">${GetText("CV_DESPUBLICAR")}</span>
+									</a>
+								</li>`;
+			}
+		}
+        ////Si es editable se puede eliminar
+        //if (data.iseditable) {
+        //    htmlAcciones += `<li>
+		//						<a class="item-dropdown">
+		//							<span class="material-icons">delete</span>
+		//							<span class="texto eliminar" data-id="${id}">${GetText('CV_ELIMINAR')}</span>
+		//						</a>
+		//					</li>`
+        //}
+		if (data.iserasable) {
             htmlAcciones += `<li>
 								<a class="item-dropdown">
 									<span class="material-icons">delete</span>
@@ -989,11 +1052,12 @@ var edicionCV = {
 		}
 		if(noEngancharComportamientosCV==null || !noEngancharComportamientosCV)
 		{
-			this.engancharComportamientosCV();				
+			this.engancharComportamientosCV($('div#contenedorOtrosMeritos').length != 0);				
 		}
         accionesPlegarDesplegarModal.init();	
-		tooltipsAccionesRecursos.init();		
+		tooltipsAccionesRecursos.init();
 		tooltipsCV.init();
+		$('#navegacion-cv li.nav-item a').tooltip('dispose');
     },
     paginarListado: function(sectionID, pagina) {
         $('.panel-group[section="' + sectionID + '"] .panNavegador .pagination.numbers .actual').removeClass('actual');
@@ -1146,6 +1210,7 @@ var edicionCV = {
         }
         this.repintarListadoEntity();
         this.engancharComportamientosCV();
+		this.loadPropertiesEntitiesAutocomplete();
     },
     printEditEntity: function(modalContenedor, data, rdfType) {
         $(modalContenedor + ' form').empty();
@@ -1338,7 +1403,18 @@ var edicionCV = {
 				{
 					propertyEntityValue=property.propertyEntityValue;
 				}
-				htmlInput+=`<input propertyorigin="${property.property}" propertyrdf="${property.propertyEntity}" value="${propertyEntityValue}" type="hidden" class="form-control not-outline ">`;
+				var attrSelectPropertyEntity="";
+				if(property.propertyEntityGraph != null && property.propertyEntityGraph!='' && property.selectPropertyEntity!=null && property.selectPropertyEntity.length>0)
+				{
+					attrSelectPropertyEntity+=' graph="'+property.propertyEntityGraph+'"';
+					attrSelectPropertyEntity+=' propertyentity="';
+					property.selectPropertyEntity.forEach(function(par, index) {
+						attrSelectPropertyEntity+=  par.propertyEntity+"|"+par.propertyCV+"&";
+					});
+					attrSelectPropertyEntity=attrSelectPropertyEntity.substring(0, attrSelectPropertyEntity.length-1);
+					attrSelectPropertyEntity+='"';
+				}
+				htmlInput+=`<input ${attrSelectPropertyEntity} propertyorigin="${property.property}" propertyrdf="${property.propertyEntity}" value="${propertyEntityValue}" type="hidden" class="form-control not-outline ">`;
 			}
 			if(property.type=="entityautocomplete")
 			{
@@ -2826,7 +2902,7 @@ var edicionCV = {
 		}
     },
     //Fin de métodos de edición
-    engancharComportamientosCV: function() {
+    engancharComportamientosCV: function(onlyPublic = false) {
 		 $('select').unbind("change.selectitem").bind("change.selectitem", function() {
 			var valor=$(this).val();
 			$(this).find('option[value="'+valor+'"]').attr('selected',''); 
@@ -2842,6 +2918,57 @@ var edicionCV = {
 		edicionListaAutorCV.init();
         var that = this;
 
+		if (onlyPublic) {
+			//LISTADOS		
+			//Paginación
+			$('.panel-group .panNavegador ul.pagination li a').off('click').on('click', function(e) {
+				if ($(this).attr('page') != null) {
+					var sectionID = $(this).closest('.panel-group').attr('section');
+					var pagina = $(this).attr('page');
+					that.paginarListado(sectionID, pagina);
+				}
+			});
+			//Cambiar tipo de paginación
+			$('.panel-group .panNavegador .item-dropdown').off('click').on('click', function(e) {
+				if ($(this).attr('items') != null) {
+					var sectionID = $(this).closest('.panel-group').attr('section');
+					var itemsPagina = parseInt($(this).attr('items'));
+					var texto = $(this).text();
+					that.cambiarTipoPaginacionListado(sectionID, itemsPagina, texto);
+				}
+			});
+			//Buscador
+			$('.panel-group input.txtBusqueda').off('keyup').on('keyup', function(e) {
+				var sectionID = $(this).closest('.panel-group').attr('section');
+				that.buscarListado(sectionID);
+			});
+			//Ordenar
+			$('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
+				var sectionID = $(this).closest('.panel-group').attr('section');
+				var dropdown = $(this).closest('.ordenar.dropdown.orders').find('.dropdown-toggle .texto');
+				that.ordenarListado(sectionID, $(this).text(), $(this).attr('property'), $(this).attr('asc'), dropdown);
+			});
+			//Fechas hidden
+			$('input.datepicker').off('change').on('change', function(e) {
+				if ($(this).val().length == 10) {
+					$(this).parent().children('input[type="hidden"]').val($(this).val().substring(6, 10) + $(this).val().substring(3, 5) + $(this).val().substring(0, 2) + "000000");
+				} else {
+					$(this).parent().children('input[type="hidden"]').val('');
+				}
+			});
+			//Seleccion combos
+			$('.entityauxcontainer>.simple-collapse-content input').off('change').on('change', function(e) {
+				$(this).closest('.entityauxcontainer').attr('selecteditem', $(this).closest('article').attr('about'));
+			});
+			//Comportamiento desplegar sección no cargada
+			$('div.panel-group.pmd-accordion.notLoaded').off('click').on('click', function(e) {
+				var about= $(this).parent().prev().attr('about');
+				var rdftype= $(this).parent().prev().attr('rdftype');
+				var section= $(this).attr('section');
+				that.completeTab(about,rdftype,section, true);
+			});
+			return;
+		}
 		//Boton duplicados 
 		$('.btn.gestionar-duplicados').unbind().click(function() {
 			duplicadosCV.init(true);
@@ -2925,6 +3052,20 @@ var edicionCV = {
 			var textoEliminar = $(this).find('.texto');
             var sectionID = textoEliminar.closest('.panel-group').attr('section');
             var entityID = textoEliminar.attr('data-id');
+			
+			var message="";
+			$("#modal-eliminar").find(".ko").remove();
+			if(textoEliminar.closest('article').find('.block-wrapper').length && 
+				(
+					sectionID=="http://w3id.org/roh/scientificPublications"||
+					sectionID=="http://w3id.org/roh/worksSubmittedConferences"||
+					sectionID=="http://w3id.org/roh/worksSubmittedSeminars"
+				)
+			)
+			{
+				$("#modal-eliminar").find(".form-actions").before(`<div class="ko" style="display:block"><p>${GetText("CV_ALERTA_ELIMINACION_BLOQUEADO")}</p></div>`);
+			}
+			
             $('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:edicionCV.eliminarItem("' + sectionID + '","' + entityID + '");$("#modal-eliminar").modal("hide");');
         });
 
@@ -3590,6 +3731,9 @@ var edicionCV = {
 							$(inputDestino).parent().hide();
 							$(inputDestino).val('');
 							$(inputDestino).trigger('change');
+							
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').val('');
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').trigger('change');
 						}
 					}
 					if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
@@ -3603,6 +3747,9 @@ var edicionCV = {
 							$(inputDestino).parent().hide();
 							$(inputDestino).val('');
 							$(inputDestino).trigger('change');
+							
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').val('');
+							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').trigger('change');
 						}
 					}
 				}); 
@@ -3675,7 +3822,9 @@ var edicionCV = {
 			var about= $(this).closest('.cvTab').attr('about');
 			var rdftype= $(this).closest('.cvTab').attr('rdftype');
 			var section= $(this).attr('section');
-			that.completeTab(about,rdftype,section);
+			if (rdftype && about) {
+				that.completeTab(about,rdftype,section);
+			}
         });
 				
 		//Obtener datos envio PRC
@@ -3703,43 +3852,126 @@ var edicionCV = {
 			that.EnvioValidacion(dataId, that.idPerson);			
 		});
 		
+		$('input[propertyentity][graph]').off('change').on('change', function(e) {
+			that.loadPropertiesEntitiesAutocomplete();	
+		});		
+		
         return;
     },
+	loadPropertiesEntitiesAutocomplete: function(){		
+		$('input[propertyentity][graph]').each(function() {
+			let graph=$(this).attr('graph');
+			let propertyEntity=$(this).attr('propertyentity');
+			let propertyOrigin=$(this).attr('propertyorigin');
+			if(graph!=null && propertyEntity!=null)
+			{				
+				let propertyEntitySplit = propertyEntity.split('&');	
+				if($(this).val()!=''){
+					var sendData = {};
+					sendData.pGraph = graph;
+					sendData.pEntity = $(this).val();
+					sendData.pProperties=[];
+					for (var i = 0; i < propertyEntitySplit.length; i++) {
+						sendData.pProperties.push(propertyEntitySplit[i].split('|')[0]);
+					}
+					$.post(urlEdicionCV + 'GetPropertyEntityData', sendData, function(data) {
+						for (var i = 0; i < propertyEntitySplit.length; i++) {
+							let propEntity=propertyEntitySplit[i].split('|')[0];
+							let propCV=propertyEntitySplit[i].split('|')[1];
+							if(propCV!=propertyOrigin)
+							{
+								$('.formulario-edicion input[propertyrdf="'+propCV+'"]').attr('disabled','disabled');
+							}
+							$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);							
+						}					
+					});
+				}else{
+					for (var i = 0; i < propertyEntitySplit.length; i++) {
+						let propEntity=propertyEntitySplit[i].split('|')[0];
+						let propCV=propertyEntitySplit[i].split('|')[1];
+						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').removeAttr('disabled');							
+					}	
+				}
+			}
+		});		
+	},
 	sendPRC: function(idrecurso, idproyecto, section, rdfTypeTab){
 		var that=this;
 		var formData = new FormData();
 		formData.append('pIdRecurso', idrecurso);
-		if(idproyecto.length > 0){
+		if (idproyecto.length > 0) {
 			for (var indice in idproyecto){
 				formData.append('pIdProyecto', idproyecto[indice]);
 			}
-			MostrarUpdateProgress();
-			$.ajax({
-				url: urlEnvioValidacionCV + 'EnvioPRC',
-				type: 'POST',
-				data: formData,	
-				cache: false,
-				processData: false,
-				enctype: 'multipart/form-data',
-				contentType: false,
-				success: function ( response ) {				
-					mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'), 10000);
-					$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + section + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + idrecurso + "&pLang=" + lang, null, function(data) {
-						$('a[data-id="' + idrecurso + '"]').closest('article').replaceWith(that.printHtmlListItem(idrecurso, data));
-						that.repintarListadoTab(section);
-						OcultarUpdateProgress();
-					});
-				},
-				error: function(){
-					mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
-				}
-			});
+		} else {
+			formData.append('pIdProyecto', "");
 		}
+		MostrarUpdateProgress();
+		$.ajax({
+			url: urlEnvioValidacionCV + 'EnvioPRC',
+			type: 'POST',
+			data: formData,	
+			cache: false,
+			processData: false,
+			enctype: 'multipart/form-data',
+			contentType: false,
+			success: function ( response ) {				
+				mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'), 10000);
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + section + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + idrecurso + "&pLang=" + lang, null, function(data) {
+					$('a[data-id="' + idrecurso + '"]').closest('article').replaceWith(that.printHtmlListItem(idrecurso, data));
+					that.repintarListadoTab(section);
+					OcultarUpdateProgress();
+				});
+			},
+			error: function(){
+				mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
+			}
+		});
 	},
 	GetDataPRC: function(dataId, idPerson, section, rdfTypeTab){
+		MostrarUpdateProgress();
+		var that = this;
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 		$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .form-actions .btn.btn-primary.uppercase.btnEnvioPRC').removeClass("disabled");
-
+		$('#modal-enviar-produccion-cientifica .modal-body > .alert').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-publicacion').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-proyecto').removeAttr('style');
+		let itemId = $('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap').find('a[data-id]').attr('data-id');
+		var urlDuplicados = urlEdicionCV + "GetItemsDuplicados?pCVId=" + this.idCV + "&pMinSimilarity=0.9&pItemId=" + itemId;
+		$.get(urlDuplicados, null, function (data) {
+			if (data && data.length > 0) {
+				$('#modal-enviar-produccion-cientifica .modal-body > .alert').removeAttr('style');
+				$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-publicacion').removeAttr('style');
+				$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-proyecto').css('display', 'none');
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('dataId', dataId);
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('section', section);
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('rdfTypeTab', rdfTypeTab);
+				$('#modal-enviar-produccion-cientifica .modal-body .form-actions .btn-aplicar').attr('idPerson', idPerson);
+				var items = data;
+				duplicadosCV.items = data;
+				let principal = true;
+				for(var itemIn in items[0].items) {
+					if(!principal) {
+						let aux=itemIn;
+						$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + items[0].idSection + "&pRdfTypeTab=" + items[0].rdfTypeTab + "&pEntityID=" + items[0].items[itemIn] + "&pLang=" + lang, null, function(data) 
+						{
+							var htmlItem=edicionCV.printHtmlListItemPRC(items[0].items[aux], data);
+							$('#modal-enviar-produccion-cientifica .formulario-publicacion .resource-list-wrap').append(htmlItem);
+							duplicadosCV.engancharComportamientos(true);
+						}).done(() => {OcultarUpdateProgress()});
+					}
+					principal=false;
+				}
+			} else {
+				edicionCV.PintarDataPRC(dataId, idPerson, section, rdfTypeTab);
+				OcultarUpdateProgress();
+			}
+		});
+	},
+	PintarDataPRC: function(dataId, idPerson, section, rdfTypeTab){
+		$('#modal-enviar-produccion-cientifica .modal-body > .alert').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-publicacion').css('display', 'none');
+		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-proyecto').removeAttr('style');
 		$.ajax({
 			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
 			type: 'GET',
@@ -4418,8 +4650,86 @@ var duplicadosCV = {
 		}
         return;
     },
-	engancharComportamientos: function() {
+	engancharComportamientos: function(envioPRC = false) {
 		var that=this;
+		if (envioPRC) {
+			//Eliminamos desplegable acciones-curriculum
+			$('#modal-enviar-produccion-cientifica .acciones-recurso-listado').remove();
+			$('#modal-enviar-produccion-cientifica .itemConflict').remove();
+			$('#modal-enviar-produccion-cientifica .btn-principal').remove();
+			
+			//Agregamos desplegable en items
+			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-publicacion article h2').after(`
+				<select class="itemConflict" name="itemConflict">
+					<option value="" selected ></option>	
+					<option value="0">${GetText("CV_DUPLICADO_FUSIONAR")}</option>
+					<option value="1">${GetText("CV_DUPLICADO_ELIMINAR")}</option>
+					<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>							
+				</select>
+			`);
+			//Publicar/despublicar duplicado
+			$('#modal-enviar-produccion-cientifica .resource-list .visibility-wrapper').off('click').on('click', function(e) {
+				var element = $(this);
+				var item = {};
+				var isPublic = !$(this).find('.con-icono-before').hasClass('eye');
+				item.pIdSection = that.items[that.pasoActual].idSection;
+				item.pRdfTypeTab = that.items[that.pasoActual].rdfTypeTab;
+				item.pEntity = $(this).parent().find('a[data-id]').attr('data-id');
+				item.pIsPublic = isPublic;
+				MostrarUpdateProgress();
+				if (isPublic) {
+					$(this).find('.con-icono-before').addClass('eye');
+					$(this).find('.con-icono-before').removeClass('visibility-activo');
+				} else {
+					$(this).find('.con-icono-before').addClass('visibility-activo');
+					$(this).find('.con-icono-before').removeClass('eye');
+				}
+				$.post(urlGuardadoCV + 'ChangePrivacityItem', item, function(data) {
+					OcultarUpdateProgress();
+				})
+			});
+			// Botón continuar aplicando cambios
+			$('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').off('click').on('click', function(e) {
+				var validar = true;
+				var url = urlGuardadoCV + 'ProcesarItemsDuplicados';
+				var args = {};
+				args.idCV = that.idCV;
+				args.idSection = that.items[that.pasoActual].idSection;
+				args.rdfTypeTab= that.items[that.pasoActual].rdfTypeTab;
+				args.principal = $("#modal-enviar-produccion-cientifica .resource-list.listView .middle-wrap h2 a").attr("data-id");
+				args.secundarios = {};
+				$("#modal-enviar-produccion-cientifica .formulario-edicion.formulario-publicacion article.resource").each(function(index) {
+					var opcion = $(this).find('.itemConflict').val();
+					var id = $(this).find('h2 a').attr('data-id');
+					if(opcion===""){
+						validar=false;
+						return false;
+					}else{
+						args.secundarios[id] = opcion;
+					}
+				});
+				if (!validar){
+					mostrarNotificacion("error",GetText("DUPLICADOS_SELECCIONAR_TODAS_OPCIONES"));
+				}else{
+					$("#modal-enviar-produccion-cientifica .formulario-edicion.formulario-publicacion article.resource .itemConflict").each(function(index) {});
+					$.post(url, args, function(data) {});
+					let dataId = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('dataId');
+					let idPerson = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('idPerson');
+					let section = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('section');
+					let rdfTypeTab = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('rdfTypeTab');
+					edicionCV.PintarDataPRC(dataId, idPerson, section, rdfTypeTab);
+				}
+			});
+			// Botón continuar sin cambios
+			$('#modal-enviar-produccion-cientifica .form-actions .btn-continuar').off('click').on('click', function(e) {
+				let dataId = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('dataId');
+				let idPerson = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('idPerson');
+				let section = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('section');
+				let rdfTypeTab = $('#modal-enviar-produccion-cientifica .form-actions .btn-aplicar').attr('rdfTypeTab');
+				edicionCV.PintarDataPRC(dataId, idPerson, section, rdfTypeTab);
+			});
+			return;
+		}
 		//Eliminamos desplegable acciones-curriculum
 		$('#modal-posible-duplicidad .acciones-recurso-listado').remove();
 		$('#modal-posible-duplicidad .itemConflict').remove();
@@ -4451,6 +4761,13 @@ var duplicadosCV = {
 		$("#modal-posible-duplicidad .resource-list-wrap.secundarios article .title-wrap .block-wrapper").each(function(index) {
 			$(this).closest('article').find('h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		});
+		
+		//Si dentro de los items hay alguno bloquedao mostramos un texto adicional
+		$("#modal-posible-duplicidad .ko").remove();
+		if($('#modal-posible-duplicidad .resource-list-wrap.secundarios article .title-wrap .block-wrapper').length>0)
+		{
+			$("#modal-posible-duplicidad .form-actions").before(`<div class="ko" style="display:block"><p>${GetText("CV_ALERTA_FUSION_ELIMINACION_BLOQUEADO")}</p></div>`);
+		}
 		
 		//Botón convertir en principal	
 		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
@@ -4580,8 +4897,6 @@ var duplicadosCV = {
 						});
 					} else if (minSimilarity == 0.7) {
 						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
-					} else {
-						mostrarNotificacion("success", GetText("DUPLICADOS_DUPLICIDAD_RESUELTA"), 10000);
 					}
 					$('#modal-repetir-duplicidad').removeClass('visible');
 					OcultarUpdateProgress();
@@ -4664,6 +4979,7 @@ function addAutocompletar(control) {
 			if($(e.target).attr('multilang')==null)
 			{
 				$(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').val('');
+				$(control).parent().find('input[propertyorigin="'+$(control).attr('propertyrdf')+'"]').change();
 			}
 		}
 	});
@@ -5400,7 +5716,12 @@ $.Autocompleter = function(input, options) {
 	function selectCurrent() {
 		var selected = select.selected();
         pintarSeleccionado($input, selected.result);
-		$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]').val(selected.value)		;
+		if($input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]').length>0)
+		{
+			let entidadDestino=$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]');
+			entidadDestino.val(selected.value);					
+			entidadDestino.change();
+		}		
 		hideResultsNow();
 		return true;
 	}
@@ -6414,6 +6735,17 @@ function posicionarCursor(textbox, pos) {
 
 $(document).ready(function() {
     pintarTagsInicio();
+
+    // // Para que se selecione la pestaña del editor CV si esta seleccionada
+    // var hash = location.hash.replace(/^#/, '');  // ^ means starting, meaning only match the first hash
+    // if (hash) {
+    //     $('.nav-tabs a[href="#' + hash + '"]').tab('show');
+    // } 
+
+    // // Change hash for page-reload
+    // $('.nav-tabs a').on('shown.bs.tab', function (e) {
+    //     window.location.hash = e.target.hash;
+    // })           
 });
 
 function pintarTagsInicio()
@@ -6676,7 +7008,8 @@ operativaFormularioProduccionCientifica.formProyecto = function (section,rdfType
 			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
 			edicionCV.sendPRC(idrecurso,idproyecto, section,rdfTypeTab);
 			
-		} else {			
+		} else {
+			$(this).removeAttr('data-dismiss');
 			$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);	
 			that.formularioProyecto.find('> .alert').show();
 			$(this).addClass('disabled');
@@ -6686,7 +7019,8 @@ operativaFormularioProduccionCientifica.formProyecto = function (section,rdfType
 	this.formularioProyecto.find('.alert-title a').off('click').on('click', function () {
 		$(this).attr('data-dismiss', 'modal');
 		var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
-		edicionCV.sendPRC(idrecurso,'', section,rdfTypeTab);
+		var idproyecto = [];
+		edicionCV.sendPRC(idrecurso,idproyecto, section,rdfTypeTab);
 	});
 
 	this.resourceList.find('.resource .form-check-inline').on('change', function () {

@@ -317,11 +317,12 @@ class SimilarityService:
 
         if update_ranking:
             cache_ros = list(self.cache.iterator())
-            distances = ro.distances(cache_ros)
-            for db_ro, dist in zip(cache_ros, distances):
-                ro.ranking.update_if_needed(db_ro, dist)
-                if db_ro.ranking.update_if_needed(ro, dist):
-                    self.cache.update_ro_ranking(db_ro)
+            if len(cache_ros) > 0:
+                distances = ro.distances(cache_ros)
+                for db_ro, dist in zip(cache_ros, distances):
+                    ro.ranking.update_if_needed(db_ro, dist)
+                    if db_ro.ranking.update_if_needed(ro, dist):
+                        self.cache.update_ro_ranking(db_ro)
             self.cache.add_ro(ro)
 
         self.db.add_ro(ro)

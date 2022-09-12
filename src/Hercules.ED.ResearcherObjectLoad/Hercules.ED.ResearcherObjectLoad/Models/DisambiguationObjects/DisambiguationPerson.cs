@@ -9,6 +9,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 {
     public class DisambiguationPerson : DisambiguableEntity
     {
+        private string mIdGnoss { get; set; }
+        public string idGnoss
+        {
+            get
+            {
+                return mIdGnoss;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mIdGnoss = string.Empty;
+                }
+                else
+                {
+                    mIdGnoss = value;
+                }
+            }
+        }
+
         private string mCompleteName { get; set; }
         public string completeName
         {
@@ -231,6 +251,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 
         public DisambiguationPerson()
         {
+            idGnoss = "";
             completeName = "";
             orcid = "";
             gitHubId = "";
@@ -267,6 +288,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
         };
 
         private static readonly DisambiguationDataConfig configZenodo = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static readonly DisambiguationDataConfig configIdGnoss = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
@@ -316,6 +342,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 property = "completeName",
                 config = configCompleteName,
                 value = completeName
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "idGnoss",
+                config = configIdGnoss,
+                value = idGnoss
             });
 
             data.Add(new DisambiguationData()

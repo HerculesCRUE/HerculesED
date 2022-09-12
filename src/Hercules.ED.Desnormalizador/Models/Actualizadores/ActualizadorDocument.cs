@@ -890,6 +890,225 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
         }
 
+
+        /// <summary>
+        /// Eliminamos los http://purl.org/ontology/bibo/Document que no tengan autores activos
+        /// </summary>
+        /// <param name="pDocuments">ID de documentos</param>
+        public void EliminarDocumentosSinAutoresActivos(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?document from <http://gnoss.com/person.owl> ";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                MINUS
+                                {{
+                                    ?document <http://purl.org/ontology/bibo/authorList> ?autores.
+                                    ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                    ?person <http://w3id.org/roh/isActive> 'true'.
+                                }}
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        try
+                        {
+                            mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(fila["document"].value));
+                        }
+                        catch (Exception) { }
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Modifica los nombres de las revistas desnormalizadas 
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">IDs de los documentos</param>
+        public void ModificarNombreRevistaDesnormalizado(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+            
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @$"select * from <http://gnoss.com/maindocument.owl> ";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                OPTIONAL{{?document <http://w3id.org/roh/hasPublicationVenueJournalText> ?nombreDesnormalizadoRevista.}}
+                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
+                                ?revista <http://w3id.org/roh/title> ?nombreRevista.
+                                FILTER(?nombreDesnormalizadoRevista!=?nombreRevista)
+                            }}limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        //Entidad principal
+                        string mainEntity = fila["document"].value;
+                        //Predicado
+                        string predicado = "http://w3id.org/roh/hasPublicationVenueJournalText";
+                        //Valor antiguo
+                        string valorAntiguo = "";
+                        if (fila.ContainsKey("nombreDesnormalizadoRevista"))
+                        {
+                            valorAntiguo = fila["nombreDesnormalizadoRevista"].value;
+                        }
+                        //Valor nuevo
+                        string valorNuevo = fila["nombreRevista"].value;
+                        ActualizadorTriple(mainEntity, predicado, valorAntiguo, valorNuevo);
+                    });
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Modifica los nombres de las editoriales de las revistas desnormalizadas 
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">IDs de los documentos</param>
+        public void ModificarEditorialRevistaDesnormalizado(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @$"select * from <http://gnoss.com/maindocument.owl> ";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                OPTIONAL{{?document <http://purl.org/ontology/bibo/publisher> ?nombreDesnormalizadoEditorial.}}
+                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
+                                ?revista <http://purl.org/ontology/bibo/editor> ?nombreEditorial.
+                                FILTER(?nombreDesnormalizadoEditorial!=?nombreEditorial)
+                            }}limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        //Entidad principal
+                        string mainEntity = fila["document"].value;
+                        //Predicado
+                        string predicado = "http://purl.org/ontology/bibo/publisher";
+                        //Valor antiguo
+                        string valorAntiguo = "";
+                        if (fila.ContainsKey("nombreDesnormalizadoEditorial"))
+                        {
+                            valorAntiguo = fila["nombreDesnormalizadoEditorial"].value;
+                        }
+                        //Valor nuevo
+                        string valorNuevo = fila["nombreEditorial"].value;
+                        ActualizadorTriple(mainEntity, predicado, valorAntiguo, valorNuevo);
+                    });
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Modifica los ISSN de las revistas desnormalizadas 
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">IDs de los documentos</param>
+        public void ModificarISSNRevistaDesnormalizado(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            foreach (string filter in filters)
+            {
+                while (true)
+                {
+                    int limit = 500;
+                    //TODO eliminar from
+                    String select = @$"select * from <http://gnoss.com/maindocument.owl> ";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                OPTIONAL{{?document <http://purl.org/ontology/bibo/issn> ?issnDesnormalizado.}}
+                                ?document <http://vivoweb.org/ontology/core#hasPublicationVenue> ?revista.
+                                ?revista <http://purl.org/ontology/bibo/issn> ?issn.
+                                FILTER(?issnDesnormalizado!=?issn)
+                            }}limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        //Entidad principal
+                        string mainEntity = fila["document"].value;
+                        //Predicado
+                        string predicado = "http://purl.org/ontology/bibo/issn";
+                        //Valor antiguo
+                        string valorAntiguo = "";
+                        if (fila.ContainsKey("issnDesnormalizado"))
+                        {
+                            valorAntiguo = fila["issnDesnormalizado"].value;
+                        }
+                        //Valor nuevo
+                        string valorNuevo = fila["issn"].value;
+                        ActualizadorTriple(mainEntity, predicado, valorAntiguo, valorNuevo);
+                    });
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Actualiza indices de impacto
         /// </summary>
@@ -1449,7 +1668,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             t.NewValue = idAux + "|" + fila["quartile"].value;
                             triples[guid].Add(t);
                         }
-                        if(fila.ContainsKey("impactCategory"))
+                        if (fila.ContainsKey("impactCategory"))
                         {
                             TriplesToInclude t = new();
                             t.Predicate = "http://w3id.org/roh/impactIndex|http://w3id.org/roh/impactIndexCategoryEntity";

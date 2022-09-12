@@ -1721,8 +1721,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void PublicacionesDocumentosSoporte(CvnItemBean item, Entity entidadAux)
         {
             //Compruebo si existe alguna revista con ese nombre
-            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, item.GetStringPorIDCampo("060.010.010.210"));
-
+            string nombreRevista = item.GetStringPorIDCampo("060.010.010.210");
+            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, nombreRevista);
+            // Mario
             //Si existe añado como tipo de soporte revista directamente.
             if (!string.IsNullOrEmpty(revista))
             {
@@ -1731,16 +1732,29 @@ namespace ImportadorWebCV.Sincro.Secciones
                     new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubMainDoc, revista)
                 ));
             }
-
-            //Si el tipo de soporte es distinto a revista, añado los datos
-            if (item.GetStringPorIDCampo("060.010.010.070") != null && !item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
+            else
             {
-                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial, item.GetStringPorIDCampo("060.010.010.100")),
-                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre, item.GetStringPorIDCampo("060.010.010.210"))
-                ));
+                //Si el tipo de soporte es revista, añado los datos
+                if (item.GetStringPorIDCampo("060.010.010.070") != null && item.GetStringPorIDCampo("060.010.010.070").Equals("057"))
+                {
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, mResourceApi.GraphsUrl + "items/documentformat_057"),
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial, item.GetStringPorIDCampo("060.010.010.100")),
+                       new Property(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista, item.GetStringPorIDCampo("060.010.010.210"))
+                   ));
+                }
+                else
+                {
+                    //Si el tipo de soporte es distinto a revista, añado los datos                    
+                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoSoporte, item.GetFormatoDocumentoPorIDCampo("060.010.010.070")),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubEditorial, item.GetStringPorIDCampo("060.010.010.100")),
+                        new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre, item.GetStringPorIDCampo("060.010.010.210"))
+                    ));
+                }
             }
+
+
         }
 
         /// <summary>
@@ -1773,7 +1787,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
                 //Si no tiene firma le añado como firma el nombre completo
-                if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
+                if (string.IsNullOrEmpty(persona.firma))
+                { persona.firma = persona.nombreCompleto; }
 
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
@@ -2096,7 +2111,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
                 //Si no tiene firma le añado como firma el nombre completo
-                if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
+                if (string.IsNullOrEmpty(persona.firma))
+                { persona.firma = persona.nombreCompleto; }
 
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
@@ -2359,7 +2375,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
                 //Si no tiene firma le añado como firma el nombre completo
-                if (string.IsNullOrEmpty(persona.firma)) { persona.firma = persona.nombreCompleto; }
+                if (string.IsNullOrEmpty(persona.firma))
+                { persona.firma = persona.nombreCompleto; }
 
                 persona.ID = Guid.NewGuid().ToString();
                 entidadAux.autores.Add(persona);
@@ -3341,7 +3358,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void AyudasBecasEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.180"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.180")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.010.180"),
@@ -3364,7 +3382,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void AyudasBecasEntidadConcede(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.080"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.080")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.010.080"),
@@ -3668,7 +3687,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void SociedadesAsociacionesEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad de Afiliacion no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.020.050"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.020.050")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.020.050"),
@@ -3752,7 +3772,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void ConsejosEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.030.050"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.030.050")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.030.050"),
@@ -3835,7 +3856,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void RedesCooperacionEntidadSeleccion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.040.110"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.040.110")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.040.110"),
@@ -3962,7 +3984,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void PremiosMencionesEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.050.050"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.050.050")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.050.050"),
@@ -4037,7 +4060,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void OtrasDistincionesEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.060.050"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.060.050")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.060.050"),
@@ -4112,7 +4136,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void PeriodosActividadInvestigadoraEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.070.050"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.070.050")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.070.050"),
@@ -4186,7 +4211,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void AcreditacionesObtenidasEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.090.060"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.090.060")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.090.060"),
@@ -4260,7 +4286,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void OtrosMeritosEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
-            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.100.020"))) { return; }
+            if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.100.020")))
+            { return; }
 
             //Añado la referencia si existe
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.100.020"),

@@ -15,6 +15,7 @@ $(document).ready(function () {
 	montarTooltipCode.init();
 	cargarCVId.init();
 });
+var cvUrl = ""
 
 function GetText(id, param1, param2, param3, param4) {
     if ($('#' + id).length) {
@@ -43,7 +44,7 @@ var cargarCVId = {
 		this.loadCVId();
 		this.printCVId();
 	},
-	loadCVId:function(){
+	loadCVId: function(){
 		var that=this;
 		var keyCache='cv_'+lang+'_'+$('#inpt_usuarioID').val();
 		this.CVId=getCacheWithExpiry(keyCache);
@@ -52,16 +53,27 @@ var cargarCVId = {
 			var urlGetCVUrl = url_servicio_editorcv+'EdicionCV/GetCVUrl?userID='+$('#inpt_usuarioID').val()+ "&lang=" + lang;
 			$.get(urlGetCVUrl, null, function(data) {
 				that.CVId=data;
+				cvUrl = data;
 				that.printCVId();
+				that.printCVIdHomeEd();
 				setCacheWithExpiry(keyCache,data,60000);
 			});
 		}
 	},
-	printCVId:function(){
+	printCVId: function(){
 		if(this.CVId!=null && this.CVId!='')
 		{
 			$('#menuLateralUsuario .hasCV').show();
 			$('#menuLateralUsuario li.liEditarCV a').attr('href',this.CVId);
+		}
+	},
+	printCVIdHomeEd: function(){
+		if(this.CVId!=null && this.CVId!='')
+		{
+			$('#menuLateralUsuarioClonado #curriculumvitae a.editcv').attr('href',this.CVId);
+			$('#menuLateralUsuarioClonado #trabajo a.editcvPub').attr('href',this.CVId + '?tab=http://w3id.org/roh/teachingExperience');
+			$('#menuLateralUsuarioClonado #trabajo a.editcvPV').attr('href',this.CVId + '?tab=http://w3id.org/roh/teachingExperience');
+			$('#menuLateralUsuarioClonado #trabajo a.editcvOR').attr('href',this.CVId + '?tab=http://w3id.org/roh/researchObject');
 		}
 	}
 }
@@ -345,6 +357,10 @@ function CompletadaCargaRecursosComunidad()
 
 	if ((typeof CompletadaCargaRecursosPublicacionesOfertas != 'undefined')) {
 		CompletadaCargaRecursosPublicacionesOfertas();
+	}
+
+	if ((typeof CompletadaCargaRecursosDocumentosROsVincular != 'undefined')) {
+		CompletadaCargaRecursosDocumentosROsVincular();
 	}
 	
 	if ((typeof CompletadaCargaRecursosSimilitud != 'undefined')) {
@@ -737,27 +753,31 @@ var MontarResultadosScroll = {
         };
 		contarLineasDescripcion.init();
         that.footer.waypoint(function (event, direction) {
-            that.peticionScrollResultados().done(function (data) {
-                that.destroyScroll();
-                var htmlRespuesta = document.createElement("div");
-                htmlRespuesta.innerHTML = data;
-                if ($(htmlRespuesta).find(that.item).length > 0) {
-                    that.CargarResultadosScroll(data);
-                    that.cargarScroll();
-                } else {
-                    that.CargarResultadosScroll('');
-                }
-                if ((typeof CompletadaCargaRecursos != 'undefined')) {
-                    CompletadaCargaRecursos();
-                }
-                if (typeof (urlCargarAccionesRecursos) != 'undefined') {
-                    ObtenerAccionesListadoMVC(urlCargarAccionesRecursos);
-                }
-                console.log("llegado cargarScroll");
-                callback();
-            });
+	        console.log("llegado cargarScroll");
+            that.launchCallWaypoint(callback())
         }, opts);
         return;
+    },
+    launchCallWaypoint: function(callback = () => {}) {
+    	var that = this;
+    	that.peticionScrollResultados().done(function (data) {
+	        that.destroyScroll();
+	        var htmlRespuesta = document.createElement("div");
+	        htmlRespuesta.innerHTML = data;
+	        if ($(htmlRespuesta).find(that.item).length > 0) {
+	            that.CargarResultadosScroll(data);
+	            that.cargarScroll();
+	        } else {
+	            that.CargarResultadosScroll('');
+	        }
+	        if ((typeof CompletadaCargaRecursos != 'undefined')) {
+	            CompletadaCargaRecursos();
+	        }
+	        if (typeof (urlCargarAccionesRecursos) != 'undefined') {
+	            ObtenerAccionesListadoMVC(urlCargarAccionesRecursos);
+	        }
+	        callback();
+	    });
     },
     destroyScroll: function () {
         this.footer.waypoint('destroy');
@@ -2173,3 +2193,45 @@ comportamientoVerMasVerMenosTags.comportamiento = function() {
         }
     });
 };
+
+
+/**
+ * Función que limpia un string como url a semejanza de GNOSS
+ */
+function cleanStringUrlLikeGnoss (text) {
+	let nameUrlRo = ""
+    let posToBreak = text.length > 50 ? text.lastIndexOf(" ", 50) : -1
+
+    if (posToBreak != -1) {
+        nameUrlRo = cleanStringUrl(text.substring(0, posToBreak))
+    } else {
+        nameUrlRo = cleanStringUrl(text)
+    }
+    return nameUrlRo
+}
+
+
+/**
+ * Función que limpia un string como un enlace
+ */
+function cleanStringUrl (text) {
+	return removeAccents(text).trim().toLowerCase().replace(/[^a-z0-9 ]+/g,'').replace(/[^a-z0-9]+/g,'-')
+}
+
+
+/**
+ * Función que elimina los acentos
+ */
+function removeAccents (text) {
+	var ts = '';
+	for (var i = 0; i < text.length; i++) {
+		var c = text.charCodeAt(i);
+		if (c >= 224 && c <= 230) { ts += 'a'; }
+		else if (c >= 232 && c <= 235) { ts += 'e'; }
+		else if (c >= 236 && c <= 239) { ts += 'i'; }
+		else if (c >= 242 && c <= 246) { ts += 'o'; }
+		else if (c >= 249 && c <= 252) { ts += 'u'; }
+		else { ts += text.charAt(i); }
+	}
+	return ts;
+}
