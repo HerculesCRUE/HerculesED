@@ -84,7 +84,7 @@ namespace Gnoss.Web.Login.Open.Controllers
             return caduca;
         }
 
-        private static Dictionary<string, string> FromLegacyCookieString(string legacyCookie, EntityContext pEntityContext)
+        public static Dictionary<string, string> FromLegacyCookieString(string legacyCookie, EntityContext pEntityContext)
         {
             string cookie = Desencriptar(legacyCookie, pEntityContext);
             if (string.IsNullOrEmpty(cookie))
@@ -94,12 +94,12 @@ namespace Gnoss.Web.Login.Open.Controllers
             return cookie.Split('&').Select(s => s.Split('=')).ToDictionary(kvp => kvp[0], kvp => kvp[1]);
         }
 
-        private static string ToLegacyCookieString(IDictionary<string, string> dict, EntityContext pEntityContext)
+        public static string ToLegacyCookieString(IDictionary<string, string> dict, EntityContext pEntityContext)
         {
             return Encriptar(string.Join("&", dict.Select(kvp => string.Join("=", kvp.Key, kvp.Value))), pEntityContext);
         }
 
-        private static string Desencriptar(string cookie, EntityContext pEntityContext)
+        public static string Desencriptar(string cookie, EntityContext pEntityContext)
         {
             if (string.IsNullOrEmpty(cookie))
             {
@@ -137,6 +137,11 @@ namespace Gnoss.Web.Login.Open.Controllers
             return HttpUtility.UrlEncode(Convert.ToBase64String(bufEncr, 0, bufEncr.Length));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pFichero"></param>
+        /// <returns></returns>
         public static byte[] DesencriptarCookie(byte[] pFichero, EntityContext entityContext)
         {
             // Generate decryptor from the existing key bytes and initialization 
@@ -211,7 +216,12 @@ namespace Gnoss.Web.Login.Open.Controllers
 
             return buff;
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pFichero"></param>
+        /// <returns></returns>
         public static byte[] EncriptarCookie(byte[] pFichero, EntityContext pEntityContext)
         {
             // Define memory stream which will be used to hold encrypted data.
@@ -276,6 +286,9 @@ namespace Gnoss.Web.Login.Open.Controllers
             return buff;
         }
 
+        /// <summary>
+        /// Representa errores que ocurren cuando un texto no puede ser desencriptado o ha sido manipulado
+        /// </summary>
         public class InvalidCypherTextException : Exception
         {
 
