@@ -120,6 +120,10 @@ namespace EditorCV.Controllers
         {
             try
             {
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetItemsDuplicados(pCVId, pMinSimilarity, pItemId));
             }
@@ -144,6 +148,10 @@ namespace EditorCV.Controllers
         {
             try
             {
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection, pOnlyPublic));
             }
@@ -186,6 +194,10 @@ namespace EditorCV.Controllers
         {
             try
             {
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetItemMini(_Configuracion, pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
