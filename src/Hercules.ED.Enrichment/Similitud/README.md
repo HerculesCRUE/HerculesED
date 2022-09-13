@@ -49,6 +49,27 @@ MongoDB) are located in docker-compose.yaml.
 
 By default, the service is mapped to the port 5081 on the host system.
 
+# Installation and deployment
+
+Create a vritual environment with the necessary requirements:
+```
+$ virtualenv -p python3 venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+```
+
+Create a copy of `conf.template.json` with the name `conf.json`, and change the values as needed:
+- Set the device to use when encoding texts: GPU is considerably faster than CPU
+- Set the model to use when encoding texts
+
+Deploy the API either within an standalone server or behind Apache
+- Standalone server: Run server (on port 8977 in the example)
+```  
+$ ./run.sh 8977
+```
+
+- Behind Apache: You can follow [this tutorial](https://flask.palletsprojects.com/en/2.2.x/deploying/mod_wsgi/) as a reference.
+
 # Especificaciones de la API de similitud
 
 | Endpoint | Method | Description |
@@ -157,7 +178,7 @@ Se comprueban los ranking de similares de todos los RO de la base de datos, por 
 
 **Ejemplo**
 ```
-$ curl -X DELETE -H 'Content-Type: application/json' "http://herculesapi.elhuyar.eus/similarity/delete_ro?ro_id=2-s2.0-85032573110"
+$ curl -X DELETE -H 'Content-Type: application/json' "http://herculesapi.elhuyar.eus/similarity/ro?ro_id=2-s2.0-85032573110"
 ```
 
 ## /ro-collection [GET]
@@ -204,7 +225,7 @@ Este método devuelve los diez RO más similares al RO de entrada. Se puede limi
 
 Comando curl:
 ```
-$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/similar?ro_id=2-s2.0-33846355632&ro_type_target=research_paper"
+$ curl -X GET "http://herculesapi.elhuyar.eus/similarity/similar?ro_id=2-s2.0-85032573110&ro_type_target=research_paper"
 ```
 
 Respuesta:
