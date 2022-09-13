@@ -502,7 +502,7 @@ namespace Gnoss.Web.Login
             sw = null;
 
             //Actualizo la cookie de rewrite
-            mHttpContextAccessor.HttpContext.Response.Cookies.Append(pDominioAplicacion + "_rewrite", UtilCookies.ToLegacyCookieString(cookieRewriteValues), cookieRewriteoptions);
+            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_rewrite", UtilCookiesHercules.ToLegacyCookieString(cookieRewriteValues, mEntityContext), cookieRewriteoptions);
         }
 
         /// <summary>
