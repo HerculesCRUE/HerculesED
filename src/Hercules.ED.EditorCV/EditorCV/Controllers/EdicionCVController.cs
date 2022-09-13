@@ -149,25 +149,25 @@ namespace EditorCV.Controllers
         {
             try
             {
-                Gnoss.ApiWrapper.UserApi mUserApi = new Gnoss.ApiWrapper.UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-                string cookie = Request.Cookies["_UsuarioActual"];
+                //Gnoss.ApiWrapper.UserApi mUserApi = new Gnoss.ApiWrapper.UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+                //string cookie = Request.Cookies["_UsuarioActual"];
 
-                try
-                {
-                    Guid userID = mUserApi.GetUserIDFromCookie(Request.Cookies["_UsuarioActual"]);
-                    cookie += "-" + userID;
-                }
-                catch (Exception)
-                {
-                    cookie += "-ERROR";
-                }
+                //try
+                //{
+                //    Guid userID = mUserApi.GetUserIDFromCookie(Request.Cookies["_UsuarioActual"]);
+                //    cookie += "-" + userID;
+                //}
+                //catch (Exception)
+                //{
+                //    cookie += "-ERROR";
+                //}
 
-                return Ok(cookie);
-                Guid usuarioCV = UtilityCV.GetUserFromCV(pCVId);
-                if (!base.CheckUser(Request, usuarioCV))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized);
-                }
+                //return Ok(cookie);
+                //Guid usuarioCV = UtilityCV.GetUserFromCV(pCVId);
+                //if (!base.CheckUser(Request, usuarioCV))
+                //{
+                //    return StatusCode(StatusCodes.Status401Unauthorized);
+                //}
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection, pOnlyPublic));
             }
