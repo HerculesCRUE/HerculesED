@@ -52,6 +52,16 @@ namespace Gnoss.Web.Login
                 //obtengo las cookies
                 Dictionary<string, string> cookie = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_UsuarioActual"], mEntityContext);
                 Dictionary<string, string> cookieRewrite = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_rewrite"], mEntityContext);
+                foreach(string a in cookie.Keys)
+                {
+                    mResourceApi.Log.Error("c:"+a);
+                    mResourceApi.Log.Error("c:" + cookie[a]);
+                }
+                foreach (string a in cookieRewrite.Keys)
+                {
+                    mResourceApi.Log.Error("r:" + a);
+                    mResourceApi.Log.Error("r:" + cookie[a]);
+                }
 
                 DateTime caduca = DateTime.Now.AddDays(1);
                 List<ParametroAplicacion> filas = ParametrosAplicacionDS.Where(parametroApp => parametroApp.Parametro.Equals("TiposParametrosAplicacion.DuracionCookieUsuario")).ToList();
