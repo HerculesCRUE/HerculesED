@@ -149,7 +149,20 @@ namespace EditorCV.Controllers
         {
             try
             {
-                return Ok(Request.Cookies["_UsuarioActual"]);
+                Gnoss.ApiWrapper.UserApi mUserApi = new Gnoss.ApiWrapper.UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+                string cookie = Request.Cookies["_UsuarioActual"];
+
+                try
+                {
+                    Guid userID = mUserApi.GetUserIDFromCookie(Request.Cookies["_UsuarioActual"]);
+                    cookie += "-" + userID;
+                }
+                catch (Exception)
+                {
+                    cookie += "-ERROR";
+                }
+
+                return Ok(cookie);
                 Guid usuarioCV = UtilityCV.GetUserFromCV(pCVId);
                 if (!base.CheckUser(Request, usuarioCV))
                 {
