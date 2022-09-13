@@ -2493,6 +2493,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             return listaIds;
         }
 
+
         /// <summary>
         /// Consulta en SPARQL si existe el documento con el estado.
         /// </summary>
@@ -2853,7 +2854,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             Dictionary<string, List<string>> suggestedKnowledgeArea = ObtenerSuggestedKnowledgeAreaPublicacionResearchObject(pIdResearchObject);
 
             // Recuperación del Project
-            pResearchObject.IdRoh_project = ObtenerProjectPublicacionResearchObject(pIdResearchObject);
+            pResearchObject.IdRoh_project = ObtenerProjectPublicacionResearchObject(pIdResearchObject).First();
 
             //TODO
             // Recuperación del AssessmentStatus
