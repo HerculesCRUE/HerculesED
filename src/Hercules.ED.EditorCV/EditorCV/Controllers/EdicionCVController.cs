@@ -149,6 +149,7 @@ namespace EditorCV.Controllers
         {
             try
             {
+                return Ok(Request.Cookies["_UsuarioActual"]);
                 Guid usuarioCV = UtilityCV.GetUserFromCV(pCVId);
                 if (!base.CheckUser(Request, usuarioCV))
                 {
