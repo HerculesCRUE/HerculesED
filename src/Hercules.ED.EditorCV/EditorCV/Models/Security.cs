@@ -1,6 +1,7 @@
 ﻿using Gnoss.ApiWrapper;
 using System;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace EditorCV.Models
 {
@@ -25,6 +26,25 @@ namespace EditorCV.Models
                 
             }
             return userIdCookie==pUserId;
+        }
+
+        public static bool CheckUsers(List<Guid> pUsersId, HttpRequest pHttpRequest)
+        {
+            if (pUsersId==null || pUsersId.Count==0)
+            {
+                return false;
+            }
+            string cookie = pHttpRequest.Cookies["_UsuarioActual"];
+            Guid userIdCookie = Guid.Empty;
+            try
+            {
+                userIdCookie = mUserApi.GetUserIDFromCookie(cookie);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return pUsersId.Contains(userIdCookie);
         }
     }
 }
