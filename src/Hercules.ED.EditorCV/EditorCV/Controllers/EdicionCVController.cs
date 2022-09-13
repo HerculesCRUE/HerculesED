@@ -8,10 +8,6 @@ using EditorCV.Models;
 using EditorCV.Models.API.Input;
 using EditorCV.Models.Utils;
 using System.Collections.Generic;
-using EditorCV.Models.Similarity;
-using System.Net.Http;
-using System.Net;
-using System.Web.Http;
 using Microsoft.AspNetCore.Http;
 
 namespace EditorCV.Controllers
@@ -29,8 +25,7 @@ namespace EditorCV.Controllers
         }
 
 
-        #region Eliminar
-        private static readonly Gnoss.ApiWrapper.ResourceApi mResourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        #region Eliminar        
 
         /// <summary>
         /// Obtiene la URL de un CV a partir de un usuario
@@ -40,46 +35,11 @@ namespace EditorCV.Controllers
         [HttpGet("Test")]
         public IActionResult Test()
         {
-            string cookie = Request.Cookies["_UsuarioActual"];
-            string text= "ValorRequest.Cookies[\"_UsuarioActual\"]:"+ cookie+"";
-
-            Gnoss.ApiWrapper.UserApi mUserApi = new Gnoss.ApiWrapper.UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-            try
-            {
-                Guid userID = mUserApi.GetUserIDFromCookie(Request.Cookies["_UsuarioActual"]);
-                text += "-" + userID;
-            }
-            catch (Exception ex)
-            {
-                text += "-ERROR:"+ex.Message.ToString();
-            }
-
-            //Guid usuarioID = Guid.Empty;
-            //if (!base.HavePermission(Request, usuarioID))
-            //{
-            //    return StatusCode(StatusCodes.Status401Unauthorized);
-            //}
-
-
-            //Gnoss.ApiWrapper.UserApi mUserApi = new Gnoss.ApiWrapper.UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-            //string cookie = Request.Cookies["_UsuarioActual"];
-
-
-
-            //return Ok(cookie);
-            //Guid usuarioCV = UtilityCV.GetUserFromCV(pCVId);
-            //if (!base.CheckUser(Request, usuarioCV))
-            //{
-            //    return StatusCode(StatusCodes.Status401Unauthorized);
-            //}
-
-
-
-
+            Gnoss.ApiWrapper.ResourceApi resourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
             DateTime inicio = DateTime.Now;
-            mResourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
+            resourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
             DateTime fin = DateTime.Now;
-            string response = (fin - inicio).TotalMilliseconds.ToString()+ "+"+text;
+            string response = (fin - inicio).TotalMilliseconds.ToString();
             return Ok(response);
         }
         #endregion
@@ -94,6 +54,10 @@ namespace EditorCV.Controllers
         {
             try
             {
+                if(!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetCVUrl(userID, lang));
             }
