@@ -106,7 +106,7 @@ namespace ScientificexperienceprojectOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_title.Keys)
 							{
-								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificExperienceProject_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma])}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificExperienceProject_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma])}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Dc_identifier != null)
@@ -117,7 +117,7 @@ namespace ScientificexperienceprojectOntology
 				{
 							foreach (LanguageEnum idioma in this.Bibo_abstract.Keys)
 							{
-								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificExperienceProject_{ResourceID}_{ArticleID}", "http://purl.org/ontology/bibo/abstract",  $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_abstract[idioma])}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ScientificExperienceProject_{ResourceID}_{ArticleID}", "http://purl.org/ontology/bibo/abstract",  $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_abstract[idioma])}\"", list,  $"@{idioma} . ");
 							}
 				}
 			return list;
@@ -132,7 +132,7 @@ namespace ScientificexperienceprojectOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_title.Keys)
 							{
-								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma]).ToLower()}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma]).ToLower()}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Dc_identifier != null)
@@ -143,7 +143,7 @@ namespace ScientificexperienceprojectOntology
 				{
 							foreach (LanguageEnum idioma in this.Bibo_abstract.Keys)
 							{
-								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/ontology/bibo/abstract",  $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_abstract[idioma]).ToLower()}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/ontology/bibo/abstract",  $"\"{GenerarTextoSinSaltoDeLinea(this.Bibo_abstract[idioma]).ToLower()}\"", list,  $"@{idioma} . ");
 							}
 				}
 			if (listaSearch != null && listaSearch.Count > 0)

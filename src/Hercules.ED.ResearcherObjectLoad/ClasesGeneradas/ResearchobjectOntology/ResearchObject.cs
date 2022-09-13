@@ -15,7 +15,9 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using ResearchObject = ResearchobjectOntology.ResearchObject;
 using Project = ProjectOntology.Project;
+using Document = DocumentOntology.Document;
 using ResearchObjectType = ResearchobjecttypeOntology.ResearchObjectType;
 
 namespace ResearchobjectOntology
@@ -53,6 +55,18 @@ namespace ResearchobjectOntology
 					}
 				}
 			}
+			this.Roh_linkedRO = new List<ResearchObject>();
+			SemanticPropertyModel propRoh_linkedRO = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/linkedRO");
+			if(propRoh_linkedRO != null && propRoh_linkedRO.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_linkedRO.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						ResearchObject roh_linkedRO = new ResearchObject(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_linkedRO.Add(roh_linkedRO);
+					}
+				}
+			}
 			this.Vcard_hasLanguage = new List<Language>();
 			SemanticPropertyModel propVcard_hasLanguage = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasLanguage");
 			if(propVcard_hasLanguage != null && propVcard_hasLanguage.PropertyValues.Count > 0)
@@ -65,11 +79,6 @@ namespace ResearchobjectOntology
 					}
 				}
 			}
-			SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
-			if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
-			{
-				this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			this.Bibo_authorList = new List<BFO_0000023>();
 			SemanticPropertyModel propBibo_authorList = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/authorList");
 			if(propBibo_authorList != null && propBibo_authorList.PropertyValues.Count > 0)
@@ -79,6 +88,23 @@ namespace ResearchobjectOntology
 					if(propValue.RelatedEntity!=null){
 						BFO_0000023 bibo_authorList = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
 						this.Bibo_authorList.Add(bibo_authorList);
+					}
+				}
+			}
+			SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
+			if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
+			{
+				this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_linkedDocument = new List<Document>();
+			SemanticPropertyModel propRoh_linkedDocument = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/linkedDocument");
+			if(propRoh_linkedDocument != null && propRoh_linkedDocument.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_linkedDocument.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						Document roh_linkedDocument = new Document(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_linkedDocument.Add(roh_linkedDocument);
 					}
 				}
 			}
@@ -163,6 +189,7 @@ namespace ResearchobjectOntology
 					this.Roh_externalKeywords.Add(propValue.Value);
 				}
 			}
+			this.Roh_linkedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/linkedCount"));
 			this.Dct_license = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/license"));
 			SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
 			this.Vivo_freeTextKeyword = new List<string>();
@@ -229,6 +256,18 @@ namespace ResearchobjectOntology
 					}
 				}
 			}
+			this.Roh_linkedRO = new List<ResearchObject>();
+			SemanticPropertyModel propRoh_linkedRO = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/linkedRO");
+			if(propRoh_linkedRO != null && propRoh_linkedRO.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_linkedRO.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						ResearchObject roh_linkedRO = new ResearchObject(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_linkedRO.Add(roh_linkedRO);
+					}
+				}
+			}
 			this.Vcard_hasLanguage = new List<Language>();
 			SemanticPropertyModel propVcard_hasLanguage = pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#hasLanguage");
 			if(propVcard_hasLanguage != null && propVcard_hasLanguage.PropertyValues.Count > 0)
@@ -241,11 +280,6 @@ namespace ResearchobjectOntology
 					}
 				}
 			}
-			SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
-			if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
-			{
-				this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			this.Bibo_authorList = new List<BFO_0000023>();
 			SemanticPropertyModel propBibo_authorList = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/authorList");
 			if(propBibo_authorList != null && propBibo_authorList.PropertyValues.Count > 0)
@@ -255,6 +289,23 @@ namespace ResearchobjectOntology
 					if(propValue.RelatedEntity!=null){
 						BFO_0000023 bibo_authorList = new BFO_0000023(propValue.RelatedEntity,idiomaUsuario);
 						this.Bibo_authorList.Add(bibo_authorList);
+					}
+				}
+			}
+			SemanticPropertyModel propRoh_project = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/project");
+			if(propRoh_project != null && propRoh_project.PropertyValues.Count > 0)
+			{
+				this.Roh_project = new Project(propRoh_project.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
+			this.Roh_linkedDocument = new List<Document>();
+			SemanticPropertyModel propRoh_linkedDocument = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/linkedDocument");
+			if(propRoh_linkedDocument != null && propRoh_linkedDocument.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_linkedDocument.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						Document roh_linkedDocument = new Document(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_linkedDocument.Add(roh_linkedDocument);
 					}
 				}
 			}
@@ -339,6 +390,7 @@ namespace ResearchobjectOntology
 					this.Roh_externalKeywords.Add(propValue.Value);
 				}
 			}
+			this.Roh_linkedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/linkedCount"));
 			this.Dct_license = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/license"));
 			SemanticPropertyModel propVivo_freeTextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freeTextKeyword");
 			this.Vivo_freeTextKeyword = new List<string>();
@@ -386,18 +438,26 @@ namespace ResearchobjectOntology
 		[RDFProperty("http://w3id.org/roh/suggestedKnowledgeArea")]
 		public  List<CategoryPath> Roh_suggestedKnowledgeArea { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/linkedRO")]
+		public  List<ResearchObject> Roh_linkedRO { get; set;}
+		public List<string> IdsRoh_linkedRO { get; set;}
+
 		[LABEL(LanguageEnum.es,"https://www.w3.org/2006/vcard/ns#hasLanguage")]
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#hasLanguage")]
 		public  List<Language> Vcard_hasLanguage { get; set;}
+
+		[LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/authorList")]
+		[RDFProperty("http://purl.org/ontology/bibo/authorList")]
+		public  List<BFO_0000023> Bibo_authorList { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/project")]
 		[RDFProperty("http://w3id.org/roh/project")]
 		public  Project Roh_project  { get; set;} 
 		public string IdRoh_project  { get; set;} 
 
-		[LABEL(LanguageEnum.es,"http://purl.org/ontology/bibo/authorList")]
-		[RDFProperty("http://purl.org/ontology/bibo/authorList")]
-		public  List<BFO_0000023> Bibo_authorList { get; set;}
+		[RDFProperty("http://w3id.org/roh/linkedDocument")]
+		public  List<Document> Roh_linkedDocument { get; set;}
+		public List<string> IdsRoh_linkedDocument { get; set;}
 
 		[LABEL(LanguageEnum.es,"http://w3id.org/roh/userKnowledgeArea")]
 		[RDFProperty("http://w3id.org/roh/userKnowledgeArea")]
@@ -461,6 +521,9 @@ namespace ResearchobjectOntology
 		[RDFProperty("http://w3id.org/roh/externalKeywords")]
 		public  List<string> Roh_externalKeywords { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/linkedCount")]
+		public  int? Roh_linkedCount { get; set;}
+
 		[RDFProperty("http://purl.org/dc/terms/license")]
 		public  string Dct_license { get; set;}
 
@@ -508,7 +571,9 @@ namespace ResearchobjectOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
+			propList.Add(new ListStringOntologyProperty("roh:linkedRO", this.IdsRoh_linkedRO));
 			propList.Add(new StringOntologyProperty("roh:project", this.IdRoh_project));
+			propList.Add(new ListStringOntologyProperty("roh:linkedDocument", this.IdsRoh_linkedDocument));
 			propList.Add(new StringOntologyProperty("dc:type", this.IdDc_type));
 			propList.Add(new StringOntologyProperty("roh:releasesNumber", this.Roh_releasesNumber.ToString()));
 			propList.Add(new StringOntologyProperty("bibo:abstract", this.Bibo_abstract));
@@ -526,6 +591,7 @@ namespace ResearchobjectOntology
 			propList.Add(new ListStringOntologyProperty("roh:userKeywords", this.Roh_userKeywords));
 			propList.Add(new StringOntologyProperty("roh:idGit", this.Roh_idGit));
 			propList.Add(new ListStringOntologyProperty("roh:externalKeywords", this.Roh_externalKeywords));
+			propList.Add(new StringOntologyProperty("roh:linkedCount", this.Roh_linkedCount.ToString()));
 			propList.Add(new StringOntologyProperty("dct:license", this.Dct_license));
 			propList.Add(new ListStringOntologyProperty("vivo:freeTextKeyword", this.Vivo_freeTextKeyword));
 			propList.Add(new StringOntologyProperty("roh:resolvedIssuesNumber", this.Roh_resolvedIssuesNumber.ToString()));
@@ -797,9 +863,23 @@ namespace ResearchobjectOntology
 				}
 			}
 			}
+				if(this.IdsRoh_linkedRO != null)
+				{
+					foreach(var item2 in this.IdsRoh_linkedRO)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}", "http://w3id.org/roh/linkedRO", $"<{item2}>", list, " . ");
+					}
+				}
 				if(this.IdRoh_project != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/project", $"<{this.IdRoh_project}>", list, " . ");
+				}
+				if(this.IdsRoh_linkedDocument != null)
+				{
+					foreach(var item2 in this.IdsRoh_linkedDocument)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}", "http://w3id.org/roh/linkedDocument", $"<{item2}>", list, " . ");
+					}
 				}
 				if(this.IdDc_type != null)
 				{
@@ -858,6 +938,10 @@ namespace ResearchobjectOntology
 					{
 						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}", "http://w3id.org/roh/externalKeywords", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
 					}
+				}
+				if(this.Roh_linkedCount != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObject_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/linkedCount", $"{this.Roh_linkedCount.Value.ToString()}", list, " . ");
 				}
 				if(this.Dct_license != null)
 				{
@@ -1127,6 +1211,23 @@ namespace ResearchobjectOntology
 				}
 			}
 			}
+				if(this.IdsRoh_linkedRO != null)
+				{
+					foreach(var item2 in this.IdsRoh_linkedRO)
+					{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item2;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/linkedRO", $"<{itemRegex}>", list, " . ");
+					}
+				}
 				if(this.IdRoh_project != null)
 				{
 					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
@@ -1140,6 +1241,23 @@ namespace ResearchobjectOntology
 						itemRegex = itemRegex.ToLower();
 					}
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/project", $"<{itemRegex}>", list, " . ");
+				}
+				if(this.IdsRoh_linkedDocument != null)
+				{
+					foreach(var item2 in this.IdsRoh_linkedDocument)
+					{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item2;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/linkedDocument", $"<{itemRegex}>", list, " . ");
+					}
 				}
 				if(this.IdDc_type != null)
 				{
@@ -1208,6 +1326,10 @@ namespace ResearchobjectOntology
 					{
 						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/externalKeywords", $"\"{GenerarTextoSinSaltoDeLinea(item2).ToLower()}\"", list, " . ");
 					}
+				}
+				if(this.Roh_linkedCount != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/linkedCount", $"{this.Roh_linkedCount.Value.ToString()}", list, " . ");
 				}
 				if(this.Dct_license != null)
 				{
@@ -1293,8 +1415,8 @@ namespace ResearchobjectOntology
 			{
 				tags = tags.Substring(0, tags.LastIndexOf(','));
 			}
-			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string titulo = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
+			string descripcion = $"{this.Roh_title.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
 			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
 			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
 
