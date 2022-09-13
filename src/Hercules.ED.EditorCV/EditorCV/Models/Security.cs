@@ -10,6 +10,10 @@ namespace EditorCV.Models
 
         public static bool CheckUser(Guid pUserId,HttpRequest pHttpRequest)
         {
+            if (pUserId == Guid.Empty)
+            {
+                return false;
+            }
             string cookie = pHttpRequest.Cookies["_UsuarioActual"];
             Guid userIdCookie = Guid.Empty;
             try
