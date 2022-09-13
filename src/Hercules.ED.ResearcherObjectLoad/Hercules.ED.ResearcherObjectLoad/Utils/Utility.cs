@@ -285,7 +285,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 return null;
             }
             if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD1")) { 
-                return "060.010.010.000"; 
+                return "060.010.010.000";
             }
             if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD2")) { 
                 return "060.010.020.000"; 

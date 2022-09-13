@@ -385,7 +385,7 @@
                 "name": {
                   "es": "Nombre de la revista"
                 },
-                "showMini": true,
+                "showMiniBold": true,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",

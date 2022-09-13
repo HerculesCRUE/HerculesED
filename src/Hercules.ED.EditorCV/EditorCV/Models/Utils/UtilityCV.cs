@@ -91,6 +91,32 @@ namespace EditorCV.Models.Utils
             return "";
         }
 
+        /// <summary>
+        /// Obtiene el ID de usuario de un CV
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static Guid GetUserFromCV(string pCv)
+        {
+            string select = $@"select ?user from <{mResourceApi.GraphsUrl}person.owl>";
+            string where = $@"where {{
+    ?persona a <http://xmlns.com/foaf/0.1/Person> .
+    ?persona <http://w3id.org/roh/gnossUser> ?user.
+    ?cv <http://w3id.org/roh/cvOf> ?persona .
+    FILTER(?cv=<{pCv}>)
+}}";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("user"))
+                {
+                    return new Guid(fila["user"].value.Replace("http://gnoss/", ""));
+                }
+            }
+
+            return Guid.Empty;
+        }
+
 
         /// <summary>
         /// Obtiene las propiedades de las entidades pasadas por parámetro
@@ -269,7 +295,7 @@ namespace EditorCV.Models.Utils
         /// <param name="pSoloPublicos">Obtiene los datos sólo de lo públicos</param>
         /// <returns></returns>
         public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetPropertiesContadores(HashSet<string> pIds,
-            List<PropertyData> pProperties,bool pSoloPublicos=false)
+            List<PropertyData> pProperties, bool pSoloPublicos = false)
         {
             int paginacion = 10000;
             int maxIn = 1000;

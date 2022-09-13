@@ -691,15 +691,18 @@
                                 </a>
                             </li>
                         }
-                        <li class="nav-item d-none" role="presentation" id="linked-panel-li">
-                            <!-- Referencias -->
-                            <a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
-                                <div class="bloque">
-                                    <div class="label">@Html.Translate("ROS_VINCULADOS")</div>
-                                    <div class="data">0</div>
-                                </div>
-                            </a>
-                        </li>
+                        @if (@pDocument.Roh_linkedCount > 0 || true) 
+                        {
+                            <li class="nav-item" role="presentation" id="linked-panel-li">
+                                <!-- Referencias -->
+                                <a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
+                                    <div class="bloque">
+                                        <div class="label">@Html.Translate("ROS_VINCULADOS")</div>
+                                        <div class="data">@pDocument.Roh_linkedCount</div>
+                                    </div>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div class="tab-content" id="paneles-recurso">
@@ -827,7 +830,7 @@
                     }
 
                     <div class="tab-pane fade" id="linked-panel" role="tabpanel" aria-labelledby="linked-tab">
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col col-12 header-listado">
                                 <div class="h1-container">
                                     <h2>@Html.Translate("ROS_VINCULADOS")
@@ -835,20 +838,8 @@
                                     </h2>
                                 </div>
                             </div>
-                            <div class="col col-12 col-contenido">
-                                <div class="wrapCol">
-                                    <div class="resource-list listView resource-list-buscador">
-                                        <div class="resource-list-wrap">
-                                     
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
+                        </div> -->
+                        <div class="row" id="contenedorBuscadorResearchObjectsLinked">
                         </div>
                     </div>
                 </div>
@@ -986,7 +977,7 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <div class="row" id="contenedorBuscadorResearchObjectsModal">
+                        <div class="row contenedorBuscadorResearchObjectsModal" id="contenedorBuscadorResearchObjectsModal">
                             <div class="col col-12 col-section-title font-weight-bold">
                                 <div class="wrapCol">
                                     <p></p>
@@ -1075,9 +1066,6 @@
 
             $(modal).modal("show")
 
-            console.log("modalTextArea", modalTextArea[0])
-            console.log("modalTextArea.value", modalTextArea[0].value)
-
             // Evento para el botón de guardado
             $(modal).find("#btn-modal-editar-anotacion").off("click").on("click", function () {
 
@@ -1105,7 +1093,6 @@
         }
         function borrarAnotacion(idCurrentAnnotation) {
             anotaciones.deleteAnnotation(idCurrentAnnotation).then((data) => {
-                console.log("data", data);
                 anotaciones.loadInRo().then((data) => {
                 
                     // Ahora pintamos los datos si hay elementos
@@ -1157,7 +1144,7 @@
 
 
     ///////////////////////////////////
-    //// Funciones para cincular ROs
+    //// Funciones para vincular ROs
     ///////////////////////////////////
 
     /**
@@ -1177,6 +1164,25 @@
         $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
             cerrarVincularRO()
         })
+    }
+
+    /**
+     * Función para iniciar la vinculación de ROs 
+     */
+    function showLinkedROsSearch() {
+
+        // $("#modal-vinvular-ro").modal("show")
+
+        buscadorPersonalizado.orders=null;
+        // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
+        // buscadorPersonalizado.setScrollVars("#modal-vinvular-ro .footer", "article")
+        // Inicia
+        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsLinked", "linkedROs=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+        // buscadorPersonalizado.resetScrollVars()
+
+        // $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
+        //     cerrarVincularRO()
+        // })
     }
 
 
@@ -1217,11 +1223,11 @@
         arg.resourceRO = "@pDocument.GNOSSID";
         arg.pIdROId = id;
         arg.pIdGnossUser = "@currentId";
+        MostrarUpdateProgress();
         $.post(url, arg, function (data) {
+            OcultarUpdateProgress()
             cargarROsVinculados()
         });
-
-        console.log("añadido", id)
 
         cerrarVincularRO()
     }
@@ -1282,14 +1288,19 @@
             if (currentSec != ro.roType) 
             {
                 currentSec = ro.roType
-                if (ro.roType == "") 
-                {
-                    htmlRes = `<h3>@Html.Translate("DOCUMENTOS")</h3><hr />`
-                } else {
-                    htmlRes = `<h3>${ro.roTypeTitle}</h3><hr />`
-                }
+                // if (ro.roType == "") 
+                // {
+                //     htmlRes = `<h3>@Html.Translate("PUBLICACIONES")</h3><hr />`
+                // } else {
+                //     htmlRes = `<h3>${ro.roTypeTitle}</h3><hr />`
+                // }
                 
             }
+            if (ro.roType == "") 
+            {
+                ro.roTypeTitle = "@Html.Translate("PUBLICACION")"
+            }
+
             let htmlMenu = ""
             let ownUser = false;
             @if (!string.IsNullOrEmpty(urlCV))
@@ -1334,9 +1345,21 @@
                 `
             }
 
-            let urlResource = "@Comunidad.Url/@Html.GetText("URLSEM", "RECURSO")/ro/" + ro.entityID.split("_")[1]
+            // Generamos la url
+            let nameUrlRo = cleanStringUrlLikeGnoss(ro.title)
+            let urlResource = "@Comunidad.Url/@Html.GetText("URLSEM", "RECURSO")/" + nameUrlRo + "/" + ro.entityID.split("_")[1]
 
 
+            // Pinto "mostrar más" si la descripción contiene un texto largo
+            let showMore = ""
+            if (ro.description.trim() != "" && ro.description.length > 60) {
+                showMore = `<p class="moreResults showMore">
+                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                                            </p>`
+            }
+
+            // Genero el HTML final
             htmlRes += `<article class="resource rolinked">
                 <div class="wrap">
                     <div class="row">
@@ -1350,15 +1373,16 @@
                                 </div>
                                 <div class="content-wrap">
                                     <div class="description-wrap counted">
-                                        <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div>
+                                        <!-- <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div> -->
+                                        <h3>
+                                            <span about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</span> 
+                                            ${ro.roTypeTitle}
+                                        </h3>
                                         <div class="description-wrap">
                                             <div class="desc" style="display: -webkit-box;">
                                                 <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
                                             </div>
-                                            <p class="moreResults showMore">
-                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
-                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                                            </p>
+                                            ${showMore}
                                         </div>
                                     </div>
                                 </div>
@@ -1409,6 +1433,7 @@
     {
         $("#contenedorBuscadorResearchObjectsModal article.resource").each((i, e) => {
             let id = e.id.split('_')[1]
+            $(e).find("h2.resource-title").attr("onclick","addROVinculado('" + id + "')")
             $(e).find("h2.resource-title a").attr("href","javascript:addROVinculado('" + id + "')")
         })
     }
@@ -1726,6 +1751,19 @@
 
 
             });
+
+            // $('#relacionados-tab').unbind().click(function (e) {
+            $('#linked-tab').unbind().on('click', function (e) {
+                e.preventDefault();
+                that.tabActive = "linked";
+
+                buscadorPersonalizado.orders=null;
+                // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
+                // Inicia
+                buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsLinked", "linkedROs=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+
+
+            });
             return;
         }
     };
@@ -1773,7 +1811,8 @@
     // Ejecuta cuando la página está cargada
     $( document ).ready(function() {
 
-        cargarROsVinculados()
+        // cargarROsVinculados()
+        showLinkedROsSearch()
 
     });
 
@@ -2319,6 +2358,7 @@
             this.Dct_issued = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("http://purl.org/dc/terms/issued"));
             this.Roh_typeOthers = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/typeOthers"));
             this.Roh_crisIdentifier = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/crisIdentifier"));
+            this.Roh_linkedCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/linkedCount"));
             this.Vcard_url = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#url"));
             SemanticPropertyModel propRoh_userKeywords = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/userKeywords");
             this.Roh_userKeywords = new List<string>();
@@ -2573,6 +2613,9 @@
 
         [RDFProperty("http://w3id.org/roh/crisIdentifier")]
         public string Roh_crisIdentifier { get; set; }
+
+        [RDFProperty("http://w3id.org/roh/linkedCount")]
+        public int? Roh_linkedCount { get; set; }
 
         [RDFProperty("https://www.w3.org/2006/vcard/ns#url")]
         public string Vcard_url { get; set; }
@@ -2923,8 +2966,7 @@
 
         [LABEL(LanguageEnum.es, "Identificador de la publicación principal")]
         [RDFProperty("http://w3id.org/roh/crisIdentifier")]
-        public string Roh_crisIdentifier { get; set; }
-    }
+        public string Roh_crisIdentifier { get; set; }    }
 
 
     public class ReferenceSource : GnossOCBase

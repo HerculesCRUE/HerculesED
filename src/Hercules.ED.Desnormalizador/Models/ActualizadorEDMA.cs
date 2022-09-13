@@ -94,6 +94,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
             actualizadorCV.EliminarDuplicados();
+            actualizadorCV.EliminarItemsEliminados();
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas();
@@ -132,6 +133,8 @@ namespace DesnormalizadorHercules.Models
                 UtilsSimilarity utilsSimilarityRos = new UtilsSimilarity(pConfigService.GetUrlSimilarity(), resourceApi, "code_project");
                 utilsSimilarityRos.SincroComplete();
             }
+
+            //TODO eliminar personas externas sin publicaciones
         }
 
         /// <summary>
@@ -151,6 +154,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorCV.ModificarElementosCV();
             actualizadorCV.ModificarOrganizacionesCV();
             actualizadorCV.EliminarDuplicados();
+            actualizadorCV.EliminarItemsEliminados();
         }
 
 

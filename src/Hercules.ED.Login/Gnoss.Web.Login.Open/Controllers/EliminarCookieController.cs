@@ -40,8 +40,8 @@ namespace Gnoss.Web.Login
         [HttpGet, HttpPost]
         public void Index()
         {
-            string cookieUsuarioKey = DominioAplicacion + "_UsuarioActual";
-            string cookieEnvioKey = DominioAplicacion + "_Envio";
+            string cookieUsuarioKey = "_UsuarioActual";
+            string cookieEnvioKey = "_Envio";
             bool hayIframes = false;
             if (!Request.Headers.ContainsKey("eliminar") && !Request.Query.ContainsKey("eliminar"))
             {
@@ -74,7 +74,7 @@ namespace Gnoss.Web.Login
                     Response.Cookies.Append(cookieUsuarioKey, "0", new CookieOptions { Expires = DateTime.Now.AddDays(-1) });
                 }
 
-                string cookieRewriteKey = DominioAplicacion + "_rewrite";
+                string cookieRewriteKey = "_rewrite";
 
                 //Elimino la cookie de rewrite
                 if (Request.Cookies.ContainsKey(cookieRewriteKey))
@@ -134,8 +134,7 @@ namespace Gnoss.Web.Login
                 hayIframes = EliminarCookieRestoDominios(dominioPeticion);
             }
 
-            Response.Redirect(Url.Content(@$"~/{mConfigServiceSAML.GetUrlServiceInDomain()}Auth/Logout"));
-            //if ((Request.Query.ContainsKey("redirect") || Request.Headers.ContainsKey("redirect") )&& !hayIframes)
+            //if ((Request.Query.ContainsKey("redirect") || Request.Headers.ContainsKey("redirect")) && !hayIframes)
             //{
             //    if (Request.Headers.ContainsKey("redirect"))
             //    {
@@ -145,8 +144,10 @@ namespace Gnoss.Web.Login
             //    {
             //        Response.Redirect(Request.Query["redirect"]);
             //    }
-                
+
             //}
+
+            Response.Redirect(Url.Content(@$"~/{mConfigServiceSAML.GetUrlServiceInDomain()}Auth/Logout"));
         }
 
         #endregion
