@@ -289,7 +289,7 @@ namespace DesnormalizadorHercules.Models
         /// Actualiza elementos desnormalizados cuando se crean/modifican documentos
         /// </summary>
         /// <param name="pDocuments">ID de los documentos</param>
-        public static void DesnormalizarDatosDocumento(List<string> pDocuments, ConfigService pConfigService)
+        public static void DesnormalizarDatosDocumento(List<string> pDocuments)
         {
             ActualizadorPerson actualizadorPersonas = new(resourceApi);
             ActualizadorGroup actualizadorGrupos = new(resourceApi);
@@ -356,7 +356,7 @@ namespace DesnormalizadorHercules.Models
         /// Actualiza elementos desnormalizados cuando se crean/modifican research objects
         /// </summary>
         /// <param name="pROs">ID de los research objects</param>
-        public static void DesnormalizarDatosResearchObject(List<string> pROs, ConfigService pConfigService)
+        public static void DesnormalizarDatosResearchObject(List<string> pROs)
         {
             ActualizadorRO actualizadorRO = new(resourceApi);
 
