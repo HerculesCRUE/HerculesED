@@ -296,12 +296,3 @@ Respuesta para 'papers':
 }
 ```
 
-
-**BioProtocol**
-
-Work in progress.
-
-
-**SourceForge**
-
-Work in progress.

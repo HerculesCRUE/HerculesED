@@ -10,7 +10,7 @@ namespace EditorCV.Controllers
     [ApiController]
     [Route("[controller]")]
     [EnableCors("_myAllowSpecificOrigins")]
-    public class EnvioValidacionController : ControllerBaseService
+    public class EnvioValidacionController : ControllerBase
     {
         readonly ConfigService _Configuracion;
 

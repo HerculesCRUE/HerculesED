@@ -29,8 +29,8 @@ namespace CurriculumvitaeOntology
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
 			this.Roh_summaryTFG = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/summaryTFG"));
-			this.Roh_summaryTFM = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/summaryTFM"));
 			this.Roh_summary = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/summary"));
+			this.Roh_summaryTFM = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/summaryTFM"));
 		}
 
 		public virtual string RdfType { get { return "http://w3id.org/roh/FreeTextSummaryValuesCV"; } }
@@ -40,19 +40,19 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/summaryTFG")]
 		public  string Roh_summaryTFG { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/summaryTFM")]
-		public  string Roh_summaryTFM { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/summary")]
 		public  string Roh_summary { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/summaryTFM")]
+		public  string Roh_summaryTFM { get; set;}
 
 
 		internal override void GetProperties()
 		{
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:summaryTFG", this.Roh_summaryTFG));
-			propList.Add(new StringOntologyProperty("roh:summaryTFM", this.Roh_summaryTFM));
 			propList.Add(new StringOntologyProperty("roh:summary", this.Roh_summary));
+			propList.Add(new StringOntologyProperty("roh:summaryTFM", this.Roh_summaryTFM));
 		}
 
 		internal override void GetEntities()
