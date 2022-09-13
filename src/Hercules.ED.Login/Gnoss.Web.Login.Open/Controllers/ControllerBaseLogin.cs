@@ -18,6 +18,7 @@ using Es.Riam.Gnoss.Web.Controles;
 using Es.Riam.Gnoss.Web.Controles.ServiciosGenerales;
 using Es.Riam.Util;
 using Es.Riam.Web.Util;
+using Gnoss.Web.Login.Open.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -376,7 +377,7 @@ namespace Gnoss.Web.Login
             //Cabeceras para poder recibir cookies de terceros
             mHttpContextAccessor.HttpContext.Response.Headers.Add("p3p", "CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");
 
-            if (!string.IsNullOrEmpty(pDominio) && UtilCookies.FromLegacyCookieString(Request.Cookies[DominioAplicacion + "_Dominios"]).ContainsKey("pDominio"))
+            if (!string.IsNullOrEmpty(pDominio) && UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_Dominios"], mEntityContext).ContainsKey("pDominio"))
             {
                 //Quito www.
                 if (pDominio.Contains("//www."))
@@ -389,7 +390,7 @@ namespace Gnoss.Web.Login
 
             //establezco la validez de la cookie que será de 1 día
             options.Expires = DateTime.Now.AddDays(1);
-            mHttpContextAccessor.HttpContext.Response.Cookies.Append(DominioAplicacion + "_Dominios", UtilCookies.ToLegacyCookieString(cookieValues), options);
+            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_Dominios", UtilCookiesHercules.ToLegacyCookieString(cookieValues, mEntityContext), options);
         }
 
         /// <summary>
@@ -406,7 +407,7 @@ namespace Gnoss.Web.Login
             //Creo la cookie para este usuario
             CookieOptions cookieUsuarioOptions = new CookieOptions();
 
-            if (!mHttpContextAccessor.HttpContext.Request.Cookies.ContainsKey(pDominioAplicacion + "_UsuarioActual"))
+            if (!mHttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("_UsuarioActual"))
             {
                 existe = false;
             }
@@ -426,7 +427,9 @@ namespace Gnoss.Web.Login
 
             //Añado la cookie al navegador
             cookieUsuarioOptions.Expires = caduca;
-            mHttpContextAccessor.HttpContext.Response.Cookies.Append(pDominioAplicacion + "_UsuarioActual", UtilCookies.ToLegacyCookieString(cookieUsuarioValues), cookieUsuarioOptions);
+            cookieUsuarioOptions.SameSite = SameSiteMode.None;
+            cookieUsuarioOptions.Secure = true;
+            mHttpContextAccessor.HttpContext.Response.Cookies.Append("_UsuarioActual", UtilCookiesHercules.ToLegacyCookieString(cookieUsuarioValues, mEntityContext), cookieUsuarioOptions);
 
             CookieOptions usuarioLogueadoOptions = new CookieOptions();
 
