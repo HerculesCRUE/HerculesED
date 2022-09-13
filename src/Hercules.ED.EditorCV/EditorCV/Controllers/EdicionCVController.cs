@@ -54,6 +54,7 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtener la URL el usuario de la petición
                 if(!Security.CheckUser(new Guid(userID), Request))
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
@@ -120,6 +121,7 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtener duplicados el propietario del CV
                 if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
@@ -148,7 +150,8 @@ namespace EditorCV.Controllers
         {
             try
             {
-                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                //Solo puede obtener los datos el propietario del CV (a no ser que sólo sean los datos públicos)
+                if (!pOnlyPublic && !Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
@@ -194,6 +197,7 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtener el propietario del CV
                 if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
@@ -221,7 +225,12 @@ namespace EditorCV.Controllers
         public IActionResult GetEdit(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
-            {
+            { 
+                //Solo puede obtener el propietario del CV
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetEdit(pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
@@ -304,12 +313,5 @@ namespace EditorCV.Controllers
                 return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
         }
-
-        //TODO entidades del propio CV
-        //GEstión multiidioma
-
-
-
-
     }
 }
