@@ -613,7 +613,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificaciones.Add(notificacion);
                                         }
 
-
                                         listaDocumentosCargar.Add(resourceDocumento);
                                     }
                                     else
@@ -785,11 +784,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             #endregion
 
                             // ------------------------------ CARGA
-                            FileLogger.Log($@"{DateTime.Now} - Cargando personas...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Cargando personas...");
                             idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
-                            FileLogger.Log($@"{DateTime.Now} - Cargando publicaciones...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Cargando publicaciones...");
                             idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
-                            FileLogger.Log($@"{DateTime.Now} - Cargando ROs...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Cargando ROs...");
                             idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
                             idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
@@ -852,7 +851,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             });
 
                             //Insertamos en la cola del desnormalizador
-                            FileLogger.Log($@"{DateTime.Now} - Inserción en la cola Rabbit del desnormalizador...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Inserción en la cola Rabbit del desnormalizador...");
                             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
                             if (idsPersonasActualizar.Count > 0)
                             {
@@ -871,7 +870,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             //Cargamos las notificaciones
                             List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
                             mResourceApi.ChangeOntoly("notification");
-                            FileLogger.Log($@"{DateTime.Now} - Creando notificaciones...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Creando notificaciones...");
                             Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, notificacion =>
                             {
                                 ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
@@ -895,7 +894,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             mResourceApi.ChangeOntoly("notification");
                             NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                             notificacion.IdRoh_owner = idPersona;
-                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Dct_issued = DateTime.UtcNow;
                             notificacion.Roh_type = "loadExternalSource";
 
                             ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
@@ -913,9 +912,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
 
                         // Hace una copia del fichero y elimina el original.
-                        FileLogger.Log($@"{DateTime.Now} - Creando ZIP...");
+                        FileLogger.Log($@"{DateTime.UtcNow} - Creando ZIP...");
                         CrearZip(pRutaEscritura, fichero.Name, jsonString);
-                        FileLogger.Log($@"{DateTime.Now} - Borrando json...");
+                        FileLogger.Log($@"{DateTime.UtcNow} - Borrando json...");
                         File.Delete(fichero.FullName);
                     }
                     catch (Exception ex)
