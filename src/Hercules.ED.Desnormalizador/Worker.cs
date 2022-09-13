@@ -346,10 +346,10 @@ namespace DesnormalizadorHercules
                                             ActualizadorEDMA.DesnormalizarDatosProyectos(pProjects: listIn);
                                             break;
                                         case DenormalizerItemQueue.ItemType.document:
-                                            ActualizadorEDMA.DesnormalizarDatosDocumento(pDocuments: listIn,pConfigService: _configService);
+                                            ActualizadorEDMA.DesnormalizarDatosDocumento(pDocuments: listIn);
                                             break;
                                         case DenormalizerItemQueue.ItemType.researchobject:
-                                            ActualizadorEDMA.DesnormalizarDatosResearchObject(pROs: listIn, pConfigService: _configService);
+                                            ActualizadorEDMA.DesnormalizarDatosResearchObject(pROs: listIn);
                                             break;
                                         case DenormalizerItemQueue.ItemType.patent:
                                             ActualizadorEDMA.DesnormalizarDatosPatentes(pPatents: listIn);
@@ -418,10 +418,10 @@ namespace DesnormalizadorHercules
                                                 ActualizadorEDMA.DesnormalizarDatosProyectos(pProjects: listIn);
                                                 break;
                                             case DenormalizerItemQueue.ItemType.document:
-                                                ActualizadorEDMA.DesnormalizarDatosDocumento(pDocuments: listIn, pConfigService: _configService);
+                                                ActualizadorEDMA.DesnormalizarDatosDocumento(pDocuments: listIn);
                                                 break;
                                             case DenormalizerItemQueue.ItemType.researchobject:
-                                                ActualizadorEDMA.DesnormalizarDatosResearchObject(pROs: listIn, pConfigService: _configService);
+                                                ActualizadorEDMA.DesnormalizarDatosResearchObject(pROs: listIn);
                                                 break;
                                             case DenormalizerItemQueue.ItemType.patent:
                                                 ActualizadorEDMA.DesnormalizarDatosPatentes(pPatents: listIn);
