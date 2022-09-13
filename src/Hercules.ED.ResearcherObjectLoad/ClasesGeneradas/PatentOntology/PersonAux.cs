@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using Person = PersonOntology.Person;
 
 namespace PatentOntology
 {
@@ -28,6 +29,11 @@ namespace PatentOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			SemanticPropertyModel propRdf_member = pSemCmsModel.GetPropertyByPath("http://www.w3.org/1999/02/22-rdf-syntax-ns#member");
+			if(propRdf_member != null && propRdf_member.PropertyValues.Count > 0)
+			{
+				this.Rdf_member = new Person(propRdf_member.PropertyValues[0].RelatedEntity,idiomaUsuario);
+			}
 			this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
 			this.Roh_secondFamilyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/secondFamilyName"));
 			this.Foaf_nick = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/nick"));
@@ -38,6 +44,10 @@ namespace PatentOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/PersonAux"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/PersonAux"; } }
 		public OntologyEntity Entity { get; set; }
+
+		[RDFProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#member")]
+		public  Person Rdf_member  { get; set;} 
+		public string IdRdf_member  { get; set;} 
 
 		[RDFProperty("http://xmlns.com/foaf/0.1/familyName")]
 		public  string Foaf_familyName { get; set;}
@@ -58,6 +68,7 @@ namespace PatentOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
+			propList.Add(new StringOntologyProperty("rdf:member", this.IdRdf_member));
 			propList.Add(new StringOntologyProperty("foaf:familyName", this.Foaf_familyName));
 			propList.Add(new StringOntologyProperty("roh:secondFamilyName", this.Roh_secondFamilyName));
 			propList.Add(new StringOntologyProperty("foaf:nick", this.Foaf_nick));

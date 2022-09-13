@@ -7,6 +7,8 @@ using Es.Riam.Gnoss.Util.Configuracion;
 using Es.Riam.Gnoss.Util.General;
 using Es.Riam.Util;
 using Es.Riam.Web.Util;
+using Gnoss.ApiWrapper;
+using Gnoss.Web.Login.Open.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,8 +47,8 @@ namespace Gnoss.Web.Login
             string url = Request.Headers["urlVuelta"];
 
             //obtengo las cookies
-            Dictionary<string, string> cookie = UtilCookies.FromLegacyCookieString(Request.Cookies[DominioAplicacion + "_UsuarioActual"]);
-            Dictionary<string, string> cookieRewrite = UtilCookies.FromLegacyCookieString(Request.Cookies[DominioAplicacion + "_rewrite"]);
+            Dictionary<string, string> cookie = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_UsuarioActual"], mEntityContext);
+            Dictionary<string, string> cookieRewrite = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_rewrite"], mEntityContext);
 
             DateTime caduca = DateTime.Now.AddDays(1);
             List<ParametroAplicacion> filas = ParametrosAplicacionDS.Where(parametroApp => parametroApp.Parametro.Equals("TiposParametrosAplicacion.DuracionCookieUsuario")).ToList();
@@ -85,18 +87,18 @@ namespace Gnoss.Web.Login
                         //Así la cookie nunca caduca
                         caduca = DateTime.MaxValue;
                     }
-                    Response.Cookies.Append(DominioAplicacion + "_UsuarioActual", UtilCookies.ToLegacyCookieString(cookie), new CookieOptions { Expires = caduca });
+                    Response.Cookies.Append("_UsuarioActual", UtilCookiesHercules.ToLegacyCookieString(cookie, mEntityContext), new CookieOptions { Expires = caduca });
                 }
             }
 
             if (cookieRewrite != null && extenderFechaCookie)
             {
-                Response.Cookies.Append(DominioAplicacion + "_rewrite", UtilCookies.ToLegacyCookieString(cookieRewrite), new CookieOptions { Expires = caduca });
+                Response.Cookies.Append("_rewrite", UtilCookiesHercules.ToLegacyCookieString(cookieRewrite, mEntityContext), new CookieOptions { Expires = caduca });
             }
 
-            if (Request.Cookies.ContainsKey(DominioAplicacion + "_Envio") && extenderFechaCookie)
+            if (Request.Cookies.ContainsKey("_Envio") && extenderFechaCookie)
             {
-                Response.Cookies.Append(DominioAplicacion + "_Envio", Request.Cookies[DominioAplicacion + "_Envio"], new CookieOptions { Expires = caduca });
+                Response.Cookies.Append("_Envio", Request.Cookies["_Envio"], new CookieOptions { Expires = caduca });
             }
 
             string redirect = "";

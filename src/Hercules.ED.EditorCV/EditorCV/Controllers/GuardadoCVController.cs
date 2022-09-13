@@ -5,7 +5,7 @@ using EditorCV.Models;
 using EditorCV.Models.API.Input;
 using EditorCV.Models.Similarity;
 
-namespace GuardadoCV.Controllers
+namespace EditorCV.Controllers
 {
     [ApiController]
     [Route("[controller]")]

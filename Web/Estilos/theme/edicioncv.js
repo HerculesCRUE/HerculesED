@@ -8,9 +8,9 @@ var edicionCV = {
     idCV: null,
     idPerson: null,
     init: function() {
-        this.config();
         this.idCV = $('.contenido-cv').attr('about');
         this.idPerson = $('.contenido-cv').attr('personid');
+        this.config();
 		duplicadosCV.init();
         return;
     },

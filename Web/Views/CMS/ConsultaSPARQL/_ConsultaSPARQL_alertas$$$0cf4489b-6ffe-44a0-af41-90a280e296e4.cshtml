@@ -15,7 +15,7 @@
         <div class="wrapCol">
             <div class="header-contenido">
                 <div class="h1-container">
-                    <h1>@Html.Translate("NOTIFICACION_ALERTA") <span class="numResultados">@listaNotificaciones.Count(x => !string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje))</span></h1>
+                    <h1>@Html.Translate("NOTIFICACION_ALERTA") <span class="numResultados">@listaNotificaciones.Count(x => !string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje) || x.tipoNotificacion.Equals("loadExternalSource"))</span></h1>
                 </div>
             </div>
             <div class="tab-paneles-alertas">
@@ -25,7 +25,7 @@
                            href="#externas-panel" role="tab" aria-controls="externas-panel"
                            aria-selected="false">
                             Novedades de fuentes externas <span class="badge">
-                                @listaNotificaciones.Count(x => string.IsNullOrEmpty(x.desencadenante) && (!string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje)))
+                                @listaNotificaciones.Count(x => string.IsNullOrEmpty(x.desencadenante) && (!string.IsNullOrEmpty(x.titulo) || !string.IsNullOrEmpty(x.mensaje) || x.tipoNotificacion.Equals("loadExternalSource")))
                             </span>
                         </a>
                     </li>
@@ -47,8 +47,8 @@
 
                                 @foreach (Notification notification in listaNotificaciones.Where(x => string.IsNullOrEmpty(x.desencadenante)))
                                 {
-									//Si no tiene titulo o mensaje no la muestro
-									if(string.IsNullOrEmpty(notification.titulo) && string.IsNullOrEmpty(notification.mensaje)){
+									//Si no tiene titulo, no tiene mensaje y no es de tipo "loadExternalSource" no la muestro
+									if(string.IsNullOrEmpty(notification.titulo) && string.IsNullOrEmpty(notification.mensaje) && !notification.tipoNotificacion.Equals("loadExternalSource")){
 										continue;
 									}
                                     notification.desencadenante = Html.Translate("NOTIFICACION_SE");
@@ -343,7 +343,11 @@
                 string hora = fecha.Substring(8, 2);
                 string min = fecha.Substring(10, 2);
                 string segs = fecha.Substring(12, 2);
-                fecha = dia + "/" + mes + "/" + anio + " " + hora + ":" + min + ":" + segs;
+                fecha = dia + "/" + mes + "/" + anio + " " + hora + ":" + min + ":" + segs + " GMT";
+
+                //Cambio la fecha de GMT a local
+                DateTime.TryParse(fecha, out DateTime dateValue);
+                fecha = dateValue.ToString();
             }
             return fecha;
         }

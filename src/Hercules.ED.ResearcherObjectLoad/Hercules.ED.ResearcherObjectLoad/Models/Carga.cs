@@ -613,7 +613,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificaciones.Add(notificacion);
                                         }
 
-
                                         listaDocumentosCargar.Add(resourceDocumento);
                                     }
                                     else
@@ -785,11 +784,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             #endregion
 
                             // ------------------------------ CARGA
-                            FileLogger.Log($@"{DateTime.Now} - Cargando personas...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Cargando personas...");
                             idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
-                            FileLogger.Log($@"{DateTime.Now} - Cargando publicaciones...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Cargando publicaciones...");
                             idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
-                            FileLogger.Log($@"{DateTime.Now} - Cargando ROs...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Cargando ROs...");
                             idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
                             idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
@@ -852,7 +851,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             });
 
                             //Insertamos en la cola del desnormalizador
-                            FileLogger.Log($@"{DateTime.Now} - Inserción en la cola Rabbit del desnormalizador...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Inserción en la cola Rabbit del desnormalizador...");
                             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(configuracion);
                             if (idsPersonasActualizar.Count > 0)
                             {
@@ -871,7 +870,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             //Cargamos las notificaciones
                             List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
                             mResourceApi.ChangeOntoly("notification");
-                            FileLogger.Log($@"{DateTime.Now} - Creando notificaciones...");
+                            FileLogger.Log($@"{DateTime.UtcNow} - Creando notificaciones...");
                             Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, notificacion =>
                             {
                                 ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
@@ -895,7 +894,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             mResourceApi.ChangeOntoly("notification");
                             NotificationOntology.Notification notificacion = new NotificationOntology.Notification();
                             notificacion.IdRoh_owner = idPersona;
-                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Dct_issued = DateTime.UtcNow;
                             notificacion.Roh_type = "loadExternalSource";
 
                             ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
@@ -913,9 +912,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
 
                         // Hace una copia del fichero y elimina el original.
-                        FileLogger.Log($@"{DateTime.Now} - Creando ZIP...");
+                        FileLogger.Log($@"{DateTime.UtcNow} - Creando ZIP...");
                         CrearZip(pRutaEscritura, fichero.Name, jsonString);
-                        FileLogger.Log($@"{DateTime.Now} - Borrando json...");
+                        FileLogger.Log($@"{DateTime.UtcNow} - Borrando json...");
                         File.Delete(fichero.FullName);
                     }
                     catch (Exception ex)
@@ -2052,6 +2051,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     document.IdVivo_hasPublicationVenue = idRevista;
                     document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
                 }
+                else
+                {
+                    if (!string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name))
+                    {
+                        document.Roh_hasPublicationVenueJournalText = pPublicacion.hasPublicationVenue.name;
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
+
+                    if (pPublicacion.hasPublicationVenue.issn != null && pPublicacion.hasPublicationVenue.issn.Count > 0)
+                    {
+                        document.Bibo_issn = pPublicacion.hasPublicationVenue.issn[0];
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
+                }
             }
             if (string.IsNullOrEmpty(document.IdVivo_hasPublicationVenue) && pPublicacionB != null)
             {
@@ -2082,6 +2095,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     document.IdVivo_hasPublicationVenue = idRevista;
                     document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(pPublicacionB.hasPublicationVenue.name))
+                    {
+                        document.Roh_hasPublicationVenueJournalText = pPublicacionB.hasPublicationVenue.name;
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
+
+                    if (pPublicacionB.hasPublicationVenue.issn != null && pPublicacionB.hasPublicationVenue.issn.Count > 0)
+                    {
+                        document.Bibo_issn = pPublicacionB.hasPublicationVenue.issn[0];
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
                 }
             }
 
@@ -2443,10 +2470,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// </summary>
         /// <param name="pId">ID del recurso.</param>
         /// <returns></returns>
-        public static string ObtenerProjectPublicacionResearchObject(string pId)
+        public static List<string> ObtenerProjectPublicacionResearchObject(string pId)
         {
+            List<string> listaIds = new List<string>();
+
             // Consulta sparql.
-            //TODO  from
             string select = $"SELECT ?project FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/project> ?project
@@ -2457,12 +2485,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
-                    return fila["project"].value;
+                    listaIds.Add(fila["project"].value);
                 }
             }
 
-            return string.Empty;
+            return listaIds;
         }
+
 
         /// <summary>
         /// Consulta en SPARQL si existe el documento con el estado.
@@ -2787,7 +2816,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             Dictionary<string, List<string>> suggestedKnowledgeArea = ObtenerSuggestedKnowledgeAreaPublicacionResearchObject(pIdDocumento);
 
             // Recuperación del Project
-            pDocument.IdRoh_project = ObtenerProjectPublicacionResearchObject(pIdDocumento);
+            pDocument.IdsRoh_project = ObtenerProjectPublicacionResearchObject(pIdDocumento);
 
             //TODO
             // Recuperación del AssessmentStatus
@@ -2824,7 +2853,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             Dictionary<string, List<string>> suggestedKnowledgeArea = ObtenerSuggestedKnowledgeAreaPublicacionResearchObject(pIdResearchObject);
 
             // Recuperación del Project
-            pResearchObject.IdRoh_project = ObtenerProjectPublicacionResearchObject(pIdResearchObject);
+            pResearchObject.IdRoh_project = ObtenerProjectPublicacionResearchObject(pIdResearchObject).First();
 
             //TODO
             // Recuperación del AssessmentStatus

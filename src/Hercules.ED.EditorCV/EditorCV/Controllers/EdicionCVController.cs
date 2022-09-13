@@ -8,9 +8,9 @@ using EditorCV.Models;
 using EditorCV.Models.API.Input;
 using EditorCV.Models.Utils;
 using System.Collections.Generic;
-using EditorCV.Models.Similarity;
+using Microsoft.AspNetCore.Http;
 
-namespace GuardadoCV.Controllers
+namespace EditorCV.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -25,8 +25,7 @@ namespace GuardadoCV.Controllers
         }
 
 
-        #region Eliminar
-        private static readonly Gnoss.ApiWrapper.ResourceApi mResourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        #region Eliminar        
 
         /// <summary>
         /// Obtiene la URL de un CV a partir de un usuario
@@ -36,10 +35,12 @@ namespace GuardadoCV.Controllers
         [HttpGet("Test")]
         public IActionResult Test()
         {
+            Gnoss.ApiWrapper.ResourceApi resourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
             DateTime inicio = DateTime.Now;
-            mResourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
+            resourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
             DateTime fin = DateTime.Now;
-            return Ok((fin - inicio).TotalMilliseconds);
+            string response = (fin - inicio).TotalMilliseconds.ToString();
+            return Ok(response);
         }
         #endregion
 
@@ -53,6 +54,11 @@ namespace GuardadoCV.Controllers
         {
             try
             {
+                //Solo puede obtener la URL el usuario de la petición
+                if(!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetCVUrl(userID, lang));
             }
@@ -115,6 +121,11 @@ namespace GuardadoCV.Controllers
         {
             try
             {
+                //Solo puede obtener duplicados el propietario del CV
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetItemsDuplicados(pCVId, pMinSimilarity, pItemId));
             }
@@ -139,6 +150,11 @@ namespace GuardadoCV.Controllers
         {
             try
             {
+                //Solo puede obtener los datos el propietario del CV (a no ser que sólo sean los datos públicos)
+                if (!pOnlyPublic && !Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetTab(_Configuracion, pCVId, pId, pRdfType, pLang, pSection, pOnlyPublic));
             }
@@ -181,6 +197,11 @@ namespace GuardadoCV.Controllers
         {
             try
             {
+                //Solo puede obtener el propietario del CV
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetItemMini(_Configuracion, pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
@@ -204,7 +225,12 @@ namespace GuardadoCV.Controllers
         public IActionResult GetEdit(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
-            {
+            { 
+                //Solo puede obtener el propietario del CV
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetEdit(pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
@@ -287,12 +313,5 @@ namespace GuardadoCV.Controllers
                 return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
         }
-
-        //TODO entidades del propio CV
-        //GEstión multiidioma
-
-
-
-
     }
 }

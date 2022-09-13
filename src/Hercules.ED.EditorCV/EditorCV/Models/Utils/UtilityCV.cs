@@ -91,6 +91,86 @@ namespace EditorCV.Models.Utils
             return "";
         }
 
+        /// <summary>
+        /// Obtiene el ID de usuario de un CV
+        /// </summary>
+        /// <param name="pCv"></param>
+        /// <returns></returns>
+        public static Guid GetUserFromCV(string pCv)
+        {
+            string select = $@"select ?user from <{mResourceApi.GraphsUrl}person.owl>";
+            string where = $@"where {{
+    ?persona a <http://xmlns.com/foaf/0.1/Person> .
+    ?persona <http://w3id.org/roh/gnossUser> ?user.
+    ?cv <http://w3id.org/roh/cvOf> ?persona .
+    FILTER(?cv=<{pCv}>)
+}}";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("user"))
+                {
+                    return new Guid(fila["user"].value.Replace("http://gnoss/", ""));
+                }
+            }
+
+            return Guid.Empty;
+        }
+
+        /// <summary>
+        /// Obtiene el ID de usuario de una personas
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static Guid GetUserFromPerson(string pPersonID)
+        {
+            string select = $@"select ?user ";
+            string where = $@"where {{
+    ?persona a <http://xmlns.com/foaf/0.1/Person> .
+    ?persona <http://w3id.org/roh/gnossUser> ?user.
+    FILTER(?persona=<{pPersonID}>)
+}}";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "person");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("user"))
+                {
+                    return new Guid(fila["user"].value.Replace("http://gnoss/", ""));
+                }
+            }
+
+            return Guid.Empty;
+        }
+
+        /// <summary>
+        /// Obtiene los ID de usuario de los autores de un Document
+        /// </summary>
+        /// <param name="pDocument"></param>
+        /// <returns></returns>
+        public static List<Guid> GetUsersFromDocument(string pDocument)
+        {
+            List<Guid> users = new List<Guid>();
+            string select = $@"select ?user  from <{mResourceApi.GraphsUrl}person.owl>"; 
+            string where = $@"where {{
+    ?persona a <http://xmlns.com/foaf/0.1/Person> .
+    ?persona <http://w3id.org/roh/gnossUser> ?user.
+    ?document a <http://purl.org/ontology/bibo/Document>.
+    ?document <http://purl.org/ontology/bibo/authorList> ?authorList.
+    ?authorList <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona.
+    FILTER(?document=<{pDocument}>)
+}}";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "document");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("user"))
+                {
+                    users.Add(new Guid(fila["user"].value.Replace("http://gnoss/", "")));
+                }
+            }
+
+            return users;
+        }
+
 
         /// <summary>
         /// Obtiene las propiedades de las entidades pasadas por parámetro
@@ -269,7 +349,7 @@ namespace EditorCV.Models.Utils
         /// <param name="pSoloPublicos">Obtiene los datos sólo de lo públicos</param>
         /// <returns></returns>
         public static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetPropertiesContadores(HashSet<string> pIds,
-            List<PropertyData> pProperties,bool pSoloPublicos=false)
+            List<PropertyData> pProperties, bool pSoloPublicos = false)
         {
             int paginacion = 10000;
             int maxIn = 1000;
