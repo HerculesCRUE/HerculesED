@@ -40,18 +40,6 @@ namespace CurriculumvitaeOntology
 					}
 				}
 			}
-			this.Roh_otherActivities = new List<RelatedOtherActivities>();
-			SemanticPropertyModel propRoh_otherActivities = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/otherActivities");
-			if(propRoh_otherActivities != null && propRoh_otherActivities.PropertyValues.Count > 0)
-			{
-				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_otherActivities.PropertyValues)
-				{
-					if(propValue.RelatedEntity!=null){
-						RelatedOtherActivities roh_otherActivities = new RelatedOtherActivities(propValue.RelatedEntity,idiomaUsuario);
-						this.Roh_otherActivities.Add(roh_otherActivities);
-					}
-				}
-			}
 			this.Roh_teachingCongress = new List<RelatedTeachingCongress>();
 			SemanticPropertyModel propRoh_teachingCongress = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/teachingCongress");
 			if(propRoh_teachingCongress != null && propRoh_teachingCongress.PropertyValues.Count > 0)
@@ -61,6 +49,18 @@ namespace CurriculumvitaeOntology
 					if(propValue.RelatedEntity!=null){
 						RelatedTeachingCongress roh_teachingCongress = new RelatedTeachingCongress(propValue.RelatedEntity,idiomaUsuario);
 						this.Roh_teachingCongress.Add(roh_teachingCongress);
+					}
+				}
+			}
+			this.Roh_otherActivities = new List<RelatedOtherActivities>();
+			SemanticPropertyModel propRoh_otherActivities = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/otherActivities");
+			if(propRoh_otherActivities != null && propRoh_otherActivities.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_otherActivities.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						RelatedOtherActivities roh_otherActivities = new RelatedOtherActivities(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_otherActivities.Add(roh_otherActivities);
 					}
 				}
 			}
@@ -158,11 +158,11 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/thesisSupervisions")]
 		public  List<RelatedThesisSupervisions> Roh_thesisSupervisions { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/otherActivities")]
-		public  List<RelatedOtherActivities> Roh_otherActivities { get; set;}
-
 		[RDFProperty("http://w3id.org/roh/teachingCongress")]
 		public  List<RelatedTeachingCongress> Roh_teachingCongress { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/otherActivities")]
+		public  List<RelatedOtherActivities> Roh_otherActivities { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/mostRelevantContributions")]
 		public  List<RelatedMostRelevantContributions> Roh_mostRelevantContributions { get; set;}
@@ -207,15 +207,6 @@ namespace CurriculumvitaeOntology
 				prop.Entity= entityRelatedThesisSupervisions;
 				}
 			}
-			if(Roh_otherActivities!=null){
-				foreach(RelatedOtherActivities prop in Roh_otherActivities){
-					prop.GetProperties();
-					prop.GetEntities();
-					OntologyEntity entityRelatedOtherActivities = new OntologyEntity("http://w3id.org/roh/RelatedOtherActivities", "http://w3id.org/roh/RelatedOtherActivities", "roh:otherActivities", prop.propList, prop.entList);
-				entList.Add(entityRelatedOtherActivities);
-				prop.Entity= entityRelatedOtherActivities;
-				}
-			}
 			if(Roh_teachingCongress!=null){
 				foreach(RelatedTeachingCongress prop in Roh_teachingCongress){
 					prop.GetProperties();
@@ -223,6 +214,15 @@ namespace CurriculumvitaeOntology
 					OntologyEntity entityRelatedTeachingCongress = new OntologyEntity("http://w3id.org/roh/RelatedTeachingCongress", "http://w3id.org/roh/RelatedTeachingCongress", "roh:teachingCongress", prop.propList, prop.entList);
 				entList.Add(entityRelatedTeachingCongress);
 				prop.Entity= entityRelatedTeachingCongress;
+				}
+			}
+			if(Roh_otherActivities!=null){
+				foreach(RelatedOtherActivities prop in Roh_otherActivities){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityRelatedOtherActivities = new OntologyEntity("http://w3id.org/roh/RelatedOtherActivities", "http://w3id.org/roh/RelatedOtherActivities", "roh:otherActivities", prop.propList, prop.entList);
+				entList.Add(entityRelatedOtherActivities);
+				prop.Entity= entityRelatedOtherActivities;
 				}
 			}
 			if(Roh_mostRelevantContributions!=null){

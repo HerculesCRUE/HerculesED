@@ -40,7 +40,9 @@ namespace CurriculumvitaeOntology
 			{
 				this.Roh_inscriptionType = new EventInscriptionType(propRoh_inscriptionType.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
+			this.Roh_googleScholarCitationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/googleScholarCitationCount"));
 			this.Roh_correspondingAuthor= GetBooleanPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/correspondingAuthor"));
+			this.Roh_inrecsCitationCount = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/inrecsCitationCount"));
 			this.Roh_inscriptionTypeOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/inscriptionTypeOther"));
 		}
 
@@ -56,8 +58,14 @@ namespace CurriculumvitaeOntology
 		public  EventInscriptionType Roh_inscriptionType  { get; set;} 
 		public string IdRoh_inscriptionType  { get; set;} 
 
+		[RDFProperty("http://w3id.org/roh/googleScholarCitationCount")]
+		public  int? Roh_googleScholarCitationCount { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/correspondingAuthor")]
 		public  bool Roh_correspondingAuthor { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/inrecsCitationCount")]
+		public  int? Roh_inrecsCitationCount { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/inscriptionTypeOther")]
 		public  string Roh_inscriptionTypeOther { get; set;}
@@ -68,7 +76,9 @@ namespace CurriculumvitaeOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("roh:participationType", this.IdRoh_participationType));
 			propList.Add(new StringOntologyProperty("roh:inscriptionType", this.IdRoh_inscriptionType));
+			propList.Add(new StringOntologyProperty("roh:googleScholarCitationCount", this.Roh_googleScholarCitationCount.ToString()));
 			propList.Add(new BoolOntologyProperty("roh:correspondingAuthor", this.Roh_correspondingAuthor));
+			propList.Add(new StringOntologyProperty("roh:inrecsCitationCount", this.Roh_inrecsCitationCount.ToString()));
 			propList.Add(new StringOntologyProperty("roh:inscriptionTypeOther", this.Roh_inscriptionTypeOther));
 		}
 

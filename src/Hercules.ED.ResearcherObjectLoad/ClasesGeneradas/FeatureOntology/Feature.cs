@@ -114,7 +114,7 @@ namespace FeatureOntology
 				{
 							foreach (LanguageEnum idioma in this.Gn_name.Keys)
 							{
-								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Feature_{ResourceID}_{ArticleID}", "http://www.geonames.org/ontology#name",  $"\"{GenerarTextoSinSaltoDeLinea(this.Gn_name[idioma])}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Feature_{ResourceID}_{ArticleID}", "http://www.geonames.org/ontology#name",  $"\"{GenerarTextoSinSaltoDeLinea(this.Gn_name[idioma])}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Gn_featureCode != null)
@@ -151,7 +151,7 @@ namespace FeatureOntology
 				{
 							foreach (LanguageEnum idioma in this.Gn_name.Keys)
 							{
-								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://www.geonames.org/ontology#name",  $"\"{GenerarTextoSinSaltoDeLinea(this.Gn_name[idioma]).ToLower()}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://www.geonames.org/ontology#name",  $"\"{GenerarTextoSinSaltoDeLinea(this.Gn_name[idioma]).ToLower()}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Gn_featureCode != null)

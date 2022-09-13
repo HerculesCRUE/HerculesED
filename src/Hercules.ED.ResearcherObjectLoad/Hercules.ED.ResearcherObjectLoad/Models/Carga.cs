@@ -2052,6 +2052,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     document.IdVivo_hasPublicationVenue = idRevista;
                     document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
                 }
+                else
+                {
+                    if (!string.IsNullOrEmpty(pPublicacion.hasPublicationVenue.name))
+                    {
+                        document.Roh_hasPublicationVenueJournalText = pPublicacion.hasPublicationVenue.name;
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
+
+                    if (pPublicacion.hasPublicationVenue.issn != null && pPublicacion.hasPublicationVenue.issn.Count > 0)
+                    {
+                        document.Bibo_issn = pPublicacion.hasPublicationVenue.issn[0];
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
+                }
             }
             if (string.IsNullOrEmpty(document.IdVivo_hasPublicationVenue) && pPublicacionB != null)
             {
@@ -2082,6 +2096,20 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 {
                     document.IdVivo_hasPublicationVenue = idRevista;
                     document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(pPublicacionB.hasPublicationVenue.name))
+                    {
+                        document.Roh_hasPublicationVenueJournalText = pPublicacionB.hasPublicationVenue.name;
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
+
+                    if (pPublicacionB.hasPublicationVenue.issn != null && pPublicacionB.hasPublicationVenue.issn.Count > 0)
+                    {
+                        document.Bibo_issn = pPublicacionB.hasPublicationVenue.issn[0];
+                        document.IdRoh_supportType = mResourceApi.GraphsUrl + "items/documentformat_057";
+                    }
                 }
             }
 
@@ -2443,10 +2471,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// </summary>
         /// <param name="pId">ID del recurso.</param>
         /// <returns></returns>
-        public static string ObtenerProjectPublicacionResearchObject(string pId)
+        public static List<string> ObtenerProjectPublicacionResearchObject(string pId)
         {
+            List<string> listaIds = new List<string>();
+
             // Consulta sparql.
-            //TODO  from
             string select = $"SELECT ?project FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/project> ?project
@@ -2457,11 +2486,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
-                    return fila["project"].value;
+                    listaIds.Add(fila["project"].value);
                 }
             }
 
-            return string.Empty;
+            return listaIds;
         }
 
         /// <summary>
@@ -2787,7 +2816,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             Dictionary<string, List<string>> suggestedKnowledgeArea = ObtenerSuggestedKnowledgeAreaPublicacionResearchObject(pIdDocumento);
 
             // Recuperación del Project
-            pDocument.IdRoh_project = ObtenerProjectPublicacionResearchObject(pIdDocumento);
+            pDocument.IdsRoh_project = ObtenerProjectPublicacionResearchObject(pIdDocumento);
 
             //TODO
             // Recuperación del AssessmentStatus
