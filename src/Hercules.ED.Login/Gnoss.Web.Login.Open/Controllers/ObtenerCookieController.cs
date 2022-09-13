@@ -44,109 +44,92 @@ namespace Gnoss.Web.Login
         [HttpGet, HttpPost]
         public void Index()
         {
-            ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-            try
+            string url = Request.Headers["urlVuelta"];
+
+            //obtengo las cookies
+            Dictionary<string, string> cookie = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_UsuarioActual"], mEntityContext);
+            Dictionary<string, string> cookieRewrite = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_rewrite"], mEntityContext);
+
+            DateTime caduca = DateTime.Now.AddDays(1);
+            List<ParametroAplicacion> filas = ParametrosAplicacionDS.Where(parametroApp => parametroApp.Parametro.Equals("TiposParametrosAplicacion.DuracionCookieUsuario")).ToList();
+            bool extenderFechaCookie = false;
+            if (filas == null)
             {
-                string url = Request.Headers["urlVuelta"];
-
-                //obtengo las cookies
-                Dictionary<string, string> cookie = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_UsuarioActual"], mEntityContext);
-                Dictionary<string, string> cookieRewrite = UtilCookiesHercules.FromLegacyCookieString(Request.Cookies["_rewrite"], mEntityContext);
-                foreach(string a in cookie.Keys)
-                {
-                    mResourceApi.Log.Error("c:"+a);
-                    mResourceApi.Log.Error("c:" + cookie[a]);
-                }
-                foreach (string a in cookieRewrite.Keys)
-                {
-                    mResourceApi.Log.Error("r:" + a);
-                    mResourceApi.Log.Error("r:" + cookieRewrite[a]);
-                }
-
-                DateTime caduca = DateTime.Now.AddDays(1);
-                List<ParametroAplicacion> filas = ParametrosAplicacionDS.Where(parametroApp => parametroApp.Parametro.Equals("TiposParametrosAplicacion.DuracionCookieUsuario")).ToList();
-                bool extenderFechaCookie = false;
-                if (filas == null)
-                {
-                    extenderFechaCookie = true;
-                }
-
-                string dominio = "*";
-
-                if (Request.Headers.ContainsKey("Referer"))
-                {
-                    dominio = UtilDominios.ObtenerDominioUrl(Request.Headers["Referer"], true);
-                }
-
-                Response.Headers.Add("Access-Control-Allow-Origin", dominio);
-                Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-
-                if (cookieRewrite != null)
-                {
-                    mPersonaID = new Guid(cookieRewrite["personaID"]);
-                    mNombreCorto = cookieRewrite["nombreCorto"];
-                }
-                if (cookie != null)
-                {
-                    mUsuarioID = new Guid(cookie["usuarioID"]);
-                    mMantenerConectado = bool.Parse(cookie["MantenerConectado"]);
-                    mLogin = cookie["loginUsuario"];
-                    mIdioma = cookie["idioma"];
-
-                    if (extenderFechaCookie)
-                    {
-                        if (mMantenerConectado)
-                        {
-                            //Así la cookie nunca caduca
-                            caduca = DateTime.MaxValue;
-                        }
-                        Response.Cookies.Append("_UsuarioActual", UtilCookiesHercules.ToLegacyCookieString(cookie, mEntityContext), new CookieOptions { Expires = caduca });
-                    }
-                }
-
-                if (cookieRewrite != null && extenderFechaCookie)
-                {
-                    Response.Cookies.Append("_rewrite", UtilCookiesHercules.ToLegacyCookieString(cookieRewrite, mEntityContext), new CookieOptions { Expires = caduca });
-                }
-
-                if (Request.Cookies.ContainsKey("_Envio") && extenderFechaCookie)
-                {
-                    Response.Cookies.Append("_Envio", Request.Cookies["_Envio"], new CookieOptions { Expires = caduca });
-                }
-
-                string redirect = "";
-                string token = "";
-                string eliminarCookie = "";
-                if (Request.Headers.ContainsKey("Referer") && !Request.Headers["Referer"].ToString().Contains(UtilIdiomas.GetText("URLSEM", "DESCONECTAR")))
-                {
-                    redirect = Request.Headers["Referer"].ToString();
-                }
-                if (Request.Query.Count > 1)
-                {
-                    string queryRequest = Request.QueryString.ToString().Substring(1);
-
-
-                    Dictionary<string, string> hashQuery = UtilDominios.QueryStringToDictionary(queryRequest);
-
-                    url = hashQuery["urlVuelta"];
-
-                    if (hashQuery.ContainsKey("redirect"))
-                    {
-                        redirect = HttpUtility.UrlDecode(hashQuery["redirect"]);
-                    }
-                    token = hashQuery["token"];
-
-                    if (hashQuery.ContainsKey("eliminarCookie"))
-                    {
-                        eliminarCookie = "&eliminarCookie=" + hashQuery["eliminarCookie"];
-                    }
-                }
-
-                RedireccionarADominioDeOrigen(url, redirect, token, eliminarCookie);
-            }catch(Exception ex)
-            {
-                mResourceApi.Log.Error(ex.Message);
+                extenderFechaCookie = true;
             }
+
+            string dominio = "*";
+
+            if (Request.Headers.ContainsKey("Referer"))
+            {
+                dominio = UtilDominios.ObtenerDominioUrl(Request.Headers["Referer"], true);
+            }
+
+            Response.Headers.Add("Access-Control-Allow-Origin", dominio);
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+
+            if (cookieRewrite != null)
+            {
+                mPersonaID = new Guid(cookieRewrite["personaID"]);
+                mNombreCorto = cookieRewrite["nombreCorto"];
+            }
+            if (cookie != null)
+            {
+                mUsuarioID = new Guid(cookie["usuarioID"]);
+                mMantenerConectado = bool.Parse(cookie["MantenerConectado"]);
+                mLogin = cookie["loginUsuario"];
+                mIdioma = cookie["idioma"];
+
+                if (extenderFechaCookie)
+                {
+                    if (mMantenerConectado)
+                    {
+                        //Así la cookie nunca caduca
+                        caduca = DateTime.MaxValue;
+                    }
+                    Response.Cookies.Append("_UsuarioActual", UtilCookiesHercules.ToLegacyCookieString(cookie, mEntityContext), new CookieOptions { Expires = caduca });
+                }
+            }
+
+            if (cookieRewrite != null && extenderFechaCookie)
+            {
+                Response.Cookies.Append("_rewrite", UtilCookiesHercules.ToLegacyCookieString(cookieRewrite, mEntityContext), new CookieOptions { Expires = caduca });
+            }
+
+            if (Request.Cookies.ContainsKey("_Envio") && extenderFechaCookie)
+            {
+                Response.Cookies.Append("_Envio", Request.Cookies["_Envio"], new CookieOptions { Expires = caduca });
+            }
+
+            string redirect = "";
+            string token = "";
+            string eliminarCookie = "";
+            if (Request.Headers.ContainsKey("Referer") && !Request.Headers["Referer"].ToString().Contains(UtilIdiomas.GetText("URLSEM", "DESCONECTAR")))
+            {
+                redirect = Request.Headers["Referer"].ToString();
+            }
+            if (Request.Query.Count > 1)
+            {
+                string queryRequest = Request.QueryString.ToString().Substring(1);
+
+
+                Dictionary<string, string> hashQuery = UtilDominios.QueryStringToDictionary(queryRequest);
+
+                url = hashQuery["urlVuelta"];
+
+                if (hashQuery.ContainsKey("redirect"))
+                {
+                    redirect = HttpUtility.UrlDecode(hashQuery["redirect"]);
+                }
+                token = hashQuery["token"];
+
+                if (hashQuery.ContainsKey("eliminarCookie"))
+                {
+                    eliminarCookie = "&eliminarCookie=" + hashQuery["eliminarCookie"];
+                }
+            }
+
+            RedireccionarADominioDeOrigen(url, redirect, token, eliminarCookie);
         }
 
         #endregion
