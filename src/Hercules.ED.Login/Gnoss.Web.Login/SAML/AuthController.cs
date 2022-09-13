@@ -57,7 +57,7 @@ namespace Gnoss.Web.Login.SAML
             }
 
 
-            //binding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnResponse);            
+            binding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnResponse);            
             await saml2AuthnResponse.CreateSession(HttpContext, lifetime: new TimeSpan(0, 0, 5), claimsTransform: (claimsPrincipal) => ClaimsTransform.Transform(claimsPrincipal));
 
             var relayStateQuery = binding.GetRelayStateQuery();
