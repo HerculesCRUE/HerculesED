@@ -15,7 +15,6 @@ using System.Globalization;
 using System.Collections;
 using Gnoss.ApiWrapper.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using ImpactIndexCategory = ImpactindexcategoryOntology.ImpactIndexCategory;
 using ReferenceSource = ReferencesourceOntology.ReferenceSource;
 
 namespace DocumentOntology
@@ -30,11 +29,6 @@ namespace DocumentOntology
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
-			SemanticPropertyModel propRoh_impactIndexCategory = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexCategory");
-			if(propRoh_impactIndexCategory != null && propRoh_impactIndexCategory.PropertyValues.Count > 0)
-			{
-				this.Roh_impactIndexCategory = new ImpactIndexCategory(propRoh_impactIndexCategory.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			SemanticPropertyModel propRoh_impactSource = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSource");
 			if(propRoh_impactSource != null && propRoh_impactSource.PropertyValues.Count > 0)
 			{
@@ -42,7 +36,9 @@ namespace DocumentOntology
 			}
 			this.Roh_impactIndexInYear = GetNumberFloatPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexInYear"));
 			this.Roh_impactSourceOther = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactSourceOther"));
+			this.Roh_impactIndexCategoryEntity = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexCategoryEntity"));
 			this.Roh_journalNumberInCat = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/journalNumberInCat"));
+			this.Roh_impactIndexCategory = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/impactIndexCategory"));
 			this.Roh_publicationPosition = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/publicationPosition"));
 			this.Roh_quartile = GetNumberIntPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/quartile"));
 		}
@@ -50,11 +46,6 @@ namespace DocumentOntology
 		public virtual string RdfType { get { return "http://w3id.org/roh/ImpactIndex"; } }
 		public virtual string RdfsLabel { get { return "http://w3id.org/roh/ImpactIndex"; } }
 		public OntologyEntity Entity { get; set; }
-
-		[LABEL(LanguageEnum.es,"Categoría del índice de impacto")]
-		[RDFProperty("http://w3id.org/roh/impactIndexCategory")]
-		public  ImpactIndexCategory Roh_impactIndexCategory  { get; set;} 
-		public string IdRoh_impactIndexCategory  { get; set;} 
 
 		[LABEL(LanguageEnum.es,"Fuente de impacto")]
 		[RDFProperty("http://w3id.org/roh/impactSource")]
@@ -67,8 +58,14 @@ namespace DocumentOntology
 		[RDFProperty("http://w3id.org/roh/impactSourceOther")]
 		public  string Roh_impactSourceOther { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/impactIndexCategoryEntity")]
+		public  string Roh_impactIndexCategoryEntity { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/journalNumberInCat")]
 		public  int? Roh_journalNumberInCat { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/impactIndexCategory")]
+		public  string Roh_impactIndexCategory { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/publicationPosition")]
 		public  int? Roh_publicationPosition { get; set;}
@@ -80,11 +77,12 @@ namespace DocumentOntology
 		internal override void GetProperties()
 		{
 			base.GetProperties();
-			propList.Add(new StringOntologyProperty("roh:impactIndexCategory", this.IdRoh_impactIndexCategory));
 			propList.Add(new StringOntologyProperty("roh:impactSource", this.IdRoh_impactSource));
 			propList.Add(new StringOntologyProperty("roh:impactIndexInYear", this.Roh_impactIndexInYear.ToString()));
 			propList.Add(new StringOntologyProperty("roh:impactSourceOther", this.Roh_impactSourceOther));
+			propList.Add(new StringOntologyProperty("roh:impactIndexCategoryEntity", this.Roh_impactIndexCategoryEntity));
 			propList.Add(new StringOntologyProperty("roh:journalNumberInCat", this.Roh_journalNumberInCat.ToString()));
+			propList.Add(new StringOntologyProperty("roh:impactIndexCategory", this.Roh_impactIndexCategory));
 			propList.Add(new StringOntologyProperty("roh:publicationPosition", this.Roh_publicationPosition.ToString()));
 			propList.Add(new StringOntologyProperty("roh:quartile", this.Roh_quartile.ToString()));
 		}
