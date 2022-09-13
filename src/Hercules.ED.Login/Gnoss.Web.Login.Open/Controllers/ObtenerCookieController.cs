@@ -60,7 +60,7 @@ namespace Gnoss.Web.Login
                 foreach (string a in cookieRewrite.Keys)
                 {
                     mResourceApi.Log.Error("r:" + a);
-                    mResourceApi.Log.Error("r:" + cookie[a]);
+                    mResourceApi.Log.Error("r:" + cookieRewrite[a]);
                 }
 
                 DateTime caduca = DateTime.Now.AddDays(1);
