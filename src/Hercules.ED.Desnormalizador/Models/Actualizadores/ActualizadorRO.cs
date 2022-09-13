@@ -364,5 +364,82 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
         }
 
+        // <summary>
+        /// Insertamos en la propiedad http://w3id.org/roh/linkedCount de los http://w3id.org/roh/ResearchObject
+        /// el nº de recursos relacionados públicos de un researchObject
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">IDs de documentos</param>
+        public void ActualizarNumeroVinculados(List<string> pROs = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pROs != null && pROs.Count > 0)
+            {
+                filters.Add($" FILTER(?ro in (<{string.Join(">,<", pROs)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            //Eliminamos los duplicados
+            EliminarDuplicados("researchobject", "http://w3id.org/roh/ResearchObject", "http://w3id.org/roh/linkedCount");
+
+            foreach (string filter in filters)
+            {
+                //Actualizamos los datos
+                while (true)
+                {
+                    int limit = 500;
+                    //Eliminar from
+                    String select = @"select ?ro ?numLinkedCargados IF (BOUND (?numLinkedACargar), ?numLinkedACargar, 0 ) as ?numLinkedACargar FROM <http://gnoss.com/document.owl>";
+                    String where = @$"where{{
+                                ?ro a <http://w3id.org/roh/ResearchObject>.
+                                {filter}
+                                OPTIONAL
+                                {{
+                                  ?ro <http://w3id.org/roh/linkedCount> ?numLinkedCargadosAux. 
+                                  BIND(xsd:int( ?numLinkedCargadosAux) as  ?numLinkedCargados)
+                                }}
+                                OPTIONAL{{
+                                  select ?ro count(distinct(?linkedID)) as ?numLinkedACargar
+                                  Where{{                                    
+                                    ?ro a <http://w3id.org/roh/ResearchObject>.
+                                    {{
+                                        ?document ?linked ?linkedID.
+                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                              
+                                    }}UNION
+                                    {{
+                                        ?linkedID ?linked ?document. 
+                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                     
+                                    }}
+                                  }}
+                                }}
+                                FILTER(?numLinkedCargados!= ?numLinkedACargar OR !BOUND(?numLinkedCargados) )
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string ro = fila["ro"].value;
+                        string numLinkedACargar = fila["numLinkedACargar"].value;
+                        string numLinkedCargados = "";
+                        if (fila.ContainsKey("numLinkedCargados"))
+                        {
+                            numLinkedCargados = fila["numLinkedCargados"].value;
+                        }
+                        ActualizadorTriple(ro, "http://w3id.org/roh/linkedCount", numLinkedCargados, numLinkedACargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 }

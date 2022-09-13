@@ -125,11 +125,13 @@ namespace DesnormalizadorHercules
 
             AltaUsuarioGnoss("Antonio", "Morales", "antonio.morales@pruebagnoss.es", "antonio-mora", "48485751", "", "");
 
+            AltaUsuarioGnoss("Senena", "Corbalan", "senena.corbalan@pruebagnoss.es", "senena-corba", "77562435", "", "", "0000-0003-1840-5578");
+
 
 
         }
 
-        public static User AltaUsuarioGnoss(string pNombre, string pApellidos, string pEmail, string pNombreCorto, string pID, string pUsuarioGitHub, string pUsuarioFigShare)
+        public static User AltaUsuarioGnoss(string pNombre, string pApellidos, string pEmail, string pNombreCorto, string pID, string pUsuarioGitHub, string pUsuarioFigShare, string pOrcid = null)
         {
             User user = userApi.GetUserByShortName(pNombreCorto);
 
@@ -159,6 +161,7 @@ namespace DesnormalizadorHercules
                                                                                                 OPTIONAL{{?s <http://w3id.org/roh/gnossUser> ?user }}
                                                                                                 OPTIONAL{{?s <http://w3id.org/roh/usuarioGitHub> ?userGit }}
                                                                                                 OPTIONAL{{?s <http://w3id.org/roh/usuarioFigShare> ?userFigShare }}
+                                                                                                OPTIONAL{{?s <http://w3id.org/roh/ORCID> ?ORCID }}
                                                                                             }}", "person").results.bindings.First();
             string idPerona = fila["s"].value;
 
@@ -185,6 +188,16 @@ namespace DesnormalizadorHercules
                 dicPropiedadValorActual["http://w3id.org/roh/usuarioFigShare"] = fila["userFigShare"].value;
             }
             dicPropiedadValorCargar["http://w3id.org/roh/usuarioFigShare"] = pUsuarioFigShare;
+
+            if (!string.IsNullOrEmpty(pOrcid))
+            {
+                dicPropiedadValorActual["http://w3id.org/roh/ORCID"] = "";
+                if (fila.ContainsKey("ORCID"))
+                {
+                    dicPropiedadValorActual["http://w3id.org/roh/ORCID"] = fila["ORCID"].value;
+                }
+                dicPropiedadValorCargar["http://w3id.org/roh/ORCID"] = pOrcid;
+            }
 
             foreach (string prop in dicPropiedadValorCargar.Keys)
             {
@@ -275,7 +288,7 @@ namespace DesnormalizadorHercules
                                             ?cv ?pLvl1 ?oLvl1.
                                             ?oLvl1 ?pLvl2 ?oLvl2.
                                             ?oLvl2 <http://vivoweb.org/ontology/core#relatedBy> ?entity.
-                                            FILTER(?cv =<http://gnoss.com/items/CV_693c2f58-d466-4ff5-841a-34f51499efe2_997709d4-b8d6-49ae-9504-aad506f9bbd9>)
+                                            FILTER(?cv =<http://gnoss.com/items/CV_cf131d23-1378-4991-8b54-e069f2e99814_57b3ffed-98fa-4495-b8be-5d4d5e9e2486>)
                                         }}";
 
             SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, "curriculumvitae");
@@ -284,14 +297,17 @@ namespace DesnormalizadorHercules
             Dictionary<Guid, List<RemoveTriples>> dicEliminar = new Dictionary<Guid, List<RemoveTriples>>();
             foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
             {
-                eliminar.Add(resourceApi.GetShortGuid(fila["entity"].value));
-                Guid idCV = resourceApi.GetShortGuid(fila["cv"].value);
-                if (!dicEliminar.ContainsKey(idCV))
+                if (!fila["entity"].value.Contains("Document") && !fila["entity"].value.Contains("Project") && !fila["entity"].value.Contains("Group"))
                 {
-                    dicEliminar.Add(idCV, new List<RemoveTriples>());
+                    eliminar.Add(resourceApi.GetShortGuid(fila["entity"].value));
+                    Guid idCV = resourceApi.GetShortGuid(fila["cv"].value);
+                    if (!dicEliminar.ContainsKey(idCV))
+                    {
+                        dicEliminar.Add(idCV, new List<RemoveTriples>());
+                    }
+                    RemoveTriples remove = new RemoveTriples(fila["oLvl1"].value + "|" + fila["oLvl2"].value, fila["pLvl1"].value + "|" + fila["pLvl2"].value);
+                    dicEliminar[idCV].Add(remove);
                 }
-                RemoveTriples remove = new RemoveTriples(fila["oLvl1"].value + "|" + fila["oLvl2"].value, fila["pLvl1"].value + "|" + fila["pLvl2"].value);
-                dicEliminar[idCV].Add(remove);
             }
             Dictionary<Guid, bool> resp = resourceApi.DeletePropertiesLoadedResources(dicEliminar);
 

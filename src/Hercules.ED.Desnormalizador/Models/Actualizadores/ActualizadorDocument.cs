@@ -1601,6 +1601,83 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
         }
 
+        // <summary>
+        /// Insertamos en la propiedad http://w3id.org/roh/linkedCount de los http://purl.org/ontology/bibo/Document
+        /// el nº de recursos relacionados públicos de una publicación
+        /// No tiene dependencias
+        /// </summary>
+        /// <param name="pDocuments">IDs de documentos</param>
+        public void ActualizarNumeroVinculados(List<string> pDocuments = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($" FILTER(?document in (<{string.Join(">,<", pDocuments)}>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            //Eliminamos los duplicados
+            EliminarDuplicados("document", "http://purl.org/ontology/bibo/Document", "http://w3id.org/roh/linkedCount");
+
+            foreach (string filter in filters)
+            {
+                //Actualizamos los datos
+                while (true)
+                {
+                    int limit = 500;
+                    //Eliminar from
+                    String select = @"select ?document ?numLinkedCargados IF (BOUND (?numLinkedACargar), ?numLinkedACargar, 0 ) as ?numLinkedACargar FROM <http://gnoss.com/researchobject.owl>";
+                    String where = @$"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document>.
+                                {filter}
+                                OPTIONAL
+                                {{
+                                  ?document <http://w3id.org/roh/linkedCount> ?numLinkedCargadosAux. 
+                                  BIND(xsd:int( ?numLinkedCargadosAux) as  ?numLinkedCargados)
+                                }}
+                                OPTIONAL{{
+                                  select ?document count(distinct(?linkedID)) as ?numLinkedACargar
+                                  Where{{                                    
+                                    ?document a <http://purl.org/ontology/bibo/Document>.
+                                    {{
+                                        ?document ?linked ?linkedID.
+                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                              
+                                    }}UNION
+                                    {{
+                                        ?linkedID ?linked ?document. 
+                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                     
+                                    }}
+                                  }}
+                                }}
+                                FILTER(?numLinkedCargados!= ?numLinkedACargar OR !BOUND(?numLinkedCargados) )
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string document = fila["document"].value;
+                        string numLinkedACargar = fila["numLinkedACargar"].value;
+                        string numLinkedCargados = "";
+                        if (fila.ContainsKey("numLinkedCargados"))
+                        {
+                            numLinkedCargados = fila["numLinkedCargados"].value;
+                        }
+                        ActualizadorTriple(document, "http://w3id.org/roh/linkedCount", numLinkedCargados, numLinkedACargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Método para inserción múltiple de indices de impacto
