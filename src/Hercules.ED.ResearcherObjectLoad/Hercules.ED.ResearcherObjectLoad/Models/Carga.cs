@@ -70,8 +70,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // TODO: Falta la asignación por ID y no por nombre. A la espera que elhuyar nos envíe los IDs, en lugar de los nombres.
             Tuple<Dictionary<string, string>, Dictionary<string, string>> tupla = ObtenerDatosTesauro();
 
-            FileLogger.Log($@"{DateTime.Now} - Ruta lectura: {pRutaLectura}");
-            FileLogger.Log($@"{DateTime.Now} - Ruta escritura: {pRutaEscritura}");
+            FileLogger.Log($@"{DateTime.UtcNow} - Ruta lectura: {pRutaLectura}");
+            FileLogger.Log($@"{DateTime.UtcNow} - Ruta escritura: {pRutaEscritura}");
 
             while (true)
             {
@@ -119,7 +119,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             List<ResearchObjectFigShare> listaFigShareData = JsonConvert.DeserializeObject<List<ResearchObjectFigShare>>(jsonString);
                             HashSet<string> listaFigShare = new HashSet<string>();
 
-                            FileLogger.Log($@"{DateTime.Now} - [FigShare] Procesando fichero de : {orcidAutor}");
+                            FileLogger.Log($@"{DateTime.UtcNow} - [FigShare] Procesando fichero de : {orcidAutor}");
 
                             if (listaFigShareData != null && listaFigShareData.Any())
                             {
@@ -170,7 +170,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             List<ResearchObjectGitHub> listaGithubData = JsonConvert.DeserializeObject<List<ResearchObjectGitHub>>(jsonString);
                             HashSet<string> listadoGitHub = new HashSet<string>();
 
-                            FileLogger.Log($@"{DateTime.Now} - [GitHub] Procesando fichero de : {orcidAutor}");
+                            FileLogger.Log($@"{DateTime.UtcNow} - [GitHub] Procesando fichero de : {orcidAutor}");
 
                             if (listaGithubData != null && listaGithubData.Any())
                             {
@@ -236,7 +236,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             List<ResearchObjectZenodo> listaZenodoData = JsonConvert.DeserializeObject<List<ResearchObjectZenodo>>(jsonString);
                             HashSet<string> listadoZenodo = new HashSet<string>();
 
-                            FileLogger.Log($@"{DateTime.Now} - [Zenodo] Procesando fichero de : {idAutor}");
+                            FileLogger.Log($@"{DateTime.UtcNow} - [Zenodo] Procesando fichero de : {idAutor}");
 
                             if (listaZenodoData != null && listaZenodoData.Any())
                             {
@@ -302,7 +302,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
                             HashSet<string> listadoDOI = new HashSet<string>();
 
-                            FileLogger.Log($@"{DateTime.Now} - [Publicaciones] Procesando fichero de : {idAutor}");
+                            FileLogger.Log($@"{DateTime.UtcNow} - [Publicaciones] Procesando fichero de : {idAutor}");
 
                             if (listaPublicaciones != null && listaPublicaciones.Any())
                             {
@@ -607,7 +607,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                             notificacion.Roh_entity = resourceDocumento.GnossId;
                                             notificacion.IdRoh_owner = autor.IdRdf_member;
-                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Dct_issued = DateTime.UtcNow;
                                             notificacion.Roh_type = "create";
                                             notificacion.CvnCode = Utility.IdentificadorFECYT(documento.IdRoh_scientificActivityDocument);
                                             notificaciones.Add(notificacion);
@@ -624,7 +624,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                             notificacion.Roh_entity = listaDocumentosCargados[idBBDD];
                                             notificacion.IdRoh_owner = autor.IdRdf_member;
-                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Dct_issued = DateTime.UtcNow;
                                             notificacion.Roh_type = "edit";
                                             notificacion.CvnCode = Utility.IdentificadorFECYT(listaDocumentosCargarEquivalencias.Where(x => x.Value.Contains(idBBDD)).FirstOrDefault().Key.IdRoh_scientificActivityDocument);
                                             if (string.IsNullOrEmpty(notificacion.CvnCode))
@@ -750,7 +750,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
                                             notificacion.Roh_entity = resourceResearchObject.GnossId;
                                             notificacion.IdRoh_owner = autor.IdRdf_member;
-                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Dct_issued = DateTime.UtcNow;
                                             notificacion.Roh_type = "create";
                                             notificacion.CvnCode = "";
 
@@ -768,7 +768,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                             notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/researchObject";
                                             notificacion.Roh_entity = listaROsCargados[idBBDD];
                                             notificacion.IdRoh_owner = autor.IdRdf_member;
-                                            notificacion.Dct_issued = DateTime.Now;
+                                            notificacion.Dct_issued = DateTime.UtcNow;
                                             notificacion.Roh_type = "edit";
                                             notificacion.CvnCode = "";
 
@@ -920,7 +920,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     catch (Exception ex)
                     {
                         FileLogger.Log($@"ERROR - {ex.Message}");
-                        FileLogger.Log($@"{DateTime.Now} - Borrando json inválido...");
+                        FileLogger.Log($@"{DateTime.UtcNow} - Borrando json inválido...");
                         File.Delete(fichero.FullName);
                         continue;
                     }
