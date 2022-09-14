@@ -920,6 +920,7 @@ namespace Utils
                 CvnItemBeanCvnAuthorBean cvnAuthorBean = new CvnItemBeanCvnAuthorBean();
                 cvnAuthorBean.Code = code;
                 cvnAuthorBean.SignatureOrder = contador;
+                cvnAuthorBean.SignatureOrderSpecified = true;
                 cvnAuthorBean.GivenName = autores.Item2;
                 cvnAuthorBean.CvnFamilyNameBean = new CvnItemBeanCvnAuthorBeanCvnFamilyNameBean()
                 {
@@ -1389,7 +1390,7 @@ namespace Utils
         /// <param name="publicationPosition"></param>
         /// <param name="journalNumberInCat"></param>
         /// <param name="cuartil"></param>
-        public static void AddImpactIndex(CvnItemBean itemBean, string source,string sourceOther,string categoria,string impactIndex, string publicationPosition, string journalNumberInCat, string cuartil)
+        public static void AddImpactIndex(CvnItemBean itemBean, string source, string sourceOther, string categoria, string impactIndex, string publicationPosition, string journalNumberInCat, string cuartil)
         {
             //Source
             //SourceOther
@@ -1408,9 +1409,9 @@ namespace Utils
             CvnItemBeanCvnCodeGroupCvnBoolean boolBean = null;
             List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new List<CvnItemBeanCvnCodeGroupCvnString>();
             List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new List<CvnItemBeanCvnCodeGroupCvnDouble>();
-            
 
-            if(!string.IsNullOrEmpty(source))
+
+            if (!string.IsNullOrEmpty(source))
             {
                 CvnItemBeanCvnCodeGroupCvnString cvnString = new CvnItemBeanCvnCodeGroupCvnString();
                 cvnString.Code = "060.010.010.190";
@@ -1455,10 +1456,10 @@ namespace Utils
             {
                 boolBean = new CvnItemBeanCvnCodeGroupCvnBoolean();
                 boolBean.Code = "060.010.010.330";
-                boolBean.Value = cuartil=="1";
+                boolBean.Value = cuartil == "1";
             }
 
-            if (titleBean!=null)
+            if (titleBean != null)
             {
                 codeGroup.CvnTitleBean = titleBean;
             }
@@ -1473,7 +1474,7 @@ namespace Utils
             if (listadoDouble.Count > 0)
             {
                 codeGroup.CvnDouble = listadoDouble.ToArray();
-            }            
+            }
 
             if (codeGroup.CvnString != null && codeGroup.CvnString.Length != 0)
             {
