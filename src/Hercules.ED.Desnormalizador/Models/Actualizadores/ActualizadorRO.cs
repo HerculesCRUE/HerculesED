@@ -405,15 +405,18 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                   select ?ro count(distinct(?linkedID)) as ?numLinkedACargar
                                   Where{{                                    
                                     ?ro a <http://w3id.org/roh/ResearchObject>.
+                                    OPTIONAL
                                     {{
-                                        ?ro ?linked ?linkedID.
-                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
-                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                              
-                                    }}UNION
-                                    {{
-                                        ?linkedID ?linked ?ro. 
-                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
-                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                     
+                                        {{
+                                            ?ro ?linked ?linkedID.
+                                            Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                            ?linkedID <http://w3id.org/roh/isValidated> 'true'.                              
+                                        }}UNION
+                                        {{
+                                            ?linkedID ?linked ?ro. 
+                                            Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                            ?linkedID <http://w3id.org/roh/isValidated> 'true'.                     
+                                        }}
                                     }}
                                   }}
                                 }}
