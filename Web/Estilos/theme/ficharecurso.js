@@ -839,11 +839,11 @@ function filtrarSearch(callback = () => {}) {
 	let searchID = $('#buscadorPersonalizadoSearchForm').closest('.row').attr('id');
 	let search = '';
 	if(searchID === 'contenedorBuscadorPublicaciones' || searchID === 'contenedorBuscadorRelacionados' 
-		|| searchID === 'contenedorBuscadorResearchObjects' || searchID === 'contenedorBuscadorResearchObjectsModal')
+		|| searchID === 'contenedorBuscadorResearchObjects' || searchID === 'contenedorBuscadorResearchObjectsModal' || searchID === 'ofertaListPublicaciones')
 	{
 		search = 'searcherPublications';
 	}
-	else if(searchID === 'contenedorBuscadorProyectos')
+	else if(searchID === 'contenedorBuscadorProyectos' || searchID === 'ofertaListProyectos')
 	{
 		search = 'searcherProjects';
 	}
