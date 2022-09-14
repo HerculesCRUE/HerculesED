@@ -873,7 +873,11 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string document = fila["document"].value;
-                        string positionIPACargar = fila["positionIPACargar"].value;
+                        string positionIPACargar = "";
+                        if (fila.ContainsKey("positionIPACargar"))
+                        {
+                            positionIPACargar=fila["positionIPACargar"].value;
+                        }
                         string positionIPCargado = "";
                         if (fila.ContainsKey("positionIPCargado"))
                         {
