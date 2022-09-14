@@ -81,7 +81,7 @@ namespace Harvester
             ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
             // Fecha de la última actualización.
-            string fecha = "2022-04-01T00:00:00Z";
+            string fecha = "2022-09-13T00:00:00Z";
 
             //Genero los ficheros con los datos a procesar desde la fecha
             GuardarIdentificadores(_Config, "Organizacion", fecha);
@@ -107,6 +107,9 @@ namespace Harvester
             // Proyectos.
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+
+            // Document.
+            mResourceApi.ChangeOntoly("document");
             ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
 
             // Autorizaciones.

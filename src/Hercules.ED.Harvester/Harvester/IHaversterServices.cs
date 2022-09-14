@@ -119,7 +119,7 @@ namespace Harvester
                         var prc = metadata.Descendants(nameSpace + "ProduccionCientificaEstado");
                         foreach (var prod in prc)
                         {
-                            identifierRecord.Estado = prod.Element(nameSpace + "Estado").Value;
+                            identifierRecord.Estado = prod.Element(nameSpace + "estado").Value;
                         }
                     }
 
