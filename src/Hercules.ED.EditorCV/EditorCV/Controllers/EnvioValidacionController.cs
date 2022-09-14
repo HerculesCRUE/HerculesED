@@ -1,5 +1,7 @@
 ﻿using EditorCV.Models;
+using EditorCV.Models.Utils;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,6 +31,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtener el propietario del CV
+                if (!Security.CheckUser(UtilityCV.GetUserFromPerson(pIdPersona), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 return Ok(accionesPRC.ObtenerDatosEnvioPRC(pIdPersona));
             }
@@ -49,6 +56,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede enviar los autores de la publicación
+                if (!Security.CheckUsers(UtilityCV.GetUsersFromDocument(pIdRecurso), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 accionesPRC.EnvioPRC(_Configuracion, pIdRecurso, pIdProyecto);
             }
@@ -93,6 +105,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede enviar los autores de la publicación
+                if (!Security.CheckUsers(UtilityCV.GetUsersFromDocument(pIdRecurso), Request) || !Security.CheckUser(UtilityCV.GetUserFromPerson(pIdPersona), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEnvioProyecto accionesProyecto = new AccionesEnvioProyecto();
                 accionesProyecto.EnvioProyecto(_Configuracion, pIdRecurso, pIdPersona, pIdAutorizacion);
             }

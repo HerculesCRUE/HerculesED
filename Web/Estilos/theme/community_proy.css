@@ -654,6 +654,18 @@ div.row.upper-row div.menu-logo-wrapper > div.menu-toggle > a.texto-blanco {
     display: flex;
 }
 
+.modal-vinvular-ro .resource-list .resource .middle-wrap .title-wrap .resource-title.visibility_off:before {
+    content: 'visibility_off';
+}
+
+.modal-vinvular-ro .resource-list .resource .middle-wrap .title-wrap .resource-title.visibility:before {
+    content: 'visibility';
+}
+
+.modal-vinvular-ro .title_list {
+    margin: auto -7px;
+}
+
 
 
 /** 

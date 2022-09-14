@@ -15,6 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using Models;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace EditorCV.Controllers
 {
@@ -44,6 +45,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtenerlo el usuario pasado por parámetro
+                if (!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 List<string> listadoId = null;
                 if (listaId != null)
                 {
@@ -104,6 +110,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtenerlo el usuario pasado por parámetro
+                if (!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
@@ -151,6 +162,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtenerlo el usuario pasado por parámetro
+                if (!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
@@ -175,6 +191,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtenerlo el usuario pasado por parámetro
+                if (!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
@@ -202,6 +223,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtenerlo el usuario pasado por parámetro
+                if (!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
@@ -229,6 +255,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                //Solo puede obtenerlo el usuario pasado por parámetro
+                if (!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {

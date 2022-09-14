@@ -72,11 +72,13 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ModificarNombreRevistaDesnormalizado();
             actualizadorDocument.ModificarEditorialRevistaDesnormalizado();
             actualizadorDocument.ModificarISSNRevistaDesnormalizado();
+            actualizadorDocument.ActualizarNumeroVinculados();
 
             //ROs sin dependencias
             actualizadorRO.ActualizarAreasRO();
             actualizadorRO.ActualizarTagsRO();
             actualizadorRO.EliminarROsSinAutoresActivos();
+            actualizadorRO.ActualizarNumeroVinculados();
 
             //Patentes sin dependencias
             actualizadorPatent.ActualizarPatentesValidadas();
@@ -309,6 +311,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ModificarNombreRevistaDesnormalizado(pDocuments: pDocuments);
             actualizadorDocument.ModificarEditorialRevistaDesnormalizado(pDocuments: pDocuments);
             actualizadorDocument.ModificarISSNRevistaDesnormalizado(pDocuments: pDocuments);
+            actualizadorDocument.ActualizarNumeroVinculados(pDocuments: pDocuments);
 
             //Proyectos con dependencias
             actualizadorProject.ActualizarNumeroAreasTematicas(pDocuments: pDocuments);
@@ -362,6 +365,7 @@ namespace DesnormalizadorHercules.Models
             //ROs sin dependencias
             actualizadorRO.ActualizarAreasRO(pROs: pROs);
             actualizadorRO.ActualizarTagsRO(pROs: pROs);
+            actualizadorRO.ActualizarNumeroVinculados(pROs: pROs);
         }
 
         /// <summary>

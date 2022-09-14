@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>ac306b82-d81a-4403-a7cd-784cb4c15007</UserSecretsId>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="EnterpriseLibrary.Data.NetCore" Version="6.3.2" />
-    <PackageReference Include="GnossApiWrapper.NetCore" Version="1.0.8">
+    <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.5">
       <Aliases>ApiWrapper</Aliases>
     </PackageReference>
     <PackageReference Include="ITfoxtec.Identity.Saml2.MvcCore" Version="4.8.2" />
