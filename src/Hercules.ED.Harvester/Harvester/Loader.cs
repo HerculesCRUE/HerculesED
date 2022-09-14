@@ -361,7 +361,7 @@ namespace Harvester
                                     {
                                         Borrado(guid, "http://w3id.org/roh/projectAux", item.Value);
                                     }
-                                    else if (item.Key == "validationStatusPRC")
+                                    else if (item.Key == "validationStatusPRC" && item.Value != "validado")
                                     {
                                         switch (estado)
                                         {
@@ -378,6 +378,7 @@ namespace Harvester
                                         if (estado.Equals("VALIDADO"))
                                         {
                                             Modificacion(guid, "http://w3id.org/roh/isValidated", "false", item.Value);
+                                            Borrado(guid, "http://w3id.org/roh/validationStatusPRC", item.Value);
                                         }
                                         Borrado(guid, "http://w3id.org/roh/validationDeleteStatusPRC", item.Value);
                                     }
