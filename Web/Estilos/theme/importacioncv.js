@@ -510,6 +510,7 @@ function checkAllWrappersSection(toCheck, section){
 	var wrappersChecked = section.find('.checkAllCVWrapper input[type="checkbox"]:checked');
 	var wrappersUnchecked = section.find('.checkAllCVWrapper input[type="checkbox"]:not(:checked)');	
 	checkAllCVWrapper();
+	aniadirTooltipsConflict();
 	
 	//Si quiero añadir checks
 	if(toCheck){		
@@ -584,6 +585,7 @@ function checkAllConflict(){
 			edicionCV.buscarListado(seccion, false, true);
 		}
 		checkAllCVWrapper();
+		aniadirTooltipsConflict();
 	});	
 };
 

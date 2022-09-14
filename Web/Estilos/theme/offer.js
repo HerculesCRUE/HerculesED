@@ -3264,7 +3264,7 @@ var comportamientoProyectosOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListProyectos", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(stepsOffer.txtProyectos, "#ofertaListProyectos", "searcherProyectosPublicosPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(stepsOffer.txtProyectos, "#ofertaListProyectos", "searcherProyectosValidadasPersonas=" + paramsCl, null, "rdf:type=project|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		//Enganchamos comportamiento grafica seleccionados
@@ -3308,7 +3308,7 @@ var comportamientoPublicacionesOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(stepsOffer.txtPublicaciones, "#ofertaListPublicaciones", "searcherPublicacionesPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(stepsOffer.txtPublicaciones, "#ofertaListPublicaciones", "searcherPublicacionesValidadasPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		return;
