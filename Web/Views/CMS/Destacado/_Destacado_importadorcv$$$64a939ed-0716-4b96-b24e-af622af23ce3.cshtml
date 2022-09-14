@@ -2,11 +2,12 @@
 @{ 
 	CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
-	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";
-	string urlImportacionJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/importacioncv.js";
+	string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+	string urlJS = $"{urlPersonalizacion}/theme/edicioncv.js?v={Html.Translate("VERSION_CSS_JS")}";
+	string urlImportacionJS = $"{urlPersonalizacion}/theme/importacioncv.js?v={Html.Translate("VERSION_CSS_JS")}";
     Html.GetListaJS().Add(urlJS);
     Html.GetListaJS().Add(urlImportacionJS);
-	string urlCSS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.css";
+	string urlCSS = $"{urlPersonalizacion}/theme/edicioncv.css?v={Html.Translate("VERSION_CSS_JS")}";
 	Html.GetListaCSS().Add(urlCSS);
 }
 
