@@ -914,10 +914,12 @@ namespace Utils
             {
                 return;
             }
+            int contador = 1;
             foreach (Tuple<string, string, string> autores in autorNombreApellido)
             {
                 CvnItemBeanCvnAuthorBean cvnAuthorBean = new CvnItemBeanCvnAuthorBean();
                 cvnAuthorBean.Code = code;
+                cvnAuthorBean.SignatureOrder = contador;
                 cvnAuthorBean.GivenName = autores.Item2;
                 cvnAuthorBean.CvnFamilyNameBean = new CvnItemBeanCvnAuthorBeanCvnFamilyNameBean()
                 {
@@ -929,6 +931,8 @@ namespace Utils
                     cvnAuthorBean.Signature = dicFirmas[autores.Item1];
                 }
                 itemBean.Items.Add(cvnAuthorBean);
+
+                contador++;
             }
         }
 
