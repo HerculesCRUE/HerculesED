@@ -361,9 +361,25 @@ namespace Harvester
                                     {
                                         Borrado(guid, "http://w3id.org/roh/projectAux", item.Value);
                                     }
-                                    else if (item.Key == "status")
+                                    else if (item.Key == "validationStatusPRC")
                                     {
-                                        Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", estado, item.Value);
+                                        switch (estado)
+                                        {
+                                            case "VALIDADO":
+                                                Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "validado", item.Value);
+                                                break;
+                                            default:
+                                                Borrado(guid, "http://w3id.org/roh/validationStatusPRC", item.Value);
+                                                break;
+                                        }
+                                    }
+                                    else if (item.Key == "validationDeleteStatusPRC")
+                                    {
+                                        if (estado.Equals("VALIDADO"))
+                                        {
+                                            Modificacion(guid, "http://w3id.org/roh/isValidated", "false", item.Value);
+                                        }
+                                        Borrado(guid, "http://w3id.org/roh/validationDeleteStatusPRC", item.Value);
                                     }
                                     else
                                     {
@@ -635,18 +651,20 @@ namespace Harvester
             dicResultados.Add("projectAux", "");
             dicResultados.Add("isValidated", "");
             dicResultados.Add("validationStatusPRC", "");
+            dicResultados.Add("validationDeleteStatusPRC", "");
 
             string valorEnviado = string.Empty;
             StringBuilder select = new StringBuilder();
             StringBuilder where = new StringBuilder();
 
             select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?projectAux ?isValidated ?validationStatusPRC ");
+            select.Append("SELECT DISTINCT ?projectAux ?isValidated ?validationStatusPRC ?validationDeleteStatusPRC ");
             where.Append("WHERE { ");
             where.Append("?s a bibo:Document. ");
             where.Append("OPTIONAL{?s roh:projectAux ?projectAux. } ");
             where.Append("OPTIONAL{?s roh:isValidated ?isValidated. } ");
             where.Append("OPTIONAL{?s roh:validationStatusPRC ?validationStatusPRC. } ");
+            where.Append("OPTIONAL{?s roh:validationDeleteStatusPRC ?validationDeleteStatusPRC. } ");
             where.Append($@"FILTER(?s = <{pIdRecurso}>) ");
             where.Append("} ");
 
@@ -667,6 +685,10 @@ namespace Harvester
                     if (fila.ContainsKey("validationStatusPRC"))
                     {
                         dicResultados["validationStatusPRC"] = UtilidadesAPI.GetValorFilaSparqlObject(fila, "validationStatusPRC");
+                    }
+                    if (fila.ContainsKey("validationDeleteStatusPRC"))
+                    {
+                        dicResultados["validationDeleteStatusPRC"] = UtilidadesAPI.GetValorFilaSparqlObject(fila, "validationDeleteStatusPRC");
                     }
                 }
             }
