@@ -549,10 +549,10 @@
 
     // Datos gráfica áreas temáticas
     function borrarCluster() {
-        var url = url_servicio_externo + "Cluster/borrarCluster"
+        var url = url_servicio_externo + "Cluster/BorrarCluster"
         var arg = {};
-        arg.id = "@pCluster.GNOSSID"
-        $.get(url, arg, function (data) {
+        arg.pIdClusterId = "@pCluster.GNOSSID"
+        $.post(url, arg, function (data) {
             window.location = "@Comunidad.Url/@Html.Translate("CLUSTER_URL")"
         });
     }
