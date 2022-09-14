@@ -2,12 +2,15 @@
 @{ CommunityModel Comunidad = Html.GetComunidad();
 	UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
 
+	string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+
 	// Añadiendo JS
-	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/editorWysiwyg.js";
+	string urlJS = $"{urlPersonalizacion}/theme/editorWysiwyg.js?v={Html.Translate("VERSION_CSS_JS")}";
+	
     Html.GetListaJS().Add(urlJS);
 
     // Añadiendo CSS
-    string urlCSS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/editorWysiwyg.css";
+    string urlCSS = $"{urlPersonalizacion}/theme/editorWysiwyg.css?v={Html.Translate("VERSION_CSS_JS")}";
 	Html.GetListaCSS().Add(urlCSS);
 
 
