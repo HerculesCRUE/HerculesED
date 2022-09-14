@@ -128,7 +128,7 @@ namespace OAI_PMH.Services
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
             string identifier = id.Replace("\"", ""); 
-            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invencion-inventores/" + identifier + "/inventores");
+            RestClient client = new(pConfig.GetUrlBaseInvenciones() + "inventores/" + identifier + "/invencion-inventores");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

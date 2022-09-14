@@ -71,6 +71,27 @@ namespace EditorCV.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Servicio de envío a Producción Científica.
+        /// </summary>
+        /// <param name="pIdRecurso">ID del recurso que apunta al documento.</param>
+        /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
+        /// <returns></returns>
+        [HttpPost("EnvioEliminacionPRC")]
+        public IActionResult EnvioEliminacionPRC([FromForm][Required] string pIdRecurso)
+        {
+            try
+            {
+                AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
+                accionesPRC.EnvioEliminacionPRC(_Configuracion, pIdRecurso);
+            }
+            catch (Exception e)
+            {
+                return Problem(e.Message);
+            }
+
+            return Ok();
+        }
 
         /// <summary>
         /// Servicio de envío de un proyecto a validación.
