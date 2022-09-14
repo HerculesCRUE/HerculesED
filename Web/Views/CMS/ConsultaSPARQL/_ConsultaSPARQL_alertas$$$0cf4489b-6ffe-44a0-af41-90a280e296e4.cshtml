@@ -343,11 +343,7 @@
                 string hora = fecha.Substring(8, 2);
                 string min = fecha.Substring(10, 2);
                 string segs = fecha.Substring(12, 2);
-                fecha = dia + "/" + mes + "/" + anio + " " + hora + ":" + min + ":" + segs + " GMT";
-
-                //Cambio la fecha de GMT a local
-                DateTime.TryParse(fecha, out DateTime dateValue);
-                fecha = dateValue.ToString();
+                fecha = dia + "/" + mes + "/" + anio + " " + hora + ":" + min + ":" + segs + " UTC";
             }
             return fecha;
         }
