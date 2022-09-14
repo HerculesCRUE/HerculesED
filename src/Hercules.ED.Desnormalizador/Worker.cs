@@ -136,15 +136,15 @@ namespace DesnormalizadorHercules
 
             
 
-            ListenToQueue();
-
-            ProcessComplete();
+            ListenToQueue();            
 
             ProcessItemsPendingCV();
 
             ProcessItemsPending();
 
             ProcessItemsError();
+
+            ProcessComplete();
 
 
 

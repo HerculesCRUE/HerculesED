@@ -813,7 +813,7 @@ namespace EditorCV.Models
                             notificacion.Roh_tabPropertyCV = template.property;
                             notificacion.Roh_entity = entity.id;
                             notificacion.IdRoh_owner = fila["person"].value;
-                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Dct_issued = DateTime.UtcNow;
                             notificacion.Roh_type = accion;
                             notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
@@ -900,7 +900,7 @@ namespace EditorCV.Models
                             notificacion.Roh_tabPropertyCV = template.property;
                             notificacion.Roh_entity = entity.id;
                             notificacion.IdRoh_owner = fila["person"].value;
-                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Dct_issued = DateTime.UtcNow;
                             notificacion.Roh_type = accion;
                             notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
@@ -978,7 +978,7 @@ namespace EditorCV.Models
                             notificacion.Roh_tabPropertyCV = template.property;
                             notificacion.Roh_entity = entity.id;
                             notificacion.IdRoh_owner = fila["person"].value;
-                            notificacion.Dct_issued = DateTime.Now;
+                            notificacion.Dct_issued = DateTime.UtcNow;
                             notificacion.Roh_type = "delete";
                             notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
@@ -1003,7 +1003,7 @@ namespace EditorCV.Models
                     notificacion.Roh_tabPropertyCV = template.property;
                     notificacion.Roh_entity = entity.id;
                     notificacion.IdRoh_owner = persona;
-                    notificacion.Dct_issued = DateTime.Now;
+                    notificacion.Dct_issued = DateTime.UtcNow;
                     notificacion.Roh_type = accion;
                     notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 

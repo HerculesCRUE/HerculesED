@@ -14,6 +14,36 @@
 El Desnormalizador es un proceso encargado de generar datos desnormalizados para su consulta, búsqueda y representación; tanto en Hércules ED como en [Hércules MA](https://github.com/HerculesCRUE/HerculesMA).
 El Desnormalizador tambien es encargado de eliminar los datos innecesarios del sistema, como las notificaciones antiguas.
 
+## Configuración en el appsettings.json
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "RabbitMQ": ""
+  },
+  "AllowedHosts": "*",
+  "DenormalizerQueueRabbit": "",
+  "DirectorioEscritura": "",
+  "UrlSimilarity": "",
+  "DenormalizerCronExpression": ""
+}
+```
+- **LogLevel.Default**: Nivel de error por defecto.
+- **LogLevel.Microsoft**: Nivel de error para los errores propios de Microsoft.
+- **LogLevel.Microsoft.Hosting.Lifetime**: Nivel de error para los errores de host.
+- **ConnectionStrings.RabbitMQ**: Conexión con Rabbit.
+- **DenormalizerQueueRabbit**: Nombre de la cola.
+- **DirectorioEscritura**: Ruta de directorio de escritura temporal.
+- **UrlSimilarity**: Url del servicio de [similaridad](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.Enrichment/Similitud).
+- **DenormalizerCronExpression**: Expresión CRON para una ejecución completa del desnormalizador.
+
+
 ## Dependencias
 - **dotNetRDF**: v2.7.2
 - **GnossApiWrapper.NetCore**: v1.0.6
