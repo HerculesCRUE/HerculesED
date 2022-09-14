@@ -1635,7 +1635,7 @@
             let arg = {};
             arg.resourceRO = idResource;
             arg.pIdROId = idLink;
-            arg.pIdGnossUser = "@currentId";
+            arg.pIdGnossUser = currentId;
             $.post(urlDel.toString(), arg, function (data) {
                 // _self.cargarROsVinculados()
             });
@@ -1988,7 +1988,7 @@
                 buscadorPersonalizado.orders=null;
                 // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
                 // Inicia
-                buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsLinked", "linkedROs=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS_VINCULADOS")", "#contenedorBuscadorResearchObjectsLinked", "linkedROs=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
 
 
             });
@@ -2040,7 +2040,7 @@
     $( document ).ready(function() {
 
         // cargarROsVinculados()
-        showLinkedROsSearch()
+        // showLinkedROsSearch()
 
     });
 
