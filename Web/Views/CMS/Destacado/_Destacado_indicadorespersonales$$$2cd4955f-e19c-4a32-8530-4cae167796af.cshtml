@@ -1,7 +1,8 @@
 @model CMSComponentHot
 @{ CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
-    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/graphic-engine.js";
+    string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+    string urlJS = $"{urlPersonalizacion}/theme/graphic-engine.js?v={Html.Translate("VERSION_CSS_JS")}";
     Html.GetListaJS().Add(urlJS);
 }
 <input type="hidden" id="NO_HAY_GRAFICAS" value="@Html.Translate("NO_HAY_GRAFICAS")"/>

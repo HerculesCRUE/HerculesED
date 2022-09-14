@@ -1,7 +1,8 @@
 @model CMSComponentHot
 @{ CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
-	string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/redes.js";
+    string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+	string urlJS = $"{urlPersonalizacion}/theme/redes.js?v={Html.Translate("VERSION_CSS_JS")}";
     Html.GetListaJS().Add(urlJS);
 }
 <input type="hidden" id="USUARIOFIGSHARE" value="@Html.Translate("IDENTIFICADOR_FIGSHARE")"/>
