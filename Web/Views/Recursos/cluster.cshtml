@@ -7,13 +7,8 @@
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
     Html.AddBodyClass(" fichaRecurso ");
     Html.AddBodyClass(" fichaRecurso-cluster ");
-    if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
-    {
-        string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
-        Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
-        Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
-    }
-    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
+    string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+    string urlJS = $"{urlPersonalizacion}/theme/ficharecurso.js?v={Html.Translate("VERSION_CSS_JS")}";
     Html.GetListaJS().Add(urlJS);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
