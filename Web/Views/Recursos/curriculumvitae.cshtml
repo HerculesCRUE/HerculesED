@@ -6,20 +6,16 @@
     CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
 	
+    string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+
     Html.AddBodyClass(" page-cv");
-    if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
-    {
-        string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
-        Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
-        Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
-    }
-    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.js";	
+    string urlJS = $"{urlPersonalizacion}/theme/edicioncv.js?v={Html.Translate("VERSION_CSS_JS")}";	
     Html.GetListaJS().Add(urlJS);
-	string urlJS2 = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/editorWysiwyg.js";
+	string urlJS2 = $"{urlPersonalizacion}/theme/editorWysiwyg.js?v={Html.Translate("VERSION_CSS_JS")}";	
 	Html.GetListaJS().Add(urlJS2);
-	string urlCSS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/edicioncv.css";
+	string urlCSS = $"{urlPersonalizacion}/theme/edicioncv.css?v={Html.Translate("VERSION_CSS_JS")}";
     Html.GetListaCSS().Add(urlCSS);
-	string urlCSS2 = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/editorWysiwyg.css";
+	string urlCSS2 = $"{urlPersonalizacion}/theme/editorWysiwyg.css?v={Html.Translate("VERSION_CSS_JS")}";
     Html.GetListaCSS().Add(urlCSS2);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
     GnossOCBase.LanguageEnum idiomaUsuario = (GnossOCBase.LanguageEnum)Enum.Parse(typeof(GnossOCBase.LanguageEnum), Html.GetUtilIdiomas().LanguageCode.ToLower());
