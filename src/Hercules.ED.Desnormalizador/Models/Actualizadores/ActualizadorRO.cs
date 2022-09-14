@@ -406,12 +406,12 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                   Where{{                                    
                                     ?ro a <http://w3id.org/roh/ResearchObject>.
                                     {{
-                                        ?document ?linked ?linkedID.
+                                        ?ro ?linked ?linkedID.
                                         Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
                                         ?linkedID <http://w3id.org/roh/isValidated> 'true'.                              
                                     }}UNION
                                     {{
-                                        ?linkedID ?linked ?document. 
+                                        ?linkedID ?linked ?ro. 
                                         Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
                                         ?linkedID <http://w3id.org/roh/isValidated> 'true'.                     
                                     }}
