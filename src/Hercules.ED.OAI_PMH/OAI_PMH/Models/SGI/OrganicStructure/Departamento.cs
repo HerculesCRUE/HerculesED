@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.OrganicStructure
 {
+    /// <summary>
+    /// Departamento
+    /// </summary>
     public class Departamento : SGI_Base
     {
         /// <summary>

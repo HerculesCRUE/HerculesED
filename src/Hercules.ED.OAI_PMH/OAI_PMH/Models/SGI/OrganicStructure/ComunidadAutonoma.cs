@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.OrganicStructure
 {
+    /// <summary>
+    /// Comunidad autónoma
+    /// </summary>
     public class ComunidadAutonoma : SGI_Base
     {
         /// <summary>

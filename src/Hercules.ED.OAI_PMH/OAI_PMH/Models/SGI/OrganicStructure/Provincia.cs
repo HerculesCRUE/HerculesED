@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.OrganicStructure
 {
+    /// <summary>
+    /// Provincia
+    /// </summary>
     public class Provincia : SGI_Base
     {
         /// <summary>
