@@ -226,6 +226,18 @@ namespace OAI_PMH.Services
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             vinculacion = JsonConvert.DeserializeObject<Vinculacion>(response.Content);
+            vinculacion.VinculacionCategoriaProfesional = GetVinculacionCategoriaProfesional(id, pConfig, accessToken);
+            return vinculacion;
+        }
+
+        private static VinculacionCategoriaProfesional GetVinculacionCategoriaProfesional(string id, ConfigService pConfig, string accessToken)
+        {
+            VinculacionCategoriaProfesional vinculacion = new();
+            RestClient client = new(pConfig.GetUrlBasePersona() + "vinculaciones/persona/" + id + "/vinculaciones-categorias-profesionales");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            vinculacion = JsonConvert.DeserializeObject<VinculacionCategoriaProfesional>(response.Content);
             return vinculacion;
         }
 
