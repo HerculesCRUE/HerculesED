@@ -834,7 +834,7 @@ where {{
             ProduccionCientifica PRC = new ProduccionCientifica();
 
             // Identificador.
-            PRC.idRef = pIdDocumento;
+            PRC.idRef = "Eliminar_" + pIdDocumento;
             PRC.estado = "PENDIENTE";
             PRC.campos = new List<CampoProduccionCientifica>();
 
