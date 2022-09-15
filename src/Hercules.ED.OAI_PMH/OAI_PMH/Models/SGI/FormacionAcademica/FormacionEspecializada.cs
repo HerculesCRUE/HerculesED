@@ -3,6 +3,9 @@ using System;
 
 namespace OAI_PMH.Models.SGI.FormacionAcademica
 {
+    /// <summary>
+    /// Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización (distinta a la formación académica reglada y a la sanitaria)
+    /// </summary>
     public class FormacionEspecializada : SGI_Base
     {
         /// <summary>

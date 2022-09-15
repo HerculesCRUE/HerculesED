@@ -3,6 +3,9 @@ using System;
 
 namespace OAI_PMH.Models.SGI.FormacionAcademica
 {
+    /// <summary>
+    /// Otra formación universitaria de posgrado
+    /// </summary>
     public class Posgrado : SGI_Base
     {
         /// <summary>

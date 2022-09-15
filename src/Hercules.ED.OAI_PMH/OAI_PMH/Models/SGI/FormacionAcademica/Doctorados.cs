@@ -3,6 +3,9 @@ using System;
 
 namespace OAI_PMH.Models.SGI.FormacionAcademica
 {
+    /// <summary>
+    /// Doctorados
+    /// </summary>
     public class Doctorados : SGI_Base
     {
         /// <summary>
