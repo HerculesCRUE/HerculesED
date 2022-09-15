@@ -1,5 +1,8 @@
 ﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
+    /// <summary>
+    /// LineaClasificacion
+    /// </summary>
     public class LineaClasificacion
     {
         /// <summary>

@@ -1,9 +1,21 @@
 ﻿namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
 {
+    /// <summary>
+    /// PalabraClave
+    /// </summary>
     public class PalabraClave
     {
-        public int id { get; set; }
-        public int invencionId { get; set; }
+        /// <summary>
+        /// Id.
+        /// </summary>
+        public int? id { get; set; }
+        /// <summary>
+        /// InvencionId.
+        /// </summary>
+        public int? invencionId { get; set; }
+        /// <summary>
+        /// PalabraClaveRef.
+        /// </summary>
         public string palabraClaveRef { get; set; }
     }
 }

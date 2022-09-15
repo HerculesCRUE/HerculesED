@@ -1,5 +1,8 @@
 ﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
+    /// <summary>
+    /// Clase principal de Grupo Equipo.
+    /// </summary>
     public class GrupoEquipo : SGI_Base
     {
         /// <summary>

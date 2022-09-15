@@ -1,5 +1,8 @@
 ﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
+    /// <summary>
+    /// LineaInvestigacion
+    /// </summary>
     public class LineaInvestigacion
     {
         /// <summary>
