@@ -14,6 +14,6 @@ namespace OAI_PMH.Models.SGI.PersonalData
         /// <summary>
         /// Fecha de obtención de categoría profesional de la persona
         /// </summary>
-        public DateTime fechaObtencion { get; set; }
+        public DateTime? fechaObtencion { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace OAI_PMH.Models.SGI.Project
         public int proyectoId { get; set; }
         public string areaConocimientoRef { get; set; }
         public string createdBy { get; set; }
-        public DateTime creationDate { get; set; }
+        public DateTime? creationDate { get; set; }
         public string lastModifiedBy { get; set; }
-        public DateTime lastModifiedDate { get; set; }
+        public DateTime? lastModifiedDate { get; set; }
     }
 }

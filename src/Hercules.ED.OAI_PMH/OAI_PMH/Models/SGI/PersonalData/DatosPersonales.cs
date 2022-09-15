@@ -11,7 +11,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
         /// <summary>
         /// Fecha de nacimiento
         /// </summary>
-        public DateTime FechaNacimiento { get; set; }
+        public DateTime? FechaNacimiento { get; set; }
         /// <summary>
         /// País de nacimiento
         /// </summary>
