@@ -1,5 +1,8 @@
 ﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
+    /// <summary>
+    /// GrupoPalabraClave
+    /// </summary>
     public class GrupoPalabraClave
     {
         /// <summary>

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
+    /// <summary>
+    /// Grupo.
+    /// </summary>
     public class Grupo : SGI_Base
     {
         /// <summary>
