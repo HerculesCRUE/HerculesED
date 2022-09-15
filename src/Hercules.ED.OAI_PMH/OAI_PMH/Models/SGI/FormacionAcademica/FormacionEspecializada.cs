@@ -16,7 +16,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de obtención del título
         /// </summary>
-        public DateTime FechaTitulacion { get; set; }
+        public DateTime? FechaTitulacion { get; set; }
         /// <summary>
         /// Horas de formación
         /// </summary>

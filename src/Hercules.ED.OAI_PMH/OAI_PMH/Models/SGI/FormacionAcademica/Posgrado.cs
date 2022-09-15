@@ -16,7 +16,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de obtención del título
         /// </summary>
-        public DateTime FechaTitulacion { get; set; }
+        public DateTime? FechaTitulacion { get; set; }
         /// <summary>
         /// Entidad que concede el título
         /// </summary>
@@ -44,7 +44,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de la homologación
         /// </summary>
-        public DateTime FechaHomologacion { get; set; }
+        public DateTime? FechaHomologacion { get; set; }
         /// <summary>
         /// Indica si el título está homologado
         /// </summary>

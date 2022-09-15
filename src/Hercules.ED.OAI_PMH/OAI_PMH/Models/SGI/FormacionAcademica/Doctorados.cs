@@ -16,7 +16,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de obtención del título
         /// </summary>
-        public DateTime FechaTitulacion { get; set; }
+        public DateTime? FechaTitulacion { get; set; }
         /// <summary>
         /// Entidad que concede el título
         /// </summary>
@@ -36,7 +36,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de obtención del título Diploma de títulos avanzados
         /// </summary>
-        public DateTime FechaTitulacionDEA { get; set; }
+        public DateTime? FechaTitulacionDEA { get; set; }
         /// <summary>
         /// Entidad que concede el título Diploma de títulos avanzados
         /// </summary>
@@ -64,7 +64,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de la mención del doctorado europeo
         /// </summary>
-        public DateTime FechaMencionDoctoradoEuropeo { get; set; }
+        public DateTime? FechaMencionDoctoradoEuropeo { get; set; }
         /// <summary>
         /// Indica si el dotorado ha recibido una mención de calidad
         /// </summary>
@@ -76,7 +76,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha del premio extraordinario de doctorado
         /// </summary>
-        public DateTime FechaPremioExtraordinarioDoctor { get; set; }
+        public DateTime? FechaPremioExtraordinarioDoctor { get; set; }
         /// <summary>
         /// Indica si se trata de un título extranjero homologado
         /// </summary>
@@ -84,6 +84,6 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de la homologación del doctorado extranjero
         /// </summary>
-        public DateTime FechaHomologacion { get; set; }
+        public DateTime? FechaHomologacion { get; set; }
     }
 }

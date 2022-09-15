@@ -16,7 +16,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         /// Fecha de obtención del título
         /// </summary>
-        public DateTime FechaTitulacion { get; set; }
+        public DateTime? FechaTitulacion { get; set; }
         /// <summary>
         /// Doctor, titulado medio, titulado superior, otros
         /// </summary>
@@ -48,7 +48,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
         /// <summary>
         ///  Fecha de la homologación
         /// </summary>
-        public DateTime FechaHomologacion { get; set; }
+        public DateTime? FechaHomologacion { get; set; }
         /// <summary>
         /// Nota media del expediente
         /// </summary>
