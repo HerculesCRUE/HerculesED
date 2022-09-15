@@ -8,6 +8,9 @@ using System.Linq;
 
 namespace OAI_PMH.Services
 {
+    /// <summary>
+    /// Clase principal del grupo de investigación.
+    /// </summary>
     public class InvestigationGroup
     {
         /// <summary>
@@ -76,12 +79,18 @@ namespace OAI_PMH.Services
             }
             catch (Exception e)
             {
-                return null;
+                throw new Exception(e.Message);
             }
 
             return grupo;
         }
 
+        /// <summary>
+        /// Obtiene las lineas de clasificación.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         private static List<LineaClasificacion> GetLineasClasificacion(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -94,6 +103,12 @@ namespace OAI_PMH.Services
             return lineas;
         }
 
+        /// <summary>
+        /// Obtiene las líneas de investigación.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         private static List<LineaInvestigacion> GetLineasInvestigacion(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -106,6 +121,12 @@ namespace OAI_PMH.Services
             return lineas;
         }
 
+        /// <summary>
+        /// Obtiene las palabras clave.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         private static List<GrupoPalabraClave> GetPalabrasClave(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -118,6 +139,12 @@ namespace OAI_PMH.Services
             return palabras;
         }
 
+        /// <summary>
+        /// Obtiene los investigadores que más han participado.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         private static List<string> GetInvestigadoresPrincipalesMax(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -130,6 +157,12 @@ namespace OAI_PMH.Services
             return investigadores;
         }
 
+        /// <summary>
+        /// Obtiene los investigadores principales.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         private static List<string> GetInvestigadoresPrincipales(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -142,28 +175,22 @@ namespace OAI_PMH.Services
             return investigadores;
         }
 
+        /// <summary>
+        /// Obtiene los equipos de los grupos.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         private static List<GrupoEquipo> GetGrupoEquipo(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
             List<GrupoEquipo> grupoEquipo = new();
-            RestClient client = new(pConfig.GetUrlBaseGrupos() + "grupos/" + id + "/miembrosequipo"); // TODO: Revisar url petición.
+            RestClient client = new(pConfig.GetUrlBaseGrupos() + "grupos/" + id + "/miembrosequipo"); 
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             grupoEquipo = JsonConvert.DeserializeObject<List<GrupoEquipo>>(response.Content);
             return grupoEquipo;
-        }
-
-        private static List<string> GetGrupoPalabrasClave(string id, ConfigService pConfig)
-        {
-            string accessToken = Token.CheckToken(pConfig);
-            List<string> palabras = new();
-            RestClient client = new(pConfig.GetUrlBaseGrupos() + "grupos/" + id + "/palabrasclave"); // TODO: Revisar url petición.
-            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
-            var request = new RestRequest(Method.GET);
-            IRestResponse response = client.Execute(request);
-            palabras = JsonConvert.DeserializeObject<List<string>>(response.Content);
-            return palabras;
         }
     }
 }
