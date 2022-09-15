@@ -706,22 +706,19 @@ var edicionCV = {
 		
 		//Si la publicación está en validación o pendiente no se permite el envio a produccion cientifica
 		if(data.sendPRC){
-			console.log(data.validationStatus);
-			if (data.validationStatus == 'validado') {
-				htmlAcciones += `<li>
-								<a class="item-dropdown" data-toggle="modal">
-									<span class="material-icons">send</span>
-									<span class="texto prodCientBorrarItem" data-id="${id}" >${GetText("ENVIAR_BORRAR_PRODUCCION_CIENTIFICA")}</span>
-								</a>
-							</li>`;
-			} else {
-				htmlAcciones += `<li>
-								<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
-									<span class="material-icons">send</span>
-									<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_PRODUCCION_CIENTIFICA")}</span>
-								</a>
-							</li>`;
-			}
+			htmlAcciones += `<li>
+							<a class="item-dropdown" data-toggle="modal" data-target="#modal-enviar-produccion-cientifica">
+								<span class="material-icons">send</span>
+								<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_PRODUCCION_CIENTIFICA")}</span>
+							</a>
+						</li>`;
+		} else if (data.validationStatus == 'validado') {
+			htmlAcciones += `<li>
+							<a class="item-dropdown" data-toggle="modal">
+								<span class="material-icons">delete</span>
+								<span class="texto prodCientBorrarItem" data-id="${id}" >${GetText("ENVIAR_BORRAR_PRODUCCION_CIENTIFICA")}</span>
+							</a>
+						</li>`;
 		}
 		//Si el proyecto está en validación o pendiente no se permite el envio
 		if(data.sendValidationProject){
@@ -3863,11 +3860,19 @@ var edicionCV = {
 			let idrecurso = $(this).find('[data-id]').attr('data-id')
 			formData.append('pIdRecurso', idrecurso);
 			$.ajax({
-				url: urlEnvioValidacionCV + 'EnvioEliminacionPRC',	
+				url: urlEnvioValidacionCV + 'EnvioEliminacionPRC',
 				type: 'POST',
-				data: formData,
-				success: function ( response ) {
+				data: formData,	
+				cache: false,
+				processData: false,
+				enctype: 'multipart/form-data',
+				contentType: false,
+				success: function ( response ) {				
 					mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'), 10000);
+					OcultarUpdateProgress();
+				},
+				error: function(){
+					mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
 					OcultarUpdateProgress();
 				}
 			});
