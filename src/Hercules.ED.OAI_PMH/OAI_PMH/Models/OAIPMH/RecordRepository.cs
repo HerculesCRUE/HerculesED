@@ -98,7 +98,7 @@ namespace OAI_PMH.Models.OAIPMH
                             Content = XElement.Parse(pObject.ToXML())
                         };
                     }
-                    catch (Exception error)
+                    catch (Exception)
                     {
                         return null;
                     }
