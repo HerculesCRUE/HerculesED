@@ -873,7 +873,11 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string document = fila["document"].value;
-                        string positionIPACargar = fila["positionIPACargar"].value;
+                        string positionIPACargar = "";
+                        if (fila.ContainsKey("positionIPACargar"))
+                        {
+                            positionIPACargar=fila["positionIPACargar"].value;
+                        }
                         string positionIPCargado = "";
                         if (fila.ContainsKey("positionIPCargado"))
                         {
@@ -1642,15 +1646,18 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                   select ?document count(distinct(?linkedID)) as ?numLinkedACargar
                                   Where{{                                    
                                     ?document a <http://purl.org/ontology/bibo/Document>.
+                                    OPTIONAL
                                     {{
-                                        ?document ?linked ?linkedID.
-                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
-                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                              
-                                    }}UNION
-                                    {{
-                                        ?linkedID ?linked ?document. 
-                                        Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
-                                        ?linkedID <http://w3id.org/roh/isValidated> 'true'.                     
+                                        {{
+                                            ?document ?linked ?linkedID.
+                                            Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                            ?linkedID <http://w3id.org/roh/isValidated> 'true'.                              
+                                        }}UNION
+                                        {{
+                                            ?linkedID ?linked ?document. 
+                                            Filter (?linked in (<http://w3id.org/roh/linkedDocument>, <http://w3id.org/roh/linkedRO>))
+                                            ?linkedID <http://w3id.org/roh/isValidated> 'true'.                     
+                                        }}
                                     }}
                                   }}
                                 }}

@@ -7,14 +7,9 @@
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
     Html.AddBodyClass(" fichaRecurso ");
     Html.AddBodyClass(" fichaRecurso-publicacion ");
-    if (FichaDocumento.ItemLinkedFotoVersion != 0 && !string.IsNullOrEmpty(FichaDocumento.ItemLinked.ToString()) && FichaDocumento.ItemLinked != Guid.Empty)
-    {
-        string urlPersonalizacion = $"{Html.GetBaseUrlContent()}/{Es.Riam.Util.UtilArchivos.ContentOntologias}/Archivos/{FichaDocumento.ItemLinked.ToString().Substring(0, 3)}";
-        Html.GetListaJS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.js?v= {FichaDocumento.ItemLinkedFotoVersion}");
-        Html.GetListaCSS().Add($"{urlPersonalizacion}/{FichaDocumento.ItemLinked.ToString()}.css?v= {FichaDocumento.ItemLinkedFotoVersion}");
-    }
-    string urlJS = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/ficharecurso.js";
-    string urlJSAnnotation = $"{Html.GetBaseUrlContent()}/imagenes/proyectos/personalizacion/{Comunidad.Key.ToString()}/theme/annotations.js";
+    string urlPersonalizacion = Html.GetBaseUrlContent() + "/imagenes/proyectos/personalizacion/" + Comunidad.Key.ToString();
+    string urlJS = $"{urlPersonalizacion}/theme/ficharecurso.js?v={Html.Translate("VERSION_CSS_JS")}";
+    string urlJSAnnotation = $"{urlPersonalizacion}/theme/annotations.js?v={Html.Translate("VERSION_CSS_JS")}";
     Html.GetListaJS().Add(urlJS);
     Html.GetListaJS().Add(urlJSAnnotation);
     SemanticResourceModel semCmsModel = Model.SemanticFrom;
@@ -691,18 +686,15 @@
                                 </a>
                             </li>
                         }
-                        @if (@pDocument.Roh_linkedCount > 0 || true) 
-                        {
-                            <li class="nav-item" role="presentation" id="linked-panel-li">
-                                <!-- Referencias -->
-                                <a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
-                                    <div class="bloque">
-                                        <div class="label">@Html.Translate("ROS_VINCULADOS")</div>
-                                        <div class="data">@pDocument.Roh_linkedCount</div>
-                                    </div>
-                                </a>
-                            </li>
-                        }
+						<li class="nav-item" role="presentation" id="linked-panel-li">
+							<!-- Referencias -->
+							<a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
+								<div class="bloque">
+									<div class="label">@Html.Translate("ROS_VINCULADOS")</div>
+									<div class="data">@pDocument.Roh_linkedCount</div>
+								</div>
+							</a>
+						</li>
                     </ul>
                 </div>
                 <div class="tab-content" id="paneles-recurso">
@@ -968,7 +960,7 @@
         </div>
     </div>
 
-    <div id="modal-vinvular-ro" class="modal modal-top modal-wide fade" tabindex="-1" role="dialog">
+    <div id="modal-vinvular-ro-old" class="modal modal-top modal-wide fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -999,6 +991,53 @@
             </div>
         </div>
     </div>
+
+    <div id="modal-vinvular-ro" data-backdrop="static"  class="modal modal-top fade modal-vinvular-ro" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content modal-content-height">
+                    <div class="modal-header">
+                        <p class="modal-title"><span class="material-icons">label</span>@Html.Translate("VILCULAR_ROS")</p>
+                        <span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="formulario-edicion">
+                            <div class="custom-form-row mb-0">
+                                <div class="form-group full-group">
+                                    <label class="control-label d-block">@Html.Translate("VILCULAR_ROS")</label>
+                                    <small class="pb-2 d-inline-block">@Html.Translate("TEXTO_EXPLICATIVO_VINCULAR_ROS")</small>
+                                    <input placeholder="@Html.Translate("TECLEA_E_INTRODUCE_AUTOCOMPLETADO")" type="text" name="" id="tagsSearchModalCluster" class="form-control not-outline">
+                                    <div class="ac_results" style="position: absolute;width: 100%;display: none;">
+                                        <ul>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-wrap tags">
+                                <ul>
+                                </ul>
+                            </div>
+                            <!-- <div class="form-actions">
+                                <a href="javascript: void(0);" class="btn btn-primary uppercase btnclosemodal" data-dismiss="modal">@Html.Translate("GUARDAR")</a>
+                            </div> -->
+                        </div>
+                        <div class="row px-3">
+                            <div class="col col-12 col-contenido">
+                                <div class="wrapCol">
+                                    <div class="title_list">
+                                        <h2>@Html.Translate("ROS_VINCULADOS")</h2>
+                                    </div>
+                                    <div class="resource-list listView resource-list-buscador">
+                                        <div class="resource-list-wrap">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
 }
 
 
@@ -1140,62 +1179,472 @@
 <script type="text/javascript">
 
     var depuracion = false;
-    const localUrlBase = "https://localhost:44321/";
+    const localUrlBase = "https://localhost:44321/"
+    const currentId = "@currentId"
+    const docId = "@pDocument.GNOSSID"
 
 
     ///////////////////////////////////
     //// Funciones para vincular ROs
     ///////////////////////////////////
 
+    const urlSearchLinked = new URL(url_servicio_externo + "RosVinculados/SearchROs")
+    const urlLoadLinked = new URL(url_servicio_externo + "RosVinculados/LoadRosLinked")
+    const urlDel = new URL(url_servicio_externo+"RosVinculados/DeleteLinked")
+    const urlAddRo = new URL(url_servicio_externo+"RosVinculados/AddLink")
+
+
+
+    /**
+    * Clase que contiene la funcionalidad del modal de los TAGS para el Cluster
+    */
+    class ModalSearchTagsVinculados {
+        constructor() {
+            this.body = $('body')
+            this.modal = this.body.find('#modal-vinvular-ro')
+            this.inputSearch = this.modal.find('#tagsSearchModalCluster')
+            this.results = this.modal.find('.ac_results')
+            this.resultsUl = this.results.find('ul')
+            this.addedROs = []
+            this.excludedItems = []
+            this.loadedResources = []
+            this.timeWaitingForUserToType = 750; // Esperar 0.75 segundos a si el usuario ha dejado de escribir para iniciar búsqueda
+            this.tagsWrappper = this.modal.find('.resource-list-wrap')
+            // this.ignoreKeysToBuscador = [37, 38, 39, 40, 46, 8, 32, 91, 17, 18, 20, 36, 18, 27]
+            this.ignoreKeysToBuscador = [37, 38, 39, 40, 8, 32, 91, 17, 18, 20, 36, 18, 27]
+
+            // Inicializa la funcionalidad del buscador de TAGS
+            this.inputSearchEnter()
+
+
+            this.excludedItems.push(docId)
+
+            /* if (window.location.hostname == 'depuracion.net' || window.location.hostname.includes("localhost")) {
+                var urlSTAGS = new URL(url_servicio_externo + 'servicioexterno/' + uriSearchTags)
+            } */
+        }
+
+        /**
+         * Inicia la funcionalidad del modal
+         */
+        init() {
+
+            let _self = this
+
+            this.modal.modal('show')
+            this.cargarROsVinculados()
+
+            // Se ejecuta cuando el modal se cierra
+            $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
+                _self.cerrarVincularRO()
+            })
+        }
+
+        /**
+         * Método para terminar de vincular los ROs
+         */
+        cerrarVincularRO() {
+            $("#modal-vinvular-ro").modal("hide")
+            MontarResultadosScroll.destroyScroll()
+            $(document.querySelector("#navegacion-recurso .active")).click()
+            // $(document.querySelector('#navegacion-recurso .active')).tab('show')
+        }
+
+
+        /**
+         * Método que carga los ROs vinculados
+         */
+        cargarROsVinculados() {
+
+            let _self = this
+
+            let arg = {};
+            arg.pIdROId = docId;
+            arg.lang = "@idiomaUsuario";
+
+            MostrarUpdateProgress();
+            $.get(urlLoadLinked.toString(), arg, function (data) {
+                if (data.length > 0) 
+                {
+                    _self.printAllLinkedROs(data)
+                    _self.addedROs = data.map(e => e.entityID)
+                    _self.loadedResources = data
+                    _self.excludedItems = data.map(e => e.entityID)
+                }
+                OcultarUpdateProgress()
+            });
+        }
+
+        /**
+         * Método que carga los ROs vinculados
+         */
+        printAllLinkedROs(data) {
+
+            let _self = this
+
+            // var currentSec = "none!!!";
+
+            data = data.sort((a, b) => {
+                if (a.roType < b.roType) {
+                    return -1
+                }
+                if (a.roType > b.roType) {
+                    return 1
+                }
+                return 0
+            })
+
+
+            let ros = data.map(ro => {
+                var $ro = $(_self.generateHtmlItem(ro))
+                _self.deleteEvent($ro, ro)
+                return $ro
+            })
+
+            // Pinta el resultado
+            // $("#linked-panel .col-contenido .resource-list-wrap").html(ros)
+            this.tagsWrappper.html(ros)
+
+            comportamientoVerMasVerMenos.init()
+
+        }
+
+        /**
+         * Método que obtiene el html a pintar de un RO
+         */
+        generateHtmlItem(ro) {
+            let htmlRes = ""
+            // if (currentSec != ro.roType) 
+            // {
+            //     currentSec = ro.roType
+            // }
+
+            if (ro.roType == "") 
+            {
+                ro.roTypeTitle = "@Html.Translate("PUBLICACION")"
+            }
+
+            let htmlMenu = ""
+
+            // Creamos el método de borrado dependiendo de si el vínculo es desde el RO o está relacionado desde otro RO
+            // let link = ""
+            // if (ro.origin) 
+            // {
+            //     link = "javascript:modalSearchTagsVinculados.deleteLink('"+ ro.entityID +"', docId)"
+            // } else {
+            //     link = "javascript:modalSearchTagsVinculados.deleteLink(docId, '"+ ro.entityID +"')"
+            // }
+            
+
+            // Generamos la url
+            let nameUrlRo = cleanStringUrlLikeGnoss(ro.title)
+            let urlResource = "@Comunidad.Url/@Html.GetText("URLSEM", "RECURSO")/" + nameUrlRo + "/" + ro.entityID.split("_")[1]
+
+
+            // Pinto "mostrar más" si la descripción contiene un texto largo
+            let showMore = ""
+            if (ro.description.trim() != "" && ro.description.length > 60) {
+                showMore = `<p class="moreResults showMore">
+                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
+                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
+                            </p>`
+            }
+
+            let classIcon = "visibility_off"
+            if (ro.isValidated) {
+                classIcon = "visibility"
+            }
+
+            // Genero el HTML final
+            htmlRes += `<article class="resource rolinked">
+                <div class="wrap">
+                    <div class="row pb-0">
+
+                        <div class="col">
+                            <div class="middle-wrap">
+                                <div class="title-wrap">
+                                    <h4 class="resource-title ${classIcon}">
+                                        <a href="${urlResource}" target="_blank" about="${ro.entityID}" property="http://w3id.org/roh/title">${ro.title}</a>
+                                    </h4>
+                                </div>
+                                <div class="content-wrap">
+                                    <div class="description-wrap counted">
+                                        <!-- <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div> -->
+                                        <h3>
+                                            <span about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</span> 
+                                            <!-- ${ro.roTypeTitle} -->
+                                        </h3>
+                                        <!-- <div class="description-wrap">
+                                            <div class="desc" style="display: -webkit-box;">
+                                                <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
+                                            </div>
+                                            ${showMore}
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="acciones-wrap">
+                            <ul class="no-list-style">
+                                <li>
+                                    <a href="#" class="texto-gris-claro link-delete">
+                                        <span style="width:1px; height:1px; opacity: .01; display:inline-block">Eliminar</span>
+                                        <span class="material-icons-outlined">delete</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>`
+
+            return htmlRes
+        }
+
+
+        /**
+         * Funcionalidad para cuando se introduce un valor en el buscador
+         */
+        inputSearchEnter() {
+            let _self = this
+            this.inputSearch.off('keyup').on('keyup', function(e) {
+                let inputVal = this.value
+
+                if (inputVal.length <= 1) 
+                {
+                    _self.hiddenResults()
+                }
+                else {
+                    // Valida si el valor introducirdo en el input es 'válido'
+                    if (_self.validarKeyPulsada(e) == true) {
+                        // Limpia el 'time' para reinicializar la espera para iniciar la búsqueda de TAGS
+                        clearTimeout(_self.timer)
+                        // Espera 0.5s para realizar la búsqueda de TAGS
+                        _self.timer = setTimeout(function () {
+                            _self.hiddenResults()
+
+                            _self.searchCall(inputVal).then((data) => {
+                                // Muestra el selector 
+                                _self.results.show()
+                                if (data.length > 0) {
+                                    // Pinta los resultados
+                                    let resultHTML = data.map(e => {
+                                        return '<li class="ac_even" data-id="'+ e.entityID +'">' + e.title + '</li>'
+                                    })
+                                    _self.resultsUl.html(resultHTML.join(''))
+                                    _self.addTagClick()
+
+                                } else {
+                                    _self.mostrarPanelSinResultados()
+                                }
+                                
+                            })
+
+                        }, _self.timeWaitingForUserToType);
+                    }               
+                }
+            })
+        }
+
+        /**
+         * Oculta y borra los resultados del API
+         */
+        hiddenResults() {
+            this.resultsUl.html('')
+            this.results.hide()
+        }
+
+        /**
+         * Muestra un texto "sin resultados" cuando no hay resultados del API
+         */
+        mostrarPanelSinResultados() {
+            this.resultsUl.html('<li>Sin resultados</li>')
+        }
+
+        /**
+         * Método que genera un inicia el evento de añadir el tag (al hacer 'click') cuando se 
+         * ha seleccionado un elemento de la lista de opciones disponibles 
+         */
+        addTagClick() {
+            let _self = this
+            // Evento para el click
+            this.resultsUl.off('click').on('click', 'li', function(e) {
+                let texto = $(this).text()
+                let idItem = $(this).data('id')
+
+
+                if (texto != "Sin resultados") {
+
+                    // Añadir nuevo RO
+                    _self.addROVinculado(idItem).then(saved => {
+
+                        if (saved) {
+
+                            // Añadir el RO a las listas
+                            // Seleccionamos el objeto del RO
+                            let cro = _self.loadedResources.find(ro => {
+                                return ro.entityID == idItem
+                            })
+
+                            // Pinta el RO
+                            var item = $(_self.generateHtmlItem(cro))
+                            _self.tagsWrappper.append(item)
+                            _self.deleteEvent(item, cro)
+                        }
+                        _self.hiddenResults() // Vacía los resultados de la búsqueda
+                        _self.inputSearch.val('') // Vacía el campo de búsqueda
+                    })
+
+                }
+
+            })
+            // Delete list item  
+        }
+
+
+        /**
+         * Función para añadir los ROs vinculados y realizar la llamada ajax
+         */
+        addROVinculado(id) {
+
+            let arg = {};
+            arg.resourceRO = docId;
+            arg.pIdROId = id;
+            arg.pIdGnossUser = currentId;
+            MostrarUpdateProgress();
+            return new Promise((resolve, reject) => {
+                $.post(urlAddRo.toString(), arg, function (data) {
+                    OcultarUpdateProgress()
+                    resolve(data)
+                    // cargarROsVinculados()
+                });
+            })
+
+            // cerrarVincularRO()
+        }
+
+        /**
+         * Añade un tag al modal
+         * @@param texto, texto del tag a añadir
+         */
+        deleteEvent(item, ro) {
+            var _self = this
+
+            
+            this.addedROs.push(ro.entityID)
+            this.excludedItems.push(ro.entityID)
+
+            item.off('click').on('click', '.link-delete', function(e) {
+
+                if (ro.origin) 
+                {
+                    _self.deleteLink(ro.entityID, docId)
+                } else {
+                    _self.deleteLink(docId, ro.entityID)
+                }
+
+                let cid = ro.entityID
+                item.remove()
+                _self.addedROs = _self.addedROs.filter(id => id != cid)
+                _self.excludedItems = _self.excludedItems.filter(id => id != cid)
+            })
+        }
+
+        /**
+         * Remove all tags html
+         */
+        removeTags() {
+            this.tagsWrappper.html('')
+        }
+
+        /**
+         * Método que genera un evento para el botón "guardar" y devuelve el número de TAGS añadidas
+         * @@return promise (array) con la lista de resultados 
+         */
+        closeBtnClick() {
+            let _self = this
+            return new Promise((resolve, reject) => {
+
+                this.modal.find('.btnclosemodal').off('click').on('click', function(e) {
+                
+                    let result = new Array()
+                    _self.tagsWrappper.find('li .texto').each((i, item) => {
+                        result.push(item.innerText)
+                    })
+                    resolve(result)
+                })
+            })
+        }
+
+
+        /**
+         * Comprobará la tecla pulsada, y si no se encuentra entre las excluidas, dará lo introducido por válido devolviendo true
+         * Si se pulsa una tecla de las excluidas, devolverá false y por lo tanto el metabuscador no debería iniciarse
+         * @@param {any} event: Evento o tecla pulsada en el teclado
+         * @@return bool, devuelve si la tecla pulsada es válida o no
+         */
+        validarKeyPulsada (event) {
+            const keyPressed = this.ignoreKeysToBuscador.find(key => key == event.keyCode);
+            if (keyPressed) {
+                return false
+            }
+            return true;
+        }
+
+        /**
+         * Realiza la petición ajax (GET) para buscar los ROs sugeridos en el input
+         * @@param {string} inputVal: Texto para la búsqueda
+         * @@return promise (array) con la lista de resultados 
+         */
+        searchCall (inputVal) {
+            var _self = this
+            // Set the url parameters
+            // this.url.searchParams.set('tagInput', inputVal)
+            let args = {
+                text: inputVal,
+                pIdGnossUser: currentId,
+                listItemsRelated: _self.excludedItems
+            }
+
+            return new Promise((resolve) => {
+                $.post(urlSearchLinked.toString(), args , function (data) {
+                    _self.loadedResources = data;
+                    resolve(data.filter(itm => !_self.addedROs.includes(itm.entityID)))
+                });
+            })
+        }
+
+
+        /**
+         * Método que borra un RO vinculado
+         * @@param {string} idResource: Id del recurso sobre el que borrar
+         * @@param {string} idLink: Id del recurso a borrar 
+         */
+        deleteLink(idResource, idLink) {
+
+            var _self = this
+
+            let arg = {};
+            arg.resourceRO = idResource;
+            arg.pIdROId = idLink;
+            arg.pIdGnossUser = currentId;
+            $.post(urlDel.toString(), arg, function (data) {
+                // _self.cargarROsVinculados()
+            });
+        }
+    }
+
+    var modalSearchTagsVinculados = new ModalSearchTagsVinculados()
+
+
     /**
      * Función para iniciar la vinculación de ROs 
      */
     function startVincularRo() {
-
-        $("#modal-vinvular-ro").modal("show")
-
-        buscadorPersonalizado.orders=null;
-        // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
-        buscadorPersonalizado.setScrollVars("#modal-vinvular-ro .footer", "article")
-        // Inicia
-        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsModal", "selectRODocument", "dct:issued", "rdf:type=researchobject|rdf:type=document|bibo:authorList@@@@@@rdf:member@@@@@@roh:gnossUser=http://gnoss/@currentId.ToString().ToUpper()", "@Comunidad.Url", "@Comunidad.Key.ToString()");
-        buscadorPersonalizado.resetScrollVars()
-
-        $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
-            cerrarVincularRO()
-        })
+        
+        modalSearchTagsVinculados.init()
+        return;
     }
-
-    /**
-     * Función para iniciar la vinculación de ROs 
-     */
-    function showLinkedROsSearch() {
-
-        // $("#modal-vinvular-ro").modal("show")
-
-        buscadorPersonalizado.orders=null;
-        // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
-        // buscadorPersonalizado.setScrollVars("#modal-vinvular-ro .footer", "article")
-        // Inicia
-        buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsLinked", "linkedROs=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
-        // buscadorPersonalizado.resetScrollVars()
-
-        // $("#modal-vinvular-ro").on("hidden.bs.modal", function () {
-        //     cerrarVincularRO()
-        // })
-    }
-
-
-    /**
-     * Función para terminar de vincular los ROs
-     */
-    function cerrarVincularRO() {
-        $("#modal-vinvular-ro").modal("hide")
-        MontarResultadosScroll.destroyScroll()
-        $(document.querySelector("#navegacion-recurso .active")).click()
-        // $(document.querySelector('#navegacion-recurso .active')).tab('show')
-    }
-
 
     /**
      * Función que cargar más ROs
@@ -1208,238 +1657,9 @@
     }
 
 
-    /**
-     * Función para añadir los ROs vinculados y realizar la llamada ajax
-     */
-    function addROVinculado(id) {
-
-        // Datos cabeceras de las fichas.
-        let url = url_servicio_externo+"RosVinculados/AddLink"
-        if (depuracion) {
-            url = localUrlBase + "RosVinculados/AddLink"
-        }
-
-        let arg = {};
-        arg.resourceRO = "@pDocument.GNOSSID";
-        arg.pIdROId = id;
-        arg.pIdGnossUser = "@currentId";
-        MostrarUpdateProgress();
-        $.post(url, arg, function (data) {
-            OcultarUpdateProgress()
-            cargarROsVinculados()
-        });
-
-        cerrarVincularRO()
-    }
-
-    /**
-     * Función que carga los ROs vinculados
-     */
-    function cargarROsVinculados() {
-        // Datos cabeceras de las fichas.
-        let url = url_servicio_externo+"RosVinculados/LoadRosLinked"
-        if (depuracion) {
-            url = localUrlBase + "RosVinculados/LoadRosLinked"
-        }
-
-        let arg = {};
-        arg.pIdROId = "@pDocument.GNOSSID";
-        arg.lang = "@idiomaUsuario";
-
-        MostrarUpdateProgress();
-        $.get(url, arg, function (data) {
-            if (data.length > 0) 
-            {
-                printAllLinkedROs(data)
-                $("#linked-panel-li").removeClass("d-none")
-                let numItems = data.length
-                document.querySelector("#linked-panel .h1-container .numResultados").innerText = numItems
-                document.querySelector("#linked-tab .bloque .data").innerText = numItems
-            }
-            OcultarUpdateProgress()
-        });
-    }
-
     function short(a, b) {
         return a - b
     }
-
-    /**
-     * Función que carga los ROs vinculados
-     */
-    function printAllLinkedROs(data) {
-
-        var currentSec = "none!!!";
-
-        data = data.sort((a, b) => {
-            if (a.roType < b.roType) {
-                return -1
-            }
-            if (a.roType > b.roType) {
-                return 1
-            }
-            return 0
-        })
-
-
-        let ros = data.map(ro => {
-
-            let htmlRes = ""
-            if (currentSec != ro.roType) 
-            {
-                currentSec = ro.roType
-                // if (ro.roType == "") 
-                // {
-                //     htmlRes = `<h3>@Html.Translate("PUBLICACIONES")</h3><hr />`
-                // } else {
-                //     htmlRes = `<h3>${ro.roTypeTitle}</h3><hr />`
-                // }
-                
-            }
-            if (ro.roType == "") 
-            {
-                ro.roTypeTitle = "@Html.Translate("PUBLICACION")"
-            }
-
-            let htmlMenu = ""
-            let ownUser = false;
-            @if (!string.IsNullOrEmpty(urlCV))
-            {
-                Html.Raw("ownUser = true");
-            }
-
-            if (ro.idsGnoss && ro.idsGnoss.includes("http://gnoss/@currentId.ToString().ToUpper()") || ownUser)
-            {
-
-                // Creamos el método de borrado dependiendo de si el vínculo es desde el RO o está relacionado desde otro RO
-                let link = ""
-                if (ro.origin) 
-                {
-                    link = "javascript:deleteLink('"+ ro.entityID +"', '@pDocument.GNOSSID')"
-                } else {
-                    link = "javascript:deleteLink('@pDocument.GNOSSID', '"+ ro.entityID +"')"
-                }
-
-
-                htmlMenu = `
-                    <div class="col-auto">
-                        <div class="acciones-recurso-listado">
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle btn btn-outline-grey no-flecha px-1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="material-icons px-0">more_vert</span>
-                                </a>
-                                <div class="dropdown-menu basic-dropdown dropdown-icons dropdown-menu-right">
-                                    <p class="dropdown-title">@Html.Translate("ACCIONES")</p>
-                                    <ul class="no-list-style">
-                                        <li>
-                                            <a href="`+ link +`" class="item-dropdown">
-                                                <span class="material-icons">delete</span>
-                                                <span class="texto">@Html.Translate("BORRAR")</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-
-            // Generamos la url
-            let nameUrlRo = cleanStringUrlLikeGnoss(ro.title)
-            let urlResource = "@Comunidad.Url/@Html.GetText("URLSEM", "RECURSO")/" + nameUrlRo + "/" + ro.entityID.split("_")[1]
-
-
-            // Pinto "mostrar más" si la descripción contiene un texto largo
-            let showMore = ""
-            if (ro.description.trim() != "" && ro.description.length > 60) {
-                showMore = `<p class="moreResults showMore">
-                                                <a href="javascript: void(0);" class="ver-mas" style="display: flex;">@Html.Translate("VER_MAS")</a>
-                                                <a href="javascript: void(0);" class="ver-menos" style="display: none;">@Html.Translate("VER_MENOS")</a>
-                                            </p>`
-            }
-
-            // Genero el HTML final
-            htmlRes += `<article class="resource rolinked">
-                <div class="wrap">
-                    <div class="row">
-
-                        <div class="col">
-                            <div class="middle-wrap">
-                                <div class="title-wrap">
-                                    <h4 class="resource-title">
-                                        <a href="${urlResource}" target="_blank" about="${ro.entityID}" property="http://w3id.org/roh/title">${ro.title}</a>
-                                    </h4>
-                                </div>
-                                <div class="content-wrap">
-                                    <div class="description-wrap counted">
-                                        <!-- <div><b about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</b></div> -->
-                                        <h3>
-                                            <span about="${ro.entityID}" property="http://purl.org/dc/terms/issued">${ro.fecha}</span> 
-                                            ${ro.roTypeTitle}
-                                        </h3>
-                                        <div class="description-wrap">
-                                            <div class="desc" style="display: -webkit-box;">
-                                                <p about="${ro.entityID}" property="http://purl.org/ontology/bibo/abstract">${ro.description}</p>
-                                            </div>
-                                            ${showMore}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        `+ htmlMenu +`
-                        
-                    </div>
-                    
-                </div>
-            </article>`
-
-            return htmlRes
-
-
-        })
-
-        // Pinta el resultado
-        $("#linked-panel .col-contenido .resource-list-wrap").html(ros)
-
-        comportamientoVerMasVerMenos.init()
-
-    }
-
-    function deleteLink(idResource, idLink) {
-
-        // Datos cabeceras de las fichas.
-        let urlDel = url_servicio_externo+"RosVinculados/DeleteLinked"
-        if (depuracion) {
-            urlDel = localUrlBase + "RosVinculados/DeleteLinked"
-        }
-
-        let arg = {};
-        arg.resourceRO = idResource;
-        arg.pIdROId = idLink;
-        arg.pIdGnossUser = "@currentId";
-        $.post(urlDel, arg, function (data) {
-            cargarROsVinculados()
-        });
-    }
-
-
-
-    /**
-     * Función que se llama cuando se cargan los ROs
-     */
-    function CompletadaCargaRecursosDocumentosROsVincular()
-    {
-        $("#contenedorBuscadorResearchObjectsModal article.resource").each((i, e) => {
-            let id = e.id.split('_')[1]
-            $(e).find("h2.resource-title").attr("onclick","addROVinculado('" + id + "')")
-            $(e).find("h2.resource-title a").attr("href","javascript:addROVinculado('" + id + "')")
-        })
-    }
-
-
-
 
 
 
@@ -1760,7 +1980,7 @@
                 buscadorPersonalizado.orders=null;
                 // Realmente no funciona correctamente, he tenido que crear un botón para cargar más.
                 // Inicia
-                buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS")", "#contenedorBuscadorResearchObjectsLinked", "linkedROs=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
+                buscadorPersonalizado.init("@Html.Translate("LISTADO_RESEARCHOBJECTS_DOCUMENTOS_VINCULADOS")", "#contenedorBuscadorResearchObjectsLinked", "linkedROs=http://gnoss/@pDocument.GNOSSID.Split('_')[1].ToUpper()", "dct:issued", "rdf:type=researchobject|rdf:type=document", "@Comunidad.Url", "@Comunidad.Key.ToString()");
 
 
             });
@@ -1812,7 +2032,7 @@
     $( document ).ready(function() {
 
         // cargarROsVinculados()
-        showLinkedROsSearch()
+        // showLinkedROsSearch()
 
     });
 
