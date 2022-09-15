@@ -1,16 +1,16 @@
 ﻿namespace OAI_PMH.Models.SGI.OrganicStructure
 {
     /// <summary>
-    /// Tipo identificador
+    /// Tipo de entidad Organizadora del evento
     /// </summary>
-    public class TipoIdentificador : SGI_Base
+    public class TipoEntidadOrganizadoraEvento
     {
         /// <summary>
-        /// Identificador
+        /// Identificador del tipo de entidad organizadora del evento
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// Nombre
+        /// Tipo de entidad
         /// </summary>
         public string Nombre { get; set; }
     }
