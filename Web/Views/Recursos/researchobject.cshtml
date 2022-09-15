@@ -460,21 +460,17 @@
                                     <div class="data" about="@pResearchObject.GNOSSID" property="@pResearchObject.GetPropertyURI(nameof(pResearchObject.Roh_citationLoadedCount))">@pResearchObject.Roh_citationLoadedCount</div>
                                 </div>
                             </a>
-                         </li>
-                         
-                        }
-                        @if (@pResearchObject.Roh_linkedCount > 0) 
-                        {
-                            <li class="nav-item" role="presentation" id="linked-panel-li">
-                                <!-- Referencias -->
-                                <a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
-                                    <div class="bloque">
-                                        <div class="label">@Html.Translate("ROS_VINCULADOS")</div>
-                                        <div class="data">@pResearchObject.Roh_linkedCount</div>
-                                    </div>
-                                </a>
-                            </li>
-                        }
+                         </li>                         
+                        }                        
+						<li class="nav-item" role="presentation" id="linked-panel-li">
+							<!-- Referencias -->
+							<a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
+								<div class="bloque">
+									<div class="label">@Html.Translate("ROS_VINCULADOS")</div>
+									<div class="data">@pResearchObject.Roh_linkedCount</div>
+								</div>
+							</a>
+						</li>
                     </ul>
                 </div>
                 <div class="tab-content" id="paneles-recurso">
