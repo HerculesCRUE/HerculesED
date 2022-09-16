@@ -1,18 +1,14 @@
-﻿namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
+﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
     /// <summary>
-    /// PalabraClave
+    /// GrupoPalabraClave
     /// </summary>
-    public class PalabraClave
+    public class GrupoPalabraClave
     {
         /// <summary>
         /// Id.
         /// </summary>
         public int? id { get; set; }
-        /// <summary>
-        /// InvencionId.
-        /// </summary>
-        public int? invencionId { get; set; }
         /// <summary>
         /// PalabraClaveRef.
         /// </summary>

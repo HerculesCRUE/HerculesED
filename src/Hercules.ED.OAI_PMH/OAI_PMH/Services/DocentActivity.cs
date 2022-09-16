@@ -84,7 +84,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<FormacionAcademicaImpartida>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -123,7 +123,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<SeminariosCursos>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

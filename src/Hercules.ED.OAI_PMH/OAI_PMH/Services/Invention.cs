@@ -8,8 +8,17 @@ using System.Linq;
 
 namespace OAI_PMH.Services
 {
+    /// <summary>
+    /// Clase principal de Invention.
+    /// </summary>
     public class Invention
     {
+        /// <summary>
+        /// Obtiene los IDs modificados de las invenciones.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static Dictionary<string, DateTime> GetModifiedInvenciones(string from, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
@@ -35,6 +44,12 @@ namespace OAI_PMH.Services
             return idDictionary;
         }
 
+        /// <summary>
+        /// Obtiene los datos de las invenciones mediante un ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static Invencion GetInvenciones(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
@@ -52,6 +67,12 @@ namespace OAI_PMH.Services
             return invencion;
         }
 
+        /// <summary>
+        /// Obtiene los sectores.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static List<SectorAplicacion> GetSectores(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
@@ -64,12 +85,18 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<SectorAplicacion>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
         }
 
+        /// <summary>
+        /// Obtiene los documentos.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static List<InvencionDocumento> GetDocumentos(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
@@ -82,12 +109,18 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<InvencionDocumento>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
         }
 
+        /// <summary>
+        /// Obtiene los gastos.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static List<InvencionGastos> GetGastos(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
@@ -100,12 +133,18 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<InvencionGastos>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
         }
 
+        /// <summary>
+        /// Obtiene las palabras clave.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static List<PalabraClave> GetPalabrasClaves(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
@@ -118,12 +157,18 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<PalabraClave>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
         }
 
+        /// <summary>
+        /// Obtiene los inventores.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static List<Inventor> GetInventores(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
@@ -136,7 +181,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<Inventor>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
