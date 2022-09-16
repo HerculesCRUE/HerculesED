@@ -12,6 +12,10 @@ namespace OAI_PMH.Models.SGI.Project
     public class Proyecto : SGI_Base
     {
         /// <summary>
+        /// Identificador del proyecto.
+        /// </summary>
+        public long? Id { get; set; }
+        /// <summary>
         /// Nombre del usuario que ha creado la entidad.
         /// </summary>
         public string CreatedBy { get; set; }
@@ -27,10 +31,6 @@ namespace OAI_PMH.Models.SGI.Project
         /// Fecha de la última modificación de la entidad.
         /// </summary>
         public string LastModifiedDate { get; set; }
-        /// <summary>
-        /// Identificador del proyecto.
-        /// </summary>
-        public string Id { get; set; }
         /// <summary>
         /// Identificador de la convocatoria del proyecto en caso de que la convocatoria este registrada en el SGI.
         /// </summary>

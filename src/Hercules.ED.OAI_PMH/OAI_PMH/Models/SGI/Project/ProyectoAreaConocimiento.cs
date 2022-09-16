@@ -10,11 +10,11 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Identificador único del área de conocimiento del proyecto.
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Referencia al proyecto.
         /// </summary>
-        public int proyectoId { get; set; }
+        public long? proyectoId { get; set; }
         /// <summary>
         /// Referencia al área de conocimiento en los sistemas de la Universidad.
         /// </summary>

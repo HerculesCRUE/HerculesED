@@ -13,11 +13,11 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Identificador de la anualidad del proyecto.
         /// </summary>
-        public string Id { get; set; }
+        public long? Id { get; set; }
         /// <summary>
         /// Año de la anualidad
         /// </summary>
-        public string Anio { get; set; }
+        public long? Anio { get; set; }
         /// <summary>
         /// Fecha de inicio de la anualidad
         /// </summary>
