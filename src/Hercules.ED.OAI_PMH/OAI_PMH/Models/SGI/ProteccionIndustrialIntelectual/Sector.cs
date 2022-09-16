@@ -1,21 +1,25 @@
 ﻿namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
 {
     /// <summary>
-    /// SectorAplicacion
+    /// Sector.
     /// </summary>
-    public class SectorAplicacion
+    public class Sector
     {
         /// <summary>
         /// Id.
         /// </summary>
         public int? id { get; set; }
         /// <summary>
-        /// invencionId
+        /// Nombre.
         /// </summary>
-        public int? invencionId { get; set; }
+        public string nombre { get; set; }
         /// <summary>
-        /// sectorAplicacion
+        /// Descripción.
         /// </summary>
-        public Sector sectorAplicacion { get; set; }
+        public string descripcion { get; set; }
+        /// <summary>
+        /// Activo.
+        /// </summary>
+        public bool? activo { get; set; }
     }
 }
