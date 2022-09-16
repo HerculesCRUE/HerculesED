@@ -14,7 +14,7 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Identificador de la entidad convocante del proyecto.
         /// </summary>
-        public string Id { get; set; }
+        public long? Id { get; set; }
         /// <summary>
         /// Nombre del usuario que ha creado la entidad.
         /// </summary>
@@ -34,7 +34,7 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Identifcador del proyecto.
         /// </summary>
-        public string ProyectoId { get; set; }
+        public long? ProyectoId { get; set; }
         /// <summary>
         /// Referencia o Identificador de la entidad en el sistema externo de Empresas.
         /// </summary>

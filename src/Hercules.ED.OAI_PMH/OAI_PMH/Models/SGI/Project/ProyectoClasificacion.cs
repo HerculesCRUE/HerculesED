@@ -8,7 +8,7 @@
         /// <summary>
         /// Identificador de la entidad clasificación proyecto
         /// </summary>
-        public int Id { get; set; }
+        public long? Id { get; set; }
         /// <summary>
         /// Nombre del usuario que ha creado la entidad.
         /// </summary>
@@ -28,7 +28,7 @@
         /// <summary>
         /// Identificador del proyecto.
         /// </summary>
-        public int ProyectoId { get; set; }
+        public long? ProyectoId { get; set; }
         /// <summary>
         /// Identificador de la clasificación.
         /// </summary>

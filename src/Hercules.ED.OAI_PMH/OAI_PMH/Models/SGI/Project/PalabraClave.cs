@@ -8,11 +8,11 @@
         /// <summary>
         /// Identificador único autogenerado de la palabra clave.
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Identificador del proyecto al que se asocia la palabra clave.
         /// </summary>
-        public int proyectoId { get; set; }
+        public long? proyectoId { get; set; }
         /// <summary>
         /// Referencia a la palabra clave. 
         /// </summary>
