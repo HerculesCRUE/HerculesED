@@ -350,12 +350,14 @@ namespace Harvester
                         case "PRC":
                             bool eliminar = false;
                             string idRecurso = id.Split("||")[0];
-                            if (idRecurso.Contains('/'))
-                                idRecurso = idRecurso.Split('/').LastOrDefault();
                             if (id.StartsWith("Eliminar_"))
                             {
                                 eliminar = true;
                                 idRecurso = idRecurso.Split("Eliminar_")[1];
+                            }
+                            if (!idRecurso.Contains('/'))
+                            {
+                                idRecurso = "http://gnoss.com/items/" + idRecurso;
                             }
                             string estado = id.Split("||")[1];
 
