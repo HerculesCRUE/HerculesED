@@ -350,6 +350,8 @@ namespace Harvester
                         case "PRC":
                             bool eliminar = false;
                             string idRecurso = id.Split("||")[0];
+                            if (idRecurso.Contains('/'))
+                                idRecurso = idRecurso.Split('/').LastOrDefault();
                             if (id.StartsWith("Eliminar_"))
                             {
                                 eliminar = true;
@@ -376,7 +378,7 @@ namespace Harvester
                                                 Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "validado", item.Value);
                                                 break;
                                             default:
-                                                Borrado(guid, "http://w3id.org/roh/validationStatusPRC", item.Value);
+                                                Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "rechazado", item.Value);
                                                 break;
                                         }
                                     }
@@ -388,7 +390,7 @@ namespace Harvester
                                         }
                                         else
                                         {
-                                            Borrado(guid, "http://w3id.org/roh/validationDeleteStatusPRC", item.Value);
+                                            Modificacion(guid, "http://w3id.org/roh/validationDeleteStatusPRC", "rechazado", item.Value);
                                         }
                                     }
                                     else

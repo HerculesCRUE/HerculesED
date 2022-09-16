@@ -3957,6 +3957,7 @@ var edicionCV = {
 			},
 			error: function(){
 				mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
+				OcultarUpdateProgress();
 			}
 		});
 	},
