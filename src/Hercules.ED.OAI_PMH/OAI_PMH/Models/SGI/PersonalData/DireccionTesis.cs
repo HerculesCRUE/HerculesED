@@ -2,6 +2,9 @@
 
 namespace OAI_PMH.Models.SGI.PersonalData
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DireccionTesis : SGI_Base
     {
         public string Id { get; set; }

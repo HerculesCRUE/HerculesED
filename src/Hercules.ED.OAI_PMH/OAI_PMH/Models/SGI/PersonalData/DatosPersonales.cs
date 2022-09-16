@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.PersonalData
 {
+    /// <summary>
+    /// Contiene los datos personales de una persona
+    /// </summary>
     public class DatosPersonales : SGI_Base
     {
         /// <summary>

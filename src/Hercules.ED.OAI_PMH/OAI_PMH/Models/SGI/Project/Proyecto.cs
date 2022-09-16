@@ -168,17 +168,49 @@ namespace OAI_PMH.Models.SGI.Project
         /// Indica si esta activa o no. 
         /// </summary>
         public bool? Activo { get; set; }
-
+        /// <summary>
+        /// Contexto
+        /// </summary>
         public ContextoProyecto Contexto { get; set; }
+        /// <summary>
+        /// Equipo
+        /// </summary>
         public List<ProyectoEquipo> Equipo { get; set; }
+        /// <summary>
+        /// Entidades gestoras
+        /// </summary>
         public List<ProyectoEntidadGestora> EntidadesGestoras { get; set; }
+        /// <summary>
+        /// Entidades convocantes
+        /// </summary>
         public List<ProyectoEntidadConvocante> EntidadesConvocantes { get; set; }
+        /// <summary>
+        /// Entidades financiadoras
+        /// </summary>
         public List<ProyectoEntidadFinanciadora> EntidadesFinanciadoras { get; set; }
+        /// <summary>
+        /// Resumen anualidades
+        /// </summary>
         public List<ProyectoAnualidadResumen> ResumenAnualidades { get; set; }
+        /// <summary>
+        /// Presupuestos totales
+        /// </summary>
         public ProyectoPresupuestoTotales PresupuestosTotales { get; set; }
+        /// <summary>
+        /// Presupuestos clasificación
+        /// </summary>
         public List<ProyectoClasificacion> ProyectoClasificacion { get; set; }
+        /// <summary>
+        /// Notificación de proyecto externo CVN
+        /// </summary>
         public List<NotificacionProyectoExternoCVN> NotificacionProyectoExternoCVN { get; set; }
+        /// <summary>
+        /// Areas de conocimiento
+        /// </summary>
         public List<ProyectoAreaConocimiento> AreasConocimiento { get; set; }
+        /// <summary>
+        /// Palabras clave
+        /// </summary>
         public List<PalabraClave> PalabrasClaves { get; set; }
     }
 }
