@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Services
 {
+    /// <summary>
+    /// Datos personales
+    /// </summary>
     public class PersonalData
     {
         public static Dictionary<string, DateTime> GetModifiedPeople(string from, ConfigService pConfig)
@@ -165,6 +168,12 @@ namespace OAI_PMH.Services
             return idDictionary;
         }
 
+        /// <summary>
+        /// Devuelve la persona con el id <paramref name="id"/>
+        /// </summary>
+        /// <param name="id">Identificador de la persona</param>
+        /// <param name="pConfig">ConfigService</param>
+        /// <returns>Devuelve la persona</returns>
         public static Persona GetPersona(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -196,6 +205,13 @@ namespace OAI_PMH.Services
             return persona;
         }
 
+        /// <summary>
+        /// Devuelve los datos personales de la persona con id <paramref name="id"/>
+        /// </summary>
+        /// <param name="id">Identificador de la persona</param>
+        /// <param name="pConfig">ConfigService</param>
+        /// <param name="accessToken">Token de acceso</param>
+        /// <returns>Devuelve los datos personales de la persona</returns>
         private static DatosPersonales GetDatosPersonales(string id, ConfigService pConfig, string accessToken)
         {
             DatosPersonales datosPersonales = new();

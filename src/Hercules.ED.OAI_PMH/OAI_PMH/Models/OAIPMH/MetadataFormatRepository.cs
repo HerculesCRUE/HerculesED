@@ -8,10 +8,16 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.OAIPMH
 {
+    /// <summary>
+    /// MetadataFormatRepository
+    /// </summary>
     public class MetadataFormatRepository : IMetadataFormatRepository
     {
         private readonly Dictionary<string, MetadataFormat> _dictionary;
         
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MetadataFormatRepository()
         {
             MetadataFormat xml = new("EDMA", "", "", "");

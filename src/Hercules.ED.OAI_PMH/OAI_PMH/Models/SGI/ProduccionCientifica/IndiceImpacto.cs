@@ -29,7 +29,13 @@
         /// Indica la posición que ocupa la revista dentro de su categoría
         /// </summary>
         public float? PosicionPublicacion { get; set; }
+        /// <summary>
+        /// Numero de revistas
+        /// </summary>
         public float? NumeroRevistas { get; set; }
+        /// <summary>
+        /// Indica si se está dentro del 25% de la revista
+        /// </summary>
         public bool Revista25 { get; set; }
     }
 }
