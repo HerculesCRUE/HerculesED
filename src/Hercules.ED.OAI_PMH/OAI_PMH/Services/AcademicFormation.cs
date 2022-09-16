@@ -46,7 +46,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<Ciclos>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -85,7 +85,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<Doctorados>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -124,7 +124,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<Posgrado>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -163,7 +163,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<FormacionEspecializada>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
