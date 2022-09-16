@@ -66,10 +66,10 @@ namespace OAI_PMH.Services
             invencion.areasConocimiento = GetAreasConocimiento(identifier, pConfig);
             invencion.inventores = GetInventores(identifier, pConfig);
             invencion.periodosTitularidad = GetPeriodosTitularidad(identifier, pConfig);
-            if(invencion.periodosTitularidad != null && invencion.periodosTitularidad.Any())
+            if (invencion.periodosTitularidad != null && invencion.periodosTitularidad.Any())
             {
                 invencion.titulares = new List<Titular>();
-                foreach(PeriodoTitularidad periodo in invencion.periodosTitularidad)
+                foreach (PeriodoTitularidad periodo in invencion.periodosTitularidad)
                 {
                     invencion.titulares.AddRange(GetTitular(periodo.id.ToString(), pConfig));
                 }
@@ -183,7 +183,7 @@ namespace OAI_PMH.Services
         public static List<SectorAplicacion> GetSectores(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
-            string identifier = id.Replace("\"", ""); 
+            string identifier = id.Replace("\"", "");
             RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/sectoresaplicacion");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
@@ -255,7 +255,7 @@ namespace OAI_PMH.Services
         public static List<PalabraClave> GetPalabrasClaves(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
-            string identifier = id.Replace("\"", ""); 
+            string identifier = id.Replace("\"", "");
             RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/palabrasclave");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
@@ -279,7 +279,7 @@ namespace OAI_PMH.Services
         public static List<Inventor> GetInventores(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig, pTokenGestor: false, pTokenPii: true);
-            string identifier = id.Replace("\"", ""); 
+            string identifier = id.Replace("\"", "");
             RestClient client = new(pConfig.GetUrlBaseInvenciones() + "invenciones/" + identifier + "/invencion-inventores");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);

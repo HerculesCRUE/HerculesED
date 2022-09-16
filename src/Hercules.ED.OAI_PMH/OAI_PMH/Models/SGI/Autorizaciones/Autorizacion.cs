@@ -36,18 +36,18 @@
         /// <summary>
         /// Nombre de la entidad en la que se desarrollará el proyecto.
         /// </summary>
-        public string datosEntidad{ get; set; }
+        public string datosEntidad { get; set; }
         /// <summary>
         /// Identificador de la convocatoria del proyecto en caso de que la convocatoria exista dentro del SGI.
         /// </summary>
-        public string convocatoriaId{ get; set; }
+        public string convocatoriaId { get; set; }
         /// <summary>
         /// Nombre de la convocatoria del proyecto en caso de que la convocatoria no existan dentro del SGI.
         /// </summary>
-        public string datosConvocatoria{ get; set; }
+        public string datosConvocatoria { get; set; }
         /// <summary>
         /// Observaciones aportadas a la autorización.
         /// </summary>
-        public string observaciones{ get; set; }
+        public string observaciones { get; set; }
     }
 }
