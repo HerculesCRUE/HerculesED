@@ -8,7 +8,7 @@
         /// <summary>
         /// Identificador de la solicitud de autorización
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Investigador a quien se le ha concedido la autorización. 
         /// </summary>
@@ -32,7 +32,7 @@
         /// <summary>
         /// Horas de dedicación al proyecto por parte del solicitante.
         /// </summary>
-        public string horasDedicacion { get; set; }
+        public long? horasDedicacion { get; set; }
         /// <summary>
         /// Nombre de la entidad en la que se desarrollará el proyecto.
         /// </summary>
@@ -40,7 +40,7 @@
         /// <summary>
         /// Identificador de la convocatoria del proyecto en caso de que la convocatoria exista dentro del SGI.
         /// </summary>
-        public string convocatoriaId { get; set; }
+        public long? convocatoriaId { get; set; }
         /// <summary>
         /// Nombre de la convocatoria del proyecto en caso de que la convocatoria no existan dentro del SGI.
         /// </summary>
