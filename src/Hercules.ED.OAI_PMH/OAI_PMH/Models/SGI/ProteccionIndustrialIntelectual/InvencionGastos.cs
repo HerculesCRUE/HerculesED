@@ -8,11 +8,11 @@
         /// <summary>
         /// Id.
         /// </summary>
-        public int? id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// InvencionId
         /// </summary>
-        public int? invencionId { get; set; }
+        public long? invencionId { get; set; }
         /// <summary>
         /// GastoRef
         /// </summary>
@@ -24,10 +24,10 @@
         /// <summary>
         /// ImportePendienteDeducir
         /// </summary>
-        public float importePendienteDeducir { get; set; }
+        public float? importePendienteDeducir { get; set; }
         /// <summary>
         /// SolicitudProteccion 
         /// </summary>
-        public int solicitudProteccion { get; set; }
+        public long? solicitudProteccion { get; set; }
     }
 }

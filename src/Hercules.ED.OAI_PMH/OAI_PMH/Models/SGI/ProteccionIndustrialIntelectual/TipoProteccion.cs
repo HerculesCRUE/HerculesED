@@ -8,7 +8,7 @@
         /// <summary>
         /// Id.
         /// </summary>
-        public int? id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Nombre.
         /// </summary>
@@ -20,7 +20,7 @@
         /// <summary>
         /// PadreId.
         /// </summary>
-        public int? padreId { get; set; }
+        public long? padreId { get; set; }
         /// <summary>
         /// TipoPropiedad.
         /// </summary>
