@@ -153,7 +153,7 @@ where {{
             ProduccionCientifica PRC = new ProduccionCientifica();
 
             // Identificador.
-            PRC.idRef = pIdDocumento;
+            PRC.idRef = pIdDocumento.Split('/').LastOrDefault();
             //PRC.idRef = mResourceApi.GetShortGuid(pIdDocumento).ToString();
             //PRC.idRef = pIdDocumento.Substring(pIdDocumento.LastIndexOf("/") + 1);
             PRC.estado = "PENDIENTE";
