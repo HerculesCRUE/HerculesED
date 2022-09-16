@@ -7,7 +7,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
     {
         public string Id { get; set; }
         public string NombreTitulo { get; set; }
-        public DateTime FechaTitulacion { get; set; }
+        public DateTime? FechaTitulacion { get; set; }
         public int? DuracionTitulacion { get; set; }
         public Entidad EntidadTitulacion { get; set; }
         public string CiudadEntidadTitulacion { get; set; }

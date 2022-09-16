@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
         public string Id { get; set; }
         public string NombreEvento { get; set; }
         //public TipoEvento TipoEvento { get; set; }
-        public DateTime FechaTitulacion { get; set; }
+        public DateTime? FechaTitulacion { get; set; }
         public Entidad EntidadOrganizacionEvento { get; set; }
         public TipoEntidadOrganizadora TipoEntidad { get; set; }
         public string CiudadEntidadOrganizacionEvento { get; set; }

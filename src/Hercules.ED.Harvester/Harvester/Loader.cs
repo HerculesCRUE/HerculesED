@@ -282,12 +282,12 @@ namespace Harvester
                             if (dicPersonas.ContainsKey(personOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -812,7 +812,7 @@ namespace Harvester
             {
                 mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(pEntity), true);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

@@ -3,6 +3,6 @@
     public class Email
     {
         public string email { get; set; }
-        public bool Principal { get; set; }
+        public bool? Principal { get; set; }
     }
 }
