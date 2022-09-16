@@ -11,7 +11,7 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         /// <summary>
         /// Id.
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Título.
         /// </summary>

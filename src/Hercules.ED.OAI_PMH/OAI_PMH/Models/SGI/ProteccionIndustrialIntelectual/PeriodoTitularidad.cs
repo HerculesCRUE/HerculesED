@@ -10,11 +10,11 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         /// <summary>
         /// Id.
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// InvencionId.
         /// </summary>
-        public int invencionId { get; set; }
+        public long? invencionId { get; set; }
         /// <summary>
         /// FechaInicio
         /// </summary>

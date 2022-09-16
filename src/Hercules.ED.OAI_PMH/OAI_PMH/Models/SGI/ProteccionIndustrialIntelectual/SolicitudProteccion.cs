@@ -10,7 +10,7 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         /// <summary>
         /// Identificador único de la solicitud de protección.
         /// </summary>
-        public int? id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Invención a la que pertenece la solicitud de protección.
         /// </summary>

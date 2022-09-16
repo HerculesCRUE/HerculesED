@@ -8,11 +8,11 @@
         /// <summary>
         /// Identificador.
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Periodo de titularidad.
         /// </summary>
-        public int periodoTitularidadId { get; set; }
+        public long? periodoTitularidadId { get; set; }
         /// <summary>
         /// RefTitular.
         /// </summary>
@@ -20,6 +20,6 @@
         /// <summary>
         /// Participación.
         /// </summary>
-        public float participacion { get; set; }
+        public float? participacion { get; set; }
     }
 }
