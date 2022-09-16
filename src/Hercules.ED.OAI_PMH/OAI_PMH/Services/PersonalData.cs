@@ -241,8 +241,14 @@ namespace OAI_PMH.Services
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
-            vinculacion = JsonConvert.DeserializeObject<Vinculacion>(response.Content);
-            vinculacion.VinculacionCategoriaProfesional = GetVinculacionCategoriaProfesional(id, pConfig, accessToken);
+            try
+            {
+                vinculacion = JsonConvert.DeserializeObject<Vinculacion>(response.Content);
+            }
+            catch
+            {
+                return null;
+            }
             return vinculacion;
         }
 

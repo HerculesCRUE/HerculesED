@@ -68,11 +68,11 @@ namespace Harvester
             //Compruebo que no hay ficheros pendientes de procesar
             //mResourceApi.ChangeOntoly("organization");
             //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
-            //mResourceApi.ChangeOntoly("person");
-            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
             //mResourceApi.ChangeOntoly("project");
             //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
-            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
             //mResourceApi.ChangeOntoly("projectauthorization");
             //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
             //mResourceApi.ChangeOntoly("group");
@@ -85,9 +85,9 @@ namespace Harvester
 
             ////Genero los ficheros con los datos a procesar desde la fecha
             //GuardarIdentificadores(_Config, "Organizacion", fecha);
-            //GuardarIdentificadores(_Config, "Persona", fecha);
+            GuardarIdentificadores(_Config, "Persona", fecha);
             //GuardarIdentificadores(_Config, "Proyecto", fecha);
-            GuardarIdentificadores(_Config, "PRC", fecha, true);
+            //GuardarIdentificadores(_Config, "PRC", fecha, true);
             //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
             //GuardarIdentificadores(_Config, "Grupo", fecha);
             //GuardarIdentificadores(_Config, "Invencion", fecha);
@@ -101,9 +101,9 @@ namespace Harvester
             mResourceApi.ChangeOntoly("organization");
             ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
 
-            //// Personas.
-            //mResourceApi.ChangeOntoly("person");
-            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            // Personas.
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
 
             //// Proyectos.
             //mResourceApi.ChangeOntoly("project");
@@ -246,7 +246,7 @@ namespace Harvester
                         #region - Persona
                         case "Persona":
                             // Obtención de datos en bruto.
-                            if (id.Contains("@") || id.Contains("|"))
+                            if (ComprobarID(id.Split("_")[1]))
                             {
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
@@ -282,12 +282,12 @@ namespace Harvester
                             if (dicPersonas.ContainsKey(personOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -2208,6 +2208,29 @@ namespace Harvester
             // TODO
 
             return project;
+        }
+
+        public bool ComprobarID(string pIdMalFormado)
+        {
+            // Si el ID es distinto a 8 dígitos, está mal formado.
+            if (pIdMalFormado.Count() != 8)
+            {
+                return true;
+            }
+
+            // Si contiene '@' o '|' está mal formado.
+            if (pIdMalFormado.Contains("@") || pIdMalFormado.Contains("|"))
+            {
+                return true;
+            }
+
+            // Si el NIE está mal formado, es inválido.
+            if (!Int32.TryParse(pIdMalFormado.Substring(1), out int result))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
