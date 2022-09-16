@@ -13,10 +13,34 @@ namespace DesnormalizadorHercules.Models
     public static class ActualizadorEDMA
     {
         private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
-        private static ResourceApi resourceApi = new ResourceApi(rutaOauth);
-        private static CommunityApi communityApi = new CommunityApi(rutaOauth);
-
+        private static ResourceApi mResourceApi = null;
+        private static CommunityApi mCommunityApi = null;
         private static Guid communityID = communityApi.GetCommunityId();
+
+
+        private static ResourceApi resourceApi
+        {
+            get
+            {
+                if (mResourceApi == null)
+                {
+                    mResourceApi = new ResourceApi(rutaOauth);
+                }
+                return mResourceApi;
+            }
+        }
+
+        private static CommunityApi communityApi
+        {
+            get
+            {
+                if (mCommunityApi == null)
+                {
+                    mCommunityApi = new CommunityApi(rutaOauth);
+                }
+                return mCommunityApi;
+            }
+        }
 
         /// <summary>
         /// Actualiza todos los elementos desnormalizados
@@ -172,8 +196,8 @@ namespace DesnormalizadorHercules.Models
             //Ejecuciones ordenadas en función de sus dependencias
 
             //Persona sin dependencias                
-            actualizadorPersonas.ActualizarPertenenciaLineas(pPersons:pPersons);
-            actualizadorPersonas.ActualizarNumeroIPProyectos(pPersons:pPersons);
+            actualizadorPersonas.ActualizarPertenenciaLineas(pPersons: pPersons);
+            actualizadorPersonas.ActualizarNumeroIPProyectos(pPersons: pPersons);
             actualizadorPersonas.ActualizarIPGruposActuales(pPersons: pPersons);
             actualizadorPersonas.ActualizarIPGruposHistoricos(pPersons: pPersons);
             actualizadorPersonas.ActualizarIPProyectosActuales(pPersons: pPersons);
@@ -221,7 +245,7 @@ namespace DesnormalizadorHercules.Models
             //Persona sin dependencias                
             actualizadorPersonas.ActualizarNumeroIPProyectos(pProjects: pProjects);
             actualizadorPersonas.ActualizarIPProyectosActuales(pProjects: pProjects);
-            actualizadorPersonas.ActualizarIPProyectosHistoricos(pProjects: pProjects);            
+            actualizadorPersonas.ActualizarIPProyectosHistoricos(pProjects: pProjects);
 
             //Proyectos sin dependencias
             actualizadorProject.ActualizarProyectosValidados(pProjects: pProjects);
@@ -319,14 +343,14 @@ namespace DesnormalizadorHercules.Models
             actualizadorProject.ActualizarNumeroPublicaciones(pDocuments: pDocuments);
 
             //Persona con dependencias  
-            List<string> persons= resourceApi.VirtuosoQuery("select ?person", 
+            List<string> persons = resourceApi.VirtuosoQuery("select ?person",
                 $@" where
                     {{ 
                         ?document <http://purl.org/ontology/bibo/authorList> ?autores. 
                         ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.  
                         FILTER(?document in (<{string.Join(">,<", pDocuments)}>))
-                    }}", "document").results.bindings.Select(x=>x["person"].value).Distinct().ToList();
-            List<List<string>> listPersons= ActualizadorBase.SplitList(persons, 500).ToList();
+                    }}", "document").results.bindings.Select(x => x["person"].value).Distinct().ToList();
+            List<List<string>> listPersons = ActualizadorBase.SplitList(persons, 500).ToList();
             foreach (List<string> listPersonIn in listPersons)
             {
                 actualizadorPersonas.ActualizarNumeroPublicacionesValidadas(pPersons: listPersonIn);
