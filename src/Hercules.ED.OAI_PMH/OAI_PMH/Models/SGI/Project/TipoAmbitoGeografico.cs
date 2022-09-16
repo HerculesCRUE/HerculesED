@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace OAI_PMH.Models.SGI.Project
 {
     /// <summary>
-    /// Programa
+    /// Tipo ambito geografico
     /// </summary>
-    public class Programa : SGI_Base
+    public class TipoAmbitoGeografico : SGI_Base
     {
         /// <summary>
-        /// Identificador del programa.
+        /// Identificador del tipo de ámbito geográfico.
         /// </summary>
         public string Id { get; set; }
         /// <summary>
@@ -32,20 +32,12 @@ namespace OAI_PMH.Models.SGI.Project
         /// </summary>
         public string LastModifiedDate { get; set; }
         /// <summary>
-        /// Nombre del programa
+        /// Nombre del ámbito geográfico
         /// </summary>
         public string Nombre { get; set; }
         /// <summary>
-        /// Descripción del programa.
+        /// Campo utilizado para dar soporte al borrado lógico de los registros de esta entidad.
         /// </summary>
-        public string Descripcion { get; set; }
-        /// <summary>
-        /// Entidad que representa el programa padre.
-        /// </summary>
-        public Programa Padre { get; set; }
-        /// <summary>
-        /// Flag con el que se da cobertura al borrado lógico de los registros de esta tabla.
-        /// </summary>
-        public bool Activo { get; set; }
+        public bool? Activo { get; set; }
     }
 }

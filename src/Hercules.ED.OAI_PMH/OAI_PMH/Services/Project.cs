@@ -75,7 +75,7 @@ namespace OAI_PMH.Services
         {
             string accessToken = Token.CheckToken(pConfig);
             List<ProyectoEquipo> equipo = new();
-            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/equipos");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/equipo");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

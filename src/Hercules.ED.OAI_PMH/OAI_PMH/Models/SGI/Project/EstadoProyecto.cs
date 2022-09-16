@@ -15,7 +15,7 @@ namespace OAI_PMH.Models.SGI.Project
         public int Id { get; set; }
         public int ProyectoId { get; set; }
         public string Estado { get; set; }
-        public DateTime FechaEstado { get; set; }
+        public DateTime? FechaEstado { get; set; }
         public string Comentario { get; set; }
     }
 }
