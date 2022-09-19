@@ -51,11 +51,11 @@ namespace OAI_PMH.Services
             proyecto.EntidadesConvocantes = GetEntidadesConvocantes(identifier, pConfig);
             proyecto.EntidadesFinanciadoras = GetEntidadesFinanciadoras(identifier, pConfig);
             proyecto.ResumenAnualidades = GetAnualidades(identifier, pConfig);
-            proyecto.ProyectoClasificacion = GetProyectoClasificaciones(identifier, pConfig);
-            proyecto.NotificacionProyectoExternoCVN = GetNotificacionProyectoExternoCVN(identifier, pConfig);
             proyecto.PresupuestosTotales = GetPresupuestosProyecto(identifier, pConfig);
+            proyecto.ProyectoClasificacion = GetProyectoClasificaciones(identifier, pConfig);            
             proyecto.AreasConocimiento = GetAreasConocimiento(identifier, pConfig);
             proyecto.PalabrasClaves = GetPalabrasClave(identifier, pConfig);
+            proyecto.NotificacionProyectoExternoCVN = GetNotificacionProyectoExternoCVN(identifier, pConfig);
             return proyecto;
         }
 
@@ -75,7 +75,7 @@ namespace OAI_PMH.Services
         {
             string accessToken = Token.CheckToken(pConfig);
             List<ProyectoEquipo> equipo = new();
-            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/equipo");
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/equipos");
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
@@ -188,6 +188,18 @@ namespace OAI_PMH.Services
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             palabrasClave = JsonConvert.DeserializeObject<List<PalabraClave>>(response.Content);
+            return palabrasClave;
+        }
+
+        public static List<EstadoProyecto> GetEstadoProyecto(string id, ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            List<EstadoProyecto> palabrasClave = new();
+            RestClient client = new(pConfig.GetUrlBaseProyecto() + "proyectos/" + id + "/estadoproyectos");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            palabrasClave = JsonConvert.DeserializeObject<List<EstadoProyecto>>(response.Content);
             return palabrasClave;
         }
     }
