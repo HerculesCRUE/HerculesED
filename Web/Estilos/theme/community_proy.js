@@ -367,6 +367,10 @@ function CompletadaCargaRecursosComunidad()
 		CompletadaCargaRecursosSimilitud();
 	}
 	
+	if ((typeof CompletadaCargaRecursosPIIOfertas != 'undefined')) {
+		CompletadaCargaRecursosPIIOfertas();
+	}
+	
 	if ((typeof gOTecnEndLoadedResources != 'undefined')) {
 		gOTecnEndLoadedResources();
 	}
