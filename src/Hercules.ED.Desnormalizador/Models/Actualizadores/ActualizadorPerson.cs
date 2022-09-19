@@ -881,7 +881,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                               }}Group by ?person 
                             }}
-                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar )
+                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar  OR !BOUND(?numAreasTematicasCargadas) )
                             }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 
