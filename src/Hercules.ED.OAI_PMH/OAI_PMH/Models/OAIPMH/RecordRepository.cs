@@ -98,7 +98,38 @@ namespace OAI_PMH.Models.OAIPMH
                             Content = XElement.Parse(pObject.ToXML())
                         };
                     }
-                    catch (Exception error)
+                    catch (Exception)
+                    {
+                        return null;
+                    }
+                    break;
+            }
+            return record;
+        }
+
+        private static Record ToRecord(SGI_Base pObject, string pSet, long? pId, DateTime pDate, string pMetadataPrefix)
+        {
+            Record record = new()
+            {
+                Header = new RecordHeader()
+                {
+                    Identifier = pId.ToString(),
+                    SetSpecs = new List<string>() { pSet },
+                    Datestamp = pDate
+                }
+            };
+
+            switch (pMetadataPrefix)
+            {
+                case "EDMA":
+                    try
+                    {
+                        record.Metadata = new RecordMetadata()
+                        {
+                            Content = XElement.Parse(pObject.ToXML())
+                        };
+                    }
+                    catch (Exception)
                     {
                         return null;
                     }
@@ -229,6 +260,11 @@ namespace OAI_PMH.Models.OAIPMH
                         List<Record> projectRecordList = new();
                         foreach (Proyecto proyecto in projectsList)
                         {
+                            if (proyecto.Id == null)
+                            {
+                                continue;
+                            }
+
                             projectRecordList.Add(ToRecord(proyecto, arguments.Set, proyecto.Id, startDate, arguments.MetadataPrefix));
                         }
                         container.Records = projectRecordList;

@@ -4,9 +4,14 @@ using System.Collections;
 
 namespace OAI_PMH.Controllers
 {
+    /// <summary>
+    /// ConfigService
+    /// </summary>
     public class ConfigService
     {
-        // Archivo de configuración.
+        /// <summary>
+        /// Archivo de configuración.
+        /// </summary>
         public static IConfigurationRoot configuracion;
 
         // Credenciales

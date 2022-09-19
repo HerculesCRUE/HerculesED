@@ -66,37 +66,38 @@ namespace Harvester
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
             //Compruebo que no hay ficheros pendientes de procesar
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            //mResourceApi.ChangeOntoly("organization");
+            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
             mResourceApi.ChangeOntoly("person");
             ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
-            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            //mResourceApi.ChangeOntoly("project");
+            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+            //mResourceApi.ChangeOntoly("projectauthorization");
+            //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
+            //mResourceApi.ChangeOntoly("group");
+            //ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
+            //mResourceApi.ChangeOntoly("patent");
+            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
             // Fecha de la última actualización.
-            string fecha = "2022-09-13T00:00:00Z";
+            string fecha = "1500-01-01T00:00:00Z";
 
-            //Genero los ficheros con los datos a procesar desde la fecha
-            GuardarIdentificadores(_Config, "Organizacion", fecha);
+            ////Genero los ficheros con los datos a procesar desde la fecha
+            //GuardarIdentificadores(_Config, "Organizacion", fecha);
             GuardarIdentificadores(_Config, "Persona", fecha);
-            GuardarIdentificadores(_Config, "Proyecto", fecha);
-            GuardarIdentificadores(_Config, "PRC", fecha, true);
-            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            GuardarIdentificadores(_Config, "Grupo", fecha);
-            GuardarIdentificadores(_Config, "Invencion", fecha);
+            //GuardarIdentificadores(_Config, "Proyecto", fecha);
+            //GuardarIdentificadores(_Config, "PRC", fecha, true);
+            //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+            //GuardarIdentificadores(_Config, "Grupo", fecha);
+            //GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
 
             // Procesamiento de ficheros.
-            // Organizaciones. 
+
+            // Organizaciones. Datos correctos.
             mResourceApi.ChangeOntoly("organization");
             ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
 
@@ -104,25 +105,25 @@ namespace Harvester
             mResourceApi.ChangeOntoly("person");
             ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
 
-            // Proyectos.
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            //// Proyectos.
+            //mResourceApi.ChangeOntoly("project");
+            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
 
-            // Document.
+            //// Document.
             mResourceApi.ChangeOntoly("document");
             ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
 
-            // Autorizaciones.
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
+            //// Autorizaciones.
+            //mResourceApi.ChangeOntoly("projectauthorization");
+            //ProcesarFichero(_Config, "AutorizacionProyecto");
 
-            // Grupos.
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo");
+            //// Grupos.
+            //mResourceApi.ChangeOntoly("group");
+            //ProcesarFichero(_Config, "Grupo");
 
-            // Patentes.
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            //// Patentes.
+            //mResourceApi.ChangeOntoly("patent");
+            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
         }
 
         /// <summary>
@@ -245,7 +246,7 @@ namespace Harvester
                         #region - Persona
                         case "Persona":
                             // Obtención de datos en bruto.
-                            if (id.Contains("@") || id.Contains("|"))
+                            if (ComprobarID(id.Split("_")[1]))
                             {
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
@@ -347,7 +348,17 @@ namespace Harvester
 
                         #region - PRC
                         case "PRC":
+                            bool eliminar = false;
                             string idRecurso = id.Split("||")[0];
+                            if (id.StartsWith("Eliminar_"))
+                            {
+                                eliminar = true;
+                                idRecurso = idRecurso.Split("Eliminar_")[1];
+                            }
+                            if (!idRecurso.Contains('/'))
+                            {
+                                idRecurso = "http://gnoss.com/items/" + idRecurso;
+                            }
                             string estado = id.Split("||")[1];
 
                             Guid guid = mResourceApi.GetShortGuid(idRecurso);
@@ -369,18 +380,20 @@ namespace Harvester
                                                 Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "validado", item.Value);
                                                 break;
                                             default:
-                                                Borrado(guid, "http://w3id.org/roh/validationStatusPRC", item.Value);
+                                                Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "rechazado", item.Value);
                                                 break;
                                         }
                                     }
-                                    else if (item.Key == "validationDeleteStatusPRC")
+                                    else if (item.Key == "validationDeleteStatusPRC" && eliminar)
                                     {
                                         if (estado.Equals("VALIDADO"))
                                         {
-                                            Modificacion(guid, "http://w3id.org/roh/isValidated", "false", item.Value);
-                                            Borrado(guid, "http://w3id.org/roh/validationStatusPRC", item.Value);
+                                            BorrarPublicacion(idRecurso);
                                         }
-                                        Borrado(guid, "http://w3id.org/roh/validationDeleteStatusPRC", item.Value);
+                                        else
+                                        {
+                                            Modificacion(guid, "http://w3id.org/roh/validationDeleteStatusPRC", "rechazado", item.Value);
+                                        }
                                     }
                                     else
                                     {
@@ -753,6 +766,56 @@ namespace Harvester
             listaTriplesBorrado.Add(triple);
             dicBorrado.Add(pGuid, listaTriplesBorrado);
             mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+        }
+        /// <summary>
+        /// Elimina una publicación y sus referencias
+        /// </summary>
+        /// <param name="pEntity">Entidad a eliminar</param>
+        /// <returns></returns>
+        public void BorrarPublicacion(string pEntity)
+        {
+            //Eliminar las referencias en los CVs
+            String select = @$"select ?cv ?p1 ?o1 ?p2 ?o2 ?item ";
+            String where = @$"  where{{
+                                            ?cv a <http://w3id.org/roh/CV>.
+                                            ?cv ?p1 ?o1.
+                                            ?o1 ?p2 ?o2.
+                                            ?o2 <http://vivoweb.org/ontology/core#relatedBy> ?item.
+                                            FILTER(?item=<{pEntity}>)
+                                        }}";
+            SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+
+            Dictionary<Guid, List<RemoveTriples>> triplesEliminar = new Dictionary<Guid, List<RemoveTriples>>();
+            foreach (var fila in resultado.results.bindings)
+            {
+                Guid cv = mResourceApi.GetShortGuid(fila["cv"].value);
+                string p1 = fila["p1"].value;
+                string o1 = fila["o1"].value;
+                string p2 = fila["p2"].value;
+                string o2 = fila["o2"].value;
+                string predicado = p1 + "|" + p2;
+                string objeto = o1 + "|" + o2;
+
+                if (!triplesEliminar.ContainsKey(cv))
+                {
+                    triplesEliminar[cv] = new List<RemoveTriples>();
+                }
+                RemoveTriples t = new();
+                t.Predicate = predicado;
+                t.Value = objeto;
+                triplesEliminar[cv].Add(t);
+            }
+            mResourceApi.DeletePropertiesLoadedResources(triplesEliminar);
+
+            //Eliminar la publicación
+            try
+            {
+                mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(pEntity), true);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         /// <summary>
@@ -2145,6 +2208,29 @@ namespace Harvester
             // TODO
 
             return project;
+        }
+
+        public bool ComprobarID(string pIdMalFormado)
+        {
+            // Si el ID es distinto a 8 dígitos, está mal formado.
+            if (pIdMalFormado.Count() != 8)
+            {
+                return true;
+            }
+
+            // Si contiene '@' o '|' está mal formado.
+            if (pIdMalFormado.Contains("@") || pIdMalFormado.Contains("|"))
+            {
+                return true;
+            }
+
+            // Si el NIE está mal formado, es inválido.
+            if (!Int32.TryParse(pIdMalFormado.Substring(1), out int result))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

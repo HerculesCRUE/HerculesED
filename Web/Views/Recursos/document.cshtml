@@ -686,18 +686,15 @@
                                 </a>
                             </li>
                         }
-                        @if (@pDocument.Roh_linkedCount > 0) 
-                        {
-                            <li class="nav-item" role="presentation" id="linked-panel-li">
-                                <!-- Referencias -->
-                                <a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
-                                    <div class="bloque">
-                                        <div class="label">@Html.Translate("ROS_VINCULADOS")</div>
-                                        <div class="data">@pDocument.Roh_linkedCount</div>
-                                    </div>
-                                </a>
-                            </li>
-                        }
+						<li class="nav-item" role="presentation" id="linked-panel-li">
+							<!-- Referencias -->
+							<a class="nav-link" id="linked-tab" data-toggle="tab" href="#linked-panel" role="tab" aria-controls="linked-panel">
+								<div class="bloque">
+									<div class="label">@Html.Translate("ROS_VINCULADOS")</div>
+									<div class="data">@pDocument.Roh_linkedCount</div>
+								</div>
+							</a>
+						</li>
                     </ul>
                 </div>
                 <div class="tab-content" id="paneles-recurso">
