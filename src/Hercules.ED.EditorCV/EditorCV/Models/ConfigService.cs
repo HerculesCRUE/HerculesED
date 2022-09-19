@@ -22,6 +22,7 @@ namespace EditorCV.Models
         // URLs
         private string urlEnrichment { get; set; }
         private string urlSGI { get; set; }
+        private string urlDSpace { get; set; }
         private string urlImportadorExportador { get; set; }
         private int? maxMonthsValidationDocument { get; set; }
         private int? maxMonthsValidationProjectsDocument { get; set; }
@@ -362,6 +363,27 @@ namespace EditorCV.Models
         public string GetUrlImportador()
         {
             return GetUrlimportadorExportador() + "/ImportadorCV";
+        }
+
+        public string GetUrlDSpace()
+        {
+            if (string.IsNullOrEmpty(urlDSpace))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("url_dspace"))
+                {
+                    connectionString = environmentVariables["url_dspace"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["url_dspace"];
+                }
+
+                urlDSpace = connectionString;
+            }
+
+            return urlDSpace;
         }
     }
 }
