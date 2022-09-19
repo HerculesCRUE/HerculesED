@@ -1472,7 +1472,7 @@ namespace EditorCV.Models
         /// <param name="pListItemConfig">Configuración del item</param>
         /// <param name="pLang">Idioma</param>
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
-        /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidoima configurado</param>
+        /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidioma configurado</param>
         /// <returns></returns>
         private TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData,
             TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas,
