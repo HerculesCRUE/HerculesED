@@ -1,6 +1,10 @@
-﻿using System;
+﻿using EditorCV.Models.EnvioDSpace;
+using EditorCV.Models.PreimportModels;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
 
 namespace EditorCV.Models
 {
@@ -13,11 +17,19 @@ namespace EditorCV.Models
             _Configuracion = pConfig;
         }
 
-        public void EnvioDSpace(ConfigService pConfig, string pIdRecurso)
+        public void EnvioDSpace(string pIdRecurso)
         {
             //Compruebo si está el ítem en la biblioteca
             try
             {
+                string urlStatus = _Configuracion.GetUrlDSpace() + "/status";
+                HttpClient httpClientStatus = new HttpClient();
+                HttpResponseMessage responseStatus = httpClientStatus.GetAsync($"{urlStatus}").Result;
+                if (responseStatus.IsSuccessStatusCode)
+                {
+                    Status s = responseStatus.Content.ReadFromJsonAsync<Status>().Result;
+                }
+
                 string urlEstado = _Configuracion.GetUrlDSpace() + "/items/" + pIdRecurso;
                 HttpClient httpClientEstado = new HttpClient();
                 HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{urlEstado}").Result;
