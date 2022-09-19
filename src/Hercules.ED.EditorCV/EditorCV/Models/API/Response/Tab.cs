@@ -160,6 +160,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public bool removePRC { get; set; }
         /// <summary>
+        /// Indica si se ha de mostrar el botón de envío a Dspace
+        /// </summary>
+        public bool sendDspace { get; set; }
+        /// <summary>
         /// Indica si se ha de mostrar el botón de validación
         /// </summary>
         public bool sendValidationProject { get; set; }
