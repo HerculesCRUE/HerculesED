@@ -4,5 +4,11 @@
     {
         public string authenticated { get; set; }
         public string okay  { get; set; }
+
+        public Status()
+        {
+            authenticated = "";
+            okay = "";
+        }
     }
 }
