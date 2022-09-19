@@ -17,7 +17,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public string EntidadPropiaRef { get; set; }
         // TODO:
         public CategoriaProfesional CategoriaProfesional { get; set; }
-        public DateTime FechaObtencionCategoria { get; set; }
+        public DateTime? FechaObtencionCategoria { get; set; }
         public Departamento Departamento { get; set; }
     }
 }
