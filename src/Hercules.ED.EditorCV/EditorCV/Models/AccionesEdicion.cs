@@ -1810,14 +1810,12 @@ namespace EditorCV.Models
                 }
             }
 
-            //SendPRC
+            // Envío
             item.sendPRC = false;
+            item.sendDspace = false;
             if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
             {
-                if (item.title == "testPRC")
-                {
-                    bool a = true;
-                }
+                item.sendDspace = true;
                 item.sendPRC = true;
                 if (!string.IsNullOrEmpty(pId))
                 {

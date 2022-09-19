@@ -720,6 +720,15 @@ var edicionCV = {
 							</a>
 						</li>`;
 		}
+		// Envío a dspace
+		if (data.sendDspace) {
+			htmlAcciones += `<li>
+							<a class="item-dropdown" data-toggle="modal">
+								<span class="material-icons">send</span>
+								<span class="texto sendDspace" data-id="${id}" >${GetText("ENVIAR_A_DSPACE")}</span>
+							</a>
+						</li>`;
+		}
 		//Si el proyecto está en validación o pendiente no se permite el envio
 		if(data.sendValidationProject){
 			htmlAcciones += `<li>
@@ -3853,7 +3862,7 @@ var edicionCV = {
 			that.GetDataPRC(dataId, that.idPerson, section,rdfTypeTab);
 		});
 
-		//Enviar a borrar en PRC - TODO
+		//Enviar a borrar en PRC
 		$('.texto.prodCientBorrarItem').closest('li').off('click').on('click', function(e) {
 			MostrarUpdateProgress();
 			var formData = new FormData();
@@ -3876,6 +3885,18 @@ var edicionCV = {
 					OcultarUpdateProgress();
 				}
 			});
+		});
+
+		//Enviar a borrar en PRC
+		$('.texto.sendDspace').closest('li').off('click').on('click', function(e) {
+			MostrarUpdateProgress();
+			var formData = new FormData();
+			let idrecurso = $(this).find('[data-id]').attr('data-id')
+			formData.append('pIdRecurso', idrecurso);				
+			mostrarNotificacion('success', GetText('CV_ENVIO_DSPACE_CORRECTO'), 10000);
+			OcultarUpdateProgress();
+			mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
+			OcultarUpdateProgress();
 		});
 				
 		$('.texto.validacionItem').off('click').on('click', function(e) {
