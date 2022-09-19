@@ -156,6 +156,10 @@ namespace EditorCV.Models.API.Response
         /// </summary>
         public bool sendPRC { get; set; }
         /// <summary>
+        /// Indica si se ha de mostrar el botón de envío a eliminar a producción cientifica
+        /// </summary>
+        public bool removePRC { get; set; }
+        /// <summary>
         /// Indica si se ha de mostrar el botón de validación
         /// </summary>
         public bool sendValidationProject { get; set; }

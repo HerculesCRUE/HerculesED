@@ -644,7 +644,7 @@ var edicionCV = {
         return html;
     },
 	printHtmlListItemValidacion: function(data){
-		if(data.validationStatus=='pendiente'){
+		if(data.validationStatus=='pendiente' || data.removePRC){
 			return `<div class="manage-history-wrapper">
 						<span class="con-icono-before material-icons">manage_history</span>
 					</div>`;
@@ -712,7 +712,7 @@ var edicionCV = {
 								<span class="texto prodCientItem" data-id="${id}" >${GetText("ENVIAR_PRODUCCION_CIENTIFICA")}</span>
 							</a>
 						</li>`;
-		} else if (data.validationStatus == 'validado') {
+		} else if (data.validationStatus == 'validado' && !data.removePRC) {
 			htmlAcciones += `<li>
 							<a class="item-dropdown" data-toggle="modal">
 								<span class="material-icons">delete</span>

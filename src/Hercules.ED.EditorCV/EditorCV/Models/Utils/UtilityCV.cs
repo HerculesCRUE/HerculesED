@@ -34,6 +34,7 @@ namespace EditorCV.Models.Utils
             { "http://w3id.org/roh/crisIdentifier", new List<string>() },
             { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} },
             { "http://w3id.org/roh/validationStatusPRC", new List<string>(){ "pendiente", "validado" } },
+            { "http://w3id.org/roh/validationDeleteStatusPRC", new List<string>(){ "pendiente" } },
             { "http://w3id.org/roh/validationStatusProject", new List<string>(){ "pendiente", "validado" } }
         };
 
