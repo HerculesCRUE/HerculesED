@@ -141,7 +141,7 @@ namespace Harvester
                 record = record.Replace("xmlns=\"" + nameSpace + "\"", "");
                 return record;
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 return null;
             }

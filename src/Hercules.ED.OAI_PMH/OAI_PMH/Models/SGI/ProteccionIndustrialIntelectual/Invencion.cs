@@ -11,7 +11,7 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         /// <summary>
         /// Id.
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// Título.
         /// </summary>
@@ -27,7 +27,7 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         /// <summary>
         /// TipoProtecciónId.
         /// </summary>
-        public int tipoProteccionId { get; set; }
+        public TipoProteccion tipoProteccion { get; set; }
         /// <summary>
         /// ProyectoRef.
         /// </summary>
@@ -36,6 +36,10 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         /// Comentarios.
         /// </summary>
         public string comentarios { get; set; }
+        /// <summary>
+        /// Activo.
+        /// </summary>
+        public bool? activo { get; set; }
         /// <summary>
         /// SectoresAplicacion.
         /// </summary>
@@ -56,5 +60,21 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
         /// Inventores.
         /// </summary>
         public List<Inventor> inventores { get; set; }
+        /// <summary>
+        /// AreaConocimiento.
+        /// </summary>
+        public List<AreaConocimiento> areasConocimiento { get; set; }
+        /// <summary>
+        /// PeriodoTitularidad
+        /// </summary>
+        public List<PeriodoTitularidad> periodosTitularidad { get; set; }
+        /// <summary>
+        /// Titulares.
+        /// </summary>
+        public List<Titular> titulares { get; set; }
+        /// <summary>
+        /// Solicitudes de protección.
+        /// </summary>
+        public List<SolicitudProteccion> solicitudes { get; set; }
     }
 }

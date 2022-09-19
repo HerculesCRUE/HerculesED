@@ -11,7 +11,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     public class Fotografia : SGI_Base
     {
         /// <summary>
-        /// Contenido
+        /// Contenido de la fotografía digital de la persona (en bytes y en base 64).
         /// </summary>
         public string Contenido { get; set; }
         /// <summary>

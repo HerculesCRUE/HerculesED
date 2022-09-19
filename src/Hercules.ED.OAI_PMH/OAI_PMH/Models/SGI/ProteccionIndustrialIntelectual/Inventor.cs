@@ -8,11 +8,11 @@
         /// <summary>
         /// Id.
         /// </summary>
-        public int id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// InvencionId.
         /// </summary>
-        public int invencionId { get; set; }
+        public long? invencionId { get; set; }
         /// <summary>
         /// InventorRef.
         /// </summary>
@@ -20,7 +20,7 @@
         /// <summary>
         /// Participacion.
         /// </summary>
-        public float participacion { get; set; }
+        public float? participacion { get; set; }
         /// <summary>
         /// RepartoUniversidad
         /// </summary>

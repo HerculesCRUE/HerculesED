@@ -45,7 +45,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<List<Tesis>>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
