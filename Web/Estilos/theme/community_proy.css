@@ -436,6 +436,12 @@ body.homeComunidad #col01 {
 * Buscador Ofertas tecnológicas
 */
 
+/*.home-ma .destacado .box.content .group.contenido {
+    height: 96px;
+    -webkit-line-clamp: 5;
+}*/
+
+
 .buscador-ofertas-tecnologicas .resource-list.resource-list-buscador .resource .middle-wrap,
 .gestorOfertaTech .resource-list.resource-list-buscador .resource .middle-wrap {
     margin-bottom: 0;
@@ -484,6 +490,8 @@ body.homeComunidad #col01 {
 .noMiniUser .user-miniatura {
     display: none;
 }
+
+
 
 /* ETIQUETAS */
 /*.panFiltros { padding-bottom: 15px; width: 100%; }*/

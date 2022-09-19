@@ -206,7 +206,7 @@ class StepsOffer {
 		this.descriptoresEspecificosText = this.crearOferta.data("descriptoresespecificostext")
 		this.txtProyectos = this.crearOferta.data("proyectos")
 		this.txtPublicaciones = this.crearOferta.data("publicaciones")
-		this.txtPii = this.crearOferta.data("PII")
+		this.txtPii = this.crearOferta.data("pii")
 		this.sinEspcificarText = this.crearOferta.data("sinespecificar")
 	}
 
@@ -1855,19 +1855,19 @@ class StepsOffer {
 			let htmlUser = ""
 
 			// Obtenemos el usuario actual
-			let proj = this.data.pii[e]
+			let resource = this.data.pii[e]
 
 			// Obtenemos el usuario actual
 			let researchers = []
 			let researchersFin = ""
-			if (proj.researchers) {
-				researchers = proj.researchers.map(user => {
+			if (resource.researchers) {
+				researchers = resource.researchers.map(user => {
 					return '<li>' + user + '</li>'
 				})
 				researchersFin = '<ul>' + researchers.join('') + '</ul>'
 			}
 
-			if(proj != null)
+			if(resource != null)
 			{
 
 				htmlUser = `
@@ -1876,7 +1876,7 @@ class StepsOffer {
 		                <div class="middle-wrap">
 		                    <div class="title-wrap">
 		                        <h2 class="resource-title">
-		                            <a href="javascript:void(0)">${proj.name}</a>
+		                            <a href="javascript:void(0)">${resource.name}</a>
 		                        </h2>
 		                        <div class="acciones-wrap">
 		                            <ul class="no-list-style">
@@ -1892,13 +1892,13 @@ class StepsOffer {
 		                    <div class="content-wrap">
 		                        <div class="description-wrap counted">
 		                            <div class="list-wrap">
-		                                <p class="nombre-completo">`+ proj.info +`</p>
+		                                <p class="nombre-completo">`+ resource.info +`</p>
 		                            </div>
 		                            <div class="list-wrap authors">
 		                            	${researchersFin}
 		                            </div>
 		                            <div class="desc">
-		                                <p>`+ proj.description +`</p>
+		                                <p>`+ resource.description +`</p>
 		                            </div>
 		                        </div>
 		                    </div>
@@ -1961,8 +1961,8 @@ class StepsOffer {
 	printNumPII() {
 
 		// Establecemos el número de investigadores
-		this.crearOfertaStep5.find('#stp5-num-selected-pii-txt').text(this.numSeleccionadosDocuments)
-		this.crearOfertaStep5.find('#stp5-pii-num-selected').text('(' + this.numSeleccionadosDocuments + ')')
+		this.crearOfertaStep5.find('#stp5-num-selected-pii-txt').text(this.numSeleccionadosPII)
+		this.crearOfertaStep5.find('#stp5-pii-num-selected').text('(' + this.numSeleccionadosPII + ')')
 	}
 
 	/**
@@ -3011,7 +3011,7 @@ function CompletadaCargaRecursosPublicacionesOfertas()
 				if (stepsOffer.data.documents) {
 					newPNumber = Object.keys(stepsOffer.data.documents).length
 				} else {
-					stepsOffer.numSeleccionadosProjects = 0
+					stepsOffer.numSeleccionadosDocuments = 0
 				}
 				// Pinto únicamente nuevos elementos si el número de elementos ha cambiado.
 				if (stepsOffer.numSeleccionadosDocuments != newPNumber) {
@@ -3034,15 +3034,15 @@ function CompletadaCargaRecursosPIIOfertas()
 	if(typeof stepsOffer != 'undefined' && stepsOffer != null && stepsOffer.data != null)
 	{		
 		$('#ofertaListPII article.resource h2.resource-title').attr('tagert','_blank')
-		stepsOffer.data.pPersons = $('#ofertaListPII article.resource').toArray().map(e => {return $(e).attr('id')})
+		// stepsOffer.data.pPersons = $('#ofertaListPII article.resource').toArray().map(e => {return $(e).attr('id')})
 		
 		$('#ofertaListPII article.resource').each((i, e) => {
 
-			currentsIds.push(e.id)
+			currentsIds.push(e.id.split('_')[1])
 
 			if ($(e).find(".custom-checkbox-resource .material-icons").length == 0) {
 
-				if (Object.values(stepsOffer.data.researchers).filter(pr => pr.shortId == e.id).length > 0) {
+				if (stepsOffer.data.pii && Object.values(stepsOffer.data.pii).filter(pr => pr.shortId == currentsIds.at(-1)).length > 0) {
 					$(e).prepend(`<div class="custom-control custom-checkbox-resource done">
 		                <span class="material-icons">done</span>
 		            </div>`)
@@ -3058,9 +3058,9 @@ function CompletadaCargaRecursosPIIOfertas()
 
 		checkboxResources.init()
 
-		currentsIds.forEach(idProject => {
+		currentsIds.forEach(idPii => {
 
-			$('#' + idProject).on("DOMSubtreeModified", function(e) {
+			$('#resource_' + idPii).on("DOMSubtreeModified", function(e) {
 
 				let selector = $(this).find(".custom-checkbox-resource")
 
@@ -3069,39 +3069,63 @@ function CompletadaCargaRecursosPIIOfertas()
 					let element = $(this)
 					let item = {}
 					let arrInfo = []
-					item.shortId = idProject
+					let arrUsers = []
+					let description = []
+					let dates = []
+					item.shortId = idPii
 					item.name = element.find('h2.resource-title').text().trim()
 
-					// Obtener la descripción
-					element.find('.middle-wrap > .content-wrap > .list-wrap li').each((i, elem) => {
+					// Obtener la información descriptiva
+					element.find('.middle-wrap > .content-wrap > .list-wrap:not(.authors) li').each((i, elem) => {
 						arrInfo.push($(elem).text().trim())
 					})
 					item.info = arrInfo.join(', ')
 
-					let numPubDOM = $(this).find('.info-resource .texto')
-					numPubDOM.each((i, e) => {
-						let textPubDom = $(numPubDOM).text()
-						if (textPubDom.includes('publicaciones')) {
-							let numPub = textPubDom.split('publicaciones')[0].trim()
-							item.numPublicacionesTotal = numPub
-						}
+					// Obtener los investigadores
+					element.find('.middle-wrap > .content-wrap > .list-wrap.authors li').each((i, elem) => {
+						arrUsers.push($(elem).text().trim())
 					})
+					item.researchers = arrUsers
+
+					// Obtener la descripción
+					element.find('.middle-wrap > .content-wrap > .description-wrap .desc').each((i, elem) => {
+						description.push($(elem).text().trim())
+					})
+					item.description = description.join(', ')
+
+					// Obtener la fecha
+					element.find('.middle-wrap > .content-wrap > .content-wrap span').each((i, elem) => {
+						dates = ($(elem).text().trim())
+					})
+					item.dates = dates
+
 
 					// item.ipNumber = element.data('ipNumber')
-					if(stepsOffer.data.projects == null)					
+					if(stepsOffer.data.pii == null)					
 					{
-						stepsOffer.data.projects = {};
+						stepsOffer.data.pii = {};
 					}
-					stepsOffer.data.projects[idProject] = item
+					stepsOffer.data.pii[idPii] = item
 
 				}else
 				{
 					// Borrar investigador del objeto
-					delete stepsOffer.data.projects[idProject]
+					delete stepsOffer.data.pii[idPii]
 				}
 
-				stepsOffer.numSeleccionadosProjects = Object.keys(stepsOffer.data.projects).length
-				stepsOffer.PrintSelectedPIIStp5();
+				// Pintamos de nuevo los elementos seleccionados
+				let newPNumber = 0
+				// Obtengo el número de elementos actuales
+				if (stepsOffer.data.pii) {
+					newPNumber = Object.keys(stepsOffer.data.pii).length
+				} else {
+					stepsOffer.numSeleccionadosPII = 0
+				}
+				// Pinto únicamente nuevos elementos si el número de elementos ha cambiado.
+				if (stepsOffer.numSeleccionadosPII != newPNumber) {
+					stepsOffer.numSeleccionadosPII = newPNumber
+					stepsOffer.PrintSelectedPIIStp5();
+				}
 			});	
 
 		})
@@ -3347,7 +3371,7 @@ var comportamientoPIIOferta = {
 		
 		// Iniciar el listado de usuarios
 		// buscadorPersonalizado.init($('#INVESTIGADORES').val(), "#ofertaListPublicaciones", "searchOfertaMixto=" + paramsCl, null, "profiles=" + JSON.stringify(profiles) + "|viewmode=oferta|rdf:type=person", $('inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
-		buscadorPersonalizado.init(ofertaObj.txtPii, "#ofertaListPII", "searcherPIIPublicosPersonas=" + paramsCl, null, "rdf:type=document|roh:isValidated=true", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
+		buscadorPersonalizado.init(stepsOffer.txtPii, "#ofertaListPII", "searcherPIIPublicosPersonas=" + paramsCl, null, "rdf:type=patent", $('#inpt_baseUrlBusqueda').val(), $('#inpt_proyID').val());
 		
 
 		return;
