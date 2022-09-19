@@ -40,24 +40,5 @@ namespace EditorCV.Controllers
 
             return Ok();
         }
-
-        [HttpPut("EnvioDSpace")]
-        public IActionResult ActualizarDSpace([FromForm][Required] string pIdRecurso, [FromForm] List<string> pIdProyecto)
-        {
-            try
-            {
-                if (!Security.CheckUsers(UtilityCV.GetUsersFromDocument(pIdRecurso), Request))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized);
-                }
-                AccionesEnvioDSpace accionesEnvioDSpace = new AccionesEnvioDSpace(_Configuracion);
-            }
-            catch (Exception e)
-            {
-                return Problem(e.Message);
-            }
-
-            return Ok();
-        }
     }
 }
