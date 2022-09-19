@@ -1814,6 +1814,10 @@ namespace EditorCV.Models
             item.sendPRC = false;
             if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
             {
+                if (item.title == "testPRC")
+                {
+                    bool a = true;
+                }
                 item.sendPRC = true;
                 if (!string.IsNullOrEmpty(pId))
                 {
@@ -1861,6 +1865,11 @@ namespace EditorCV.Models
                     }
 
                 }
+            }
+            string validationDeleteStatus = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationDeleteStatusPRC", pData).FirstOrDefault();
+            if (validationDeleteStatus == "pendiente")
+            {
+                item.removePRC = true;
             }
 
             //Estado de validación
