@@ -1472,7 +1472,7 @@ namespace EditorCV.Models
         /// <param name="pListItemConfig">Configuración del item</param>
         /// <param name="pLang">Idioma</param>
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
-        /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidoima configurado</param>
+        /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidioma configurado</param>
         /// <returns></returns>
         private TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData,
             TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas,
@@ -1810,10 +1810,12 @@ namespace EditorCV.Models
                 }
             }
 
-            //SendPRC
+            // Envío
             item.sendPRC = false;
+            item.sendDspace = false;
             if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
             {
+                item.sendDspace = true;
                 item.sendPRC = true;
                 if (!string.IsNullOrEmpty(pId))
                 {
@@ -1822,6 +1824,11 @@ namespace EditorCV.Models
                     if (validationStatus == "pendiente" || validationStatus == "validado")
                     {
                         item.sendPRC = false;
+                        string validationDeleteStatus = GetPropValues(pId, pListItemConfig.property + "@@@" + "http://w3id.org/roh/validationDeleteStatusPRC", pData).FirstOrDefault();
+                        if (validationDeleteStatus == "pendiente")
+                        {
+                            item.removePRC = true;
+                        }
                     }
                     //Si el item no tiene fecha, no permito el envío
                     if (!item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).Any())

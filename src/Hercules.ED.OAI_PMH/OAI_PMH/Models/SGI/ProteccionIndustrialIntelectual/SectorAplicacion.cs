@@ -8,14 +8,14 @@
         /// <summary>
         /// Id.
         /// </summary>
-        public int? id { get; set; }
+        public long? id { get; set; }
         /// <summary>
         /// invencionId
         /// </summary>
-        public int? invencionId { get; set; }
+        public long? invencionId { get; set; }
         /// <summary>
         /// sectorAplicacion
         /// </summary>
-        public int? sectorAplicacionId { get; set; }
+        public Sector sectorAplicacion { get; set; }
     }
 }

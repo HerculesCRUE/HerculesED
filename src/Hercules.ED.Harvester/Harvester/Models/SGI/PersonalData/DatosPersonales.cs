@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
 {
     public class DatosPersonales : SGI_Base
     {
-        public DateTime FechaNacimiento { get; set; }
+        public DateTime? FechaNacimiento { get; set; }
         public Pais PaisNacimiento { get; set; }
         public ComunidadAutonoma ComAutonomaNacimiento { get; set; }
         public string CiudadNacimiento { get; set; }

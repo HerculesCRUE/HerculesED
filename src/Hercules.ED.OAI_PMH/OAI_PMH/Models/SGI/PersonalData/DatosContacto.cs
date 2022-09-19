@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.PersonalData
 {
+    /// <summary>
+    /// Contiene los datos de contacto de una persona
+    /// </summary>
     public class DatosContacto : SGI_Base
     {
         /// <summary>

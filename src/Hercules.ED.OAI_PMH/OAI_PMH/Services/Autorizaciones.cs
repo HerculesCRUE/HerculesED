@@ -8,8 +8,17 @@ using System.Linq;
 
 namespace OAI_PMH.Services
 {
+    /// <summary>
+    /// Autorizaciones de proyectos.
+    /// </summary>
     public class Autorizaciones
     {
+        /// <summary>
+        /// Obtiene los IDs de las autorizaciones de proyectos modificadas en una determinada fecha
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static Dictionary<string, DateTime> GetModifiedAutorizaciones(string from, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -30,6 +39,12 @@ namespace OAI_PMH.Services
             return idDictionary;
         }
 
+        /// <summary>
+        /// Obtiene las autorizaciones.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
         public static Autorizacion GetAutorizacion(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);
@@ -42,7 +57,7 @@ namespace OAI_PMH.Services
             {
                 return JsonConvert.DeserializeObject<Autorizacion>(response.Content);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

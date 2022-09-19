@@ -12,7 +12,7 @@ namespace OAI_PMH.Models.SGI.Organization
     public class DatosContacto : SGI_Base
     {
         /// <summary>
-        /// Dirección
+        /// Dirección de contacto de la empresa.
         /// </summary>
         public string Direccion { get; set; }
     }

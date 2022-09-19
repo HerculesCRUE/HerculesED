@@ -14,7 +14,7 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Identificador del programa.
         /// </summary>
-        public string Id { get; set; }
+        public long? Id { get; set; }
         /// <summary>
         /// Nombre del usuario que ha creado la entidad.
         /// </summary>

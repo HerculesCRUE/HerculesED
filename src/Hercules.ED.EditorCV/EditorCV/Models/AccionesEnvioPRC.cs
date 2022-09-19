@@ -153,7 +153,7 @@ where {{
             ProduccionCientifica PRC = new ProduccionCientifica();
 
             // Identificador.
-            PRC.idRef = pIdDocumento;
+            PRC.idRef = pIdDocumento.Split('/').LastOrDefault();
             //PRC.idRef = mResourceApi.GetShortGuid(pIdDocumento).ToString();
             //PRC.idRef = pIdDocumento.Substring(pIdDocumento.LastIndexOf("/") + 1);
             PRC.estado = "PENDIENTE";
@@ -793,6 +793,7 @@ where {{
             }
             #endregion
         }
+        
         /// <summary>
         /// Permite enviar a eliminar en Producción Científica los datos necesarios para la validación.
         /// </summary>
@@ -834,7 +835,7 @@ where {{
             ProduccionCientifica PRC = new ProduccionCientifica();
 
             // Identificador.
-            PRC.idRef = "Eliminar_" + pIdDocumento;
+            PRC.idRef = "Eliminar_" + pIdDocumento.Split('/').LastOrDefault();
             PRC.estado = "PENDIENTE";
             PRC.campos = new List<CampoProduccionCientifica>();
 

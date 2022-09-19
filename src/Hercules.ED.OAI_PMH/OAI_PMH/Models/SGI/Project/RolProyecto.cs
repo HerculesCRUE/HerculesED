@@ -14,7 +14,7 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Identificador del rol proyecto.
         /// </summary>
-        public string Id { get; set; }
+        public long? Id { get; set; }
         /// <summary>
         /// Nombre del usuario que ha creado la entidad.
         /// </summary>
@@ -46,7 +46,7 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Indica si el rol es el rol principal.
         /// </summary>
-        public bool RolPrincipal { get; set; }
+        public bool? RolPrincipal { get; set; }
         /// <summary>
         /// Tipo de Orden. 
         /// </summary>
@@ -58,6 +58,6 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Indica si esta activo o no. 
         /// </summary>
-        public bool Activo { get; set; }
+        public bool? Activo { get; set; }
     }
 }

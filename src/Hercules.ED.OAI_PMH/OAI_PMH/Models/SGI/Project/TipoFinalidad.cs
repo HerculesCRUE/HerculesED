@@ -14,7 +14,7 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Identificador del tipo de finalidad.
         /// </summary>
-        public string Id { get; set; }
+        public long? Id { get; set; }
         /// <summary>
         /// Nombre del usuario que ha creado la entidad.
         /// </summary>
@@ -46,7 +46,7 @@ namespace OAI_PMH.Models.SGI.Project
         /// <summary>
         /// Iva
         /// </summary>
-        public double Iva { get; set; }
+        public double? Iva { get; set; }
         /// <summary>
         /// Fecha de inicio
         /// </summary>

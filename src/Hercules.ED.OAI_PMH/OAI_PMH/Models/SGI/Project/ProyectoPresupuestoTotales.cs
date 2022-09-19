@@ -9,37 +9,37 @@
         /// Importe total (suma del importe de todas las anualidades) presupuestado a la Universidad para el desarrollo del proyecto,
         /// asociado a conceptos de gasto que no representan costes indirectos.
         /// </summary>
-        public float importeTotalPresupuestoUniversidadSinCosteIndirecto { get; set; }
+        public decimal? importeTotalPresupuestoUniversidadSinCosteIndirecto { get; set; }
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) presupuestado al resto de socios de la Universidad para el desarrollo del proyecto.
         /// </summary>
-        public float importeTotalPresupuestoSocios { get; set; }
+        public decimal? importeTotalPresupuestoSocios { get; set; }
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) concedido a la Universidad para el desarrollo del proyecto, 
         /// asociado a conceptos de gasto que no representan costes indirectos.
         /// </summary>
-        public float importeTotalConcedidoUniversidadSinCosteIndirecto { get; set; }
+        public decimal? importeTotalConcedidoUniversidadSinCosteIndirecto { get; set; }
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) concedido al resto de socios de la Universidad para el desarrollo del proyecto.
         /// </summary>
-        public float importeTotalConcedidoSocios { get; set; }
+        public decimal? importeTotalConcedidoSocios { get; set; }
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) presupuestado.
         /// </summary>
-        public float importeTotalPresupuesto { get; set; }
+        public decimal? importeTotalPresupuesto { get; set; }
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) concedido.
         /// </summary>
-        public float importeTotalConcedido { get; set; }
+        public decimal? importeTotalConcedido { get; set; }
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) presupuestado a la Universidad para el desarrollo del proyecto,
         /// asociado a conceptos de gasto que representan costes indirectos.
         /// </summary>
-        public float importeTotalPresupuestoUniversidadCostesIndirectos { get; set; }
+        public decimal? importeTotalPresupuestoUniversidadCostesIndirectos { get; set; }
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) concedido a la Universidad para el desarrollo del proyecto,
         /// asociado a conceptos de gasto que representan costes indirectos.
         /// </summary>
-        public float importeTotalConcedidoUniversidadCostesIndirectos { get; set; }
+        public decimal? importeTotalConcedidoUniversidadCostesIndirectos { get; set; }
     }
 }

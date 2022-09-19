@@ -76,6 +76,18 @@ namespace OAI_PMH.Services
             return datos;
         }
 
+        private static List<TipoIdentificador> GetTiposIdentificadorFiscal(ConfigService pConfig)
+        {
+            string accessToken = Token.CheckToken(pConfig);
+            List<TipoIdentificador> tiposIdentificador = new();
+            RestClient client = new(pConfig.GetUrlBaseOrganizacion() + "/tipos-identificador");
+            client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+            tiposIdentificador = JsonConvert.DeserializeObject<List<TipoIdentificador>>(response.Content);
+            return tiposIdentificador;
+        }
+
         private static DatosTipoEmpresa GetDatosTipoEmpresa(string id, ConfigService pConfig)
         {
             string accessToken = Token.CheckToken(pConfig);

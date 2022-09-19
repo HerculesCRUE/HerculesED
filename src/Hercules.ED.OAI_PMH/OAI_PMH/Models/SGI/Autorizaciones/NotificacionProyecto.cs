@@ -19,7 +19,7 @@ namespace OAI_PMH.Models.SGI.Autorizacion
         /// <summary>
         /// Identificador de la solicitud de autorización previamente remitido por el SGI
         /// </summary>
-        public int autorizacionId { get; set; }
+        public long? autorizacionId { get; set; }
         /// <summary>
         /// Campo título del ítem proyecto/contrato registrado en CVN.
         /// </summary>
@@ -67,11 +67,11 @@ namespace OAI_PMH.Models.SGI.Autorizacion
         /// <summary>
         /// Importe total del proyecto/programa recogido en el CVN.
         /// </summary>
-        public float importeTotal { get; set; }
+        public float? importeTotal { get; set; }
         /// <summary>
         /// Porcentaje subvencionado recogido en el CVN.
         /// </summary>
-        public float porcentajeSubvencion { get; set; }
+        public float? porcentajeSubvencion { get; set; }
         /// <summary>
         /// Identificador del documento acreditativo de la concesión del proyecto
         /// </summary>
