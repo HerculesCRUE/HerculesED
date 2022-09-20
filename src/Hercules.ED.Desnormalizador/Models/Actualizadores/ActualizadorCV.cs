@@ -148,8 +148,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Creamos CVs
                     int limit = 50;
-                    //TODO eliminar from
-                    String select = @"SELECT distinct ?person from <http://gnoss.com/curriculumvitae.owl> from <http://gnoss.com/project.owl> from <http://gnoss.com/group.owl> from <http://gnoss.com/document.owl> from <http://gnoss.com/researchobject.owl>  ";
+                    String select = @"SELECT distinct ?person  ";
                     String where = @$"  where{{
                                             {filter}
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.
@@ -157,7 +156,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                             MINUS{{ ?cv  <http://w3id.org/roh/cvOf> ?person}}
                                         }} limit {limit}";
 
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "curriculumvitae", "project", "group", "document", "researchobject" });
 
                     // Personas que no poseen actualmente un CV y deberían tenerlo
                     List<string> persons = new();
@@ -1107,7 +1106,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                             {{
                                                 ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
                                                 ?item a <{section.rdfType}>.
-                                                ?item <http://w3id.org/roh/cvnCode> ""{section.cvnCode }"".
+                                                ?item <http://w3id.org/roh/cvnCode> ""{section.cvnCode}"".
                                                 ?cv a <http://w3id.org/roh/CV>.
                                                 ?cv <http://w3id.org/roh/cvOf> ?person.
                                                 ?cv <{section.sectionProperty}> ?idSection.
@@ -1148,7 +1147,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                             #DESEABLES
                                             ?person a <http://xmlns.com/foaf/0.1/Person>.                                            
                                             ?item a <{section.rdfType}>.
-                                            ?item <http://w3id.org/roh/cvnCode> ""{section.cvnCode }"".
+                                            ?item <http://w3id.org/roh/cvnCode> ""{section.cvnCode}"".
                                             ?cv a <http://w3id.org/roh/CV>.
                                             ?cv <http://w3id.org/roh/cvOf> ?person.
                                             ?cv <{section.sectionProperty}> ?idSection.
