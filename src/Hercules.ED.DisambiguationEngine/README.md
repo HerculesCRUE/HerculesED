@@ -17,7 +17,13 @@ Este proceso tiene varias ventajas como:
 - Generación de un sistema centralizado de información.
 
 ## Funcionamiento
-Esta librería tiene 3 métodos públicos dentro de la clase 'Disambiguation', todos ellos toman como parámetros de entrada un listado de items con los datos a los que buscar equivalentes (pItems) y un listado de items en los que buscafr los equivalentes (pItemsBBDD). Para ello se utiliza la clase ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs), se trata de una clase abstracta que hay heredar en función de la implementación deseada.
+Esta librería tiene 3 métodos públicos dentro de la clase 'Disambiguation', todos ellos toman como parámetros de entrada un listado de items con los datos a los que buscar equivalentes (pItems) y un listado de items en los que buscar los equivalentes (pItemsBBDD). Para ello se utiliza la clase ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs), se trata de una clase abstracta que hay heredar en función de la implementación deseada. En la implementación hay que utilizar las propiedades que se consideren representativas de la entidad y configurar sus pesos postivos y negativos y su tipo dentro de los siguientes [valores](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguationData.cs):
+ - equalsIdentifiers: Propiedad de tipo identificador, dos entidades con el mismo valor son la misma entidad, dos entidades con distintos valores son diferentes entidades
+ - equalsTitle: Propiedad de tipo título, en caso de estar configurada, dos elementos tienen que tener el mismo valor para ser considerados iguales (sin diferenciar mayúsculas y minúsculas y excluyendo caracteres no alfanumñericos)
+ - equalsItem: Propiedad 'normal' se asignan los pesos positivos en caso de que coincidan y los negativos en caso de que sean diferentes.
+ - equalsItemList: Igual que la anterior pero para valores múltiples.
+ - algoritmoNombres: Utilizado para los nombres de las personas
+
 
 ### SimilarityBBDD
 Obtenemos un diccionario cuya clave son los identificadores de los 'pItems' y un valor que especifica el identificador del item de 'pItemBBDD' con el que se ha obtenido la similaridad. 
