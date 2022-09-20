@@ -18,6 +18,8 @@ namespace EditorCV.Models
         private string passwordESBcsp { get; set; }
         private string usernameESBprc { get; set; }
         private string passwordESBprc { get; set; }
+        private string usernameDspace { get; set; }
+        private string passwordDspace { get; set; }
 
         // URLs
         private string urlEnrichment { get; set; }
@@ -204,6 +206,48 @@ namespace EditorCV.Models
             }
 
             return urlEnrichment;
+        }
+
+        public string GetUsernameDspace()
+        {
+            if (string.IsNullOrEmpty(usernameDspace))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("username_dspace"))
+                {
+                    connectionString = environmentVariables["username_dspace"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["username_dspace"];
+                }
+
+                usernameDspace = connectionString;
+            }
+
+            return usernameDspace;
+        }
+
+        public string GetPasswordDspace()
+        {
+            if (string.IsNullOrEmpty(passwordDspace))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("password_dspace"))
+                {
+                    connectionString = environmentVariables["password_dspace"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["password_dspace"];
+                }
+
+                passwordDspace = connectionString;
+            }
+
+            return passwordDspace;
         }
 
         /// <summary>

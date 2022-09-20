@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OAI_PMH.Models.SGI.Project
+﻿namespace OAI_PMH.Models.SGI.Project
 {
     /// <summary>
-    /// Tipo de financiación
+    /// Contiene la referencia a la clasificación.
     /// </summary>
-    public class TipoFinanciacion : SGI_Base
+    public class ProyectoClasificacion : SGI_Base
     {
         /// <summary>
-        /// Identificador del tipo de financiación.
+        /// Identificador de la entidad clasificación proyecto
         /// </summary>
         public long? Id { get; set; }
         /// <summary>
@@ -32,16 +26,12 @@ namespace OAI_PMH.Models.SGI.Project
         /// </summary>
         public string LastModifiedDate { get; set; }
         /// <summary>
-        /// Nombre del tipo de financiación.
+        /// Identificador del proyecto.
         /// </summary>
-        public string Nombre { get; set; }
+        public long? ProyectoId { get; set; }
         /// <summary>
-        /// Descripción del tipo de financiación.
+        /// Identificador de la clasificación.
         /// </summary>
-        public string Descripcion { get; set; }
-        /// <summary>
-        /// Flag a través del que se implementa el borrado lógico de los registros de esta tabla.
-        /// </summary>
-        public bool? Activo { get; set; }
+        public string ClasificacionRef { get; set; }
     }
 }

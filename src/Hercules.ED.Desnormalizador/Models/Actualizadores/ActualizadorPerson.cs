@@ -690,7 +690,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         }
                         if (triplesRemove.Count > 0)
                         {
-                            var resultadox = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>>() { { mResourceApi.GetShortGuid(person), triplesRemove } });
+                            var resultadox = mResourceApi.DeletePropertiesLoadedResources(new Dictionary<Guid, List<RemoveTriples>>() { { mResourceApi.GetShortGuid(person), triplesRemove } });
                         }
                     });
 
@@ -735,7 +735,8 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.                            
                             {{                                
-                                select  distinct ?person ?hasKnowledgeAreaDocument ?categoryNode where{{
+                                select  distinct ?person ?hasKnowledgeAreaDocument ?categoryNode 
+                                where{{
                                     {filter}
                                     ?document a <http://purl.org/ontology/bibo/Document>.
                                     ?document <http://w3id.org/roh/isValidated> 'true'.
@@ -881,7 +882,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                               }}Group by ?person 
                             }}
-                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar )
+                            FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar  OR !BOUND(?numAreasTematicasCargadas) )
                             }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
 

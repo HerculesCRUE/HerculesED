@@ -224,7 +224,7 @@ namespace EditorCV.Models
                 {
                     mResourceApi.PersistentDelete(mResourceApi.GetShortGuid(entityDestino), true);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
