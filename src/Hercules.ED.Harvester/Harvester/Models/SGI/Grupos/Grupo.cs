@@ -7,8 +7,8 @@ namespace OAI_PMH.Models.SGI.Grupos
     {
         public int? id { get; set; }
         public string nombre { get; set; }
-        public DateTime fechaInicio { get; set; }
-        public DateTime fechaFin { get;set; }
+        public DateTime? fechaInicio { get; set; }
+        public DateTime? fechaFin { get;set; }
         public string proyectoSgeRef { get; set; }
         public int? solicitudId { get; set; }
         public string codigo { get; set; }
