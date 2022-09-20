@@ -68,28 +68,28 @@ namespace Harvester
             //Compruebo que no hay ficheros pendientes de procesar
             //mResourceApi.ChangeOntoly("organization");
             //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            //mResourceApi.ChangeOntoly("person");
+            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
             //mResourceApi.ChangeOntoly("project");
             //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
             //mResourceApi.ChangeOntoly("projectauthorization");
             //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
-            //mResourceApi.ChangeOntoly("group");
-            //ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos);
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos, dicPersonas: dicPersonas);
             //mResourceApi.ChangeOntoly("patent");
             //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
 
-            ////Genero los ficheros con los datos a procesar desde la fecha
+            //Genero los ficheros con los datos a procesar desde la fecha
             //GuardarIdentificadores(_Config, "Organizacion", fecha);
-            GuardarIdentificadores(_Config, "Persona", fecha);
+            //GuardarIdentificadores(_Config, "Persona", fecha);
             //GuardarIdentificadores(_Config, "Proyecto", fecha);
             //GuardarIdentificadores(_Config, "PRC", fecha, true);
             //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            //GuardarIdentificadores(_Config, "Grupo", fecha);
+            GuardarIdentificadores(_Config, "Grupo", fecha);
             //GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
@@ -98,28 +98,28 @@ namespace Harvester
             // Procesamiento de ficheros.
 
             // Organizaciones. Datos correctos.
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            //mResourceApi.ChangeOntoly("organization");
+            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
 
             // Personas.
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            //mResourceApi.ChangeOntoly("person");
+            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
 
             //// Proyectos.
             //mResourceApi.ChangeOntoly("project");
             //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
 
             //// Document.
-            mResourceApi.ChangeOntoly("document");
-            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+            //mResourceApi.ChangeOntoly("document");
+            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
 
             //// Autorizaciones.
             //mResourceApi.ChangeOntoly("projectauthorization");
             //ProcesarFichero(_Config, "AutorizacionProyecto");
 
             //// Grupos.
-            //mResourceApi.ChangeOntoly("group");
-            //ProcesarFichero(_Config, "Grupo");
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo");
 
             //// Patentes.
             //mResourceApi.ChangeOntoly("patent");
@@ -549,7 +549,7 @@ namespace Harvester
                                 continue;
                             }
 
-                            xmlSerializer = new(typeof(Invencion));
+                            xmlSerializer = new(typeof(Grupo));
                             using (StringReader sr = new(xmlResult))
                             {
                                 grupo = (Grupo)xmlSerializer.Deserialize(sr);
@@ -564,18 +564,18 @@ namespace Harvester
                             }
 
                             //Cambio de modelo.
-                            GroupOntology.Group group = CrearGrupo(grupo);
+                            GroupOntology.Group group = CrearGrupo(grupo, dicPersonas);
 
                             resource = group.ToGnossApiResource(mResourceApi, null);
                             if (dicGrupos.ContainsKey(group.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicGrupos[group.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -1886,16 +1886,109 @@ namespace Harvester
         /// </summary>
         /// <param name="grupo"></param>
         /// <returns></returns>
-        public static GroupOntology.Group CrearGrupo(Grupo grupo)
+        public static GroupOntology.Group CrearGrupo(Grupo grupo, Dictionary<string, Tuple<string, string>> dicPersonas)
         {
             GroupOntology.Group groupOntology = new GroupOntology.Group();
             groupOntology.Roh_title = grupo.nombre;
             groupOntology.Roh_normalizedCode = grupo.codigo;
             groupOntology.Roh_foundationDate = grupo.fechaInicio;
-            Tuple<string, string, string> duracion = RestarFechas(grupo.fechaInicio, grupo.fechaFin);
-            groupOntology.Roh_durationYears = duracion.Item1;
-            groupOntology.Roh_durationMonths = duracion.Item2;
-            groupOntology.Roh_durationDays = duracion.Item3;
+            groupOntology.Roh_crisIdentifier = grupo.id.ToString();
+            if (grupo.fechaInicio != null && grupo.fechaFin != null)
+            {
+                Tuple<string, string, string> duracion = RestarFechas((DateTime)grupo.fechaInicio, (DateTime)grupo.fechaFin);
+                groupOntology.Roh_durationYears = duracion.Item1;
+                groupOntology.Roh_durationMonths = duracion.Item2;
+                groupOntology.Roh_durationDays = duracion.Item3;
+            }
+            List<GroupOntology.BFO_0000023> listaPersonas = new List<GroupOntology.BFO_0000023>();
+            foreach (GrupoEquipo grupoEquipo in grupo.equipo)
+            {
+                GroupOntology.BFO_0000023 persona = new GroupOntology.BFO_0000023();
+                if (dicPersonas.ContainsKey(grupoEquipo.personaRef))
+                {
+                    persona.IdRoh_roleOf = dicPersonas[grupoEquipo.personaRef].Item1;
+                    List<GroupOntology.ResearchArea> hasResearchArea = new List<GroupOntology.ResearchArea>();
+                    string select = "SELECT ?end ?start ?hasResearchArea ?title ?startRA ?endRA ?isIP";
+                    string where = $@"WHERE {{
+                                    ?s <http://w3id.org/roh/roleOf> <{dicPersonas[grupoEquipo.personaRef].Item1}>.
+                                    OPTIONAL {{ ?s <http://vivoweb.org/ontology/core#end> ?end. }}
+                                    OPTIONAL {{ ?s <http://vivoweb.org/ontology/core#start> ?start. }}
+                                    OPTIONAL {{ ?s <http://vivoweb.org/ontology/core#hasResearchArea> ?hasResearchArea. }}
+                                    OPTIONAL {{ ?hasResearchArea <http://w3id.org/roh/title> ?title. }}
+                                    OPTIONAL {{ ?hasResearchArea <http://vivoweb.org/ontology/core#start> ?startRA. }}
+                                    OPTIONAL {{ ?hasResearchArea <http://vivoweb.org/ontology/core#end> ?endRA. }}
+                                    OPTIONAL {{ ?s <http://w3id.org/roh/isIP> ?isIP. }}
+                                   }}";
+                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                    if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                    {
+                        foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                        {
+                            if (fila.ContainsKey("end"))
+                            {
+                                persona.Vivo_end = DateTime.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "end"));
+                            }
+                            if (fila.ContainsKey("start"))
+                            {
+                                persona.Vivo_start = DateTime.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "start"));
+                            }
+                            if (fila.ContainsKey("hasResearchArea"))
+                            {
+                                GroupOntology.ResearchArea researchArea = new GroupOntology.ResearchArea();
+                                if (fila.ContainsKey("title")) {
+                                    researchArea.Roh_title = fila["title"].value;
+                                }
+                                if (fila.ContainsKey("startRA"))
+                                {
+                                    researchArea.Vivo_start = DateTime.Parse(fila["startRA"].value);
+                                }
+                                if (fila.ContainsKey("endRA"))
+                                {
+                                    researchArea.Vivo_end = DateTime.Parse(fila["endRA"].value);
+                                }
+                                hasResearchArea.Add(researchArea);
+                            }
+                            if (fila.ContainsKey("isIP"))
+                            {
+                                persona.Roh_isIP = bool.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "isIP"));
+                            }
+                        }
+                    }
+                    persona.Vivo_hasResearchArea = hasResearchArea;
+                } 
+                else
+                {
+                    PersonOntology.Person personOntology = new PersonOntology.Person();
+                    // Se piden los datos de la persona.
+                    Persona person = ObtenerPersona(grupoEquipo.personaRef);
+                    // TODO: Desambiguación de Personas
+                    // Si la persona no tiene nombre, no se inserta.
+                    if (!string.IsNullOrEmpty(person.Nombre))
+                    {
+                        personOntology = CrearPersona(person);
+                        mResourceApi.ChangeOntoly("person");
+                        ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
+                        //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                        dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                        persona.IdRoh_roleOf = dicPersonas[grupoEquipo.personaRef].Item1;
+                    }
+                }
+                // IP principal
+                BFO.Roh_isIP = item.RolProyecto.RolPrincipal.HasValue;
+                if (!string.IsNullOrEmpty(item.FechaInicio))
+                {
+                    BFO.Vivo_start = Convert.ToDateTime(item.FechaInicio);
+                }
+                if (!string.IsNullOrEmpty(item.FechaFin))
+                {
+                    BFO.Vivo_end = Convert.ToDateTime(item.FechaFin);
+                }
+                project.Vivo_relates.Add(BFO);
+                orden++;
+            }
+                listaPersonas.Add(persona);
+            }
+            groupOntology.Vivo_relates = listaPersonas;
             //groupOntology.Roh_hasKnowledgeArea = grupo.palabrasClave;
 
             return groupOntology;
