@@ -21,7 +21,7 @@ Esta librería tiene 3 métodos públicos dentro de la clase 'Disambiguation'
 
 ### SimilarityBBDD
 Parámetros:
- - List<DisambiguableEntity> pItems
+ - List<<DisambiguableEntity>> pItems
  - List<DisambiguableEntity> pItemBBDD
  - float pUmbral = 0.8f
  - float pToleranciaNombres = 0f
