@@ -424,6 +424,7 @@ namespace EditorCV.Models
                                     }
                                 }
                             }
+
                             //Eliminamos de los similares aquellos que estén marcados como no duplicados
                             foreach (HashSet<string> sim in similars.ToList())
                             {
@@ -453,7 +454,7 @@ namespace EditorCV.Models
                                 }
                             }
 
-                            //NOs quedamos sólo con aquellos que tengan más de uno
+                            //Nos quedamos sólo con aquellos que tengan más de uno
                             similars = similars.Where(x => x.Count > 1).ToList();
                             foreach (HashSet<string> sim in similars)
                             {
