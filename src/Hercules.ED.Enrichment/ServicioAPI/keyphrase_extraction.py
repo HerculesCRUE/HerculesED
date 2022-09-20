@@ -1,4 +1,3 @@
-import pickle, joblib
 import pandas as pd
 import numpy as np
 import spacy
@@ -98,12 +97,11 @@ def remove_similar_kws(data):
 
 class KeyphraseExtractor:
     
-    def __init__(self, model_s_fpath, model_m_fpath, clef_fpath, scopus_fpath, clef_idf_fpath):
+    def __init__(self, model_s, model_m, clef, scopus, clef_idf):
         
-        self._model_s = joblib.load(model_s_fpath)
-        self._model_m = joblib.load(model_m_fpath)
-
-        self._feature_extractor = FeatureExtractor(clef_fpath, scopus_fpath, clef_idf_fpath)
+        self._model_s = model_s
+        self._model_m = model_m
+        self._feature_extractor = FeatureExtractor(clef, scopus, clef_idf)
 
         
     def extract_keyphrases(self, title, abstract, body, return_n=10):
@@ -169,17 +167,12 @@ class FeatureExtractor:
     CLEF_SIZE = 90e6
     SCOPUS_SIZE = 146e6
     
-    def __init__(self, clef_fpath, scopus_fpath, clef_idf_fpath):
+    def __init__(self, clef, scopus, clef_idf):
 
         self._nlp = spacy.load(SPACY_MODEL)
-
-        print("Loading Tfidf models")
-        with open(clef_fpath, 'rb') as f:
-            self._clef = pickle.load(f)
-        with open(scopus_fpath, 'rb') as f:
-            self._scopus = pickle.load(f)
-        self._idf_clef = joblib.load(clef_idf_fpath)
-        print("Done")
+        self._clef = clef
+        self._scopus = scopus
+        self._idf_clef = clef_idf
         
         
     def extract_features(self, title, abstract, body, remove_similar=False):
