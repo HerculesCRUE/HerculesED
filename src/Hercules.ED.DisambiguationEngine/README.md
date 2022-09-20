@@ -17,7 +17,7 @@ Este proceso tiene varias ventajas como:
 - Generación de un sistema centralizado de información.
 
 ## Funcionamiento
-Esta librería tiene 3 métodos públicos dentro de la clase 'Disambiguation'
+Esta librería tiene 3 métodos públicos dentro de la clase 'Disambiguation', todos ellos toman como parámetros de entrada un listado de items con los datos a los que buscar equivalentes (pItems) y un listado de items en los que buscafr los equivalentes (pItemsBBDD). Para ello se utiliza la clase ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs), se trata de una clase abstracta que hay heredar en función de la implementación deseada.
 
 ### SimilarityBBDD
 Obtenemos un diccionario cuya clave son los identificadores de los 'pItems' y un valor que especifica el identificador del item de 'pItemBBDD' con el que se ha obtenido la similaridad. 
