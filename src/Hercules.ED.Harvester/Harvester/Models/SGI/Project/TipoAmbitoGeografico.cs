@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace OAI_PMH.Models.SGI.Project
 {
     /// <summary>
-    /// Area temática
+    /// Tipo ambito geografico
     /// </summary>
-    public class AreaTematica : SGI_Base
+    public class TipoAmbitoGeografico : SGI_Base
     {
         /// <summary>
-        /// Identificador del área temática
+        /// Identificador del tipo de ámbito geográfico.
         /// </summary>
         public long? Id { get; set; }
         /// <summary>
@@ -32,19 +32,11 @@ namespace OAI_PMH.Models.SGI.Project
         /// </summary>
         public string LastModifiedDate { get; set; }
         /// <summary>
-        /// Nombre del área temática. El nombre del nodo raíz del árbol da el nombre al listado de áreas temáticas.
+        /// Nombre del ámbito geográfico
         /// </summary>
         public string Nombre { get; set; }
         /// <summary>
-        /// Descripción del área temática.
-        /// </summary>
-        public string Descripcion { get; set; }
-        /// <summary>
-        /// Entidad que representa el área temática padre.
-        /// </summary>
-        public AreaTematica Padre { get; set; }
-        /// <summary>
-        /// Flag a través del que se implementa el borrado lógico de los registros de esta tabla.
+        /// Campo utilizado para dar soporte al borrado lógico de los registros de esta entidad.
         /// </summary>
         public bool? Activo { get; set; }
     }
