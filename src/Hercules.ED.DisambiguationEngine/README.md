@@ -22,24 +22,24 @@ Esta librería tiene 3 métodos públicos dentro de la clase 'Disambiguation'
 ### SimilarityBBDD
 Obtenemos un diccionario cuya clave son los identificadores de los 'pItems' y un valor que especifica el identificador del item de 'pItemBBDD' con el que se ha obtenido la similaridad. 
 Parámetros:
- - pItems: Listado de objetos con items del tipo 'DisambiguableEntity' a desambiguar.
- - pItemBBDD: Listado de objetos con items obtenidos de la BBDD del tipo 'DisambiguableEntity' para realizar la desmbiguación.
+ - pItems: Listado de objetos con items del tipo ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs) a desambiguar.
+ - pItemBBDD: Listado de objetos con items obtenidos de la BBDD del tipo ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs) para realizar la desmbiguación.
  - pUmbral(valor por defecto 0.8f): Valor por el cual se considerará que una similitud es positiva.
  - pToleranciaNombres (valor por defecto 0f): Tolerancia utilizada en los nombres.
 
 ### SimilarityBBDDScores
 Obtenemos un diccionario cuya clave son los identificadores de los 'pItems' y un valor que es otro diccionario cuyas claves son los identificadores de los items de 'pItemBBDD' junto con una puntuación de similaridad (entre 0 y 1). 
 Parámetros:
- - pItems: Listado de objetos con items del tipo 'DisambiguableEntity' a desambiguar.
- - pItemBBDD: Listado de objetos con items obtenidos de la BBDD del tipo 'DisambiguableEntity' para realizar la desmbiguación.
+ - pItems: Listado de objetos con items del tipo ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs) a desambiguar.
+ - pItemBBDD: Listado de objetos con items obtenidos de la BBDD del tipo ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs) para realizar la desmbiguación.
  - pUmbral(valor por defecto 0.8f): Valor por el cual se considerará que una similitud es positiva.
  - pToleranciaNombres (valor por defecto 0f): Tolerancia utilizada en los nombres.
 
 ### Disambiguate
 Obtenemos un diccionario cuya clave son los identificadores de los 'pItems' y un valor que es una lista con los identificadores de los items de 'pItemBBDD' con los que se ha obtenido la similaridad. 
 Parámetros:
- - pItems: Listado de objetos con items del tipo 'DisambiguableEntity' a desambiguar.
- - pItemBBDD: Listado de objetos con items obtenidos de la BBDD del tipo 'DisambiguableEntity' para realizar la desmbiguación.
+ - pItems: Listado de objetos con items del tipo ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs) a desambiguar.
+ - pItemBBDD: Listado de objetos con items obtenidos de la BBDD del tipo ['DisambiguableEntity'](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.DisambiguationEngine/Hercules.ED.DisambiguationEngine/Models/DisambiguableEntity.cs) para realizar la desmbiguación.
  - pDisambiguateItems: Indica si hay que desambiguiar entre los pItems.
  - pUmbral(valor por defecto 0.8f): Valor por el cual se considerará que una similitud es positiva.
  - pToleranciaNombres (valor por defecto 0f): Tolerancia utilizada en los nombres.
