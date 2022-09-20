@@ -329,16 +329,17 @@ namespace Harvester
                             // Cambio de modelo. TODO: Mirar propiedades.
                             ProjectOntology.Project projectOntology = CrearProyecto(proyecto, dicPersonas: dicPersonas, dicOrganizaciones: dicOrganizaciones);
 
+                            mResourceApi.ChangeOntoly("project");
                             resource = projectOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicProyectos.ContainsKey(projectOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicProyectos[projectOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -2045,9 +2046,6 @@ namespace Harvester
             {
                 switch (pDatos.ClasificacionCVN)
                 {
-                    case "AYUDAS":
-                        //project.IdRoh_scientificExperienceProject = mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1";
-                        break;
                     case "COMPETITIVOS":
                         project.IdRoh_scientificExperienceProject = mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1";
                         break;
@@ -2055,6 +2053,46 @@ namespace Harvester
                         project.IdRoh_scientificExperienceProject = mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2";
                         break;
                     default:
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Devuelve el ámbito del proyecto de <paramref name="project"/>
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="pDatos"></param>
+        private static void AmbitoGeograficoProyecto(ProjectOntology.Project project, Proyecto pDatos)
+        {
+            if (string.IsNullOrEmpty(project.IdRoh_scientificExperienceProject) && pDatos.AmbitoGeografico != null && !string.IsNullOrEmpty(pDatos.AmbitoGeografico.Nombre))
+            {
+                switch (pDatos.AmbitoGeografico.Nombre.ToLower())
+                {
+                    case "autonómica":
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_000";
+                        break;
+                    case "autonómico":
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_000";
+                        break;
+                    case "nacional":
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_010";
+                        break;
+                    case "unión europea":
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_020";
+                        break;
+                    case "europeo":
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_020";
+                        break;
+                    case "internacional no ue":
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_030";
+                        break;
+                    case "internacional no europeo":
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_030";
+                        break;
+                    default:
+                        project.IdVivo_geographicFocus = mResourceApi.GraphsUrl + "items/geographicregion_OTHERS";
+                        project.Roh_geographicFocusOther = pDatos.AmbitoGeografico.Nombre;
                         break;
                 }
             }
@@ -2156,7 +2194,7 @@ namespace Harvester
                     }
                     else
                     {
-                        PersonOntology.Person nuevaPersona = new PersonOntology.Person();
+                        PersonOntology.Person personOntology = new PersonOntology.Person();
 
                         // Se piden los datos de la persona.
                         Persona persona = ObtenerPersona(item.PersonaRef);
@@ -2166,10 +2204,13 @@ namespace Harvester
                         // Si la persona no tiene nombre, no se inserta.
                         if (!string.IsNullOrEmpty(persona.Nombre))
                         {
-                            nuevaPersona = CrearPersona(persona);
+                            personOntology = CrearPersona(persona);
 
-                            //mResourceApi.LoadComplexSemanticResource(nuevaPersona, false, false);
-                            dicPersonas[nuevaPersona.Roh_crisIdentifier] = new Tuple<string, string>("", "");//TODO //nuevaPersona.GnossId;
+                            mResourceApi.ChangeOntoly("person");
+                            ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
+                            //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+
+                            dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
                         }
                     }
@@ -2232,17 +2273,13 @@ namespace Harvester
             // Número de investigadores. TODO: ¿Actuales?
             project.Roh_researchersNumber = pDatos.Equipo.Select(x => x.PersonaRef).GroupBy(x => x).Count();
 
-            // TODO: No vienen datos de porcentajes.
+            // Porcentajes
             double porcentajeSubvencion = 0;
             double porcentajeCredito = 0;
             double porcentajeMixto = 0;
-            List<ProjectOntology.OrganizationAux> organizaciones = new List<ProjectOntology.OrganizationAux>();
+
             foreach (ProyectoEntidadFinanciadora entidadFinanciadora in pDatos.EntidadesFinanciadoras)
             {
-                //ProjectOntology.OrganizationAux organizacion = new ProjectOntology.OrganizationAux();
-                //organizacion.Roh_organizationTitle = entidadFinanciadora.EntidadRef;//TODO
-                //TODO ? string entFinanciadora = harvesterServices.GetRecord("Organizacion_" + entidadFinanciadora.EntidadRef);
-
                 if (entidadFinanciadora.TipoFinanciacion != null && entidadFinanciadora.PorcentajeFinanciacion != null)
                 {
                     if (entidadFinanciadora.TipoFinanciacion.Nombre.Equals("Subvención"))
@@ -2264,13 +2301,14 @@ namespace Harvester
             project.Roh_creditPercentage = (float)porcentajeCredito;
             project.Roh_mixedPercentage = (float)porcentajeMixto;
 
-            //TODO - revisar
+            // Cuantía Total
             double cuantiaTotal = pDatos.TotalImporteConcedido != null ? (double)pDatos.TotalImporteConcedido : 0;
+
             if (cuantiaTotal == 0)
             {
                 foreach (ProyectoAnualidadResumen anualidadResumen in pDatos.ResumenAnualidades)
                 {
-                    if (anualidadResumen.Presupuestar != null && (bool)anualidadResumen.Presupuestar)//TODO - contamos con el dato de presupuestar?
+                    if (anualidadResumen.Presupuestar != null && (bool)anualidadResumen.Presupuestar)
                     {
                         cuantiaTotal += anualidadResumen.TotalGastosConcedido;
                     }
@@ -2290,7 +2328,6 @@ namespace Harvester
 
             if (pDatos.FechaFinDefinitiva != null)
             {
-
                 if (pDatos.FechaInicio != null)
                 {
                     Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFinDefinitiva));
@@ -2301,7 +2338,6 @@ namespace Harvester
             }
             else
             {
-
                 if (pDatos.FechaInicio != null)
                 {
                     Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(pDatos.FechaInicio), Convert.ToDateTime(pDatos.FechaFin));
@@ -2314,7 +2350,8 @@ namespace Harvester
             project.Roh_relevantResults = pDatos.Contexto?.ResultadosPrevistos;
             project.Roh_projectCode = pDatos.CodigoExterno;
 
-            // TODO
+            // Ámbito geográfico
+            AmbitoGeograficoProyecto(project, pDatos);
 
             return project;
         }
