@@ -2,8 +2,8 @@
 {
     public class GrupoEquipo : SGI_Base
     {
-        public int? id { get; set; }
-        public int? grupoId { get; set; }
+        public long? id { get; set; }
+        public long? grupoId { get; set; }
         public string personaRef { get; set; }
         public RolProyecto rol { get; set; }
         public string fechaInicio { get; set; }
