@@ -44,7 +44,7 @@ Parámetros:
  - pUmbral(valor por defecto 0.8f): Valor por el cual se considerará que una similitud es positiva.
  - pToleranciaNombres (valor por defecto 0f): Tolerancia utilizada en los nombres.
 
-
+### Usos dentro de Hércules
 
 En Hércules ED, dicho motor de desambiguación es utilizado en varios servicios que trabajan con datos. Estos servicios son los siguientes:
 - Importación de CVN.
