@@ -2,7 +2,7 @@
 
 | Fecha         | 4/3/2022                                                   |
 | ------------- | ------------------------------------------------------------ |
-|Título|Librería de desambiguación y deduplicación de datos.| 
+|Título|Motor de desambiguación y deduplicación de datos.| 
 |Descripción|Librería encargada de la deduplicación de datos (investigadores, publicaciones, ROs, etc).|
 |Versión|1.0|
 |Módulo|Documentación|
@@ -10,7 +10,7 @@
 |Cambios de la Versión|Versión inicial|
 
 # Motor de desambiguación y deduplicación de datos
-la librería de desambiguación y deduplicación de datos se ocupa de reconocer y diferenciar de un conjunto de datos aquellos que sean iguales. Dicho proceso beneficia el desarrollo y mantenimiento de la información en aquellos servicios que hagan uso en Hércules ED.
+El motor de desambiguación y deduplicación de datos se ocupa de reconocer y diferenciar de un conjunto de datos aquellos que sean iguales. Dicho proceso beneficia el desarrollo y mantenimiento de la información en aquellos servicios que hagan uso en Hércules ED.
 Este proceso tiene varias ventajas como:
 - Reducción del tiempo y el espacio del almacenamiento.
 - Información más gestionable.
