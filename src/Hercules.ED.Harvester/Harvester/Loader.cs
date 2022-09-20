@@ -1977,10 +1977,20 @@ namespace Harvester
         public static GroupOntology.Group CrearGrupo(Grupo grupo, Dictionary<string, Tuple<string, string>> dicPersonas)
         {
             GroupOntology.Group groupOntology = new GroupOntology.Group();
-            groupOntology.Roh_title = grupo.nombre;
-            groupOntology.Roh_normalizedCode = grupo.codigo;
-            groupOntology.Roh_foundationDate = grupo.fechaInicio;
+
+            // Crisidentifier.
             groupOntology.Roh_crisIdentifier = grupo.id.ToString();
+
+            // Nombre del grupo.
+            groupOntology.Roh_title = grupo.nombre;
+
+            // Código interno del grupo.
+            groupOntology.Roh_normalizedCode = grupo.codigo;
+
+            // Fecha de inicio del grupo.
+            groupOntology.Roh_foundationDate = grupo.fechaInicio;
+            
+            // Duración.
             if (grupo.fechaInicio != null && grupo.fechaFin != null)
             {
                 Tuple<string, string, string> duracion = RestarFechas((DateTime)grupo.fechaInicio, (DateTime)grupo.fechaFin);
@@ -1988,6 +1998,7 @@ namespace Harvester
                 groupOntology.Roh_durationMonths = duracion.Item2;
                 groupOntology.Roh_durationDays = duracion.Item3;
             }
+
             List<GroupOntology.BFO_0000023> listaPersonas = new List<GroupOntology.BFO_0000023>();
             foreach (GrupoEquipo grupoEquipo in grupo.equipo)
             {
