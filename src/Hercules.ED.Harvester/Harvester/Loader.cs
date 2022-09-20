@@ -2062,18 +2062,15 @@ namespace Harvester
                     }
                 }
                 // IP principal
-                BFO.Roh_isIP = item.RolProyecto.RolPrincipal.HasValue;
-                if (!string.IsNullOrEmpty(item.FechaInicio))
+                persona.Roh_isIP = grupoEquipo.rol.abreviatura == "IP";
+                if (!string.IsNullOrEmpty(grupoEquipo.fechaInicio))
                 {
-                    BFO.Vivo_start = Convert.ToDateTime(item.FechaInicio);
+                    persona.Vivo_start = Convert.ToDateTime(grupoEquipo.fechaInicio);
                 }
-                if (!string.IsNullOrEmpty(item.FechaFin))
+                if (!string.IsNullOrEmpty(grupoEquipo.fechaFin))
                 {
-                    BFO.Vivo_end = Convert.ToDateTime(item.FechaFin);
+                    persona.Vivo_end = Convert.ToDateTime(grupoEquipo.fechaFin);
                 }
-                project.Vivo_relates.Add(BFO);
-                orden++;
-            }
                 listaPersonas.Add(persona);
             }
             groupOntology.Vivo_relates = listaPersonas;
