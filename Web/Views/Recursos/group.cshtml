@@ -463,10 +463,13 @@
                                                                 <div class="graph-controls-menu">
                                                                     <ul class="no-list-style d-flex align-items-center">
                                                                         <li onclick="zoomCyOut()" class="control zoomin-control">
-                                                                            <span class="material-icons">zoom_out</span>
+                                                                            <span class="material-icons">remove</span>
+                                                                        </li>
+                                                                        <li class="control text-control">
+                                                                            <span class="material-icons">search</span>
                                                                         </li>
                                                                         <li onclick="zoomCyIn()" class="control zoomout-control">
-                                                                            <span class="material-icons">zoom_in</span>
+                                                                            <span class="material-icons">add</span>
                                                                         </li>
                                                                     </ul>
                                                                 </div>
@@ -555,10 +558,13 @@
 
                                                                 <ul class="no-list-style d-flex align-items-center">
                                                                     <li onclick="zoomCyOut()" class="control zoomin-control">
-                                                                        <span class="material-icons">zoom_out</span>
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span class="material-icons">search</span>
                                                                     </li>
                                                                     <li onclick="zoomCyIn()" class="control zoomout-control">
-                                                                        <span class="material-icons">zoom_in</span>
+                                                                        <span class="material-icons">add</span>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -593,36 +599,6 @@
                                         <div class="acciones-grafico">
                                             <div class="periodo dropdown dropdown-select">
                                             </div>
-
-                                            <div class="vista-red dropdown dropdown-select show">
-                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                    @Html.Translate("RELACIONES"):
-                                                    <span class="texto">@Html.Translate("TODOS")</span>
-                                                </a>
-                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed" x-placement="bottom-end">
-                                                    <ul class="no-list-style">
-                                                        <li>
-                                                            <a href="javascript: actualizarTypesOcultar('relation_todas')" rel="nofollow" class="item-dropdown activeView">
-                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-                                                                <span class="texto">@Html.Translate("TODOS")</span>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript: actualizarTypesOcultar('relation_project')" rel="nofollow" class="item-dropdown activeView">
-                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-                                                                <span class="texto">@Html.Translate("PROYECTOS")</span>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript: actualizarTypesOcultar('relation_document')" rel="nofollow" class="item-dropdown">
-                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES"):</span>
-                                                                <span class="texto">@Html.Translate("DOCUMENTOS")</span>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-
 
                                             <div class="vista-red dropdown dropdown-select show">
                                                 <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -668,10 +644,13 @@
                                                                 </ul>
                                                                 <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
                                                                     <li onclick="zoomCyOut()" class="control zoomout-control zoomOut" id="zoomOut">
-                                                                        <span class="material-icons">zoom_out</span>
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span class="material-icons">search</span>
                                                                     </li>
                                                                     <li onclick="zoomCyIn()" class="control zoomin-control zoomIn" id="zoomIn">
-                                                                        <span class="material-icons">zoom_in</span>
+                                                                        <span class="material-icons">add</span>
                                                                     </li>
                                                                 </ul>
                                                             </div>
