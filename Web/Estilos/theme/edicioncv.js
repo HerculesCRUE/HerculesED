@@ -3892,7 +3892,7 @@ var edicionCV = {
 			MostrarUpdateProgress();
 			var formData = new FormData();
 			let idrecurso = $(this).find('[data-id]').attr('data-id')
-			formData.append('pIdRecurso', idrecurso);				
+			formData.append('pIdRecurso', idrecurso);
 			mostrarNotificacion('success', GetText('CV_ENVIO_DSPACE_CORRECTO'), 10000);
 			OcultarUpdateProgress();
 			mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
