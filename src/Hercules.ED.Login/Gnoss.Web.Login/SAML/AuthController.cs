@@ -22,9 +22,9 @@ namespace Gnoss.Web.Login.SAML
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         const string relayStateReturnUrl = "ReturnUrl";
         private Saml2Configuration config;
-        readonly ConfigServiceSAML mConfigServiceSAML;
+        readonly ConfigServiceLogin mConfigServiceSAML;
 
-        public AuthController(IOptions<Saml2Configuration> configAccessor, ConfigServiceSAML configServiceSAML)
+        public AuthController(IOptions<Saml2Configuration> configAccessor, ConfigServiceLogin configServiceSAML)
         {
             config = configAccessor.Value;
             mConfigServiceSAML = configServiceSAML;
