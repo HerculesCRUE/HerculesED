@@ -4,6 +4,7 @@ import numpy as np
 import spacy
 import math
 import re
+import unidecode
 import pdb
 
 SPACY_MODEL = 'en_core_web_lg'
@@ -19,8 +20,8 @@ SINGLE_W_ATTRS_FULLTEXT = ['LENGTH', 'IN_TITLE?', 'IN_ABSTRACT?', 'OFFSET',
 SINGLE_W_ATTRS_SHORT = ['LENGTH', 'IN_TITLE?', 'IN_ABSTRACT?', 'OFFSET',
                         'IDF_CLEF', 'TFIDF_CLEF', 'LLR_CLEF', 'LLR_SCOPUS']
 MULTI_W_ATTRS_FULLTEXT = ['LENGTH', 'IN_TITLE?', 'IN_ABSTRACT?', 'OFFSET', 'NORM_OFFSET',
-                          'SPREAD', 'NESTED_RATE', 'LLR_CLEF']
-MULTI_W_ATTRS_SHORT = ['LENGTH', 'OFFSET', 'SPREAD', 'NESTED_RATE', 'LLR_CLEF']
+                          'NESTED_RATE', 'LLR_CLEF']
+MULTI_W_ATTRS_SHORT = ['LENGTH', 'OFFSET', 'NESTED_RATE', 'LLR_CLEF']
 
 
 def clean_dataset(ds):
@@ -206,6 +207,7 @@ class FeatureExtractor:
         with open(scopus_fpath, 'rb') as f:
             self._scopus = pickle.load(f)
         self._idf_clef = joblib.load(clef_idf_fpath)
+        self._max_idf = max(self._idf_clef.values())
         
         
     def extract_features(self, title, abstract, body, remove_similar=False):
@@ -232,6 +234,7 @@ class FeatureExtractor:
         unique_kw_cands = list(unique_kw_cands.values())
         kw_cand_freqs = { form.lower(): all_kw_cands_str.count(form.lower()) for span, form, lemma in unique_kw_cands }
 
+        normalize_kw = lambda kw: unidecode.unidecode(kw.lower())
         features = {}
         for kwc_span, kwc, kwc_lemma in unique_kw_cands:
             length = len(kwc)
@@ -241,11 +244,10 @@ class FeatureExtractor:
             offset = kwc_match.start() if kwc_match else fulltext_len
             kwc_match = re.search(r"\b"+kwc[::-1]+r"\b", fulltext_rev, re.IGNORECASE)
             last_offset = fulltext_len - kwc_match.end() if kwc_match else fulltext_len
-            spread = last_offset - offset
             norm_offset = offset / len(fulltext)
             nested_rate = self._get_nested_rate(kwc, all_phrases)
-            kwc_idf_clef = self._idf_clef[kwc] if kwc in self._idf_clef else 0.0
-            clef_freq = self._clef['freqs'][kwc_lemma] if kwc_lemma in self._clef['freqs'] else 0
+            kwc_idf_clef = self._idf_clef[normalize_kw(kwc)] if normalize_kw(kwc) in self._idf_clef else self._max_idf
+            clef_freq = self._clef['freqs'][normalize_kw(kwc)] if normalize_kw(kwc) in self._clef['freqs'] else 0
             scopus_freq = self._scopus['freqs'][kwc_lemma] if kwc_lemma in self._scopus['freqs'] else 0
             doc_len = len(fulltext.split())
             article_freq = kw_cand_freqs[kwc.lower()]
@@ -260,7 +262,6 @@ class FeatureExtractor:
                 'IN_ABSTRACT?': in_abstract,
                 'OFFSET': offset,
                 'NORM_OFFSET': norm_offset,
-                'SPREAD': spread,
                 'NESTED_RATE': nested_rate,
                 'IDF_CLEF': kwc_idf_clef,
                 'TFIDF_CLEF': tfidf_clef,
