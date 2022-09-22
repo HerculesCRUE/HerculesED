@@ -849,7 +849,7 @@ namespace EditorCV.Models
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
                 HashSet<string> colaboradoresDepartament = ObtenerColaboradoresDepartamento(pPersonID);
 
-                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).ToList();
+                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).Where(x=>x!="").ToList();
                 Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
