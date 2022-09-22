@@ -19,8 +19,8 @@ SINGLE_W_ATTRS_FULLTEXT = ['LENGTH', 'IN_TITLE?', 'IN_ABSTRACT?', 'OFFSET',
 SINGLE_W_ATTRS_SHORT = ['LENGTH', 'IN_TITLE?', 'IN_ABSTRACT?', 'OFFSET',
                         'IDF_CLEF', 'TFIDF_CLEF', 'LLR_CLEF', 'LLR_SCOPUS']
 MULTI_W_ATTRS_FULLTEXT = ['LENGTH', 'IN_TITLE?', 'IN_ABSTRACT?', 'OFFSET', 'NORM_OFFSET',
-                          'SPREAD', 'NESTED_RATE', 'LLR_CLEF']
-MULTI_W_ATTRS_SHORT = ['LENGTH', 'OFFSET', 'SPREAD', 'NESTED_RATE', 'LLR_CLEF']
+                          'NESTED_RATE', 'LLR_CLEF']
+MULTI_W_ATTRS_SHORT = ['LENGTH', 'OFFSET', 'NESTED_RATE', 'LLR_CLEF']
 
 
 def clean_dataset(ds):
@@ -219,7 +219,6 @@ class FeatureExtractor:
             offset = kwc_match.start() if kwc_match else fulltext_len
             kwc_match = re.search(r"\b"+kwc[::-1]+r"\b", fulltext_rev, re.IGNORECASE)
             last_offset = fulltext_len - kwc_match.end() if kwc_match else fulltext_len
-            spread = last_offset - offset
             norm_offset = offset / len(fulltext)
             nested_rate = self._get_nested_rate(kwc, all_phrases)
             kwc_idf_clef = self._idf_clef[lang][kwc] if kwc in self._idf_clef[lang] else 0.0
@@ -238,7 +237,6 @@ class FeatureExtractor:
                 'IN_ABSTRACT?': in_abstract,
                 'OFFSET': offset,
                 'NORM_OFFSET': norm_offset,
-                'SPREAD': spread,
                 'NESTED_RATE': nested_rate,
                 'IDF_CLEF': kwc_idf_clef,
                 'TFIDF_CLEF': tfidf_clef,
