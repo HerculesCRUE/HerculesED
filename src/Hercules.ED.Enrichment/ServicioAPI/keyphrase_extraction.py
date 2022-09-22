@@ -170,7 +170,10 @@ class FeatureExtractor:
     VALID_DEP_RELS = set(['advmod', 'amod', 'case', 'cc', 'compound', 'conj', 'mark',
                           'neg', 'nmod', 'npadvmod', 'poss', 'punct', 'quantmod', 'root'])
 
-    CLEF_SIZE = 90e6
+    CLEF_SIZE = {
+        'en': 86e6,
+        'es': 149e6,
+    }
     SCOPUS_SIZE = 146e6
     
     def __init__(self, clef, scopus, clef_idf):
@@ -229,8 +232,8 @@ class FeatureExtractor:
             scopus_freq = self._scopus['freqs'][kwc_lemma] if kwc_lemma in self._scopus['freqs'] else 0
             doc_len = len(fulltext.split())
             article_freq = kw_cand_freqs[kwc.lower()]
-            tfidf_clef = FeatureExtractor._tf_idf(article_freq, doc_len, clef_freq, self.CLEF_SIZE)
-            llr_clef = FeatureExtractor._association_measure(article_freq, clef_freq, doc_len, self.CLEF_SIZE)
+            tfidf_clef = FeatureExtractor._tf_idf(article_freq, doc_len, clef_freq, self.CLEF_SIZE[lang])
+            llr_clef = FeatureExtractor._association_measure(article_freq, clef_freq, doc_len, self.CLEF_SIZE[lang])
             if lang == 'en':
                 llr_scopus = FeatureExtractor._association_measure(article_freq, scopus_freq, doc_len, self.SCOPUS_SIZE)
             elif lang == 'es':
