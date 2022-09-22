@@ -1,4 +1,5 @@
 var urlEdicionCV = url_servicio_editorcv+"EdicionCV/";
+var urlEnvioDSpaceCV = url_servicio_editorcv+"EnvioDSpace/";
 var urlEnvioValidacionCV = url_servicio_editorcv+"EnvioValidacion/";
 var urlGuardadoCV = url_servicio_editorcv+"GuardadoCV/";
 var languages=['en','ca','eu','gl','fr'];
