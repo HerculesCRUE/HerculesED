@@ -287,7 +287,7 @@ namespace EditorCV.Models
                 {
                     //TODO
                     return int.Parse(fila["crisIdentifier"].value.Split("|").Last());
-                    return Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier"));
+                    //return Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier"));
                 }
             }
 

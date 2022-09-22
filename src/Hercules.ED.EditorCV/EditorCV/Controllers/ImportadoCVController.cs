@@ -168,7 +168,7 @@ namespace EditorCV.Controllers
                                 petitionStatus[petitionID].subActualWork = petitionStatus[petitionID].subTotalWorks;
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
 
                         }

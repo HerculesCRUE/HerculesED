@@ -21,7 +21,7 @@ namespace EditorCV.Models
             {
                 userIdCookie = mUserApi.GetUserIDFromCookie(cookie);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 
             }
@@ -40,7 +40,7 @@ namespace EditorCV.Models
             {
                 userIdCookie = mUserApi.GetUserIDFromCookie(cookie);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

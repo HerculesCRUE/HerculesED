@@ -471,8 +471,17 @@ function PintarGraficaArania(data,idContenedor) {
 			case 'icon_member':
 				cy.nodes()[i].style({
 					'background-color': '#b2cff7',
-					// 'background-image': 'https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png',
-					'background-fit': 'cover',
+					'border-width': '0px',
+					'border-color': '#b2cff7',
+					'shape': 'ellipse'
+				})
+				break;
+			case 'icon_project':
+				cy.nodes()[i].style({
+					'background-color': '#b2cff7',
+					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/briefcase-446-460356.png',
+					'background-width': '65%',
+					'background-height': '65%',
 					'border-width': '0px',
 					'border-color': '#b2cff7',
 					'shape': 'ellipse'

@@ -424,6 +424,7 @@ namespace EditorCV.Models
                                     }
                                 }
                             }
+
                             //Eliminamos de los similares aquellos que estén marcados como no duplicados
                             foreach (HashSet<string> sim in similars.ToList())
                             {
@@ -453,7 +454,7 @@ namespace EditorCV.Models
                                 }
                             }
 
-                            //NOs quedamos sólo con aquellos que tengan más de uno
+                            //Nos quedamos sólo con aquellos que tengan más de uno
                             similars = similars.Where(x => x.Count > 1).ToList();
                             foreach (HashSet<string> sim in similars)
                             {
@@ -848,7 +849,7 @@ namespace EditorCV.Models
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
                 HashSet<string> colaboradoresDepartament = ObtenerColaboradoresDepartamento(pPersonID);
 
-                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).ToList();
+                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).Where(x=>x!="").ToList();
                 Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
@@ -1472,7 +1473,7 @@ namespace EditorCV.Models
         /// <param name="pListItemConfig">Configuración del item</param>
         /// <param name="pLang">Idioma</param>
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
-        /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidoima configurado</param>
+        /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidioma configurado</param>
         /// <returns></returns>
         private TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData,
             TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas,
@@ -1810,14 +1811,12 @@ namespace EditorCV.Models
                 }
             }
 
-            //SendPRC
+            // Envío
             item.sendPRC = false;
+            item.sendDspace = false;
             if (pListItemConfig.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Document"))
             {
-                if (item.title == "testPRC")
-                {
-                    bool a = true;
-                }
+                item.sendDspace = true;
                 item.sendPRC = true;
                 if (!string.IsNullOrEmpty(pId))
                 {

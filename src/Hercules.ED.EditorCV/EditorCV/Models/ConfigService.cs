@@ -18,10 +18,13 @@ namespace EditorCV.Models
         private string passwordESBcsp { get; set; }
         private string usernameESBprc { get; set; }
         private string passwordESBprc { get; set; }
+        private string usernameDspace { get; set; }
+        private string passwordDspace { get; set; }
 
         // URLs
         private string urlEnrichment { get; set; }
         private string urlSGI { get; set; }
+        private string urlDSpace { get; set; }
         private string urlImportadorExportador { get; set; }
         private int? maxMonthsValidationDocument { get; set; }
         private int? maxMonthsValidationProjectsDocument { get; set; }
@@ -205,6 +208,48 @@ namespace EditorCV.Models
             return urlEnrichment;
         }
 
+        public string GetUsernameDspace()
+        {
+            if (string.IsNullOrEmpty(usernameDspace))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("username_dspace"))
+                {
+                    connectionString = environmentVariables["username_dspace"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["username_dspace"];
+                }
+
+                usernameDspace = connectionString;
+            }
+
+            return usernameDspace;
+        }
+
+        public string GetPasswordDspace()
+        {
+            if (string.IsNullOrEmpty(passwordDspace))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("password_dspace"))
+                {
+                    connectionString = environmentVariables["password_dspace"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["password_dspace"];
+                }
+
+                passwordDspace = connectionString;
+            }
+
+            return passwordDspace;
+        }
+
         /// <summary>
         /// Obtiene la URL del API del enriquecimiento de tópicos temáticos que ha sido configurada.
         /// </summary>
@@ -362,6 +407,27 @@ namespace EditorCV.Models
         public string GetUrlImportador()
         {
             return GetUrlimportadorExportador() + "/ImportadorCV";
+        }
+
+        public string GetUrlDSpace()
+        {
+            if (string.IsNullOrEmpty(urlDSpace))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("url_dspace"))
+                {
+                    connectionString = environmentVariables["url_dspace"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["url_dspace"];
+                }
+
+                urlDSpace = connectionString;
+            }
+
+            return urlDSpace;
         }
     }
 }
