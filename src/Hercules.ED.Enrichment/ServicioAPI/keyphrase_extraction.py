@@ -3,6 +3,7 @@ import numpy as np
 import langid
 import spacy
 import math
+import unidecode
 import re
 import pdb
 
@@ -211,6 +212,7 @@ class FeatureExtractor:
         unique_kw_cands = list(unique_kw_cands.values())
         kw_cand_freqs = { form.lower(): all_kw_cands_str.count(form.lower()) for span, form, lemma in unique_kw_cands }
 
+        normalize_kw = lambda kw: unidecode.unidecode(kw.lower())
         features = {}
         for kwc_span, kwc, kwc_lemma in unique_kw_cands:
             length = len(kwc)
@@ -222,8 +224,8 @@ class FeatureExtractor:
             last_offset = fulltext_len - kwc_match.end() if kwc_match else fulltext_len
             norm_offset = offset / len(fulltext)
             nested_rate = self._get_nested_rate(kwc, all_phrases)
-            kwc_idf_clef = self._idf_clef[lang][kwc] if kwc in self._idf_clef[lang] else self._max_idf[lang]
-            clef_freq = self._clef[lang]['freqs'][kwc_lemma] if kwc_lemma in self._clef[lang]['freqs'] else 0
+            kwc_idf_clef = self._idf_clef[lang][normalize_kw(kwc)] if normalize_kw(kwc) in self._idf_clef[lang] else self._max_idf[lang]
+            clef_freq = self._clef[lang]['freqs'][normalize_kw(kwc)] if normalize_kw(kwc) in self._clef[lang]['freqs'] else 0
             scopus_freq = self._scopus['freqs'][kwc_lemma] if kwc_lemma in self._scopus['freqs'] else 0
             doc_len = len(fulltext.split())
             article_freq = kw_cand_freqs[kwc.lower()]
