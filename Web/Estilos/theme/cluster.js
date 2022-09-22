@@ -65,6 +65,7 @@ class StepsCluster {
 		// Areas temáticas Modal
 		this.modalAreasTematicas = this.body.find('#modal-seleccionar-area-tematica')
 		this.divTesArbol = this.modalAreasTematicas.find('.divTesArbol')
+		this.filtroText = this.divTesArbol.find('.filtroRapido')
 		this.divTesLista = this.modalAreasTematicas.find('.divTesLista')
 		this.divTesListaCaths = undefined
 		this.btnSaveAT = this.modalAreasTematicas.find('.btnsave')
@@ -771,6 +772,11 @@ class StepsCluster {
 
 		let relItem = $('#' + $(item).data("rel"))
 
+		// Reinicia el filtro del texto de búsqueda
+		_self.filtroText.val("");
+		MVCFiltrarListaSelCatArbol(_self.filtroText, 'panDesplegableSelCat')
+
+		// Comprueba si hay elementos seleccionados para iniciar la selección
 		if (relItem.length > 0) {
 
 			let dataJson = relItem.data('jsondata')
