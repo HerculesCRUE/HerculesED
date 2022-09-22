@@ -76,10 +76,10 @@ namespace Harvester
             //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
             //mResourceApi.ChangeOntoly("projectauthorization");
             //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos, dicPersonas: dicPersonas);
-            //mResourceApi.ChangeOntoly("patent");
-            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            //mResourceApi.ChangeOntoly("group");
+            //ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos, dicPersonas: dicPersonas);
+            mResourceApi.ChangeOntoly("patent");
+            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
@@ -90,8 +90,8 @@ namespace Harvester
             //GuardarIdentificadores(_Config, "Proyecto", fecha);
             //GuardarIdentificadores(_Config, "PRC", fecha, true);
             //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            GuardarIdentificadores(_Config, "Grupo", fecha);
-            //GuardarIdentificadores(_Config, "Invencion", fecha);
+            //GuardarIdentificadores(_Config, "Grupo", fecha);
+            GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
@@ -107,8 +107,8 @@ namespace Harvester
             //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
 
             // Proyectos.
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            //mResourceApi.ChangeOntoly("project");
+            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
 
             // Document.
             //mResourceApi.ChangeOntoly("document");
@@ -119,12 +119,12 @@ namespace Harvester
             //ProcesarFichero(_Config, "AutorizacionProyecto");
 
             //// Grupos.
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo");
+            //mResourceApi.ChangeOntoly("group");
+            //ProcesarFichero(_Config, "Grupo");
 
             // Patentes.
-            //mResourceApi.ChangeOntoly("patent");
-            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            mResourceApi.ChangeOntoly("patent");
+            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
         }
 
         /// <summary>
@@ -519,18 +519,18 @@ namespace Harvester
                             }
 
                             // TODO: Crear método para las patentes.
-                            PatentOntology.Patent patentOntology = CrearInvencionesOntology(invencion);
+                            PatentOntology.Patent patentOntology = CrearInvencionesOntology(invencion, dicPersonas);
 
                             resource = patentOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicInvenciones.ContainsKey(patentOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
                                 // Carga.                   
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicInvenciones[patentOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -1912,10 +1912,9 @@ namespace Harvester
             return organizationAux.GNOSSID;//TODO asignar si no se autoasigna
         }
 
-        private static PatentOntology.Patent CrearInvencionesOntology(Invencion pInvencion)
+        private static PatentOntology.Patent CrearInvencionesOntology(Invencion pInvencion, Dictionary<string, Tuple<string, string>> dicPersonas)
         {
             PatentOntology.Patent patente = new PatentOntology.Patent();
-
             // CrisIdentifier
             patente.Roh_crisIdentifier = pInvencion.id.ToString();
 
@@ -1925,6 +1924,42 @@ namespace Harvester
             // Fecha
             patente.Dct_issued = pInvencion.fechaComunicacion;
 
+            // Descripción
+            patente.Roh_qualityDescription = pInvencion.descripcion;
+
+            // Autores
+            List<PatentOntology.PersonAux> listaPersonas = new List<PatentOntology.PersonAux>();
+            foreach (Inventor inventor in pInvencion.inventores)
+            {
+                PatentOntology.PersonAux persona = new PatentOntology.PersonAux();
+                if (dicPersonas.ContainsKey(inventor.inventorRef))
+                {
+                    persona.IdRdf_member = dicPersonas[inventor.inventorRef].Item1;
+                }
+                else
+                {
+                    PersonOntology.Person personOntology = new PersonOntology.Person();
+                    // Se piden los datos de la persona.
+                    Persona person = ObtenerPersona(inventor.inventorRef);
+                    // TODO: Desambiguación de Personas
+                    // Si la persona no tiene nombre, no se inserta.
+                    if (!string.IsNullOrEmpty(person.Nombre))
+                    {
+                        personOntology = CrearPersona(person);
+                        mResourceApi.ChangeOntoly("person");
+                        ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
+                        //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                        dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                        persona.IdRdf_member = dicPersonas[inventor.inventorRef].Item1;
+                    }
+                }
+                listaPersonas.Add(persona);
+            }
+            patente.Bibo_authorList = listaPersonas;
+
+            // TODO - palabras clave
+            List<PatentOntology.CategoryPath> listaPalabrasClave = new List<PatentOntology.CategoryPath>();
+            patente.Vivo_freeTextKeywords = listaPalabrasClave;
             // TODO: REVISAR DATOS FALTANTES
 
             return patente;
@@ -1989,7 +2024,7 @@ namespace Harvester
 
             // Fecha de inicio del grupo.
             groupOntology.Roh_foundationDate = grupo.fechaInicio;
-            
+
             // Duración.
             if (grupo.fechaInicio != null && grupo.fechaFin != null)
             {
@@ -2018,7 +2053,7 @@ namespace Harvester
                                     OPTIONAL {{ ?hasResearchArea <http://vivoweb.org/ontology/core#end> ?endRA. }}
                                     OPTIONAL {{ ?s <http://w3id.org/roh/isIP> ?isIP. }}
                                    }}";
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person", "project" });
                     if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                     {
                         foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -2034,7 +2069,8 @@ namespace Harvester
                             if (fila.ContainsKey("hasResearchArea"))
                             {
                                 GroupOntology.ResearchArea researchArea = new GroupOntology.ResearchArea();
-                                if (fila.ContainsKey("title")) {
+                                if (fila.ContainsKey("title"))
+                                {
                                     researchArea.Roh_title = fila["title"].value;
                                 }
                                 if (fila.ContainsKey("startRA"))
@@ -2054,7 +2090,7 @@ namespace Harvester
                         }
                     }
                     persona.Vivo_hasResearchArea = hasResearchArea;
-                } 
+                }
                 else
                 {
                     PersonOntology.Person personOntology = new PersonOntology.Person();
@@ -2085,6 +2121,7 @@ namespace Harvester
                 listaPersonas.Add(persona);
             }
             groupOntology.Vivo_relates = listaPersonas;
+            // TODO - palabras clave
             //groupOntology.Roh_hasKnowledgeArea = grupo.palabrasClave;
 
             return groupOntology;

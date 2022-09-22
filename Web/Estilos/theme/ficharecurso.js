@@ -476,13 +476,12 @@ function PintarGraficaArania(data,idContenedor) {
 					'shape': 'ellipse'
 				})
 				break;
-			case 'project':
+			case 'icon_project':
 				cy.nodes()[i].style({
 					'background-color': '#b2cff7',
 					'background-image': 'https://cdn.iconscout.com/icon/free/png-256/briefcase-446-460356.png',
-					'background-width': '60%',
-					'background-height': '60%',
-					'background-fit': 'cover',
+					'background-width': '65%',
+					'background-height': '65%',
 					'border-width': '0px',
 					'border-color': '#b2cff7',
 					'shape': 'ellipse'
