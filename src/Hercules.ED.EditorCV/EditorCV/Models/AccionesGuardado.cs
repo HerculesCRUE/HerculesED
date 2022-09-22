@@ -1057,22 +1057,31 @@ namespace EditorCV.Models
                         Entity entity = new Entity();
                         entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
                         entity.propTitle = "http://xmlns.com/foaf/0.1/name";
+                        string name = "";
+                        if (person.name.given_names!=null)  {
+                            name = person.name.given_names.value.Trim();
+                        }
+                        string lastName = "";
+                        if (person.name.family_name!=null)
+                        {
+                            lastName = person.name.family_name.value.Trim();
+                        }
                         entity.properties = new List<Entity.Property>()
                         {
                             new Entity.Property()
                             {
                                 prop = "http://xmlns.com/foaf/0.1/name",
-                                values = new List<string>() { person.name.given_names.value.Trim() + " "+ person.name.family_name.value.Trim() }
+                                values = new List<string>() { (name + " "+ lastName).Trim() }
                             },
                             new Entity.Property()
                             {
                                 prop = "http://xmlns.com/foaf/0.1/firstName",
-                                values = new List<string>() { person.name.given_names.value.Trim() }
+                                values = new List<string>() { name.Trim() }
                             },
                             new Entity.Property()
                             {
                                 prop = "http://xmlns.com/foaf/0.1/lastName",
-                                values = new List<string>() { person.name.family_name.value.Trim() }
+                                values = new List<string>() { lastName.Trim() }
                             },
                             new Entity.Property()
                             {
