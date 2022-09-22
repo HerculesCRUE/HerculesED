@@ -3888,7 +3888,7 @@ var edicionCV = {
 			});
 		});
 
-		//Enviar a borrar en PRC
+		//Enviar a DSpace
 		$('.texto.sendDspace').closest('li').off('click').on('click', function(e) {
 			MostrarUpdateProgress();
 			var formData = new FormData();
