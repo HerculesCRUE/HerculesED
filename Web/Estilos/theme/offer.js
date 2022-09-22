@@ -3549,14 +3549,16 @@ class OfferList {
 		        let itemState = item.dataset.estadores
 		        // Obtiene el listado de opciones en el menu
 		        let selector = item.querySelector(".acciones-recurso-listado .dropdown-menu ul")
+		        let menuParent = item.querySelector(".acciones-recurso-listado .dropdown")
 
 
-		        let htmlRes = "";
-		        let estados = [];
-		        let idEstadoOFerta = "";
-		        let txtEnviar = "";
-
-		        selector.innerHTML = this.printMenu(idDocument, itemState, typeUser).join("")
+		        // Comprueba si devuelve algo para bloquear
+		        let htmlRes = this.printMenu(idDocument, itemState, typeUser).join("")
+		        if (htmlRes == "") {
+		        	menuParent.classList.add("d-none")
+		        }
+		        // Añade el html al menú el correspondiente elemento
+		        selector.innerHTML = htmlRes
 	        }
 	        
 	            
@@ -3576,6 +3578,7 @@ class OfferList {
 
 		let estados = this.setActionsOffer(itemState, typeUser)
 
+		// Devuelve un array con el html de las acciones por cada acción 
 	    let htmlRes = estados.map(e => {
 
             if (e.idEstadoOFerta == "editar") {
