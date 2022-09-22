@@ -229,7 +229,10 @@ class FeatureExtractor:
             article_freq = kw_cand_freqs[kwc.lower()]
             tfidf_clef = FeatureExtractor._tf_idf(article_freq, doc_len, clef_freq, self.CLEF_SIZE)
             llr_clef = FeatureExtractor._association_measure(article_freq, clef_freq, doc_len, self.CLEF_SIZE)
-            llr_scopus = FeatureExtractor._association_measure(article_freq, scopus_freq, doc_len, self.SCOPUS_SIZE)
+            if lang == 'en':
+                llr_scopus = FeatureExtractor._association_measure(article_freq, scopus_freq, doc_len, self.SCOPUS_SIZE)
+            elif lang == 'es':
+                llr_scopus = 20.0
 
             self._add_features(features, {
                 'KW': kwc,
