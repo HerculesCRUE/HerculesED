@@ -3895,7 +3895,7 @@ var edicionCV = {
 			let idrecurso = $(this).find('[data-id]').attr('data-id');
 			formData.append('pIdRecurso', idrecurso);
 			$.ajax({
-				url: urlEdicionCV + '/EnvioDSpace',
+				url: urlEnvioDSpaceCV + '/EnvioDSpace',
 				type: 'POST',
 				data: formData,
 				cache: false,
