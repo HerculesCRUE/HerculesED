@@ -181,6 +181,7 @@ class FeatureExtractor:
         self._clef = clef  # dict: es, en
         self._scopus = scopus
         self._idf_clef = clef_idf  # dict: es, en
+        self._max_idf = { lang: max(clef_idf[lang].values()) for lang in clef_idf.keys() }
         
         
     def extract_features(self, title, abstract, body, remove_similar=False):
@@ -221,7 +222,7 @@ class FeatureExtractor:
             last_offset = fulltext_len - kwc_match.end() if kwc_match else fulltext_len
             norm_offset = offset / len(fulltext)
             nested_rate = self._get_nested_rate(kwc, all_phrases)
-            kwc_idf_clef = self._idf_clef[lang][kwc] if kwc in self._idf_clef[lang] else 0.0
+            kwc_idf_clef = self._idf_clef[lang][kwc] if kwc in self._idf_clef[lang] else self._max_idf[lang]
             clef_freq = self._clef[lang]['freqs'][kwc_lemma] if kwc_lemma in self._clef[lang]['freqs'] else 0
             scopus_freq = self._scopus['freqs'][kwc_lemma] if kwc_lemma in self._scopus['freqs'] else 0
             doc_len = len(fulltext.split())
