@@ -719,9 +719,62 @@
                         </div>
                         <div class="tab-pane fade" id="pll-destacados-panel" role="tabpanel" aria-labelledby="pll-destacados-tab">
                             <div class="row">
-                                <div class="col col-12 col-section-title font-weight-bold">
+                                <div class="col col-12 header-listado">
+                                    <div class="h1-container">
+                                        <h2>@Html.Translate("PRUBLICACIONES_SELECCIONADOS")
+                                            <span class="numResultados">@pOffer.Roh_patents.Count</span>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div class="col col-12 col-contenido derecha">
                                     <div class="wrapCol">
-                                        <p>@Html.Translate("PII_SELECCIONADOS")</p>
+                                        <div class="acciones-listado acciones-listado-investigadores">
+                                            <div class="wrap">
+                                                <div class="usuario-wrap">@Html.Translate("PUBLICACIONES")</div>
+                                            </div>
+                                        </div>
+                                        <div class="resource-list listView resource-list-investigadores">
+                                            <div class="resource-list-wrap">
+
+                                                @foreach (Patent patent in pOffer.Roh_patents)
+                                                {
+
+                                                    <article class="resource">
+                                                        <div class="wrap">
+                                                            <div class="usuario-wrap">
+                                                                <div class="user-miniatura">
+                                                                    <div class="imagen-usuario-wrap">
+                                                                        <a href="@patent.URL">
+                                                                            <div class="imagen con-material-icons">
+                                                                                <span class="material-icons">article</span>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="nombre-usuario-wrap">
+                                                                        <a href="@patent.URL">
+                                                                            <p class="nombre">@patent.Roh_title</p>
+                                                                            <p class="nombre-completo">
+                                                                                @{
+                                                                                    if (patent.Roh_dateFiled != null)
+                                                                                    {
+                                                                                            <span about="@patent.GNOSSID" property="@patent.GetPropertyURI(nameof(patent.Roh_dateFiled))"><b> @patent.Roh_dateFiled </b></span>
+                                                                                    }
+                                                                                    if (patent.Roh_ownerOrganizationTitle != null)
+                                                                                    {
+                                                                                            <span about="@patent.GNOSSID" property="@patent.GetPropertyURI(nameof(patent.Roh_ownerOrganizationTitle))"> @patent.Roh_ownerOrganizationTitle</span>
+                                                                                    }
+                                                                                }
+                                                                            </p>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </article>
+                                                }
+
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
