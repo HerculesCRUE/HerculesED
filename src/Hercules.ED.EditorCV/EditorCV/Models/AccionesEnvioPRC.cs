@@ -753,7 +753,7 @@ where {{
                     client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
                     var request = new RestRequest(Method.PUT);
                     request.AddJsonBody(PRC);
-                    string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
+                    string jsonString = JsonConvert.SerializeObject(PRC);
                     response = client.Execute(request);
                 }
                 else
@@ -762,7 +762,7 @@ where {{
                     client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
                     var request = new RestRequest(Method.POST);
                     request.AddJsonBody(PRC);
-                    string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
+                    string jsonString = JsonConvert.SerializeObject(PRC);
                     response = client.Execute(request);
                 }
 
