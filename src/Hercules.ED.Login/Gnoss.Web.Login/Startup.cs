@@ -10,8 +10,7 @@ using Es.Riam.Gnoss.UtilServiciosWeb;
 using Es.Riam.OpenReplication;
 using Es.Riam.Util;
 using Gnoss.Web.Login;
-using Gnoss.Web.Login.Open.SAML;
-using Gnoss.Web.Login.SAML;
+using Gnoss.Web.Login.Open;
 using ITfoxtec.Identity.Saml2;
 using ITfoxtec.Identity.Saml2.MvcCore.Configuration;
 using ITfoxtec.Identity.Saml2.Schemas.Metadata;
@@ -114,29 +113,37 @@ namespace Gnoss.Web.Login
                 RevocationMode = Configuration["Saml2:RevocationMode"];
             }
 
-            services.Configure<Saml2Configuration>(saml2Configuration =>
+            bool useSAML = false;
+            if (!string.IsNullOrEmpty(IdPMetadata) && !string.IsNullOrEmpty(Issuer) && !string.IsNullOrEmpty(SignatureAlgorithm) && !string.IsNullOrEmpty(CertificateValidationMode) && !string.IsNullOrEmpty(RevocationMode))
             {
-                saml2Configuration.Issuer = Issuer;
-                saml2Configuration.SignatureAlgorithm = SignatureAlgorithm;
-                saml2Configuration.CertificateValidationMode = (X509CertificateValidationMode)Enum.Parse(typeof(X509CertificateValidationMode), CertificateValidationMode, true);
-                saml2Configuration.RevocationMode = (X509RevocationMode)Enum.Parse(typeof(X509RevocationMode), RevocationMode, true);
-                saml2Configuration.AllowedAudienceUris.Add(Issuer);
-                
-                var entityDescriptor = new EntityDescriptor();
-                entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(IdPMetadata));
-                if (entityDescriptor.IdPSsoDescriptor != null)
-                {
-                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
-                    saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
-                    saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
-                }
-                else
-                {
-                    throw new Exception("IdPSsoDescriptor not loaded from metadata.");
-                }
-            });
+                useSAML = true;
+            }
 
+            if (useSAML)
+            {
+                services.Configure<Saml2Configuration>(saml2Configuration =>
+                {
+                    saml2Configuration.Issuer = Issuer;
+                    saml2Configuration.SignatureAlgorithm = SignatureAlgorithm;
+                    saml2Configuration.CertificateValidationMode = (X509CertificateValidationMode)Enum.Parse(typeof(X509CertificateValidationMode), CertificateValidationMode, true);
+                    saml2Configuration.RevocationMode = (X509RevocationMode)Enum.Parse(typeof(X509RevocationMode), RevocationMode, true);
+                    saml2Configuration.AllowedAudienceUris.Add(Issuer);
 
+                    var entityDescriptor = new EntityDescriptor();
+                    entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(IdPMetadata));
+                    if (entityDescriptor.IdPSsoDescriptor != null)
+                    {
+                        saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
+                        saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
+                        saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
+                    }
+                    else
+                    {
+                        throw new Exception("IdPSsoDescriptor not loaded from metadata.");
+                    }
+                });
+
+            }
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "_myAllowSpecificOrigins",
@@ -149,7 +156,7 @@ namespace Gnoss.Web.Login
                     builder.AllowCredentials();
                 });
             });
-            string bdType = "";            
+            string bdType = "";
             if (environmentVariables.Contains("connectionType"))
             {
                 bdType = environmentVariables["connectionType"] as string;
@@ -164,10 +171,7 @@ namespace Gnoss.Web.Login
                 services.AddScoped(typeof(DbContextOptions<EntityContextBASE>));
             }
             services.AddSingleton(typeof(ConfigService));
-            services.AddSingleton(typeof(ConfigServiceSAML));
-
-
-            
+            services.AddSingleton(typeof(ConfigServiceLogin));
 
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
 
@@ -242,8 +246,10 @@ namespace Gnoss.Web.Login
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gnoss.Web.Login", Version = "v1" });
             });
-
-            services.AddSaml2();
+            if (useSAML)
+            {
+                services.AddSaml2();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
