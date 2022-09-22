@@ -67,7 +67,7 @@ namespace Gnoss.Web.Login
             services.AddScoped(typeof(UtilServicios));
             services.AddScoped<IServicesUtilVirtuosoAndReplication, ServicesVirtuosoAndBidirectionalReplicationOpen>();
 
-            //services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
+            services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
             //services.Configure<Saml2Configuration>(saml2Configuration =>
             //{
             //    saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
