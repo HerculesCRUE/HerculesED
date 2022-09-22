@@ -47,7 +47,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             this.bareer = bareer;
             this.ds = ds;
             mResourceApi = pResourceApi;
-            tuplaTesauro = ObtenerDatosTesauro();            
+            tuplaTesauro = ObtenerDatosTesauro();
         }
 
         /// <summary>
@@ -65,15 +65,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
                     request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
-                    //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
@@ -124,37 +119,35 @@ namespace WoSConnect.ROs.WoS.Controllers
         {
             ROWoSControllerJSON info = new ROWoSControllerJSON(this);
             int n = 0;
-            List<Publication> sol = new List<Publication>();
+            List<Publication> listaResultados = new List<Publication>();
             int numItems = 100;
             bool continuar = true;
+
             while (continuar)
             {
-                //TODO: Cambiar fecha de publicación por fecha de modificación.
                 Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=AI=({orcid})&count={numItems}&firstRecord={(numItems * n) + 1}&publishTimeSpan={date}%2B3000-12-31");
-                //Uri url = new Uri($@"{baseUri}api/wos/citing?databaseId=WOK&uniqueId=WOS:000624784700001&count={numItems}&firstRecord={(numItems * n) + 1}&publishTimeSpan=1500-01-01%2B3000-12-31"); //&publishTimeSpan={date}%2B3000-12-31
-                //Uri url = new Uri($@"{baseUri}api/wos/references?databaseId=WOK&uniqueId=WOS:000624784700001&count={numItems}&firstRecord={(numItems * n) + 1}"); //
-                //Uri url = new Uri($@"{baseUri}api/wos?databaseId=WOK&uniqueId=WOS:000270372400005"); //&publishTimeSpan={date}%2B3000-12-31
-                n++;
                 string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                n++;                
+
                 try
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                    List<Publication> nuevas = info.getListPublicatio(objInicial, tuplaTesauro.Item2, mResourceApi);
-                    sol.AddRange(nuevas);
+                    List<Publication> nuevas = info.getListPublication(objInicial, tuplaTesauro.Item2, mResourceApi);
+                    listaResultados.AddRange(nuevas);
                     if (nuevas.Count == 0)
                     {
                         continuar = false;
                     }
                 }
-                catch (Exception error)
+                catch (Exception e)
                 {
-                    throw error;
+                    mResourceApi.Log.Error(e.Message);
                 }
             }
 
-            if (sol.Any())
+            if (listaResultados.Any())
             {
-                return sol;
+                return listaResultados;
             }
             else
             {
@@ -189,7 +182,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true, tuplaTesauro.Item2, mResourceApi);
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 return publicacionFinal;
             }
@@ -232,7 +225,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             }
 
             return new Tuple<Dictionary<string, string>, Dictionary<string, string>>(dicAreasBroader, dicAreasNombre);
-        }       
+        }
 
         /// <summary>
         /// Obtiene una publicación mediante el DOI.
@@ -261,7 +254,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true, tuplaTesauro.Item2, mResourceApi);
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 return publicacionFinal;
             }
@@ -306,7 +299,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             objInicial = JsonConvert.DeserializeObject<Root>(result);
                         }
-                        catch (Exception error)
+                        catch (Exception)
                         {
                             continue; // Si no puede parsear el objeto, que pase al siguiente.
                         }
@@ -323,7 +316,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 return listaPublicaciones;
             }

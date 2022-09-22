@@ -105,16 +105,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 try
                 {
-                    Log.Information("Haciendo petición a Scopus...");
-                    objInicial_Scopus = llamada_Scopus_Doi(pDoi);
-                }
-                catch
-                {
-                    Log.Information("No se ha podido recuperar los datos de Scopus...");
-                }
-
-                try
-                {
                     Log.Information("Haciendo petición a Wos...");
                     objInicial_woS = llamada_WoS_Doi(pDoi);
                 }
@@ -122,6 +112,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     Log.Information("No se ha podido recuperar los datos de Wos...");
                 }
+
+                try
+                {
+                    Log.Information("Haciendo petición a Scopus...");
+                    objInicial_Scopus = llamada_Scopus_Doi(pDoi);
+                }
+                catch
+                {
+                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                }                
 
                 try
                 {
@@ -137,16 +137,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 try
                 {
-                    Log.Information("Haciendo petición a Scopus...");
-                    objInicial_Scopus = llamada_Scopus(pOrcid, pDate);
-                }
-                catch
-                {
-                    Log.Information("No se ha podido recuperar los datos de Scopus...");
-                }
-
-                try
-                {
                     Log.Information("Haciendo petición a Wos...");
                     objInicial_woS = llamada_WoS(pOrcid, pDate);
                 }
@@ -154,6 +144,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     Log.Information("No se ha podido recuperar los datos de Wos...");
                 }
+
+                try
+                {
+                    Log.Information("Haciendo petición a Scopus...");
+                    objInicial_Scopus = llamada_Scopus(pOrcid, pDate);
+                }
+                catch
+                {
+                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                }                
 
                 try
                 {
@@ -576,8 +576,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             // TODO: Preparación de ejemplo.
-            //string data = JsonConvert.SerializeObject(listaPubsFinal);
-            //File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
+            string data = JsonConvert.SerializeObject(listaPubsFinal);
+            File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
 
             return listaPubsFinal;
         }

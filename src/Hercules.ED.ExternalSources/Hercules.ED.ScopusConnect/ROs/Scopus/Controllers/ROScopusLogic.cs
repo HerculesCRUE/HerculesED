@@ -13,19 +13,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
     {
 
         protected string bareer;
-        //ROScopusControllerJSON info = new ROScopusControllerJSON();
-       // protected string baseUri { get; set; }
 
-        // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
 
         public static string apiKey = "75f4ab3fac56f42ac83cdeb7c98882ca";
-        public ROScopusLogic()
-        {
-            //this.bareer = bareer;
-        }
 
-        // TODO: Esto no se si abra que cambiarlo o no.... 
         /// <summary>
         /// A Http calls function
         /// </summary>
@@ -40,16 +32,11 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    request.Headers.Add("X-ELS-APIKey", apiKey); //TODO: Token
-                    //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
+                    request.Headers.Add("X-ELS-APIKey", apiKey);
                     request.Headers.Add("Accept", "application/json");
 
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
                         foreach (var item in headers)
                         {
                             request.Headers.Add(item.Key, item.Value);
@@ -93,34 +80,34 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="ID"></param>
-        /// <param date="date">year-month-day</param>
-
+        /// <param name="name"></param>
+        /// <param name="date"></param>
+        /// <param name="uri"></param>
         /// <returns></returns>
         public List<Publication> getPublications(string name, string date = "1500-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&date={1}%&start={2}")//AU-ID?{0}")
         {
-            string date_scopus = date.Substring(0, 4) + "-" + (DateTime.Now.Date.Year+1).ToString();
-            
+            // Fecha requerida para Scopus.
+            string date_scopus = date.Substring(0, 4) + "-" + (DateTime.Now.Date.Year + 1).ToString();
+
             ROScopusControllerJSON info = new ROScopusControllerJSON(this);
-            
+
             int n = 0;
-            List<Publication> sol = new List<Publication>();
+            List<Publication> listaResultados = new List<Publication>();
             int result = 1;
-            int cardinalidad =1;
-            while (cardinalidad >= result )
+            int cardinalidad = 1;
+            while (cardinalidad >= result)
             {
-    
                 uri = "content/search/scopus?query=ORCID(\"{0}\")&apikey={1}&date={2}&start={3}";
                 Uri url = new Uri("https://api.elsevier.com/" + string.Format(uri, name, apiKey, date_scopus, result.ToString()));
-                n=n+1;
-                result = 200*n;
+                n++;
+                result = 200 * n;
 
-                String info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                if (!info_publication.StartsWith( "{\"service-error\":"))//{\"status\":{\"statusCode\":\"INVALID_INPUT\",\"statusText\":\"Error translating query\"}}}")
-                {            
+                string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                if (!info_publication.StartsWith("{\"service-error\":"))
+                {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
                     List<Publication> nuevas = info.getListPublicatio(objInicial, date);
-                    sol.AddRange(nuevas);
+                    listaResultados.AddRange(nuevas);
                     cardinalidad = 0;
                     if (objInicial.SearchResults.entry != null)
                     {
@@ -128,7 +115,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     }
                 }
             }
-            return sol;
+            return listaResultados;
         }
 
         /// <summary>
@@ -158,16 +145,16 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 return publicacionFinal;
             }
 
             return publicacionFinal;
         }
-    
+
         public float getHIndex(string pOrcid)
-        {    
+        {
             try
             {
                 // Clase.
@@ -180,10 +167,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 // Obtención de datos.
                 if (!string.IsNullOrEmpty(result) && !result.StartsWith("{\"service-error\":"))
                 {
-                    
+
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 return 0;
             }

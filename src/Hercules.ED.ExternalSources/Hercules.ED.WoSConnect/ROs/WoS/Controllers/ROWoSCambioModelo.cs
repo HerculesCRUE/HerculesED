@@ -62,51 +62,40 @@ namespace WoSConnect.ROs.WoS.Controllers
         }
 
 
-        public List<Publication> getListPublicatio(Root objInicial, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
+        public List<Publication> getListPublication(Root objInicial, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
-            List<Publication> sol = new List<Publication>();
-            if (objInicial != null)
+            List<Publication> listaResultados = new List<Publication>();
+            if (objInicial != null && objInicial.Data != null && objInicial.Data.Records != null
+                && objInicial.Data.Records.records != null && objInicial.Data.Records.records.REC != null)
             {
-                if (objInicial.Data != null)
+                foreach (PublicacionInicial rec in objInicial.Data.Records.records.REC)
                 {
-                    if (objInicial.Data.Records != null)
+                    try
                     {
-                        if (objInicial.Data.Records.records != null)
+                        Publication publicacion = cambioDeModeloPublicacion(rec, true, pTuplaTesauro, pResourceApi);
+
+                        if (publicacion != null)
                         {
-                            if (objInicial.Data.Records.records.REC != null)
+                            if (this.advertencia != null)
                             {
-
-                                foreach (PublicacionInicial rec in objInicial.Data.Records.records.REC)
-                                {
-                                    try
-                                    {
-                                        Publication publicacion = cambioDeModeloPublicacion(rec, true, pTuplaTesauro, pResourceApi);
-
-                                        if (publicacion != null)
-                                        {
-                                            if (this.advertencia != null)
-                                            {
-                                                publicacion.problema = this.advertencia;
-                                                this.advertencia = null;
-                                            }
-                                            sol.Add(publicacion);
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                    }
-                                }
+                                publicacion.problema = this.advertencia;
+                                this.advertencia = null;
                             }
+
+                            listaResultados.Add(publicacion);
                         }
+                    }
+                    catch (Exception)
+                    {
+
                     }
                 }
             }
 
-            return sol;
+            return listaResultados;
         }
 
-        public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, Boolean publicacion_principal, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
+        public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, bool publicacion_principal, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
             Publication publicacion = new Publication();
             publicacion.typeOfPublication = getType(objInicial);
@@ -224,7 +213,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <summary>
         /// Obtiene el idioma de la publicación.
         /// </summary>
-        /// <param name="objInicial">Publicación a obtener el idioma.</param>
+        /// <param name="pPublicacionIn">Publicación a obtener el idioma.</param>
         /// <returns>Idioma.</returns>
         public string getLanguage(PublicacionInicial pPublicacionIn)
         {
@@ -583,9 +572,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch
                     {
-
+                        // Error en obtención del ORCID.
                     }
 
                     // RELLENAR ORCID QUE NO HEMOS CONSEGUIDO OBTENER POR ID.
