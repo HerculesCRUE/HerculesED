@@ -32,17 +32,17 @@ var edicionCV = {
             var rdfType = $($(this).attr('href')).find('.cvTab').attr('rdftype');
             that.loadTab(entityID, rdfType);
         });
-		
+
 		if(getParam('tab')!=null)
 		{
-			$('a.nav-link[property="'+getParam('tab')+'"]').click();			
+			$('a.nav-link[property="'+getParam('tab')+'"]').click();
 		}else
-		{		
+		{
 			$('#identificacion-tab').click();
 		}
-		
-		
-		
+
+
+
         return;
     },
     //Métodos de pestañas
@@ -50,7 +50,7 @@ var edicionCV = {
         var that = this;
         $('div[about="' + entityID + '"] .col-12.col-contenido').empty();
         MostrarUpdateProgress();
-		
+
         $.get(urlEdicionCV + 'GetTab?pCVId='+that.idCV+'&pId=' + entityID + "&pRdfType=" + rdfType + "&pLang=" + lang+ "&pSection=0", null, function(data) {
             that.printTab(entityID, data);
             if (!$('div#modal-posible-duplicidad').hasClass('visible')) {
@@ -127,7 +127,7 @@ var edicionCV = {
         return;
     },
 	printTabPublic: function(entityID, data, section) {
-		for (var i = 0; i < data.sections.length; i++) {	
+		for (var i = 0; i < data.sections.length; i++) {
 			if (data.sections[i].items.length == 0) {
 				continue;
 			} else if(data.sections[i].identifier==section) {
@@ -146,10 +146,10 @@ var edicionCV = {
 		if (data.entityID != null) {
 			$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printPersonalData(data));
 		} else {
-			for (var i = 0; i < data.sections.length; i++) {	
+			for (var i = 0; i < data.sections.length; i++) {
 				if(section==null)
 				{
-					$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));	
+					$('div[about="' + entityID + '"] .col-12.col-contenido').append(this.printTabSection(data.sections[i]));
 				}else if(data.sections[i].identifier==section)
 				{
 					$('div[about="' + entityID + '"] .col-12.col-contenido div[section="'+data.sections[i].identifier+'"]').replaceWith(this.printTabSection(data.sections[i]));
@@ -186,14 +186,14 @@ var edicionCV = {
 		}
 		accionesPlegarDesplegarModal.init();
 		this.engancharComportamientosCV();
-		this.mostrarTraducciones();		
+		this.mostrarTraducciones();
 	},
     printSectionItem: function(contenedor,item,identifier,rdftype,entityID) {
-		this.printEditItemCV('#' + contenedor, item, identifier, rdftype, entityID);		
-		
+		this.printEditItemCV('#' + contenedor, item, identifier, rdftype, entityID);
+
 		var htmlGuardar = `	<div class="form-actions">
 							<a class="btn btn-primary">${GetText('CV_GUARDAR')}</a>
-						</div>`;						
+						</div>`;
 		$('#' + contenedor).append(htmlGuardar);
 	}
 	//Fin de métodos de pestañas
@@ -252,7 +252,7 @@ var edicionCV = {
                 }
                 if (value != '' && property.type == 'date') {
                     value = value.substring(6, 8) + "/" + value.substring(4, 6) + "/" + value.substring(0, 4);
-                }				
+                }
                 if (value != '') {
 					if(property.type=="image")
 					{
@@ -342,8 +342,8 @@ var edicionCV = {
 
         var expanded = "";
         var show = "";
-        if (data.items != null) {			
-			var tieneElementosCargados=Object.values(data.items).some(function (item) {				
+        if (data.items != null) {
+			var tieneElementosCargados=Object.values(data.items).some(function (item) {
 				return item!=null;
 			});
 			var tieneItems=Object.keys(data.items).length > 0;
@@ -353,22 +353,22 @@ var edicionCV = {
                 expanded = "true";
                 show = "show";
             } else {
-                //No desplegado	
+                //No desplegado
                 expanded = "false";
             }
-			
+
 			var htmlListItems='';
 			if(tieneElementosCargados)
 			{
 				htmlListItems=this.printHtmlListItems(data.items, onlyPublic);
 			}
-			
+
 			var notLoaded='';
 			if(tieneItems && !tieneElementosCargados)
 			{
 				notLoaded='notLoaded';
 			}
-			
+
             //TODO texto ver items
 			let aniadirEntidad = `<ul class="no-list-style d-flex align-items-center">
 									<li>
@@ -396,7 +396,7 @@ var edicionCV = {
 					<div id="${id2}" class="panel-collapse collapse ${show}" role="tabpanel">
 						<div class="panel-body">
 							<div class="acciones-listado acciones-listado-cv">
-								<div class="wrap">								
+								<div class="wrap">
 								</div>
 								<div class="wrap">
 									${!onlyPublic ? aniadirEntidad : ''}
@@ -410,9 +410,9 @@ var edicionCV = {
 												</span>
 											</div>
 										</div>
-									</div>    
+									</div>
 								</div>
-							</div>                        
+							</div>
 							<div class="resource-list listView">
 								<div class="resource-list-wrap">
 									${htmlListItems}
@@ -429,14 +429,14 @@ var edicionCV = {
 												<a href="javascript: void(0)" class="item-dropdown" items="100">Ver 100 items</a>
 											</div>
 										</div>
-										<nav>											
-											<ul class="pagination arrows">											
+										<nav>
+											<ul class="pagination arrows">
 											</ul>
-											<ul class="pagination numbers">	
+											<ul class="pagination numbers">
 												<li class="actual"><a href="javascript: void(0)" page="1">1</a></li>
 											</ul>
 										</nav>
-									</div>    
+									</div>
 								</div>
 							</div>
 						</div>
@@ -451,8 +451,8 @@ var edicionCV = {
                 expanded = "true";
                 show = "show";
             } else {
-                //No desplegado	
-                expanded = "false";                
+                //No desplegado
+                expanded = "false";
             }
 			data.item.idContenedor = 'x'+RandomGuid();
             var htmlSection = `
@@ -681,7 +681,7 @@ var edicionCV = {
     printHtmlListItemIdiomas: function(data) {
         if (data.multilang!=null && Object.entries(data.multilang).length>0) {
 			let listado=``;
-			
+
 			for (const [key, value] of Object.entries(data.multilang)) {
 				let css='';
 				if(value)
@@ -694,7 +694,7 @@ var edicionCV = {
                                 </span>
                             </div>`;
 			}
-			
+
             return `<div class="traducciones-wrapper">
                             ${listado}
                         </div>`;
@@ -703,7 +703,7 @@ var edicionCV = {
     },
     printHtmlListItemAcciones: function(data, id) {
         var htmlAcciones = "";
-		
+
 		//Si la publicación está en validación o pendiente no se permite el envio a produccion cientifica
 		if(data.sendPRC){
 			htmlAcciones += `<li>
@@ -826,15 +826,15 @@ var edicionCV = {
 					${htmlProp}
 				</div>`;
     },
-    repintarListadoTab: function(id,noEngancharComportamientosCV, mostrarSoloConflictos, mostrarSoloNuevos) {		
+    repintarListadoTab: function(id,noEngancharComportamientosCV, mostrarSoloConflictos, mostrarSoloNuevos) {
 		var sectionItem=$('.panel-group[section="' + id + '"]');
 		var numResultadosPagina = parseInt(sectionItem.find(' .panNavegador .dropdown-toggle span').attr('items'));
         var texto = sectionItem.find(' .txtBusqueda').val();
-		
+
 		if(mostrarSoloConflictos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarSimilitudes'))
 		{
 			mostrarSoloConflictos = true;
-		}		
+		}
 		else if(mostrarSoloNuevos != null && sectionItem.find('.acciones-listado .checkAllCVWrapper input[type="checkbox"]').hasClass('mostrarNuevos'))
 		{
 			mostrarSoloNuevos = true;
@@ -843,22 +843,22 @@ var edicionCV = {
 			mostrarSoloConflictos = false;
 			mostrarSoloNuevos = false;
 		}
-		
+
         var paginaActual = parseInt(sectionItem.find(' .panNavegador .pagination.numbers li.actual a').attr('page'));
 		var ordenItem=sectionItem.find(' .ordenar.dropdown.orders .texto');
         var ordenProperty = ordenItem.attr('property');
         var ordenAsc = ordenItem.attr('asc');
-		
-		
+
+
         //paginaActual
         //orden
 
         var NUM_PAG_INICIO = 3;
         var NUM_PAG_PROX_CENTRO = 2;
         var NUM_PAG_FIN = 3;
-		
-        var articulos = $('div[section="' + id + '"] article');		
-		
+
+        var articulos = $('div[section="' + id + '"] article');
+
 		var ordenPropertySplit=[];
 		var ordenAscSplit=[];
 		if(ordenProperty!=null)
@@ -866,13 +866,13 @@ var edicionCV = {
 			ordenPropertySplit = ordenProperty.split('||');
             ordenAscSplit = ordenAsc.split('||');
 		}
-		
-		
+
+
 		//Ordenes por defecto
 		var orderDefaultText = $('div[section="' + id + '"] article div.orderItems div[property="default"]').map((i, e) => {
 			return $(e).text();
 		});
-		
+
 		//Ordenes auxiliares
 		var ordersPropertyText={};
 		for (var i = 0; i < ordenPropertySplit.length; i++) {
@@ -920,7 +920,7 @@ var edicionCV = {
                 return 0;
 
             }
-        });			
+        });
         $('div[section="' + id + '"] article').remove();
         $('div[section="' + id + '"] .resource-list .resource-list-wrap').prepend(articulos);
 
@@ -932,7 +932,7 @@ var edicionCV = {
 			var existe=texto=='';
             var existeEnTitulo = existe || EliminarAcentos($(this).find('h2').text()).toLowerCase().indexOf(texto) > -1;
             var existeEnPropiedad = existe || EliminarAcentos($(this).find('.content-wrap .group p:not(.title),.content-wrap .group li').text()).toLowerCase().indexOf(texto) > -1;
-            			
+
 			if(existe ||existeEnTitulo || existeEnPropiedad)
 			{
 				if (mostrarSoloConflictos) {
@@ -951,7 +951,7 @@ var edicionCV = {
 				}else{
 					numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
 					if (numPaginas == paginaActual) {
-						$(this).show();					
+						$(this).show();
 					}
 					numTotal++;
 				}
@@ -960,7 +960,7 @@ var edicionCV = {
         });
         $('div[section="' + id + '"] .pagination.numbers').empty();
         $('div[section="' + id + '"] .pagination.arrows').empty();
-		
+
         ///INICIO/
         for (i = 1; i <= NUM_PAG_INICIO; i++) {
             if (i > numPaginas) //Hemos excedio el número máximo de páginas, así que dejamos de pintar.
@@ -973,7 +973,7 @@ var edicionCV = {
                 $('div[section="' + id + '"] .pagination.numbers').append(`<li ><a href="javascript: void(0)" page="${i}" >${i}</a></li>`);
             }
         }
-		
+
         if (numPaginas > NUM_PAG_INICIO) //Continuamos si ha más páginas que las que ya hemos pintado
         {
             var inicioRango = paginaActual - NUM_PAG_PROX_CENTRO;
@@ -1061,16 +1061,16 @@ var edicionCV = {
         } else {
             $('div[section="' + id + '"] .pagination.arrows').append(`<li><a href="javascript: void(0)" page="${(paginaActual + 1)}" class="ultimaPagina">Página siguiente</a></li>`);
         }
-		
-		if(!$('div[section="' + id + '"]').hasClass('notLoaded'))		
-		{		
-			$('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');     
+
+		if(!$('div[section="' + id + '"]').hasClass('notLoaded'))
+		{
+			$('div[section="' + id + '"] .numResultados').text('(' + $('div[section="' + id + '"] article').length + ')');
 		}
 		if(noEngancharComportamientosCV==null || !noEngancharComportamientosCV)
 		{
-			this.engancharComportamientosCV($('div#contenedorOtrosMeritos').length != 0);				
+			this.engancharComportamientosCV($('div#contenedorOtrosMeritos').length != 0);
 		}
-        accionesPlegarDesplegarModal.init();	
+        accionesPlegarDesplegarModal.init();
 		tooltipsAccionesRecursos.init();
 		tooltipsCV.init();
 		$('#navegacion-cv li.nav-item a').tooltip('dispose');
@@ -1100,9 +1100,9 @@ var edicionCV = {
 			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown.orders .dropdown-toggle .texto').attr('property', property);
 			$('.panel-group[section="' + sectionID + '"] .ordenar.dropdown.orders .dropdown-toggle .texto').attr('asc', asc);
 		}
-		else{			
+		else{
 			dropdown.text(text);
-			if(property!=null){			
+			if(property!=null){
 				dropdown.attr('property', property);
 				dropdown.attr('asc', asc);
 			}
@@ -1144,7 +1144,7 @@ var edicionCV = {
 					montarTooltip.comportamiento($(key));
 				}
                 OcultarUpdateProgress();
-				
+
             });
         }
 
@@ -1160,7 +1160,7 @@ var edicionCV = {
         $(contenedor).attr('rdfTypeTab', rdfTypeTab);
         //TODO ¿se usa, cambiar de nombre?
         $(contenedor).attr('entityload', entityID);
-		
+
 		let multiidioma= data.sections.some(function (section) {
 			return section.rows.some(function (row) {
 				return row.properties.some(function (property) {
@@ -1168,7 +1168,7 @@ var edicionCV = {
 				});
 			});
 		});
-		
+
 		if(multiidioma)
 		{
 			let htmlLangs='<ul class="nav nav-tabs grey" id="" role="tablist">';
@@ -1193,7 +1193,7 @@ var edicionCV = {
 					case 'fr':
 						nombreIdioma=GetText('FRANCES');
 						break;
-				}			
+				}
 				htmlLangs+=`	<li class="nav-item">
 				<a href="javascript: void(0);" lang=${language} class="nav-link">${nombreIdioma}</a>
 			</li>`;
@@ -1201,7 +1201,7 @@ var edicionCV = {
 			htmlLangs+='</ul>';
 			$(contenedor).append(htmlLangs);
 		}
-		
+
         for (var i = 0; i < data.sections.length; i++) {
             var collapsed = ""
             var ariaexpanded = "true";
@@ -1231,8 +1231,8 @@ var edicionCV = {
     printEditEntity: function(modalContenedor, data, rdfType) {
         $(modalContenedor + ' form').empty();
         $(modalContenedor + ' form').attr('entityid', data.entityID);
-        $(modalContenedor + ' form').attr('rdftype', data.rdftype);		
-		
+        $(modalContenedor + ' form').attr('rdftype', data.rdftype);
+
         for (var i = 0; i < data.sections.length; i++) {
             var collapsed = ""
             var ariaexpanded = "true";
@@ -1241,7 +1241,7 @@ var edicionCV = {
                 collapsed = "collapsed";
                 ariaexpanded = "false";
                 show = "";
-            }			
+            }
             var section =
                 `<div class="simple-collapse">
 								<a class="collapse-toggle ${collapsed}" data-toggle="collapse" href="#collapse-${i}" role="button" aria-expanded="${ariaexpanded}" aria-controls="collapse-${i}">${data.sections[i].title}</a>
@@ -1441,26 +1441,26 @@ var edicionCV = {
 					cssDependency+=' hasdependency';
 					if(property.dependency.parentDependencyValue!=null)
 					{
-						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;			
+						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;
 					}else if(property.dependency.parentDependencyValueDistinct!=null)
 					{
-						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;			
+						htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;
 					}
 				}
-				
+
 				htmlInput+=`<input propertyorigin="${property.property}_aux" propertyrdf="${property.property}" value="${value}" type="hidden" class="form-control not-outline ${cssDependency} " ${htmlDependency} >`;
 			}
             return `<div class="form-group ${css}" ${rdftype}>
 					<div style="display: flex;">
 						<label class="control-label d-block">${property.title}${required}</label>
 						${spanTooltip}
-					</div> 
+					</div>
 					${htmlInput}
 				</div>`;
         } else {
             if (property.multiple) {
                 css += ' multiple';
-            }			
+            }
             var htmlMultiple = `<div class='item aux'>`;
             if (property.type == 'auxEntity' || property.type == 'auxEntityAuthorList' || property.type == 'thesaurus') {
                 htmlMultiple = `<div class='item aux entityaux' propertyrdf='${property.property}' rdftype='${property.entityAuxData.rdftype}' about=''>`;
@@ -1640,13 +1640,13 @@ var edicionCV = {
 
 				if(property.dependency.parentDependencyValue!=null)
 				{
-					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;		
-		
+					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvalue="${property.dependency.parentDependencyValue}"` ;
+
 				}else if(property.dependency.parentDependencyValueDistinct!=null)
 				{
-					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;			
+					htmlDependency=` dependencyproperty="${property.dependency.parent}" dependencypropertyvaluedistinct="${property.dependency.parentDependencyValueDistinct}"` ;
 				}
-				
+
 			}
             return `<div ${htmlDependency} class="form-group ${css}" ${order} ${rdftype}>
 						<div style="display: flex;">
@@ -1657,7 +1657,7 @@ var edicionCV = {
 				</div>`;
         }
     },
-    printPropertyEditImage: function(property, placeholder, value) {    
+    printPropertyEditImage: function(property, placeholder, value) {
 		var imagen="";
 		if(value!=null)
 		{
@@ -1665,7 +1665,7 @@ var edicionCV = {
 		}
         return `<div class="image-uploader js-image-uploader" id="foto-perfil-cv">
 					<div class="image-uploader__preview">
-						${imagen}				
+						${imagen}
 					</div>
 					<div class="image-uploader__drop-area">
 						<div class="image-uploader__icon">
@@ -1736,22 +1736,22 @@ var edicionCV = {
 				}
 			}
         }
-		
+
 		let htmlDependency = '';
 		if(dependency!=null)
 		{
 			css+=' hasdependency';
 			if(dependency.parentDependencyValue!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
-	
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;
+
 			}else if(dependency.parentDependencyValueDistinct!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;
 			}
-			
+
 		}
-		
+
 		let html='';
 		if(pMultilang)
 		{
@@ -1798,7 +1798,7 @@ var edicionCV = {
 				if(autocompleteConfig.graph!=null)
 				{
 					atributesAutocomplete+=' graphautocomplete="'+autocompleteConfig.graph+'" ';
-				}			
+				}
 				if(autocompleteConfig.cache!=null)
 				{
 					atributesAutocomplete+=' cache="'+autocompleteConfig.cache+'" ';
@@ -1806,7 +1806,7 @@ var edicionCV = {
 				if(autocompleteConfig.getEntityId)
 				{
 					atributesAutocomplete+=' entityidautocomplete="true" ';
-				}		
+				}
 				if(autocompleteConfig.propertiesAux!=null)
 				{
 					atributesAutocomplete+=' propertyautocompleteaux="'+autocompleteConfig.propertiesAux.join('|')+'" ';
@@ -1814,28 +1814,28 @@ var edicionCV = {
 				if(autocompleteConfig.printAux!=null)
 				{
 					atributesAutocomplete+=' propertyautocompleteprint="'+autocompleteConfig.printAux+'" ';
-				}				
+				}
 				atributesAutocomplete+=' entityidautocomplete="true" ';
 			}
         }
-		
+
 		var htmlDependency = '';
 		if(dependency!=null)
 		{
 			css+=' hasdependency';
 			if(dependency.parentDependencyValue!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
-	
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;
+
 			}else if(dependency.parentDependencyValueDistinct!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
-			}			
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;
+			}
 		}
 
         return `<input ${disabled} ${atributesAutocomplete} propertyrdf="${property}_aux" placeholder="${placeholder}" value="${value}" value="${value}" onfocus="${action}" type="text" class="form-control not-outline autocompleteentity ${css}" ${htmlDependency}>`;
     },
-    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency,pEntity_cv) 
+    printPropertyEditNumberInput: function(property, placeholder, value, required, pDisabled, dependency,pEntity_cv)
 	{
         var css = "";
         if (required) {
@@ -1855,14 +1855,14 @@ var edicionCV = {
 		if(dependency!=null)
 		{
 			css+=' hasdependency';
-			
+
 			if(dependency.parentDependencyValue!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;		
-	
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}"` ;
+
 			}else if(dependency.parentDependencyValueDistinct!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;			
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}"` ;
 			}
 		}
         return `<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${value}" type="number" class="form-control not-outline ${css}" ${htmlDependency}>`;
@@ -1886,12 +1886,12 @@ var edicionCV = {
 		{
 			if(dependency.parentDependencyValue!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}" class="hasdependency"` ;		
-	
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvalue="${dependency.parentDependencyValue}" class="hasdependency"` ;
+
 			}else if(dependency.parentDependencyValueDistinct!=null)
 			{
-				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}" class="hasdependency"` ;			
-			}			
+				htmlDependency=` dependencyproperty="${dependency.parent}" dependencypropertyvaluedistinct="${dependency.parentDependencyValueDistinct}" class="hasdependency"` ;
+			}
 		}
         return `<input propertyrdf="${property}" value="${value}" type="hidden" ${htmlDependency}>
 		<input ${disabled} propertyrdf="${property}" placeholder="${placeholder}" value="${valueDate}" type="text" class="form-control aux not-outline form-group-date datepicker ${css}">
@@ -1911,8 +1911,8 @@ var edicionCV = {
             disabled = 'disabled';
 			css +=" disabled ";
         }
-		
-		
+
+
 		let html='';
 		if(pMultilang)
 		{
@@ -1930,8 +1930,8 @@ var edicionCV = {
                                     <div class="box">
                                         <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
 											format_bold
-                                        </span>        
-                                    </div>   
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div multilang="${language}" class="form-control not-outline ${css} visuell-view" propertyrdf="${property}" ${css.includes("disabled") ? "":"contenteditable"} placeholder="${placeholder}" type="text" >${valorIdioma}</div>
@@ -1945,13 +1945,13 @@ var edicionCV = {
                             <div class="box">
                                 <span class="material-icons editor-btn icon smaller" data-action="bold" data-tag-name="b" title="Bold">
                                    format_bold
-                                </span>        
-                            </div>   
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-control not-outline visuell-view ${css}" propertyrdf="${property}" ${disabled.length == 0 ? "contenteditable":""} placeholder="${placeholder}" type="text">${value}</div>
                 </div>`;
-            
+
 		//html+=`<textarea ${disabled} propertyrdf="${property}" placeholder="${placeholder}" type="text" class="form-control not-outline ${css}">${value}</textarea>`;
 		return html;
     },
@@ -1974,23 +1974,23 @@ var edicionCV = {
             css += " hasdependency";
             dependency = pComboDependency.parent;
         }
-		
+
 		var htmlDependency = '';
 		if(pDependency!=null)
 		{
 			css+=' hasdependency';
 			if(pDependency.parentDependencyValue!=null)
 			{
-				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvalue="${pDependency.parentDependencyValue}"` ;		
-	
+				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvalue="${pDependency.parentDependencyValue}"` ;
+
 			}else if(pDependency.parentDependencyValueDistinct!=null)
 			{
-				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvaluedistinct="${pDependency.parentDependencyValueDistinct}"` ;			
-			}			
+				htmlDependency=` dependencyproperty="${pDependency.parent}" dependencypropertyvaluedistinct="${pDependency.parentDependencyValueDistinct}"` ;
+			}
 		}
-		
-		
-		
+
+
+
         var selector = `<select ${disabled} ${htmlDependency} propertyrdf="${property}" class="js-select2 ${css}" dependency="${dependency}" data-select-search="true">`;
         for (var propiedad in pItems) {
             var propAux = '';
@@ -2006,9 +2006,9 @@ var edicionCV = {
         selector += "</select>";
         return selector;
     },
-    printThesaurus: function(property, thesaurusID, values, pItems, required, pDisabled) {        
+    printThesaurus: function(property, thesaurusID, values, pItems, required, pDisabled) {
         var css = "";
-        
+
         if (required) {
             css = "obligatorio";
         }
@@ -2231,7 +2231,7 @@ var edicionCV = {
 		var listadosTesauros = $(".entityauxcontainer.thesaurus");
 
 		//Añadimos enriquecidas al principio
-        $(listadosTesauros).each(function() {			
+        $(listadosTesauros).each(function() {
 			if(tesauroUser.length==1)
 			{
 				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
@@ -2240,12 +2240,12 @@ var edicionCV = {
 					tesauroUser.find('.simple-collapse-content .resource-list ul').prepend($(this).find('.simple-collapse-content .resource-list ul li'));
 				}
 			}
-			
+
 		});
-		
+
 		//Añadimos externas al principio
 		$(listadosTesauros).each(function() {
-			
+
 			if(tesauroUser.length==1)
 			{
 				var propActual=$(this).find('div.item.aux').attr('propertyrdf');
@@ -2254,10 +2254,10 @@ var edicionCV = {
 					tesauroUser.find('.simple-collapse-content .resource-list ul').prepend($(this).find('.simple-collapse-content .resource-list ul li'));
 				}
 			}
-			
+
 		});
-		
-		
+
+
 
         this.engancharComportamientosCV();
     },
@@ -2282,7 +2282,7 @@ var edicionCV = {
 		{
 			return;
 		}
-		
+
         var title = valoresTesauro.find(x => x.key == idItem).value;
 
         //var listado = item.parent().find('.item.aux.entityaux').find('ul.listadoTesauro');
@@ -2357,7 +2357,7 @@ var edicionCV = {
             if ($(this).attr('order') != null && $(this).attr('order') != '') {
                 var ordenProperty = $(this).attr('order');
 
-                //Ordenamos				
+                //Ordenamos
                 var maxOrder = 1;
                 $(items).each(function() {
                     var orderIn = $(this).children('input[propertyrdf="' + ordenProperty + '"]').val();
@@ -2468,7 +2468,7 @@ var edicionCV = {
 										</span>
 									</div>`;*/
                 }
-				
+
                 var htmlAcciones = `
 									<div class="simple-collapse-content">
 										<div class="acciones-listado acciones-listado-edicion">
@@ -2494,13 +2494,13 @@ var edicionCV = {
 				if(authorList)
 				{
 					var authorList='';
-					
+
 					var autores=$(this).find('div.item.added.entityaux');
-					
+
 					autores = autores.sort(function(a, b) {
 						var ordenA = $(a).find('input[propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment"]').val();
 						ordenA = parseInt(ordenA);
-						var ordenB = $(b).children('input[propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment"]').val();						
+						var ordenB = $(b).children('input[propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment"]').val();
 						ordenB = parseInt(ordenB);
 						if (ordenA > ordenB) {
 							return 1;
@@ -2510,14 +2510,14 @@ var edicionCV = {
 							return 0;
 						}
 					});
-					
-					
+
+
 					$(autores).each(function() {
 						var nombre=$(this).find('span[route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"]').text();
 						authorList+=`<li>${nombre}</li>`;
 					});
-					
-					
+
+
 					htmlAcciones=`	<div class="simple-collapse-content">
 										<div class="collapse show" id="collapse-lista-autores" style="">
 											<div class="simple-collapse-content">
@@ -2890,7 +2890,7 @@ var edicionCV = {
         data.pUrlPdf = documento;
 
         MostrarUpdateProgress();
-		
+
 		//Pintado tesauro y asignacion de etiquetas asociadas al mismo
 		var ul = $('ul.listadoTesauro.partial');
 		conseguirTesauro('researcharea', lang, '', ul, false, false, true, that, data);
@@ -2902,13 +2902,13 @@ var edicionCV = {
 			//Ocultamos todos los campos multiidioma que tienen idioma
 			contenedor.find('input.multilang[multilang],div.multilang[multilang], div.multilangcontainer[multilangcontainer]').hide();
 			//Mostramos todos los campos multiidioma que no tienen idioma
-			contenedor.find('input.multilang:not([multilang]),div.multilang:not([multilang]), div.multilangcontainer:not([multilangcontainer])').show();		
+			contenedor.find('input.multilang:not([multilang]),div.multilang:not([multilang]), div.multilangcontainer:not([multilangcontainer])').show();
 			//Hablitamos todos los campos q(que no sean campos deshabilitados)
-			contenedor.find('input:not(.disabled),select:not(.disabled)').removeAttr('disabled');		
-            contenedor.find('div.edmaTextEditor:not(.disabled)').removeAttr('disabled').find('.visuell-view').attr('contenteditable',"true");		
+			contenedor.find('input:not(.disabled),select:not(.disabled)').removeAttr('disabled');
+            contenedor.find('div.edmaTextEditor:not(.disabled)').removeAttr('disabled').find('.visuell-view').attr('contenteditable',"true");
 		}else
 		{
-			//Ocultamos todos los campos multiidioma 
+			//Ocultamos todos los campos multiidioma
 			contenedor.find('input.multilang,div.multilang,div.multilangcontainer').hide();
 			//Mostramos todos los campos multiidioma que tienen el idioma seleccionado
 			contenedor.find(`input.multilang[multilang="${lang}"],div.multilang[multilang="${lang}"],div.multilangcontainer[multilangcontainer="${lang}"]`).show();
@@ -2921,10 +2921,10 @@ var edicionCV = {
     engancharComportamientosCV: function(onlyPublic = false) {
 		 $('select').unbind("change.selectitem").bind("change.selectitem", function() {
 			var valor=$(this).val();
-			$(this).find('option[value="'+valor+'"]').attr('selected',''); 
-			$(this).find('option[value!="'+valor+'"]').removeAttr('selected'); 
+			$(this).find('option[value="'+valor+'"]').attr('selected','');
+			$(this).find('option[value!="'+valor+'"]').removeAttr('selected');
 		});
-		
+
         $('.select2-container').remove();
         iniciarSelects2.init();
         iniciarDatepicker.init();
@@ -2935,7 +2935,7 @@ var edicionCV = {
         var that = this;
 
 		if (onlyPublic) {
-			//LISTADOS		
+			//LISTADOS
 			//Paginación
 			$('.panel-group .panNavegador ul.pagination li a').off('click').on('click', function(e) {
 				if ($(this).attr('page') != null) {
@@ -2985,7 +2985,7 @@ var edicionCV = {
 			});
 			return;
 		}
-		//Boton duplicados 
+		//Boton duplicados
 		$('.btn.gestionar-duplicados').unbind().click(function() {
 			duplicadosCV.init(true);
 		});
@@ -3015,7 +3015,7 @@ var edicionCV = {
             //$(this).closest('.formulario-edicion').next().find('a').trigger('click');
         });
 
-        //LISTADOS		
+        //LISTADOS
         //Paginación
         $('.panel-group .panNavegador ul.pagination li a').off('click').on('click', function(e) {
             if ($(this).attr('page') != null) {
@@ -3068,10 +3068,10 @@ var edicionCV = {
 			var textoEliminar = $(this).find('.texto');
             var sectionID = textoEliminar.closest('.panel-group').attr('section');
             var entityID = textoEliminar.attr('data-id');
-			
+
 			var message="";
 			$("#modal-eliminar").find(".ko").remove();
-			if(textoEliminar.closest('article').find('.block-wrapper').length && 
+			if(textoEliminar.closest('article').find('.block-wrapper').length &&
 				(
 					sectionID=="http://w3id.org/roh/scientificPublications"||
 					sectionID=="http://w3id.org/roh/worksSubmittedConferences"||
@@ -3081,7 +3081,7 @@ var edicionCV = {
 			{
 				$("#modal-eliminar").find(".form-actions").before(`<div class="ko" style="display:block"><p>${GetText("CV_ALERTA_ELIMINACION_BLOQUEADO")}</p></div>`);
 			}
-			
+
             $('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:edicionCV.eliminarItem("' + sectionID + '","' + entityID + '");$("#modal-eliminar").modal("hide");');
         });
 
@@ -3113,7 +3113,7 @@ var edicionCV = {
         });
 
 
-        //Añadir propiedad multiple que no es otra entidad 		
+        //Añadir propiedad multiple que no es otra entidad
         $('.multiple:not(.entityauxcontainer ):not(.entitycontainer ) .acciones-listado-edicion .add').off('click').on('click', function(e) {
             var contenedor = $(this).closest('.multiple');
             var item = $(this).closest('.item');
@@ -3129,7 +3129,7 @@ var edicionCV = {
             });
             itemClone.removeClass('aux');
             itemClone.addClass('added');
-            itemClone.find('input, select, div.edmaTextEditor').attr('disabled', ''); //TODO TEST EdmaTextEditor TextArea ; 
+            itemClone.find('input, select, div.edmaTextEditor').attr('disabled', ''); //TODO TEST EdmaTextEditor TextArea ;
             itemClone.find('div.edmaTextEditor').find('div.visuell-view').removeAttr('contenteditable');
             itemClone.find('.acciones-listado-edicion').replaceWith(that.printDeleteButton());
             contenedor.append(itemClone);
@@ -3155,11 +3155,11 @@ var edicionCV = {
         });
 
         //Mostrar popup entidad nueva/editar auxiliar/editar especiales
-        //$('.multiple.entityauxcontainer .acciones-listado-edicion .add,.multiple.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {			
+        //$('.multiple.entityauxcontainer .acciones-listado-edicion .add,.multiple.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function (e) {
         $('.entityauxcontainer .acciones-listado-edicion .add,.entityauxcontainer .acciones-listado-edicion .edit').off('click').on('click', function(e) {
             MostrarUpdateProgress();
 			var edit = $(this).hasClass('edit');
-			
+
 			// Mostrar el tesauro
 			var listadoInputSeleccionados = $(this).closest('.form-group.full-group.multiple.entityauxcontainer.thesaurus').find('.item.added').find('input');
 			var listadoValoresSeleccionados = "";
@@ -3178,14 +3178,14 @@ var edicionCV = {
 			if(ul.length != 0 && tesauro.length != 0){
 				conseguirTesauro(tesauro, lang, listadoValoresSeleccionados, ul, edit, true, false, null, null);
 			}
-			
-			
+
+
             if ($(this).closest('.entityauxauthorlist').length > 0) {
                 if (!edit) {
                     //Creación
                     $('#modal-anadir-autor').modal('show');
                     $('#modal-anadir-autor .ko').hide();
-                    $('#modal-anadir-autor .resultados .form-group.full-group').remove();					                    
+                    $('#modal-anadir-autor .resultados .form-group.full-group').remove();
 					if($('div.added.entityaux[propertyrdf="http://purl.org/ontology/bibo/authorList"] div.added.entity[about="'+edicionCV.idPerson+'"]').length)
 					{
 						$('#inputsignatures').val('');
@@ -3216,7 +3216,7 @@ var edicionCV = {
             //var entityAux=$(this).closest('.multiple').hasClass('entityauxcontainer');
             var entityAux = $(this).closest('.form-group').hasClass('entityauxcontainer');
 
-            //Usa el popup			
+            //Usa el popup
             var modalID = $(this).closest('.modal').attr('id');
             var contenedor = $(this).closest('.entitycontainer');
             if (entityAux) {
@@ -3245,7 +3245,7 @@ var edicionCV = {
 
             var idTemp = $(this).closest('li').attr('parent-idtemp');
             var id = $(this).closest('li').attr('about');
-            //$('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:$("#'+modalID+' div[idtemp=\''+idTemp+'\'] div[about=\''+id+'\']").remove();$("#'+modalID+' div[idtemp=\''+idTemp+'\']").attr(\'remove\',$("div[idtemp=\''+idTemp+'\']").attr(\'remove\')+\'||'+id+'\');edicionCV.repintarListadoEntity();$("#modal-eliminar").modal("hide");'); 
+            //$('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:$("#'+modalID+' div[idtemp=\''+idTemp+'\'] div[about=\''+id+'\']").remove();$("#'+modalID+' div[idtemp=\''+idTemp+'\']").attr(\'remove\',$("div[idtemp=\''+idTemp+'\']").attr(\'remove\')+\'||'+id+'\');edicionCV.repintarListadoEntity();$("#modal-eliminar").modal("hide");');
 
             $('#modal-eliminar .btn-outline-primary').attr('href', 'javascript:edicionCV.eliminarEntidadTesauro("' + modalID + '", "' + idTemp + '", "' + id + '")');
         });
@@ -3377,7 +3377,7 @@ var edicionCV = {
 			}
         });
 
-        //Enganchamos comportamiento check firmas		
+        //Enganchamos comportamiento check firmas
         $('input.chksignature').change(function(e) {
             var that = this;
             $(this).closest('.form-group.full-group').find('input.chksignature').each(function() {
@@ -3388,7 +3388,7 @@ var edicionCV = {
         });
         operativaFormularioAutor.init();
 
-        //Enganchamos comportamiento buscar	firmas		
+        //Enganchamos comportamiento buscar	firmas
         $('.coincidencia-wrap a.form-buscar,.collapse-wrap a.form-buscar').off('click').on('click', function(e) {
             $('#modal-anadir-autor .formulario-principal').hide();
             $('#modal-anadir-autor .formulario-codigo').show();
@@ -3447,7 +3447,7 @@ var edicionCV = {
                 num++;
                 if ($(this).find('input:checked').length > 0) {
                     var htmlAuthor = `
-						<div class="item added entityaux" propertyrdf="${$('#modal-anadir-autor').attr('propertyrdf')}" rdftype="http://purl.obolibrary.org/obo/BFO_0000023" about="${RandomGuid()}">		
+						<div class="item added entityaux" propertyrdf="${$('#modal-anadir-autor').attr('propertyrdf')}" rdftype="http://purl.obolibrary.org/obo/BFO_0000023" about="${RandomGuid()}">
 							<div class="custom-form-row">
 								<div class="form-group full-group">
 									<label class="control-label d-block">Firma *</label>
@@ -3456,13 +3456,13 @@ var edicionCV = {
 								<div class="form-group full-group entitycontainer obligatorio" rdftype="http://xmlns.com/foaf/0.1/Person" idtemp="2a591f6b-5219-4abd-ac48-d1930aae0bc6">
 									<label class="control-label d-block">Persona *</label>
 									<div class="item added entity" propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" rdftype="http://xmlns.com/foaf/0.1/Person" about="${personID}">
-										<input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" value="${personID}" type="text" class="form-control not-outline obligatorio">										
+										<input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#member" value="${personID}" type="text" class="form-control not-outline obligatorio">
 									</div>
 								</div>
-							</div>						
+							</div>
 							<input propertyrdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#comment" value="${num}" type="hidden">
-							<span class="title" loaded="true" route="http://xmlns.com/foaf/0.1/nick">${firma}</span> 
-							<span class="property" loaded="true" name="Nombre" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name">${nombre}</span> 
+							<span class="title" loaded="true" route="http://xmlns.com/foaf/0.1/nick">${firma}</span>
+							<span class="property" loaded="true" name="Nombre" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name">${nombre}</span>
 							<span class="property" loaded="true" name="ORCID" route="http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://w3id.org/roh/ORCID">${orcid}</span>
 						</div>`;
                     $('.entityauxauthorlist').append(htmlAuthor);
@@ -3544,13 +3544,13 @@ var edicionCV = {
 						<input disabled="disabled" checked="checked" type="checkbox" id="user-${rGuid}" personid="${id}" name="user-${indice}" class="custom-control-input chksignature">
 						<label class="custom-control-label" for="user-${rGuid}"></label>
 					</div>
-					<div class="imagen-usuario-wrap">						
+					<div class="imagen-usuario-wrap">
 						<div class="imagen">
 						</div>
-					</div>					
-					<div class="nombre-usuario-wrap">						
+					</div>
+					<div class="nombre-usuario-wrap">
 						<p class="nombre">${data.name}</p>
-						<p class="nombre-completo">${htmlAux}</p>								
+						<p class="nombre-completo">${htmlAux}</p>
 					</div>
 				</div>`;
                 if (labelFirma != null) {
@@ -3598,7 +3598,7 @@ var edicionCV = {
             }
         });
 
-        //Autocompletar tesauros		
+        //Autocompletar tesauros
         $('.modal-con-buscador div[rdftype="http://w3id.org/roh/CategoryPath"] input.texto').off('keyup').on('keyup', function(e) {
             that.buscarTesauro($(this).val(), $('.modal-con-buscador ul.listadoTesauro'));
         });
@@ -3615,7 +3615,7 @@ var edicionCV = {
 
 
         //Combos dependientes
-        $('select.hasdependency').each(function() {			
+        $('select.hasdependency').each(function() {
             //Obtenemos el input del que es dependiente
             var dependency = $(this).attr('dependency');
 			let contenedor = $(this).closest('.item.added');
@@ -3625,7 +3625,7 @@ var edicionCV = {
 			}
 			contenedor=$(contenedor[0]);
 			if(dependency!='')
-			{	
+			{
 				//Seleccionamos el input del que es dependiente y le añadimos el input sobre el que tiene que actuar
 				contenedor.find('select[propertyrdf="' + dependency + '"]').attr('dependencyact', $(this).attr('propertyrdf'));
 				contenedor.find('select[propertyrdf="' + dependency + '"]').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
@@ -3664,14 +3664,14 @@ var edicionCV = {
 				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]:not([style])').unbind("change.dependencycombo").bind("change.dependencycombo", function() {
 					var valorSeleccionado = $(this).val();
 					var that2=this;
-					$.each($(this).attr('dependencyactcombo').split(','), function (ind, elem) { 
+					$.each($(this).attr('dependencyactcombo').split(','), function (ind, elem) {
 						var inputDestino=$(that2).closest('.entityaux').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
 						if(inputDestino.length==0)
 						{
 							var inputDestino=$(that2).closest('form').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
 						}
 						if(inputDestino.attr('dependencypropertyvalue')!=null)
-						{						
+						{
 							var dependencyDestinoValue=inputDestino.attr('dependencypropertyvalue');
 							if((valorSeleccionado==dependencyDestinoValue) || (dependencyDestinoValue=="*" && valorSeleccionado!='') )
 							{
@@ -3684,7 +3684,7 @@ var edicionCV = {
 							}
 						}
 						if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
-						{						
+						{
 							var dependencyDestinoValueDistinct=inputDestino.attr('dependencypropertyvaluedistinct');
 							if(valorSeleccionado!=dependencyDestinoValueDistinct)
 							{
@@ -3696,9 +3696,9 @@ var edicionCV = {
 								$(inputDestino).trigger('change');
 							}
 						}
-					}); 
-					
-					
+					});
+
+
 				});
 				contenedor.find('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
 			}
@@ -3708,10 +3708,10 @@ var edicionCV = {
         $('form[rdftype="http://purl.org/ontology/bibo/Document"] div.visuell-view[propertyrdf="http://purl.org/ontology/bibo/abstract"]').off('focusout').on('focusout', function(e) {
             //TODO: Revisar tema del documento PDF. De momento, siempre se le pasa NULL.
             edicionCV.cargarAreasEtiquetasEnriquecidas($('form[rdftype="http://purl.org/ontology/bibo/Document"] input[propertyrdf="http://w3id.org/roh/title"]').val(), $('form[rdftype="http://purl.org/ontology/bibo/Document"] div.visuell-view[propertyrdf="http://purl.org/ontology/bibo/abstract"]').html(), null);
-        
-			
+
+
 		});
-		
+
 		//campos de texto dependientes
         $('input.hasdependency[type=text],input.hasdependency[type=hidden],input.hasdependency[type=number]').each(function() {
             //Obtenemos el input del que es dependiente
@@ -3730,14 +3730,14 @@ var edicionCV = {
             $('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]:not([style])').unbind("change.dependency").bind("change.dependency", function() {
                 var valorSeleccionado = $(this).val();
 				var that2=this;
-				$.each($(this).attr('dependencyact').split(','), function (ind, elem) { 
+				$.each($(this).attr('dependencyact').split(','), function (ind, elem) {
 					var inputDestino=$(that2).closest('.entityaux').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
 					if(inputDestino.length==0)
 					{
 						var inputDestino=$(that2).closest('form').find('input[propertyrdf="' + elem + '"],select[propertyrdf="' + elem + '"]');
-					}			
+					}
 					if(inputDestino.attr('dependencypropertyvalue')!=null)
-					{						
+					{
 						var dependencyDestinoValue=inputDestino.attr('dependencypropertyvalue');
 						if((valorSeleccionado==dependencyDestinoValue) || (dependencyDestinoValue=="*" && valorSeleccionado!='') )
 						{
@@ -3747,13 +3747,13 @@ var edicionCV = {
 							$(inputDestino).parent().hide();
 							$(inputDestino).val('');
 							$(inputDestino).trigger('change');
-							
+
 							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').val('');
 							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').trigger('change');
 						}
 					}
 					if(inputDestino.attr('dependencypropertyvaluedistinct')!=null)
-					{						
+					{
 						var dependencyDestinoValueDistinct=inputDestino.attr('dependencypropertyvaluedistinct');
 						if(valorSeleccionado!=dependencyDestinoValueDistinct)
 						{
@@ -3763,18 +3763,18 @@ var edicionCV = {
 							$(inputDestino).parent().hide();
 							$(inputDestino).val('');
 							$(inputDestino).trigger('change');
-							
+
 							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').val('');
 							$('input[propertyorigin="'+$(inputDestino).attr('propertyrdf')+'"]').trigger('change');
 						}
 					}
-				}); 
-				
-				
+				});
+
+
             });
 			$('select[propertyrdf="' + dependencyproperty + '"],input[propertyrdf="' + dependencyproperty + '"]').trigger('change');
         });
-		
+
 		//entidades auxiliares dependientes
         $('div.entityauxcontainer.hasdependency').each(function() {
             //Obtenemos el input del que es dependiente
@@ -3794,7 +3794,7 @@ var edicionCV = {
 			$('select[propertyrdf="' + dependencyproperty + '"]').bind("change.dependencyentity", function() {
                 var valorSeleccionado = $(this).val();
 				var that2=this;
-				$.each($(this).attr('dependencyactentity').split(','), function (ind, elem) { 					
+				$.each($(this).attr('dependencyactentity').split(','), function (ind, elem) {
 					var entidadDestino=$(that2).closest('form').find('div.item.aux.entityaux[propertyrdf="' + elem + '"]').closest('div.entityauxcontainer');
 					var dependencyDestinoValue=entidadDestino.attr('dependencypropertyvalue');
 					if(valorSeleccionado==dependencyDestinoValue)
@@ -3805,8 +3805,8 @@ var edicionCV = {
 						$(entidadDestino).parent().hide();
 						$(entidadDestino).find('div.item.added.entityaux').remove();
 						$(entidadDestino).find('div.simple-collapse-content .resource-list-wrap').empty();
-					}				
-				}); 			
+					}
+				});
             });
             $('select[propertyrdf="' + dependencyproperty + '"]').trigger('change');
         });
@@ -3818,7 +3818,7 @@ var edicionCV = {
 			$(this).addClass('active');
 			that.cambiarIdiomaEdicion($(this).attr('lang'),$(this).closest('.formulario-edicion'));
         });
-		
+
 		//Cambiamos de idioma en la edición de cv
         $('.row.cvTab ul.nav-tabs li a').off('click').on('click', function(e) {
 			$(this).closest('ul').find('a').removeClass('active');
@@ -3842,18 +3842,18 @@ var edicionCV = {
 				that.completeTab(about,rdftype,section);
 			}
         });
-				
+
 		//Obtener datos envio PRC
 		$('.texto.prodCientItem').closest('li').off('click').on('click', function(e) {
 			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').empty();
 			$('#modal-enviar-produccion-cientifica .resource-list.listView .resource-list-wrap').empty();
-			
-			
+
+
 			$(this).closest("article").clone().appendTo('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap');
 			$('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap article .acciones-recurso-listado.acciones-recurso').remove();
 			$('#modal-enviar-produccion-cientifica div.modal-body>.resource-list.listView .resource-list-wrap article .material-icons.arrow').remove();
-			
-			
+
+
 			var dataId = $(this)[0].dataset.id;
 			var nombreProy = $(this).closest("resource-success");
 			var section = $(this).closest(".resource.success").closest(".panel-group.pmd-accordion").attr("section");
@@ -3871,12 +3871,12 @@ var edicionCV = {
 			$.ajax({
 				url: urlEnvioValidacionCV + 'EnvioEliminacionPRC',
 				type: 'POST',
-				data: formData,	
+				data: formData,
 				cache: false,
 				processData: false,
 				enctype: 'multipart/form-data',
 				contentType: false,
-				success: function ( response ) {				
+				success: function ( response ) {
 					mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'), 10000);
 					OcultarUpdateProgress();
 				},
@@ -3891,34 +3891,46 @@ var edicionCV = {
 		$('.texto.sendDspace').closest('li').off('click').on('click', function(e) {
 			MostrarUpdateProgress();
 			var formData = new FormData();
-			let idrecurso = $(this).find('[data-id]').attr('data-id')
+			let idrecurso = $(this).find('[data-id]').attr('data-id');
 			formData.append('pIdRecurso', idrecurso);
-			mostrarNotificacion('success', GetText('CV_ENVIO_DSPACE_CORRECTO'), 10000);
-			OcultarUpdateProgress();
-			mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
-			OcultarUpdateProgress();
+			$.ajax({
+				url: urlEdicionCV + '/EnvioDSpace',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				processData: false,
+				enctype: 'multipart/form-data',
+				contentType: false,
+				success: function ( response ) {
+					mostrarNotificacion('success', GetText('CV_ENVIO_DSPACE_CORRECTO'), 10000);
+					OcultarUpdateProgress();
+				},
+				error: function(){
+					mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
+					OcultarUpdateProgress();
+				}
 		});
-				
+
 		$('.texto.validacionItem').off('click').on('click', function(e) {
 			var dataId = $(this)[0].dataset.id;
-			
-			that.EnvioValidacion(dataId, that.idPerson);			
+
+			that.EnvioValidacion(dataId, that.idPerson);
 		});
-		
+
 		$('input[propertyentity][graph]').off('change').on('change', function(e) {
-			that.loadPropertiesEntitiesAutocomplete();	
-		});		
-		
+			that.loadPropertiesEntitiesAutocomplete();
+		});
+
         return;
     },
-	loadPropertiesEntitiesAutocomplete: function(){		
+	loadPropertiesEntitiesAutocomplete: function(){
 		$('input[propertyentity][graph]').each(function() {
 			let graph=$(this).attr('graph');
 			let propertyEntity=$(this).attr('propertyentity');
 			let propertyOrigin=$(this).attr('propertyorigin');
 			if(graph!=null && propertyEntity!=null)
-			{				
-				let propertyEntitySplit = propertyEntity.split('&');	
+			{
+				let propertyEntitySplit = propertyEntity.split('&');
 				if($(this).val()!=''){
 					var sendData = {};
 					sendData.pGraph = graph;
@@ -3935,18 +3947,18 @@ var edicionCV = {
 							{
 								$('.formulario-edicion input[propertyrdf="'+propCV+'"]').attr('disabled','disabled');
 							}
-							$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);							
-						}					
+							$('.formulario-edicion input[propertyrdf="'+propCV+'"]').val(data[propEntity]);
+						}
 					});
 				}else{
 					for (var i = 0; i < propertyEntitySplit.length; i++) {
 						let propEntity=propertyEntitySplit[i].split('|')[0];
 						let propCV=propertyEntitySplit[i].split('|')[1];
-						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').removeAttr('disabled');							
-					}	
+						$('.formulario-edicion input[propertyrdf="'+propCV+'"]').removeAttr('disabled');
+					}
 				}
 			}
-		});		
+		});
 	},
 	sendPRC: function(idrecurso, idproyecto, section, rdfTypeTab){
 		var that=this;
@@ -3963,12 +3975,12 @@ var edicionCV = {
 		$.ajax({
 			url: urlEnvioValidacionCV + 'EnvioPRC',
 			type: 'POST',
-			data: formData,	
+			data: formData,
 			cache: false,
 			processData: false,
 			enctype: 'multipart/form-data',
 			contentType: false,
-			success: function ( response ) {				
+			success: function ( response ) {
 				mostrarNotificacion('success', GetText('CV_PUBLICACION_BLOQUEADA_RESUELVA_PROCEDIMIENTO'), 10000);
 				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + section + "&pRdfTypeTab=" + rdfTypeTab + "&pEntityID=" + idrecurso + "&pLang=" + lang, null, function(data) {
 					$('a[data-id="' + idrecurso + '"]').closest('article').replaceWith(that.printHtmlListItem(idrecurso, data));
@@ -4007,7 +4019,7 @@ var edicionCV = {
 				for(var itemIn in items[0].items) {
 					if(!principal) {
 						let aux=itemIn;
-						$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + items[0].idSection + "&pRdfTypeTab=" + items[0].rdfTypeTab + "&pEntityID=" + items[0].items[itemIn] + "&pLang=" + lang, null, function(data) 
+						$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + items[0].idSection + "&pRdfTypeTab=" + items[0].rdfTypeTab + "&pEntityID=" + items[0].items[itemIn] + "&pLang=" + lang, null, function(data)
 						{
 							var htmlItem=edicionCV.printHtmlListItemPRC(items[0].items[aux], data);
 							$('#modal-enviar-produccion-cientifica .formulario-publicacion .resource-list-wrap').append(htmlItem);
@@ -4027,7 +4039,7 @@ var edicionCV = {
 		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-publicacion').css('display', 'none');
 		$('#modal-enviar-produccion-cientifica .modal-body .formulario-edicion.formulario-proyecto').removeAttr('style');
 		$.ajax({
-			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',	
+			url: urlEnvioValidacionCV + 'ObtenerDatosEnvioPRC',
 			type: 'GET',
 			data: {
 				pIdPersona: idPerson
@@ -4079,10 +4091,10 @@ var edicionCV = {
 							</article>`;
 					contador++;
 				}
-				
+
 				$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-proyecto .resource-list-wrap').append(html);
 				operativaFormularioProduccionCientifica.formProyecto(section,rdfTypeTab);
-				
+
 			}
 		});
 	},
@@ -4091,11 +4103,11 @@ var edicionCV = {
 		formData.append('pIdRecurso', dataId);
 		formData.append('pIdPersona', idPerson);
 		formData.append('pIdAutorizacion', '');
-		
+
 		$.ajax({
 			url: urlEnvioValidacionCV + 'EnvioProyecto',
 			type: 'POST',
-			data: formData,		
+			data: formData,
 			cache: false,
 			processData: false,
             enctype: 'multipart/form-data',
@@ -4118,9 +4130,9 @@ var edicionCV = {
             if ($(this).closest('.entityauxcontainer,.entitycontainer,.multiple').length == 0) {
                 if ($(this).val() == null || $(this).val() == '') {
 					if($(this).is('input') || $(this).is('div.visuell-view'))
-					{						
+					{
 						//Si es un input o textarea sólo es obligatorio si no tiene idioma y está visible
-						if(($(this).closest('.form-group').attr('style')==null || $(this).closest('.form-group').attr('style').replaceAll(' ','').replaceAll(';','')!='display:none') 
+						if(($(this).closest('.form-group').attr('style')==null || $(this).closest('.form-group').attr('style').replaceAll(' ','').replaceAll(';','')!='display:none')
 							&& $(this).attr('multilang')==null && $(this).closest('div.visuell-view').length == 0)
 						{
 							camposObligatorios.push($(this).closest('.form-group').find('.control-label').text());
@@ -4179,7 +4191,7 @@ var edicionCV = {
 		{
 			$('#' + modalID + ' input[propertyrdf="' + propRDF + '"][data-value="' + value + '"]').closest('div[propertyrdf="http://w3id.org/roh/enrichedKeywords"]').remove();
 		}else
-		{		
+		{
 			$('#' + modalID + ' input[propertyrdf="' + propRDF + '"][data-value="' + value + '"]').parent().remove();
 		}
 
@@ -4202,7 +4214,7 @@ var edicionCV = {
     guardarEntidad: function(pFormulario) {
         var that = this;
 		$('#modal-editar-entidad .modal-body>.form-actions>.ko').remove();
-        
+
 		//Los modales son de 3 tipos
         //Modal principal (item del CV)
         //Entidad auxiliar
@@ -4260,9 +4272,9 @@ var edicionCV = {
             that.repintarListadoEntity();
 			OcultarUpdateProgress();
         } else {
-            //Modal principal (item del CV)	
+            //Modal principal (item del CV)
             //o
-            //Entidad principal			
+            //Entidad principal
             var entidad = {};
             var entidadPrincipal = false;
             if ($(pFormulario).attr('entityid') != null && $(pFormulario).attr('entityload') == null) {
@@ -4276,7 +4288,7 @@ var edicionCV = {
 			entidad.pLang = lang;
             entidad.properties = [];
 			entidad.properties_cv = [];
-            $(pFormulario).find('input, select, div.visuell-view').each(function(index) {				
+            $(pFormulario).find('input, select, div.visuell-view').each(function(index) {
 				if($(this).attr('type')!='file' && !$(this).hasClass('autocompleteentity'))
 				{
 					var entityCV=$(this).hasClass('entity_cv');
@@ -4360,7 +4372,7 @@ var edicionCV = {
 
             MostrarUpdateProgress();
             if (entidadPrincipal) {
-                //Entidad principal							
+                //Entidad principal
                 $.post(urlGuardadoCV + 'updateEntity', entidad, function(data) {
                     if (data.ok) {
                         $(modal).modal('hide');
@@ -4391,8 +4403,8 @@ var edicionCV = {
                         OcultarUpdateProgress();
                     }
                 });
-            } else {	               
-                //Modal principal (item del CV)	
+            } else {
+                //Modal principal (item del CV)
                 $.post(urlGuardadoCV + 'updateEntity', entidad, function(data) {
 					if (data.ok) {
 						$(modal).modal('hide');
@@ -4415,12 +4427,12 @@ var edicionCV = {
 								{
 									//Item CV
 									$.get(urlEdicionCV + 'GetEdit?pCVId='+that.idCV+'&pIdSection=' + entidad.sectionID + "&pRdfTypeTab=" + entidad.rdfTypeTab + "&pEntityID=" + data.id + "&pLang=" + lang, null, function(data2) {
-										that.printSectionItem($('div[sectionid="'+entidad.sectionID+'"]').attr('id'), data2, entidad.sectionID, entidad.rdfTypeTab, data2.entityID);			
+										that.printSectionItem($('div[sectionid="'+entidad.sectionID+'"]').attr('id'), data2, entidad.sectionID, entidad.rdfTypeTab, data2.entityID);
 										that.engancharComportamientosCV();
 										OcultarUpdateProgress();
 									});
 								}
-								
+
 							}
 						} else {
 							//Si no viene entityLoad carga el item
@@ -4441,7 +4453,7 @@ var edicionCV = {
 							alert("Error: " + data.error);
 						}
 						OcultarUpdateProgress();
-					}					
+					}
 				});
             }
         }
@@ -4501,9 +4513,9 @@ var edicionCV = {
             OcultarUpdateProgress();
             var i = 0;
             var htmlSinCandidatos = `<div class="user-miniatura">
-                                <div class="imagen-usuario-wrap">                                    
+                                <div class="imagen-usuario-wrap">
 									<div class="imagen">
-									</div>									
+									</div>
                                 </div>
                                 <div class="nombre-usuario-wrap">
 									<p class="nombre">Ninguna sugerencia</p>
@@ -4544,7 +4556,7 @@ var edicionCV = {
                 var autor = `	<div class="form-group full-group">
 								<div class="simple-collapse">
 									<label class="control-label d-block">${firma}</label>
-										${htmlCandidatos}									
+										${htmlCandidatos}
 								</div>
 							</div>`;
                 $('#modal-anadir-autor .formulario-edicion .resultados').append(autor);
@@ -4587,13 +4599,13 @@ var edicionCV = {
 						<input type="checkbox" id="user-${id}" personid="${candidato.personid}" name="user-${indice}" class="custom-control-input chksignature">
 						<label class="custom-control-label" for="user-${id}"></label>
 					</div>
-					<div class="imagen-usuario-wrap">						
+					<div class="imagen-usuario-wrap">
 						<div class="imagen">
 						</div>
 					</div>
-					<div class="nombre-usuario-wrap">						
+					<div class="nombre-usuario-wrap">
 						<p class="nombre"><a target="_blank" href="${candidato.url}">${candidato.name}</a></p>
-						<p class="nombre-completo">${htmlAux}</p>						
+						<p class="nombre-completo">${htmlAux}</p>
 					</div>
 					<div class="coincidencia-wrap">
 						<p class="label">${GetText('CV_COINCIDENCIA')}</p>
@@ -4649,13 +4661,13 @@ var edicionCV = {
 					<input disabled="disabled" checked="checked" type="checkbox" id="user-${rGuid}" personid="${id}" name="user-${indice}" class="custom-control-input chksignature">
 					<label class="custom-control-label" for="user-${rGuid}"></label>
 				</div>
-				<div class="imagen-usuario-wrap">						
+				<div class="imagen-usuario-wrap">
 					<div class="imagen">
 					</div>
-				</div>					
-				<div class="nombre-usuario-wrap">						
+				</div>
+				<div class="nombre-usuario-wrap">
 					<p class="nombre">${data.name}</p>
-					<p class="nombre-completo">${htmlAux}</p>								
+					<p class="nombre-completo">${htmlAux}</p>
 				</div>
 			</div>`;
 
@@ -4711,14 +4723,14 @@ var duplicadosCV = {
 			$('#modal-enviar-produccion-cientifica .acciones-recurso-listado').remove();
 			$('#modal-enviar-produccion-cientifica .itemConflict').remove();
 			$('#modal-enviar-produccion-cientifica .btn-principal').remove();
-			
+
 			//Agregamos desplegable en items
 			$('#modal-enviar-produccion-cientifica .formulario-edicion.formulario-publicacion article h2').after(`
 				<select class="itemConflict" name="itemConflict">
-					<option value="" selected ></option>	
+					<option value="" selected ></option>
 					<option value="0">${GetText("CV_DUPLICADO_FUSIONAR")}</option>
 					<option value="1">${GetText("CV_DUPLICADO_ELIMINAR")}</option>
-					<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>							
+					<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>
 				</select>
 			`);
 			//Publicar/despublicar duplicado
@@ -4788,24 +4800,24 @@ var duplicadosCV = {
 		$('#modal-posible-duplicidad .acciones-recurso-listado').remove();
 		$('#modal-posible-duplicidad .itemConflict').remove();
 		$('#modal-posible-duplicidad .btn-principal').remove();
-		
+
 
 		//Agregamos desplegable en items
 		$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`
 					   <select class="itemConflict" name="itemConflict">
-							<option value="" selected ></option>	
+							<option value="" selected ></option>
 							<option value="0">${GetText("CV_DUPLICADO_FUSIONAR")}</option>
 							<option value="1">${GetText("CV_DUPLICADO_ELIMINAR")}</option>
-							<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>							
+							<option value="2" >${GetText("CV_DUPLICADO_NO_DUPLICADO")}</option>
 						</select>
 					`);
-		
+
 		////Agregamos botón de convertir en principal	en items si el primero no está bloqueado
 		//if(!$('#modal-posible-duplicidad .resource-list-wrap.principal article .title-wrap .block-wrapper').length)
 		//{
 		//	$('#modal-posible-duplicidad .resource-list-wrap.secundarios article h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		//}
-		
+
 		//Agregamos botón de convertir a todos los items si no hay ninguno bloqueado
 		//o es un item bloqueado
 		if(!$('#modal-posible-duplicidad .resource-list-wrap article .title-wrap .block-wrapper').length)
@@ -4815,15 +4827,15 @@ var duplicadosCV = {
 		$("#modal-posible-duplicidad .resource-list-wrap.secundarios article .title-wrap .block-wrapper").each(function(index) {
 			$(this).closest('article').find('h2').after(`<a class="btn btn-secondary uppercase btn-principal">${GetText("CV_CAMBIAR_A_PRINCIPAL")}</a>`);
 		});
-		
+
 		//Si dentro de los items hay alguno bloquedao mostramos un texto adicional
 		$("#modal-posible-duplicidad .ko").remove();
 		if($('#modal-posible-duplicidad .resource-list-wrap.secundarios article .title-wrap .block-wrapper').length>0)
 		{
 			$("#modal-posible-duplicidad .form-actions").before(`<div class="ko" style="display:block"><p>${GetText("CV_ALERTA_FUSION_ELIMINACION_BLOQUEADO")}</p></div>`);
 		}
-		
-		//Botón convertir en principal	
+
+		//Botón convertir en principal
 		$('#modal-posible-duplicidad .btn-principal').unbind().click(function() {
 			var idActual=$(this).closest('.title-wrap').find('h2 a').attr('data-id')
 			//Elimina del array
@@ -4835,9 +4847,9 @@ var duplicadosCV = {
 			that.items[that.pasoActual].items.splice(0, 0, idActual);
 			that.pintarAgrupacionDuplicados();
 		});
-		
+
 		//Botón omitir
-		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function() 
+		$('#modal-posible-duplicidad .btn-omitir').unbind("click").bind("click", function()
 		{
 			if (that.pasoActual + 1 < that.pasosTotales) {
 				that.pasoActual++;
@@ -4903,7 +4915,7 @@ var duplicadosCV = {
 				}else{
 					args.secundarios[id] = opcion;
 				}
-			});			
+			});
 			if (!validar){
 				mostrarNotificacion("error",GetText("DUPLICADOS_SELECCIONAR_TODAS_OPCIONES"));
 			}else{
@@ -4919,7 +4931,7 @@ var duplicadosCV = {
 			}
 		});
 
-		accionesPlegarDesplegarModal.init();	
+		accionesPlegarDesplegarModal.init();
 		tooltipsAccionesRecursos.init();
 	},
     cargarDuplicados: function(botonPulsado, minSimilarity = 0.9) {
@@ -4933,7 +4945,7 @@ var duplicadosCV = {
 				that.items=data;
 				that.pasoActual=0;
 				that.pasosTotales=that.items.length;
-				if (that.pasosTotales>0) 
+				if (that.pasosTotales>0)
 				{
 					that.pintarItemsDuplicados();
 					$('#modal-repetir-duplicidad').addClass('visible');
@@ -4976,11 +4988,11 @@ var duplicadosCV = {
 		MostrarUpdateProgress();
 		var numActual=0;
 		for( var itemIn in this.items[this.pasoActual].items)
-		{			
+		{
 			if(principal)
 			{
 				let aux=itemIn;
-				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data)
 				{
 					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.principal').append(htmlItem);
@@ -4990,11 +5002,11 @@ var duplicadosCV = {
 						OcultarUpdateProgress();
 					}
 					that.engancharComportamientos();
-				});				
+				});
 			}else
 			{
 				let aux=itemIn;
-				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data) 
+				$.get(urlEdicionCV + 'GetItemMini?pCVId='+that.idCV+'&pIdSection=' + this.items[this.pasoActual].idSection + "&pRdfTypeTab=" + this.items[this.pasoActual].rdfTypeTab + "&pEntityID=" + this.items[this.pasoActual].items[itemIn] + "&pLang=" + lang, null, function(data)
 				{
 					var htmlItem=edicionCV.printHtmlListItem(that.items[that.pasoActual].items[aux], data);
 					$('#modal-posible-duplicidad .resource-list-wrap.secundarios').append(htmlItem);
@@ -5005,9 +5017,9 @@ var duplicadosCV = {
 					}
 					that.engancharComportamientos();
 				});
-			}			
+			}
 			principal=false;
-		}		
+		}
 	}
 }
 
@@ -5037,11 +5049,11 @@ function addAutocompletar(control) {
 			}
 		}
 	});
-	
+
 	$(control).on('keydown', e => {
 		$(e.target).data('previousValue', $(e.target).val());
 	})
-	
+
 	if($(control).hasClass('autocompleteentity'))
 	{
 		$(control).on("change", e => {
@@ -5052,12 +5064,12 @@ function addAutocompletar(control) {
 			}
 		});
 	}
-	
+
 	var urlAutocomplete=null
 	var pGetEntityID=false;
 	//Por defecto busca en los valores introducidos en esa propiedad en otras entidades iguales
 	urlAutocomplete=urlEdicionCV + "GetAutocomplete";
-    var pProperty = $(control).attr('propertyrdf');	
+    var pProperty = $(control).attr('propertyrdf');
     var pRdfType = $('#modal-editar-entidad form').attr('rdftype');
     var pGraph = $('#modal-editar-entidad form').attr('ontology');
 	var pLang = 'es';
@@ -5075,7 +5087,7 @@ function addAutocompletar(control) {
 	if($(control).attr('propertyautocompleteaux')!=null)
 	{
 		pPropertiesAux=$(control).attr('propertyautocompleteaux');
-	}	
+	}
 	if($(control).attr('propertyautocompleteprint')!=null)
 	{
 		pPrint=$(control).attr('propertyautocompleteprint');
@@ -5099,7 +5111,7 @@ function addAutocompletar(control) {
 	{
 		pGetEntityID=true;
 	}
-		
+
 
     var btnID = 'add_' + pProperty;
     $(control).parent().find('.acciones-listado-edicion .add').attr('id', btnID);
@@ -5131,7 +5143,7 @@ function addAutocompletar(control) {
 							};
 						}
 					}else
-					{					
+					{
 						for (var i = 0; i < data.length; i++) {
 							var row = data[i];
 
@@ -5149,7 +5161,7 @@ function addAutocompletar(control) {
             extraParams: {
 				pPropertiesAux: function() {
 					var lista=[];
-                    if (pPropertiesAux != null && pPropertiesAux!='') {						
+                    if (pPropertiesAux != null && pPropertiesAux!='') {
 						var pPropertiesAuxSplit = pPropertiesAux.split('|');
 						for (var i = 0; i < pPropertiesAuxSplit.length; i++) {
 							lista.push(pPropertiesAuxSplit[i]);
@@ -5180,7 +5192,7 @@ function addAutocompletar(control) {
 				pCache: pCache,
 				pGetEntityID:pGetEntityID,
                 botonBuscar: btnID,
-				
+
             }
         }
     );
@@ -5228,7 +5240,7 @@ var iniciarComportamientoImagenUsuario = {
 };
 
 function objectToFormData(obj, form, namespace) {
-    
+
 	var fd = form || new FormData();
 	var formKey;
 
@@ -5243,7 +5255,7 @@ function objectToFormData(obj, form, namespace) {
 			if(Array.isArray(obj[property])){
 				for(var itemArray in obj[property]) {
 					if(typeof obj[property][itemArray] === 'object')
-					{						
+					{
 						objectToFormData(obj[property][itemArray], fd, formKey+'['+itemArray+']');
 					}else
 					{
@@ -5264,7 +5276,7 @@ function objectToFormData(obj, form, namespace) {
 	}
 
 	return fd;
-    
+
 };
 
 //Fin de métodos auxiliares
@@ -5331,7 +5343,7 @@ $.imageDropArea2 = function (element, options) {
 				displayError(GetText('CV_IMAGENPESADEMASIADO',plugin.settings.sizeLimit));
 				return;
 			}
-			
+
 			const reader = new FileReader();
 			var that=this;
 			reader.addEventListener("load", function () {
@@ -5486,7 +5498,7 @@ $.imageDropArea2 = function (element, options) {
 			e.stopPropagation();
 			plugin.input.trigger("click");
 		});
-		
+
 		plugin.dropAreaSelector.off("dragleave").on("dragleave", function (e) {
 			e.preventDefault();
 			e.stopPropagation();
@@ -5549,7 +5561,7 @@ $.fn.imageDropArea2 = function (options) {
  */
 
 ; (function($) {
-	
+
 $.fn.extend({
 	autocomplete: function(urlOrData, options) {
 		var isUrl = typeof urlOrData == "string";
@@ -5577,16 +5589,16 @@ $.fn.extend({
 					}
 				}
 		}, options);
-		
+
 		// if highlight is set to false, replace it with a do-nothing function
 		options.highlight = options.highlight || function(value) { return value; };
-		
+
 		// if the formatMatch option is not specified, then use formatItem for backwards compatibility
 		options.formatMatch = options.formatMatch || options.formatItem;
 
         //Cargo las urls multiples en caso de haberlas:
         ObtenerUrlMultiple(options);
-		
+
 		return this.each(function() {
 			new $.Autocompleter(this, options);
 		});
@@ -5638,9 +5650,9 @@ $.Autocompleter = function(input, options) {
 		mouseDownOnSelect: false
 	};
 	var select = $.Autocompleter.Select(options, input, selectCurrent, pintarSeleccionado, config);
-	
+
 	var blockSubmit;
-	
+
 	// prevent form submit in opera when selecting with return key
 //	$.browser.opera && $(input.form).bind("submit.autocomplete", function() {
 //		if (blockSubmit) {
@@ -5648,7 +5660,7 @@ $.Autocompleter = function(input, options) {
 //			return false;
 //		}
 //	});
-	
+
 	 // only opera doesn't trigger keydown multiple times while pressed, others don't work with keypress at all
 	$input.bind((/*$.browser.opera ? "keypress" : */"keyup") + ".autocomplete", function(event) {
 		// a keypress means the input has focus
@@ -5657,7 +5669,7 @@ $.Autocompleter = function(input, options) {
 		// track last key pressed
 		lastKeyPressCode = event.keyCode;
 		switch(event.keyCode) {
-		
+
 			case KEY.UP:
 				event.preventDefault();
 				if ( select.visible() ) {
@@ -5666,7 +5678,7 @@ $.Autocompleter = function(input, options) {
 					onChange(0, true);
 				}
 				break;
-				
+
 			case KEY.DOWN:
 				event.preventDefault();
 				if ( select.visible() ) {
@@ -5675,7 +5687,7 @@ $.Autocompleter = function(input, options) {
 					onChange(0, true);
 				}
 				break;
-				
+
 			case KEY.PAGEUP:
 				event.preventDefault();
 				if ( select.visible() ) {
@@ -5684,7 +5696,7 @@ $.Autocompleter = function(input, options) {
 					onChange(0, true);
 				}
 				break;
-				
+
 			case KEY.PAGEDOWN:
 				event.preventDefault();
 				if ( select.visible() ) {
@@ -5765,21 +5777,21 @@ $.Autocompleter = function(input, options) {
 		$input.unbind();
 		$(input.form).unbind(".autocomplete");
 	});
-	
-	
+
+
 	function selectCurrent() {
 		var selected = select.selected();
         pintarSeleccionado($input, selected.result);
 		if($input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]').length>0)
 		{
 			let entidadDestino=$input.parent().find('input[propertyorigin="'+$input.attr('propertyrdf')+'"]');
-			entidadDestino.val(selected.value);					
+			entidadDestino.val(selected.value);
 			entidadDestino.change();
-		}		
+		}
 		hideResultsNow();
 		return true;
 	}
-	
+
     function pintarSeleccionado(textbox, resultado)
     {
         if (!options.pintarConcatenadores)
@@ -5791,7 +5803,7 @@ $.Autocompleter = function(input, options) {
         {
             /*Si es el buscador de una pÃ¡gina de busqueda o el metabuscador superior, autocompleta con "" */
             resultado='"'+resultado+'"';
-        }   
+        }
 
 
         var v = resultado;
@@ -5801,10 +5813,10 @@ $.Autocompleter = function(input, options) {
 		{
 		    cursorAt = textbox.val().indexOf(v) + resultado.length;
 		}
-        
+
 	    if ( options.multiple ) {
 		    var words = trimWords(textbox.val());
-		    if ( words.length > 1 ) 
+		    if ( words.length > 1 )
 		    {
 			    var seperator = options.multipleSeparator.length;
 			    var wordAt, progress = 0;
@@ -5820,16 +5832,16 @@ $.Autocompleter = function(input, options) {
 			    v = words.join( options.multipleSeparator );
 		    }
 	    }
-	    
+
 	    if (options.NoPintarSeleccionado == null || !options.NoPintarSeleccionado)
 	    {
 	        textbox.val(v);
 	        PintarTags(textbox);
 	    }
     }
-	
+
 	function forzarClickBoton(pFaceta, result)
-	{		
+	{
 	    //envia los datos al seleccionar una fila del autocompletar
         var objecte = document.getElementById(options.extraParams.botonBuscar);
 		if(objecte != null)
@@ -5856,20 +5868,20 @@ $.Autocompleter = function(input, options) {
 		    }
         }
 	}
-	
+
 	function onChange(crap, skipPrevCheck) {
 		if( lastKeyPressCode == KEY.DEL ) {
 			select.hide();
 			return;
 		}
-		
+
 		var currentValue = $input.val();
-		
+
 		if ( !skipPrevCheck && currentValue == previousValue )
 			return;
-		
+
 		previousValue = currentValue;
-		
+
 		currentValue = lastWord(currentValue);
 		if ( currentValue.length >= options.minChars) {
 			$input.addClass(options.loadingClass);
@@ -5881,7 +5893,7 @@ $.Autocompleter = function(input, options) {
 			select.hide();
 		}
 	};
-	
+
 	function trimWords(value) {
 		if (!value)
 			return [""];
@@ -5891,12 +5903,12 @@ $.Autocompleter = function(input, options) {
 			return $.trim(value).length ? $.trim(word) : null;
 		});
 	}
-	
+
 	function lastWord(value) {
 		if ( !options.multiple )
 			return value;
 		var words = trimWords(value);
-		if (words.length == 1) 
+		if (words.length == 1)
 			return words[0];
 		var cursorAt = $(input).selection().start;
 		if (cursorAt == value.length) {
@@ -5906,7 +5918,7 @@ $.Autocompleter = function(input, options) {
 		}
 		return words[words.length - 1];
 	}
-	
+
 	// fills in the input box w/the first match (assumed to be the best match)
 	// q: the term entered
 	// sValue: the first matching result
@@ -5971,12 +5983,12 @@ $.Autocompleter = function(input, options) {
 		if (typeof(requestAutocompletarPersonalizado) != 'undefined'){
 			return requestAutocompletarPersonalizado(term, success, failure, options, cache, cont, lastWord, parse, normalize);
 		}
-	
+
 	    term = replaceAll(replaceAll(replaceAll(term, '%', '%25'), '#', '%23'), '+', "%2B");
 		if (!options.matchCase)
 			term = term.toLowerCase();
 		var data = null;
-		
+
 		if (options.data == null){
 			data = cache.load(term);
 		}
@@ -6052,7 +6064,7 @@ $.Autocompleter = function(input, options) {
 		    //}, "json");
 		}
 		else if (options.servicio != null) {
-		    
+
 
             options.servicio.service = options.urlServicio(options);
 
@@ -6063,19 +6075,19 @@ $.Autocompleter = function(input, options) {
 				    cache.add(term, parsed);
 				    success(term, parsed);
 				}
-			});	
+			});
 		}
 		else if (options.data != null && options.data.length > 0){
 			var parsed = [];
 			var termNorm = normalize(term.toLowerCase());
-			
+
 			for (var i=0;i<options.data.length;i++){
 				var nombreBuscar = normalize(options.data[i][0].toLowerCase());
 				if (nombreBuscar.indexOf(termNorm) == 0 || nombreBuscar.indexOf(' ' + termNorm) != -1){
 					parsed.push({'data':options.data[i], 'value':options.data[i][0], 'result':options.data[i][0]});
 				}
 			}
-		
+
 			success(term, parsed);
 		}
 		else {
@@ -6084,16 +6096,16 @@ $.Autocompleter = function(input, options) {
 			failure(term);
 		}
 	};
-	
-	
+
+
 	var normalize = (function() {
-	  var from = "ÃƒÃ€ÃÃ„Ã‚ÃˆÃ‰Ã‹ÃŠÃŒÃÃÃŽÃ’Ã“Ã–Ã”Ã™ÃšÃœÃ›Ã£Ã Ã¡Ã¤Ã¢Ã¨Ã©Ã«ÃªÃ¬Ã­Ã¯Ã®Ã²Ã³Ã¶Ã´Ã¹ÃºÃ¼Ã»Ã‘Ã±Ã‡Ã§", 
+	  var from = "ÃƒÃ€ÃÃ„Ã‚ÃˆÃ‰Ã‹ÃŠÃŒÃÃÃŽÃ’Ã“Ã–Ã”Ã™ÃšÃœÃ›Ã£Ã Ã¡Ã¤Ã¢Ã¨Ã©Ã«ÃªÃ¬Ã­Ã¯Ã®Ã²Ã³Ã¶Ã´Ã¹ÃºÃ¼Ã»Ã‘Ã±Ã‡Ã§",
 		  to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
 		  mapping = {};
-	 
+
 	  for(var i = 0, j = from.length; i < j; i++ )
 		  mapping[ from.charAt( i ) ] = to.charAt( i );
-	 
+
 	  return function( str ) {
 		  var ret = [];
 		  for( var i = 0, j = str.length; i < j; i++ ) {
@@ -6102,12 +6114,12 @@ $.Autocompleter = function(input, options) {
 				  ret.push( mapping[ c ] );
 			  else
 				  ret.push( c );
-		  }      
+		  }
 		  return ret.join( '' );
 	  }
-	 
+
 	})();
-	
+
 	function parse(data) {
 		var parsed = [];
 		try
@@ -6130,7 +6142,7 @@ $.Autocompleter = function(input, options) {
 					{
 					    row = row.split("|");//Para que cree un array de un elemento.
 					}
-					
+
 					parsed[parsed.length] = {
 						data: row,
 						value: row[0],
@@ -6200,9 +6212,9 @@ $.Autocompleter.Cache = function(options) {
 
 	var data = {};
 	var length = 0;
-	
+
 	function matchSubset(s, sub) {
-		if (!options.matchCase) 
+		if (!options.matchCase)
 			s = s.toLowerCase();
 		var i = s.indexOf(sub);
 		if (options.matchContains == "word"){
@@ -6211,17 +6223,17 @@ $.Autocompleter.Cache = function(options) {
 		if (i == -1) return false;
 		return i == 0 || options.matchContains;
 	};
-	
+
 	function add(q, value) {
 		if (length > options.cacheLength){
 			flush();
 		}
-		if (!data[q]){ 
+		if (!data[q]){
 			length++;
 		}
 		data[q] = value;
 	}
-	
+
 	function populate(){
 		if( !options.data ) return false;
 		// track the matches
@@ -6230,23 +6242,23 @@ $.Autocompleter.Cache = function(options) {
 
 		// no url was specified, we need to adjust the cache length to make sure it fits the local data store
 		if( !options.url ) options.cacheLength = 1;
-		
+
 		// track all options for minChars = 0
 		stMatchSets[""] = [];
-		
+
 		// loop through the array and create a lookup structure
 		for ( var i = 0, ol = options.data.length; i < ol; i++ ) {
 			var rawValue = options.data[i];
 			// if rawValue is a string, make an array otherwise just reference the array
 			rawValue = (typeof rawValue == "string") ? [rawValue] : rawValue;
-			
+
 			var value = options.formatMatch(rawValue, i+1, options.data.length);
 			if ( value === false )
 				continue;
-				
+
 			var firstChar = value.charAt(0).toLowerCase();
 			// if no lookup array for this character exists, look it up now
-			if( !stMatchSets[firstChar] ) 
+			if( !stMatchSets[firstChar] )
 				stMatchSets[firstChar] = [];
 
 			// if the match is a string
@@ -6255,7 +6267,7 @@ $.Autocompleter.Cache = function(options) {
 				data: rawValue,
 				result: options.formatResult && options.formatResult(rawValue) || value
 			};
-			
+
 			// push the current match into the set list
 			stMatchSets[firstChar].push(row);
 
@@ -6273,15 +6285,15 @@ $.Autocompleter.Cache = function(options) {
 			add(i, value);
 		});
 	}
-	
+
 	// populate any existing data
 	setTimeout(populate, 25);
-	
+
 	function flush(){
 		data = {};
 		length = 0;
 	}
-	
+
 	return {
 		flush: flush,
 		add: add,
@@ -6289,7 +6301,7 @@ $.Autocompleter.Cache = function(options) {
 		load: function(q) {
 			if (!options.cacheLength || !length)
 				return null;
-			/* 
+			/*
 			 * if dealing w/local data and matchContains than we must make sure
 			 * to loop through all the data collections looking for matches
 			 */
@@ -6309,9 +6321,9 @@ $.Autocompleter.Cache = function(options) {
 							}
 						});
 					}
-				}				
+				}
 				return csub;
-			} else 
+			} else
 			// if the exact item exists, use it
 			if (data[q]){
 				return data[q];
@@ -6339,7 +6351,7 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
 	var CLASSES = {
 		ACTIVE: "ac_over"
 	};
-	
+
 	var listItems,
 		active = -1,
 		data,
@@ -6347,7 +6359,7 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
 		needsInit = true,
 		element,
 		list;
-	
+
 	// Create results
 	function init() {
 		if (!needsInit)
@@ -6366,7 +6378,7 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
         	element.appendTo($(input).parent());
             //element.appendTo(document.body);
         }
-	
+
 		list = $("<ul/>").appendTo(element).mouseover( function(event) {
 			if(target(event).nodeName && target(event).nodeName.toUpperCase() == 'LI') {
 	            active = $("li", list).removeClass(CLASSES.ACTIVE).index(target(event));
@@ -6384,16 +6396,16 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
 		}).mouseup(function() {
 			config.mouseDownOnSelect = false;
 		});
-		
+
 		if( options.width > 0 )
 			element.css("width", options.width);
-			
+
 		if (options.extraParams.maxwidth)
 		    element.css("max-width", options.extraParams.maxwidth);
-			
+
 		needsInit = false;
-	} 
-	
+	}
+
 	function target(event) {
 		var element = event.target;
 		while(element && element.tagName != "LI")
@@ -6418,9 +6430,9 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
             } else if(offset < list.scrollTop()) {
                 list.scrollTop(offset);
             }
-        } 
+        }
 	};
-	
+
 	function movePosition(step) {
 		active += step;
 		if (active < 0) {
@@ -6429,13 +6441,13 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
 			active = 0;
 		}
 	}
-	
+
 	function limitNumberOfItems(available) {
 		return options.max && options.max < available
 			? options.max
 			: available;
 	}
-	
+
 	function fillList() {
 		list.empty();
 		var max = limitNumberOfItems(data.length);
@@ -6457,7 +6469,7 @@ $.Autocompleter.Select = function (options, input, select, pintar, config) {
 		if ( $.fn.bgiframe )
 			list.bgiframe();
 	}
-	
+
 	return {
 		display: function(d, q) {
 			init();
@@ -6583,20 +6595,20 @@ function PintarTags(textBox)
     if(textBox.val().trim() != "")
     {
         var tags = textBox.val().replace(';', ',').split(',');
-        
+
         var contenedor = textBox.parents('.autocompletar').find('.contenedor');
         var textBoxHack = textBox.parents('.autocompletar').find('input').last();
-        
+
         if(textBoxHack.length > 0)
         {
             for(var i=0; i<tags.length; i++)
             {
                 var tagNombre = tags[i].trim();
                 var tagNombreEncode = Encoder.htmlEncode(tagNombre);
-                
+
                 var estaYaAgregada = textBoxHack.val().trim().indexOf(',' + tagNombre + ',') != -1;
                 estaYaAgregada = estaYaAgregada || textBoxHack.val().trim().substring(0, tagNombre.length + 1) == tagNombre + ',';
-                
+
                 if(tagNombre != '' && (!estaYaAgregada || textBox.parents('.tag').length > 0))
                 {
                     var html = "<div class=\"tag\" title=\"" + tagNombreEncode + "\"><div>" + tagNombre + "<a class=\"remove\" ></a></div><input type=\"text\" value=\"" + tagNombreEncode + "\"></div>";
@@ -6606,26 +6618,26 @@ function PintarTags(textBox)
                     }
                     else
                     {
-	                    contenedor.append(html);  
+	                    contenedor.append(html);
                     }
-                    
+
                     textBoxHack.val(textBoxHack.val() + tagNombre.toLowerCase() + ',')
                 }
             }
-            
+
             textBox.val('');
-            
+
             if(textBox.parents('.tag').length == 0)
             {
                 PosicionarTextBox(textBoxHack.prev());
             }
-            
+
             if(!textBoxHack.prev().hasClass("no-edit"))
             {
                 textBox.parents('.autocompletar').find('.tag').each(function(){
                     $(this).bind('click', function(evento){
                         cancelEvent(evento);
-                         
+
                         var divTag = $(this).children('div');
                         var textBox = divTag.parent().find('input');
                         if(textBox.css('display') == 'none')
@@ -6654,9 +6666,9 @@ function PintarTags(textBox)
                             });
                         }
                     });
-                });  
+                });
             }
-            
+
              textBox.parents('.autocompletar').find('.tag .remove').each(function(){
                 if($(this).data("events") == null)
                 {
@@ -6702,13 +6714,13 @@ function ActualizarTag(textBox, divTag, textBoxHack)
         ultimoElemento = ultimoElemento.next();
     }
     descartarTag(textBox.parents('.tag'), ultimoElemento);
-    
+
     textBox.css('display', '');
     PintarTags(textBox);
-    
+
     var valorAnterior = textBox.parents('.tag').attr('title').toLowerCase();
     var hack = textBoxHack.val().trim();
-    
+
     if(hack.indexOf(',' + valorAnterior + ',') != -1)
     {
         hack = hack.replace(',' + valorAnterior + ',', ',');
@@ -6717,7 +6729,7 @@ function ActualizarTag(textBox, divTag, textBoxHack)
     {
         hack = hack.replace(valorAnterior + ',', '');
     }
-                
+
     textBoxHack.val(hack.trim());
     textBox.parent().remove();
     PosicionarTextBox(textBoxHack.prev());
@@ -6745,9 +6757,9 @@ function EliminarTag(elemento, evento)
             }
             ultimoElemento = divAutocompletar.next();
         }
-        
+
         descartarTag(elemento, ultimoElemento);
-        
+
         elemento.remove();
         PosicionarTextBox(textBoxHack.prev());
     }
@@ -6763,10 +6775,10 @@ function descartarTag(elemento, ultimoElemento)
     else
     {
         var descartados = ultimoElemento.next().find('#txtHackDescartados').val();
-        
+
         var estaYaAgregada = descartados.indexOf(',' + elemento.attr('title') + ',') != -1;
         estaYaAgregada = estaYaAgregada || descartados.substring(0, elemento.attr('title').length + 1) == elemento.attr('title') + ',';
-        
+
         if(!estaYaAgregada)
         {
             descartados += elemento.attr('title').toLowerCase() + ','
@@ -6794,12 +6806,12 @@ $(document).ready(function() {
     // var hash = location.hash.replace(/^#/, '');  // ^ means starting, meaning only match the first hash
     // if (hash) {
     //     $('.nav-tabs a[href="#' + hash + '"]').tab('show');
-    // } 
+    // }
 
     // // Change hash for page-reload
     // $('.nav-tabs a').on('shown.bs.tab', function (e) {
     //     window.location.hash = e.target.hash;
-    // })           
+    // })
 });
 
 function pintarTagsInicio()
@@ -6810,7 +6822,7 @@ function pintarTagsInicio()
             $(this).find('input.txtAutocomplete').focus();
         });
     });
-    
+
     $('.autocompletar input.txtAutocomplete').each(function(){
         PosicionarTextBox($(this));
         $(this).bind('keydown', function(evento){
@@ -6840,7 +6852,7 @@ function pintarTagsInicio()
                 }
             }
         });
-        $(this).bind('blur', function(evento){            
+        $(this).bind('blur', function(evento){
             PintarTags($(this));
         });
         $(this).bind('click', function(evento){
@@ -6858,7 +6870,7 @@ function cancelEvent(e) {
     } else {
         e.returnValue = false;
     }
-        
+
     if (!e) e = window.event;
     if (e.stopPropagation) {
         e.stopPropagation();
@@ -6881,7 +6893,7 @@ function ObtenerUrlMultiple(pOptions){
     }
 }
 
-function aleatorio(inferior,superior){ 
+function aleatorio(inferior,superior){
     numPosibilidades = superior - inferior;
     aleat = Math.random() * numPosibilidades;
     aleat = Math.round(aleat);
@@ -6894,7 +6906,7 @@ function getParam(param)
 	var url=window.location.href;
 	url = String(url.match(/\?+.+/));
 	url = url.replace("?", "");
-	url = url.split("&");	
+	url = url.split("&");
 	x = 0;
 	while (x < url.length)
 	{
@@ -6913,7 +6925,7 @@ tooltipsAccionesRecursos.lanzar= function () {
 	montarTooltip.lanzar(this.visible, GetText('CV_VISIBLE'), 'background-gris-oscuro');
 	montarTooltip.lanzar(this.oculto, GetText('CV_OCULTO'), 'background-gris-oscuro');
 	montarTooltip.lanzar(this.body.find('.manage-history-wrapper'), GetText('CV_PENDIENTE'), 'background-gris-oscuro');
-	montarTooltip.lanzar(this.body.find('.verified-wrapper'), GetText('CV_VALIDADO'), 'background-gris-oscuro');	
+	montarTooltip.lanzar(this.body.find('.verified-wrapper'), GetText('CV_VALIDADO'), 'background-gris-oscuro');
 };
 
 montarTooltip.lanzar= function (elem, title, classes) {
@@ -6929,7 +6941,7 @@ montarTooltip.lanzar= function (elem, title, classes) {
 cambioTraducciones.comportamiento= function () {
 	var that=this;
 	var accionesListado = this.body.find('.acciones-listado');
-	var traducciones = accionesListado.find('.traducciones');	
+	var traducciones = accionesListado.find('.traducciones');
 	var dropdownMenu = traducciones.find('.dropdown-menu');
 	var dropdownToggle = traducciones.find('.dropdown-toggle');
 	var dropdownToggleIcon = dropdownToggle.find('.material-icons');
@@ -7018,7 +7030,7 @@ tooltipsCV.traducciones= function () {
 function selectionChange(e) {
     let anchor = window.getSelection().anchorNode;
     //En elementos desabilitados no existe el anchorNode;
-    if (!anchor) return; 
+    if (!anchor) return;
     let elem = anchor.parentNode;
     if (!(elem.classList.contains("visuell-view") || elem.parentNode.classList.contains("visuell-view"))) return;
     let button = elem.tagName == "DIV" ? elem.parentNode.querySelector('.editor-btn') : elem.parentNode.parentNode.querySelector('.editor-btn');
@@ -7047,11 +7059,11 @@ operativaFormularioProduccionCientifica.formProyecto = function (section,rdfType
 	that.formularioProyecto.find('> .alert').hide();
 	this.formularioProyecto.find('.btn').off('click').on('click', function () {
 		$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);
-		
+
 		if (that.resourceList.find('.resource .form-check-input').is(':checked')) {
 			that.formularioProyecto.find('> .alert').hide();
 			$(this).attr('data-dismiss', 'modal');
-			
+
 			if($('input[name="proyecto"]:checked').length)
 			{
 				var idproyecto = [];
@@ -7061,15 +7073,15 @@ operativaFormularioProduccionCientifica.formProyecto = function (section,rdfType
 			}
 			var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
 			edicionCV.sendPRC(idrecurso,idproyecto, section,rdfTypeTab);
-			
+
 		} else {
 			$(this).removeAttr('data-dismiss');
-			$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);	
+			$("#modal-enviar-produccion-cientifica .modal-body").scrollTop(0);
 			that.formularioProyecto.find('> .alert').show();
 			$(this).addClass('disabled');
 		}
 	});
-	
+
 	this.formularioProyecto.find('.alert-title a').off('click').on('click', function () {
 		$(this).attr('data-dismiss', 'modal');
 		var idrecurso = $('.modal-content>.modal-body>.resource-list.listView h2 a').attr("data-id");
@@ -7104,7 +7116,7 @@ function conseguirTesauro(tesaurus, pLang, listadoValoresSeleccionados, ul, edit
 			if(data != null){
 				pintadoEtiquetas(that, data);
 			}
-		}, 
+		},
 		error: function(response){
 		}
 	});
@@ -7124,7 +7136,7 @@ function pintadoTesauro(elementoActual, edit, mostrarModal){
 	if(mostrarModal!=false){
 		$(modalPopUp).modal('show');
 	}
-	
+
 	//IDS
 	var contenedor = elementoActual.closest('.entityauxcontainer');
 	var idTemp = $(contenedor).attr('idtemp');
@@ -7210,7 +7222,7 @@ function pintadoEtiquetas(that, data){
 			listaEtiquetasCargadas.push($(this).text().trim());
 		});
 
-		// Lista para las CATEGORIAS 
+		// Lista para las CATEGORIAS
 		var listaNombreCat = ["userKnowledgeArea", "enrichedKnowledgeArea", "externalKnowledgeArea"]
 		listaNombreCat.forEach(function(item, index) {
 			$("#modal-editar-entidad  div.item.entityaux.added[propertyrdf='http://w3id.org/roh/" + item + "']").each(function() {
@@ -7243,8 +7255,8 @@ function pintadoEtiquetas(that, data){
 				var auxKeyword=$('div.entityaux.aux[propertyrdf="http://w3id.org/roh/enrichedKeywords"]');
 				var clon=auxKeyword.clone();
 				$(clon).removeClass('aux');
-				$(clon).addClass('added');                    
-				$(clon).attr('about',RandomGuid());        
+				$(clon).addClass('added');
+				$(clon).attr('about',RandomGuid());
 				$(clon).find('input[propertyrdf="http://w3id.org/roh/title"]').val(element.word.trim());
 				$(clon).find('input[propertyrdf="http://w3id.org/roh/score"]').val(element.porcentaje);
 				auxKeyword.parent().append(clon);
