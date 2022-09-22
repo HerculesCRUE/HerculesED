@@ -68,24 +68,6 @@ namespace Gnoss.Web.Login
             services.AddScoped(typeof(UtilServicios));
             services.AddScoped<IServicesUtilVirtuosoAndReplication, ServicesVirtuosoAndBidirectionalReplicationOpen>();
 
-            //services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
-            //services.Configure<Saml2Configuration>(saml2Configuration =>
-            //{
-            //    saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
-            //    var entityDescriptor = new EntityDescriptor();
-            //    entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
-            //    if (entityDescriptor.IdPSsoDescriptor != null)
-            //    {
-            //        saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
-            //        saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
-            //        saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
-            //    }
-            //    else
-            //    {
-            //        throw new Exception("IdPSsoDescriptor not loaded from metadata.");
-            //    }
-            //});
-
             string IdPMetadata = "";
             string Issuer = "";
             string SignatureAlgorithm = "";
@@ -131,13 +113,6 @@ namespace Gnoss.Web.Login
             {
                 RevocationMode = Configuration["Saml2:RevocationMode"];
             }
-
-            //Saml2Configuration config = new Saml2Configuration();
-            //config.Issuer = Issuer;
-            //config.RevocationMode = (X509RevocationMode)Enum.Parse(typeof(X509RevocationMode), RevocationMode, true);
-            //config.CertificateValidationMode = (X509CertificateValidationMode)Enum.Parse(typeof(X509CertificateValidationMode), CertificateValidationMode, true);
-            //config.SignatureAlgorithm = SignatureAlgorithm;
-            //services.Configure<Saml2Configuration>(config);
 
             services.Configure<Saml2Configuration>(saml2Configuration =>
             {
