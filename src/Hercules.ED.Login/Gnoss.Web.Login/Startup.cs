@@ -51,6 +51,7 @@ namespace Gnoss.Web.Login
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            IDictionary environmentVariables = Environment.GetEnvironmentVariables();
             services.AddMvc();
             services.AddControllers();
             services.AddHttpContextAccessor();
@@ -84,37 +85,6 @@ namespace Gnoss.Web.Login
             //        throw new Exception("IdPSsoDescriptor not loaded from metadata.");
             //    }
             //});
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: "_myAllowSpecificOrigins",
-                builder =>
-                {
-                    builder.SetIsOriginAllowed(ComprobarDominioEnBD);
-                    //builder.AllowAnyOrigin();
-                    builder.AllowAnyHeader();
-                    builder.AllowAnyMethod();
-                    builder.AllowCredentials();
-                });
-            });
-            string bdType = "";
-            IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-            if (environmentVariables.Contains("connectionType"))
-            {
-                bdType = environmentVariables["connectionType"] as string;
-            }
-            else
-            {
-                bdType = Configuration.GetConnectionString("connectionType");
-            }
-            if (bdType.Equals("2"))
-            {
-                services.AddScoped(typeof(DbContextOptions<EntityContext>));
-                services.AddScoped(typeof(DbContextOptions<EntityContextBASE>));
-            }
-            services.AddSingleton(typeof(ConfigService));
-            services.AddSingleton(typeof(ConfigServiceSAML));
-
 
             string IdPMetadata = "";
             string Issuer = "";
@@ -180,6 +150,39 @@ namespace Gnoss.Web.Login
                     throw new Exception("IdPSsoDescriptor not loaded from metadata.");
                 }
             });
+
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                builder =>
+                {
+                    builder.SetIsOriginAllowed(ComprobarDominioEnBD);
+                    //builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.AllowCredentials();
+                });
+            });
+            string bdType = "";            
+            if (environmentVariables.Contains("connectionType"))
+            {
+                bdType = environmentVariables["connectionType"] as string;
+            }
+            else
+            {
+                bdType = Configuration.GetConnectionString("connectionType");
+            }
+            if (bdType.Equals("2"))
+            {
+                services.AddScoped(typeof(DbContextOptions<EntityContext>));
+                services.AddScoped(typeof(DbContextOptions<EntityContextBASE>));
+            }
+            services.AddSingleton(typeof(ConfigService));
+            services.AddSingleton(typeof(ConfigServiceSAML));
+
+
+            
 
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
 
