@@ -1989,7 +1989,7 @@ namespace Harvester
 
             // Fecha de inicio del grupo.
             groupOntology.Roh_foundationDate = grupo.fechaInicio;
-            
+
             // Duración.
             if (grupo.fechaInicio != null && grupo.fechaFin != null)
             {
@@ -2018,7 +2018,7 @@ namespace Harvester
                                     OPTIONAL {{ ?hasResearchArea <http://vivoweb.org/ontology/core#end> ?endRA. }}
                                     OPTIONAL {{ ?s <http://w3id.org/roh/isIP> ?isIP. }}
                                    }}";
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person", "project" });
                     if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                     {
                         foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -2034,7 +2034,8 @@ namespace Harvester
                             if (fila.ContainsKey("hasResearchArea"))
                             {
                                 GroupOntology.ResearchArea researchArea = new GroupOntology.ResearchArea();
-                                if (fila.ContainsKey("title")) {
+                                if (fila.ContainsKey("title"))
+                                {
                                     researchArea.Roh_title = fila["title"].value;
                                 }
                                 if (fila.ContainsKey("startRA"))
@@ -2054,7 +2055,7 @@ namespace Harvester
                         }
                     }
                     persona.Vivo_hasResearchArea = hasResearchArea;
-                } 
+                }
                 else
                 {
                     PersonOntology.Person personOntology = new PersonOntology.Person();
