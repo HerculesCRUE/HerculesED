@@ -318,6 +318,7 @@ namespace EditorCV.Models
         /// </returns>
         public List<SimilarityResponse> GetItemsDuplicados(string pCVId, float minSimilarity, string pItemId = null)
         {
+            //Buscamos los ítems marcados como no duplicados entre sí.
             Dictionary<string, HashSet<string>> itemsNoDuplicados = new Dictionary<string, HashSet<string>>();
             string select = $@"SELECT distinct ?group ?id";
             string where = $@"where
@@ -351,6 +352,8 @@ namespace EditorCV.Models
                             Dictionary<string, Tuple<string, string, bool>> itemsTitleValidatedSection = GetItemsTitleParaDuplicados(pCVId, tab.property, tabSection.property, tabSection.presentation.listItemsPresentation.listItemEdit.graph, tabSection.presentation.listItemsPresentation.listItemEdit.proptitle);
 
                             List<KeyValuePair<string, Tuple<string, string, bool>>> itemsTitleSectionList = itemsTitleValidatedSection.ToList();
+
+                            // Comprobamos un ítem unicamente o todos los del listado.
                             if (pItemId != null)
                             {
                                 Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
@@ -374,7 +377,7 @@ namespace EditorCV.Models
 
                                 //Ordenamos primero con los validados
                                 similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                                ////Sólo puede ser validado el primero
+
                                 if (similarsin.Count > 1)
                                 {
                                     //Si hay mas de uno y hay alguno no validado lo añadimos
@@ -387,6 +390,8 @@ namespace EditorCV.Models
                                 {
                                     Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
                                     similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
+
+                                    //Añadimos si la similaridad es superior a minSimilarity
                                     for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
                                     {
                                         double similitud = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
@@ -395,6 +400,7 @@ namespace EditorCV.Models
                                             similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
                                         }
                                     }
+
                                     //Eliminamos si hay alguno duplicado
                                     foreach (string duplicado in similars.SelectMany(x => x))
                                     {
@@ -406,17 +412,7 @@ namespace EditorCV.Models
 
                                     //Ordenamos primero con los validados
                                     similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                                    ////Sólo puede ser validado el primero
-                                    //if (similarsin.Count > 1)
-                                    //{
-                                    //    foreach (string id in similarsin.Keys.ToList().GetRange(1, similarsin.Keys.Count - 1))
-                                    //    {
-                                    //        if (similarsin[id])
-                                    //        {
-                                    //            similarsin.Remove(id);
-                                    //        }
-                                    //    }
-                                    //}
+
                                     if (similarsin.Count > 1)
                                     {
                                         //Si hay mas de uno y hay alguno no validado lo añadimos
@@ -530,21 +526,24 @@ namespace EditorCV.Models
 
             double maxLength = Math.Max(x.Length, y.Length);
             double minLength = Math.Min(x.Length, y.Length);
+
             if (1 - ((maxLength - minLength) / maxLength) < min)
             {
                 return 0;
             }
+
             if (maxLength > 0)
             {
                 int maxEditDistance = ((int)(maxLength - (min * maxLength))) + 1;
-                // opcionalmente ignora el caso si es necesario
+
                 return (maxLength - GetEditDistance(x, y, maxEditDistance)) / maxLength;
             }
             return 1.0;
         }
 
         /// <summary>
-        /// Distancia de edición entre dos string
+        /// Distancia de edición/Distancia Levenshtein.
+        /// Número mínimo de operaciones requeridas para transformar una cadena de caracteres en otra.
         /// </summary>
         /// <param name="X">string A</param>
         /// <param name="Y">string B</param>
@@ -692,7 +691,6 @@ namespace EditorCV.Models
             List<ItemEditSectionRowProperty> listaPropiedadesConfiguradas = presentationListItem.listItemEdit.sections.SelectMany(x => x.rows).SelectMany(x => x.properties).Where(x => x.multilang).ToList();
             return GetItem(pConfig, pEntityID, data, presentationListItem, pLang, propiedadesMultiIdiomaCargadas, listaPropiedadesConfiguradas);
         }
-
 
         /// <summary>
         /// Obtiene los datos de edición de una entidad
