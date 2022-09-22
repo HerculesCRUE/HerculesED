@@ -31,6 +31,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel.Security;
 using System.Threading.Tasks;
 
 namespace Gnoss.Web.Login
@@ -65,24 +67,23 @@ namespace Gnoss.Web.Login
             services.AddScoped(typeof(UtilServicios));
             services.AddScoped<IServicesUtilVirtuosoAndReplication, ServicesVirtuosoAndBidirectionalReplicationOpen>();
 
-            services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
-            services.Configure<Saml2Configuration>(saml2Configuration =>
-            {
-                saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
-                var entityDescriptor = new EntityDescriptor();
-                entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
-                if (entityDescriptor.IdPSsoDescriptor != null)
-                {
-                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
-                    saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
-                    saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
-                }
-                else
-                {
-                    throw new Exception("IdPSsoDescriptor not loaded from metadata.");
-                }
-            });
-
+            //services.Configure<Saml2Configuration>(Configuration.GetSection("Saml2"));
+            //services.Configure<Saml2Configuration>(saml2Configuration =>
+            //{
+            //    saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
+            //    var entityDescriptor = new EntityDescriptor();
+            //    entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(Configuration["Saml2:IdPMetadata"]));
+            //    if (entityDescriptor.IdPSsoDescriptor != null)
+            //    {
+            //        saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
+            //        saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
+            //        saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
+            //    }
+            //    else
+            //    {
+            //        throw new Exception("IdPSsoDescriptor not loaded from metadata.");
+            //    }
+            //});
 
             services.AddCors(options =>
             {
@@ -113,6 +114,73 @@ namespace Gnoss.Web.Login
             }
             services.AddSingleton(typeof(ConfigService));
             services.AddSingleton(typeof(ConfigServiceSAML));
+
+
+            string IdPMetadata = "";
+            string Issuer = "";
+            string SignatureAlgorithm = "";
+            string CertificateValidationMode = "";
+            string RevocationMode = "";
+            if (environmentVariables.Contains("Saml2_IdPMetadata"))
+            {
+                IdPMetadata = environmentVariables["Saml2_IdPMetadata"] as string;
+            }
+            else
+            {
+                IdPMetadata = Configuration["Saml2:IdPMetadata"];
+            }
+            if (environmentVariables.Contains("Saml2_Issuer"))
+            {
+                Issuer = environmentVariables["Saml2_Issuer"] as string;
+            }
+            else
+            {
+                Issuer = Configuration["Saml2:Issuer"];
+            }
+            if (environmentVariables.Contains("Saml2_SignatureAlgorithm"))
+            {
+                SignatureAlgorithm = environmentVariables["Saml2_SignatureAlgorithm"] as string;
+            }
+            else
+            {
+                SignatureAlgorithm = Configuration["Saml2:SignatureAlgorithm"];
+            }
+            if (environmentVariables.Contains("Saml2_CertificateValidationMode"))
+            {
+                CertificateValidationMode = environmentVariables["Saml2_CertificateValidationMode"] as string;
+            }
+            else
+            {
+                CertificateValidationMode = Configuration["Saml2:CertificateValidationMode"];
+            }
+            if (environmentVariables.Contains("Saml2_RevocationMode"))
+            {
+                RevocationMode = environmentVariables["Saml2_RevocationMode"] as string;
+            }
+            else
+            {
+                RevocationMode = Configuration["Saml2:RevocationMode"];
+            }
+            services.Configure<Saml2Configuration>(saml2Configuration =>
+            {
+                saml2Configuration.AllowedAudienceUris.Add(Issuer);
+                saml2Configuration.SignatureAlgorithm = SignatureAlgorithm;
+                saml2Configuration.CertificateValidationMode = (X509CertificateValidationMode)Enum.Parse(typeof(X509CertificateValidationMode), CertificateValidationMode, true);
+                saml2Configuration.RevocationMode = (X509RevocationMode)Enum.Parse(typeof(X509RevocationMode), RevocationMode, true);
+                var entityDescriptor = new EntityDescriptor();
+                entityDescriptor.ReadIdPSsoDescriptorFromUrl(new Uri(IdPMetadata));
+                if (entityDescriptor.IdPSsoDescriptor != null)
+                {
+                    saml2Configuration.SingleSignOnDestination = entityDescriptor.IdPSsoDescriptor.SingleSignOnServices.First(x => x.Binding == new Uri("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect")).Location;
+                    saml2Configuration.SingleLogoutDestination = entityDescriptor.IdPSsoDescriptor.SingleLogoutServices.First().Location;
+                    saml2Configuration.SignatureValidationCertificates.AddRange(entityDescriptor.IdPSsoDescriptor.SigningCertificates);
+                }
+                else
+                {
+                    throw new Exception("IdPSsoDescriptor not loaded from metadata.");
+                }
+            });
+
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
 
             Conexion.ServicioWeb = true;
@@ -203,7 +271,7 @@ namespace Gnoss.Web.Login
             app.UseStaticFiles();
             app.UseRouting();
             app.UseSaml2();
-            app.UseCors();            
+            app.UseCors();
             app.UseAuthorization();
             app.UseGnossMiddleware();
             app.UseEndpoints(endpoints =>

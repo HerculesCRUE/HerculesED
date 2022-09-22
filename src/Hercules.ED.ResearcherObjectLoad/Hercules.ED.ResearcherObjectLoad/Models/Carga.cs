@@ -293,6 +293,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                         else
                         {
+                            //Obtenemos al propietario del JSON
                             string idAutor = "http://gnoss.com/items/" + fichero.Name.Split("___")[0];
                             List<string> lista = new List<string>() { idAutor };
                             DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
