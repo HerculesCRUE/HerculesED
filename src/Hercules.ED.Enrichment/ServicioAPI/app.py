@@ -169,14 +169,20 @@ def init():
 
         # loading models
         print("Loading freqs and idf models")
-        kp_clef_fpath=os.path.join(model_path,"clef.pkl")
-        kp_clef_idf_fpath=os.path.join(model_path,"idfakCLEF.pkl")
+        kp_clef_en_fpath=os.path.join(model_path,"clef_en.pkl")
+        kp_clef_es_fpath=os.path.join(model_path,"clef_es.pkl")
+        kp_clef_idf_en_fpath=os.path.join(model_path,"idfakCLEF_en.pkl")
+        kp_clef_idf_es_fpath=os.path.join(model_path,"idfakCLEF_es.pkl")
         kp_scopus_fpath=os.path.join(model_path,"scopus.pkl")
-        with open(kp_clef_fpath, 'rb') as f:
-            kp_clef = pickle.load(f)
+        kp_clef, kp_clef_idf = {}, {}
+        with open(kp_clef_en_fpath, 'rb') as f:
+            kp_clef['en'] = pickle.load(f)
+        with open(kp_clef_es_fpath, 'rb') as f:
+            kp_clef['es'] = pickle.load(f)
         with open(kp_scopus_fpath, 'rb') as f:
             kp_scopus = pickle.load(f)
-        kp_clef_idf = joblib.load(kp_clef_idf_fpath)
+        kp_clef_idf['en'] = joblib.load(kp_clef_idf_en_fpath)
+        kp_clef_idf['es'] = joblib.load(kp_clef_idf_es_fpath)
         print("Done")
         
         for i in ['short','fulltext']:

@@ -1,11 +1,15 @@
 import pandas as pd
 import numpy as np
+import langid
 import spacy
 import math
 import re
 import pdb
 
-SPACY_MODEL = 'en_core_web_lg'
+langid.set_languages(['en', 'es'])
+
+SPACY_MODEL_EN = 'en_core_web_lg'
+SPACY_MODEL_ES = 'es_core_news_lg'
 
 KW_MAX_LEN = 50
 KW_MIN_LEN = 3
@@ -107,6 +111,7 @@ class KeyphraseExtractor:
     def extract_keyphrases(self, title, abstract, body, return_n=10):
 
         X = self._feature_extractor.extract_features(title, abstract, body)
+        print(X.to_string())
             
         ranking = self.create_ranking(self._model_s, self._model_m, X)
         ranking = ranking.head(return_n)
@@ -169,10 +174,13 @@ class FeatureExtractor:
     
     def __init__(self, clef, scopus, clef_idf):
 
-        self._nlp = spacy.load(SPACY_MODEL)
-        self._clef = clef
+        self._nlp = {
+            'en': spacy.load(SPACY_MODEL_EN),
+            'es': spacy.load(SPACY_MODEL_ES),
+        }
+        self._clef = clef  # dict: es, en
         self._scopus = scopus
-        self._idf_clef = clef_idf
+        self._idf_clef = clef_idf  # dict: es, en
         
         
     def extract_features(self, title, abstract, body, remove_similar=False):
@@ -181,9 +189,12 @@ class FeatureExtractor:
         fulltext_rev = fulltext[::-1]
         fulltext_len = len(fulltext)
 
-        title_kw_cands, title_phrases, title_doc = self._extract_keyword_candidates(title)
-        abstract_kw_cands, abstract_phrases, abstract_doc = self._extract_keyword_candidates(abstract)
-        body_kw_cands, body_phrases, _ = self._extract_keyword_candidates(body)
+        lang = langid.classify(fulltext)[0]
+        print(f"> Language identified: {lang.upper()}")
+
+        title_kw_cands, title_phrases, title_doc = self._extract_keyword_candidates(title, lang)
+        abstract_kw_cands, abstract_phrases, abstract_doc = self._extract_keyword_candidates(abstract, lang)
+        body_kw_cands, body_phrases, _ = self._extract_keyword_candidates(body, lang)
         all_kw_cands = title_kw_cands + abstract_kw_cands + body_kw_cands
         all_phrases = title_phrases + abstract_phrases + body_phrases
 
@@ -211,8 +222,8 @@ class FeatureExtractor:
             spread = last_offset - offset
             norm_offset = offset / len(fulltext)
             nested_rate = self._get_nested_rate(kwc, all_phrases)
-            kwc_idf_clef = self._idf_clef[kwc] if kwc in self._idf_clef else 0.0
-            clef_freq = self._clef['freqs'][kwc_lemma] if kwc_lemma in self._clef['freqs'] else 0
+            kwc_idf_clef = self._idf_clef[lang][kwc] if kwc in self._idf_clef[lang] else 0.0
+            clef_freq = self._clef[lang]['freqs'][kwc_lemma] if kwc_lemma in self._clef[lang]['freqs'] else 0
             scopus_freq = self._scopus['freqs'][kwc_lemma] if kwc_lemma in self._scopus['freqs'] else 0
             doc_len = len(fulltext.split())
             article_freq = kw_cand_freqs[kwc.lower()]
@@ -245,31 +256,40 @@ class FeatureExtractor:
         return df
 
 
-    def _extract_keyword_candidates(self, text):
+    def _extract_keyword_candidates(self, text, lang):
 
-        doc = self._nlp(text)
+        doc = self._nlp[lang](text)
 
         kw_cands = []
         phrases = []  # keep track of all noun phrases, later used to compute nested_rate
         for chunk in doc.noun_chunks:
-            undividable_chunks = self._get_undividable_chunks(chunk.root)
-            undividable_chunks = self._join_spans(undividable_chunks)
 
-            chunk_kw_cands = []
-            main_chunk, _ = undividable_chunks[-1]
-            for i in reversed(range(len(undividable_chunks))):
-                undividable_chunk, rel = undividable_chunks[i]
-                if rel not in self.VALID_DEP_RELS:
-                    break
-                kw_span = doc[undividable_chunk.start : main_chunk.end]
-                form = self._span_to_form(kw_span)
-                if len(form) > KW_MIN_LEN and len(form) < KW_MAX_LEN and form[0] != '-' and form[-1] != '-':
-                    lemma = self._span_to_lemma(kw_span)
-                    chunk_kw_cands.append( (kw_span, form, lemma) )
-                    
-            kw_cands.extend(chunk_kw_cands)
-            if len(chunk_kw_cands) > 0:
-                phrases.append(max(chunk_kw_cands, key=lambda kwc: len(kwc[1])))
+            if lang == 'en':
+                undividable_chunks = self._get_undividable_chunks(chunk.root)
+                undividable_chunks = self._join_spans(undividable_chunks)
+
+                chunk_kw_cands = []
+                main_chunk, _ = undividable_chunks[-1]
+                for i in reversed(range(len(undividable_chunks))):
+                    undividable_chunk, rel = undividable_chunks[i]
+                    if rel not in self.VALID_DEP_RELS:
+                        break
+                    kw_span = doc[undividable_chunk.start : main_chunk.end]
+                    form = self._span_to_form(kw_span)
+                    if len(form) > KW_MIN_LEN and len(form) < KW_MAX_LEN and form[0] != '-' and form[-1] != '-':
+                        lemma = self._span_to_lemma(kw_span)
+                        chunk_kw_cands.append( (kw_span, form, lemma) )
+
+                kw_cands.extend(chunk_kw_cands)
+                if len(chunk_kw_cands) > 0:
+                    phrases.append(max(chunk_kw_cands, key=lambda kwc: len(kwc[1])))
+
+            elif lang == 'es':
+                while chunk.start < chunk.end and chunk[0].pos_ not in ['NOUN', 'PROPN', 'ADJ']:
+                    chunk.start += 1
+                if chunk.start < chunk.end:
+                    kw_cands.append( (chunk, self._span_to_form(chunk), self._span_to_lemma(chunk)) )
+                    phrases.append(kw_cands[-1])
 
         return kw_cands, phrases, doc
 
