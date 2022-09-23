@@ -53,7 +53,15 @@ El editor de CV permite envíar a validar publicaciones (obtenidas por el CV y p
 
 ![image](https://user-images.githubusercontent.com/88077103/191733616-755c72d3-b5ee-4b89-b0de-ef829ac01da7.png)
 
-Al pulsar, la publicación se enviará a validar y pasará al estado "Pendiente de validación" con el siguiente icono:
+Al pulsar, se despliegará una ventana para poder enlazar la publicación a proyectos.
+
+![](../../Docs/media/EditorCV/PRCVentana.png)
+
+En esta ventana puedes relacionar la publicación con uno o más proyectos. En el caso de que no se quiera relacionar con ningún proyecto, aparecerá una alerta indicando que no se ha asociado con ningún proyecto junto a un botón para continuar sin asociar.
+
+![](../../Docs/media/EditorCV/PRCVentanaAsociar.png)
+
+Al desplazarse hacia abajo en la ventana, se encontrará un botón de enviar con el que la publicación se enviará a validar, junto con los proyectos asociados y el envío pasará al estado "Pendiente de validación" con el siguiente icono:
 
 ![image](https://user-images.githubusercontent.com/88077103/191734305-5f7f8886-5f42-4623-b27f-9ff09ab2f47c.png)
 
