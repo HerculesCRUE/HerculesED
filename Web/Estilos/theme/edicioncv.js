@@ -3910,6 +3910,7 @@ var edicionCV = {
 					mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
 					OcultarUpdateProgress();
 				}
+			})
 		});
 
 		$('.texto.validacionItem').off('click').on('click', function(e) {
