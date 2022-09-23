@@ -72,8 +72,7 @@ var importarCVN = {
 	config: function (){
 		var that=this;
 		$('#file_cvn').GnossDragAndDrop({
-			//TODO
-            acceptedFiles: ["pdf", "xml"],
+            acceptedFiles: ["pdf"],
 			maxSize: 5000,
             onFileAdded: function (plugin, files) {
                 $('.col-contenido .botonera').css('display', 'block');
