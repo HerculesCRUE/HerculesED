@@ -1996,7 +1996,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
             foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
             {
-                if (identificador.Type.Equals("040"))
+                if (identificador.Type != null && identificador.Type.Equals("040"))
                 {
                     idDOIValue = identificador.Value;
                 }
