@@ -242,7 +242,7 @@
                             </a>
                         </div>
                         <div class="logo-wrapper">
-                            <a href="./listado.php" class="texto-blanco">
+                            <a href="javascript: void(0);" class="texto-blanco">
                                 Hércules
                             </a>
                         </div>
@@ -399,6 +399,12 @@
                                         string urlCrearOfertaTecnologica = Comunidad.Url + "/" + Html.Translate("NUEVA_OFERTA_TECNOLOGICA_URL");
                                     }
                                     <a href="@urlCrearOfertaTecnologica">@Html.Translate("NUEVA_OFERTA_TECNOLOGICA")</a>
+                                </li>
+                                <li class="liNuevaOferta d-none" id="menu_is_otri">
+                                    @{
+                                        string urlOfertasTecnologicasOtri = Comunidad.Url + "/" + Html.Translate("OFERTA_TECNOLOGICA_OTRI_URL");
+                                    }
+                                    <a href="@urlOfertasTecnologicasOtri">@Html.Translate("GESTIONAR_OFERTA_TECNOLOGICA")</a>
                                 </li>
                             </ul>
                         </div>
@@ -707,6 +713,7 @@
 			<script type="text/javascript">
 				$(document).ready(function () {
 					EjecutarScriptsIniciales2();
+                    EnhableIfIsOtri();
 				});
 			</script>
 		
