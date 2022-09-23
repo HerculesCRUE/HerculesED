@@ -5,23 +5,17 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using ZenodoConnect.ROs.Zenodo.Models.Inicial;
 using System.Threading;
-//using Newtonsoft.Json.Linq.JObject;
 
 namespace ZenodoConnect.ROs.Zenodo.Controllers
 {
     public class ROZenodoLogic : ZenodoInterface
     {
         protected string bareer;
-        //ROScopusControllerJSON info = new ROScopusControllerJSON();
-        //protected string baseUri { get; set; }
 
-
-        // protected List<Publication> publications = new List<Publication>();
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
 
         public ROZenodoLogic()
         {
-            //this.bareer = bareer;
         }
 
         /// <summary>
@@ -60,7 +54,6 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
                             intentos--;
                             if (intentos == 0)
                             {
-                                //throw;
                                 return null;
                             }
                             else
@@ -86,7 +79,7 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
         /// Main function from get all repositories from the RO account
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>?access_token=ACCESS_TOKEN
+        /// <returns></returns>
         public string getPublications(string name)
         {
             Uri url = new Uri("https://zenodo.org/api/records/?q=doi:\"" + name + "\"");
@@ -97,17 +90,21 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
             {
                 Root_2 objInicial = JsonConvert.DeserializeObject<Root_2>("{\"data\":" + info_publication + "}");
 
-                if (objInicial != null && objInicial != new Root_2() && 
-                    objInicial.data != null && objInicial.data.Count > 0 && objInicial.data[0] != null && 
-                    objInicial.data[0].files != null && objInicial.data[0].files.Count > 0 && objInicial.data[0].files[0] != null && 
+                if (objInicial != null && objInicial != new Root_2() &&
+                    objInicial.data != null && objInicial.data.Count > 0 && objInicial.data[0] != null &&
+                    objInicial.data[0].files != null && objInicial.data[0].files.Count > 0 && objInicial.data[0].files[0] != null &&
                     objInicial.data[0].files[0].links != null && objInicial.data[0].files[0].links.download != null &&
                     objInicial.data[0].files[0].links.download.EndsWith(".pdf"))
                 {
                     return objInicial.data[0].files[0].links.download;
                 }
+
                 return null;
             }
-            catch { return null; }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

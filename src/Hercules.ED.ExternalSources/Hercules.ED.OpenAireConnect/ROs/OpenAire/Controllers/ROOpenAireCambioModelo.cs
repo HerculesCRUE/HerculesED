@@ -57,45 +57,33 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             return publicacionFinal;
         }
 
-        public List<Publication> getListPublicatio(Root objInicial)
+        public List<Publication> getListPublication(Root objInicial)
         {
-            List<Publication> sol = new List<Publication>();
-            if (objInicial != null)
+            List<Publication> listaResultado = new List<Publication>();
+            if (objInicial != null && objInicial.response != null && objInicial.response.results != null && objInicial.response.results.result != null)
             {
-                if (objInicial.response != null)
+                foreach (Result2 rec in objInicial.response.results.result)
                 {
-                    if (objInicial.response.results != null)
+                    try
                     {
-                        if (objInicial.response.results.result != null)
+                        Publication publicacion = cambioDeModeloPublicacion(rec);
+
+                        if (publicacion != null)
                         {
-                            foreach (Result2 rec in objInicial.response.results.result)
-                            {
-                                try
-                                {
-
-                                    Publication publicacion = cambioDeModeloPublicacion(rec, true);
-
-                                    if (publicacion != null)
-                                    {
-
-                                        sol.Add(publicacion);
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-
-                                }
-                            }
-
+                            listaResultado.Add(publicacion);
                         }
+                    }
+                    catch (Exception)
+                    {
+
                     }
                 }
             }
 
-            return sol;
+            return listaResultado;
         }
 
-        public Publication cambioDeModeloPublicacion(Result2 objInicial, Boolean publicacion_principal)
+        public Publication cambioDeModeloPublicacion(Result2 objInicial)
         {
             Publication publicacion = new Publication();
             publicacion.typeOfPublication = getPublicationType(objInicial);
@@ -121,40 +109,6 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         }
 
         /// <summary>
-        /// Obtiene el tipo de la publicación.
-        /// </summary>
-        /// <param name="pPublicacionIn">Publicación a obtener el tipo.</param>
-        /// <returns>Tipo de la publicación.</returns>
-        // public string getType(Result2 pPublicacionIn)
-        // {
-        //     if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.doctypes != null && pPublicacionIn.static_data.summary.doctypes.doctype != null)
-        //     {
-        //         if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK_CHAPTER))
-        //         {
-        //             return CHAPTER;
-        //         }
-        //         else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(BOOK))
-        //         {
-        //             return BOOK;
-        //         }
-        //         else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(PROCEEDINGS_PAPER))
-        //         {
-        //             return CONFERENCE_PAPER;
-        //         }
-        //         else if (pPublicacionIn.static_data.summary.doctypes.doctype.Contains(ARTICLE))
-        //         {
-        //             return JOURNAL_ARTICLE;
-        //         }
-        //         else
-        //         {
-        //             return JOURNAL_ARTICLE;
-        //         }
-        //     }
-
-        //     return null;
-        // }
-
-        // <summary>
         /// Obtiene la infromación del autor princpipal
         /// </summary>
         /// <param name="pPublicacionIn">Publicación a obtener el autor princiapl.</param>
@@ -208,8 +162,6 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
             return null;
         }
-
-
 
         /// <summary>.
         /// Obtiene el tipo de publicación.
@@ -400,7 +352,8 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
                 foreach (Subject sub in pPublicacionIn.metadata.OafEntity.OafResult.subject)
                 {
-                    if (sub.Text.Contains(";")) {
+                    if (sub.Text.Contains(";"))
+                    {
                         foreach (string key in sub.Text.Split(";"))
                         {
                             lista_keyword.Add(key.Trim());
@@ -537,7 +490,7 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                 if (pPublicacionIn.metadata.OafEntity.OafResult.journal.Vol != null)
                 {
                     return pPublicacionIn.metadata.OafEntity.OafResult.journal.Vol;
-                }               
+                }
             }
 
             return null;
@@ -547,9 +500,9 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         {
             if (pPublicacionIn.metadata != null && pPublicacionIn.metadata.OafEntity != null && pPublicacionIn.metadata.OafEntity.OafResult != null && pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright != null)
             {
-                if(pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright.Classname == "Open Access")
+                if (pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright.Classname == "Open Access")
                 {
-                    if(pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright.Classid == "OPEN")
+                    if (pPublicacionIn.metadata.OafEntity.OafResult.bestaccessright.Classid == "OPEN")
                     {
                         return true;
                     }

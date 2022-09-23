@@ -16,8 +16,6 @@ using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
 using SemanticScholarAPI.ROs.SemanticScholar.Models;
-//using Newtonsoft.Json.Linq.JObject;
-
 
 
 namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
@@ -25,13 +23,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
     public class ROSemanticScholarLogic
     {
         protected string bareer;
-        //ROScopusControllerJSON info = new ROScopusControllerJSON();
-        //  protected string baseUri { get; set; }
-        // public Dictionary<string, Tuple<string,string,string,string,string,string>>  autores_orcid; //= LeerDatosExcel_autores(@"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hercules-ED_autores.xlsx");
-
-
-
-        // protected List<Publication> publications = new List<Publication>();
+       
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
 
         public ROSemanticScholarLogic()
@@ -51,16 +43,10 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    //request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
-                    //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
@@ -110,9 +96,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
         {
             Uri url = new Uri("https://api.semanticscholar.org/" + string.Format(uri, name));
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-            // MODELO DEVUELTO 
             Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-            // CAMBIO DE MODELO -- PAra ello llamamos al controlador de cambio de modelo! 
             ROSemanticScholarControllerJSON info = new ROSemanticScholarControllerJSON(this);
             Publication sol = info.cambioDeModeloPublicacion(objInicial);
             sol.doi = name;
@@ -126,6 +110,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
             Tuple<Publication, List<PubReferencias>> tupla = null;
             Publication publicacionPrincipal = new Publication();
             List<PubReferencias> publications = new List<PubReferencias>();
+
             try
             {
                 Uri url = new Uri($@"https://api.semanticscholar.org/v1/paper/{pDoi}");
@@ -137,10 +122,11 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
                 publications = info.getReferences(data);
                 tupla = new Tuple<Publication, List<PubReferencias>>(publicacionPrincipal, publications);
             }
-            catch(Exception e)
+            catch(Exception)
             {
 
             }
+
             return tupla;
         }
     }

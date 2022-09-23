@@ -47,7 +47,7 @@ namespace SemanticScholarAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetROs([FromQuery][Required] string doi)
         {
-            ROSemanticScholarLogic SemanticScholarObject = new ROSemanticScholarLogic();//, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
+            ROSemanticScholarLogic SemanticScholarObject = new ROSemanticScholarLogic();
             Publication publication = SemanticScholarObject.getPublications(doi);
             return publication;
         }

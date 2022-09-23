@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SemanticScholarAPI.ROs.SemanticScholar.Models;
-using SemanticScholarAPI.ROs.SemanticScholar.Models;
 using SemanticScholarAPI.ROs.SemanticScholar.Models.Inicial;
 
 namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
@@ -15,18 +14,6 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
             this.SemanticScholarLogic = SemanticScholarLogic;
 
         }
-
-        // public List<Publication> getListPublicatio(Root objInicial)
-        // {
-        //     List<Publication> sol = new List<Publication>();
-        //     foreach (PublicacionInicial rec in objInicial.Data.Records.records.publicacionInicial)
-        //     {
-        //         Publication publicacion = cambioDeModeloPublicacion(rec, true);
-        //         sol.Add(publicacion);
-        //     }
-        //     return sol;
-        // }
-
         public List<PubReferencias> getReferences(SemanticScholarObj pData)
         {
             List<PubReferencias> listaReferencias = new List<PubReferencias>();
@@ -71,7 +58,7 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
                     if (pubRef.authors != null && pubRef.authors.Any())
                     {
                         referencia.autores = new Dictionary<string, string>();
-                        foreach (SemanticScholarAPI.ROs.SemanticScholar.Models.Author autor in pubRef.authors)
+                        foreach (Models.Author autor in pubRef.authors)
                         {
                             if (!referencia.autores.ContainsKey(autor.name))
                             {
@@ -112,15 +99,8 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
                 publicacion.IDs = getIDs(objInicial);
                 publicacion.title = getTitle(objInicial);
                 publicacion.Abstract = getAbstract(objInicial);
-                //publicacion.language = getLanguage(objInicial);
-                // publicacion.doi = getDoi(objInicial);
                 publicacion.url = getLinks(objInicial);
                 publicacion.dataIssued = getDate(objInicial);
-                //publicacion.pageStart = getPageStart(objInicial);
-                //publicacion.pageEnd = getPageEnd(objInicial);
-                //publicacion.hasKnowledgeArea = getKnowledgeAreas(objInicial);
-                //publicacion.freetextKeyword = getFreetextKeyword(objInicial);
-                //publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                 publicacion.seqOfAuthors = getAuthors(objInicial);
                 publicacion.hasPublicationVenue = getJournal(objInicial);
                 publicacion.hasMetric = getPublicationMetric(objInicial);
@@ -167,8 +147,6 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
                 return IDs;
             }
         }
-
-
         public string getTitle(Root objInicial)
         {
             if (objInicial.title != null)
@@ -187,14 +165,6 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
             return null;
         }
 
-        // public string getLanguage(Root objInicial)
-        // {
-        //     return null;
-        // }
-        // public string getDoi(Root objInicial)
-        // {
-        //     return null;
-        // }
         public List<string> getLinks(Root objInicial)
         {
             if (objInicial.url != null)
@@ -217,40 +187,12 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
             }
             return null;
         }
-
-        // public string getPageStart(Root objInicial)
-        // {
-        //     return null;
-        // }
-
-        // public string getPageEnd(Root objInicial)
-        // {
-        //     return null;
-        // }
-
-        // public List<KnowledgeArea> getKnowledgeAreas(Root objInicial)
-        // {
-        //     List<KnowledgeArea> result = new List<KnowledgeArea>();
-        //     KnowledgeArea area = null; 
-        //     result.Add(area);
-        //     return result;
-        // }
-
-        // public List<string> getFreetextKeyword(Root objInicial)
-        // {
-        //     return new List<string>();
-        // }
-
-        // public Person getAuthorPrincipal(Root objInicial)
-        // {
-        //     return new Person();
-        // }
         public List<Person> getAuthors(Root objInicial)
         {
             if (objInicial.authors != null)
             {
                 List<Person> autores = new List<Person>();
-                foreach (SemanticScholarAPI.ROs.SemanticScholar.Models.Inicial.Author author in objInicial.authors)
+                foreach (Models.Inicial.Author author in objInicial.authors)
                 {
                     Person persona = new Person();
                     persona.fuente = "SemanticScholar";
@@ -302,19 +244,5 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
             }
             return null;
         }
-
-        // public List<Publication> getBiblografia(Root objInicial)
-        // {
-        //     return new List<Publication>();
-        // }
-
-        // public List<Publication> getCitas(Root objInicial)
-        // {
-        //     return new List<Publication>();
-        // }
-
-
-
-
     }
 }
