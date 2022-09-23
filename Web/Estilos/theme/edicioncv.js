@@ -1225,7 +1225,7 @@ var edicionCV = {
 							</div>`;
             $(contenedor).append(section);
         }
-        this.repintarListadoEntity();
+        this.repintarListadoEntity(true);
         this.engancharComportamientosCV();
 		this.loadPropertiesEntitiesAutocomplete();
     },
@@ -2323,7 +2323,7 @@ var edicionCV = {
 					${deleteButton}
 				</li>`;
     },
-    repintarListadoEntity: function() {
+    repintarListadoEntity: function(collapseAuthors = false) {
         this.repintarTopic();
         this.repintarListadoThesaurus();
         var that = this;
@@ -2520,7 +2520,7 @@ var edicionCV = {
 
 
 					htmlAcciones=`	<div class="simple-collapse-content">
-										<div class="collapse show" id="collapse-lista-autores" style="">
+										<div class="collapse ${collapseAuthors ? 'show' : ''}" id="collapse-lista-autores" style="">
 											<div class="simple-collapse-content">
 												<div class="user-list">
 													<ul class="no-list-style d-flex flex-wrap align-items-center">
@@ -2532,7 +2532,7 @@ var edicionCV = {
 												</div>
 											</div>
 										</div>
-										<div class="collapse" id="collapse-autores">${htmlAcciones}</div>
+										<div class="collapse ${collapseAuthors ? '' : 'show'}" id="collapse-autores">${htmlAcciones}</div>
 									</div>`;
 				}
                 $(this).append(htmlAcciones);
@@ -3303,7 +3303,7 @@ var edicionCV = {
             }
             $(contenedor).attr('selecteditem', idSeleccionado);
             that.repintarListadoEntity();
-        });
+		});
 
         //Mostrar popup entidad nueva/editar listado
         $('.multiple.entitycontainer .acciones-listado-edicion .add,.multiple.entitycontainer .acciones-listado-edicion .edit').off('click').on('click', function(e) {
@@ -3910,6 +3910,7 @@ var edicionCV = {
 					mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
 					OcultarUpdateProgress();
 				}
+			})
 		});
 
 		$('.texto.validacionItem').off('click').on('click', function(e) {

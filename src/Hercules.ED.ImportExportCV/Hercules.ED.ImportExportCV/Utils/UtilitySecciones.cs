@@ -696,6 +696,11 @@ where{{
 
             foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
             {
+                if(identificador.Type == null)
+                {
+                    continue;
+                }
+
                 switch (identificador.Type)
                 {
                     case "120":

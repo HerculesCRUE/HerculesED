@@ -31,7 +31,7 @@ using Es.Riam.Util;
 using ApiWrapper::Gnoss.ApiWrapper;
 using ApiWrapper::Gnoss.ApiWrapper.ApiModel;
 using ApiWrapper::Gnoss.ApiWrapper.Model;
-using Gnoss.Web.Login.Open.SAML;
+using Gnoss.Web.Login.Open;
 
 namespace Gnoss.Web.Login.SAML
 {

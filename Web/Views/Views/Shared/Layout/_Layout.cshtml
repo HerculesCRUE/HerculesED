@@ -232,7 +232,7 @@
 
         @Html.PartialView("../Shared/_Pie")
 
-        <aside id="menuLateral" class="menuLateral" role="navigation">
+        @*<aside id="menuLateral" class="menuLateral" role="navigation">
             <div class="header">
                 <div class="wrap-header">
                     <div class="menu-logo-wrapper">
@@ -265,7 +265,7 @@
                     </li>
                 </ul>
             </div>
-        </aside>
+        </aside>*@
 		<aside id="menuLateralUsuario" class="menuLateral usuario" role="navigation">
             <div class="header">
 				<div class="wrap-header">
@@ -283,6 +283,12 @@
                     <div class="group-collapse alertas hasCV" style="display:none">
                         <div id="alertas-usuario" class="collapse show">
                             <ul class="pmd-sidebar-nav">
+								<li>
+                                    @{
+                                        string urlHomeED = Comunidad.Url + "/" + Html.Translate("HOMEED_URL");
+                                    }
+                                    <a href="@urlHomeED">@Html.Translate("PAGINA_INICIAL")</a>
+                                </li>
                                 <li>
                                     @{
                                         string urlAlertas = Comunidad.Url + "/" + Html.Translate("ALERTAS_URL");
