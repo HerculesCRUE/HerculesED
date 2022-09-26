@@ -98,61 +98,64 @@
 
         <!-- JAVASCRIPT -->
         <script type="text/javascript">
-
-            const pIdGnossUser = "@IdentidadActual.KeyUser"
-            const ERROR_IDS_VACIO = "@Html.Translate("ERROR_IDS_VACIO")"
-
-
-            // Selectores seleccionados
-            var currentsSelected = []
-            var currentsIds = []
+            $(document).ready(function () {	
+				const pIdGnossUser = "@IdentidadActual.KeyUser"
+				const ERROR_IDS_VACIO = "@Html.Translate("ERROR_IDS_VACIO")"
 
 
-            // Langs para el constructor
-            const arrLang = {
-                "ENVIAR_REVISION": "@Html.Translate("ENVIAR_REVISION")",
-                "ENVIAR_BORRADOR": "@Html.Translate("ENVIAR_BORRADOR")",
-                "MEJORAR": "@Html.Translate("MEJORAR")",
-                "VALIDAR": "@Html.Translate("VALIDAR")",
-                "DENEGAR": "@Html.Translate("DENEGAR")",
-                "ARCHIVAR": "@Html.Translate("ARCHIVAR")",
-                "BORRAR": "@Html.Translate("BORRAR")",
-                "EDITAR": "@Html.Translate("EDITAR")",
-            }
-
-            var offerList = new OfferList(arrLang)
+				// Selectores seleccionados
+				var currentsSelected = []
+				var currentsIds = []
 
 
-            // Carga las ofertas
-            comportamientoMisOfertas.init("@currentIdstr", "searchOwnOffers")
+				// Langs para el constructor
+				const arrLang = {
+					"ENVIAR_REVISION": "@Html.Translate("ENVIAR_REVISION")",
+					"ENVIAR_BORRADOR": "@Html.Translate("ENVIAR_BORRADOR")",
+					"MEJORAR": "@Html.Translate("MEJORAR")",
+					"VALIDAR": "@Html.Translate("VALIDAR")",
+					"DENEGAR": "@Html.Translate("DENEGAR")",
+					"ARCHIVAR": "@Html.Translate("ARCHIVAR")",
+					"BORRAR": "@Html.Translate("BORRAR")",
+					"EDITAR": "@Html.Translate("EDITAR")",
+				}
+
+				var offerList = new OfferList(arrLang)
 
 
-            /**
-            * Función que se llama cuando se cargan los recursos (las ofertas tecnológicas)
-            * Éste método se encarga de añadir el menú de opciones y las acciones 'rápidas'
-            */
-            function gOTecnEndLoadedResources() {
+                // Carga las ofertas
+                $(document).ready(function () {
+                    comportamientoMisOfertas.init("@currentIdstr", "searchOwnOffers")
+                });
 
-                if(true)
-                {       
-                    $("#searchOwnOffers article.resource h2.resource-title").attr("tagert","_blank")
-                    // stepsOffer.data.pPersons = $('#searchOwnOffers article.resource').toArray().map(e => {return $(e).attr('id')})
-                    
-                    $("#searchOwnOffers article.resource").each((i, e) => {
 
-                        try {
-                            cId = e.id.split('_')[1]
-                            if (!currentsIds.includes(cId)) {
-                                currentsIds.push(cId)
-                            }
-                        } catch (e) {}
+				/**
+				* Función que se llama cuando se cargan los recursos (las ofertas tecnológicas)
+				* Éste método se encarga de añadir el menú de opciones y las acciones 'rápidas'
+				*/
+				function gOTecnEndLoadedResources() {
 
-                    })
+					if(true)
+					{       
+						$("#searchOwnOffers article.resource h2.resource-title").attr("tagert","_blank")
+						// stepsOffer.data.pPersons = $('#searchOwnOffers article.resource').toArray().map(e => {return $(e).attr('id')})
+						
+						$("#searchOwnOffers article.resource").each((i, e) => {
 
-                }
+							try {
+								cId = e.id.split('_')[1]
+								if (!currentsIds.includes(cId)) {
+									currentsIds.push(cId)
+								}
+							} catch (e) {}
 
-                offerList.loadActionsOffer(currentsIds, ["own"])
-            }
+						})
+
+					}
+
+					offerList.loadActionsOffer(currentsIds, ["own"])
+				}
+			});
 
 
 
