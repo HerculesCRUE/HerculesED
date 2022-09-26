@@ -5,14 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gnoss.Web.Login.Open.SAML
+namespace Gnoss.Web.Login.Open
 {
-    public class ConfigServiceSAML
+    public class ConfigServiceLogin
     {
         private string urlServiceInDomain { get; set; }
+
         private IConfiguration _configuration { get; set; }
 
-        public ConfigServiceSAML(IConfiguration configuration)
+        public ConfigServiceLogin(IConfiguration configuration)
         {
             _configuration = configuration;
         }

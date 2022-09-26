@@ -85,6 +85,21 @@ Con esta función se combinan todos los metadatos de las publicaciones recibidas
         - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
 - Llegados a este punto ya tenemos completas todas las publicaciones de este autor. 
 
+## SLEP
+A su vez, hay servicios adicionales capaces de enriquecer la información del usuario. Para activar dichos servicios hay que ir al menú lateral al apartado de configuración de fuentes externas:
+
+![image](https://user-images.githubusercontent.com/88077103/191783029-c4de9988-177a-45af-b43b-68055e0d89da.png)
+
+Una vez dentro, el usuario puede configurar de que fuentes adicionales puede enriquecer sus datos:
+
+![image](https://user-images.githubusercontent.com/88077103/191783246-84123805-50ca-4a62-8065-9d5b0d14fcd3.png)
+
+- [FigShare](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.FigShare): Obtiene ROs de presentaciones y documentos.
+- [GitHub](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ExternalSources/Hercules.ED.GitHubConnect): Obtiene ROs de código.
+- [Matching](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.Matching): Permite enriquecer las etiquetas de ámbito médico de las publicaciones del usuario.
+
+Al pulsar sobre el botón de "Guardar" (situado en la parte inferior izquierda), el sistema por detrás obtendrá los ROs configurados y aplicará el sistema de matching a las publicaciones del usuario.
+
 Configuración del appsettings.json
 ============
 ```json

@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
-    public class ROScopusControllerJSON //: //ROScopusLogic
+    public class ROScopusControllerJSON
     {
         public List<string> advertencia = null;
         public ROScopusLogic ScopusLogic;
@@ -22,42 +22,36 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public List<Publication> getListPublicatio(Root objInicial, string date)
         {
-            List<Publication> sol = new List<Publication>();
-            if (objInicial != null)
+            List<Publication> listaResultados = new List<Publication>();
+            if (objInicial != null && objInicial.SearchResults != null && objInicial.SearchResults.entry != null)
             {
-                if (objInicial.SearchResults != null)
+                foreach (PublicacionInicial rec in objInicial.SearchResults.entry)
                 {
-                    if (objInicial.SearchResults.entry != null)
+                    Publication publicacion = cambioDeModeloPublicacion(rec, true);
+                    if (publicacion != null)
                     {
-
-                        foreach (PublicacionInicial rec in objInicial.SearchResults.entry)
-                        {
-                            Publication publicacion = cambioDeModeloPublicacion(rec, true);
-                            if (publicacion != null)
-                            {
-                                sol.Add(publicacion);
-                            }
-                        }
+                        listaResultados.Add(publicacion);
                     }
                 }
             }
 
-            return sol;
+            return listaResultados;
         }
 
 
 
-        public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, Boolean publicacion_principal)
+        public Publication cambioDeModeloPublicacion(PublicacionInicial objInicial, bool publicacion_principal)
         {
             Publication publicacion = new Publication();
 
             if (objInicial != null)
             {
                 publicacion.typeOfPublication = getType(objInicial);
+
                 if (publicacion.typeOfPublication != null)
                 {
                     publicacion.scopusID = getIDs(objInicial);
-                    publicacion.title = getTitle(objInicial);                    
+                    publicacion.title = getTitle(objInicial);
                     publicacion.doi = getDoi(objInicial);
                     publicacion.url = getLinks(objInicial);
                     publicacion.datimeTime = getDate(objInicial);
@@ -72,7 +66,10 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     publicacion.dataOrigin = "Scopus";
                     return publicacion;
                 }
-                else { return null; }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -103,9 +100,15 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 {
                     return "Conference Paper";
                 }
-                else { return null; }
+                else
+                {
+                    return null;
+                }
             }
-            else { return null; }
+            else
+            {
+                return null;
+            }
 
 
 
@@ -129,27 +132,14 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             return null;
         }
 
-        // public string getAbstract(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
-
-        // public string getLanguage(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
         public string getDoi(PublicacionInicial objInicial)
         {
             if (objInicial.PrismDoi != null)
             {
                 if (objInicial.PrismDoi.Contains("https://doi.org/"))
                 {
-
-
                     int indice = objInicial.PrismDoi.IndexOf("org/");
                     return objInicial.PrismDoi.Substring(indice + 4);
-
-
                 }
                 else
                 {
@@ -245,19 +235,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             return null;
         }
 
-        // public List<KnowledgeArea> getKnowledgeAreas(PublicacionInicial objInicial)
-        // {
-        //     List<KnowledgeArea> result = new List<KnowledgeArea>();
-        //     KnowledgeArea area = null;
-        //     result.Add(area);
-        //     return result;
-        // }
-
-        // public List<string> getFreetextKeyword(PublicacionInicial objInicial)
-        // {
-        //     return new List<string>();
-        // }
-
         public Person getAuthorPrincipal(PublicacionInicial objInicial)
         {
             if (!string.IsNullOrEmpty(objInicial.DcCreator))
@@ -270,11 +247,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
             return null;
         }
-        // public List<Person> getAuthors(PublicacionInicial objInicial)
-        // {
-        //     return new List<Person>();
-        // }
-
         public Source getJournal(PublicacionInicial objInicial)
         {
             if (objInicial.PrismPublicationName != null || objInicial.PrismIssn != null)
@@ -338,6 +310,5 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
             return null;
         }
-
     }
 }

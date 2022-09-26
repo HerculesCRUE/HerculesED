@@ -52,16 +52,10 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
             {
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    //request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
-                    //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
@@ -111,30 +105,26 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
         public List<Publication> getPublications(string orcid, string date = "1500-01-01")
         {
             ROOpenAireControllerJSON info = new ROOpenAireControllerJSON(this);
-            List<Publication> sol = new List<Publication>();
+            List<Publication> listaResultados = new List<Publication>();
 
-            string h = "1";
-            //TODO: Cambiar fecha de publicaci�n por fecha de modificaci�n.
+            // Petición
             Uri url = new Uri($@"{baseUri}/search/publications?size={1000}&orcid={orcid}&format=json&fromDateAccepted={date}");
-            //Uri url = new Uri($@"{baseUri}api/OpenAire/citing?databaseId=WOK&uniqueId=OpenAire:000624784700001&count={numItems}&firstRecord={(numItems * n) + 1}&publishTimeSpan=1500-01-01%2B3000-12-31"); //&publishTimeSpan={date}%2B3000-12-31
-            //Uri url = new Uri($@"{baseUri}api/OpenAire/references?databaseId=WOK&uniqueId=OpenAire:000624784700001&count={numItems}&firstRecord={(numItems * n) + 1}"); //
-            //Uri url = new Uri($@"{baseUri}api/OpenAire?databaseId=WOK&uniqueId=OpenAire:000270372400005"); //&publishTimeSpan={date}%2B3000-12-31
-
+            
             string info_publication = httpCall(url.ToString(), "GET", headers).Result;
 
             try
             {
                 Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
                 int total = Int32.Parse(objInicial.response.header.total.Text);
-                List<Publication> nuevas = info.getListPublicatio(objInicial);
-                sol.AddRange(nuevas);
+                List<Publication> nuevas = info.getListPublication(objInicial);
+                listaResultados.AddRange(nuevas);
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                throw error;
+                
             }
 
-            return sol;
+            return listaResultados;
         }
 
         
@@ -157,15 +147,15 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
 
                 Uri url = new Uri($@"{baseUri}/search/publications?doi={pDoi}&format=json");
                 string result = httpCall(url.ToString(), "GET", headers).Result;
-                // Obtenci�n de datos.
+                // Obtención de datos.
                 if (!string.IsNullOrEmpty(result))
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(result);
                     Result2 resultado = objInicial.response.results.result[0];
-                    publicacionFinal = info.cambioDeModeloPublicacion(resultado, true);
+                    publicacionFinal = info.cambioDeModeloPublicacion(resultado);
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 return publicacionFinal;
             }

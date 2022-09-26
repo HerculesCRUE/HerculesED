@@ -134,11 +134,6 @@ else
     }
 }
 
-@if (Comunidad != null && Comunidad.VersionJS.HasValue)
-{
-    <script type="text/javascript" src="@Html.GetBaseUrlContent()/imagenes/proyectos/personalizacion/@Comunidad.Key.ToString()@Html.GetStyleVersion()/community.js?v=@Html.Translate("VERSION_CSS_JS")"></script>
-}
-
 @if (Html.GetGoogleAnalytics() != null)
 {
     <script type="text/javascript">@Html.Raw(Html.GetGoogleAnalytics())</script>

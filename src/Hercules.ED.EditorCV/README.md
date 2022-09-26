@@ -32,6 +32,10 @@ El servicio de editor de CV cuenta con varios controladores:
 
 [Controladores](#controladores)
 
+[Ejemplo de envío a validación](#envío-a-validación-de-la-producción-científica-prc) 
+
+[Ejemplo de envío a borrado](#petición-de-borrado-en-la-producción-científica-prc)
+
 [Ejemplo de edición](#ejemplo-de-edición)
 
 * [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
@@ -44,13 +48,45 @@ Este documento describe, mediante un ejemplo práctico, cómo se realiza la conf
 
 La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta ./Config/TabTemplates/ que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
 
+## Envío a validación de la producción científica (PRC)
+El editor de CV permite envíar a validar publicaciones (obtenidas por el CV y por fuentes externas) al SGI. Una vez validada dicha publicación, es apta y oficial para la plataforma. Para proceder al envío, hay que ir a una publicación y pulsar sobre "Enviar a validación" situado en el menú de acciones (tres puntos):
+
+![image](https://user-images.githubusercontent.com/88077103/191733616-755c72d3-b5ee-4b89-b0de-ef829ac01da7.png)
+
+Al pulsar, se despliegará una ventana para poder enlazar la publicación a proyectos.
+
+![](../../Docs/media/EditorCV/PRCVentana.png)
+
+En esta ventana puedes relacionar la publicación con uno o más proyectos. En el caso de que no se quiera relacionar con ningún proyecto, aparecerá una alerta indicando que no se ha asociado con ningún proyecto junto a un botón para continuar sin asociar.
+
+![](../../Docs/media/EditorCV/PRCVentanaAsociar.png)
+
+Al desplazarse hacia abajo en la ventana, se encontrará un botón de enviar con el que la publicación se enviará a validar, junto con los proyectos asociados y el envío pasará al estado "Pendiente de validación" con el siguiente icono:
+
+![image](https://user-images.githubusercontent.com/88077103/191734305-5f7f8886-5f42-4623-b27f-9ff09ab2f47c.png)
+
+Una vez que esté validada, la publicación se podrá editar parcialmente y se mostrará de la siguiente manera:
+
+![image](https://user-images.githubusercontent.com/88077103/191734743-67f4a41f-51ec-42ff-ba53-69fdb94c0cab.png)
+
+En el caso que la publicación haya sido rechazada del envío, no se mostrará el icono de validado y se podrá volver a envíar a PRC para solicitar la validación.
+
+## Petición de borrado en la producción científica (PRC)
+Para el envío de borrado de producción científica se mandará una petición a validación, como si se tratase del envío a PRC normal, con la diferencia que el título de la publicación tendrá "[Petición de borrado]" y el identificador interno de la publicación estará compuesto por "Eliminar_ID". El usuario encargado de la modificación en el SGI, tendrá que validar la petición de borrado y borrar de sus sitemas la publicación. En el caso de querer borrar una publicación validada, se podrá hacer si pulsamos en "Enviar a borrar a producción científica".
+
+![image](https://user-images.githubusercontent.com/88077103/191735684-413f71a0-4544-4f6d-ae6f-c399a7f4ba88.png)
+
+Mientras esté en pendiente de borrado, volverá a aparecer el siguiente icono:
+
+![image](https://user-images.githubusercontent.com/88077103/191734305-5f7f8886-5f42-4623-b27f-9ff09ab2f47c.png)
+
+Finalmente, cuando se haya borrado, la publicación desaparecerá del SGI y del CV. En el caso de haber sido rechazada, no desaparecerá de los sistemas, y como en el envío a PRC, se podrá volver a solicitar el borrado.
+
 ## Ejemplo de edición
 
-Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Actividad científica" en el editor del CV del investigador:
+Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Envíar a producción científica" en el editor del CV del investigador:
 
 ![](../../Docs/media/EditorCV/EdicionCV1.png)
-
-
 
 El archivo a editar para la configuración de los ítems de "Actividad científica" es ScientificActivity.json, y lo encontramos en la carpeta TabTemplates. En él vemos la siguiente estructura:
 

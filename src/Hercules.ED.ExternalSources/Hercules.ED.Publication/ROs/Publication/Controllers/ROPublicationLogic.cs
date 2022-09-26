@@ -5,31 +5,27 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
 using PublicationConnect.ROs.Publications.Models;
-using System.IO;
-using System.Data;
 using System.Text;
-using ExcelDataReader;
 using PublicationAPI.Controllers;
 using Serilog;
 using PublicationAPI.ROs.Publication.Models;
 using System.Threading;
 using Person = PublicationConnect.ROs.Publications.Models.Person;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
+    /// <summary>
+    /// ROPublicationLogic.
+    /// </summary>
     public class ROPublicationLogic
     {
-        List<string> advertencia = new List<string>();
-        protected string bareer;
-        protected string baseUri { get; set; }
-
+        // Listado de DOIs.
         public List<string> dois_principales = new List<string>();
-        public List<string> dois_bibliografia = new List<string>();
+
+        // Headers para las peticiones.
         public Dictionary<string, string> headers = new Dictionary<string, string>();
-        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scopus = LeerDatosExcel_Scopus(@"Files/Scopus_journal_metric.xlsx");
-        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_scie = LeerDatosExcel_WoS(@"Files/JCR_SCIE_2020.xlsx");
-        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> metricas_ssci = LeerDatosExcel_WoS(@"Files/JCR_SSCI_2020.xlsx");
 
         // Configuración.
         readonly ConfigService _Configuracion;
@@ -54,16 +50,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 httpClient.Timeout = TimeSpan.FromHours(24);
                 using (var request = new HttpRequestMessage(new HttpMethod(method), url))
                 {
-                    //request.Headers.TryAddWithoutValidation("X-ApiKey", bareer);
-                    //request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
@@ -73,7 +63,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         response = await httpClient.SendAsync(request);
                     }
-                    catch (System.Exception)
+                    catch (Exception)
                     {
                         throw new Exception("Error in the http call");
                     }
@@ -86,25 +76,27 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             else
             {
-                return "";
+                return String.Empty;
             }
         }
 
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="ID"></param>
-        /// <param date="year-month-day"></param>
+        /// <param name="pOrcid">Código ORCID del autor.</param>
+        /// <param name="pDate">Fecha de obtención de publicaciones.</param>
+        /// <param name="pDoi">Código DOI de la publicación.</param>
+        /// <param name="pNombreCompletoAutor">Nombre completo del autor.</param>
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string date = "1500-01-01", string pDoi = null, string pNombreCompletoAutor = null)
+        public List<Publication> getPublications(string pOrcid, string pDate = "1500-01-01", string pDoi = null, string pNombreCompletoAutor = null)
         {
             // Diccionario con las peticiones.
-            Tuple<string, Dictionary<Publication, List<PubReferencias>>> dicSemanticScholar;
             Dictionary<string, string> dicZenodo = new Dictionary<string, string>();
 
             // Lista para almacenar las publicaciones resultantes.
             List<Publication> resultado = new List<Publication>();
 
+            // Lista con los datos obtenidos por fuentes externas.
             List<PublicacionScopus> objInicial_Scopus = null;
             List<Publication> objInicial_woS = null;
             List<Publication> objInicial_openAire = null;
@@ -113,30 +105,30 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 try
                 {
-                    Log.Information("Haciendo petición a Scopus...");
-                    objInicial_Scopus = llamada_Scopus_Doi(pDoi);
-                }
-                catch (Exception e)
-                {
-                    Log.Information("No se ha podido recuperar los datos de Scopus...");
-                }
-
-                try
-                {
                     Log.Information("Haciendo petición a Wos...");
                     objInicial_woS = llamada_WoS_Doi(pDoi);
                 }
-                catch (Exception e)
+                catch
                 {
                     Log.Information("No se ha podido recuperar los datos de Wos...");
                 }
 
                 try
                 {
+                    Log.Information("Haciendo petición a Scopus...");
+                    objInicial_Scopus = llamada_Scopus_Doi(pDoi);
+                }
+                catch
+                {
+                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                }                
+
+                try
+                {
                     Log.Information("Haciendo petición a OpenAire...");
                     objInicial_openAire = llamada_OpenAire_Doi(pDoi);
                 }
-                catch (Exception e)
+                catch
                 {
                     Log.Information("No se ha podido recuperar los datos de OpenAire...");
                 }
@@ -145,35 +137,36 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 try
                 {
-                    Log.Information("Haciendo petición a Scopus...");
-                    objInicial_Scopus = llamada_Scopus(name, date);
-                }
-                catch (Exception e)
-                {
-                    Log.Information("No se ha podido recuperar los datos de Scopus...");
-                }
-
-                try
-                {
                     Log.Information("Haciendo petición a Wos...");
-                    objInicial_woS = llamada_WoS(name, date);
+                    objInicial_woS = llamada_WoS(pOrcid, pDate);
                 }
-                catch (Exception e)
+                catch
                 {
                     Log.Information("No se ha podido recuperar los datos de Wos...");
                 }
 
                 try
                 {
-                    Log.Information("Haciendo petición a OpenAire...");
-                    objInicial_openAire = llamada_OpenAire(name, date);
+                    Log.Information("Haciendo petición a Scopus...");
+                    objInicial_Scopus = llamada_Scopus(pOrcid, pDate);
                 }
-                catch (Exception e)
+                catch
+                {
+                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                }                
+
+                try
+                {
+                    Log.Information("Haciendo petición a OpenAire...");
+                    objInicial_openAire = llamada_OpenAire(pOrcid, pDate);
+                }
+                catch
                 {
                     Log.Information("No se ha podido recuperar los datos de OpenAire...");
                 }
             }
 
+            #region --- WOS
             int contadorPubWos = 1;
             try
             {
@@ -183,27 +176,31 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         Log.Information($@"[WoS] Publicación {contadorPubWos}/{objInicial_woS.Count}");
 
-                        this.dois_bibliografia = new List<string>();
+                        // Inserción de DOI en la lista de DOIs.
                         if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
                         {
                             this.dois_principales.Add(pub.doi.ToLower());
                         }
 
-                        // SemanticScholar
+                        // SemanticScholar.
                         int contadorSemanticScholar = 1;
                         Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new Tuple<Publication, List<PubReferencias>>(null, null);
                         while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                         {
                             Log.Information($@"[WoS] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                            dataSemanticScholar = ObtenerPubSemanticScholar(pub);
+                            dataSemanticScholar = llamadaRefSemanticScholar(pub.doi);
+                            contadorSemanticScholar++;
+
+                            // Si se obtienen datos, es válido.
                             if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.title) && dataSemanticScholar.Item2 == null)
                             {
                                 break;
                             }
-                            contadorSemanticScholar++;
+
+                            // En el caso que venga vacío, esperamos 10 segundos a volverlo a intentar.
                             if (dataSemanticScholar.Item2 == null && contadorSemanticScholar != 5)
                             {
-                                Thread.Sleep(10000); // TODO: Revisar tema de los tiempos de las peticiones.
+                                Thread.Sleep(10000);
                             }
                         }
 
@@ -212,14 +209,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub_completa.dataOriginList = new HashSet<string>() { "WoS" };
                         if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                         {
-                            pub_completa = compatacion(pub, dataSemanticScholar.Item1);
+                            pub_completa = compactacion(pub, dataSemanticScholar.Item1);
                             pub_completa.bibliografia = dataSemanticScholar.Item2;
                         }
 
                         // Zenodo - Archivos pdf...
                         Log.Information("[WoS] Haciendo petición a Zenodo...");
                         pub_completa.pdf = llamadaZenodo(pub.doi, dicZenodo);
-                        if (pub_completa.pdf == "")
+                        if (pub_completa.pdf == string.Empty)
                         {
                             pub_completa.pdf = null;
                         }
@@ -240,7 +237,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     {
                                         if (pub_scopus.doi.ToLower() == pub_completa.doi.ToLower())
                                         {
-                                            pub_completa = compatacion(pub_completa, pubScopus);
+                                            pub_completa = compactacion(pub_completa, pubScopus);
                                         }
                                     }
                                 }
@@ -258,7 +255,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     {
                                         if (pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
                                         {
-                                            pub_completa = compatacion(pub_completa, pub_openAire);
+                                            pub_completa = compactacion(pub_completa, pub_openAire);
                                         }
                                     }
                                 }
@@ -268,82 +265,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         // Unificar Autores
                         pub_completa = CompararAutores(pub_completa);
 
-                        // Enriquecimiento
-                        pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
-                        if (pub_completa.Abstract != null)
-                        {
-                            pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
-                        }
-
-                        string jsonData = string.Empty;
-                        if (string.IsNullOrEmpty(pub_completa.pdf))
-                        {
-                            jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
-                        }
-                        else
-                        {
-                            jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
-                            // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
-                            //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
-                        }
-
-                        if (!string.IsNullOrEmpty(jsonData))
-                        {
-                            Log.Information("[WoS] Obteniendo topics enriquecidos...");
-                            Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                            Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
-                            Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
-
-                            if (listaTopics != null && listaTopics.Any())
-                            {
-                                pub_completa.topics_enriquecidos = new List<Knowledge_enriquecidos>();
-                                foreach (KeyValuePair<string, string> item in listaTopics)
-                                {
-                                    Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                    topic.word = item.Key;
-                                    topic.porcentaje = item.Value;
-                                    pub_completa.topics_enriquecidos.Add(topic);
-                                }
-                            }
-                            else
-                            {
-                                pub_completa.topics_enriquecidos = null;
-                            }
-
-                            if (listaEtiquetas != null && listaEtiquetas.Any())
-                            {
-                                pub_completa.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
-                                foreach (KeyValuePair<string, string> item in listaEtiquetas)
-                                {
-                                    Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                    topic.word = item.Key;
-                                    topic.porcentaje = item.Value;
-                                    pub_completa.freetextKeyword_enriquecidas.Add(topic);
-                                }
-                            }
-                            else
-                            {
-                                pub_completa.freetextKeyword_enriquecidas = null;
-                            }
-                        }
-
-                        if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any() && pub_completa.title != "One or more validation errors occurred.") // TODO
-                        {
-                            bool encontrado = false;
-                            foreach (Person persona in pub_completa.seqOfAuthors)
-                            {
-                                if (persona.ORCID == name || pDoi != null)
-                                {
-                                    encontrado = true;
-                                    break;
-                                }
-                            }
-
-                            if (encontrado)
-                            {
-                                resultado.Add(pub_completa);
-                            }
-                        }
+                        // Se guarda la publicación.
+                        resultado.Add(pub_completa);
 
                         contadorPubWos++;
                     }
@@ -353,8 +276,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 Log.Error(e.Message);
             }
-            Log.Information($@"[WoS] Publicaciones procesadas");
 
+            Log.Information($@"[WoS] Publicaciones procesadas");
+            #endregion
+
+            #region --- Scopues
             int contadoPubScopus = 1;
             try
             {
@@ -368,7 +294,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         {
                             Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
 
-                            this.dois_bibliografia = new List<string>();
                             if (pub_scopus.doi != null && !string.IsNullOrEmpty(pub_scopus.doi))
                             {
                                 this.dois_principales.Add(pub_scopus.doi.ToLower());
@@ -380,15 +305,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
                                 Log.Information($@"[Scopus] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = ObtenerPubSemanticScholar(pubScopus);
+                                dataSemanticScholar = llamadaRefSemanticScholar(pubScopus.doi);
                                 contadorSemanticScholar++;
+
+                                // Si se obtienen datos, es válido.
                                 if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.title) && dataSemanticScholar.Item2 == null)
                                 {
                                     break;
                                 }
+
+                                // En el caso que venga vacío, esperamos 10 segundos a volverlo a intentar.
                                 if (dataSemanticScholar.Item2 == null && contadorSemanticScholar != 5)
                                 {
-                                    Thread.Sleep(10000); // TODO: Revisar tema de los tiempos de las peticiones.
+                                    Thread.Sleep(10000);
                                 }
                             }
 
@@ -397,79 +326,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             pub_completa.dataOriginList = new HashSet<string>() { "Scopus" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
-                                pub_completa = compatacion(pubScopus, dataSemanticScholar.Item1);
+                                pub_completa = compactacion(pubScopus, dataSemanticScholar.Item1);
                                 pub_completa.bibliografia = dataSemanticScholar.Item2;
                             }
 
                             // Zenodo - Archivos pdf...
                             Log.Information("[Scopus] Haciendo petición a Zenodo...");
                             pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
-                            if (pub_completa.pdf == "")
+                            if (pub_completa.pdf == String.Empty)
                             {
                                 pub_completa.pdf = null;
                             }
                             else
                             {
                                 pub_completa.dataOriginList.Add("Zenodo");
-                            }
-
-                            // Enriquecimiento
-                            pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
-                            if (pub_completa.Abstract != null)
-                            {
-                                pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
-                            }
-
-                            string jsonData = string.Empty;
-                            if (string.IsNullOrEmpty(pub_completa.pdf))
-                            {
-                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
-                            }
-                            else
-                            {
-                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
-                                // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
-                                //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
-                            }
-
-                            if (!string.IsNullOrEmpty(jsonData))
-                            {
-                                Log.Information("[Scopus] Obteniendo topics enriquecidos...");
-                                Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                                Log.Information("[Scopus] Obteniendo freeTextKeywords enriquecidos...");
-                                Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
-
-                                if (listaTopics != null && listaTopics.Any())
-                                {
-                                    pub_completa.topics_enriquecidos = new List<Knowledge_enriquecidos>();
-                                    foreach (KeyValuePair<string, string> item in listaTopics)
-                                    {
-                                        Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item.Key;
-                                        topic.porcentaje = item.Value;
-                                        pub_completa.topics_enriquecidos.Add(topic);
-                                    }
-                                }
-                                else
-                                {
-                                    pub_completa.topics_enriquecidos = null;
-                                }
-
-                                if (listaEtiquetas != null && listaEtiquetas.Any())
-                                {
-                                    pub_completa.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
-                                    foreach (KeyValuePair<string, string> item in listaEtiquetas)
-                                    {
-                                        Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item.Key;
-                                        topic.porcentaje = item.Value;
-                                        pub_completa.freetextKeyword_enriquecidas.Add(topic);
-                                    }
-                                }
-                                else
-                                {
-                                    pub_completa.freetextKeyword_enriquecidas = null;
-                                }
                             }
 
                             // Completar información faltante con las publicaciones de OpenAire.
@@ -483,7 +353,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                         {
                                             if (pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
                                             {
-                                                pub_completa = compatacion(pub_completa, pub_openAire);
+                                                pub_completa = compactacion(pub_completa, pub_openAire);
                                             }
                                         }
                                     }
@@ -493,24 +363,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             // Unificar Autores
                             pub_completa = CompararAutoresCitasReferencias(pub_completa);
 
-                            if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any())
-                            {
-                                bool encontrado = false;
-                                foreach (Person persona in pub_completa.seqOfAuthors)
-                                {
-                                    if (persona.ORCID == name || pDoi != null)
-                                    {
-                                        encontrado = true;
-                                        break;
-                                    }
-                                }
-
-                                if (encontrado)
-                                {
-                                    resultado.Add(pub_completa);
-                                }
-                            }
+                            // Se guarda la publicación.
+                            resultado.Add(pub_completa);
                         }
+
                         contadoPubScopus++;
                     }
                 }
@@ -519,8 +375,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 Log.Error(e.Message);
             }
-            Log.Information($@"[Scopus] Publicaciones procesadas");
 
+            Log.Information($@"[Scopus] Publicaciones procesadas");
+            #endregion
+
+            #region --- OpenAire
             int contadorPubOpenAire = 1;
             try
             {
@@ -532,7 +391,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Log.Information($@"[OpenAire] Publicación {contadorPubOpenAire}/{objInicial_openAire.Count}");
                         if (pub != null && !string.IsNullOrEmpty(pub.doi) && !dois_principales.Contains(pub.doi.ToLower()))
                         {
-                            this.dois_bibliografia = new List<string>();
                             if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
                             {
                                 this.dois_principales.Add(pub.doi.ToLower());
@@ -544,15 +402,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
                                 Log.Information($@"[OpenAire] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = ObtenerPubSemanticScholar(pub);
+                                dataSemanticScholar = llamadaRefSemanticScholar(pub.doi);
                                 contadorSemanticScholar++;
+
+                                // Si se obtienen datos, es válido.
                                 if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.title) && dataSemanticScholar.Item2 == null)
                                 {
                                     break;
                                 }
+
+                                // En el caso que venga vacío, esperamos 10 segundos a volverlo a intentar.
                                 if (dataSemanticScholar.Item2 == null && contadorSemanticScholar != 5)
                                 {
-                                    Thread.Sleep(10000); // TODO: Revisar tema de los tiempos de las peticiones.
+                                    Thread.Sleep(10000);
                                 }
                             }
 
@@ -561,14 +423,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             pub_completa.dataOriginList = new HashSet<string>() { "OpenAire" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
-                                pub_completa = compatacion(pub, dataSemanticScholar.Item1);
+                                pub_completa = compactacion(pub, dataSemanticScholar.Item1);
                                 pub_completa.bibliografia = dataSemanticScholar.Item2;
                             }
 
                             // Zenodo - Archivos pdf...
                             Log.Information("[OpenAire] Haciendo petición a Zenodo...");
                             pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
-                            if (pub_completa.pdf == "")
+                            if (pub_completa.pdf == string.Empty)
                             {
                                 pub_completa.pdf = null;
                             }
@@ -577,85 +439,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 pub_completa.dataOriginList.Add("Zenodo");
                             }
 
-                            // Enriquecimiento
-                            pub_completa.title = Regex.Replace(pub_completa.title, "<.*?>", String.Empty);
-                            if (pub_completa.Abstract != null)
-                            {
-                                pub_completa.Abstract = Regex.Replace(pub_completa.Abstract, "<.*?>", String.Empty);
-                            }
-
-                            string jsonData = string.Empty;
-                            if (string.IsNullOrEmpty(pub_completa.pdf))
-                            {
-                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
-                            }
-                            else
-                            {
-                                jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(pub_completa));
-                                // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
-                                //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(pub_completa));
-                            }
-
-                            if (!string.IsNullOrEmpty(jsonData))
-                            {
-                                Log.Information("[OpenAire] Obteniendo topics enriquecidos...");
-                                Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                                Log.Information("[OpenAire] Obteniendo freeTextKeywords enriquecidos...");
-                                Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
-
-                                if (listaTopics != null && listaTopics.Any())
-                                {
-                                    pub_completa.topics_enriquecidos = new List<Knowledge_enriquecidos>();
-                                    foreach (KeyValuePair<string, string> item in listaTopics)
-                                    {
-                                        Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item.Key;
-                                        topic.porcentaje = item.Value;
-                                        pub_completa.topics_enriquecidos.Add(topic);
-                                    }
-                                }
-                                else
-                                {
-                                    pub_completa.topics_enriquecidos = null;
-                                }
-
-                                if (listaEtiquetas != null && listaEtiquetas.Any())
-                                {
-                                    pub_completa.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
-                                    foreach (KeyValuePair<string, string> item in listaEtiquetas)
-                                    {
-                                        Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                                        topic.word = item.Key;
-                                        topic.porcentaje = item.Value;
-                                        pub_completa.freetextKeyword_enriquecidas.Add(topic);
-                                    }
-                                }
-                                else
-                                {
-                                    pub_completa.freetextKeyword_enriquecidas = null;
-                                }
-                            }
-
                             // Unificar Autores
                             pub_completa = CompararAutoresCitasReferencias(pub_completa);
 
-                            if (pub_completa != null && !string.IsNullOrEmpty(pub_completa.title) && pub_completa.seqOfAuthors != null && pub_completa.seqOfAuthors.Any())
-                            {
-                                bool encontrado = false;
-                                foreach (Person persona in pub_completa.seqOfAuthors)
-                                {
-                                    if (persona.ORCID == name || pDoi != null)
-                                    {
-                                        encontrado = true;
-                                        break;
-                                    }
-                                }
-
-                                if (encontrado)
-                                {
-                                    resultado.Add(pub_completa);
-                                }
-                            }
+                            // Se guarda la publicación.
+                            resultado.Add(pub_completa);
                         }
                         contadorPubOpenAire++;
                     }
@@ -665,20 +453,113 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 Log.Error(e.Message);
             }
-            Log.Information($@"[OpenAire] Publicaciones procesadas");
 
-            // Comprobar si está el nombre entre los autores.
+            Log.Information($@"[OpenAire] Publicaciones procesadas");
+            #endregion
+
+            // Comprobación de que las publicaciones estén bien formadas.
+            List<Publication> listaPubsFinal = new List<Publication>();
+            foreach (Publication publicacion in resultado)
+            {
+                if (publicacion != null && !string.IsNullOrEmpty(publicacion.title) && publicacion.seqOfAuthors != null && publicacion.seqOfAuthors.Any() && publicacion.title != "One or more validation errors occurred.")
+                {
+                    bool encontrado = false;
+                    foreach (Person persona in publicacion.seqOfAuthors)
+                    {
+                        if (persona.ORCID == pOrcid || pDoi != null)
+                        {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+
+                    if (encontrado)
+                    {
+                        listaPubsFinal.Add(publicacion);
+                    }
+                }
+            }
+
+            // Enriquecimiento.
+            foreach (Publication publicacion in listaPubsFinal)
+            {
+                // Enriquecimiento
+                publicacion.title = Regex.Replace(publicacion.title, "<.*?>", string.Empty);
+                if (publicacion.Abstract != null)
+                {
+                    publicacion.Abstract = Regex.Replace(publicacion.Abstract, "<.*?>", string.Empty);
+                }
+
+                // Preparación del objeto a enviar para el enriquecimiento.
+                string jsonData = string.Empty;
+                if (string.IsNullOrEmpty(publicacion.pdf))
+                {
+                    jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(publicacion));
+                }
+                else
+                {
+                    jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(publicacion));
+                    // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
+                    //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(publicacion));
+                }
+
+                if (!string.IsNullOrEmpty(jsonData))
+                {
+                    // Peticiones.
+                    Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                    Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
+                    Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                    Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
+
+                    if (listaTopics != null && listaTopics.Any())
+                    {
+                        publicacion.topics_enriquecidos = new List<Knowledge_enriquecidos>();
+                        foreach (KeyValuePair<string, string> item in listaTopics)
+                        {
+                            Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
+                            topic.word = item.Key;
+                            topic.porcentaje = item.Value;
+                            publicacion.topics_enriquecidos.Add(topic);
+                        }
+                    }
+                    else
+                    {
+                        publicacion.topics_enriquecidos = null;
+                    }
+
+                    if (listaEtiquetas != null && listaEtiquetas.Any())
+                    {
+                        publicacion.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
+                        foreach (KeyValuePair<string, string> item in listaEtiquetas)
+                        {
+                            Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
+                            topic.word = item.Key;
+                            topic.porcentaje = item.Value;
+                            publicacion.freetextKeyword_enriquecidas.Add(topic);
+                        }
+                    }
+                    else
+                    {
+                        publicacion.freetextKeyword_enriquecidas = null;
+                    }
+                }
+            }
+
+            // Comprobar si está el nombre entre los autores (Editor CV, carga de publicaciones).
             if (!string.IsNullOrEmpty(pNombreCompletoAutor))
             {
-                float umbral = 0.6f; // TODO: ¿Cuanto asignamos?
+                float umbral = 0.6f;
                 bool valido = false;
 
-                foreach (Publication publicacion in resultado)
+                foreach (Publication publicacion in listaPubsFinal)
                 {
                     foreach (Person persona in publicacion.seqOfAuthors)
                     {
                         string nombreCompleto = persona.name.nombre_completo.First();
+
+                        // Comprueba si el nombre del autor corresponde con alguno de la publicación.
                         float resultadoSimilaridad = GetNameSimilarity(pNombreCompletoAutor, nombreCompleto);
+
                         if (resultadoSimilaridad >= umbral)
                         {
                             valido = true;
@@ -690,420 +571,24 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 // Si no supera el umbral, es que no hemos reconocido a la persona por el nombre.
                 if (!valido)
                 {
-                    resultado = new List<Publication>();
+                    listaPubsFinal = new List<Publication>();
                 }
             }
 
-            // TODO: ÑAPA. Solución temporal hasta que encontremos el error de la carga de las publicaciones con DOI duplicado.
-            // Borra aquellas publicaciones que no tengan DOI.
-            resultado.RemoveAll(x => string.IsNullOrEmpty(x.doi));
+            // TODO: Preparación de ejemplo.
+            string data = JsonConvert.SerializeObject(listaPubsFinal);
+            File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
 
-            //string info = JsonConvert.SerializeObject(resultado);
-            //string path = _Configuracion.GetRutaJsonSalida();
-            //Log.Information("Escribiendo datos en fichero...");
-            //File.WriteAllText($@"Files/{name}___{date}.json", info);            
-
-            return resultado;
-        }
-        //public List<Knowledge_enriquecidos> enriquedicmiento_pal(Publication pub)
-        //{
-        //    string info;
-        //    enriquecimiento_palabras a = new enriquecimiento_palabras();
-        //    if (pub.title != null & pub.Abstract != null)
-        //    {
-        //        a.rotype = "papers";
-        //        a.title = pub.title;
-        //        a.abstract_ = pub.Abstract;
-        //        a.journal = null;
-
-        //        info = JsonConvert.SerializeObject(a);
-        //        string info_publication = httpCall_2("specific", info);
-        //        if (!string.IsNullOrEmpty(info_publication))
-        //        {
-        //            palabras_enriquecidas objInic = JsonConvert.DeserializeObject<palabras_enriquecidas>(info_publication);
-        //            return objInic.topics;
-
-        //        }
-        //        return null;
-        //    }
-        //    else { return null; }
-
-        //}
-
-
-
-        //public List<Knowledge_enriquecidos> enriquedicmiento(Publication pub)
-        //{
-        //    string info = null;
-        //    if (pub != null)
-        //    {
-        //        try
-        //        {
-        //            if (pub.title != null & pub.hasPublicationVenue != null & pub.Abstract != null & pub.seqOfAuthors != null & pub.seqOfAuthors != new List<Models.Person>())
-        //            {
-        //                if (pub.hasPublicationVenue.name != null)
-        //                {
-        //                    if (pub.pdf != null)
-        //                    {
-        //                        enriquecimiento a = new enriquecimiento();
-        //                        a.rotype = "papers";
-        //                        a.pdfurl = pub.pdf;
-        //                        a.title = pub.title;
-        //                        a.abstract_ = pub.Abstract;
-        //                        a.journal = pub.hasPublicationVenue.name;
-        //                        //string names = "";
-        //                        //foreach (Models.Person persona in pub.seqOfAuthors)
-        //                        //{
-        //                        //    if (persona.name != null && persona.name.nombre_completo != null)
-        //                        //    {
-        //                        //        if (persona.name.nombre_completo.Count > 0)
-        //                        //        {
-        //                        //            string name = persona.name.nombre_completo[0];
-        //                        //            if (name != null)
-        //                        //            {
-        //                        //                if (names == "")
-        //                        //                {
-        //                        //                    names = names + name;
-        //                        //                }
-        //                        //                else
-        //                        //                {
-        //                        //                    names = names + " & " + name;
-        //                        //                }
-        //                        //            }
-        //                        //        }
-        //                        //    }
-        //                        //}
-        //                        //if (names != "")
-        //                        //{
-        //                        //    a.author_name = names;
-        //                        //    info = JsonConvert.SerializeObject(a);
-        //                        //}
-        //                        //else { info = null; }
-
-        //                        info = JsonConvert.SerializeObject(a);
-        //                    }
-        //                    else
-        //                    {
-        //                        enriquecimiento_sin_pdf a = new enriquecimiento_sin_pdf();
-        //                        a.rotype = "papers";
-        //                        a.title = pub.title;
-        //                        a.abstract_ = pub.Abstract;
-        //                        a.journal = pub.hasPublicationVenue.name;
-
-        //                        //string names = "";
-        //                        //foreach (Models.Person persona in pub.seqOfAuthors)
-        //                        //{
-        //                        //    if (persona.name != null)
-        //                        //    {
-        //                        //        if (persona.name.nombre_completo != null)
-        //                        //        {
-        //                        //            if (persona.name.nombre_completo.Count > 0)
-        //                        //            {
-        //                        //                string name = persona.name.nombre_completo[0];
-        //                        //                if (name != null)
-        //                        //                {
-        //                        //                    if (names == "")
-        //                        //                    {
-        //                        //                        names = names + name;
-        //                        //                    }
-        //                        //                    else
-        //                        //                    {
-        //                        //                        names = names + " & " + name;
-        //                        //                    }
-        //                        //                }
-        //                        //            }
-        //                        //        }
-        //                        //    }
-        //                        //}
-        //                        //if (names != "")
-        //                        //{
-        //                        //    a.author_name = names;
-        //                        //    info = JsonConvert.SerializeObject(a);
-        //                        //}
-        //                        //else { info = null; }
-
-        //                        info = JsonConvert.SerializeObject(a);
-        //                    }
-        //                }
-        //                if (info != null)
-        //                {
-        //                    string info_publication = httpCall_2("thematic", info);
-        //                    if (!string.IsNullOrEmpty(info_publication))
-        //                    {
-
-        //                        Topics_enriquecidos objInic = JsonConvert.DeserializeObject<Topics_enriquecidos>(info_publication);
-        //                        return objInic.topics;
-
-        //                    }
-        //                    return null;
-        //                }
-        //                else { return null; }
-        //            }
-        //            else { return null; }
-        //        }
-        //        catch
-        //        {
-        //            //string infoo = JsonConvert.SerializeObject(pub);
-        //            //Console.Write(infoo);
-        //        }
-
-        //    }
-        //    else { return null; }
-        //    return null;
-        //}
-
-        public string httpCall_2(string uri, string info)
-        {
-            HttpResponseMessage response = null;
-            HttpClient client = new HttpClient();
-            client.Timeout = TimeSpan.FromHours(24);
-            string result = string.Empty;
-
-            var contentData = new StringContent(info, System.Text.Encoding.UTF8, "application/json");
-            client.Timeout = TimeSpan.FromDays(1);
-
-            int intentos = 10;
-            while (true)
-            {
-                try
-                {
-                    response = client.PostAsync(_Configuracion.GetUrlEnriquecimiento() + uri, contentData).Result;
-                    break;
-                }
-                catch
-                {
-                    intentos--;
-                    if (intentos == 0)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        Thread.Sleep(5000);
-                    }
-                }
-            }
-
-            if (response.IsSuccessStatusCode)
-            {
-                result = response.Content.ReadAsStringAsync().Result;
-            }
-
-            return result;
+            return listaPubsFinal;
         }
 
         /// <summary>
-        /// Obtiene las citas de una publicación WoS. A su vez, enriquece las etiquetas y categorías.
+        /// Compara las dos publicaciones por parámetro y las une dándole prioridad a la primera.
         /// </summary>
-        /// <param name="pPublicacion">Publicación a obtener las citas.</param>
-        ///// <returns></returns>
-        //public Publication ObtenerCitas(Publication pPublicacion)
-        //{
-        //    foreach (string item in pPublicacion.IDs)
-        //    {
-        //        if (item.ToLower().Contains("wos"))
-        //        {
-        //            pPublicacion.citas = PeticionWosCitas(item.Split(':')[1]);
-        //        }
-        //    }
-
-        //    if (pPublicacion.citas != null && pPublicacion.citas.Any())
-        //    {
-        //        foreach (Publication pub in pPublicacion.citas)
-        //        {
-        //            pub.topics_enriquecidos = enriquedicmiento(pub);
-        //            pub.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub);
-        //        }
-        //    }
-
-        //    return pPublicacion;
-        //}
-
-        //public Publication ObtenerCitasOpenCitations(Publication pub, Dictionary<string, Publication> pDicOpenCitations, Dictionary<string, Publication> pDicSemanticScholar, Dictionary<string, Publication> pDicCrossRef, Dictionary<string, string> pDicZenodo)
-        //{
-        //    string doi = pub.doi;
-
-        //    // Consulta Open Citations 
-        //    Publication objInicial_OpenCitatons = llamadaOpenCitations(doi, pDicOpenCitations);
-        //    List<Publication> citas = new List<Publication>();
-
-        //    if (objInicial_OpenCitatons != null && objInicial_OpenCitatons.citas != null)
-        //    {
-        //        foreach (Publication pub_cita in objInicial_OpenCitatons.citas)
-        //        {
-
-        //            string doi_cita = pub_cita.doi;
-        //            Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_cita, pDicSemanticScholar);
-        //            Publication pub_2 = this.llamadaCrossRef(doi_cita, pDicCrossRef);
-        //            Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
-
-        //            // No necesitamos estos datos.
-        //            pub_completa.citas = null;
-        //            pub_completa.bibliografia = null;
-
-        //            if (pub_completa != null)
-        //            {
-        //                pub_completa.pdf = llamadaZenodo(pub_completa.doi, pDicZenodo);
-
-        //                // Enriquecimiento
-        //                pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-        //                pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
-
-        //                //if (pub_completa.dataIssued != null & pub_completa.hasPublicationVenue.issn != null)
-        //                //{
-        //                //    pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
-        //                //}
-        //                if (pub_completa.pdf == "")
-        //                {
-        //                    pub_completa.pdf = null;
-        //                }
-        //                if (pub_completa != null)
-        //                {
-        //                    pub_completa = CompararAutoresCitasReferencias(pub_completa);
-        //                    citas.Add(pub_completa);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    if (citas.Count > 0)
-        //    {
-        //        if (pub.citas == null)
-        //        {
-        //            pub.citas = citas;
-        //        }
-        //        else
-        //        {
-        //            pub.citas.AddRange(citas);
-        //        }
-        //    }
-
-        //    // No hace falta, ya que cogemos la bibliografía de CrossRef.
-        //    //List<Publication> bibliografia = new List<Publication>();
-        //    //if (objInicial_OpenCitatons != null && objInicial_OpenCitatons.bibliografia != null)
-        //    //{
-        //    //    foreach (Publication pub_bib in objInicial_OpenCitatons.bibliografia)
-        //    //    {
-        //    //        string doi_bib = pub_bib.doi;
-        //    //        if (!this.dois_bibliografia.Contains(doi_bib))
-        //    //        {
-        //    //            this.dois_bibliografia.Add(doi_bib);
-
-        //    //            //llamada Semantic Scholar 
-        //    //            Publication objInicial_SemanticScholar = llamadaSemanticScholar(doi_bib, pDicSemanticScholar);
-        //    //            Publication pub_2 = this.llamadaCrossRef(doi_bib, pDicCrossRef);
-        //    //            Publication pub_completa = compatacion(pub_2, objInicial_SemanticScholar);
-
-        //    //            // No necesitamos estos datos.
-        //    //            pub_completa.citas = null;
-        //    //            pub_completa.bibliografia = null;
-
-        //    //            if (pub_completa != null)
-        //    //            {
-        //    //                pub_completa.pdf = llamadaZenodo(pub_completa.doi, pDicZenodo);
-        //    //                pub_completa.topics_enriquecidos = enriquedicmiento(pub_completa);
-        //    //                pub_completa.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_completa);
-        //    //                //if (pub_completa.dataIssued != null && pub_completa.hasPublicationVenue != null && pub_completa.hasPublicationVenue.issn != null)
-        //    //                //{
-        //    //                //    pub_completa.hasPublicationVenue = metrica_journal(pub_completa.hasPublicationVenue, pub_completa.dataIssued.datimeTime, pub_completa.topics_enriquecidos);
-        //    //                //}
-        //    //                if (pub_completa.pdf == "")
-        //    //                {
-        //    //                    pub_completa.pdf = null;
-        //    //                }
-        //    //                if (pub_completa != null)
-        //    //                {
-        //    //                    bibliografia.Add(pub_completa);
-        //    //                }
-        //    //            }
-        //    //        }
-
-        //    //    }
-        //    //}
-        //    //if (bibliografia.Count > 0)
-        //    //{
-        //    //    if (pub.bibliografia == null)
-        //    //    {
-        //    //        pub.bibliografia = bibliografia;
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        pub.bibliografia.AddRange(bibliografia);
-        //    //    }
-        //    //}
-        //    return pub;
-        //}
-
-
-        public Tuple<Publication, List<PubReferencias>> ObtenerPubSemanticScholar(Publication pub)
-        {
-            return llamadaRefSemanticScholar(pub.doi);
-        }
-
-        //public Publication completar_bib(Publication pub, Dictionary<string, Publication> pDicOpenCitations, Dictionary<string, Publication> pDicSemanticScholar, Dictionary<string, Publication> pDicCrossRef, Dictionary<string, string> pDicZenodo)
-        //{
-        //    List<Publication> bib = new List<Publication>();
-        //    if (pub.bibliografia != null)
-        //    {
-        //        foreach (Publication pub_bib in pub.bibliografia)
-        //        {
-        //            if (!string.IsNullOrEmpty(pub_bib.doi))
-        //            {
-        //                string doi_bib = pub_bib.doi;
-        //                this.dois_bibliografia.Add(doi_bib);
-        //                Publication pub_semntic_scholar = this.llamadaSemanticScholar(doi_bib, pDicSemanticScholar);
-        //                Publication pub_crossRef = this.llamadaCrossRef(doi_bib, pDicCrossRef);
-        //                Publication pub_final_bib = compatacion(pub_crossRef, pub_semntic_scholar);
-
-        //                // No necesitamos estos datos.
-        //                pub_final_bib.citas = null;
-        //                pub_final_bib.bibliografia = null;
-
-        //                if (pub_final_bib != null)
-        //                {
-        //                    pub_final_bib.pdf = llamadaZenodo(pub_final_bib.doi, pDicZenodo);
-        //                    if (string.IsNullOrEmpty(pub_final_bib.pdf))
-        //                    {
-        //                        pub_final_bib.pdf = null;
-        //                    }
-
-        //                    //Console.Write(pub_final_bib.dataIssued);
-        //                    //Console.Write("\n");
-
-        //                    // Enriquecimiento
-        //                    pub_final_bib.topics_enriquecidos = enriquedicmiento(pub_final_bib);
-        //                    pub_final_bib.freetextKeyword_enriquecidas = enriquedicmiento_pal(pub_final_bib);
-
-        //                    //Console.Write(pub_final_bib);
-        //                    // try
-        //                    //{
-        //                    //if (pub_final_bib.dataIssued != null)
-        //                    //{
-        //                    //    if (pub_final_bib.hasPublicationVenue != null)
-        //                    //    {
-        //                    //        pub_final_bib.hasPublicationVenue = metrica_journal(pub_final_bib.hasPublicationVenue, pub_final_bib.dataIssued.datimeTime, pub_final_bib.topics_enriquecidos);
-        //                    //    }
-        //                    //}
-        //                    //    }catch{
-        //                    //    string info = JsonConvert.SerializeObject(pub_final_bib);
-        //                    //    Console.Write(info);
-        //                    //}
-
-
-        //                    if (pub_final_bib != null)
-        //                    {
-        //                        pub_final_bib = CompararAutoresCitasReferencias(pub_final_bib);
-        //                        bib.Add(pub_final_bib);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        pub.bibliografia = bib;
-        //        return pub;
-        //    }
-        //    return pub;
-        //}
-
-        public Publication compatacion(Publication pub_1, Publication pub_2)
+        /// <param name="pub_1">Publicación número uno (con prioridad).</param>
+        /// <param name="pub_2">Publicación número dos.</param>
+        /// <returns></returns>
+        public Publication compactacion(Publication pub_1, Publication pub_2)
         {
             Publication pub = new Publication();
             pub.dataOriginList = pub_1.dataOriginList;
@@ -1538,380 +1023,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
         }
 
-        public Models.Source metrica_journal(Models.Source journal_inicial, string fecha, List<Knowledge_enriquecidos> areas_Tematicas)
-        {
-            string año = fecha.Substring(0, 4);
-            List<JournalMetric> metricas_revista = new List<JournalMetric>();
-            JournalMetric metrica_revista_scopus = new JournalMetric();
-            if (metricas_scopus.Keys.ToList().Contains(año))
-            {
-                if (journal_inicial.name != null)
-                {
-                    if (metricas_scopus[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
-                    {
-
-                        Dictionary<string, Tuple<string, string, string>> diccionario_areas = metricas_scopus[año][journal_inicial.name.ToLower()];
-
-                        string area = diccionario_areas.Keys.ToList()[0];
-                        Boolean boole = false;
-                        if (areas_Tematicas != null)
-                        {
-                            foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
-                            {
-                                if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
-                                {
-                                    {
-                                        area = are_tematica_enriquecida.word.ToLower();
-                                        boole = true;
-                                    }
-                                }
-                            }
-                        }
-                        //TODO: Unificar los cuartiles. Devolver 'Q1' o 1, pero no devolver de ambos tipos.
-                        if (boole == false)
-                        {
-                            string quartil_inicial = "4";
-                            foreach (string area_revista in diccionario_areas.Keys.ToList())
-                            {
-                                Tuple<string, string, string> tuple = diccionario_areas[area_revista];
-                                string Q = tuple.Item1;
-                                if (quartil_inicial == "4")
-                                {
-                                    if (Q == "1")
-                                    {
-                                        area = area_revista;
-                                    }
-                                    else if (Q == "2")
-                                    {
-                                        area = area_revista;
-                                    }
-                                    else if (Q == "3")
-                                    {
-                                        area = area_revista;
-                                    }
-                                }
-                                else if (quartil_inicial == "3")
-                                {
-                                    if (Q == "1")
-                                    {
-                                        area = area_revista;
-                                    }
-                                    else if (Q == "2")
-                                    {
-                                        area = area_revista;
-                                    }
-                                }
-                                else if (quartil_inicial == "2")
-                                {
-                                    if (Q == "1")
-                                    {
-                                        area = area_revista;
-                                    }
-
-                                }
-                                else if (quartil_inicial == "1")
-                                {
-                                    area = area_revista;
-                                }
-
-                            }
-                        }
-                        Tuple<string, string, string> tupla = diccionario_areas[area];
-
-                        metrica_revista_scopus.impactFactor = tupla.Item3;
-                        metrica_revista_scopus.quartile = tupla.Item1;
-
-                        metrica_revista_scopus.ranking = tupla.Item2;
-                        metrica_revista_scopus.impactFactorName = "SJR";
-                        metricas_revista.Add(metrica_revista_scopus);
-
-                    }
-                }
-            }
-            //------------ lo mismo con la matrica de WoS-SCIE.
-            JournalMetric metrica_revista_woS_SCIE = new JournalMetric();
-
-            if (metricas_scie.Keys.ToList().Contains(año))
-            {
-                if (metricas_scie[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
-                {
-
-                    Dictionary<string, Tuple<string, string, string>> diccionario_areas = metricas_scie[año][journal_inicial.name.ToLower()];
-
-                    string area = diccionario_areas.Keys.ToList()[0];
-                    Boolean boole = false;
-                    if (areas_Tematicas != null)
-                    {
-                        foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
-                        {
-                            if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
-                            {
-                                {
-                                    area = are_tematica_enriquecida.word.ToLower();
-                                    boole = true;
-                                }
-                            }
-                        }
-                    }
-                    if (boole == false)
-                    {
-                        string quartil_inicial = "Q4";
-                        foreach (string area_revista in diccionario_areas.Keys.ToList())
-                        {
-                            Tuple<string, string, string> tuple = diccionario_areas[area_revista];
-                            string Q = tuple.Item1;
-                            if (quartil_inicial == "Q4")
-                            {
-                                if (Q == "Q1")
-                                {
-                                    area = area_revista;
-                                }
-                                else if (Q == "Q2")
-                                {
-                                    area = area_revista;
-                                }
-                                else if (Q == "Q3")
-                                {
-                                    area = area_revista;
-                                }
-                            }
-                            else if (quartil_inicial == "Q3")
-                            {
-                                if (Q == "Q1")
-                                {
-                                    area = area_revista;
-                                }
-                                else if (Q == "Q2")
-                                {
-                                    area = area_revista;
-                                }
-                            }
-                            else if (quartil_inicial == "Q2")
-                            {
-                                if (Q == "Q1")
-                                {
-                                    area = area_revista;
-                                }
-
-                            }
-                            else if (quartil_inicial == "Q1")
-                            {
-                                area = area_revista;
-                            }
-
-                        }
-                    }
-                    Tuple<string, string, string> tupla = diccionario_areas[area];
-
-                    metrica_revista_woS_SCIE.impactFactor = tupla.Item3;
-                    metrica_revista_woS_SCIE.quartile = tupla.Item1;
-
-                    metrica_revista_woS_SCIE.ranking = tupla.Item2;
-                    metrica_revista_woS_SCIE.impactFactorName = "JIF-SCIE";
-                    metricas_revista.Add(metrica_revista_woS_SCIE);
-
-                }
-
-            }
-
-            //------------ lo mismo con la matrica de WoS-SCIE.
-            JournalMetric metrica_revista_woS_SSCI = new JournalMetric();
-
-            if (metricas_ssci.Keys.ToList().Contains(año))
-            {
-                if (metricas_ssci[año].Keys.ToList().Contains(journal_inicial.name.ToLower()))
-                {
-
-                    Dictionary<string, Tuple<string, string, string>> diccionario_areas = metricas_ssci[año][journal_inicial.name.ToLower()];
-
-                    string area = diccionario_areas.Keys.ToList()[0];
-                    Boolean boole = false;
-                    if (areas_Tematicas != null)
-                    {
-                        foreach (Knowledge_enriquecidos are_tematica_enriquecida in areas_Tematicas)
-                        {
-                            if (diccionario_areas.Keys.ToList().Contains(are_tematica_enriquecida.word.ToLower()))
-                            {
-                                {
-                                    area = are_tematica_enriquecida.word.ToLower();
-                                    boole = true;
-                                }
-
-                            }
-                        }
-                    }
-                    if (boole == false)
-                    {
-                        string quartil_inicial = "Q4";
-                        foreach (string area_revista in diccionario_areas.Keys.ToList())
-                        {
-                            Tuple<string, string, string> tuple = diccionario_areas[area_revista];
-                            string Q = tuple.Item1;
-                            if (quartil_inicial == "Q4")
-                            {
-                                if (Q == "Q1")
-                                {
-                                    area = area_revista;
-                                }
-                                else if (Q == "Q2")
-                                {
-                                    area = area_revista;
-                                }
-                                else if (Q == "Q3")
-                                {
-                                    area = area_revista;
-                                }
-                            }
-                            else if (quartil_inicial == "Q3")
-                            {
-                                if (Q == "Q1")
-                                {
-                                    area = area_revista;
-                                }
-                                else if (Q == "Q2")
-                                {
-                                    area = area_revista;
-                                }
-                            }
-                            else if (quartil_inicial == "Q2")
-                            {
-                                if (Q == "Q1")
-                                {
-                                    area = area_revista;
-                                }
-
-                            }
-                            else if (quartil_inicial == "Q1")
-                            {
-                                area = area_revista;
-                            }
-
-                        }
-                    }
-                    Tuple<string, string, string> tupla = diccionario_areas[area];
-
-                    metrica_revista_woS_SSCI.impactFactor = tupla.Item3;
-                    metrica_revista_woS_SSCI.quartile = tupla.Item1;
-
-
-                    metrica_revista_woS_SSCI.ranking = tupla.Item2;
-                    metrica_revista_woS_SSCI.impactFactorName = "JIF-SSCI";
-                    metricas_revista.Add(metrica_revista_woS_SSCI);
-
-                }
-
-            }
-            if (metricas_revista.Count > 0)
-            {
-                journal_inicial.hasMetric = metricas_revista;
-            }
-            return journal_inicial;
-        }
-
-        public List<Publication> PeticionWosCitas(string pIdWos)
-        {
-            List<Publication> listaPublicaciones = new List<Publication>();
-
-            try
-            {
-                if (!string.IsNullOrEmpty(pIdWos))
-                {
-                    // URL a la petición.
-                    Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetCitesByWosId?pWosId={0}", pIdWos));
-
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    //Log.Information("Respuesta SemanticScholar --> " + info_publication);
-                    listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("Petición SemanticScholar --> " + e);
-                return listaPublicaciones;
-            }
-
-            return listaPublicaciones;
-        }
-
-        /// <summary>
-        /// Hace la llamada al API de SemanticScholar.
-        /// </summary>
-        /// <param name="pDoi">DOI de la publicación a consultar.</param>
-        /// <returns>Objeto Publication con los datos recuperados.</returns>
-        public Publication llamadaSemanticScholar(string pDoi, Dictionary<string, Publication> pDic)
-        {
-            Publication objInicial_SemanticScholar = null;
-
-            try
-            {
-                if (!string.IsNullOrEmpty(pDoi))
-                {
-                    // URL a la petición.
-                    Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetROs?doi={0}", pDoi));
-
-                    // Comprobación de la petición.
-                    if (!pDic.ContainsKey(pDoi))
-                    {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        //Log.Information("Respuesta SemanticScholar --> " + info_publication);
-                        objInicial_SemanticScholar = JsonConvert.DeserializeObject<Publication>(info_publication);
-                        pDic[pDoi] = objInicial_SemanticScholar;
-                    }
-                    else
-                    {
-                        objInicial_SemanticScholar = pDic[pDoi];
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("Petición SemanticScholar --> " + e);
-                return objInicial_SemanticScholar;
-            }
-
-            return objInicial_SemanticScholar;
-        }
-
-        /// <summary>
-        /// Hace la llamada al API de OpenCitations.
-        /// </summary>
-        /// <param name="pDoi">DOI de la publicación a consultar.</param>
-        /// <returns>Objeto Publication con los datos recuperados.</returns>
-        public Publication llamadaOpenCitations(string pDoi, Dictionary<string, Publication> pDic)
-        {
-            Publication objInicial_OpenCitatons = null;
-
-            try
-            {
-                if (!string.IsNullOrEmpty(pDoi))
-                {
-                    // URL a la petición.
-                    Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenCitations() + "OpenCitations/GetROs?doi={0}", pDoi));
-
-                    // Comprobación de la petición.
-                    if (!pDic.ContainsKey(pDoi))
-                    {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        //Log.Information("Respuesta OpenCitations --> " + info_publication);
-                        objInicial_OpenCitatons = JsonConvert.DeserializeObject<Publication>(info_publication);
-                        pDic[pDoi] = objInicial_OpenCitatons;
-                    }
-                    else
-                    {
-                        objInicial_OpenCitatons = pDic[pDoi];
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                Log.Error("Petición OpenCitations --> " + e);
-                return objInicial_OpenCitatons;
-            }
-
-            return objInicial_OpenCitatons;
-        }
-
         /// <summary>
         /// Hace la llamada al API de SemanticScholar.
         /// </summary>
@@ -1943,48 +1054,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         }
 
         /// <summary>
-        /// Hace la llamada al API de CrossRef.
-        /// </summary>
-        /// <param name="pDoi">DOI de la publicación a consultar.</param>
-        /// <returns>Objeto Publication con los datos obtenidos.</returns>
-        public List<PubReferencias> llamadaCrossRef(string pDoi, Dictionary<string, List<PubReferencias>> pDic)
-        {
-            List<PubReferencias> objInicial_CrossRef = null;
-
-            try
-            {
-                if (!string.IsNullOrEmpty(pDoi))
-                {
-                    // URL a la petición.
-                    Uri url = new Uri(string.Format(_Configuracion.GetUrlCrossRef() + "CrossRef/GetROs?doi={0}", pDoi));
-
-                    // Comprobación de la petición.
-                    if (!pDic.ContainsKey(pDoi))
-                    {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                        //Log.Information("Respuesta CrossRef --> " + info_publication);
-                        objInicial_CrossRef = JsonConvert.DeserializeObject<List<PubReferencias>>(info_publication);
-                        pDic[pDoi] = objInicial_CrossRef;
-                    }
-                    else
-                    {
-                        objInicial_CrossRef = pDic[pDoi];
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("Petición CrossRef --> " + e);
-                return objInicial_CrossRef;
-            }
-
-            return objInicial_CrossRef;
-        }
-
-        /// <summary>
         /// Llamada al API de Web of Science mediante un código de autor.
         /// </summary>
         /// <param name="pOrcid">ORCID del autor.</param>
+        /// <param name="date">Fecha.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<PublicacionScopus> llamada_Scopus(string pOrcid, string date)
         {
@@ -2032,6 +1105,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// Llamada al API de Web of Science mediante un código de autor.
         /// </summary>
         /// <param name="pOrcid">ORCID del autor.</param>
+        /// <param name="date">Fecha.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<Publication> llamada_WoS(string pOrcid, string date)
         {
@@ -2095,6 +1169,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// Llamada al API de OpenAire mediante un código de autor.
         /// </summary>
         /// <param name="pOrcid">ORCID del autor.</param>
+        /// <param name="date">Fecha.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<Publication> llamada_OpenAire(string pOrcid, string date)
         {
@@ -2145,6 +1220,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// Hace la llamada al API de Zenodo.
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
+        /// <param name="pDic">Diccionario con los objetos de Zenodo.</param>
         /// <returns>String con la URL del archivo PDF obtenido.</returns>
         public string llamadaZenodo(string pDoi, Dictionary<string, string> pDic)
         {
@@ -2181,272 +1257,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             return urlPdf;
-        }
-
-        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> LeerDatosExcel_WoS(string pRuta)
-        {
-            DataSet ds = new DataSet();
-
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            using (var stream = System.IO.File.Open(pRuta, FileMode.Open, FileAccess.Read))
-            {
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
-                {
-                    ds = reader.AsDataSet(new ExcelDataSetConfiguration()
-                    {
-                        ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
-                        {
-                            UseHeaderRow = true,
-                        }
-                    });
-                }
-            }
-            //año -> area_tematica
-            Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> diccionario_final = new Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>>();
-            foreach (DataTable tabla in ds.Tables)
-            {
-                if (tabla.TableName != "JCR_SCIE_counts" & tabla.Namespace != "Journal_Title_Changes")
-                {
-
-                    string[] palabras = tabla.TableName.Split("_");
-                    string año = palabras[palabras.Count() - 1].Substring(0, 4);
-                    Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
-                    //QUARTILE_RANK, CATEGORY_RANKING, IMPACT_FACTOR
-                    //CATEGORY_DESCRIPTION
-                    Dictionary<string, Dictionary<string, Tuple<string, string, string>>> titulo = new Dictionary<string, Dictionary<string, Tuple<string, string, string>>>();
-                    foreach (DataRow fila in ds.Tables[tabla.TableName].Rows)
-                    {
-                        //No e puede hacer con el issn (columas:  Print ISSN, E-ISSN)
-                        Tuple<string, string, string> tupla = new Tuple<string, string, string>(
-                            fila["QUARTILE_RANK"].ToString(), fila["CATEGORY_RANKING"].ToString(), fila["IMPACT_FACTOR"].ToString());
-                        if (titulo.Keys.Contains(fila["TITLE"].ToString().ToLower()))
-                        {
-                            area_tematica = titulo[fila["TITLE"].ToString().ToLower()];
-                        }
-                        else
-                        {
-                            area_tematica = new Dictionary<string, Tuple<string, string, string>>();
-                        }
-                        area_tematica[fila["CATEGORY_DESCRIPTION"].ToString().ToLower()] = tupla;
-                        titulo[fila["TITLE"].ToString().ToLower()] = area_tematica;
-                    }
-                    diccionario_final[año] = titulo;
-                }
-            }
-            return diccionario_final;
-        }
-
-
-        public float GetNameSimilarity(string pFirma, string pTarget)
-        {
-            pFirma = ObtenerTextosFirmasNormalizadas(pFirma);
-            pTarget = ObtenerTextosFirmasNormalizadas(pTarget);
-
-            //Almacenamos los scores de cada una de las palabras
-            List<float> scores = new List<float>();
-
-            string[] pFirmaNormalizadoSplit = pFirma.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            string[] pTargetNormalizadoSplit = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-
-            string[] source = pFirmaNormalizadoSplit;
-            string[] target = pTargetNormalizadoSplit;
-
-            int indexTarget = 0;
-            for (int i = 0; i < source.Length; i++)
-            {
-                //Similitud real
-                float score = 0;
-                string wordSource = source[i];
-                bool wordSourceInicial = wordSource.Length == 1;
-                //int desplazamiento = 0;
-                for (int j = indexTarget; j < target.Length; j++)
-                {
-                    string wordTarget = target[j];
-                    bool wordTargetInicial = wordTarget.Length == 1;
-                    //Alguna de las dos es inicial
-                    if (wordSourceInicial || wordTargetInicial)
-                    {
-                        if (wordSourceInicial != wordTargetInicial)
-                        {
-                            //No son las dos iniciales
-                            if (wordSource[0] == wordTarget[0])
-                            {
-                                score = 0.5f;
-                                indexTarget = j + 1;
-                                //desplazamiento = Math.Abs(j - i);
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            //Son las dos iniciales
-                            score = 0.75f;
-                            indexTarget = j + 1;
-                            //desplazamiento = Math.Abs(j - i);
-                            break;
-                        }
-                    }
-                    float scoreSingleName = CompareSingleName(wordSource, wordTarget);
-                    if (scoreSingleName > 0)
-                    {
-                        score = scoreSingleName;
-                        indexTarget = j + 1;
-                        break;
-                    }
-                }
-                scores.Add(score);
-            }
-            if (scores.Count > 0)
-            {
-                return scores.Sum() / source.Length;
-            }
-            return 0;
-        }
-
-        private string ObtenerTextosFirmasNormalizadas(string pText)
-        {
-            pText = pText.ToLower();
-            pText = pText.Trim();
-            if (pText.Contains(","))
-            {
-                pText = (pText.Substring(pText.IndexOf(",") + 1)).Trim() + " " + (pText.Substring(0, pText.IndexOf(","))).Trim();
-            }
-            pText = pText.Replace("-", " ");
-            string textoNormalizado = pText.Normalize(NormalizationForm.FormD);
-            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex("[^a-zA-Z ]");
-            string textoSinAcentos = reg.Replace(textoNormalizado, "");
-            while (textoSinAcentos.Contains(" del "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace(" del ", " ");
-            }
-            while (textoSinAcentos.Contains(" de "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace(" de ", " ");
-            }
-            while (textoSinAcentos.Contains(" la "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace(" la ", " ");
-            }
-            while (textoSinAcentos.Contains("  "))
-            {
-                textoSinAcentos = textoSinAcentos.Replace("  ", " ");
-            }
-
-            return textoSinAcentos.Trim();
-        }
-
-        private float CompareSingleName(string pNameA, string pNameB)
-        {
-            HashSet<string> ngramsNameA = GetNGramas(pNameA, 2);
-            HashSet<string> ngramsNameB = GetNGramas(pNameB, 2);
-            float tokens_comunes = ngramsNameA.Intersect(ngramsNameB).Count();
-            float union_tokens = ngramsNameA.Union(ngramsNameB).Count();
-            float coeficiente_jackard = tokens_comunes / union_tokens;
-            return coeficiente_jackard;
-        }
-
-        private HashSet<string> GetNGramas(string pText, int pNgramSize)
-        {
-            HashSet<string> ngramas = new HashSet<string>();
-            int textLength = pText.Length;
-            if (pNgramSize == 1)
-            {
-                for (int i = 0; i < textLength; i++)
-                {
-                    ngramas.Add(pText[i].ToString());
-                }
-                return ngramas;
-            }
-
-            HashSet<string> ngramasaux = new HashSet<string>();
-            for (int i = 0; i < textLength; i++)
-            {
-                foreach (string ngram in ngramasaux.ToList())
-                {
-                    string ngamaux = ngram + pText[i];
-                    if (ngamaux.Length == pNgramSize)
-                    {
-                        ngramas.Add(ngamaux);
-                    }
-                    else
-                    {
-                        ngramasaux.Add(ngamaux);
-                    }
-                    ngramasaux.Remove(ngram);
-                }
-                ngramasaux.Add(pText[i].ToString());
-                if (i < pNgramSize)
-                {
-                    foreach (string ngrama in ngramasaux)
-                    {
-                        if (ngrama.Length == i + 1)
-                        {
-                            ngramas.Add(ngrama);
-                        }
-                    }
-                }
-            }
-            for (int i = (textLength - pNgramSize) + 1; i < textLength; i++)
-            {
-                if (i >= pNgramSize)
-                {
-                    ngramas.Add(pText.Substring(i));
-                }
-            }
-            return ngramas;
-        }
-
-        public static Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> LeerDatosExcel_Scopus(string pRuta)
-        {
-            DataSet ds = new DataSet();
-
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            using (var stream = System.IO.File.Open(pRuta, FileMode.Open, FileAccess.Read))
-            {
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
-                {
-                    ds = reader.AsDataSet(new ExcelDataSetConfiguration()
-                    {
-                        ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
-                        {
-                            UseHeaderRow = true,
-                        }
-                    });
-                }
-            }
-            //año -> area_tematica
-            Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>> diccionario_final = new Dictionary<string, Dictionary<string, Dictionary<string, Tuple<string, string, string>>>>();
-            foreach (DataTable tabla in ds.Tables)
-            {
-                if (tabla.TableName != "About CiteScore" & tabla.Namespace != "ASJC codes")
-                {
-
-                    string[] palabras = tabla.TableName.Split(" ");
-                    string año = palabras[palabras.Count() - 1];
-                    Dictionary<string, Tuple<string, string, string>> area_tematica = new Dictionary<string, Tuple<string, string, string>>();
-                    // area_tematica ->  SJR,  Quartile, RANK,
-                    Dictionary<string, Dictionary<string, Tuple<string, string, string>>> titulo = new Dictionary<string, Dictionary<string, Tuple<string, string, string>>>();
-                    foreach (DataRow fila in ds.Tables[tabla.TableName].Rows)
-                    {
-                        //No e puede hacer con el issn (columas:  Print ISSN, E-ISSN)
-                        //Columnas usadas: Title,  Scopus Sub-Subject Area,
-                        Tuple<string, string, string> tupla = new Tuple<string, string, string>(
-                            fila["Quartile"].ToString(), fila["RANK"].ToString(), fila["SJR"].ToString());
-                        if (titulo.Keys.Contains(fila["Title"].ToString().ToLower()))
-                        {
-                            area_tematica = titulo[fila["Title"].ToString().ToLower()];
-                        }
-                        else
-                        {
-                            area_tematica = new Dictionary<string, Tuple<string, string, string>>();
-                        }
-                        area_tematica[fila["Scopus Sub-Subject Area"].ToString().ToLower()] = tupla;
-                        titulo[fila["Title"].ToString().ToLower()] = area_tematica;
-                    }
-                    diccionario_final[año] = titulo;
-                }
-            }
-            return diccionario_final;
         }
 
         /// <summary>
@@ -2987,12 +1797,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         /// <summary>
         /// Permite unificar la información de dos personas que son la misma.
-        /// TODO: Revisar la unión de personas que tengan nombre y no apellido.
         /// </summary>
         /// <param name="pPersonaFinal">Persona con prioridad (WoS).</param>
         /// <param name="pPersonaAUnir">Persona a unificar.</param>
         /// <returns></returns>
-        public Models.Person UnirPersonas(Models.Person pPersonaFinal, Models.Person pPersonaAUnir)
+        public Person UnirPersonas(Person pPersonaFinal, Person pPersonaAUnir)
         {
             // ORCID
             if (string.IsNullOrEmpty(pPersonaFinal.ORCID))
@@ -3149,7 +1958,168 @@ namespace PublicationConnect.ROs.Publications.Controllers
         }
 
 
+        #region --- Similaridad en los nombres.
+        public float GetNameSimilarity(string pFirma, string pTarget)
+        {
+            pFirma = ObtenerTextosFirmasNormalizadas(pFirma);
+            pTarget = ObtenerTextosFirmasNormalizadas(pTarget);
 
+            //Almacenamos los scores de cada una de las palabras
+            List<float> scores = new List<float>();
+
+            string[] pFirmaNormalizadoSplit = pFirma.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] pTargetNormalizadoSplit = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            string[] source = pFirmaNormalizadoSplit;
+            string[] target = pTargetNormalizadoSplit;
+
+            int indexTarget = 0;
+            for (int i = 0; i < source.Length; i++)
+            {
+                //Similitud real
+                float score = 0;
+                string wordSource = source[i];
+                bool wordSourceInicial = wordSource.Length == 1;
+                //int desplazamiento = 0;
+                for (int j = indexTarget; j < target.Length; j++)
+                {
+                    string wordTarget = target[j];
+                    bool wordTargetInicial = wordTarget.Length == 1;
+                    //Alguna de las dos es inicial
+                    if (wordSourceInicial || wordTargetInicial)
+                    {
+                        if (wordSourceInicial != wordTargetInicial)
+                        {
+                            //No son las dos iniciales
+                            if (wordSource[0] == wordTarget[0])
+                            {
+                                score = 0.5f;
+                                indexTarget = j + 1;
+                                //desplazamiento = Math.Abs(j - i);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            //Son las dos iniciales
+                            score = 0.75f;
+                            indexTarget = j + 1;
+                            //desplazamiento = Math.Abs(j - i);
+                            break;
+                        }
+                    }
+                    float scoreSingleName = CompareSingleName(wordSource, wordTarget);
+                    if (scoreSingleName > 0)
+                    {
+                        score = scoreSingleName;
+                        indexTarget = j + 1;
+                        break;
+                    }
+                }
+                scores.Add(score);
+            }
+            if (scores.Count > 0)
+            {
+                return scores.Sum() / source.Length;
+            }
+            return 0;
+        }
+
+        private string ObtenerTextosFirmasNormalizadas(string pText)
+        {
+            pText = pText.ToLower();
+            pText = pText.Trim();
+            if (pText.Contains(","))
+            {
+                pText = (pText.Substring(pText.IndexOf(",") + 1)).Trim() + " " + (pText.Substring(0, pText.IndexOf(","))).Trim();
+            }
+            pText = pText.Replace("-", " ");
+            string textoNormalizado = pText.Normalize(NormalizationForm.FormD);
+            Regex reg = new Regex("[^a-zA-Z ]");
+            string textoSinAcentos = reg.Replace(textoNormalizado, "");
+            while (textoSinAcentos.Contains(" del "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" del ", " ");
+            }
+            while (textoSinAcentos.Contains(" de "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" de ", " ");
+            }
+            while (textoSinAcentos.Contains(" la "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace(" la ", " ");
+            }
+            while (textoSinAcentos.Contains("  "))
+            {
+                textoSinAcentos = textoSinAcentos.Replace("  ", " ");
+            }
+
+            return textoSinAcentos.Trim();
+        }
+
+        private float CompareSingleName(string pNameA, string pNameB)
+        {
+            HashSet<string> ngramsNameA = GetNGramas(pNameA, 2);
+            HashSet<string> ngramsNameB = GetNGramas(pNameB, 2);
+            float tokens_comunes = ngramsNameA.Intersect(ngramsNameB).Count();
+            float union_tokens = ngramsNameA.Union(ngramsNameB).Count();
+            float coeficiente_jackard = tokens_comunes / union_tokens;
+            return coeficiente_jackard;
+        }
+
+        private HashSet<string> GetNGramas(string pText, int pNgramSize)
+        {
+            HashSet<string> ngramas = new HashSet<string>();
+            int textLength = pText.Length;
+            if (pNgramSize == 1)
+            {
+                for (int i = 0; i < textLength; i++)
+                {
+                    ngramas.Add(pText[i].ToString());
+                }
+                return ngramas;
+            }
+
+            HashSet<string> ngramasaux = new HashSet<string>();
+            for (int i = 0; i < textLength; i++)
+            {
+                foreach (string ngram in ngramasaux.ToList())
+                {
+                    string ngamaux = ngram + pText[i];
+                    if (ngamaux.Length == pNgramSize)
+                    {
+                        ngramas.Add(ngamaux);
+                    }
+                    else
+                    {
+                        ngramasaux.Add(ngamaux);
+                    }
+                    ngramasaux.Remove(ngram);
+                }
+                ngramasaux.Add(pText[i].ToString());
+                if (i < pNgramSize)
+                {
+                    foreach (string ngrama in ngramasaux)
+                    {
+                        if (ngrama.Length == i + 1)
+                        {
+                            ngramas.Add(ngrama);
+                        }
+                    }
+                }
+            }
+            for (int i = (textLength - pNgramSize) + 1; i < textLength; i++)
+            {
+                if (i >= pNgramSize)
+                {
+                    ngramas.Add(pText.Substring(i));
+                }
+            }
+            return ngramas;
+        }
+        #endregion
+
+        #region --- Enrqieucimiento
         public static ObjEnriquecimientoConPdf obtenerObjEnriquecimientoPdf(Publication pPub)
         {
             if (!string.IsNullOrEmpty(pPub.title) && !string.IsNullOrEmpty(pPub.Abstract))
@@ -3174,12 +2144,18 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public static ObjEnriquecimientoSinPdf obtenerObjEnriquecimiento(Publication pPub)
         {
-            if (!string.IsNullOrEmpty(pPub.title) && !string.IsNullOrEmpty(pPub.Abstract))
+            if (!string.IsNullOrEmpty(pPub.title))
             {
                 ObjEnriquecimientoSinPdf objEnriquecimiento = new ObjEnriquecimientoSinPdf();
                 objEnriquecimiento.rotype = "papers";
                 objEnriquecimiento.title = pPub.title;
                 objEnriquecimiento.abstract_ = pPub.Abstract;
+
+                if (string.IsNullOrEmpty(objEnriquecimiento.abstract_))
+                {
+                    objEnriquecimiento.abstract_ = pPub.title;
+                }
+
                 return objEnriquecimiento;
             }
             else
@@ -3251,5 +2227,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             return null;
         }
+        #endregion
     }
 }
