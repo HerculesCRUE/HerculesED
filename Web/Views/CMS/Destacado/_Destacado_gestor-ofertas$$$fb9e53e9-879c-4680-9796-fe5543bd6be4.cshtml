@@ -123,7 +123,9 @@
 
 
             // Carga las ofertas
-            comportamientoOfertasOtri.init("@currentIdstr", "ofertaListOtri")
+            $(document).ready(function () {
+                comportamientoOfertasOtri.init("@currentIdstr", "ofertaListOtri")
+            });
 
 
             var currentId = ""
