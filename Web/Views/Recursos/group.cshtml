@@ -474,6 +474,18 @@
                                                                     </ul>
                                                                 </div>
                                                             </div>
+                                                        <div class="chartLegend">
+                                                            <div class="dataSetLabels">
+                                                                <div id="actualizarTypesOcultar_member_document" class="labelContainer" onclick="ocultarMostrarDocumentos('membersgraph')">
+                                                                    <div style="background-color: #f8abab;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("DOCUMENTOS")</p>
+                                                                </div>
+                                                                <div id="actualizarTypesOcultar_member_project" class="labelContainer" onclick="ocultarMostrarProyectos('membersgraph')">
+                                                                    <div style="background-color: #b2cff7;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("PROYECTOS")</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>                                                            
                                                         <div class="wrapCol" id="membersgraph" style="width: 100%; height: 500px;"></div>
                                                     </div>
                                                 </div>
@@ -798,8 +810,9 @@
         AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
     }
 
-
     // Datos gráfica miembros.
+    var dataMiembros;
+    var dataMiembrosAux;
     function CargarGraficaMiembros(pIdGrupo, parametros, idContenedor) {
         var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaMiembrosGrupo"
         if (depuracion) {
@@ -810,10 +823,48 @@
         arg.pParametros = parametros;
         $('#' + idContenedor).empty();
         $.get(url, arg, function (data) {
+            $('#' + idContenedor).data("data",data)
             PintarGraficaArania(data, idContenedor);
         });
     }
 
+    function ocultarMostrarProyectos(id){
+        var graph = $("#"+id);
+        var ocultar = [];
+        $("#actualizarTypesOcultar_member_project").toggleClass("tachado");
+
+
+        if(graph.data("isProyectosHidden")){
+            ocultar.push("relation_project")
+        }
+        if(!graph.data("isDocumentosHidden")){
+            graph.data("isDocumentosHidden",true);
+            ocultar.push("relation_document")
+            
+        }else{
+            graph.data("isDocumentosHidden",false)
+        }
+
+       
+        AjustarGraficaArania(graph.data("data"),id,ocultar);
+    }
+    
+    function ocultarMostrarDocumentos(id){
+         var graph = $("#"+id);
+        var ocultar = [];
+        $("#actualizarTypesOcultar_member_document").toggleClass("tachado");
+         if(graph.data("isDocumentosHidden")){
+            ocultar.push("relation_document")
+        }
+        if(!graph.data("isProyectosHidden")){
+            graph.data("isProyectosHidden",true);
+            ocultar.push("relation_project")
+            
+        }else{
+            graph.data("isProyectosHidden",false)
+        }
+        AjustarGraficaArania(graph.data("data"),id,ocultar);
+    }
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
         var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
