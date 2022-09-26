@@ -2239,3 +2239,70 @@ function removeAccents (text) {
 	}
 	return ts;
 }
+
+
+
+
+// Función para hacer la llamada y comprobar si el usuario es un gestor Otri
+function CheckIsOtri(idUser) {
+	// Comfigura la URL
+	let uriIsOtriGestor = "Ofertas/CheckIfIsOtri"
+	let urlIOG = new URL(url_servicio_externo +  uriIsOtriGestor)
+	urlIOG.searchParams.set('pIdGnossUser', idUser)
+
+	// Realizo la llamada y devuelvo un booleano si es otri o no
+	return new Promise((resolve) => {
+		$.get(urlIOG.toString(), function (isOtri) {
+			resolve(isOtri)
+		});
+	})
+	
+}
+
+// Comprobar si el usuario es un gestor Otri y habilitar la url
+function EnhableIfIsOtri() {
+
+
+    let isOtriVal = localStorage.getItem("ISOTRI"); // Obtengo del solalStorage si el usuario es otri
+	let idUser = $('#inpt_usuarioID').val() // Obtego el id del usuario
+	// Comprueba si hacer la llamada ajax
+	if (CheckIfCallIsOtri(idUser)) {
+		// Realizo la llamada ajax
+		CheckIsOtri(idUser).then((isOtri) => {
+    		// Actualiza el estado si es el caso
+    		localStorage.setItem("ISOTRI", isOtri);
+    		isOtriVal = isOtri
+
+    		// Si el usuario no ha cambiado y es un gestor otri, se activa
+			if (isOtriVal) {
+				$('#menu_is_otri').removeClass("d-none")
+			}
+		})
+	} else {
+		// Si el usuario no ha cambiado y es un gestor otri, se activa
+		if (isOtriVal) {
+			$('#menu_is_otri').removeClass("d-none")
+		}
+	}
+
+
+
+}
+
+// Comprobar si llamar al servicio para comprobar si el usuario es un gestor Otri
+function CheckIfCallIsOtri(idUser) {
+
+	let currentSavedIdUser = localStorage.getItem("IDUSER")
+
+	// Compruebo si el valor en localSotorage está vacío
+	if (currentSavedIdUser == "") {
+        localStorage.setItem("IDUSER", idUser);
+        return true
+    // Compruebo si el id de usuario ha cambiado
+	} else if (idUser != currentSavedIdUser) {
+        localStorage.setItem("IDUSER", idUser);
+        return true
+	} else {
+        return false
+	}
+}

@@ -474,6 +474,7 @@ function aniadirComportamientoWrapperSeccion(){
 	});
 	
 };
+
 function aniadirTooltipsConflict(){
 	$('select[name="itemConflict"]').tooltip({
 		html: true,
