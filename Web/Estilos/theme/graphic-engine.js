@@ -595,6 +595,9 @@ var metricas = {
         numPagina = $('.listadoMenuPaginas').find('a.active').parent().attr('num');
 
         // Comportamientos facetas
+
+
+
         $(".faceta-date-range .ui-slider").slider({
             range: true,
             min: minYear,
@@ -1288,6 +1291,7 @@ var metricas = {
         // Agrega el enganche sin sobreescribir la función.
         $('#panFacetas .open-popup-link-tesauro').unbind('.clicktesauro').bind("click.clicktesauro", (function (event) {
             that.engancharComportamientos();
+            $(".modal-body .buscador-coleccion .action-buttons-resultados").remove();
         }));
 
         $('#panFacetas .open-popup-link-resultados').unbind().click(function (event) {
