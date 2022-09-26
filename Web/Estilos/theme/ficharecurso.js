@@ -857,9 +857,17 @@ function filtrarSearch(callback = () => {}) {
 		search = 'searcherProjects';
 	}
 	else if(searchID === 'contenedorBuscadorMiembros' || searchID === 'contenedorBuscadorMiembrosFuera' 
-		|| searchID === 'contenedorBuscadorColaboradores' || searchID === 'contenedorBuscadorParticipantes')
+		|| searchID === 'contenedorBuscadorColaboradores' || searchID === 'contenedorBuscadorParticipantes' || searchID === 'ofertaListUsers')
 	{
 		search = 'searcherPersons';
+	}
+	else if(searchID === 'searchOwnOffers' || searchID === 'ofertaListOtri')
+	{
+		search = 'searcherOffers';
+	}
+	else if(searchID === 'ofertaListPII')
+	{
+		search = 'searcherPII';
 	}
 
 	let parameterVal = input[0].value;
