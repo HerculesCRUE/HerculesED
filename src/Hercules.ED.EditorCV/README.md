@@ -20,11 +20,11 @@
 ## Controladores
 El servicio de editor de CV cuenta con varios controladores:
 
-- Edicion CV - Servicio encargado de la obtención de datos del curriculum vitae (CV) y tambien de la obtención de duplicados de los mismos.
-- Envio validación - Servicio encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
-- Exportado CV - Servicio encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
-- Guardado CV - Servicio encargado de la creación, modificación y eliminacion de un ítem.
-- Importado CV - Servicio encargado de la carga de datos y presentación de los mismos para la implementación de CV.
+- EdicionCVController - Servicio encargado de la obtención de datos del curriculum vitae (CV) y tambien de la obtención de duplicados de los mismos.
+- EnvioValidacionController - Servicio encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
+- ExportadoCVController - Servicio encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
+- GuardadoCVController - Servicio encargado de la creación, modificación y eliminacion de un ítem.
+- ImportadoCVController - Servicio encargado de la carga de datos y presentación de los mismos para la implementación de CV.
 
 ## Hércules ED. Configuración del Editor de CV
 
