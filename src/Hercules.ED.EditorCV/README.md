@@ -415,7 +415,7 @@ Quedando la visualización en la interfaz del siguiente modo:
 ![](../../Docs/media/EditorCV/EdicionCV9.png)
 
 ## Dependencias
-- **GnossApiWrapper.NetCore**: v1.0.8
+- **GnossApiWrapper.NetCore**: v6.0.6
 - **Microsoft.AspNet.WebApi.Client**: v5.2.7
 - **Newtonsoft.Json**: v13.0.1
 - **RabbitMQ.Client**: v6.2.4
