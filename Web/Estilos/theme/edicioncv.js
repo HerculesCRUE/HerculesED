@@ -3907,7 +3907,7 @@ var edicionCV = {
 					OcultarUpdateProgress();
 				},
 				error: function(){
-					mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
+					mostrarNotificacion('warning', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
 					OcultarUpdateProgress();
 				}
 			})
