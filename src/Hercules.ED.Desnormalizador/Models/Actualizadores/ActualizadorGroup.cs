@@ -10,7 +10,7 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace DesnormalizadorHercules.Models.Actualizadores
 {
-    //TODO comentarios completados, falta eliminar froms
+    //TODO comentarios completados
 
     /// <summary>
     /// Clase para actualizar propiedades de grupos
@@ -155,8 +155,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     while (true)
                     {
                         int limit = 500;
-                        //TODO eliminar from
-                        String select = @"select distinct ?group ?personAux ?propPersonAux ?property ?propertyLoad ?propertyToLoad from <http://gnoss.com/person.owl> ";
+                        String select = @"select distinct ?group ?personAux ?propPersonAux ?property ?propertyLoad ?propertyToLoad ";
                         String where = @$"where{{
                                     {filter}
                                     {{
@@ -191,7 +190,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?group) limit {limit}";
-                        SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                        SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "person" });
                         ActualizarPropiedadMiembrosProyectoGrupoPatente(resultado.results.bindings, "group");
                         if (resultado.results.bindings.Count != limit)
                         {
@@ -381,7 +380,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
                     String select = @"select ?group ?numMiembrosCargados ?numMiembrosACargar  ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
@@ -450,8 +448,8 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?group ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/person.owl> from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
+
+                    String select = @"select ?group ?numColaboradoresCargados ?numColaboradoresACargar ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -511,7 +509,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numColaboradoresCargados!= ?numColaboradoresACargar OR !BOUND(?numColaboradoresCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "person", "project", "document" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -566,8 +564,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?group  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl> ";
+                    String select = @"select ?group  ?numProyectosCargados ?numProyectosACargar ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -590,7 +587,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numProyectosCargados!= ?numProyectosACargar OR !BOUND(?numProyectosCargados) )
                         }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "person", "project", });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -641,8 +638,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?group  ?numDocumentosCargados ?numDocumentosACargar  from <http://gnoss.com/document.owl>  ";
+                    String select = @"select ?group  ?numDocumentosCargados ?numDocumentosACargar ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -663,7 +659,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numDocumentosCargados!= ?numDocumentosACargar OR !BOUND(?numDocumentosCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "document" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -713,8 +709,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?group  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select ?group  ?numAreasTematicasCargadas ?numAreasTematicasACargar   ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -743,7 +738,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar OR !BOUND(?numAreasTematicasCargadas) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "document", "taxonomy" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -792,8 +787,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Añadimos líneas
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?group  ?linea  from <http://gnoss.com/person.owl> ";
+                    String select = @"select distinct ?group  ?linea ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -826,7 +820,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}                                    
                                 }}order by desc(?group) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "group" ,"person"});
                     InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "group", "linea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -838,8 +832,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Eliminamos líneas
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?group  ?linea  from <http://gnoss.com/person.owl> ";
+                    String select = @"select distinct ?group  ?linea ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -872,7 +865,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?group) limit {limit}";
-                    var resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    var resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "person" });
                     EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "group", "linea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -907,8 +900,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO from
-                    String select = @"select ?group ?categoryNode from <http://gnoss.com/taxonomy.owl> ";
+                    String select = @"select ?group ?categoryNode  ";
                     String where = @$"where{{
                                 select distinct ?group ?hasKnowledgeAreaAux  ?categoryNode
                                 where{{
@@ -921,14 +913,13 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}
                                }}
                             }}group by ?group ?categoryNode HAVING (COUNT(*) > 1) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "group","taxonomy" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string group = fila["group"].value;
                         string categoryNode = fila["categoryNode"].value;
-                        //TODO from
-                        select = @"select ?group ?hasKnowledgeArea  ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                        select = @"select ?group ?hasKnowledgeArea  ?categoryNode ";
                         where = @$"where{{
                                     FILTER(?group=<{group}>)
                                     FILTER(?categoryNode =<{categoryNode}>)
@@ -944,7 +935,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}";
-                        resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group" ,"taxonomy"});
                         List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
@@ -994,8 +985,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
                     //INSERTAMOS
-                    //TODO eliminar from
-                    String select = @"select distinct * where{select ?group ?categoryNode from <http://gnoss.com/person.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct * where{select ?group ?categoryNode ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -1023,7 +1013,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                             }}
                             }}}}order by (?group) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "group" , "person", "taxonomy" });
                     InsertarCategorias(resultado, dicAreasBroader, mResourceApi.GraphsUrl, "group", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1034,9 +1024,8 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //ELIMINAMOS
-                    //TODO eliminar from
-                    String select = @"select distinct * where{select ?group ?hasKnowledgeArea from <http://gnoss.com/person.owl> from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
+                    //ELIMINAMOS                    
+                    String select = @"select distinct * where{select ?group ?hasKnowledgeArea ";
                     String where = @$"where{{
                             ?group a <http://xmlns.com/foaf/0.1/Group>.
                             {filter}
@@ -1065,7 +1054,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                  
                             }}
                             }}}}order by (?group) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "group");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "group", "person", "document", "taxonomy" });
                     EliminarCategorias(resultado, "group", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
