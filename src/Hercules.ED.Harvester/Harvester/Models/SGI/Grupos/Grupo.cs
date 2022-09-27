@@ -16,6 +16,6 @@ namespace OAI_PMH.Models.SGI.Grupos
         public bool? especialInvestigacion { get; set; }
         public bool? activo { get; set; }
         public List<GrupoEquipo> equipo { get; set; }
-        public List<string> palabrasClave { get; set; }
+        public List<string> areasTematicas { get; set; }
     }
 }
