@@ -170,7 +170,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     List<CV> listaCVCargar = GenerateCVFromPersons(persons);
                     Parallel.ForEach(listaCVCargar, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, cv =>
                     {
-                        ComplexOntologyResource resource = cv.ToGnossApiResource(mResourceApi, new());
+                        ComplexOntologyResource resource = cv.ToGnossApiResource(mResourceApi,null);
                         int numIntentos = 0;
                         while (!resource.Uploaded)
                         {
