@@ -17,8 +17,6 @@
     - [Ejemplo de edición](#ejemplo-de-edición)
       - [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
       - [Configuración de la edición](#configuración-de-la-edición)
-
-
   - [Ejemplo de envío a validación](#envío-a-validación-de-la-producción-científica-prc) 
   - [Ejemplo de envío a borrado](#petición-de-borrado-en-la-producción-científica-prc)
   - [Dependencias](#dependencias)
