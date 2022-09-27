@@ -13,6 +13,16 @@
 
   - [Controladores](#controladores)
   - [Hércules ED. Configuración del Editor de CV](#hércules-ed-configuración-del-editor-de-cv)
+
+[Introducción](#introducción)
+
+[Ejemplo de edición](#ejemplo-de-edición)
+
+* [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
+
+* [Configuración de la edición](#configuración-de-la-edición)
+
+
   - [Ejemplo de envío a validación](#envío-a-validación-de-la-producción-científica-prc) 
   - [Ejemplo de envío a borrado](#petición-de-borrado-en-la-producción-científica-prc)
   - [Dependencias](#dependencias)
@@ -28,14 +38,6 @@ El servicio de editor de CV cuenta con varios controladores:
 
 
 ## Hércules ED. Configuración del Editor de CV
-
-[Introducción](#introducción)
-
-[Ejemplo de edición](#ejemplo-de-edición)
-
-* [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
-
-* [Configuración de la edición](#configuración-de-la-edición)
 
 ### Introducción
 
