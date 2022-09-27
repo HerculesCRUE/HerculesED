@@ -181,7 +181,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }
                             if (listaCVCargar.Last() == cv)
                             {
-                                mResourceApi.LoadComplexSemanticResource(resource, true, true);
+                                mResourceApi.LoadComplexSemanticResource(resource, false, true);
                             }
                             else
                             {
@@ -231,8 +231,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Añadimos documentos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?cv ?scientificActivity ?document ?isValidated ?typeDocument  from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
+                    String select = @"select distinct ?cv ?scientificActivity ?document ?isValidated ?typeDocument ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -279,7 +278,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "person", "scientificactivitydocument" });
                     InsertarDocumentosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -291,8 +290,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Elminamos documentos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?cv ?scientificActivity ?item ?typeDocument from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificactivitydocument.owl>  ";
+                    String select = @"select distinct ?cv ?scientificActivity ?item ?typeDocument ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -338,7 +336,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}                                        
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "person", "scientificactivitydocument" });
                     EliminarDocumentosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -386,8 +384,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         //        {
         //            //Publicamos los documentos
         //            int limit = 500;
-        //            //TODO eliminar from
-        //            String select = @"select distinct ?cv ?scientificActivity ?propItem ?item from <http://gnoss.com/document.owl> from <http://gnoss.com/person.owl>  ";
+        //            String select = @"select distinct ?cv ?scientificActivity ?propItem ?item ";
         //            String where = @$"where{{
         //                        {filter}
         //                        {{
@@ -402,7 +399,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         //                            ?item <http://w3id.org/roh/isPublic> 'false'.
         //                        }}
         //                    }}order by desc(?cv) limit {limit}";
-        //            SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+        //            SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document","person"});
         //            PublicarDocumentosCV(resultado);
         //            if (resultado.results.bindings.Count != limit)
         //            {
@@ -446,8 +443,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Añadimos documentos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?cv ?researchObject ?ro from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>   ";
+                    String select = @"select distinct ?cv ?researchObject ?ro ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -476,7 +472,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         ?item <http://vivoweb.org/ontology/core#relatedBy> ?ro.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "researchobject", "person" });
                     InsertarResearchObjectsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -488,8 +484,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Elminamos documentos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?cv ?researchObject ?item from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>  ";
+                    String select = @"select distinct ?cv ?researchObject ?item ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -518,7 +513,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}                                      
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "researchobject", "person" });
                     EliminarResearchObjectsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -565,8 +560,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Publicamos los documentos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?cv ?researchObject ?propItem ?item from <http://gnoss.com/researchobject.owl> from <http://gnoss.com/person.owl>  ";
+                    String select = @"select distinct ?cv ?researchObject ?propItem ?item ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -581,7 +575,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         ?item <http://w3id.org/roh/isPublic> 'false'.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "researchobject", "person" });
                     PublicarResearchObjectsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -624,8 +618,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Añadimos proyectos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?cv ?scientificExperience ?project ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
+                    String select = @"select distinct ?cv ?scientificExperience ?project ?typeProject ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -667,7 +660,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "project", "person", "scientificexperienceproject" });
                     InsertarProyectosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -679,8 +672,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Elminamos proyectos
                     int limit = 500;
-                    //TODO eliminar from select distinct ?cv ?scientificActivity ?item ?typeDocument
-                    String select = @"select distinct ?cv ?scientificExperience ?project ?item ?typeProject from <http://gnoss.com/project.owl> from <http://gnoss.com/person.owl>  from <http://gnoss.com/scientificexperienceproject.owl>  ";
+                    String select = @"select distinct ?cv ?scientificExperience ?project ?item ?typeProject ";
                     String where = @$"where{{
                                     {filter}
                                     
@@ -722,7 +714,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "project", "person", "scientificexperienceproject" });
                     EliminarProyectosCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -768,12 +760,10 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Añadimos grupos
                     int limit = 500;
-                    //TODO eliminar from
                     String select = @"select distinct ?cv ?idSection ?item 
                                         'http://w3id.org/roh/RelatedGroup' as ?rdfTypeAux 
                                         'http://w3id.org/roh/scientificExperience' as ?sectionProperty
-                                        'http://w3id.org/roh/groups' as ?auxProperty
-                    from <http://gnoss.com/group.owl> from <http://gnoss.com/person.owl> ";
+                                        'http://w3id.org/roh/groups' as ?auxProperty  ";
                     String where = @$"where{{
                                     {filter} 
                                     {{
@@ -801,7 +791,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         ?auxSection <http://vivoweb.org/ontology/core#relatedBy> ?item.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "group", "person" });
                     InsertarItemsCV(resultado);
 
                     if (resultado.results.bindings.Count != limit)
@@ -814,11 +804,9 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Elminamos grupos
                     int limit = 500;
-                    //TODO eliminar from 
                     String select = @"select distinct ?cv ?idSection ?auxEntity 
                                         'http://w3id.org/roh/scientificExperience' as ?sectionProperty
-                                        'http://w3id.org/roh/groups' as ?auxProperty      
-                                        ?group from <http://gnoss.com/group.owl> from <http://gnoss.com/person.owl> ";
+                                        'http://w3id.org/roh/groups' as ?auxProperty ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -845,7 +833,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         ?rol <http://w3id.org/roh/roleOf> ?person.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "group", "person" });
                     EliminarItemsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -891,10 +879,9 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Añadimos patentes
                     int limit = 500;
-                    //TODO eliminar from
                     String select = @"select distinct ?cv ?idSection ?item 'http://w3id.org/roh/RelatedPatent' as ?rdfTypeAux 
                                         'http://w3id.org/roh/scientificExperience' as ?sectionProperty
-                                        'http://w3id.org/roh/patents' as ?auxProperty from <http://gnoss.com/patent.owl> from <http://gnoss.com/person.owl>  ";
+                                        'http://w3id.org/roh/patents' as ?auxProperty ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -922,7 +909,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         ?auxSection <http://vivoweb.org/ontology/core#relatedBy> ?item.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "patent", "person" });
                     InsertarItemsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -934,11 +921,10 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Elminamos patentes
                     int limit = 500;
-                    //TODO eliminar from 
                     String select = @"select distinct ?cv ?idSection ?auxEntity 
                                         'http://w3id.org/roh/scientificExperience' as ?sectionProperty
                                         'http://w3id.org/roh/patents' as ?auxProperty      
-                                        ?group from <http://gnoss.com/patent.owl> from <http://gnoss.com/person.owl> ";
+                                        ?group ";
                     String where = @$"where{{
                                     {filter}                                    
                                     {{
@@ -965,7 +951,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         ?rol <http://w3id.org/roh/roleOf> ?person.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "patent", "person" });
                     EliminarItemsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1159,18 +1145,20 @@ namespace DesnormalizadorHercules.Models.Actualizadores
 
             foreach (string filter in filters)
             {
+                List<string> listaFroms = new List<string>() { "curriculumvitae", "person" };
+                listaFroms.AddRange(listaSecciones.Select(x => x.graph));
                 while (true)
                 {
 
                     //Añadimos items
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @$"select distinct ?cv ?idSection ?rdfTypeAux ?item ?sectionProperty ?auxProperty ?crisIdentifier from <http://gnoss.com/person.owl> from <http://gnoss.com/{string.Join(".owl> from <http://gnoss.com/", listaSecciones.Select(x => x.graph))}.owl> ";
+                    String select = @$"select distinct ?cv ?idSection ?rdfTypeAux ?item ?sectionProperty ?auxProperty ?crisIdentifier ";
                     String where = @$"where{{
                                     {filter}
                                     {string.Join("UNION", querySectionsAniadir)}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, listaFroms);
                     InsertarItemsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1182,13 +1170,12 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Eliminamos items
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @$"select distinct ?cv ?idSection ?auxEntity ?sectionProperty ?auxProperty from <http://gnoss.com/person.owl> from <http://gnoss.com/{string.Join(".owl> from <http://gnoss.com/", listaSecciones.Select(x => x.graph))}.owl> ";
+                    String select = @$"select distinct ?cv ?idSection ?auxEntity ?sectionProperty ?auxProperty ";
                     String where = @$"where{{
                                     {filter}
                                     {string.Join("UNION", querySectionsEliminar)}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, listaFroms);
                     EliminarItemsCV(resultado);
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -1275,8 +1262,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         }
 
                         int limit = 500;
-                        //TODO eliminar from
-                        String select = @$"select * from <http://gnoss.com/organization.owl> ";
+                        String select = @$"select *  ";
                         String where = @$"where{{
                                     ?s0 a <{section.rdfType}>.
                                     {filterPropAux}
@@ -1285,7 +1271,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     ?org <http://w3id.org/roh/title> ?titleOrg.
                                     FILTER(?orgTituloDesnormalizado!=?titleOrg)
                                 }}limit {limit}";
-                        SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, section.graph);
+                        SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { section.graph, "organization" });
                         Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                         {
                             //Entidad principal
@@ -1364,7 +1350,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
                     String select = @$"select * where{{ select ?cv ?item count(?o2) as ?numItems  ";
                     String where = @$"  where{{
                                             ?cv a <http://w3id.org/roh/CV>.
@@ -1420,41 +1405,41 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             }
 
             List<string> graphs = new List<string>();
-            graphs.Add("from <http://gnoss.com/document.owl>");
-            graphs.Add("from <http://gnoss.com/project.owl>");
-            graphs.Add("from <http://gnoss.com/tutorship.owl>");
-            graphs.Add("from <http://gnoss.com/thesissupervision.owl>");
-            graphs.Add("from <http://gnoss.com/teachingpublication.owl>");
-            graphs.Add("from <http://gnoss.com/teachingproject.owl>");
-            graphs.Add("from <http://gnoss.com/stay.owl>");
-            graphs.Add("from <http://gnoss.com/society.owl>");
-            graphs.Add("from <http://gnoss.com/position.owl>");
-            graphs.Add("from <http://gnoss.com/languagecertificate.owl>");
-            graphs.Add("from <http://gnoss.com/group.owl>");
-            graphs.Add("from <http://gnoss.com/grant.owl>");
-            graphs.Add("from <http://gnoss.com/activity.owl>");
-            graphs.Add("from <http://gnoss.com/impartedacademictraining.owl>");
-            graphs.Add("from <http://gnoss.com/accreditation.owl>");
-            graphs.Add("from <http://gnoss.com/academicdegree.owl>");
-            graphs.Add("from <http://gnoss.com/impartedcoursesseminars.owl>");
-            graphs.Add("from <http://gnoss.com/network.owl>");
-            graphs.Add("from <http://gnoss.com/council.owl>");
-            graphs.Add("from <http://gnoss.com/collaboration.owl>");
-            graphs.Add("from <http://gnoss.com/committee.owl>");
-            graphs.Add("from <http://gnoss.com/technologicalresult.owl>");
-            graphs.Add("from <http://gnoss.com/teachingcongress.owl>");
-            graphs.Add("from <http://gnoss.com/supervisedartisticproject.owl>");
-            graphs.Add("from <http://gnoss.com/scientificproduction.owl>");
-            graphs.Add("from <http://gnoss.com/patent.owl>");
-            graphs.Add("from <http://gnoss.com/researchobject.owl>");
+            graphs.Add("document");
+            graphs.Add("project");
+            graphs.Add("tutorship");
+            graphs.Add("thesissupervision");
+            graphs.Add("teachingpublication");
+            graphs.Add("teachingproject");
+            graphs.Add("stay");
+            graphs.Add("society");
+            graphs.Add("position");
+            graphs.Add("languagecertificate");
+            graphs.Add("group");
+            graphs.Add("grant");
+            graphs.Add("activity");
+            graphs.Add("impartedacademictraining");
+            graphs.Add("accreditation");
+            graphs.Add("academicdegree");
+            graphs.Add("impartedcoursesseminars");
+            graphs.Add("network");
+            graphs.Add("council");
+            graphs.Add("collaboration");
+            graphs.Add("committee");
+            graphs.Add("technologicalresult");
+            graphs.Add("teachingcongress");
+            graphs.Add("supervisedartisticproject");
+            graphs.Add("scientificproduction");
+            graphs.Add("patent");
+            graphs.Add("researchobject");
+            graphs.Add("curriculumvitae");
 
             foreach (string filter in filters)
             {
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @$"select ?cv ?p1 ?o1 ?p2 ?o2 ?item {string.Join(" ", graphs)}";
+                    String select = @$"select ?cv ?p1 ?o1 ?p2 ?o2 ?item ";
                     String where = @$"  where{{
                                             ?cv a <http://w3id.org/roh/CV>.
                                             ?cv ?p1 ?o1.
@@ -1463,7 +1448,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                             MINUS{{?item a ?rdfType}}
                                             {filter}
                                         }}limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, graphs);
 
                     Dictionary<Guid, List<RemoveTriples>> triplesEliminar = new Dictionary<Guid, List<RemoveTriples>>();
                     foreach (var fila in resultado.results.bindings)
