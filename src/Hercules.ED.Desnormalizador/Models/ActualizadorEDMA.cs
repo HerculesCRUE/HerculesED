@@ -15,16 +15,20 @@ namespace DesnormalizadorHercules.Models
         private readonly static string rutaOauth = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
         private static ResourceApi mResourceApi = null;
         private static CommunityApi mCommunityApi = null;
-        private static Guid communityID = communityApi.GetCommunityId();
+        private static Guid? mCommunityID = null;
 
 
         private static ResourceApi resourceApi
         {
             get
             {
-                if (mResourceApi == null)
+                while (mResourceApi == null)
                 {
-                    mResourceApi = new ResourceApi(rutaOauth);
+                    try
+                    {
+                        mResourceApi = new ResourceApi(rutaOauth);
+                    }
+                    catch (Exception) { }
                 }
                 return mResourceApi;
             }
@@ -34,11 +38,31 @@ namespace DesnormalizadorHercules.Models
         {
             get
             {
-                if (mCommunityApi == null)
+                while (mCommunityApi == null)
                 {
-                    mCommunityApi = new CommunityApi(rutaOauth);
+                    try
+                    {
+                        mCommunityApi = new CommunityApi(rutaOauth);
+                    }
+                    catch (Exception) { }
                 }
                 return mCommunityApi;
+            }
+        }
+
+        private static Guid communityID
+        {
+            get
+            {
+                while (!mCommunityID.HasValue)
+                {
+                    try
+                    {
+                        mCommunityID = communityApi.GetCommunityId();
+                    }
+                    catch (Exception) { }
+                }
+                return mCommunityID.Value;
             }
         }
 
