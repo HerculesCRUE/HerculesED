@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace DesnormalizadorHercules.Models.Actualizadores
 {
-    //TODO comentarios completados, falta eliminar froms
+    //TODO comentarios completados
 
     /// <summary>
     /// Clase para actualizar propiedades de documentos
@@ -53,8 +53,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO from
-                    String select = @"select ?ro ?categoryNode from <http://gnoss.com/taxonomy.owl> ";
+                    String select = @"select ?ro ?categoryNode ";
                     String where = @$"where{{
                                 select distinct ?ro ?hasKnowledgeAreaAux  ?categoryNode
                                 where{{
@@ -67,14 +66,13 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}
                                }}
                             }}group by ?ro ?categoryNode HAVING (COUNT(*) > 1) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "researchobject", "taxonomy" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string ro = fila["ro"].value;
                         string categoryNode = fila["categoryNode"].value;
-                        //TODO from
-                        select = @"select ?ro ?hasKnowledgeArea   ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                        select = @"select ?ro ?hasKnowledgeArea   ?categoryNode ";
                         where = @$"where{{
                                     FILTER(?ro=<{ro}>)
                                     FILTER(?categoryNode =<{categoryNode}>)
@@ -90,7 +88,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}";
-                        resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "researchobject", "taxonomy" });
                         List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
@@ -143,8 +141,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
                     //INSERTAMOS
-                    //TODO eliminar from
-                    String select = @"select distinct * where{select ?ro ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct * where{select ?ro ?categoryNode ";
                     String where = @$"where{{
                             ?ro a <http://w3id.org/roh/ResearchObject>.
                             {filter}
@@ -171,7 +168,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                             }}
                             }}}}order by (?ro) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "researchobject", "taxonomy" });
                     InsertarCategorias(resultado, dicAreasBroader, mResourceApi.GraphsUrl, "ro", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -183,8 +180,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
                     //ELIMINAMOS
-                    //TODO eliminar from
-                    String select = @"select distinct * where{select ?ro ?hasKnowledgeArea from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct * where{select ?ro ?hasKnowledgeArea ";
                     String where = @$"where{{
                             ?ro a <http://w3id.org/roh/ResearchObject>.
                             {filter}
@@ -212,7 +208,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                  
                             }}
                             }}}} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "researchobject", "taxonomy" });
                     EliminarCategorias(resultado, "ro", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -228,7 +224,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// No tiene dependencias
         /// </summary>
         /// <param name="pROs">ID de ROs</param>
-        public void ActualizarTagsRO(List<string> pROs=null)
+        public void ActualizarTagsRO(List<string> pROs = null)
         {
             //Etiquetas
             //unificada-->http://vivoweb.org/ontology/core#freeTextKeyword
@@ -334,7 +330,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select ?ro from <http://gnoss.com/person.owl> ";
+                    String select = @"select ?ro ";
                     String where = @$"where{{
                                 ?ro a <http://w3id.org/roh/ResearchObject>.
                                 {filter}
@@ -345,7 +341,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     ?person <http://w3id.org/roh/isActive> 'true'.
                                 }}
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "researchobject", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -391,8 +387,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //Eliminar from
-                    String select = @"select ?ro ?numLinkedCargados IF (BOUND (?numLinkedACargar), ?numLinkedACargar, 0 ) as ?numLinkedACargar FROM <http://gnoss.com/document.owl>";
+                    String select = @"select ?ro ?numLinkedCargados IF (BOUND (?numLinkedACargar), ?numLinkedACargar, 0 ) as ?numLinkedACargar ";
                     String where = @$"where{{
                                 ?ro a <http://w3id.org/roh/ResearchObject>.
                                 {filter}
@@ -422,7 +417,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                                 FILTER(?numLinkedCargados!= ?numLinkedACargar OR !BOUND(?numLinkedCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "researchobject", "document" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
