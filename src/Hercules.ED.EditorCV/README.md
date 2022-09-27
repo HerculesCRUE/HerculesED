@@ -30,8 +30,6 @@ El servicio de editor de CV cuenta con varios controladores:
 
 [Introducción](#introducción)
 
-[Controladores](#controladores)
-
 [Ejemplo de envío a validación](#envío-a-validación-de-la-producción-científica-prc) 
 
 [Ejemplo de envío a borrado](#petición-de-borrado-en-la-producción-científica-prc)
