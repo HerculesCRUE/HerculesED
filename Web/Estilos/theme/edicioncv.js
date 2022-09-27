@@ -3882,7 +3882,7 @@ var edicionCV = {
 					OcultarUpdateProgress();
 				},
 				error: function(){
-					mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
+					mostrarNotificacion('warning', GetText('CV_ERROR_PUBLICACION_PRC'));
 					OcultarUpdateProgress();
 				}
 			});
@@ -3991,7 +3991,7 @@ var edicionCV = {
 				});
 			},
 			error: function(){
-				mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
+				mostrarNotificacion('warning', GetText('CV_ERROR_PUBLICACION_PRC'));
 				OcultarUpdateProgress();
 			}
 		});
@@ -4118,7 +4118,7 @@ var edicionCV = {
 				mostrarNotificacion('success', GetText('CV_DOCUMENTO_VALIDACION'), 10000);
 			},
 			error: function(response){
-				mostrarNotificacion('error', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
+				mostrarNotificacion('warning', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
 			}
 		});
 		return;

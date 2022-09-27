@@ -729,4 +729,6 @@ div.row.upper-row div.menu-logo-wrapper > div.menu-toggle > a.texto-blanco {
     padding-bottom: 0px;
 }
 
-
+div#toast-container{
+	margin-top: 75px;
+}
