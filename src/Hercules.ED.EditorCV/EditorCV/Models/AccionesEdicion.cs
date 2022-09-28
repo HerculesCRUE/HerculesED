@@ -219,7 +219,14 @@ namespace EditorCV.Models
                     }
 
                 }
-                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }}ORDER BY ASC(strlen(?o)) ASC (?o)";
+                string where = @$"WHERE {{
+                                    ?s a <{pRdfType}> .
+                                    ?s <{pPropertyAux}> ?o .
+                                    {auxProperties}
+                                    FILTER( {filter} ) 
+                                    FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   
+                                }}
+                                ORDER BY ASC(strlen(?o)) ASC (?o)";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
