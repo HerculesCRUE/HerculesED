@@ -37,7 +37,7 @@ El servicio de editor de CV cuenta con varios controladores:
 
 ### Introducción
 
-Este servicio es utilizado para la edición de los CVs de los investigadores y para la presentación de los datos de los CVs tanto en la edición del propio CV como en la visualización de la pestaña 'otros méritos' dentro de la ficha de un investigador.
+Este servicio es utilizado para la edición de los CVs de los investigadores y para la presentación de los datos de los CVs tanto en la edición del propio CV como en la visualización de la pestaña 'otros méritos' dentro de la ficha de un investigador, para lo cual debe estar configurada la propiedad 'isPublishable':true dentro de 'listItemsPresentation' en la sección correspondiente.
 
 Este editor se basa en el editor de CV del [fecyt](https://cvn.fecyt.es/editor/cvn.html?locale=spa#IDENTIFICACION).
 
