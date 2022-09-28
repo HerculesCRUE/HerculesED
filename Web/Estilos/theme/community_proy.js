@@ -2259,6 +2259,7 @@ function CheckIsOtri(idUser) {
 	
 }
 
+
 // Comprobar si el usuario es un gestor Otri y habilitar la url
 function EnhableIfIsOtri() {
 
@@ -2284,10 +2285,8 @@ function EnhableIfIsOtri() {
 			$('#menu_is_otri').removeClass("d-none")
 		}
 	}
-
-
-
 }
+
 
 // Comprobar si llamar al servicio para comprobar si el usuario es un gestor Otri
 function CheckIfCallIsOtri(idUser) {

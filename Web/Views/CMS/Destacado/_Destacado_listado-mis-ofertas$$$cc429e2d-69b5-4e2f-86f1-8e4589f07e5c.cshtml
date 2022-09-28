@@ -123,8 +123,10 @@
 				var offerList = new OfferList(arrLang)
 
 
-				// Carga las ofertas
-				comportamientoMisOfertas.init("@currentIdstr", "searchOwnOffers")
+                // Carga las ofertas
+                $(document).ready(function () {
+                    comportamientoMisOfertas.init("@currentIdstr", "searchOwnOffers")
+                });
 
 
 				/**

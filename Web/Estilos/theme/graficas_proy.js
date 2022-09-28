@@ -157,13 +157,13 @@ class GraficaBase {
     }
     pintarGrafica(canvas, cambiarFont = true) {
         this.addPlugin("legend", {
-                onHover: (e) => {
-                    e.chart.canvas.style.cursor = 'pointer';
-                },
-                onLeave: (e) => {
-                    e.chart.canvas.style.cursor = 'default';
-                }
-            });
+            onHover: (e) => {
+                e.chart.canvas.style.cursor = 'pointer';
+            },
+            onLeave: (e) => {
+                e.chart.canvas.style.cursor = 'default';
+            }
+        });
         this.globalPlugins.push({
             id: 'custom_canvas_background_color',
             beforeDraw: (chart) => {
@@ -246,11 +246,10 @@ class GraficaBase {
 
                 // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
                 var grafica = $(this).parents(".acciones-mapa").parent().find(".grafica.show");
+                $("#modal-ampliar-mapa").data("ctx",grafica);
                 var data = grafica.data('grafica');
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
                 parent.removeClass('small horizontal vertical'); // se le quitan los estilos que podria tener
-                //var pIdGrafica = (canvas).parents('div.grafica').attr("idgrafica");
-                var ctx;
                 var modalContent = $('#modal-ampliar-mapa').find('.modal-content');
                 // Tamaño del contenedor (dejando 50px de margen arriba y abajo).
                 modalContent.css({ height: 'calc(100vh - 100px)' });
@@ -341,7 +340,7 @@ class GraficaBase {
                     var a = document.createElement('a');
                     a.href = image;
 
-                    a.download = this.titulo + '.jpg';
+                    a.download = grafica.titulo + '.jpg';
                     a.click();
 
                 } else {
@@ -480,6 +479,11 @@ class GraficaBase {
                         expand.find("span").text("close_fullscreen");
                     }
                 }
+                var graph = grafica.data("grafica");
+                if (graph instanceof GraficaNodos) {
+                    grafica.find(".graficoNodos").empty();
+                    graph.comportamientoNodos(grafica.find(".graficoNodos"));
+                }
                 grafica.removeClass("hide");
                 grafica.addClass("show");
                 grafica.attr('style', '');
@@ -514,19 +518,11 @@ class GraficaNodos extends GraficaBase {
         return ctx[0];
 
     }
-    pintarGrafica(ctx) {
-        ctx = super.addToGroup(ctx);
-
-        super.callbacks(ctx);
-
-        $(ctx).data("grafica", this);
-        ctx = this.pintarContenedores(ctx);
-
+    comportamientoNodos(ctx) {
         var controls = $(ctx).parent().find(".graph-controls");
         this.data.container = ctx;
-        this.data.ready = function () { window.cy = this };
         this.cy = cytoscape(this.data);
-
+        $(ctx).data("cy", this.cy);
         var arrayNodes = [];
         var nodos = this.cy.nodes();
         for (i = 0; i < this.cy.nodes().length; i++) {
@@ -578,6 +574,18 @@ class GraficaNodos extends GraficaBase {
                     renderedPosition: { x: grafica.cy.width() / 2, y: grafica.cy.height() / 2 }
                 });
             })
+
+    }
+    pintarGrafica(ctx) {
+        ctx = super.addToGroup(ctx);
+
+        super.callbacks(ctx);
+
+        $(ctx).data("grafica", this);
+
+        ctx = this.pintarContenedores(ctx);
+
+        this.comportamientoNodos(ctx);
 
     }
 }
@@ -644,7 +652,7 @@ class GraficaBarras extends GraficaBase {
         //esto modifica el tamaño de las barras 
         this.data.data.datasets.forEach((item) => {
             item['barThickness'] = ancho;
-        }) 
+        })
 
         this.data.options.scale = {
             ticks: {
@@ -652,7 +660,7 @@ class GraficaBarras extends GraficaBase {
             }
         }
         return canvasSize;
-   
+
     }
     drawSmallChart(ctx) {
 
@@ -903,7 +911,7 @@ class GraficaVertical extends GraficaBarras {
     constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50) {
         super(idPagina, idGrafica, data, filtroFacetas, titulo, escalas, barSize, "vertical");
         this.escalas = escalas;
-       
+
     }
     pintarGrafica(ctx) {
         $(ctx).addClass("vertical");
@@ -923,7 +931,7 @@ class GraficaVertical extends GraficaBarras {
             //console.log(this.escalas);
             //if contains ","
             if (this.escalas.indexOf(",") > -1) {
-              
+
                 this.data.options.scales.y1['max'] = parseInt(this.escalas.split(",")[0]);
                 this.data.options.scales.y2['max'] = parseInt(this.escalas.split(",")[1]);
             } else {
@@ -1297,7 +1305,7 @@ async function getPagesUser(pContenedor = null, userId) {
     return paginas;
 
 }
-async function pintarGraficaIndividual(pContenedor, pIdPagina, idGrafica = "") {
+async function pintarGraficaIndividual(pContenedor, pIdPagina, idGrafica) {
     if (!$(pContenedor).hasClass("grafica")) {
         $(pContenedor).addClass("grafica");
     }
@@ -1348,6 +1356,7 @@ function comportamientos() {
             var selected = parent.find('#' + $(this).attr("value")).parents('div.hide');
             if (selected.length) { // si la grafica existe
                 // la mostramos
+
                 selected.css('display', 'flex');
                 //selected.css('opacity', '1');
                 selected.css('position', 'relative');
@@ -1359,6 +1368,9 @@ function comportamientos() {
 
                 selected.removeClass('hide');
                 selected.addClass('show');
+
+
+
 
                 if (selected.attr('idgrafica').includes('nodes')) {
                     selected.parents('article').find('a#img').addClass('descargarcyto');
@@ -1538,8 +1550,16 @@ function pintarAccionesMapa(pContenedor) {
         return $(pContenedor).parent().find("div.acciones-mapa");
     }
 }
-//TODO MOVER A GRAPHIC ENGINE
+
 function cerrarModal() {
+    var ctx = $('#modal-ampliar-mapa').data("ctx");
+    var grafica = ctx.data("grafica");
+    if (grafica instanceof GraficaNodos) {
+
+        ctx.find(".graficoNodos").empty();
+        grafica.comportamientoNodos(ctx.find(".graficoNodos"));
+
+    }
     $('#modal-ampliar-mapa').find('div.graph-container').empty();
     $('#modal-ampliar-mapa').find('div.acciones-mapa').empty();
     $('#modal-ampliar-mapa').removeClass('show');

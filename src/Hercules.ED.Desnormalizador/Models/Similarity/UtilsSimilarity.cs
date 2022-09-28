@@ -73,13 +73,13 @@ namespace DesnormalizadorHercules.Models.Similarity
             int offset = 0;
             while (true)
             {
-                string select = "select * where{select distinct ?doc from <http://gnoss.com/curriculumvitae.owl> ";
+                string select = "select * where{select distinct ?doc ";
                 string where = $@"
 where{{
     ?doc a <{mRdfType}>.
     {mQueryVisible}
 }}ORDER BY ASC(?doc)}} LIMIT {limit} OFFSET {offset}";
-                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, mGraph);
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { mGraph, "curriculumvitae" });
                 idsToLoad = idsToLoad.Union(resultadoQuery.results.bindings.Select(x => x["doc"].value)).ToList();
                 offset += limit;
                 if (resultadoQuery.results.bindings.Count < limit)
@@ -162,7 +162,7 @@ where{{
                     #region Obtenemos autores
                     while (true)
                     {
-                        select = "select * where{select ?doc ?orden ?authorName from <http://gnoss.com/person.owl>";
+                        select = "select * where{select ?doc ?orden ?authorName ";
                         where = $@"
 where
 {{
@@ -174,7 +174,7 @@ where
     ?person <http://xmlns.com/foaf/0.1/name> ?authorName
 	BIND(xsd:int(?ordenAux) as ?orden)
 }}order by asc(?doc) asc(?orden) }} LIMIT {limit} OFFSET {offset}";
-                        response = mResourceApi.VirtuosoQuery(select, where, mGraph);
+                        response = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { mGraph, "person" });
                         offset += limit;
                         foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
                         {
@@ -310,7 +310,7 @@ where
                     offset = 0;
                     while (true)
                     {
-                        select = "select * where{select ?doc ?category from <http://gnoss.com/taxonomy.owl>";
+                        select = "select * where{select ?doc ?category ";
                         where = $@"
 where
 {{
@@ -323,7 +323,7 @@ where
     }}
     FILTER(?doc in(<{string.Join(">,<", idsAux)}>))
 }} ORDER BY ASC(?doc)}} LIMIT {limit} OFFSET {offset}";
-                        response = mResourceApi.VirtuosoQuery(select, where, mGraph);
+                        response = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { mGraph,"taxonomy" });
                         offset += limit;
                         foreach (Dictionary<string, SparqlObject.Data> fila in response.results.bindings)
                         {
@@ -458,7 +458,7 @@ where
             if (dicSimilarsAux.Count > 0)
             {
                 //Hacemos una verificación para que sólo se devuelvan validados
-                string select = "select distinct ?id from <http://gnoss.com/curriculumvitae.owl> ";
+                string select = "select distinct ?id ";
                 string where = $@"
 where{{
     FILTER(?id in (<{string.Join(">,<", dicSimilarsAux.Keys)}>))
@@ -466,7 +466,7 @@ where{{
     ?id <http://w3id.org/roh/isValidated> 'true'.
 
 }}";
-                List<string> listID = mResourceApi.VirtuosoQuery(select, where, graph).results.bindings.Select(x => x["id"].value).ToList();
+                List<string> listID = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { graph, "curriculumvitae" }).results.bindings.Select(x => x["id"].value).ToList();
                 dicSimilarsAux = dicSimilarsAux.Where(x => listID.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
             }
             List<KeyValuePair<Guid, Dictionary<string, float>>> dicSimilars = dicSimilarsAux.ToDictionary(x => mResourceApi.GetShortGuid(x.Key), x => x.Value).ToList();
@@ -583,7 +583,7 @@ where{{
                 }
                 else if (specific[1] is float)
                 {
-                    score = float.Parse(specific[1].ToString().Replace(",","."), CultureInfo.InvariantCulture);
+                    score = float.Parse(specific[1].ToString().Replace(",", "."), CultureInfo.InvariantCulture);
                 }
                 else if (specific[1] is double)
                 {

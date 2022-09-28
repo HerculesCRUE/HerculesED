@@ -10,7 +10,7 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace DesnormalizadorHercules.Models.Actualizadores
 {
-    //TODO comentarios completados, falta eliminar froms
+    //TODO comentarios completados
 
     /// <summary>
     /// Clase para actualizar propiedades de patentes
@@ -122,8 +122,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                     while (true)
                     {
                         int limit = 500;
-                        //TODO eliminar from
-                        String select = @"select distinct ?patent ?personAux ?propPersonAux ?property ?propertyLoad ?propertyToLoad from <http://gnoss.com/person.owl> ";
+                        String select = @"select distinct ?patent ?personAux ?propPersonAux ?property ?propertyLoad ?propertyToLoad ";
                         String where = @$"where{{
                                     {filter}
                                     {{
@@ -148,7 +147,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?patent) limit {limit}";
-                        SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "patent");
+                        SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "patent" ,"person"});
                         ActualizarPropiedadMiembrosProyectoGrupoPatente(resultado.results.bindings, "patent");
                         if (resultado.results.bindings.Count != limit)
                         {

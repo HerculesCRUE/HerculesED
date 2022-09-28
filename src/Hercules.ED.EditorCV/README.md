@@ -11,78 +11,40 @@
 
 # Apartados
 
-[Controladores](#controladores)
-
-[Hércules ED. Configuración del Editor de CV](#hércules-ed-configuración-del-editor-de-cv)
-
-[Dependencias](#dependencias)
+  - [Controladores](#controladores)
+  - [Hércules ED. Configuración del Editor de CV](#hércules-ed-configuración-del-editor-de-cv)
+    - [Introducción](#introducción)
+    - [Ejemplo de edición](#ejemplo-de-edición)
+      - [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
+      - [Configuración de la edición](#configuración-de-la-edición)
+  - [Ejemplo de envío a validación](#envío-a-validación-de-la-producción-científica-prc) 
+  - [Ejemplo de envío a borrado](#petición-de-borrado-en-la-producción-científica-prc)
+  - [Dependencias](#dependencias)
 
 ## Controladores
 El servicio de editor de CV cuenta con varios controladores:
 
-- Edicion CV - Servicio encargado de la obtención de datos del curriculum vitae (CV) y tambien de la obtención de duplicados de los mismos.
-- Envio validación - Servicio encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
-- Exportado CV - Servicio encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
-- Guardado CV - Servicio encargado de la creación, modificación y eliminacion de un ítem.
-- Importado CV - Servicio encargado de la carga de datos y presentación de los mismos para la implementación de CV.
+- EdicionCVController - Controlador encargado de las tareas de edición del CV correspondientes a la obtención de datos.
+- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion de un ítem.
+- EnvioValidacionController - Controlador encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
+- ExportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
+- ImportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la importación de CV.
+
 
 ## Hércules ED. Configuración del Editor de CV
-
-[Introducción](#introducción)
-
-[Controladores](#controladores)
-
-[Ejemplo de envío a validación](#envío-a-validación-de-la-producción-científica-prc) 
-
-[Ejemplo de envío a borrado](#petición-de-borrado-en-la-producción-científica-prc)
-
-[Ejemplo de edición](#ejemplo-de-edición)
-
-* [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
-
-* [Configuración de la edición](#configuración-de-la-edición)
 
 ### Introducción
 
 Este documento describe, mediante un ejemplo práctico, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
-La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta ./Config/TabTemplates/ que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
+La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta [./Config/TabTemplates/](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.EditorCV/EditorCV/Config/TabTemplates) que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
 
-## Envío a validación de la producción científica (PRC)
-El editor de CV permite envíar a validar publicaciones (obtenidas por el CV y por fuentes externas) al SGI. Una vez validada dicha publicación, es apta y oficial para la plataforma. Para proceder al envío, hay que ir a una publicación y pulsar sobre "Enviar a validación" situado en el menú de acciones (tres puntos):
+### Estructura de los JSON
 
-![image](https://user-images.githubusercontent.com/88077103/191733616-755c72d3-b5ee-4b89-b0de-ef829ac01da7.png)
+Cada unos de estos JSON se corresponde con un objeto [Tab](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.EditorCV/EditorCV/Models/API/Templates/Tab.cs)
 
-Al pulsar, se despliegará una ventana para poder enlazar la publicación a proyectos.
 
-![](../../Docs/media/EditorCV/PRCVentana.png)
-
-En esta ventana puedes relacionar la publicación con uno o más proyectos. En el caso de que no se quiera relacionar con ningún proyecto, aparecerá una alerta indicando que no se ha asociado con ningún proyecto junto a un botón para continuar sin asociar.
-
-![](../../Docs/media/EditorCV/PRCVentanaAsociar.png)
-
-Al desplazarse hacia abajo en la ventana, se encontrará un botón de enviar con el que la publicación se enviará a validar, junto con los proyectos asociados y el envío pasará al estado "Pendiente de validación" con el siguiente icono:
-
-![image](https://user-images.githubusercontent.com/88077103/191734305-5f7f8886-5f42-4623-b27f-9ff09ab2f47c.png)
-
-Una vez que esté validada, la publicación se podrá editar parcialmente y se mostrará de la siguiente manera:
-
-![image](https://user-images.githubusercontent.com/88077103/191734743-67f4a41f-51ec-42ff-ba53-69fdb94c0cab.png)
-
-En el caso que la publicación haya sido rechazada del envío, no se mostrará el icono de validado y se podrá volver a envíar a PRC para solicitar la validación.
-
-## Petición de borrado en la producción científica (PRC)
-Para el envío de borrado de producción científica se mandará una petición a validación, como si se tratase del envío a PRC normal, con la diferencia que el título de la publicación tendrá "[Petición de borrado]" y el identificador interno de la publicación estará compuesto por "Eliminar_ID". El usuario encargado de la modificación en el SGI, tendrá que validar la petición de borrado y borrar de sus sitemas la publicación. En el caso de querer borrar una publicación validada, se podrá hacer si pulsamos en "Enviar a borrar a producción científica".
-
-![image](https://user-images.githubusercontent.com/88077103/191735684-413f71a0-4544-4f6d-ae6f-c399a7f4ba88.png)
-
-Mientras esté en pendiente de borrado, volverá a aparecer el siguiente icono:
-
-![image](https://user-images.githubusercontent.com/88077103/191734305-5f7f8886-5f42-4623-b27f-9ff09ab2f47c.png)
-
-Finalmente, cuando se haya borrado, la publicación desaparecerá del SGI y del CV. En el caso de haber sido rechazada, no desaparecerá de los sistemas, y como en el envío a PRC, se podrá volver a solicitar el borrado.
-
-## Ejemplo de edición
+### Ejemplo de edición
 
 Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Envíar a producción científica" en el editor del CV del investigador:
 
@@ -108,7 +70,7 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 En primer lugar, se presenta el RDF y la propiedad que, en este caso, corresponden a la pestaña de actividad científica y tecnológica del investigador (roh:ScientificActivity). En un segundo nivel se sitúa el listado de secciones (ítems) que podemos editar. Como se observa en la imagen anterior, la primera sección corresponde a las publicaciones científicas (roh:scientificPublications), cuyo RDF, propiedad y presentación han sido establecidos. "presentation" contiene un tercer nivel en el que se ha definido el tipo (listado de ítems) y el título de la sección (Publicaciones, documentos científicos y técnicos).
 
 
-### Configuración de la presentación (listado y minificha)
+#### Configuración de la presentación (listado y minificha)
 
 
 Para definir la presentación de cada una de las publicaciones que el titular del CV puede añadir en esta sección, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
@@ -283,7 +245,7 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 ![](../../Docs/media/EditorCV/EdicionCV4.png)
 
 
-### Configuración de la edición
+#### Configuración de la edición
 
 Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
 
@@ -416,8 +378,42 @@ Quedando la visualización en la interfaz del siguiente modo:
 
 ![](../../Docs/media/EditorCV/EdicionCV9.png)
 
+## Envío a validación de la producción científica (PRC)
+El editor de CV permite envíar a validar publicaciones (obtenidas por el CV y por fuentes externas) al SGI. Una vez validada dicha publicación, es apta y oficial para la plataforma. Para proceder al envío, hay que ir a una publicación y pulsar sobre "Enviar a validación" situado en el menú de acciones (tres puntos):
+
+![image](https://user-images.githubusercontent.com/88077103/191733616-755c72d3-b5ee-4b89-b0de-ef829ac01da7.png)
+
+Al pulsar, se despliegará una ventana para poder enlazar la publicación a proyectos.
+
+![](../../Docs/media/EditorCV/PRCVentana.png)
+
+En esta ventana puedes relacionar la publicación con uno o más proyectos. En el caso de que no se quiera relacionar con ningún proyecto, aparecerá una alerta indicando que no se ha asociado con ningún proyecto junto a un botón para continuar sin asociar.
+
+![](../../Docs/media/EditorCV/PRCVentanaAsociar.png)
+
+Al desplazarse hacia abajo en la ventana, se encontrará un botón de enviar con el que la publicación se enviará a validar, junto con los proyectos asociados y el envío pasará al estado "Pendiente de validación" con el siguiente icono:
+
+![image](https://user-images.githubusercontent.com/88077103/191734305-5f7f8886-5f42-4623-b27f-9ff09ab2f47c.png)
+
+Una vez que esté validada, la publicación se podrá editar parcialmente y se mostrará de la siguiente manera:
+
+![image](https://user-images.githubusercontent.com/88077103/191734743-67f4a41f-51ec-42ff-ba53-69fdb94c0cab.png)
+
+En el caso que la publicación haya sido rechazada del envío, no se mostrará el icono de validado y se podrá volver a envíar a PRC para solicitar la validación.
+
+## Petición de borrado en la producción científica (PRC)
+Para el envío de borrado de producción científica se mandará una petición a validación, como si se tratase del envío a PRC normal, con la diferencia que el título de la publicación tendrá "[Petición de borrado]" y el identificador interno de la publicación estará compuesto por "Eliminar_ID". El usuario encargado de la modificación en el SGI, tendrá que validar la petición de borrado y borrar de sus sitemas la publicación. En el caso de querer borrar una publicación validada, se podrá hacer si pulsamos en "Enviar a borrar a producción científica".
+
+![image](https://user-images.githubusercontent.com/88077103/191735684-413f71a0-4544-4f6d-ae6f-c399a7f4ba88.png)
+
+Mientras esté en pendiente de borrado, volverá a aparecer el siguiente icono:
+
+![image](https://user-images.githubusercontent.com/88077103/191734305-5f7f8886-5f42-4623-b27f-9ff09ab2f47c.png)
+
+Finalmente, cuando se haya borrado, la publicación desaparecerá del SGI y del CV. En el caso de haber sido rechazada, no desaparecerá de los sistemas, y como en el envío a PRC, se podrá volver a solicitar el borrado.
+
 ## Dependencias
-- **GnossApiWrapper.NetCore**: v1.0.8
+- **GnossApiWrapper.NetCore**: v6.0.6
 - **Microsoft.AspNet.WebApi.Client**: v5.2.7
 - **Newtonsoft.Json**: v13.0.1
 - **RabbitMQ.Client**: v6.2.4

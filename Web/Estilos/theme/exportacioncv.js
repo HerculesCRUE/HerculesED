@@ -522,7 +522,7 @@ function deleteExportationProfile(userID, title){
 			OcultarUpdateProgress();
 		},
 		error: function(jqXHR, exception){
-			mostrarNotificacion('error', GetText('CV_ERROR_ELIMINAR_PERFIL_EXPORTACION'));
+			mostrarNotificacion('warning', GetText('CV_ERROR_ELIMINAR_PERFIL_EXPORTACION'));
 			getExportationProfile(userID);
 			OcultarUpdateProgress();		
 		}
@@ -552,7 +552,7 @@ function addExportationProfile(userID, title, checks){
 			OcultarUpdateProgress();
 		},
 		error: function(jqXHR, exception){
-			mostrarNotificacion('error', GetText('CV_ERROR_ANIADIR_PERFIL_EXPORTACION'));
+			mostrarNotificacion('warning', GetText('CV_ERROR_ANIADIR_PERFIL_EXPORTACION'));
 			getExportationProfile(userID);
 			OcultarUpdateProgress();
 		}

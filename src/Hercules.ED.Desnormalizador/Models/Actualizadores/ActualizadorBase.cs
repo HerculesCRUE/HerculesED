@@ -10,7 +10,7 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace DesnormalizadorHercules.Models.Actualizadores
 {
-    //TODO comentarios completados, falta eliminar froms
+    //TODO comentarios completados
 
     /// <summary>
     /// Clase base para los actualizadores
