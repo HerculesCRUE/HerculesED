@@ -2957,7 +2957,14 @@ var edicionCV = {
 			//Buscador
 			$('.panel-group input.txtBusqueda').off('keyup').on('keyup', function(e) {
 				var sectionID = $(this).closest('.panel-group').attr('section');
-				that.buscarListado(sectionID);
+				var ignoreKeysToBuscador = [37, 38, 39, 40, 91, 17, 18, 20, 36, 18, 27];
+				if (!ignoreKeysToBuscador.find(key => key == e.keyCode)) {
+	                clearTimeout(that.timer);
+	                that.timer = setTimeout(function () {
+                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
+						that.buscarListado(sectionID);
+	                }, 150);
+				}
 			});
 			//Ordenar
 			$('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
@@ -3037,7 +3044,14 @@ var edicionCV = {
         //Buscador
         $('.panel-group input.txtBusqueda').off('keyup').on('keyup', function(e) {
             var sectionID = $(this).closest('.panel-group').attr('section');
-            that.buscarListado(sectionID);
+            var ignoreKeysToBuscador = [37, 38, 39, 40, 91, 17, 18, 20, 36, 18, 27];
+				if (!ignoreKeysToBuscador.find(key => key == e.keyCode)) {
+	                clearTimeout(that.timer);
+	                that.timer = setTimeout(function () {
+                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
+						that.buscarListado(sectionID);
+	                }, 150);
+				}
         });
         //Ordenar
         $('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
