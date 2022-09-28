@@ -26,8 +26,8 @@
 ## Controladores
 El servicio de editor de CV cuenta con varios controladores:
 
-- EdicionCVController - Controlador encargado de las tareas de edición del CV correspondientes a la obtención de datos.
-- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion de un ítem.
+- EdicionCVController - Controlador encargado de las tareas de edición y presentación del CV correspondientes a la obtención de datos.
+- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion items.
 - EnvioValidacionController - Controlador encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
 - ExportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
 - ImportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la importación de CV.
