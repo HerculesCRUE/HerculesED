@@ -2957,7 +2957,14 @@ var edicionCV = {
 			//Buscador
 			$('.panel-group input.txtBusqueda').off('keyup').on('keyup', function(e) {
 				var sectionID = $(this).closest('.panel-group').attr('section');
-				that.buscarListado(sectionID);
+				var ignoreKeysToBuscador = [37, 38, 39, 40, 91, 17, 18, 20, 36, 18, 27];
+				if (!ignoreKeysToBuscador.find(key => key == e.keyCode)) {
+	                clearTimeout(that.timer);
+	                that.timer = setTimeout(function () {
+                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
+						that.buscarListado(sectionID);
+	                }, 150);
+				}
 			});
 			//Ordenar
 			$('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
@@ -3037,7 +3044,14 @@ var edicionCV = {
         //Buscador
         $('.panel-group input.txtBusqueda').off('keyup').on('keyup', function(e) {
             var sectionID = $(this).closest('.panel-group').attr('section');
-            that.buscarListado(sectionID);
+            var ignoreKeysToBuscador = [37, 38, 39, 40, 91, 17, 18, 20, 36, 18, 27];
+				if (!ignoreKeysToBuscador.find(key => key == e.keyCode)) {
+	                clearTimeout(that.timer);
+	                that.timer = setTimeout(function () {
+                        // Ocultar panel sin resultados por posible busqueda anterior sin resultados
+						that.buscarListado(sectionID);
+	                }, 150);
+				}
         });
         //Ordenar
         $('.panel-group .ordenar.dropdown.orders .dropdown-menu a').off('click').on('click', function(e) {
@@ -3882,7 +3896,7 @@ var edicionCV = {
 					OcultarUpdateProgress();
 				},
 				error: function(){
-					mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
+					mostrarNotificacion('warning', GetText('CV_ERROR_PUBLICACION_PRC'));
 					OcultarUpdateProgress();
 				}
 			});
@@ -3907,7 +3921,7 @@ var edicionCV = {
 					OcultarUpdateProgress();
 				},
 				error: function(){
-					mostrarNotificacion('error', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
+					mostrarNotificacion('warning', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
 					OcultarUpdateProgress();
 				}
 			})
@@ -3991,7 +4005,7 @@ var edicionCV = {
 				});
 			},
 			error: function(){
-				mostrarNotificacion('error', GetText('CV_ERROR_PUBLICACION_PRC'));
+				mostrarNotificacion('warning', GetText('CV_ERROR_PUBLICACION_PRC'));
 				OcultarUpdateProgress();
 			}
 		});
@@ -4118,7 +4132,7 @@ var edicionCV = {
 				mostrarNotificacion('success', GetText('CV_DOCUMENTO_VALIDACION'), 10000);
 			},
 			error: function(response){
-				mostrarNotificacion('error', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
+				mostrarNotificacion('warning', GetText('CV_ERROR_DOCUMENTO_VALIDACION'));
 			}
 		});
 		return;

@@ -16,7 +16,7 @@ using System.Web;
 
 namespace DesnormalizadorHercules.Models.Actualizadores
 {
-    //TODO comentarios completados, falta eliminar froms
+    //TODO comentarios completados
 
     /// <summary>
     /// Clase para actualizar propiedades de documentos
@@ -140,8 +140,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Añadimos a documentos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?doc ?grupo  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl> from <http://gnoss.com/group.owl>  ";
+                    String select = @"select distinct ?doc ?grupo  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -170,7 +169,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         ?doc <http://w3id.org/roh/isProducedBy> ?grupo.
                                     }}
                                 }}order by desc(?doc) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "curriculumvitae", "person", "group" });
                     InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/isProducedBy", "doc", "grupo");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -182,8 +181,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     //Eliminamos de dcumentpos
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?doc ?grupo  from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/person.owl> from <http://gnoss.com/group.owl>  ";
+                    String select = @"select distinct ?doc ?grupo  ";
                     String where = @$"where{{
                                     {filter}
                                     {{
@@ -212,7 +210,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?doc) limit {limit}";
-                    var resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    var resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "curriculumvitae", "person", "group" });
                     EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/isProducedBy", "doc", "grupo");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -331,8 +329,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO from
-                    String select = @"select ?document ?categoryNode from <http://gnoss.com/taxonomy.owl> ";
+                    String select = @"select ?document ?categoryNode ";
                     String where = @$"where{{
                                 select distinct ?document ?hasKnowledgeAreaAux  ?categoryNode
                                 where{{
@@ -345,14 +342,13 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}
                                }}
                             }}group by ?document ?categoryNode HAVING (COUNT(*) > 1) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "taxonomy" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string document = fila["document"].value;
                         string categoryNode = fila["categoryNode"].value;
-                        //TODO from
-                        select = @"select ?document ?hasKnowledgeArea   ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                        select = @"select ?document ?hasKnowledgeArea ?categoryNode ";
                         where = @$"where{{
                                     FILTER(?document=<{document}>)
                                     FILTER(?categoryNode =<{categoryNode}>)
@@ -368,7 +364,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}";
-                        resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "document" ,"taxonomy"});
                         List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
@@ -421,8 +417,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
                     //INSERTAMOS
-                    //TODO eliminar from
-                    String select = @"select ?document ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select ?document ?categoryNode ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 {filter}
@@ -449,7 +444,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}
                                 }}
                             }}order by (?document) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "taxonomy" });
                     InsertarCategorias(resultado, dicAreasBroader, mResourceApi.GraphsUrl, "document", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -461,8 +456,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
                     //ELIMINAMOS
-                    //TODO eliminar from
-                    String select = @"select ?document ?hasKnowledgeArea from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select ?document ?hasKnowledgeArea ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 {filter}
@@ -490,7 +484,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                  
                                 }}
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "taxonomy" });
                     EliminarCategorias(resultado, "document", "http://w3id.org/roh/hasKnowledgeArea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -673,7 +667,6 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-
                     String select = @"select distinct * where{select ?document ?yearCargado ?yearCargar  ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
@@ -741,7 +734,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select ?document ?genderIPCargado ?genderIPACargar from <http://gnoss.com/person.owl>";
+                    String select = @"select ?document ?genderIPCargado ?genderIPACargar ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 {filter}
@@ -780,7 +773,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     (BOUND(?genderIPCargado) AND !BOUND(?genderIPACargar)) 
                                     )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -834,7 +827,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select ?document ?positionIPCargado ?positionIPACargar from <http://gnoss.com/person.owl>";
+                    String select = @"select ?document ?positionIPCargado ?positionIPACargar ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 {filter}
@@ -868,7 +861,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                                 FILTER(?positionIPCargado!= ?positionIPACargar OR !BOUND(?positionIPCargado) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "document", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -876,7 +869,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         string positionIPACargar = "";
                         if (fila.ContainsKey("positionIPACargar"))
                         {
-                            positionIPACargar=fila["positionIPACargar"].value;
+                            positionIPACargar = fila["positionIPACargar"].value;
                         }
                         string positionIPCargado = "";
                         if (fila.ContainsKey("positionIPCargado"))
@@ -915,7 +908,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    String select = @"select ?document from <http://gnoss.com/person.owl> ";
+                    String select = @"select ?document  ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 {filter}
@@ -926,7 +919,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     ?person <http://w3id.org/roh/isActive> 'true'.
                                 }}
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -961,14 +954,13 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add("");
             }
-            
+
             foreach (string filter in filters)
             {
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @$"select * from <http://gnoss.com/maindocument.owl> ";
+                    String select = @$"select *  ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 OPTIONAL{{?document <http://w3id.org/roh/hasPublicationVenueJournalText> ?nombreDesnormalizadoRevista.}}
@@ -976,7 +968,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 ?revista <http://w3id.org/roh/title> ?nombreRevista.
                                 FILTER(?nombreDesnormalizadoRevista!=?nombreRevista)
                             }}limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         //Entidad principal
@@ -1023,8 +1015,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @$"select * from <http://gnoss.com/maindocument.owl> ";
+                    String select = @$"select * ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 OPTIONAL{{?document <http://purl.org/ontology/bibo/publisher> ?nombreDesnormalizadoEditorial.}}
@@ -1032,7 +1023,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 ?revista <http://purl.org/ontology/bibo/editor> ?nombreEditorial.
                                 FILTER(?nombreDesnormalizadoEditorial!=?nombreEditorial)
                             }}limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         //Entidad principal
@@ -1079,8 +1070,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @$"select * from <http://gnoss.com/maindocument.owl> ";
+                    String select = @$"select * ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 OPTIONAL{{?document <http://purl.org/ontology/bibo/issn> ?issnDesnormalizado.}}
@@ -1088,7 +1078,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 ?revista <http://purl.org/ontology/bibo/issn> ?issn.
                                 FILTER(?issnDesnormalizado!=?issn)
                             }}limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         //Entidad principal
@@ -1136,7 +1126,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select distinct ?document ?impactSource ?categoryTitle ?impactCategory ?impactIndexInYear from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct ?document ?impactSource ?categoryTitle ?impactCategory ?impactIndexInYear ";
                     String where = @$"where{{          
     ?document a <http://purl.org/ontology/bibo/Document>.
     {filter}
@@ -1169,7 +1159,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
     }}
 }}order by (?document) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument", "taxonomy" });
 
                     InsercionIndicesImpacto(resultado.results.bindings);
 
@@ -1184,7 +1174,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select distinct ?document ?impactIndexDoc from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct ?document ?impactIndexDoc ";
                     String where = @$"where{{   
     ?document a <http://purl.org/ontology/bibo/Document>.
     {filter}
@@ -1219,7 +1209,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
     
 }}order by (?document) limit {limit}";
 
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument", "taxonomy" });
 
                     List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
                     if (ids.Count > 0)
@@ -1255,7 +1245,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select distinct ?document ?impactIndexDoc ?publicationPositionCargar ?publicationPositionCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select distinct ?document ?impactIndexDoc ?publicationPositionCargar ?publicationPositionCargado  ";
                     String where = @$"where{{
     ?document a <http://purl.org/ontology/bibo/Document>. 
 	?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
@@ -1271,7 +1261,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
     FILTER(?publicationPositionCargado!= ?publicationPositionCargar OR (!BOUND(?publicationPositionCargado) AND BOUND(?publicationPositionCargar)) OR (!BOUND(?publicationPositionCargar) AND BOUND(?publicationPositionCargado)))
 }} limit {limit}";
 
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument", "taxonomy" });
 
                     List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
                     if (ids.Count > 0)
@@ -1308,7 +1298,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select distinct ?document ?impactIndexDoc ?journalNumberInCatCargar ?journalNumberInCatCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select distinct ?document ?impactIndexDoc ?journalNumberInCatCargar ?journalNumberInCatCargado ";
                     String where = @$"where{{
     ?document a <http://purl.org/ontology/bibo/Document>. 
 	?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
@@ -1324,7 +1314,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
     FILTER(?journalNumberInCatCargado!= ?journalNumberInCatCargar OR (!BOUND(?journalNumberInCatCargado) AND BOUND(?journalNumberInCatCargar)) OR (!BOUND(?journalNumberInCatCargar) AND BOUND(?journalNumberInCatCargado)))
 }} limit {limit}";
 
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument", "taxonomy" });
 
                     List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
                     if (ids.Count > 0)
@@ -1361,7 +1351,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select distinct ?document ?impactIndexDoc ?quartileCargar ?quartileCargado from <http://gnoss.com/maindocument.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select distinct ?document ?impactIndexDoc ?quartileCargar ?quartileCargado ";
                     String where = @$"where{{
     ?document a <http://purl.org/ontology/bibo/Document>. 
 	?document <http://w3id.org/roh/impactIndex> ?impactIndexDoc.	
@@ -1376,7 +1366,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
     FILTER(?quartileCargado!= ?quartileCargar OR (!BOUND(?quartileCargado) AND BOUND(?quartileCargar)) OR (!BOUND(?quartileCargar) AND BOUND(?quartileCargado)))
 }} limit {limit}";
 
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument", "taxonomy" });
 
                     List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
                     if (ids.Count > 0)
@@ -1413,7 +1403,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select distinct ?document ?impactSource ?impactIndexInYear from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct ?document ?impactSource ?impactIndexInYear ";
                     String where = @$"where{{          
     ?document a <http://purl.org/ontology/bibo/Document>.
     {filter}
@@ -1434,7 +1424,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         ?impactIndexDoc <http://w3id.org/roh/impactIndexInYear> ?impactIndexInYear.
     }}
 }}order by (?document) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument", "taxonomy" });
 
                     InsercionIndicesImpacto(resultado.results.bindings);
 
@@ -1449,7 +1439,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
 
-                    String select = @"select ?document ?impactIndexDoc from <http://gnoss.com/maindocument.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select ?document ?impactIndexDoc ";
                     String where = @$"where{{          
     ?document a <http://purl.org/ontology/bibo/Document>.
     {filter}
@@ -1472,7 +1462,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
     }}
 }}order by (?document) limit {limit}";
 
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "maindocument", "taxonomy" });
 
                     List<string> ids = resultado.results.bindings.Select(x => x["document"].value).Distinct().ToList();
                     if (ids.Count > 0)
@@ -1632,8 +1622,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //Eliminar from
-                    String select = @"select ?document ?numLinkedCargados IF (BOUND (?numLinkedACargar), ?numLinkedACargar, 0 ) as ?numLinkedACargar FROM <http://gnoss.com/researchobject.owl>";
+                    String select = @"select ?document ?numLinkedCargados IF (BOUND (?numLinkedACargar), ?numLinkedACargar, 0 ) as ?numLinkedACargar ";
                     String where = @$"where{{
                                 ?document a <http://purl.org/ontology/bibo/Document>.
                                 {filter}
@@ -1663,7 +1652,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                                 FILTER(?numLinkedCargados!= ?numLinkedACargar OR !BOUND(?numLinkedCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "researchobject" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {

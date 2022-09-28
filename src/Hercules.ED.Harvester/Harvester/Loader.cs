@@ -78,8 +78,8 @@ namespace Harvester
             //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
             //mResourceApi.ChangeOntoly("group");
             //ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos, dicPersonas: dicPersonas);
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            //mResourceApi.ChangeOntoly("patent");
+            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
 
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
@@ -90,8 +90,8 @@ namespace Harvester
             //GuardarIdentificadores(_Config, "Proyecto", fecha);
             //GuardarIdentificadores(_Config, "PRC", fecha, true);
             //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            //GuardarIdentificadores(_Config, "Grupo", fecha);
-            GuardarIdentificadores(_Config, "Invencion", fecha);
+            GuardarIdentificadores(_Config, "Grupo", fecha);
+            //GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
@@ -119,12 +119,12 @@ namespace Harvester
             //ProcesarFichero(_Config, "AutorizacionProyecto");
 
             //// Grupos.
-            //mResourceApi.ChangeOntoly("group");
-            //ProcesarFichero(_Config, "Grupo");
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo", dicPersonas: dicPersonas);
 
             // Patentes.
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            //mResourceApi.ChangeOntoly("patent");
+            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
         }
 
         /// <summary>
@@ -1939,8 +1939,10 @@ namespace Harvester
                 else
                 {
                     PersonOntology.Person personOntology = new PersonOntology.Person();
+
                     // Se piden los datos de la persona.
                     Persona person = ObtenerPersona(inventor.inventorRef);
+
                     // TODO: Desambiguación de Personas
                     // Si la persona no tiene nombre, no se inserta.
                     if (!string.IsNullOrEmpty(person.Nombre))
@@ -2010,7 +2012,7 @@ namespace Harvester
         /// <param name="grupo"></param>
         /// <returns></returns>
         public static GroupOntology.Group CrearGrupo(Grupo grupo, Dictionary<string, Tuple<string, string>> dicPersonas)
-        {
+        {  
             GroupOntology.Group groupOntology = new GroupOntology.Group();
 
             // Crisidentifier.
@@ -2093,34 +2095,48 @@ namespace Harvester
                 }
                 else
                 {
-                    PersonOntology.Person personOntology = new PersonOntology.Person();
                     // Se piden los datos de la persona.
                     Persona person = ObtenerPersona(grupoEquipo.personaRef);
+
                     // TODO: Desambiguación de Personas
+
                     // Si la persona no tiene nombre, no se inserta.
                     if (!string.IsNullOrEmpty(person.Nombre))
                     {
+                        PersonOntology.Person personOntology = new PersonOntology.Person();
                         personOntology = CrearPersona(person);
+
+                        // Carga de la persona.
                         mResourceApi.ChangeOntoly("person");
                         ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
                         //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+
                         dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                         persona.IdRoh_roleOf = dicPersonas[grupoEquipo.personaRef].Item1;
                     }
                 }
+
                 // IP principal
                 persona.Roh_isIP = grupoEquipo.rol.abreviatura == "IP";
+
+                // Fecha de inicio de la persona en el grupo.
                 if (!string.IsNullOrEmpty(grupoEquipo.fechaInicio))
                 {
                     persona.Vivo_start = Convert.ToDateTime(grupoEquipo.fechaInicio);
                 }
+
+                // Fecha de fin de la persona en el grupo.
                 if (!string.IsNullOrEmpty(grupoEquipo.fechaFin))
                 {
                     persona.Vivo_end = Convert.ToDateTime(grupoEquipo.fechaFin);
                 }
+
                 listaPersonas.Add(persona);
             }
+
+            // Relates.
             groupOntology.Vivo_relates = listaPersonas;
+
             // TODO - palabras clave
             //groupOntology.Roh_hasKnowledgeArea = grupo.palabrasClave;
 

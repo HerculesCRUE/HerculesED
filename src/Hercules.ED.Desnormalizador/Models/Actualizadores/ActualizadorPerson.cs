@@ -85,7 +85,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}                                    
                                 }}order by desc(?person) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "group" , "person" });
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "person" });
                     InsercionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "person", "linea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -130,7 +130,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}order by desc(?person) limit {limit}";
-                    var resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "group", "person" });
+                    var resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "group", "person" });
                     EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/lineResearch", "person", "linea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -156,7 +156,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -190,7 +190,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numDocumentosCargados!= ?numDocumentosACargar OR !BOUND(?numDocumentosCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person" , "document", "curriculumvitae" });
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "document", "curriculumvitae" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -227,7 +227,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -316,7 +316,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?project <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -352,7 +352,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numIPCargados!= ?numIPACargar OR !BOUND(?numIPCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person" , "project" });
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "project" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -394,7 +394,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?project <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -406,8 +406,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> ";
+                    String select = @"select ?person  ?numProyectosCargados ?numProyectosACargar ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -429,7 +428,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numProyectosCargados!= ?numProyectosACargar OR !BOUND(?numProyectosCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "project" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -471,7 +470,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?project <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?project in (<{string.Join(">,<", pProjects)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -483,8 +482,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person  ?numProyectosCargados ?numProyectosACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/curriculumvitae.owl> ";
+                    String select = @"select ?person  ?numProyectosCargados ?numProyectosACargar ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -516,7 +514,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numProyectosCargados!= ?numProyectosACargar OR !BOUND(?numProyectosCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person", "project", "curriculumvitae" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -563,8 +561,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person ?numResearchObjectsCargados ?numResearchObjectsACargar from <http://gnoss.com/curriculumvitae.owl> ";
+                    String select = @"select ?person ?numResearchObjectsCargados ?numResearchObjectsACargar ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -589,7 +586,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         FILTER(?numResearchObjectsCargados!= ?numResearchObjectsACargar OR !BOUND(?numResearchObjectsCargados) )
                         }}
                         limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person" , "curriculumvitae" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -625,7 +622,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -636,8 +633,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO from
-                    String select = @"select ?person ?categoryNode from <http://gnoss.com/taxonomy.owl> ";
+                    String select = @"select ?person ?categoryNode ";
                     String where = @$"where{{
                                 select distinct ?person ?hasKnowledgeAreaAux  ?categoryNode
                                 where{{
@@ -650,14 +646,13 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                     }}
                                }}
                             }}group by ?person ?categoryNode HAVING (COUNT(*) > 1) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "taxonomy" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["person"].value;
                         string categoryNode = fila["categoryNode"].value;
-                        //TODO from
-                        select = @"select ?person ?hasKnowledgeArea   ?categoryNode from <http://gnoss.com/taxonomy.owl>";
+                        select = @"select ?person ?hasKnowledgeArea ?categoryNode ";
                         where = @$"where{{
                                     FILTER(?person=<{person}>)
                                     FILTER(?categoryNode =<{categoryNode}>)
@@ -673,7 +668,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}";
-                        resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person" ,"taxonomy"});
                         List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
@@ -725,8 +720,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
                     //INSERTAMOS
-                    //TODO eliminar from
-                    String select = @"select distinct ?person ?categoryNode from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select distinct ?person ?categoryNode ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.                            
                             {{                                
@@ -757,7 +751,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                             }}
                             }}order by (?person) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "taxonomy", "document" });
                     InsertarCategorias(resultado, dicAreasBroader, mResourceApi.GraphsUrl, "person", "http://vivoweb.org/ontology/core#hasResearchArea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -769,8 +763,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 {
                     int limit = 500;
                     //ELIMINAMOS
-                    //TODO eliminar from
-                    String select = @"select ?person ?hasKnowledgeArea from <http://gnoss.com/document.owl> from <http://gnoss.com/taxonomy.owl>";
+                    String select = @"select ?person ?hasKnowledgeArea ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.                            
                             {{
@@ -801,7 +794,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                  
                             }}
                             }}order by (?person) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "taxonomy", "document" });
                     EliminarCategorias(resultado, "person", "http://vivoweb.org/ontology/core#hasResearchArea");
                     if (resultado.results.bindings.Count != limit)
                     {
@@ -827,7 +820,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -839,8 +832,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person  ?numAreasTematicasCargadas ?numAreasTematicasACargar  from <http://gnoss.com/document.owl> from <http://gnoss.com/curriculumvitae.owl>  from <http://gnoss.com/taxonomy.owl>  ";
+                    String select = @"select ?person  ?numAreasTematicasCargadas ?numAreasTematicasACargar ";
                     String where = @$"where{{                            
                             {filter}
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
@@ -879,7 +871,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numAreasTematicasCargadas!= ?numAreasTematicasACargar  OR !BOUND(?numAreasTematicasCargadas) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "document", "curriculumvitae", "taxonomy" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -922,7 +914,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?projectAux <http://vivoweb.org/ontology/core#relates> ?relatesAux. ?relatesAux <http://w3id.org/roh/roleOf> ?person.  FILTER(?projectAux in (<{string.Join(">,<", pProjects)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -932,8 +924,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select distinct ?person ?numColaboradoresCargados ?numColaboradoresACargar  from <http://gnoss.com/project.owl> from <http://gnoss.com/document.owl> ";
+                    String select = @"select distinct ?person ?numColaboradoresCargados ?numColaboradoresACargar ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -983,7 +974,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numColaboradoresCargados!= ?numColaboradoresACargar OR !BOUND(?numColaboradoresCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "project", "document" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["person"].value;
@@ -1027,8 +1018,8 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?groupAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?groupAux in (<{string.Join(">,<", pGroups)}>))");
             }
-            
-            if(filters.Count==0)
+
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -1038,8 +1029,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/group.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar  ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -1067,7 +1057,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "group" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["person"].value;
@@ -1109,7 +1099,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?groupAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?groupAux in (<{string.Join(">,<", pGroups)}>))");
             }
-            if (filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -1119,8 +1109,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/group.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar  ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -1143,7 +1132,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "group" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["person"].value;
@@ -1187,7 +1176,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?projectAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?projectAux in (<{string.Join(">,<", pProjects)}>))");
             }
-            if(filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -1197,8 +1186,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/project.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar  ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -1226,7 +1214,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "project" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["person"].value;
@@ -1268,7 +1256,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
             {
                 filters.Add($" ?projectAux <http://vivoweb.org/ontology/core#relates> ?member. ?member <http://w3id.org/roh/roleOf> ?person. FILTER(?projectAux in (<{string.Join(">,<", pProjects)}>))");
             }
-            if(filters.Count==0)
+            if (filters.Count == 0)
             {
                 filters.Add("");
             }
@@ -1278,8 +1266,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    String select = @"select ?person ?datoActual ?datoCargar  from <http://gnoss.com/project.owl> ";
+                    String select = @"select ?person ?datoActual ?datoCargar   ";
                     String where = @$"where{{
                             ?person a <http://xmlns.com/foaf/0.1/Person>.
                             {filter}
@@ -1302,7 +1289,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?datoActual!= ?datoCargar OR !BOUND(?datoActual) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "project" });
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
                         string person = fila["person"].value;
