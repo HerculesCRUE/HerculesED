@@ -37,9 +37,9 @@ El servicio de editor de CV cuenta con varios controladores:
 
 Este documento describe, mediante un ejemplo práctico, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
-La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta ./Config/TabTemplates/ que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
+La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta [./Config/TabTemplates/](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.EditorCV/EditorCV/Config/TabTemplates) que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
 
-## Ejemplo de edición
+### Ejemplo de edición
 
 Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Envíar a producción científica" en el editor del CV del investigador:
 
@@ -65,7 +65,7 @@ El archivo a editar para la configuración de los ítems de "Actividad científi
 En primer lugar, se presenta el RDF y la propiedad que, en este caso, corresponden a la pestaña de actividad científica y tecnológica del investigador (roh:ScientificActivity). En un segundo nivel se sitúa el listado de secciones (ítems) que podemos editar. Como se observa en la imagen anterior, la primera sección corresponde a las publicaciones científicas (roh:scientificPublications), cuyo RDF, propiedad y presentación han sido establecidos. "presentation" contiene un tercer nivel en el que se ha definido el tipo (listado de ítems) y el título de la sección (Publicaciones, documentos científicos y técnicos).
 
 
-### Configuración de la presentación (listado y minificha)
+#### Configuración de la presentación (listado y minificha)
 
 
 Para definir la presentación de cada una de las publicaciones que el titular del CV puede añadir en esta sección, se añade la propiedad que vincula el CV del investigador con el objeto que contendrá los datos generales de la publicación (vivo:relatedBy). Después definimos el grafo sobre el que vamos a trabajar (document) y la propiedad que mostrará el título de cada una de las publicaciones que añadamos, en este caso roh:title.
@@ -240,7 +240,7 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 ![](../../Docs/media/EditorCV/EdicionCV4.png)
 
 
-### Configuración de la edición
+#### Configuración de la edición
 
 Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
 
