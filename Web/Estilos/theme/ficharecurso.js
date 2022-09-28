@@ -350,7 +350,7 @@ function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation =
 	}
 
 	if (showRelation == false) {
-		let ipEl = data.filter(e => e.data.type === "none" || e.data.type === "icon_ip");
+		let ipEl = data.filter(e => e.data.type === "none" || e.data.type === "icon_ip" || e.data.type === "icon_project");
 		if (ipEl.length > 0) {
 			let id = ipEl[0].data.id;
 			if (id != "")
@@ -1039,4 +1039,17 @@ $(function () {
 
 	// Comportamiento cabecera de las fichas
 	mostrarFichaCabeceraFixed.init();
+	
+	if (mostrarFichaCabeceraFixed.contenido.length < 1) return;
+	const position = mostrarFichaCabeceraFixed.contenido.position().top;
+	$(window).scroll(function (e) {
+		var scroll = $(window).scrollTop();
+		if(scroll >= position) {
+			body.addClass('cabecera-ficha-fixed');
+			return;
+		} else {
+			body.removeClass('cabecera-ficha-fixed');
+			return;
+		}
+	});
 });

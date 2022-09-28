@@ -26,8 +26,8 @@
 ## Controladores
 El servicio de editor de CV cuenta con varios controladores:
 
-- EdicionCVController - Controlador encargado de las tareas de edición del CV correspondientes a la obtención de datos.
-- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion de un ítem.
+- EdicionCVController - Controlador encargado de las tareas de edición y presentación del CV correspondientes a la obtención de datos.
+- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion items.
 - EnvioValidacionController - Controlador encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
 - ExportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
 - ImportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la importación de CV.
@@ -37,12 +37,13 @@ El servicio de editor de CV cuenta con varios controladores:
 
 ### Introducción
 
-Este servicio es utilizado para la edición de los CVs de los investigadores y para la presentación de los datos de los CVs tanto en la edición del propio CV como en la visualización de la pestaña 'otros méritos' dentro de la ficha de un investigador.
+Este servicio es utilizado para la edición de los CVs de los investigadores y para la presentación de los datos de los CVs tanto en la edición del propio CV como en la visualización de la pestaña 'otros méritos' dentro de la ficha de un investigador, para lo cual debe estar configurada la propiedad 'isPublishable':true dentro de 'listItemsPresentation' en la sección correspondiente.
 
 Este editor se basa en el editor de CV del [fecyt](https://cvn.fecyt.es/editor/cvn.html?locale=spa#IDENTIFICACION).
 
 Todos los items del CV son editables a excepción de:
   - Items bloqueados: Aquellos items que vengan de fuentes externas y de la sincronización con el SGI. En estos items se podrán editar las propiedades propias del usuario o las propiedades multiidioma que sólo afectan al usuario que está editando el CV.
+  - Campos bloqueados: Determinados campos como el índice de impacto que se calculará automáticamente en función de la revista, año de publicación y categorías de la publicación.
 
 Este documento describe, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
@@ -272,8 +273,9 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
 
 * "graph" --> El grafo utilizado.
-* "proptitle" --> El título de la propiedad.
-* "propdescription" --> La descripción de la propiedad.
+* "proptitle" --> La propiedad del título.
+* "propAuthor" --> Establece la propiedad en la que el propietario debe figurar como autor de forma obligatoria en caso de que sea necesario (publicaciones)
+* "propdescription" --> La propiedad de la descripción.
 * "rdftype" --> El RDF.
 * "loadPropertyValues" --> Establece el valor que toma la propiedad que distingue el tipo de publicación (según CVN) con el que vamos a trabajar.
 * "sections" --> Aquí se define el listado de campos que se desea incluir en la edición de este ítem.
