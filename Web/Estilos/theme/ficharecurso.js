@@ -350,7 +350,7 @@ function AjustarGraficaArania(data,idContenedor,typesOcultar = [],showRelation =
 	}
 
 	if (showRelation == false) {
-		let ipEl = data.filter(e => e.data.type === "none" || e.data.type === "icon_ip");
+		let ipEl = data.filter(e => e.data.type === "none" || e.data.type === "icon_ip" || e.data.type === "icon_project");
 		if (ipEl.length > 0) {
 			let id = ipEl[0].data.id;
 			if (id != "")
