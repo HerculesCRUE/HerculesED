@@ -61,7 +61,8 @@ namespace EditorCV.Models
         {
             Status status = new Status();
 
-            try{
+            try
+            {
                 string urlStatus = _Configuracion.GetUrlDSpace() + "/status";
                 HttpClient httpClientStatus = new HttpClient();
                 HttpResponseMessage responseStatus = httpClientStatus.GetAsync($"{urlStatus}").Result;
@@ -87,12 +88,26 @@ namespace EditorCV.Models
             try
             {
                 string urlLogin = _Configuracion.GetUrlDSpace() + "/login";
-                List<KeyValuePair<string, string>> valores = new List<KeyValuePair<string, string>>();
-                valores.Add(new KeyValuePair<string, string>("email", _Configuracion.GetUsernameDspace()));
-                valores.Add(new KeyValuePair<string, string>("password", _Configuracion.GetPasswordDspace()));
+
+                UserDspace user = new UserDspace
+                {
+                    email = _Configuracion.GetUsernameDspace(),
+                    password = _Configuracion.GetPasswordDspace()
+                };
+
+                string content = JsonConvert.SerializeObject(user);
+                byte[] buffer = Encoding.UTF8.GetBytes(content);
+                ByteArrayContent byteContent = new ByteArrayContent(buffer);
+
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
                 HttpClient httpClientLoguin = new HttpClient();
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, urlLogin) { Content = new FormUrlEncodedContent(valores) };
-                HttpResponseMessage res = httpClientLoguin.SendAsync(req).Result;
+                var result = httpClientLoguin.PostAsync(urlLogin, byteContent).Result;
+
+                //Asigno el token
+                //TODO
+                tokenAuth = "";
+
             }
             catch (Exception)
             {
