@@ -4988,6 +4988,7 @@ var duplicadosCV = {
 		var principal=true;
 		$('#modal-posible-duplicidad .numpasos').html(' ('+(this.pasoActual+1)+"/"+this.pasosTotales+')');
 		MostrarUpdateProgress();
+		$("#modal-posible-duplicidad").find(".btn.btn-primary").addClass("disabled");
 		var numActual=0;
 		for( var itemIn in this.items[this.pasoActual].items)
 		{
@@ -5002,6 +5003,7 @@ var duplicadosCV = {
 					if(numActual==that.items[that.pasoActual].items.length)
 					{
 						OcultarUpdateProgress();
+						$("#modal-posible-duplicidad").find(".btn.btn-primary").removeClass("disabled");
 					}
 					that.engancharComportamientos();
 				});
@@ -5016,12 +5018,14 @@ var duplicadosCV = {
 					if(numActual==that.items[that.pasoActual].items.length)
 					{
 						OcultarUpdateProgress();
+						$("#modal-posible-duplicidad").find(".btn.btn-primary").removeClass("disabled");
 					}
 					that.engancharComportamientos();
 				});
 			}
 			principal=false;
 		}
+
 	}
 }
 
