@@ -1894,7 +1894,12 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         //Elimino la url en caso de que esté
                         doi = doi.Replace("http://dx.doi.org/", "");
+                        doi = doi.Replace("http://doi.org/", "");
+                        doi = doi.Replace("https://dx.doi.org/", "");
+                        doi = doi.Replace("https://doi.org/", "");
                         doi = doi.Replace("doi:", "");
+                        doi = doi.Replace("DOI:", "");
+                        doi = doi.Trim();
                         string nombreCompleto = personaCV.name.nombre_completo.FirstOrDefault();
 
                         //Llamada al servicio de Fuentes externas para que cargue los datos.
