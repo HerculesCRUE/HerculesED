@@ -55,11 +55,10 @@ namespace EditorCV.Controllers
             try
             {
                 //Solo puede obtener la URL el usuario de la petición
-                //TODO - eliminar comentario
-                //if(!Security.CheckUser(new Guid(userID), Request))
-                //{
-                //    return StatusCode(StatusCodes.Status401Unauthorized);
-                //}
+                if (!Security.CheckUser(new Guid(userID), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetCVUrl(userID, lang));
             }
