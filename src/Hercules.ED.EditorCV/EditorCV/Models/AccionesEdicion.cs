@@ -206,7 +206,8 @@ namespace EditorCV.Models
                 }
                 if (searchText != "")
                 {
-                    filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
+                    filter = $"lcase(?o) like \"{searchText}%\" OR lcase(?o) like \"% {searchText}%\" ";
+                    //filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
                 }
                 string select = "SELECT DISTINCT ?s ?o ";
                 string auxProperties = "";
@@ -219,7 +220,14 @@ namespace EditorCV.Models
                     }
 
                 }
-                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }}ORDER BY ASC(strlen(?o)) ASC (?o)";
+                string where = @$"WHERE {{
+                                    ?s a <{pRdfType}> .
+                                    ?s <{pPropertyAux}> ?o .
+                                    {auxProperties}
+                                    FILTER( {filter} ) 
+                                    FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   
+                                }}
+                                ORDER BY ASC(strlen(?o)) ASC (?o)";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
