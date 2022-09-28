@@ -39,7 +39,7 @@ El servicio de editor de CV cuenta con varios controladores:
 
 Este servicio es utilizado para la edición de los CVs de los investigadores y para la presentación de los datos de los CVs tanto en la edición del propio CV como en la visualización de la pestaña 'otros méritos' dentro de la ficha de un investigador.
 
-Este editor se basa en el editor de CV del (fecyt)[https://cvn.fecyt.es/editor/cvn.html?locale=spa#IDENTIFICACION].
+Este editor se basa en el editor de CV del [fecyt](https://cvn.fecyt.es/editor/cvn.html?locale=spa#IDENTIFICACION).
 
 Todos los items del CV son editables a excepción de:
   - Items bloqueados: Aquellos items que vengan de fuentes externas y de la sincronización con el SGI. En estos items se podrán editar las propiedades propias del usuario o las propiedades multiidioma que sólo afectan al usuario que está editando el CV.
