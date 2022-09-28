@@ -206,7 +206,8 @@ namespace EditorCV.Models
                 }
                 if (searchText != "")
                 {
-                    filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
+                    filter = $"lcase(?o) like \"{searchText}%\" OR lcase(?o) like \"% {searchText}%\" ";
+                    //filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
                 }
                 string select = "SELECT DISTINCT ?s ?o ";
                 string auxProperties = "";
