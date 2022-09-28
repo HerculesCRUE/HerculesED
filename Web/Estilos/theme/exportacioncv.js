@@ -115,7 +115,7 @@ var exportacionCV = {
 					estado = 'pending';
 				}
 				
-				var articleHTML = `<article class="resource plegado ${estado}">
+				var articleHTML = `<article class="resource plegado ${estado}" num="${i}">
 										<div class="middle-wrap">
 											<div class="title-wrap">
 												<h2 class="resource-title">
@@ -124,29 +124,185 @@ var exportacionCV = {
 											</div>
 											<div class="content-wrap">
 												<div class="description-wrap counted">
-														<div class="list-wrap no-oculto">
-															<div class="label">Estado</div>
-															<ul>
-																<li class="entity">
-																	${GetText("CV_EXPORTAR_"+data[i].estado.toUpperCase())}
-																</li>
-															</ul>
-														</div>
-														<div class="list-wrap no-oculto">
-															<div class="label">Fecha</div>
-															<ul>
-																<li>${data[i].fecha}</li>
-															</ul>
-														</div>
+													<div class="list-wrap no-oculto">
+														<div class="label">Estado</div>
+														<ul>
+															<li class="entity">
+																${GetText("CV_EXPORTAR_"+data[i].estado.toUpperCase())}
+															</li>
+														</ul>
 													</div>
-													
+													<div class="list-wrap no-oculto">
+														<div class="label">Fecha</div>
+														<ul>
+															<li>${data[i].fecha}</li>
+														</ul>
+													</div>
+												</div>
 											</div>
 										</div>
 									</article>`;
 				$('.listadoCV').append(articleHTML);
 			}
+			$('.panNavegador').append(`
+				<div class="items dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+						<span class="texto" items="5">Ver 5 items</span>
+					</a>
+					<div class="dropdown-menu basic-dropdown dropdown-menu-right" x-placement="bottom-end">
+						<a href="javascript: void(0)" class="item-dropdown" items="5">Ver 5 items</a>
+						<a href="javascript: void(0)" class="item-dropdown" items="10">Ver 10 items</a>
+						<a href="javascript: void(0)" class="item-dropdown" items="20">Ver 20 items</a>
+						<a href="javascript: void(0)" class="item-dropdown" items="50">Ver 50 items</a>
+						<a href="javascript: void(0)" class="item-dropdown" items="100">Ver 100 items</a>
+					</div>
+				</div>
+				<nav>
+					<ul class="pagination arrows">
+					</ul>
+					<ul class="pagination numbers">
+						<li class="actual"><a href="javascript: void(0)" page="1">1</a></li>
+					</ul>
+				</nav>`);
+			that.pintarPaginacion();
 			OcultarUpdateProgress();
 		});
+	},
+	pintarPaginacion: function(pagina = 0, numItems = 5) {
+		var numResultadosPagina = numItems == 5 ? parseInt($(' .panNavegador .dropdown-toggle span').attr('items')) : parseInt(numItems);
+		var paginaActual = pagina == 0 ? parseInt($('.panNavegador .pagination.numbers li.actual a').attr('page')) : parseInt(pagina);
+		$('.panNavegador .dropdown-menu a').removeClass('active');
+		$('.panNavegador .dropdown-menu a[items="' + numResultadosPagina + '"]').addClass('active');
+		var NUM_PAG_INICIO = 3;
+        var NUM_PAG_PROX_CENTRO = 2;
+        var NUM_PAG_FIN = 3;
+
+        var numTotal = 1;
+        var numPaginas = 1;
+		$('.listadoCV article').attr('style','display:none');
+        $('.listadoCV article').each(function() {
+			numPaginas = Math.floor((numTotal - 1 + numResultadosPagina) / numResultadosPagina);
+			if (numPaginas == paginaActual) {
+				$(this).show();
+			}
+			numTotal++;
+        });
+        $('.panNavegador .pagination.numbers').empty();
+        $('.panNavegador .pagination.arrows').empty();
+
+        // INICIO
+        for (i = 1; i <= NUM_PAG_INICIO; i++) {
+            if (i > numPaginas) // Hemos excedido el número máximo de páginas, así que dejamos de pintar.
+            {
+                break;
+            }
+            if (i == paginaActual) {
+                $('.panNavegador .pagination.numbers').append(`<li class="actual"><a page="${i}" >${i}</a></li>`);
+            } else {
+                $('.panNavegador .pagination.numbers').append(`<li ><a href="javascript: void(0)" page="${i}" >${i}</a></li>`);
+            }
+        }
+
+        if (numPaginas > NUM_PAG_INICIO) // Continuamos si hay más páginas que las que ya hemos pintado
+        {
+            var inicioRango = paginaActual - NUM_PAG_PROX_CENTRO;
+            var finRango = paginaActual + NUM_PAG_PROX_CENTRO;
+
+            if (paginaActual < (NUM_PAG_INICIO + NUM_PAG_PROX_CENTRO + 1)) {
+                inicioRango = NUM_PAG_INICIO + 1;
+                if (paginaActual <= NUM_PAG_INICIO) //En el rango de las primeras
+                {
+                    finRango = paginaActual + NUM_PAG_INICIO + NUM_PAG_PROX_CENTRO - 1;
+                } else {
+                    finRango = NUM_PAG_INICIO + (2 * NUM_PAG_PROX_CENTRO) + 1; //Ultimo número de la serie.
+                }
+            } else if (paginaActual > (numPaginas - NUM_PAG_FIN - NUM_PAG_PROX_CENTRO)) {
+                finRango = numPaginas - NUM_PAG_FIN;
+                if (paginaActual > numPaginas - NUM_PAG_FIN) //En el rango de las últimas
+                {
+                    inicioRango = paginaActual - NUM_PAG_FIN - NUM_PAG_PROX_CENTRO + 1; //finRango - (pNumPaginas - paginaActual + 1);
+                } else {
+                    inicioRango = numPaginas - (NUM_PAG_FIN + (2 * NUM_PAG_PROX_CENTRO)); //Ultimo número de la serie empezando atrás.
+                }
+
+                //Avanzamos el inicio de la zona final para que no agrege páginas ya pintadas
+                while (inicioRango <= NUM_PAG_INICIO) {
+                    inicioRango++;
+                }
+            }
+
+            if (inicioRango > (NUM_PAG_INICIO + 1)) {
+                $('.panNavegador .pagination.numbers').append(`<span>...</span>`);
+            }
+
+
+            for (i = inicioRango; i <= finRango; i++) {
+                if (i > numPaginas) // Hemos excedido el número máximo de páginas, así que dejamos de pintar.
+                {
+                    break;
+                }
+
+                if (i == paginaActual) {
+                    $('.panNavegador .pagination.numbers').append(`<li class="actual"><a page="${i}" >${i}</a></li>`);
+                } else {
+                    $('.panNavegador .pagination.numbers').append(`<li><a href="javascript: void(0)" page="${i}" >${i}</a></li>`);
+                }
+            }
+
+            if (finRango < numPaginas) {
+                // Continuamos si hay más páginas que las que ya hemos pintado
+                inicioRango = numPaginas - NUM_PAG_FIN + 1;
+
+                if ((inicioRango - 1) > finRango) {
+                    $('.panNavegador .pagination.numbers').append(`<span>...</span>`);
+                }
+
+                //Avanzamos el inicio de la zona final para que no agrege páginas ya pintadas
+                while (inicioRango <= finRango) {
+                    inicioRango++;
+                }
+
+                finRango = numPaginas;
+
+                for (i = inicioRango; i <= finRango; i++) {
+                    if (i > numPaginas) //Hemos excedio el número máximo de páginas, así que dejamos de pintar.
+                    {
+                        break;
+                    }
+
+                    if (i == paginaActual) {
+                        $('.panNavegador .pagination.numbers').append(`<li class="actual"><a page="${i}" >${i}</a></li>`);
+                    } else {
+                        $('.panNavegador .pagination.numbers').append(`<li><a href="javascript: void(0)" page="${i}" >${i}</a></li>`);
+                    }
+                }
+            }
+        }
+
+        if (paginaActual == 1) {
+            $('.panNavegador .pagination.arrows').append(`<li class="actual"><a class="primeraPagina">Página anterior</a></li>`);
+        } else {
+            $('.panNavegador .pagination.arrows').append(`<li><a href="javascript: void(0)" page="${(parseInt(paginaActual) - 1)}" class="primeraPagina">Página anterior</a></li>`);
+        }
+
+        if (paginaActual == numPaginas) {
+            $('.panNavegador .pagination.arrows').append(`<li class="actual"><a class="ultimaPagina">Página siguiente</a></li>`);
+        } else {
+            $('.panNavegador .pagination.arrows').append(`<li><a href="javascript: void(0)" page="${(parseInt(paginaActual) + 1)}" class="ultimaPagina">Página siguiente</a></li>`);
+        }
+
+		// Cambiar de página
+		$('.panNavegador ul.pagination li a').off('click').on('click', function(e) {
+			var pagina = $(this).attr('page');
+			exportacionCV.pintarPaginacion(pagina);
+        });
+        // Cambiar número de items por página
+        $('.panNavegador .item-dropdown').off('click').on('click', function(e) {
+			var itemsPagina = parseInt($(this).attr('items'));
+			$('.panNavegador .dropdown-toggle span').attr('items', itemsPagina);
+			$('.panNavegador .dropdown-toggle span').text($(this).text());
+			exportacionCV.pintarPaginacion(1, itemsPagina);
+        });
 	},
 	//Carga los datos del CV para la exportacion
     cargarCV: function(isLast5Years) {
