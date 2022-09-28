@@ -14,7 +14,9 @@
   - [Controladores](#controladores)
   - [Hércules ED. Configuración del Editor de CV](#hércules-ed-configuración-del-editor-de-cv)
     - [Introducción](#introducción)
-    - [Ejemplo de edición](#ejemplo-de-edición)
+    - [Estructura de los JSON](#estructura-de-los-json)
+    - [Métodos de edición y visualización del cv](#metodos-de-edicion-y-visualizacion-del-cv)
+    - [Ejemplos de edición](#ejemplo-de-edición)
       - [Configuración de la presentación (listado y minificha)](#configuración-de-la-presentación-listado)
       - [Configuración de la edición](#configuración-de-la-edición)
   - [Ejemplo de envío a validación](#envío-a-validación-de-la-producción-científica-prc) 
@@ -35,18 +37,38 @@ El servicio de editor de CV cuenta con varios controladores:
 
 ### Introducción
 
-Este documento describe, mediante un ejemplo práctico, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
+Este servicio es utilizado para la edición de los CVs de los investigadores y para la presentación de los datos de los CVs tanto en la edición del propio CV como en la visualización de la pestaña 'otros méritos' dentro de la ficha de un investigador.
+
+Este editor se basa en el editor de CV del (fecyt)[https://cvn.fecyt.es/editor/cvn.html?locale=spa#IDENTIFICACION].
+
+Todos los items del CV son editables a excepción de:
+  - Items bloqueados: Aquellos items que vengan de fuentes externas y de la sincronización con el SGI. En estos items se podrán editar las propiedades propias del usuario o las propiedades multiidioma que sólo afectan al usuario que está editando el CV.
+
+Este documento describe, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 
 La configuración de las pestañas que figuran en el CV del investigador se lleva a cabo mediante la edición de archivos JSON situados en la carpeta [./Config/TabTemplates/](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.EditorCV/EditorCV/Config/TabTemplates) que definen diversos aspectos para cada uno de los ítems contenidos en las secciones o pestañas que define la norma CVN.
 
 ### Estructura de los JSON
 
-Cada unos de estos JSON se corresponde con un objeto [Tab](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.EditorCV/EditorCV/Models/API/Templates/Tab.cs)
+Cada unos de estos JSON se corresponde con un objeto [Tab](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.EditorCV/EditorCV/Models/API/Templates/Tab.cs).  
 
+### Métodos de edición y visualización del cv
 
-### Ejemplo de edición
+Para la edición y visualización del CV se utilizan los controladores 'EdicionCVController' y 'GuardadoCVController' con los métodos descritos a continuación:
 
-Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Envíar a producción científica" en el editor del CV del investigador:
+  - EdicionCVController.GetTab: Sirve para obtener los datos de una pestaña del CV en la edición o para obtener los datos de una determinada sección tanto en la edición del CV como en la visualización de otros méritos en el perfil de un investigador.
+  - EdicionCVController.GetAllPublicData: Sirve para la obtención de los datos generales dentro de la pestaña de otros méritos en el perfil de un investigador.
+  - EdicionCVController.GetItemMini: Sirve para la obtención de los datos de un item de un listado dentro de una sección.
+  - EdicionCVController.GetEdit: Sirve para obtener los datos de edición de un item dentro de la ediciónd del CV.
+  - GuardadoCVController.ChangePrivacityItem: Sirve para cambiar la privacidad de un item del CV.
+  - GuardadoCVController.RemoveItem: Sirve para eliminar un item del CV.
+  - GuardadoCVController.UpdateEntity: Sirve para la actualización de un item del CV.
+  - GuardadoCVController.ValidateORCID: Sirve para validar los datos cuando se introduce el ORCID de un investigador dentro de los autores de una publicación.
+  - GuardadoCVController.CreatePerson: Sirve para crear una persona cuando se introducen los datos a mano de un investigador dentro de los autores de una publicación. 
+
+### Ejemplos de edición
+
+Véase el caso en el que se desee realizar la configuración para el ítem "Publicaciones, documentos científicos y técnicos", de la pestaña "Actividad" en el editor del CV del investigador:
 
 ![](../../Docs/media/EditorCV/EdicionCV1.png)
 
