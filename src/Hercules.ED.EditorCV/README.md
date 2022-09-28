@@ -272,8 +272,9 @@ Como vemos en el ejemplo anterior, cada propiedad que deseamos mostrar de la pub
 Finalmente, vamos a configurar los distintos campos que queremos que presente una publicación a la hora de su edición por el titular del CV. Para ello, y al nivel de "listItemsPresentation", añadimos la propiedad "listItemEdit" que contendrá, a su vez, las siguientes propiedades:
 
 * "graph" --> El grafo utilizado.
-* "proptitle" --> El título de la propiedad.
-* "propdescription" --> La descripción de la propiedad.
+* "proptitle" --> La propiedad del título.
+* "propAuthor" --> Establece la propiedad en la que el propietario debe figurar como autor de forma obligatoria en caso de que sea necesario (publicaciones)
+* "propdescription" --> La propiedad de la descripción.
 * "rdftype" --> El RDF.
 * "loadPropertyValues" --> Establece el valor que toma la propiedad que distingue el tipo de publicación (según CVN) con el que vamos a trabajar.
 * "sections" --> Aquí se define el listado de campos que se desea incluir en la edición de este ítem.
