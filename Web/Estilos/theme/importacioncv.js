@@ -65,7 +65,7 @@ var importarCVN = {
 		selectorCamposTexto = `<select hidden name="itemConflict" class="uniqueItemConflict" disabled>
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 									<option value="ig">${GetText('CV_IGNORAR')}</option>
-								</select>`;
+								</select>`;	
 
         return;        
     },
@@ -1034,9 +1034,6 @@ edicionCV.printHtmlListItem= function(id, data) {
 	{
 		isConflict = false;
 	}
-	if(data.isBlockedFE){
-		isBlockedFE = true;
-	}
 	
 	var htmlListItem = ``;
 	if(data.title!= null){
@@ -1058,13 +1055,9 @@ edicionCV.printHtmlListItem= function(id, data) {
 				htmlListItem += selectorConflictoBloqueado;
 			}	
 		}
-		else if(!isBlockedFE)
+		else 
 		{
 			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
-		}
-		else if(isBlockedFE){
-			//TODO añadir tooltip fuentes externas
-			htmlListItem += `<span class="material-icons-outlined new">mediation</span>`;
 		}
 		
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>

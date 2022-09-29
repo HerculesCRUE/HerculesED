@@ -169,7 +169,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus, preimportar);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -234,25 +234,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     if (bloqueados.ContainsKey(idBBDD))
                     {
-                        bool isBlockedFE = false;
-                        if (listadoAux != null && listadoAux.Count > 0 && listadoAux.ElementAt(i) != null)
-                        {
-                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
-                        }
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD], isBlockedFE: isBlockedFE));
-
-                        //listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
                     }
                     else
                     {
-                        bool isBlockedFE = false;
-                        if (listadoAux != null && listadoAux.Count > 0 && listadoAux.ElementAt(i) != null)
-                        {
-                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
-                        }
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false, isBlockedFE: isBlockedFE));
-
-                        //listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false));
                     }
                 }
                 return listaAux;
@@ -1510,7 +1496,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus, [Optional] bool preimportar)
+        public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1531,6 +1517,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             petitionStatus.actualWork++;
                         }
 
+                        /*
                         //Compruebo si está el DOI asociado a la publicación en BBDD
                         string doi = PublicacionesDocumentosComprobarDOI(item);
                         if (preimportar)
@@ -1554,51 +1541,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                             //Llamada al servicio de Fuentes externas para que cargue los datos.
                             try
                             {
-                                entidadAux.isBlockedFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
+                                //TODO
+                                UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
                             }
                             catch (Exception e)
                             {
                                 mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
-                            }
-
-                            if (entidadAux.isBlockedFE)
-                            {
-                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd, item.GetTipoPublicacionPorIDCampo("060.010.010.010")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros, item.GetStringPorIDCampo("060.010.010.020")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, item.GetStringPorIDCampo("060.010.010.030")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, item.GetVolumenPorIDCampo("060.010.010.080")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.010.080")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.010.090")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.010.090")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPais, item.GetPaisPorIDCampo("060.010.010.110")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCCAA, item.GetRegionPorIDCampo("060.010.010.120")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, item.GetStringDatetimePorIDCampo("060.010.010.140")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, item.GetStringPorIDCampo("060.010.010.150")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubDepositoLegal, item.GetValueCvnExternalPKBean("060.010.010.170")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCiudad, item.GetStringPorIDCampo("060.010.010.220")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosColeccion, item.GetStringPorIDCampo("060.010.010.270")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosReseniaRevista, item.GetStringDoublePorIDCampo("060.010.010.340"))
-                                ));
-                                entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("060.010.010.060")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosResultadosDestacados, item.GetStringPorIDCampo("060.010.010.290")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubRelevante, item.GetStringBooleanPorIDCampo("060.010.010.300")),
-                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.010.390"))
-                                ));
-                                PublicacionesDocumentosSoporte(item, entidadAux);
-                                PublicacionesDocumentosAutores(item, entidadAux, listadoSituacionProfesional);
-                                PublicacionesDocumentosTraducciones(item, entidadAux);
-                                PublicacionesDocumentosIDPublicacion(item, entidadAux);
-                                PublicacionesDocumentosISBN(item, entidadAux);
-                                PublicacionesDocumentosCitasINRECS(item, entidadAux);
-
-
-                                listado.Add(entidadAux);
-                                continue;
-                            }
+                            }                            
                         }
-
+                        */
 
                         //Carga normal de los datos
 
@@ -1918,6 +1869,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualWork++;
                     }
 
+                    /*
                     //Compruebo si está el DOI asociado a la publicación en BBDD
                     string doi = TrabajosCongresosComprobarDOI(item);
                     //string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
@@ -1950,17 +1902,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                         //Llamada al servicio de Fuentes externas para que cargue los datos.
                         try
                         {
-                            entidadAux.isBlockedFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
+                            //TODO
+                            UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
                             //insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
                         }
                         catch (Exception e)
                         {
                             mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
-                        }
-
-                        if (entidadAux.isBlockedFE)
-                        {
-                            continue;
                         }
 
                         ////Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
@@ -1973,6 +1921,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         //    continue;
                         //}
                     }
+                    */
 
                     //Carga normal de los datos
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.030")))

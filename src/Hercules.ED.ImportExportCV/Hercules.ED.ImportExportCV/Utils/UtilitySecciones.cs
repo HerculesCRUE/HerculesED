@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mail;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
@@ -710,16 +711,28 @@ where{{
 
                 switch (identificador.Type)
                 {
+                    //Handle
                     case "120":
                         entidadAux.properties.AddRange(AddProperty(
                             new Property(propIdHandle, identificador.Value)
                         ));
                         break;
+                    //DOI
                     case "040":
+                        string doi = identificador.Value;
+                        doi = doi.Replace("http://dx.doi.org/", "");
+                        doi = doi.Replace("http://doi.org/", "");
+                        doi = doi.Replace("https://dx.doi.org/", "");
+                        doi = doi.Replace("https://doi.org/", "");
+                        doi = doi.Replace("doi:", "");
+                        doi = doi.Replace("DOI:", "");
+                        doi = doi.Trim();
+
                         entidadAux.properties.AddRange(AddProperty(
-                            new Property(propIdDOI, identificador.Value)
+                            new Property(propIdDOI, doi)
                         ));
                         break;
+                    //PMID
                     case "130":
                         entidadAux.properties.AddRange(AddProperty(
                             new Property(propIdPMID, identificador.Value)
