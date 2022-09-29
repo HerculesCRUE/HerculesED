@@ -191,6 +191,12 @@
                                 }
                                 <a href="@urlMisOfertasTecnologicas">@Html.Translate("MIS_OFERTAS_TECNOLOGICAS")</a>
                             </li>
+                            <li class="liOffer d-none" id="menu_ed_is_otri">
+                                @{
+                                    string urlOfertasTecnologicasOtri = Comunidad.Url + "/" + Html.Translate("OFERTA_TECNOLOGICA_OTRI_URL");
+                                }
+                                <a href="@urlOfertasTecnologicasOtri">@Html.Translate("GESTIONAR_OFERTA_TECNOLOGICA")</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
