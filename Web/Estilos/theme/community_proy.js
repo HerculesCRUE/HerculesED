@@ -2277,12 +2277,18 @@ function EnhableIfIsOtri() {
     		// Si el usuario no ha cambiado y es un gestor otri, se activa
 			if (isOtriVal) {
 				$('#menu_is_otri').removeClass("d-none")
+				if ($('#menu_ed_is_otri').length > 0) {
+					$('#menu_ed_is_otri').removeClass("d-none")
+				}
 			}
 		})
 	} else {
 		// Si el usuario no ha cambiado y es un gestor otri, se activa
 		if (isOtriVal) {
 			$('#menu_is_otri').removeClass("d-none")
+			if ($('#menu_ed_is_otri').length > 0) {
+				$('#menu_ed_is_otri').removeClass("d-none")
+			}
 		}
 	}
 }

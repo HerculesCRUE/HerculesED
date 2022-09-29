@@ -495,7 +495,6 @@ namespace EditorCV.Models
             }
             sectionItem.properties = new List<TabSectionItemProperty>();
             sectionItem.iseditable = !subseccionItem.isBlocked;
-            sectionItem.isBlockedFE = !subseccionItem.isBlockedFE;
             sectionItem.idBBDD = subseccionItem.idBBDD;
             sectionItem.identifier = subseccionItem.guid;
             sectionItem.orderProperties = new List<TabSectionItemOrderProperty>();
