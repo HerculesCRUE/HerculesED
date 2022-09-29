@@ -1680,6 +1680,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
+        /// <summary>
+        /// Devuelve el doi de la publicación
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
         {
             string idDOIValue = "";
