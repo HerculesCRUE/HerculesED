@@ -3,6 +3,7 @@ using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester.Models;
 using Harvester.Models.ModelsBBDD;
+using Harvester.Models.RabbitMQ;
 using Harvester.Models.SGI.Autorizaciones;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
@@ -55,6 +56,8 @@ namespace Harvester
         /// </summary>
         public void LoadMainEntities()
         {
+            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
+
             Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicPersonas = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
@@ -69,17 +72,28 @@ namespace Harvester
             //Compruebo que no hay ficheros pendientes de procesar
             mResourceApi.ChangeOntoly("organization");
             ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+
             mResourceApi.ChangeOntoly("person");
             ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+
             mResourceApi.ChangeOntoly("project");
             ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
             ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+
             mResourceApi.ChangeOntoly("projectauthorization");
             ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
+
             mResourceApi.ChangeOntoly("group");
             ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos, dicPersonas: dicPersonas);
+
             mResourceApi.ChangeOntoly("patent");
             ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+
+            // Inserción de personas en la cola de Rabbit.
+            if (dicPersonas.Keys.Count > 0)
+            {
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, dicPersonas.Keys.ToHashSet()));
+            }
 
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
