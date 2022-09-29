@@ -1573,6 +1573,38 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                             if (entidadAux.isBlockedFE)
                             {
+                                entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd, item.GetTipoPublicacionPorIDCampo("060.010.010.010")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros, item.GetStringPorIDCampo("060.010.010.020")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo, item.GetStringPorIDCampo("060.010.010.030")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubVolumen, item.GetVolumenPorIDCampo("060.010.010.080")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubNumero, item.GetNumeroVolumenPorIDCampo("060.010.010.080")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagIni, item.GetPaginaInicialPorIDCampo("060.010.010.090")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPagFin, item.GetPaginaFinalPorIDCampo("060.010.010.090")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubPais, item.GetPaisPorIDCampo("060.010.010.110")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCCAA, item.GetRegionPorIDCampo("060.010.010.120")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubFecha, item.GetStringDatetimePorIDCampo("060.010.010.140")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubURL, item.GetStringPorIDCampo("060.010.010.150")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubDepositoLegal, item.GetValueCvnExternalPKBean("060.010.010.170")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubCiudad, item.GetStringPorIDCampo("060.010.010.220")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosColeccion, item.GetStringPorIDCampo("060.010.010.270")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosReseniaRevista, item.GetStringDoublePorIDCampo("060.010.010.340"))
+                                ));
+                                entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosGradoContribucion, item.GetGradoContribucionDocumentoPorIDCampo("060.010.010.060")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosResultadosDestacados, item.GetStringPorIDCampo("060.010.010.290")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosPubRelevante, item.GetStringBooleanPorIDCampo("060.010.010.300")),
+                                    new Property(Variables.ActividadCientificaTecnologica.pubDocumentosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.010.390"))
+                                ));
+                                PublicacionesDocumentosSoporte(item, entidadAux);
+                                PublicacionesDocumentosAutores(item, entidadAux, listadoSituacionProfesional);
+                                PublicacionesDocumentosTraducciones(item, entidadAux);
+                                PublicacionesDocumentosIDPublicacion(item, entidadAux);
+                                PublicacionesDocumentosISBN(item, entidadAux);
+                                PublicacionesDocumentosCitasINRECS(item, entidadAux);
+
+
+                                listado.Add(entidadAux);
                                 continue;
                             }
 
