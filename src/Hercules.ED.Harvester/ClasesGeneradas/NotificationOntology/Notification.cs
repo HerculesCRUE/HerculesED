@@ -39,6 +39,7 @@ namespace NotificationOntology
 				this.Roh_trigger = new Person(propRoh_trigger.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_idEntityCV = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/idEntityCV"));
+			this.Roh_text = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/text"));
 			this.Roh_tabPropertyCV = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tabPropertyCV"));
 			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
@@ -68,6 +69,7 @@ if(item0.HasValue){
 				this.Roh_trigger = new Person(propRoh_trigger.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Roh_idEntityCV = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/idEntityCV"));
+			this.Roh_text = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/text"));
 			this.Roh_tabPropertyCV = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/tabPropertyCV"));
 			this.Roh_cvnCode = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/cvnCode"));
 			SemanticPropertyModel propRoh_owner = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/owner");
@@ -95,6 +97,9 @@ if(item1.HasValue){
 		[RDFProperty("http://w3id.org/roh/idEntityCV")]
 		public  string Roh_idEntityCV { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/text")]
+		public  string Roh_text { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/tabPropertyCV")]
 		public  string Roh_tabPropertyCV { get; set;}
 
@@ -119,6 +124,7 @@ if(item1.HasValue){
 			propList.Add(new StringOntologyProperty("roh:entity", this.IdRoh_entity));
 			propList.Add(new StringOntologyProperty("roh:trigger", this.IdRoh_trigger));
 			propList.Add(new StringOntologyProperty("roh:idEntityCV", this.Roh_idEntityCV));
+			propList.Add(new StringOntologyProperty("roh:text", this.Roh_text));
 			propList.Add(new StringOntologyProperty("roh:tabPropertyCV", this.Roh_tabPropertyCV));
 			propList.Add(new StringOntologyProperty("roh:cvnCode", this.Roh_cvnCode));
 			propList.Add(new StringOntologyProperty("roh:owner", this.IdRoh_owner));
@@ -174,6 +180,10 @@ if(item1.HasValue){
 				if(this.Roh_idEntityCV != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Notification_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/idEntityCV", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_idEntityCV)}\"", list, " . ");
+				}
+				if(this.Roh_text != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Notification_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/text", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_text)}\"", list, " . ");
 				}
 				if(this.Roh_tabPropertyCV != null)
 				{
@@ -245,6 +255,10 @@ if(item1.HasValue){
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/idEntityCV", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_idEntityCV).ToLower()}\"", list, " . ");
 				}
+				if(this.Roh_text != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/text", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_text).ToLower()}\"", list, " . ");
+				}
 				if(this.Roh_tabPropertyCV != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/tabPropertyCV", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_tabPropertyCV).ToLower()}\"", list, " . ");
@@ -302,8 +316,8 @@ if(item1.HasValue){
 			{
 				tags = tags.Substring(0, tags.LastIndexOf(','));
 			}
-			string titulo = $"{this.Roh_type.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Roh_type.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string titulo = $"{this.Roh_type.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
+			string descripcion = $"{this.Roh_type.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
 			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
 			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
 
