@@ -172,6 +172,29 @@ namespace EditorCV.Models.Utils
             return users;
         }
 
+        /// <summary>
+        /// Obtiene un documento a partir de un RelatedScientificPublication
+        /// </summary>
+        /// <param name="pIdRecurso"></param>
+        /// <returns></returns>
+        public static string ObtenerDocumentoPRC(string pIdRecurso)
+        {
+            string pIdDocumento = "";
+            string selectProyecto = "select distinct ?documento";
+            string whereProyecto = $@"where{{
+                <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
+            }}";
+            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
+            if (query.results.bindings.Count != 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> res in query.results.bindings)
+                {
+                    pIdDocumento = res["documento"].value;
+                }
+            }
+            return pIdDocumento;
+        }
+
 
         /// <summary>
         /// Obtiene las propiedades de las entidades pasadas por parámetro

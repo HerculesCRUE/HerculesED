@@ -57,11 +57,11 @@ namespace EditorCV.Controllers
             try
             {
                 //Solo puede enviar los autores de la publicación
-                //TODO arreglar
-                //if (!Security.CheckUsers(UtilityCV.GetUsersFromDocument(pIdRecurso), Request))
-                //{
-                //    return StatusCode(StatusCodes.Status401Unauthorized);
-                //}
+                string pIdDocumento = UtilityCV.ObtenerDocumentoPRC(pIdRecurso);
+                if (!Security.CheckUsers(UtilityCV.GetUsersFromDocument(pIdDocumento), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEnvioPRC accionesPRC = new AccionesEnvioPRC(_Configuracion);
                 accionesPRC.EnvioPRC(_Configuracion, pIdRecurso, pIdProyecto);
             }
