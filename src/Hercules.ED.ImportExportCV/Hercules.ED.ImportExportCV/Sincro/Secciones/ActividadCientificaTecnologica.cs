@@ -169,7 +169,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus, preimportar);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -1510,7 +1510,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus)
+        public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus, [Optional] bool preimportar)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1533,24 +1533,14 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         //Compruebo si está el DOI asociado a la publicación en BBDD
                         string doi = PublicacionesDocumentosComprobarDOI(item);
-                        //string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+                        if (preimportar)
+                        {
+                            string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+                        }
 
-                        //if (!string.IsNullOrEmpty(idDOIBBDD))
-                        //{
-                        //    //Si existe alguna publicación con ese DOI no la inserto
-                        //    listadoCvn.Remove(item);
-                        //    mCvn.cvnRootBean = listadoCvn.ToArray();
-
-                        //    continue;
-                        //}
-
-                        //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
-                        //else 
                         if (!string.IsNullOrEmpty(doi) && personaCV.name != null &&
                             personaCV.name.nombre_completo != null && !string.IsNullOrEmpty(personaCV.name.nombre_completo.First()))
                         {
-                            //bool insertadoPorFE = false;
-
                             //Elimino la url en caso de que esté
                             doi = doi.Replace("http://dx.doi.org/", "");
                             doi = doi.Replace("http://doi.org/", "");
@@ -1607,16 +1597,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 listado.Add(entidadAux);
                                 continue;
                             }
-
-                            ////Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
-                            //if (insertadoPorFE)
-                            //{
-                            //    //TODO - confirmar comportamiento
-                            //    listadoCvn.Remove(item);
-                            //    mCvn.cvnRootBean = listadoCvn.ToArray();
-
-                            //    continue;
-                            //}
                         }
 
 
