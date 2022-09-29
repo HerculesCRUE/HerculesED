@@ -82,6 +82,7 @@ namespace EditorCV.Models.PreimportModels
         /// Indica si el objeto esta bloqueado o se puede editar.
         /// </summary>
         public bool isBlocked { get; set; }
+        public bool isBlockedFE { get; set; }
 
         /// <summary>
         /// Bloques pertenecientes al subapartado
