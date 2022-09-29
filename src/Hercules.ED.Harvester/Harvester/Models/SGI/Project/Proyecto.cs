@@ -212,5 +212,9 @@ namespace OAI_PMH.Models.SGI.Project
         /// Palabras clave
         /// </summary>
         public List<PalabraClave> PalabrasClaves { get; set; }
+        /// <summary>
+        /// Histórico de estados.
+        /// </summary>
+        public List<EstadoProyecto> historicoProyectos { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace OAI_PMH.Models.SGI.Grupos
+﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
     /// <summary>
     /// LineaInvestigacion

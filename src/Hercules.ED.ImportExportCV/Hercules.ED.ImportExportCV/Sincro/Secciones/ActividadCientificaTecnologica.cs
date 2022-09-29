@@ -234,11 +234,25 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     if (bloqueados.ContainsKey(idBBDD))
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
+                        bool isBlockedFE = false;
+                        if (listadoAux != null && listadoAux.Count > 0 && listadoAux.ElementAt(i) != null)
+                        {
+                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
+                        }
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD], isBlockedFE: isBlockedFE));
+
+                        //listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD]));
                     }
                     else
                     {
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false));
+                        bool isBlockedFE = false;
+                        if (listadoAux != null && listadoAux.Count > 0 && listadoAux.ElementAt(i) != null)
+                        {
+                            isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
+                        }
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false, isBlockedFE: isBlockedFE));
+
+                        //listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false));
                     }
                 }
                 return listaAux;
@@ -1519,21 +1533,23 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                         //Compruebo si está el DOI asociado a la publicación en BBDD
                         string doi = PublicacionesDocumentosComprobarDOI(item);
-                        string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+                        //string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
 
-                        if (!string.IsNullOrEmpty(idDOIBBDD))
-                        {
-                            //Si existe alguna publicación con ese DOI no la inserto
-                            listadoCvn.Remove(item);
-                            mCvn.cvnRootBean = listadoCvn.ToArray();
+                        //if (!string.IsNullOrEmpty(idDOIBBDD))
+                        //{
+                        //    //Si existe alguna publicación con ese DOI no la inserto
+                        //    listadoCvn.Remove(item);
+                        //    mCvn.cvnRootBean = listadoCvn.ToArray();
 
-                            continue;
-                        }
+                        //    continue;
+                        //}
+
                         //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
-                        else if (!string.IsNullOrEmpty(doi) && personaCV.name != null &&
+                        //else 
+                        if (!string.IsNullOrEmpty(doi) && personaCV.name != null &&
                             personaCV.name.nombre_completo != null && !string.IsNullOrEmpty(personaCV.name.nombre_completo.First()))
                         {
-                            bool insertadoPorFE = false;
+                            //bool insertadoPorFE = false;
 
                             //Elimino la url en caso de que esté
                             doi = doi.Replace("http://dx.doi.org/", "");
@@ -1548,22 +1564,27 @@ namespace ImportadorWebCV.Sincro.Secciones
                             //Llamada al servicio de Fuentes externas para que cargue los datos.
                             try
                             {
-                                insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
+                                entidadAux.isBlockedFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
                             }
                             catch (Exception e)
                             {
                                 mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
                             }
 
-                            //Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
-                            if (insertadoPorFE)
+                            if (entidadAux.isBlockedFE)
                             {
-                                //TODO - confirmar comportamiento
-                                listadoCvn.Remove(item);
-                                mCvn.cvnRootBean = listadoCvn.ToArray();
-
                                 continue;
                             }
+
+                            ////Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
+                            //if (insertadoPorFE)
+                            //{
+                            //    //TODO - confirmar comportamiento
+                            //    listadoCvn.Remove(item);
+                            //    mCvn.cvnRootBean = listadoCvn.ToArray();
+
+                            //    continue;
+                            //}
                         }
 
 
@@ -1869,6 +1890,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoTrabajosCongresos)
                 {
+                    Entity entidadAux = new Entity();
+                    entidadAux.properties = new List<Property>();
+                    entidadAux.properties_cv = new List<Property>();
+                    entidadAux.id = Guid.NewGuid().ToString();
+
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
@@ -1877,20 +1903,22 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     //Compruebo si está el DOI asociado a la publicación en BBDD
                     string doi = TrabajosCongresosComprobarDOI(item);
-                    string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
+                    //string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
 
-                    if (!string.IsNullOrEmpty(idDOIBBDD))
-                    {
-                        //Si existe alguna publicación con ese DOI no la inserto
-                        listadoCvn.Remove(item);
-                        mCvn.cvnRootBean = listadoCvn.ToArray();
+                    //if (!string.IsNullOrEmpty(idDOIBBDD))
+                    //{
+                    //    //Si existe alguna publicación con ese DOI no la inserto
+                    //    listadoCvn.Remove(item);
+                    //    mCvn.cvnRootBean = listadoCvn.ToArray();
 
-                        continue;
-                    }
+                    //    continue;
+                    //}
+
                     //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
-                    else if (!string.IsNullOrEmpty(doi) && personaCV.name != null && personaCV.name.nombre_completo != null)
+                    //else 
+                    if (!string.IsNullOrEmpty(doi) && personaCV.name != null && personaCV.name.nombre_completo != null)
                     {
-                        bool insertadoPorFE = false;
+                        //bool insertadoPorFE = false;
 
                         //Elimino la url en caso de que esté
                         doi = doi.Replace("http://dx.doi.org/", "");
@@ -1905,30 +1933,31 @@ namespace ImportadorWebCV.Sincro.Secciones
                         //Llamada al servicio de Fuentes externas para que cargue los datos.
                         try
                         {
-                            insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
+                            entidadAux.isBlockedFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
+                            //insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
                         }
                         catch (Exception e)
                         {
                             mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
                         }
 
-
-                        //Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
-                        if (insertadoPorFE)
+                        if (entidadAux.isBlockedFE)
                         {
-                            //TODO - confirmar comportamiento
-                            listadoCvn.Remove(item);
-                            mCvn.cvnRootBean = listadoCvn.ToArray();
-
                             continue;
                         }
+
+                        ////Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
+                        //if (insertadoPorFE)
+                        //{
+                        //    //TODO - confirmar comportamiento
+                        //    listadoCvn.Remove(item);
+                        //    mCvn.cvnRootBean = listadoCvn.ToArray();
+
+                        //    continue;
+                        //}
                     }
 
                     //Carga normal de los datos
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
-                    entidadAux.properties_cv = new List<Property>();
-                    entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.030")))
                     {
                         // Añado las etiquetas enriquecidas

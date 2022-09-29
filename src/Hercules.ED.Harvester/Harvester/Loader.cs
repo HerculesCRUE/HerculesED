@@ -3,11 +3,12 @@ using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester.Models;
 using Harvester.Models.ModelsBBDD;
+using Harvester.Models.RabbitMQ;
 using Harvester.Models.SGI.Autorizaciones;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI;
-using OAI_PMH.Models.SGI.Grupos;
+using OAI_PMH.Models.SGI.GruposInvestigacion;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
@@ -55,43 +56,56 @@ namespace Harvester
         /// </summary>
         public void LoadMainEntities()
         {
+            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
+
             Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicPersonas = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicAutorizaciones = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicInvenciones = new Dictionary<string, Tuple<string, string>>();
-            IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
 
+            IniciacionDiccionarios(ref dicProyectos, ref dicPersonas, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
             //Compruebo que no hay ficheros pendientes de procesar
-            //mResourceApi.ChangeOntoly("organization");
-            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
-            //mResourceApi.ChangeOntoly("person");
-            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
-            //mResourceApi.ChangeOntoly("project");
-            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
-            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
-            //mResourceApi.ChangeOntoly("projectauthorization");
-            //ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
-            //mResourceApi.ChangeOntoly("group");
-            //ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos, dicPersonas: dicPersonas);
-            //mResourceApi.ChangeOntoly("patent");
-            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+
+            mResourceApi.ChangeOntoly("project");
+            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+
+            mResourceApi.ChangeOntoly("projectauthorization");
+            ProcesarFichero(_Config, "AutorizacionProyecto", dicAutorizaciones: dicAutorizaciones);
+
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo", dicGrupos: dicGrupos, dicPersonas: dicPersonas);
+
+            mResourceApi.ChangeOntoly("patent");
+            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+
+            // Inserción de personas en la cola de Rabbit.
+            if (dicPersonas.Keys.Count > 0)
+            {
+                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, dicPersonas.Keys.ToHashSet()));
+            }
 
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
 
-            //Genero los ficheros con los datos a procesar desde la fecha
-            //GuardarIdentificadores(_Config, "Organizacion", fecha);
-            //GuardarIdentificadores(_Config, "Persona", fecha);
-            //GuardarIdentificadores(_Config, "Proyecto", fecha);
-            //GuardarIdentificadores(_Config, "PRC", fecha, true);
-            //GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+            // Genero los ficheros con los datos a procesar desde la fecha
+            GuardarIdentificadores(_Config, "Organizacion", fecha);
+            GuardarIdentificadores(_Config, "Persona", fecha);
+            GuardarIdentificadores(_Config, "Proyecto", fecha);
+            GuardarIdentificadores(_Config, "PRC", fecha, true);
+            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
             GuardarIdentificadores(_Config, "Grupo", fecha);
-            //GuardarIdentificadores(_Config, "Invencion", fecha);
+            GuardarIdentificadores(_Config, "Invencion", fecha);
 
             //Actualizo la última fecha de carga
             UpdateLastDate(_Config, fecha);
@@ -99,32 +113,32 @@ namespace Harvester
             // Procesamiento de ficheros.
 
             // Organizaciones. Datos correctos.
-            //mResourceApi.ChangeOntoly("organization");
-            //ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion", dicOrganizaciones: dicOrganizaciones);
 
-            // Personas. TODO: Revisar propiedades.
-            //mResourceApi.ChangeOntoly("person");
-            //ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
+            // Personas. 
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", dicPersonas: dicPersonas);
 
             // Proyectos.
-            //mResourceApi.ChangeOntoly("project");
-            //ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
+            mResourceApi.ChangeOntoly("project");
+            ProcesarFichero(_Config, "Proyecto", dicOrganizaciones, dicProyectos, dicPersonas);
 
             // Document.
-            //mResourceApi.ChangeOntoly("document");
-            //ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
+            mResourceApi.ChangeOntoly("document");
+            ProcesarFichero(_Config, "PRC", dicProyectos: dicProyectos);
 
             // Autorizaciones.
-            //mResourceApi.ChangeOntoly("projectauthorization");
-            //ProcesarFichero(_Config, "AutorizacionProyecto");
+            mResourceApi.ChangeOntoly("projectauthorization");
+            ProcesarFichero(_Config, "AutorizacionProyecto");
 
-            //// Grupos.
+            // Grupos.
             mResourceApi.ChangeOntoly("group");
             ProcesarFichero(_Config, "Grupo", dicPersonas: dicPersonas);
 
             // Patentes.
-            //mResourceApi.ChangeOntoly("patent");
-            //ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
+            mResourceApi.ChangeOntoly("patent");
+            ProcesarFichero(_Config, "Invencion", dicInvenciones: dicInvenciones);
         }
 
         /// <summary>
@@ -222,20 +236,16 @@ namespace Harvester
 
                             if (dicOrganizaciones.ContainsKey(empresaOntology.Roh_crisIdentifier))
                             {
+                                // Modificación.
                                 string[] idSplit = dicOrganizaciones[empresaOntology.Roh_crisIdentifier].Item1.Split('_');
                                 resource = empresaOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-
-                                // Modificación.
                                 mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                                //bool modificado = resource.Modified;
                             }
                             else
                             {
+                                // Carga.
                                 resource = empresaOntology.ToGnossApiResource(mResourceApi, null);
-
-                                // Carga.                   
                                 mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                //bool modificado = resource.Uploaded;
                                 dicOrganizaciones[empresaOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -279,15 +289,21 @@ namespace Harvester
                                 continue;
                             }
 
-                            resource = personOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicPersonas.ContainsKey(personOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
+                                string[] idSplit = dicPersonas[personOntology.Roh_crisIdentifier].Item1.Split('_');
+
+                                PersonOntology.Person personaBBDD = DatosPersonaNoBorrar(idSplit.ToString());
+                                FusionarPersonas(personOntology, personaBBDD);
+
+                                resource = personOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
                                 mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
-                                // Carga.                   
+                                // Carga.
+                                resource = personOntology.ToGnossApiResource(mResourceApi, null);
                                 mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
@@ -316,9 +332,10 @@ namespace Harvester
                                 proyecto = (Proyecto)xmlSerializer.Deserialize(sr);
                             }
 
-                            UtilidadesLoader.CreacionAuxiliaresProyecto(proyecto, dicProyectos, dicPersonas, dicOrganizaciones, mResourceApi: mResourceApi);
+                            // TODO: Manu. ¿?
+                            //UtilidadesLoader.CreacionAuxiliaresProyecto(proyecto, dicProyectos, dicPersonas, dicOrganizaciones, mResourceApi: mResourceApi);
 
-                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
                             if (string.IsNullOrEmpty(proyecto.Id.ToString()) && string.IsNullOrEmpty(proyecto.Titulo))
                             {
                                 // Guardamos el ID cargado.
@@ -326,20 +343,22 @@ namespace Harvester
                                 continue;
                             }
 
-                            // Cambio de modelo. TODO: Mirar propiedades.
+                            // Cambio de modelo.
                             ProjectOntology.Project projectOntology = CrearProyecto(proyecto, dicPersonas: dicPersonas, dicOrganizaciones: dicOrganizaciones);
 
                             mResourceApi.ChangeOntoly("project");
-                            resource = projectOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicProyectos.ContainsKey(projectOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                string[] idSplit = dicProyectos[projectOntology.Roh_crisIdentifier].Item1.Split('_');
+                                resource = projectOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
-                                // Carga.                   
-                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                // Carga.
+                                resource = projectOntology.ToGnossApiResource(mResourceApi, null);
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicProyectos[projectOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -442,7 +461,7 @@ namespace Harvester
                                 }
                             }
 
-                            //Si no me llega el cris identifier o los datos obligatorios salto a la siguiente
+                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
                             if (string.IsNullOrEmpty(autorizacion.id.ToString()) && string.IsNullOrEmpty(autorizacion.solicitanteRef)
                                 && string.IsNullOrEmpty(autorizacion.tituloProyecto))
                             {
@@ -453,39 +472,21 @@ namespace Harvester
 
                             // Cambio de modelo.
                             ProjectAuthorization projectAuthOntology = CrearAutorizacion(autorizacion);
-
-                            // TODO: Hacer tema del diccionario.
-                            resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
+                            
                             if (dicAutorizaciones.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
+                                string[] idSplit = dicAutorizaciones[projectAuthOntology.Roh_crisIdentifier].Item1.Split('_');
+                                resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
                                 mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
-                                // Carga.                   
+                                // Carga.
+                                resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
                                 mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicAutorizaciones[projectAuthOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
-
-                            ////TODO - revisar 
-                            //if (!string.IsNullOrEmpty(resource.GnossId))
-                            //{
-                            //    string idProyecto = ObtenerProyecto(projectAuthOntology.Roh_crisIdentifier);
-                            //    Guid guidProyecto = Guid.Empty;
-                            //    if (!string.IsNullOrEmpty(idProyecto))
-                            //    {
-                            //        guidProyecto = mResourceApi.GetShortGuid(idProyecto);
-
-                            //        Dictionary<Guid, List<TriplesToInclude>> insertTriples = new Dictionary<Guid, List<TriplesToInclude>>();
-                            //        insertTriples.Add(guidProyecto, new List<TriplesToInclude>(){ new TriplesToInclude() { Predicate = "http://w3id.org/roh/projectAuthorization", NewValue = resource.GnossId } });
-
-                            //        if (guidProyecto != Guid.Empty)
-                            //        {
-                            //            mResourceApi.InsertPropertiesLoadedResources(insertTriples);
-                            //        }
-                            //    }
-                            //}
 
                             // Guardamos el ID cargado.
                             File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
@@ -517,20 +518,21 @@ namespace Harvester
                                 File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                                 continue;
                             }
-
-                            // TODO: Crear método para las patentes.
+                                                        
                             PatentOntology.Patent patentOntology = CrearInvencionesOntology(invencion, dicPersonas);
 
-                            resource = patentOntology.ToGnossApiResource(mResourceApi, null);
                             if (dicInvenciones.ContainsKey(patentOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                string[] idSplit = dicInvenciones[patentOntology.Roh_crisIdentifier].Item1.Split('_');
+                                resource = patentOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
-                                // Carga.                   
-                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                // Carga.
+                                resource = patentOntology.ToGnossApiResource(mResourceApi, null);
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicInvenciones[patentOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
@@ -566,19 +568,21 @@ namespace Harvester
                             }
 
                             //Cambio de modelo.
-                            GroupOntology.Group group = CrearGrupo(grupo, dicPersonas);
+                            GroupOntology.Group groupOntology = CrearGrupo(grupo, dicPersonas);
 
-                            resource = group.ToGnossApiResource(mResourceApi, null);
-                            if (dicGrupos.ContainsKey(group.Roh_crisIdentifier))
+                            if (dicGrupos.ContainsKey(groupOntology.Roh_crisIdentifier))
                             {
                                 // Modificación.
-                                //mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                string[] idSplit = dicGrupos[groupOntology.Roh_crisIdentifier].Item1.Split('_');
+                                resource = groupOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
                             }
                             else
                             {
-                                // Carga.                   
-                                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                dicGrupos[group.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
+                                // Carga.
+                                resource = groupOntology.ToGnossApiResource(mResourceApi, null);
+                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                                dicGrupos[groupOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             }
 
                             // Guardamos el ID cargado.
@@ -591,6 +595,250 @@ namespace Harvester
                 // Borra el fichero.
                 File.Delete(fichero);
             }
+        }
+
+        /// <summary>
+        /// Obtiene los datos de la persona que no deben de borrarse.
+        /// </summary>
+        /// <param name="pIdRecurso">ID del recurso de la persona a obtener datos.</param>
+        private PersonOntology.Person DatosPersonaNoBorrar(string pIdRecurso)
+        {
+            // Objeto Persona Final
+            PersonOntology.Person persona = new PersonOntology.Person();
+            persona.Roh_metricPage = new List<PersonOntology.MetricPage>();
+            persona.Roh_ignorePublication = new List<PersonOntology.IgnorePublication>();
+
+            HashSet<string> listaMetricPage = new HashSet<string>();            
+            HashSet<string> listaIgnorePublications = new HashSet<string>();
+            
+            List<MetricPageBBDD> listaMetricPagesBBDD = new List<MetricPageBBDD>();
+
+            #region --- Datos de la Persona
+            string selectPerson = $@"{mPrefijos} SELECT DISTINCT ?isOtriManager ?isGraphicManager ?ORCID ?scopusId ?researcherId ?semanticScholarId ?gnossUser ?usuarioFigShare ?tokenFigShare ?usuarioGitHub ?tokenGitHub ?metricPage ?useMatching ?ignorePublication ";
+            string wherePerson = $@"WHERE {{ 
+                            ?s a foaf:Person. 
+                            OPTIONAL {{?s roh:isOtriManager ?isOtriManager. }}
+                            OPTIONAL {{?s roh:isGraphicManager ?isGraphicManager. }} 
+                            OPTIONAL {{?s roh:ORCID ?ORCID. }}
+                            OPTIONAL {{?s vivo:scopusId ?scopusId. }}
+                            OPTIONAL {{?s vivo:researcherId ?researcherId. }}
+                            OPTIONAL {{?s roh:semanticScholarId ?semanticScholarId. }}
+                            OPTIONAL {{?s roh:gnossUser ?gnossUser. }}
+                            OPTIONAL {{?s roh:usuarioFigShare ?usuarioFigShare. }}
+                            OPTIONAL {{?s roh:tokenFigShare ?tokenFigShare. }}
+                            OPTIONAL {{?s roh:usuarioGitHub ?usuarioGitHub. }}
+                            OPTIONAL {{?s roh:tokenGitHub ?tokenGitHub. }}
+                            OPTIONAL {{?s roh:metricPage ?metricPage. }}
+                            OPTIONAL {{?s roh:useMatching ?useMatching. }}
+                            OPTIONAL {{?s roh:ignorePublication ?ignorePublication. }}
+                            FILTER(?s = <{pIdRecurso}>)}} ";
+
+            SparqlObject resultadoQueryPerson = mResourceApi.VirtuosoQuery(selectPerson, wherePerson, "person");
+
+            if (resultadoQueryPerson != null && resultadoQueryPerson.results != null && resultadoQueryPerson.results.bindings != null && resultadoQueryPerson.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryPerson.results.bindings)
+                {
+                    if (fila.ContainsKey("isOtriManager") && !string.IsNullOrEmpty(fila["isOtriManager"].value))
+                    {
+                        persona.Roh_isOtriManager = bool.Parse(fila["isOtriManager"].value);
+                    }
+                    if (fila.ContainsKey("isGraphicManager") && !string.IsNullOrEmpty(fila["isGraphicManager"].value))
+                    {
+                        persona.Roh_isGraphicManager = bool.Parse(fila["isGraphicManager"].value);
+                    }
+                    if (fila.ContainsKey("ORCID") && !string.IsNullOrEmpty(fila["ORCID"].value))
+                    {
+                        persona.Roh_ORCID = fila["ORCID"].value;
+                    }
+                    if (fila.ContainsKey("scopusId") && !string.IsNullOrEmpty(fila["scopusId"].value))
+                    {
+                        persona.Vivo_scopusId = fila["scopusId"].value;
+                    }
+                    if (fila.ContainsKey("researcherId") && !string.IsNullOrEmpty(fila["researcherId"].value))
+                    {
+                        persona.Vivo_researcherId = fila["researcherId"].value;
+                    }
+                    if (fila.ContainsKey("semanticScholarId") && !string.IsNullOrEmpty(fila["semanticScholarId"].value))
+                    {
+                        persona.Roh_semanticScholarId = fila["semanticScholarId"].value;
+                    }
+                    if (fila.ContainsKey("gnossUser") && !string.IsNullOrEmpty(fila["gnossUser"].value))
+                    {
+                        persona.IdRoh_gnossUser = fila["gnossUser"].value;
+                    }
+                    if (fila.ContainsKey("usuarioFigShare") && !string.IsNullOrEmpty(fila["usuarioFigShare"].value))
+                    {
+                        persona.Roh_usuarioFigShare = fila["usuarioFigShare"].value;
+                    }
+                    if (fila.ContainsKey("tokenFigShare") && !string.IsNullOrEmpty(fila["tokenFigShare"].value))
+                    {
+                        persona.Roh_tokenFigShare = fila["tokenFigShare"].value;
+                    }
+                    if (fila.ContainsKey("usuarioGitHub") && !string.IsNullOrEmpty(fila["usuarioGitHub"].value))
+                    {
+                        persona.Roh_usuarioGitHub = fila["usuarioGitHub"].value;
+                    }
+                    if (fila.ContainsKey("tokenGitHub") && !string.IsNullOrEmpty(fila["tokenGitHub"].value))
+                    {
+                        persona.Roh_tokenGitHub = fila["tokenGitHub"].value;
+                    }
+                    if (fila.ContainsKey("metricPage") && !string.IsNullOrEmpty(fila["metricPage"].value))
+                    {
+                        listaMetricPage.Add(fila["metricPage"].value);
+                    }
+                    if (fila.ContainsKey("useMatching") && !string.IsNullOrEmpty(fila["useMatching"].value))
+                    {
+                        persona.Roh_useMatching = bool.Parse(fila["useMatching"].value);
+                    }
+                    if (fila.ContainsKey("ignorePublication") && !string.IsNullOrEmpty(fila["ignorePublication"].value))
+                    {
+                        listaIgnorePublications.Add(fila["ignorePublication"].value);
+                    }
+                }
+            }
+            #endregion
+
+            #region --- Datos del IgnorePublication
+            string selectIgnorePublication = $@"{mPrefijos} SELECT DISTINCT ?id ?tipo ";
+            string whereIgnorePublication = $@"WHERE {{ 
+                            ?s a roh:IgnorePublication. 
+                            ?s roh:title ?id. 
+                            ?s foaf:topic ?tipo. 
+                            FILTER(?s in (<{string.Join(">, <", listaIgnorePublications.Select(x => x))}>))}} ";
+
+            SparqlObject resultadoQueryIgnorePublications = mResourceApi.VirtuosoQuery(selectIgnorePublication, whereIgnorePublication, "person");
+
+            if (resultadoQueryIgnorePublications != null && resultadoQueryIgnorePublications.results != null && resultadoQueryIgnorePublications.results.bindings != null && resultadoQueryIgnorePublications.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryIgnorePublications.results.bindings)
+                {
+                    PersonOntology.IgnorePublication ignorePub = new PersonOntology.IgnorePublication();
+                    ignorePub.Foaf_topic = fila["tipo"].value;
+                    ignorePub.Roh_title = fila["id"].value;
+                    persona.Roh_ignorePublication.Add(ignorePub);
+                }
+            }
+            #endregion
+
+            #region --- Datos del MetricPage
+            string selecMetricPage = $@"{mPrefijos} SELECT DISTINCT ?order ?title ?metricGraphic ";
+            string whereMetricPage = $@"WHERE {{ 
+                            ?s a roh:MetricPage. 
+                            ?s roh:order ?order. 
+                            ?s roh:title ?title. 
+                            OPTIONAL {{?s roh:metricGraphic ?metricGraphic. }}
+                            FILTER(?s in (<{string.Join(">, <", listaMetricPage.Select(x => x))}>))}} ";
+
+            SparqlObject resultadoQueryMetricPage = mResourceApi.VirtuosoQuery(selecMetricPage, whereMetricPage, "person");
+
+            if (resultadoQueryMetricPage != null && resultadoQueryMetricPage.results != null && resultadoQueryMetricPage.results.bindings != null && resultadoQueryMetricPage.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryMetricPage.results.bindings)
+                {
+                    MetricPageBBDD metricPage = new MetricPageBBDD();
+                    metricPage.listaGraficas = new List<PersonOntology.MetricGraphic>();
+                    metricPage.order = Int32.Parse(fila["order"].value);
+                    metricPage.title = fila["title"].value;
+
+                    if (fila.ContainsKey("metricGraphic") && !string.IsNullOrEmpty(fila["metricGraphic"].value))
+                    {
+                        if (listaMetricPagesBBDD.Any(x => x.order == Int32.Parse(fila["order"].value) && x.title == fila["title"].value))
+                        {
+                            listaMetricPagesBBDD.First(x => x.order == Int32.Parse(fila["order"].value) && x.title == fila["title"].value).idsMetricGraphic.Add(fila["metricGraphic"].value);
+                        }
+                        else
+                        {
+                            metricPage.idsMetricGraphic = new List<string>() { fila["metricGraphic"].value };
+                            listaMetricPagesBBDD.Add(metricPage);
+                        }
+                    }
+                    else
+                    {
+                        listaMetricPagesBBDD.Add(metricPage);
+                    }
+                }
+            }
+            #endregion
+
+            #region --- MetricGraphic
+            foreach (MetricPageBBDD item in listaMetricPagesBBDD)
+            {
+                string selectMetricGraphic = $@"{mPrefijos} SELECT DISTINCT ?title ?order ?pageId ?graphicId ?filters ?width ?scales ";
+                string whereMetricGraphic = $@"WHERE {{ 
+                            ?s a roh:MetricGraphic.
+                            ?s roh:title ?title.
+                            ?s roh:order ?order.
+                            ?s roh:pageId ?pageId.
+                            ?s roh:graphicId ?graphicId.
+                            OPTIONAL{{ ?s roh:filters ?filters. }}
+                            ?s roh:width ?width.
+                            OPTIONAL{{ ?s roh:scales ?scales. }}
+                            FILTER(?s in (<{string.Join(">, <", item.idsMetricGraphic.Select(x => x))}>))}} ";
+
+                SparqlObject resultadoQueryMetricGraphic = mResourceApi.VirtuosoQuery(selectMetricGraphic, whereMetricGraphic, "person");
+
+                if (resultadoQueryMetricGraphic != null && resultadoQueryMetricGraphic.results != null && resultadoQueryMetricGraphic.results.bindings != null && resultadoQueryMetricGraphic.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryMetricGraphic.results.bindings)
+                    {
+                        PersonOntology.MetricGraphic metricGraphic = new PersonOntology.MetricGraphic();
+                        metricGraphic.Roh_title = fila["title"].value;
+                        metricGraphic.Roh_order = Int32.Parse(fila["order"].value);
+                        metricGraphic.Roh_pageId = fila["pageId"].value;
+                        metricGraphic.Roh_graphicId = fila["graphicId"].value;
+                        metricGraphic.Roh_width = fila["width"].value;
+
+                        if (fila.ContainsKey("filters") && !string.IsNullOrEmpty(fila["filters"].value))
+                        {
+                            metricGraphic.Roh_filters = fila["filters"].value;
+                        }
+                        
+                        if (fila.ContainsKey("scales") && !string.IsNullOrEmpty(fila["scales"].value))
+                        {
+                            metricGraphic.Roh_scales = fila["scales"].value;
+                        }
+
+                        item.listaGraficas.Add(metricGraphic);
+                    }
+                }
+            }
+            #endregion
+
+            // Construcción de objetos finales.
+            foreach(MetricPageBBDD item in listaMetricPagesBBDD)
+            {
+                PersonOntology.MetricPage metricPage = new PersonOntology.MetricPage();
+                metricPage.Roh_order = item.order;
+                metricPage.Roh_title = item.title;
+                metricPage.Roh_metricGraphic = item.listaGraficas;
+                persona.Roh_metricPage.Add(metricPage);
+            }
+
+            return persona;
+        }
+
+        /// <summary>
+        /// Junta la información de BBDD con la persona obtenida del SGI.
+        /// </summary>
+        /// <param name="pPersonaSGI">Persona del SGI.</param>
+        /// <param name="pPersonaBBDD">Persona de BBDD.</param>
+        public void FusionarPersonas(PersonOntology.Person pPersonaSGI, PersonOntology.Person pPersonaBBDD)
+        {
+            pPersonaSGI.Roh_isOtriManager = pPersonaBBDD.Roh_isOtriManager;
+            pPersonaSGI.Roh_isGraphicManager = pPersonaBBDD.Roh_isGraphicManager;
+            pPersonaSGI.Roh_ORCID = pPersonaBBDD.Roh_ORCID;
+            pPersonaSGI.Vivo_scopusId = pPersonaBBDD.Vivo_scopusId;
+            pPersonaSGI.Vivo_researcherId = pPersonaBBDD.Vivo_researcherId;
+            pPersonaSGI.Roh_semanticScholarId = pPersonaBBDD.Roh_semanticScholarId;
+            pPersonaSGI.IdRoh_gnossUser = pPersonaBBDD.IdRoh_gnossUser;
+            pPersonaSGI.Roh_usuarioFigShare = pPersonaBBDD.Roh_usuarioFigShare;
+            pPersonaSGI.Roh_tokenFigShare = pPersonaBBDD.Roh_tokenFigShare;
+            pPersonaSGI.Roh_usuarioGitHub = pPersonaBBDD.Roh_usuarioGitHub;
+            pPersonaSGI.Roh_tokenGitHub = pPersonaBBDD.Roh_tokenGitHub;
+            pPersonaSGI.Roh_metricPage = pPersonaBBDD.Roh_metricPage;
+            pPersonaSGI.Roh_useMatching = pPersonaBBDD.Roh_useMatching;
+            pPersonaSGI.Roh_ignorePublication = pPersonaBBDD.Roh_ignorePublication;
         }
 
         /// <summary>
@@ -769,6 +1017,7 @@ namespace Harvester
             dicBorrado.Add(pGuid, listaTriplesBorrado);
             mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
         }
+
         /// <summary>
         /// Elimina una publicación y sus referencias
         /// </summary>
@@ -932,9 +1181,9 @@ namespace Harvester
             }
 
             // Cargo en la universidad.
-            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.CategoriaProfesional?.Nombre))
+            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.VinculacionCategoriaProfesional?.categoriaProfesional?.nombre))
             {
-                persona.Roh_hasPosition = pDatos.Vinculacion.CategoriaProfesional.Nombre;
+                persona.Roh_hasPosition = pDatos.Vinculacion?.VinculacionCategoriaProfesional?.categoriaProfesional?.nombre;
             }
 
             // Fecha de actualización.
@@ -1645,8 +1894,8 @@ namespace Harvester
                 //academicTraining.IdRoh_callType = CallType(formacionAcademica.TipoConvocatoria);
                 //academicTraining.IdVivo_geographicFocus = GeographicRegion(formacionAcademica.AmbitoGeografico);
                 //academicTraining.Roh_center = formacionAcademica.facultad;
-                academicTraining.Vivo_start = formacionAcademica.FechaInicio;
-                academicTraining.Vivo_end = formacionAcademica.FechaFinalizacion;
+                //academicTraining.Vivo_start = formacionAcademica.FechaInicio;
+                //academicTraining.Vivo_end = formacionAcademica.FechaFinalizacion;
 
                 //Titulacion universitaria
                 academicTraining.Roh_title = formacionAcademica.TitulacionUniversitaria;
@@ -1915,6 +2164,7 @@ namespace Harvester
         private static PatentOntology.Patent CrearInvencionesOntology(Invencion pInvencion, Dictionary<string, Tuple<string, string>> dicPersonas)
         {
             PatentOntology.Patent patente = new PatentOntology.Patent();
+
             // CrisIdentifier
             patente.Roh_crisIdentifier = pInvencion.id.ToString();
 
@@ -1944,25 +2194,22 @@ namespace Harvester
                     Persona person = ObtenerPersona(inventor.inventorRef);
 
                     // TODO: Desambiguación de Personas
+
                     // Si la persona no tiene nombre, no se inserta.
                     if (!string.IsNullOrEmpty(person.Nombre))
                     {
                         personOntology = CrearPersona(person);
                         mResourceApi.ChangeOntoly("person");
                         ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
-                        //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                        mResourceApi.LoadComplexSemanticResource(resource, false, false);
                         dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                         persona.IdRdf_member = dicPersonas[inventor.inventorRef].Item1;
                     }
                 }
                 listaPersonas.Add(persona);
             }
-            patente.Bibo_authorList = listaPersonas;
 
-            // TODO - palabras clave
-            List<PatentOntology.CategoryPath> listaPalabrasClave = new List<PatentOntology.CategoryPath>();
-            patente.Vivo_freeTextKeywords = listaPalabrasClave;
-            // TODO: REVISAR DATOS FALTANTES
+            patente.Bibo_authorList = listaPersonas;
 
             return patente;
         }
@@ -1974,26 +2221,13 @@ namespace Harvester
         /// <returns></returns>
         public static ProjectAuthorization CrearAutorizacion(Autorizacion pAutorizacionProyecto)
         {
-            ProjectAuthorization autorizacion = new ProjectAuthorization();
-            Persona persona = new Persona();
+            ProjectAuthorization autorizacion = new ProjectAuthorization();            
             autorizacion.Roh_crisIdentifier = pAutorizacionProyecto.entidadRef;
             autorizacion.Roh_title = pAutorizacionProyecto.tituloProyecto;
             autorizacion.IdRoh_owner = GetPersonGnossId(pAutorizacionProyecto.solicitanteRef);
 
-            if (string.IsNullOrEmpty(autorizacion.IdRoh_owner))
-            {
-                //Obtengo los datos de la persona del SGI
-                persona = ObtenerPersona(pAutorizacionProyecto.solicitanteRef);
-
-                //Creo la persona en BBDD
-                PersonOntology.Person personOntology = CrearPersona(persona);
-
-                ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
-
-                // Carga.                   
-                //mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                //dicAutorizacion[personOntology.Roh_crisIdentifier] = resource.GnossId;//necesario incluirla en diccionario?
-            }
+            // TODO: En teoría el OWNER nunca debería de ser vacío. En el caso de que lo fuera...
+            // ¿Hay que cargar la persona?
 
             if (!string.IsNullOrEmpty(autorizacion.Roh_crisIdentifier) && !string.IsNullOrEmpty(autorizacion.Roh_title)
                 && !string.IsNullOrEmpty(autorizacion.IdRoh_owner))
@@ -2012,7 +2246,7 @@ namespace Harvester
         /// <param name="grupo"></param>
         /// <returns></returns>
         public static GroupOntology.Group CrearGrupo(Grupo grupo, Dictionary<string, Tuple<string, string>> dicPersonas)
-        {  
+        {
             GroupOntology.Group groupOntology = new GroupOntology.Group();
 
             // Crisidentifier.
@@ -2109,7 +2343,7 @@ namespace Harvester
                         // Carga de la persona.
                         mResourceApi.ChangeOntoly("person");
                         ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
-                        //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                        mResourceApi.LoadComplexSemanticResource(resource, false, false);
 
                         dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                         persona.IdRoh_roleOf = dicPersonas[grupoEquipo.personaRef].Item1;
@@ -2136,9 +2370,6 @@ namespace Harvester
 
             // Relates.
             groupOntology.Vivo_relates = listaPersonas;
-
-            // TODO - palabras clave
-            //groupOntology.Roh_hasKnowledgeArea = grupo.palabrasClave;
 
             return groupOntology;
         }
@@ -2362,7 +2593,7 @@ namespace Harvester
 
                             mResourceApi.ChangeOntoly("person");
                             ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
-                            //mResourceApi.LoadComplexSemanticResource(resource, false, false);
+                            mResourceApi.LoadComplexSemanticResource(resource, false, false);
 
                             dicPersonas[personOntology.Roh_crisIdentifier] = new Tuple<string, string>(resource.GnossId, "");
                             BFO.IdRoh_roleOf = dicPersonas[item.PersonaRef].Item1;
@@ -2382,9 +2613,6 @@ namespace Harvester
                     project.Vivo_relates.Add(BFO);
                     orden++;
                 }
-
-                // TODO: ¿Personas que han pasado por el proyecto o personas activas en un equipo?
-                project.Roh_researchersNumber = pDatos.Equipo.Select(x => x.PersonaRef).GroupBy(x => x).Count();
             }
 
             // Añado las entidades financiadoras que no existan en BBDD

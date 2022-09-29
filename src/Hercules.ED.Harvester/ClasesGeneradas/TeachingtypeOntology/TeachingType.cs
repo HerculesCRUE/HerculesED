@@ -86,7 +86,7 @@ namespace TeachingtypeOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_title.Keys)
 							{
-								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TeachingType_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma])}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/TeachingType_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma])}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Dc_identifier != null)
@@ -105,7 +105,7 @@ namespace TeachingtypeOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_title.Keys)
 							{
-								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma]).ToLower()}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma]).ToLower()}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Dc_identifier != null)

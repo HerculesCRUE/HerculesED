@@ -1,9 +1,9 @@
-﻿namespace OAI_PMH.Models.SGI.Grupos
-{ 
+﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
+{
     /// <summary>
     /// LineaClasificacion
     /// </summary>
-    public class LineaClasificacion : SGI_Base
+    public class LineaClasificacion
     {
         /// <summary>
         /// Id.
