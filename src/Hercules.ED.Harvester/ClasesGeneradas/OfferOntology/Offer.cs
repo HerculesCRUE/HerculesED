@@ -21,7 +21,6 @@ using Group = GroupOntology.Group;
 using Project = ProjectOntology.Project;
 using Patent = PatentOntology.Patent;
 using OfferState = OfferstateOntology.OfferState;
-using FramingSector = FramingsectorOntology.FramingSector;
 using MatureState = MaturestateOntology.MatureState;
 
 namespace OfferOntology
@@ -35,6 +34,18 @@ namespace OfferOntology
 		public Offer(SemanticResourceModel pSemCmsModel, LanguageEnum idiomaUsuario) : base()
 		{
 			this.mGNOSSID = pSemCmsModel.RootEntities[0].Entity.Uri;
+			this.Roh_sectoraplicacion = new List<CategoryPath>();
+			SemanticPropertyModel propRoh_sectoraplicacion = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/sectoraplicacion");
+			if(propRoh_sectoraplicacion != null && propRoh_sectoraplicacion.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_sectoraplicacion.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath roh_sectoraplicacion = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_sectoraplicacion.Add(roh_sectoraplicacion);
+					}
+				}
+			}
 			this.Roh_researchers = new List<Person>();
 			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
 			if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
@@ -95,6 +106,18 @@ namespace OfferOntology
 					}
 				}
 			}
+			this.Roh_areaprocedencia = new List<CategoryPath>();
+			SemanticPropertyModel propRoh_areaprocedencia = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/areaprocedencia");
+			if(propRoh_areaprocedencia != null && propRoh_areaprocedencia.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_areaprocedencia.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath roh_areaprocedencia = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_areaprocedencia.Add(roh_areaprocedencia);
+					}
+				}
+			}
 			this.Roh_patents = new List<Patent>();
 			SemanticPropertyModel propRoh_patents = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/patents");
 			if(propRoh_patents != null && propRoh_patents.PropertyValues.Count > 0)
@@ -118,6 +141,7 @@ namespace OfferOntology
 					this.Roh_lineResearch.Add(propValue.Value);
 				}
 			}
+			this.Roh_advantagesBenefits = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/advantagesBenefits"));
 			SemanticPropertyModel propVivo_freetextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freetextKeyword");
 			this.Vivo_freetextKeyword = new List<string>();
 			if (propVivo_freetextKeyword != null && propVivo_freetextKeyword.PropertyValues.Count > 0)
@@ -148,11 +172,6 @@ if(item0.HasValue){
 				this.Schema_availability = new OfferState(propSchema_availability.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Schema_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/description"));
-			SemanticPropertyModel propRoh_framingSector = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/framingSector");
-			if(propRoh_framingSector != null && propRoh_framingSector.PropertyValues.Count > 0)
-			{
-				this.Roh_framingSector = new FramingSector(propRoh_framingSector.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/name"));
 			SemanticPropertyModel propBibo_status = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/status");
 			if(propBibo_status != null && propBibo_status.PropertyValues.Count > 0)
@@ -165,6 +184,18 @@ if(item0.HasValue){
 		{
 			this.mGNOSSID = pSemCmsModel.Entity.Uri;
 			this.mURL = pSemCmsModel.Properties.FirstOrDefault(p => p.PropertyValues.Any(prop => prop.DownloadUrl != null))?.FirstPropertyValue.DownloadUrl;
+			this.Roh_sectoraplicacion = new List<CategoryPath>();
+			SemanticPropertyModel propRoh_sectoraplicacion = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/sectoraplicacion");
+			if(propRoh_sectoraplicacion != null && propRoh_sectoraplicacion.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_sectoraplicacion.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath roh_sectoraplicacion = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_sectoraplicacion.Add(roh_sectoraplicacion);
+					}
+				}
+			}
 			this.Roh_researchers = new List<Person>();
 			SemanticPropertyModel propRoh_researchers = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/researchers");
 			if(propRoh_researchers != null && propRoh_researchers.PropertyValues.Count > 0)
@@ -225,6 +256,18 @@ if(item0.HasValue){
 					}
 				}
 			}
+			this.Roh_areaprocedencia = new List<CategoryPath>();
+			SemanticPropertyModel propRoh_areaprocedencia = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/areaprocedencia");
+			if(propRoh_areaprocedencia != null && propRoh_areaprocedencia.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_areaprocedencia.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						CategoryPath roh_areaprocedencia = new CategoryPath(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_areaprocedencia.Add(roh_areaprocedencia);
+					}
+				}
+			}
 			this.Roh_patents = new List<Patent>();
 			SemanticPropertyModel propRoh_patents = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/patents");
 			if(propRoh_patents != null && propRoh_patents.PropertyValues.Count > 0)
@@ -248,6 +291,7 @@ if(item0.HasValue){
 					this.Roh_lineResearch.Add(propValue.Value);
 				}
 			}
+			this.Roh_advantagesBenefits = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/advantagesBenefits"));
 			SemanticPropertyModel propVivo_freetextKeyword = pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#freetextKeyword");
 			this.Vivo_freetextKeyword = new List<string>();
 			if (propVivo_freetextKeyword != null && propVivo_freetextKeyword.PropertyValues.Count > 0)
@@ -278,11 +322,6 @@ if(item1.HasValue){
 				this.Schema_availability = new OfferState(propSchema_availability.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
 			this.Schema_description = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/description"));
-			SemanticPropertyModel propRoh_framingSector = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/framingSector");
-			if(propRoh_framingSector != null && propRoh_framingSector.PropertyValues.Count > 0)
-			{
-				this.Roh_framingSector = new FramingSector(propRoh_framingSector.PropertyValues[0].RelatedEntity,idiomaUsuario);
-			}
 			this.Schema_name = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://www.schema.org/name"));
 			SemanticPropertyModel propBibo_status = pSemCmsModel.GetPropertyByPath("http://purl.org/ontology/bibo/status");
 			if(propBibo_status != null && propBibo_status.PropertyValues.Count > 0)
@@ -293,6 +332,9 @@ if(item1.HasValue){
 
 		public virtual string RdfType { get { return "http://www.schema.org/Offer"; } }
 		public virtual string RdfsLabel { get { return "http://www.schema.org/Offer"; } }
+		[RDFProperty("http://w3id.org/roh/sectoraplicacion")]
+		public  List<CategoryPath> Roh_sectoraplicacion { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/researchers")]
 		public  List<Person> Roh_researchers { get; set;}
 		public List<string> IdsRoh_researchers { get; set;}
@@ -313,6 +355,9 @@ if(item1.HasValue){
 		[MinLength(1)]
 		public  List<AvailabilityChangeEvent> Roh_availabilityChangeEvent { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/areaprocedencia")]
+		public  List<CategoryPath> Roh_areaprocedencia { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/patents")]
 		public  List<Patent> Roh_patents { get; set;}
 		public List<string> IdsRoh_patents { get; set;}
@@ -325,6 +370,9 @@ if(item1.HasValue){
 
 		[RDFProperty("http://w3id.org/roh/lineResearch")]
 		public  List<string> Roh_lineResearch { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/advantagesBenefits")]
+		public  string Roh_advantagesBenefits { get; set;}
 
 		[RDFProperty("http://vivoweb.org/ontology/core#freetextKeyword")]
 		public  List<string> Vivo_freetextKeyword { get; set;}
@@ -363,11 +411,6 @@ if(item1.HasValue){
 		[RDFProperty("http://www.schema.org/description")]
 		public  string Schema_description { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/framingSector")]
-		[Required]
-		public  FramingSector Roh_framingSector  { get; set;} 
-		public string IdRoh_framingSector  { get; set;} 
-
 		[RDFProperty("http://www.schema.org/name")]
 		public  string Schema_name { get; set;}
 
@@ -388,6 +431,7 @@ if(item1.HasValue){
 			propList.Add(new StringOntologyProperty("roh:search", this.Roh_search));
 			propList.Add(new StringOntologyProperty("drm:origin", this.Drm_origin));
 			propList.Add(new ListStringOntologyProperty("roh:lineResearch", this.Roh_lineResearch));
+			propList.Add(new StringOntologyProperty("roh:advantagesBenefits", this.Roh_advantagesBenefits));
 			propList.Add(new ListStringOntologyProperty("vivo:freetextKeyword", this.Vivo_freetextKeyword));
 			propList.Add(new StringOntologyProperty("roh:innovation", this.Roh_innovation));
 			propList.Add(new StringOntologyProperty("roh:collaborationSought", this.Roh_collaborationSought));
@@ -399,7 +443,6 @@ if(item1.HasValue){
 			propList.Add(new StringOntologyProperty("roh:application", this.Roh_application));
 			propList.Add(new StringOntologyProperty("schema:availability", this.IdSchema_availability));
 			propList.Add(new StringOntologyProperty("schema:description", this.Schema_description));
-			propList.Add(new StringOntologyProperty("roh:framingSector", this.IdRoh_framingSector));
 			propList.Add(new StringOntologyProperty("schema:name", this.Schema_name));
 			propList.Add(new StringOntologyProperty("bibo:status", this.IdBibo_status));
 		}
@@ -407,6 +450,15 @@ if(item1.HasValue){
 		internal override void GetEntities()
 		{
 			base.GetEntities();
+			if(Roh_sectoraplicacion!=null){
+				foreach(CategoryPath prop in Roh_sectoraplicacion){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityCategoryPath = new OntologyEntity("http://w3id.org/roh/CategoryPath", "http://w3id.org/roh/CategoryPath", "roh:sectoraplicacion", prop.propList, prop.entList);
+				entList.Add(entityCategoryPath);
+				prop.Entity= entityCategoryPath;
+				}
+			}
 			if(Roh_availabilityChangeEvent!=null){
 				foreach(AvailabilityChangeEvent prop in Roh_availabilityChangeEvent){
 					prop.GetProperties();
@@ -414,6 +466,15 @@ if(item1.HasValue){
 					OntologyEntity entityAvailabilityChangeEvent = new OntologyEntity("http://w3id.org/roh/AvailabilityChangeEvent", "http://w3id.org/roh/AvailabilityChangeEvent", "roh:availabilityChangeEvent", prop.propList, prop.entList);
 				entList.Add(entityAvailabilityChangeEvent);
 				prop.Entity= entityAvailabilityChangeEvent;
+				}
+			}
+			if(Roh_areaprocedencia!=null){
+				foreach(CategoryPath prop in Roh_areaprocedencia){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityCategoryPath = new OntologyEntity("http://w3id.org/roh/CategoryPath", "http://w3id.org/roh/CategoryPath", "roh:areaprocedencia", prop.propList, prop.entList);
+				entList.Add(entityCategoryPath);
+				prop.Entity= entityCategoryPath;
 				}
 			}
 		} 
@@ -451,6 +512,40 @@ if(item1.HasValue){
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://www.schema.org/Offer>", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://www.schema.org/Offer\"", list, " . ");
 			AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}>", list, " . ");
+			if(this.Roh_sectoraplicacion != null)
+			{
+			foreach(var item0 in this.Roh_sectoraplicacion)
+			{
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/CategoryPath>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/CategoryPath\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}", "http://w3id.org/roh/sectoraplicacion", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdsRoh_categoryNode != null)
+				{
+					foreach(var item2 in item0.IdsRoh_categoryNode)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/categoryNode", $"<{item2}>", list, " . ");
+					}
+				}
+			}
+			}
+			if(this.Roh_areaprocedencia != null)
+			{
+			foreach(var item0 in this.Roh_areaprocedencia)
+			{
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/CategoryPath>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/CategoryPath\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}", "http://w3id.org/roh/areaprocedencia", $"<{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdsRoh_categoryNode != null)
+				{
+					foreach(var item2 in item0.IdsRoh_categoryNode)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CategoryPath_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/categoryNode", $"<{item2}>", list, " . ");
+					}
+				}
+			}
+			}
 			if(this.Roh_availabilityChangeEvent != null)
 			{
 			foreach(var item0 in this.Roh_availabilityChangeEvent)
@@ -523,6 +618,10 @@ if(item1.HasValue){
 						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}", "http://w3id.org/roh/lineResearch", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
 					}
 				}
+				if(this.Roh_advantagesBenefits != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/advantagesBenefits", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_advantagesBenefits)}\"", list, " . ");
+				}
 				if(this.Vivo_freetextKeyword != null)
 				{
 					foreach(var item2 in this.Vivo_freetextKeyword)
@@ -570,10 +669,6 @@ if(item1.HasValue){
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}",  "http://www.schema.org/description", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_description)}\"", list, " . ");
 				}
-				if(this.IdRoh_framingSector != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}",  "http://w3id.org/roh/framingSector", $"<{this.IdRoh_framingSector}>", list, " . ");
-				}
 				if(this.Schema_name != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/Offer_{ResourceID}_{ArticleID}",  "http://www.schema.org/name", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_name)}\"", list, " . ");
@@ -600,6 +695,54 @@ if(item1.HasValue){
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://xmlns.com/foaf/0.1/firstName", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_name)}\"", list, " . ");
 			AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://gnoss/hasnombrecompleto", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_name)}\"", list, " . ");
 			string search = string.Empty;
+			if(this.Roh_sectoraplicacion != null)
+			{
+			foreach(var item0 in this.Roh_sectoraplicacion)
+			{
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/sectoraplicacion", $"<{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdsRoh_categoryNode != null)
+				{
+					foreach(var item2 in item0.IdsRoh_categoryNode)
+					{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item2;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/categoryNode", $"<{itemRegex}>", list, " . ");
+					}
+				}
+			}
+			}
+			if(this.Roh_areaprocedencia != null)
+			{
+			foreach(var item0 in this.Roh_areaprocedencia)
+			{
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/areaprocedencia", $"<{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.IdsRoh_categoryNode != null)
+				{
+					foreach(var item2 in item0.IdsRoh_categoryNode)
+					{
+					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
+					string itemRegex = item2;
+					if (regex.IsMatch(itemRegex))
+					{
+						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
+					}
+					else
+					{
+						itemRegex = itemRegex.ToLower();
+					}
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/categorypath_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/categoryNode", $"<{itemRegex}>", list, " . ");
+					}
+				}
+			}
+			}
 			if(this.Roh_availabilityChangeEvent != null)
 			{
 			foreach(var item0 in this.Roh_availabilityChangeEvent)
@@ -739,6 +882,10 @@ if(item1.HasValue){
 						AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/lineResearch", $"\"{GenerarTextoSinSaltoDeLinea(item2).ToLower()}\"", list, " . ");
 					}
 				}
+				if(this.Roh_advantagesBenefits != null)
+				{
+					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/advantagesBenefits", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_advantagesBenefits).ToLower()}\"", list, " . ");
+				}
 				if(this.Vivo_freetextKeyword != null)
 				{
 					foreach(var item2 in this.Vivo_freetextKeyword)
@@ -806,20 +953,6 @@ if(item1.HasValue){
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://www.schema.org/description", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_description).ToLower()}\"", list, " . ");
 				}
-				if(this.IdRoh_framingSector != null)
-				{
-					Regex regex = new Regex(@"\/items\/.+_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}_[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}");
-					string itemRegex = this.IdRoh_framingSector;
-					if (regex.IsMatch(itemRegex))
-					{
-						itemRegex = $"http://gnoss/{resourceAPI.GetShortGuid(itemRegex).ToString().ToUpper()}";
-					}
-					else
-					{
-						itemRegex = itemRegex.ToLower();
-					}
-					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://w3id.org/roh/framingSector", $"<{itemRegex}>", list, " . ");
-				}
 				if(this.Schema_name != null)
 				{
 					AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}",  "http://www.schema.org/name", $"\"{GenerarTextoSinSaltoDeLinea(this.Schema_name).ToLower()}\"", list, " . ");
@@ -865,8 +998,8 @@ if(item1.HasValue){
 			{
 				tags = tags.Substring(0, tags.LastIndexOf(','));
 			}
-			string titulo = $"{this.Schema_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Schema_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string titulo = $"{this.Schema_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
+			string descripcion = $"{this.Schema_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
 			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
 			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
 

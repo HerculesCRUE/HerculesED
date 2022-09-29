@@ -77,17 +77,17 @@ namespace CurriculumvitaeOntology
 			{
 				this.Roh_hasMobilePhone = new TelephoneType(propRoh_hasMobilePhone.PropertyValues[0].RelatedEntity,idiomaUsuario);
 			}
-			this.Roh_nie = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/nie"));
-			this.Vivo_researcherId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#researcherId"));
 			this.Vivo_scopusId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#scopusId"));
 			this.Foaf_familyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/familyName"));
-			this.Roh_secondFamilyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/secondFamilyName"));
 			this.Vcard_email = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#email"));
-			this.Foaf_img = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/img"));
 			this.Roh_dni = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/dni"));
-			this.Foaf_homepage = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/homepage"));
-			this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
 			this.Roh_passport = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/passport"));
+			this.Roh_ORCID = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/ORCID"));
+			this.Roh_nie = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/nie"));
+			this.Vivo_researcherId = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://vivoweb.org/ontology/core#researcherId"));
+			this.Roh_secondFamilyName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/secondFamilyName"));
+			this.Foaf_img = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/img"));
+			this.Foaf_homepage = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/homepage"));
 			this.Vcard_birth_date = GetDateValuePropertySemCms(pSemCmsModel.GetPropertyByPath("https://www.w3.org/2006/vcard/ns#birth-date"));
 			this.Foaf_firstName = GetPropertyValueSemCms(pSemCmsModel.GetPropertyByPath("http://xmlns.com/foaf/0.1/firstName"));
 		}
@@ -122,38 +122,38 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/hasMobilePhone")]
 		public  TelephoneType Roh_hasMobilePhone { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/nie")]
-		public  string Roh_nie { get; set;}
-
-		[RDFProperty("http://vivoweb.org/ontology/core#researcherId")]
-		public  string Vivo_researcherId { get; set;}
-
 		[RDFProperty("http://vivoweb.org/ontology/core#scopusId")]
 		public  string Vivo_scopusId { get; set;}
 
 		[RDFProperty("http://xmlns.com/foaf/0.1/familyName")]
 		public  string Foaf_familyName { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/secondFamilyName")]
-		public  string Roh_secondFamilyName { get; set;}
-
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#email")]
 		public  string Vcard_email { get; set;}
-
-		[RDFProperty("http://xmlns.com/foaf/0.1/img")]
-		public  string Foaf_img { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/dni")]
 		public  string Roh_dni { get; set;}
 
-		[RDFProperty("http://xmlns.com/foaf/0.1/homepage")]
-		public  string Foaf_homepage { get; set;}
+		[RDFProperty("http://w3id.org/roh/passport")]
+		public  string Roh_passport { get; set;}
 
 		[RDFProperty("http://w3id.org/roh/ORCID")]
 		public  string Roh_ORCID { get; set;}
 
-		[RDFProperty("http://w3id.org/roh/passport")]
-		public  string Roh_passport { get; set;}
+		[RDFProperty("http://w3id.org/roh/nie")]
+		public  string Roh_nie { get; set;}
+
+		[RDFProperty("http://vivoweb.org/ontology/core#researcherId")]
+		public  string Vivo_researcherId { get; set;}
+
+		[RDFProperty("http://w3id.org/roh/secondFamilyName")]
+		public  string Roh_secondFamilyName { get; set;}
+
+		[RDFProperty("http://xmlns.com/foaf/0.1/img")]
+		public  string Foaf_img { get; set;}
+
+		[RDFProperty("http://xmlns.com/foaf/0.1/homepage")]
+		public  string Foaf_homepage { get; set;}
 
 		[RDFProperty("https://www.w3.org/2006/vcard/ns#birth-date")]
 		public  DateTime? Vcard_birth_date { get; set;}
@@ -167,17 +167,17 @@ namespace CurriculumvitaeOntology
 			base.GetProperties();
 			propList.Add(new StringOntologyProperty("foaf:gender", this.IdFoaf_gender));
 			propList.Add(new StringOntologyProperty("schema:nationality", this.IdSchema_nationality));
-			propList.Add(new StringOntologyProperty("roh:nie", this.Roh_nie));
-			propList.Add(new StringOntologyProperty("vivo:researcherId", this.Vivo_researcherId));
 			propList.Add(new StringOntologyProperty("vivo:scopusId", this.Vivo_scopusId));
 			propList.Add(new StringOntologyProperty("foaf:familyName", this.Foaf_familyName));
-			propList.Add(new StringOntologyProperty("roh:secondFamilyName", this.Roh_secondFamilyName));
 			propList.Add(new StringOntologyProperty("vcard:email", this.Vcard_email));
-			propList.Add(new StringOntologyProperty("foaf:img", this.Foaf_img));
 			propList.Add(new StringOntologyProperty("roh:dni", this.Roh_dni));
-			propList.Add(new StringOntologyProperty("foaf:homepage", this.Foaf_homepage));
-			propList.Add(new StringOntologyProperty("roh:ORCID", this.Roh_ORCID));
 			propList.Add(new StringOntologyProperty("roh:passport", this.Roh_passport));
+			propList.Add(new StringOntologyProperty("roh:ORCID", this.Roh_ORCID));
+			propList.Add(new StringOntologyProperty("roh:nie", this.Roh_nie));
+			propList.Add(new StringOntologyProperty("vivo:researcherId", this.Vivo_researcherId));
+			propList.Add(new StringOntologyProperty("roh:secondFamilyName", this.Roh_secondFamilyName));
+			propList.Add(new StringOntologyProperty("foaf:img", this.Foaf_img));
+			propList.Add(new StringOntologyProperty("foaf:homepage", this.Foaf_homepage));
 			if (this.Vcard_birth_date.HasValue){
 				propList.Add(new DateOntologyProperty("vcard:birth-date", this.Vcard_birth_date.Value));
 				}

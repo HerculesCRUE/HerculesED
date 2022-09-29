@@ -52,6 +52,18 @@ namespace CurriculumvitaeOntology
 					}
 				}
 			}
+			this.Roh_noDuplicateGroup = new List<NoDuplicateGroup>();
+			SemanticPropertyModel propRoh_noDuplicateGroup = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/noDuplicateGroup");
+			if(propRoh_noDuplicateGroup != null && propRoh_noDuplicateGroup.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_noDuplicateGroup.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						NoDuplicateGroup roh_noDuplicateGroup = new NoDuplicateGroup(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_noDuplicateGroup.Add(roh_noDuplicateGroup);
+					}
+				}
+			}
 			this.Roh_exportProfile = new List<ExportProfile>();
 			SemanticPropertyModel propRoh_exportProfile = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/exportProfile");
 			if(propRoh_exportProfile != null && propRoh_exportProfile.PropertyValues.Count > 0)
@@ -140,6 +152,18 @@ namespace CurriculumvitaeOntology
 					}
 				}
 			}
+			this.Roh_noDuplicateGroup = new List<NoDuplicateGroup>();
+			SemanticPropertyModel propRoh_noDuplicateGroup = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/noDuplicateGroup");
+			if(propRoh_noDuplicateGroup != null && propRoh_noDuplicateGroup.PropertyValues.Count > 0)
+			{
+				foreach (SemanticPropertyModel.PropertyValue propValue in propRoh_noDuplicateGroup.PropertyValues)
+				{
+					if(propValue.RelatedEntity!=null){
+						NoDuplicateGroup roh_noDuplicateGroup = new NoDuplicateGroup(propValue.RelatedEntity,idiomaUsuario);
+						this.Roh_noDuplicateGroup.Add(roh_noDuplicateGroup);
+					}
+				}
+			}
 			this.Roh_exportProfile = new List<ExportProfile>();
 			SemanticPropertyModel propRoh_exportProfile = pSemCmsModel.GetPropertyByPath("http://w3id.org/roh/exportProfile");
 			if(propRoh_exportProfile != null && propRoh_exportProfile.PropertyValues.Count > 0)
@@ -208,6 +232,9 @@ namespace CurriculumvitaeOntology
 		[RDFProperty("http://w3id.org/roh/multilangProperties")]
 		public  List<MultilangProperties> Roh_multilangProperties { get; set;}
 
+		[RDFProperty("http://w3id.org/roh/noDuplicateGroup")]
+		public  List<NoDuplicateGroup> Roh_noDuplicateGroup { get; set;}
+
 		[RDFProperty("http://w3id.org/roh/exportProfile")]
 		public  List<ExportProfile> Roh_exportProfile { get; set;}
 
@@ -270,6 +297,15 @@ namespace CurriculumvitaeOntology
 					OntologyEntity entityMultilangProperties = new OntologyEntity("http://w3id.org/roh/MultilangProperties", "http://w3id.org/roh/MultilangProperties", "roh:multilangProperties", prop.propList, prop.entList);
 				entList.Add(entityMultilangProperties);
 				prop.Entity= entityMultilangProperties;
+				}
+			}
+			if(Roh_noDuplicateGroup!=null){
+				foreach(NoDuplicateGroup prop in Roh_noDuplicateGroup){
+					prop.GetProperties();
+					prop.GetEntities();
+					OntologyEntity entityNoDuplicateGroup = new OntologyEntity("http://w3id.org/roh/NoDuplicateGroup", "http://w3id.org/roh/NoDuplicateGroup", "roh:noDuplicateGroup", prop.propList, prop.entList);
+				entList.Add(entityNoDuplicateGroup);
+				prop.Entity= entityNoDuplicateGroup;
 				}
 			}
 			if(Roh_exportProfile!=null){
@@ -397,6 +433,23 @@ namespace CurriculumvitaeOntology
 				if(item0.Roh_entity != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/MultilangProperties_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/entity", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_entity)}\"", list, " . ");
+				}
+			}
+			}
+			if(this.Roh_noDuplicateGroup != null)
+			{
+			foreach(var item0 in this.Roh_noDuplicateGroup)
+			{
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/NoDuplicateGroup_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", $"<http://w3id.org/roh/NoDuplicateGroup>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/NoDuplicateGroup_{ResourceID}_{item0.ArticleID}", "http://www.w3.org/2000/01/rdf-schema#label", $"\"http://w3id.org/roh/NoDuplicateGroup\"", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}{ResourceID}", "http://gnoss/hasEntidad", $"<{resourceAPI.GraphsUrl}items/NoDuplicateGroup_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				AgregarTripleALista($"{resourceAPI.GraphsUrl}items/CV_{ResourceID}_{ArticleID}", "http://w3id.org/roh/noDuplicateGroup", $"<{resourceAPI.GraphsUrl}items/NoDuplicateGroup_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.Roh_noDuplicateId != null)
+				{
+					foreach(var item2 in item0.Roh_noDuplicateId)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/NoDuplicateGroup_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/noDuplicateId", $"\"{GenerarTextoSinSaltoDeLinea(item2)}\"", list, " . ");
+					}
 				}
 			}
 			}
@@ -737,9 +790,17 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedWorkSubmittedConferencesCV_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/inscriptionType", $"<{item3.Roh_relatedWorkSubmittedConferencesCV.IdRoh_inscriptionType}>", list, " . ");
 				}
+				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_googleScholarCitationCount != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedWorkSubmittedConferencesCV_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/googleScholarCitationCount", $"{item3.Roh_relatedWorkSubmittedConferencesCV.Roh_googleScholarCitationCount.Value.ToString()}", list, " . ");
+				}
 				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_correspondingAuthor != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedWorkSubmittedConferencesCV_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/correspondingAuthor", $"\"{item3.Roh_relatedWorkSubmittedConferencesCV.Roh_correspondingAuthor.ToString()}\"", list, " . ");
+				}
+				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_inrecsCitationCount != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedWorkSubmittedConferencesCV_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/inrecsCitationCount", $"{item3.Roh_relatedWorkSubmittedConferencesCV.Roh_inrecsCitationCount.Value.ToString()}", list, " . ");
 				}
 				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_inscriptionTypeOther != null)
 				{
@@ -882,9 +943,9 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedScientificPublicationCV_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/contributionGrade", $"<{item10.Roh_relatedScientificPublicationCV.IdRoh_contributionGrade}>", list, " . ");
 				}
-				if(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults != null)
+				if(item10.Roh_relatedScientificPublicationCV.Roh_googleScholarCitationCount != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedScientificPublicationCV_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/relevantResults", $"\"{GenerarTextoSinSaltoDeLinea(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedScientificPublicationCV_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/googleScholarCitationCount", $"{item10.Roh_relatedScientificPublicationCV.Roh_googleScholarCitationCount.Value.ToString()}", list, " . ");
 				}
 				if(item10.Roh_relatedScientificPublicationCV.Roh_correspondingAuthor != null)
 				{
@@ -893,6 +954,14 @@ namespace CurriculumvitaeOntology
 				if(item10.Roh_relatedScientificPublicationCV.Roh_relevantPublication != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedScientificPublicationCV_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/relevantPublication", $"\"{item10.Roh_relatedScientificPublicationCV.Roh_relevantPublication.ToString()}\"", list, " . ");
+				}
+				if(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedScientificPublicationCV_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/relevantResults", $"\"{GenerarTextoSinSaltoDeLinea(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults)}\"", list, " . ");
+				}
+				if(item10.Roh_relatedScientificPublicationCV.Roh_inrecsCitationCount != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/RelatedScientificPublicationCV_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/inrecsCitationCount", $"{item10.Roh_relatedScientificPublicationCV.Roh_inrecsCitationCount.Value.ToString()}", list, " . ");
 				}
 			}
 				if(item10.Roh_isPublic != null)
@@ -1163,13 +1232,13 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/FreeTextSummaryValuesCV_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summaryTFG", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFG)}\"", list, " . ");
 				}
-				if(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/FreeTextSummaryValuesCV_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summaryTFM", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM)}\"", list, " . ");
-				}
 				if(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summary != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/FreeTextSummaryValuesCV_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summary", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summary)}\"", list, " . ");
+				}
+				if(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/FreeTextSummaryValuesCV_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summaryTFM", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM)}\"", list, " . ");
 				}
 			}
 			}
@@ -1456,14 +1525,6 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://www.schema.org/nationality", $"<{this.Roh_personalData.IdSchema_nationality}>", list, " . ");
 				}
-				if(this.Roh_personalData.Roh_nie != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/nie", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_nie)}\"", list, " . ");
-				}
-				if(this.Roh_personalData.Vivo_researcherId != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#researcherId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_researcherId)}\"", list, " . ");
-				}
 				if(this.Roh_personalData.Vivo_scopusId != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#scopusId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_scopusId)}\"", list, " . ");
@@ -1472,33 +1533,41 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_familyName)}\"", list, " . ");
 				}
-				if(this.Roh_personalData.Roh_secondFamilyName != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_secondFamilyName)}\"", list, " . ");
-				}
 				if(this.Roh_personalData.Vcard_email != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#email", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_email)}\"", list, " . ");
-				}
-				if(this.Roh_personalData.Foaf_img != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/img", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_img)}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Roh_dni != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/dni", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_dni)}\"", list, " . ");
 				}
-				if(this.Roh_personalData.Foaf_homepage != null)
+				if(this.Roh_personalData.Roh_passport != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_homepage)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/passport", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_passport)}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Roh_ORCID != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/ORCID", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_ORCID)}\"", list, " . ");
 				}
-				if(this.Roh_personalData.Roh_passport != null)
+				if(this.Roh_personalData.Roh_nie != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/passport", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_passport)}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/nie", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_nie)}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Vivo_researcherId != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#researcherId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_researcherId)}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Roh_secondFamilyName != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_secondFamilyName)}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Foaf_img != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/img", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_img)}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Foaf_homepage != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/PersonalData_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_homepage)}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Vcard_birth_date != null)
 				{
@@ -1769,6 +1838,20 @@ namespace CurriculumvitaeOntology
 				if(item0.Roh_entity != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/multilangproperties_{ResourceID}_{item0.ArticleID}",  "http://w3id.org/roh/entity", $"\"{GenerarTextoSinSaltoDeLinea(item0.Roh_entity).ToLower()}\"", list, " . ");
+				}
+			}
+			}
+			if(this.Roh_noDuplicateGroup != null)
+			{
+			foreach(var item0 in this.Roh_noDuplicateGroup)
+			{
+				AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://w3id.org/roh/noDuplicateGroup", $"<{resourceAPI.GraphsUrl}items/noduplicategroup_{ResourceID}_{item0.ArticleID}>", list, " . ");
+				if(item0.Roh_noDuplicateId != null)
+				{
+					foreach(var item2 in item0.Roh_noDuplicateId)
+					{
+						AgregarTripleALista($"{resourceAPI.GraphsUrl}items/noduplicategroup_{ResourceID}_{item0.ArticleID}", "http://w3id.org/roh/noDuplicateId", $"\"{GenerarTextoSinSaltoDeLinea(item2).ToLower()}\"", list, " . ");
+					}
 				}
 			}
 			}
@@ -2213,9 +2296,17 @@ namespace CurriculumvitaeOntology
 					}
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedworksubmittedconferencescv_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/inscriptionType", $"<{itemRegex}>", list, " . ");
 				}
+				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_googleScholarCitationCount != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedworksubmittedconferencescv_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/googleScholarCitationCount", $"{item3.Roh_relatedWorkSubmittedConferencesCV.Roh_googleScholarCitationCount.Value.ToString()}", list, " . ");
+				}
 				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_correspondingAuthor != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedworksubmittedconferencescv_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/correspondingAuthor", $"\"{item3.Roh_relatedWorkSubmittedConferencesCV.Roh_correspondingAuthor.ToString().ToLower()}\"", list, " . ");
+				}
+				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_inrecsCitationCount != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedworksubmittedconferencescv_{ResourceID}_{item3.Roh_relatedWorkSubmittedConferencesCV.ArticleID}",  "http://w3id.org/roh/inrecsCitationCount", $"{item3.Roh_relatedWorkSubmittedConferencesCV.Roh_inrecsCitationCount.Value.ToString()}", list, " . ");
 				}
 				if(item3.Roh_relatedWorkSubmittedConferencesCV.Roh_inscriptionTypeOther != null)
 				{
@@ -2414,9 +2505,9 @@ namespace CurriculumvitaeOntology
 					}
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedscientificpublicationcv_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/contributionGrade", $"<{itemRegex}>", list, " . ");
 				}
-				if(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults != null)
+				if(item10.Roh_relatedScientificPublicationCV.Roh_googleScholarCitationCount != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedscientificpublicationcv_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/relevantResults", $"\"{GenerarTextoSinSaltoDeLinea(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedscientificpublicationcv_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/googleScholarCitationCount", $"{item10.Roh_relatedScientificPublicationCV.Roh_googleScholarCitationCount.Value.ToString()}", list, " . ");
 				}
 				if(item10.Roh_relatedScientificPublicationCV.Roh_correspondingAuthor != null)
 				{
@@ -2425,6 +2516,14 @@ namespace CurriculumvitaeOntology
 				if(item10.Roh_relatedScientificPublicationCV.Roh_relevantPublication != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedscientificpublicationcv_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/relevantPublication", $"\"{item10.Roh_relatedScientificPublicationCV.Roh_relevantPublication.ToString().ToLower()}\"", list, " . ");
+				}
+				if(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedscientificpublicationcv_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/relevantResults", $"\"{GenerarTextoSinSaltoDeLinea(item10.Roh_relatedScientificPublicationCV.Roh_relevantResults).ToLower()}\"", list, " . ");
+				}
+				if(item10.Roh_relatedScientificPublicationCV.Roh_inrecsCitationCount != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/relatedscientificpublicationcv_{ResourceID}_{item10.Roh_relatedScientificPublicationCV.ArticleID}",  "http://w3id.org/roh/inrecsCitationCount", $"{item10.Roh_relatedScientificPublicationCV.Roh_inrecsCitationCount.Value.ToString()}", list, " . ");
 				}
 			}
 				if(item10.Roh_isPublic != null)
@@ -2787,13 +2886,13 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/freetextsummaryvaluescv_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summaryTFG", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFG).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/freetextsummaryvaluescv_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summaryTFM", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM).ToLower()}\"", list, " . ");
-				}
 				if(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summary != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/freetextsummaryvaluescv_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summary", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summary).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/freetextsummaryvaluescv_{ResourceID}_{this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.ArticleID}",  "http://w3id.org/roh/summaryTFM", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_freeTextSummary.Roh_freeTextSummaryValues.Roh_freeTextSummaryValuesCV.Roh_summaryTFM).ToLower()}\"", list, " . ");
 				}
 			}
 			}
@@ -3178,14 +3277,6 @@ namespace CurriculumvitaeOntology
 					}
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://www.schema.org/nationality", $"<{itemRegex}>", list, " . ");
 				}
-				if(this.Roh_personalData.Roh_nie != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/nie", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_nie).ToLower()}\"", list, " . ");
-				}
-				if(this.Roh_personalData.Vivo_researcherId != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#researcherId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_researcherId).ToLower()}\"", list, " . ");
-				}
 				if(this.Roh_personalData.Vivo_scopusId != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#scopusId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_scopusId).ToLower()}\"", list, " . ");
@@ -3194,33 +3285,41 @@ namespace CurriculumvitaeOntology
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/familyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_familyName).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_personalData.Roh_secondFamilyName != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_secondFamilyName).ToLower()}\"", list, " . ");
-				}
 				if(this.Roh_personalData.Vcard_email != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "https://www.w3.org/2006/vcard/ns#email", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vcard_email).ToLower()}\"", list, " . ");
-				}
-				if(this.Roh_personalData.Foaf_img != null)
-				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/img", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_img).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Roh_dni != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/dni", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_dni).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_personalData.Foaf_homepage != null)
+				if(this.Roh_personalData.Roh_passport != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_homepage).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/passport", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_passport).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Roh_ORCID != null)
 				{
 					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/ORCID", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_ORCID).ToLower()}\"", list, " . ");
 				}
-				if(this.Roh_personalData.Roh_passport != null)
+				if(this.Roh_personalData.Roh_nie != null)
 				{
-					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/passport", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_passport).ToLower()}\"", list, " . ");
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/nie", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_nie).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Vivo_researcherId != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://vivoweb.org/ontology/core#researcherId", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Vivo_researcherId).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Roh_secondFamilyName != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://w3id.org/roh/secondFamilyName", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Roh_secondFamilyName).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Foaf_img != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/img", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_img).ToLower()}\"", list, " . ");
+				}
+				if(this.Roh_personalData.Foaf_homepage != null)
+				{
+					AgregarTripleALista($"{resourceAPI.GraphsUrl}items/personaldata_{ResourceID}_{this.Roh_personalData.ArticleID}",  "http://xmlns.com/foaf/0.1/homepage", $"\"{GenerarTextoSinSaltoDeLinea(this.Roh_personalData.Foaf_homepage).ToLower()}\"", list, " . ");
 				}
 				if(this.Roh_personalData.Vcard_birth_date != null)
 				{
@@ -3534,8 +3633,8 @@ namespace CurriculumvitaeOntology
 			{
 				tags = tags.Substring(0, tags.LastIndexOf(','));
 			}
-			string titulo = $"{this.Foaf_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
-			string descripcion = $"{this.Foaf_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "''").Replace("|", "#PIPE#")}";
+			string titulo = $"{this.Foaf_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
+			string descripcion = $"{this.Foaf_name.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"").Replace("'", "#COMILLA#").Replace("|", "#PIPE#")}";
 			string tablaDoc = $"'{titulo}', '{descripcion}', '{resourceAPI.GraphsUrl}', '{tags}'";
 			KeyValuePair<Guid, string> valor = new KeyValuePair<Guid, string>(ResourceID, tablaDoc);
 

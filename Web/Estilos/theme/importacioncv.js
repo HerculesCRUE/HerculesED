@@ -65,7 +65,7 @@ var importarCVN = {
 		selectorCamposTexto = `<select hidden name="itemConflict" class="uniqueItemConflict" disabled>
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 									<option value="ig">${GetText('CV_IGNORAR')}</option>
-								</select>`;
+								</select>`;	
 
         return;        
     },
@@ -1018,13 +1018,16 @@ edicionCV.printHtmlListItem= function(id, data) {
 	let isCheck ="";
 	let isConflict = false;
 	let isBlockedFE = false;
-	if (data.isopenaccess) {
+	if (data.isopenaccess) 
+	{
 		openAccess = "open-access";
 	}
-	if(data.idBBDD == null || data.idBBDD == ''){
+	if(data.idBBDD == null || data.idBBDD == '')
+	{
 		isCheck = "checked";
 	}
-	if(data.idBBDD != ""){
+	if(data.idBBDD != "")
+	{
 		isConflict = true;
 	}
 	else
@@ -1056,6 +1059,7 @@ edicionCV.printHtmlListItem= function(id, data) {
 		{
 			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
 		}
+		
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>
 									<div class="content-wrap">
