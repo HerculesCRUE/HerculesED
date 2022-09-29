@@ -404,16 +404,23 @@ where{{
         /// <returns>True si se inserta, false en caso contrario</returns>
         public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string nombreAutor, string orcid)
         {
-            string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pDoi=" + doi + "&pNombreCompletoAutor=" + nombreAutor + "&pOrcid=" + orcid;
-            HttpClient httpClientEstado = new HttpClient();
-            HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{ urlEstado }").Result;
-
-            bool status = responseEstado.IsSuccessStatusCode;
-            if (status)
+            try
             {
-                return bool.Parse(responseEstado.Content.ReadAsStringAsync().Result);
+                string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pDoi=" + doi + "&pNombreCompletoAutor=" + nombreAutor + "&pOrcid=" + orcid;
+                HttpClient httpClientEstado = new HttpClient();
+                HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{urlEstado}").Result;
+
+                bool status = responseEstado.IsSuccessStatusCode;
+                if (status)
+                {
+                    return bool.Parse(responseEstado.Content.ReadAsStringAsync().Result);
+                }
+                return false;
             }
-            return false;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
