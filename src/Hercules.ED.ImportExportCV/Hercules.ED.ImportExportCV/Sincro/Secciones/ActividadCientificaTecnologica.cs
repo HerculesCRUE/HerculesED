@@ -250,7 +250,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         {
                             isBlockedFE = listadoAux.ElementAt(i).isBlockedFE;
                         }
-                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, bloqueados[idBBDD], isBlockedFE: isBlockedFE));
+                        listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false, isBlockedFE: isBlockedFE));
 
                         //listaAux.Add(new SubseccionItem(i, idBBDD, listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, isBlocked: false));
                     }
