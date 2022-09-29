@@ -1018,18 +1018,24 @@ edicionCV.printHtmlListItem= function(id, data) {
 	let isCheck ="";
 	let isConflict = false;
 	let isBlockedFE = false;
-	if (data.isopenaccess) {
+	if (data.isopenaccess) 
+	{
 		openAccess = "open-access";
 	}
-	if(data.idBBDD == null || data.idBBDD == ''){
+	if(data.idBBDD == null || data.idBBDD == '')
+	{
 		isCheck = "checked";
 	}
-	if(data.idBBDD != ""){
+	if(data.idBBDD != "")
+	{
 		isConflict = true;
 	}
 	else
 	{
 		isConflict = false;
+	}
+	if(data.isBlockedFE){
+		isBlockedFE = true;
 	}
 	
 	var htmlListItem = ``;
@@ -1052,10 +1058,15 @@ edicionCV.printHtmlListItem= function(id, data) {
 				htmlListItem += selectorConflictoBloqueado;
 			}	
 		}
-		else 
+		else if(!isBlockedFE)
 		{
 			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
 		}
+		else if(isBlockedFE){
+			//TODO añadir tooltip fuentes externas
+			htmlListItem += `<span class="material-icons-outlined new">mediation</span>`;
+		}
+		
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>
 									<div class="content-wrap">

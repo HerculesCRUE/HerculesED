@@ -72,6 +72,7 @@ namespace Hercules.ED.ImportExportCV.Models
         /// Indica si el objeto esta bloqueado o se puede editar.
         /// </summary>
         public bool isBlocked { get; set; }
+        public bool isBlockedFE { get; set; }
 
         /// <summary>
         /// Bloques pertenecientes al subapartado
@@ -82,6 +83,17 @@ namespace Hercules.ED.ImportExportCV.Models
         /// </summary>
         public List<Entity.Property> propiedadesCV { get; set; }
 
+
+        public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, List<Entity.Property> propiedadesCV, bool isBlocked, bool isBlockedFE)
+        {
+            this.guid = Guid.NewGuid().ToString();
+            this.id = id;
+            this.idBBDD = idBBDD;
+            this.isBlocked = isBlocked;
+            this.isBlockedFE = isBlockedFE;
+            this.propiedades = propiedades;
+            this.propiedadesCV = propiedadesCV;
+        }
 
         public SubseccionItem(int id, string idBBDD, List<Entity.Property> propiedades, List<Entity.Property> propiedadesCV, bool isBlocked = false)
         {
