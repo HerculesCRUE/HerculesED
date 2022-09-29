@@ -1,12 +1,33 @@
 ﻿namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
 {
+    /// <summary>
+    /// InvencionGasto
+    /// </summary>
     public class InvencionGastos : SGI_Base
     {
-        public int id { get; set; }
-        public int invencionId { get; set; }
+        /// <summary>
+        /// Id.
+        /// </summary>
+        public long? id { get; set; }
+        /// <summary>
+        /// InvencionId
+        /// </summary>
+        public long? invencionId { get; set; }
+        /// <summary>
+        /// GastoRef
+        /// </summary>
         public string gastoRef { get; set; }
+        /// <summary>
+        /// Estado.
+        /// </summary>
         public string estado { get; set; }
-        public float importePendienteDeducir { get; set; }
-        public int solicitudProteccion { get; set; }
+        /// <summary>
+        /// ImportePendienteDeducir
+        /// </summary>
+        public float? importePendienteDeducir { get; set; }
+        /// <summary>
+        /// SolicitudProteccion 
+        /// </summary>
+        public long? solicitudProteccion { get; set; }
     }
 }

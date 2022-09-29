@@ -105,7 +105,7 @@ namespace ResearchobjecttypeOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_title.Keys)
 							{
-								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObjectType_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma])}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObjectType_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma])}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Dc_identifier != null)
@@ -116,7 +116,7 @@ namespace ResearchobjecttypeOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_type.Keys)
 							{
-								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObjectType_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/type",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_type[idioma])}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"{resourceAPI.GraphsUrl}items/ResearchObjectType_{ResourceID}_{ArticleID}", "http://purl.org/dc/elements/1.1/type",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_type[idioma])}\"", list,  $"@{idioma} . ");
 							}
 				}
 			return list;
@@ -131,7 +131,7 @@ namespace ResearchobjecttypeOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_title.Keys)
 							{
-								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma]).ToLower()}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/title",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_title[idioma]).ToLower()}\"", list,  $"@{idioma} . ");
 							}
 				}
 				if(this.Dc_identifier != null)
@@ -142,7 +142,7 @@ namespace ResearchobjecttypeOntology
 				{
 							foreach (LanguageEnum idioma in this.Dc_type.Keys)
 							{
-								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/type",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_type[idioma]).ToLower()}\"", list,  $"{idioma} . ");
+								AgregarTripleALista($"http://gnoss/{ResourceID.ToString().ToUpper()}", "http://purl.org/dc/elements/1.1/type",  $"\"{GenerarTextoSinSaltoDeLinea(this.Dc_type[idioma]).ToLower()}\"", list,  $"@{idioma} . ");
 							}
 				}
 			if (listaSearch != null && listaSearch.Count > 0)
