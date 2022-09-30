@@ -415,8 +415,7 @@ function changeUniqueItem(opcion, itemConflict){
 }
 
 function checkUniqueItems(){
-	$('.uniqueItemConflict').closest('.resource').find('input[type="checkbox"]').off('click').on('click', function(e){
-		
+	$('.uniqueItemConflict').closest('.resource').find('input[type="checkbox"]').off('click').on('click', function(e){		
 		var itemConflict = $(this).closest('.resource').find('.uniqueItemConflict');
 		var seleccion = $(this).closest('.resource').find('.uniqueItemConflict option:selected').val();
 		changeUniqueItem(seleccion, itemConflict);
