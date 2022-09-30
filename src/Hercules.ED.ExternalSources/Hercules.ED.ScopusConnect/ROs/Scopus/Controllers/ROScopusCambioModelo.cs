@@ -20,7 +20,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         }
 
-        public List<Publication> getListPublicatio(Root objInicial, string date)
+        public List<Publication> getListPublications(Root objInicial, string date)
         {
             List<Publication> listaResultados = new List<Publication>();
             if (objInicial != null && objInicial.SearchResults != null && objInicial.SearchResults.entry != null)

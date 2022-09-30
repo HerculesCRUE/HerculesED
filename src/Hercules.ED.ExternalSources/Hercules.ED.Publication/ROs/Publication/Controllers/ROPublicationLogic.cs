@@ -497,10 +497,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(publicacion));
                 }
                 else
-                {
-                    jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(publicacion));
-                    // TODO: Cuando se envía PDF, no obtiene etiquetas. Si no se envía, si que obtienen.
-                    //jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(publicacion));
+                {                    
+                    jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(publicacion));
                 }
 
                 if (!string.IsNullOrEmpty(jsonData))
@@ -576,8 +574,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             // TODO: Preparación de ejemplo.
-            string data = JsonConvert.SerializeObject(listaPubsFinal);
-            File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
+            //string data = JsonConvert.SerializeObject(listaPubsFinal);
+            //File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
 
             return listaPubsFinal;
         }

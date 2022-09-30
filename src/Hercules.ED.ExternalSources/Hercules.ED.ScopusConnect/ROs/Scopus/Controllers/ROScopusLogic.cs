@@ -106,7 +106,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 if (!info_publication.StartsWith("{\"service-error\":"))
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                    List<Publication> nuevas = info.getListPublicatio(objInicial, date);
+                    List<Publication> nuevas = info.getListPublications(objInicial, date);
                     listaResultados.AddRange(nuevas);
                     cardinalidad = 0;
                     if (objInicial.SearchResults.entry != null)

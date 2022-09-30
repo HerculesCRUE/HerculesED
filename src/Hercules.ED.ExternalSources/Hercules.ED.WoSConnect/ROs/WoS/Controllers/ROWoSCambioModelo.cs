@@ -384,7 +384,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
                 //listaAreas.Add(area);
 
-                // TODO: Comprobar funcionamiento correcto.
+                // Mapeo de la categoría con la taxonomía unificada.
                 KnowledgeAreas taxonomia = recuperar_taxonomia(area, pTuplaTesauro, pResourceApi);
                 if (taxonomia != null)
                 {
@@ -664,7 +664,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     case BOOK:
                         revista.type = BOOK;
                         break;
-                    default: // TODO: ¿Por defecto son todas Journal?
+                    default:
                         revista.type = JOURNAL;
                         break;
                 }
