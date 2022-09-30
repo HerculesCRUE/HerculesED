@@ -102,7 +102,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 listaRepositorios = JsonConvert.DeserializeObject<List<Repositories>>(result);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -213,7 +213,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 listaContributors = JsonConvert.DeserializeObject<List<Contributors>>(result);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -252,7 +252,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 dicLenguajes = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -388,7 +388,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 {
                     data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }
