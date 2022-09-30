@@ -553,7 +553,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             // Comprobar si está el nombre entre los autores (Editor CV, carga de publicaciones).
             if (!string.IsNullOrEmpty(pNombreCompletoAutor))
             {
-                float umbral = 0.6f;
+                float umbral = 0.5f;
                 bool valido = false;
 
                 foreach (Publication publicacion in listaPubsFinal)
@@ -580,7 +580,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            // TODO: Preparación de ejemplo.
             //string data = JsonConvert.SerializeObject(listaPubsFinal);
             //File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
 
