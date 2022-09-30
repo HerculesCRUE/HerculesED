@@ -1074,6 +1074,12 @@ var edicionCV = {
         accionesPlegarDesplegarModal.init();
 		tooltipsAccionesRecursos.init();
 		tooltipsCV.init();
+		//Añado comportamientos en importacioncv
+		if(typeof checkAllCVWrapper != 'undefined')
+		{
+			checkAllCVWrapper();
+		}
+				
 		$('#navegacion-cv li.nav-item a').tooltip('dispose');
     },
     paginarListado: function(sectionID, pagina) {

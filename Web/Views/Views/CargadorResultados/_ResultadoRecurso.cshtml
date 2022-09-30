@@ -2157,41 +2157,6 @@
             </div>
         </article>
     }
-    else
-    {
-        <article class="resource publicacion" id="resource_@Model.Key" typeof="sioc_t:Item" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:sioc_t="http://rdfs.org/sioc/types#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:sioc="http://rdfs.org/sioc/ns#">
-            <div class="wrap">
-                <div class="middle-wrap">
-                    <div class="title-wrap">
-                        <h2 class="resource-title">
-                            <a href="@Model.CompletCardLink">@Model.Title</a>
-                        </h2>
-                    </div>
-                    <div class="content-wrap flex-column">
-                        <div class="description-wrap">
-                            <div class="desc">
-                                @if ((Model.ViewSettings == null) || (!Model.MapView && (Model.ViewSettings.DescriptionOnList || Model.ViewSettings.DescriptionOnMosaic)) || (Model.MapView && Model.ViewSettings.DescriptionOnMap))
-                                {
-                                    if ((Model.Description.Contains("<p ") || Model.Description.Contains("<p>")) && Model.Description.Contains("</p>"))
-                                    {
-                                        <p>@Html.Raw(Model.Description)</p>
-                                    }
-                                    else
-                                    {
-                                        <p>@Html.Raw(Model.Description)</p>
-                                    }
-                                }
-                                else
-                                {
-                                    <p>El recurso no tiene descripción.</p>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-    }
 }
 
 

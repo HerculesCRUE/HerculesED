@@ -403,11 +403,11 @@ where{{
         /// <param name="nombreAutor"></param>
         /// <param name="orcid"></param>
         /// <returns>True si se inserta, false en caso contrario</returns>
-        public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string nombreAutor, string orcid)
+        public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string idPersona, string nombreCompletoAutor)
         {
             try
             {
-                string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pDoi=" + doi + "&pNombreCompletoAutor=" + nombreAutor + "&pOrcid=" + orcid;
+                string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pIdentificador=doi&pDoi=" + doi + "&pIdPersona=" + idPersona + "&pNombreCompletoAutor=" + nombreCompletoAutor;
                 HttpClient httpClientEstado = new HttpClient();
                 HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{urlEstado}").Result;
 

@@ -33,12 +33,31 @@ namespace Utils
             string select = $@"select distinct ?person ";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
+                                    ?person a <http://xmlns.com/foaf/0.1/Person> .
                                     FILTER(?s=<{pCVID}>)
                                 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person"});
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 return fila["person"].value;
+            }
+            return null;
+        }
+        
+        public static string GetNombreCompletoPersonaCV(string pCVID)
+        {
+            string select = $@"select distinct ?name ";
+            string where = $@" where {{
+                                ?cv a <http://w3id.org/roh/CV> .
+                                ?cv ?cvOf ?person .
+                                ?person a <http://xmlns.com/foaf/0.1/Person> .
+                                ?person <http://xmlns.com/foaf/0.1/name> ?name . 
+                                FILTER(?cv=<{pCVID}>)
+                            }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                return fila["name"].value;
             }
             return null;
         }
@@ -1892,7 +1911,7 @@ namespace Utils
             return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
         }
 
-        public static Person GetPersonaCV(string pCVID)
+        public static Person GetNombrePersonaCV(string pCVID)
         {
             Person persona = new Person();
             try

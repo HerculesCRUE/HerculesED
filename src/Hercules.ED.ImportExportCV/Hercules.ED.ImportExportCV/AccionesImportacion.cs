@@ -17,11 +17,12 @@ namespace Hercules.ED.ImportExportCV
 {
     public class AccionesImportacion : SincroDatos
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        readonly ConfigService mConfiguracion;
 
         public AccionesImportacion(ConfigService Configuracion, string cvID, string fileData) : base(Configuracion, cvID, fileData)
         {
-
+            this.mConfiguracion = Configuracion;
         }
 
         private List<string> listadoSecciones = new List<string>()
@@ -153,7 +154,6 @@ namespace Hercules.ED.ImportExportCV
             List<string> listadoFusionarBBDD = new List<string>();
             List<string> listadoSobrescribirBBDD = new List<string>();
             List<string> listadoTextoLibreBBDD = new List<string>();
-
 
             foreach (IGrouping<string, CvnItemBean> seccionAgrupada in listadoItemsAgrupados)
             {
@@ -287,7 +287,7 @@ namespace Hercules.ED.ImportExportCV
             petitionStatus.totalWorks = listadoDuplicar.Count();
             petitionStatus.actualWork = 0;
 
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus:petitionStatus);
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
@@ -320,6 +320,24 @@ namespace Hercules.ED.ImportExportCV
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
+
+            //Despues de duplicar, fusionar y sobrescribir los ítems, llamo al servicio de FE para buscar aquellos ítems duplicados con DOI.
+            string personId = Utils.Utility.PersonaCV(pCVID);
+            string nombreCompletoPersona = Utils.Utility.GetNombreCompletoPersonaCV(pCVID);
+
+            foreach (string doi in listaDOI)
+            {
+                try
+                {
+                    Utils.UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, personId, nombreCompletoPersona);
+                }
+                catch (Exception ex)
+                {
+                    mResourceApi.Log.Error(ex.Message);
+                    continue;
+                }
+            }
+
         }
     }
 }

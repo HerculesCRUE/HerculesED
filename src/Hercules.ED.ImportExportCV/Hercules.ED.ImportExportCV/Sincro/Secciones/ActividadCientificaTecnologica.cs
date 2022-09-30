@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             listadoDatos = mCvn.GetListadoBloque("060");
             listadoSituacionProfesional = mCvn.GetListadoBloque("010");
             listadoCvn = mCvn.cvnRootBean.ToList();
-            personaCV = Utility.GetPersonaCV(cvID);
+            personaCV = Utility.GetNombrePersonaCV(cvID);
         }
 
         /// <summary>

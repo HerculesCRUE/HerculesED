@@ -72,7 +72,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 sincro.SincroActividadCientificaTecnologica(Secciones, listaDOI: listaDOI);
                 sincro.SincroTextoLibre(Secciones);
 
-                sincro.SincroPublicacionesFuenteExternas(listaDOI);
+                sincro.SincroPublicacionesFuenteExternas(pCVID, listaDOI);
 
                 return Ok();
             }
