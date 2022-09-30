@@ -419,5 +419,16 @@ namespace ImportadorWebCV.Sincro
 
             return listadoSecciones;
         }
+
+        public void SincroPublicacionesFuenteExternas(List<string> listadoDOI)
+        {
+            try
+            {
+            }
+            catch (Exception)
+            {
+
+            }
+        }
     }
 }
