@@ -31,7 +31,6 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
                 Items = new List<CVNObject>()
             };
 
-            //TODO
             //Idioma del curriculum
             UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "000.020.000.070", "spa");
             //Version
