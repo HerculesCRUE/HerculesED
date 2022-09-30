@@ -43,6 +43,8 @@ namespace Hercules.ED.UpdateKeywords
 
                             // 1.- Probamos con el término en "Exact Match".
                             List<string> listaAux = new List<string>() { etiquetaTag.Value.Replace(")", "").Replace("(", "") };
+                                                      
+
                             Dictionary<string, string> dicResultados = new Dictionary<string, string>();
 
                             if (!utilKeywords.ComprobarCaracteres(etiquetaTag.Value))
