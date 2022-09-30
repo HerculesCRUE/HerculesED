@@ -337,7 +337,6 @@ namespace Hercules.ED.ImportExportCV
                     mResourceApi.Log.Error(ex.Message);
                     continue;
                 }
-
             }
 
         }

@@ -420,10 +420,24 @@ namespace ImportadorWebCV.Sincro
             return listadoSecciones;
         }
 
-        public void SincroPublicacionesFuenteExternas(List<string> listadoDOI)
+        public void SincroPublicacionesFuenteExternas(string pCVID, List<string> listaDOI)
         {
             try
             {
+                string personId = Utils.Utility.PersonaCV(pCVID);
+                string nombreCompletoPersona = Utils.Utility.GetNombreCompletoPersonaCV(pCVID);
+
+                foreach (string doi in listaDOI)
+                {
+                    try
+                    {
+                        UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, personId, nombreCompletoPersona);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
             }
             catch (Exception)
             {
