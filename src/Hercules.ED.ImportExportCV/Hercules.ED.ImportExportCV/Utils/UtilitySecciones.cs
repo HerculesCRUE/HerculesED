@@ -407,7 +407,7 @@ where{{
         {
             try
             {
-                string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueueFuentesExternas?pIdentificador=doi&pDoi='" + doi + "'&pIdPersona='" + idPersona + "'&pNombreCompletoAutor='" + nombreCompletoAutor+"'";
+                string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pIdentificador=doi&pDoi=" + doi + "&pIdPersona=" + idPersona + "&pNombreCompletoAutor=" + nombreCompletoAutor;
                 HttpClient httpClientEstado = new HttpClient();
                 HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{urlEstado}").Result;
 
