@@ -321,7 +321,6 @@ namespace Hercules.ED.ImportExportCV
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
 
-            //TODO
             //Despues de duplicar, fusionar y sobrescribir los ítems, llamo al servicio de FE para buscar aquellos ítems duplicados con DOI.
             string personId = Utils.Utility.PersonaCV(pCVID);
             string nombreCompletoPersona = Utils.Utility.GetNombreCompletoPersonaCV(pCVID);
