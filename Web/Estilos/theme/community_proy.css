@@ -371,6 +371,21 @@ body.comunidad.listado.buscador-ofertas-tecnologicas .resource-list.resource-lis
  * Home MA
  */
 
+.home-ma .buscador-container .info-recursos .item a.titulo {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: .26px;
+    color: var(--c-texto-claro);
+    text-decoration: none;
+    display: block;
+    transition: all ease .3s;
+}
+
+.home-ma .buscador-container .info-recursos .item a.titulo:hover {
+    color: var(--c-primario);
+    text-decoration: underline;
+}
+
 
 .home-ma .buscador-container .info-recursos .item {
     flex: 0 0 calc(100% / 6 - 16px);
