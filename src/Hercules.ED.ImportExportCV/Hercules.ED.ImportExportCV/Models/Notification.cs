@@ -43,6 +43,7 @@ namespace Models.NotificationOntology
 		public string IdRoh_owner { get; set; }
 		public DateTime Dct_issued { get; set; }
 		public string Roh_type { get; set; }
+		public string Roh_text { get; set; }
 		public string CvnCode { get; set; }
 
 
@@ -56,6 +57,7 @@ namespace Models.NotificationOntology
 			propList.Add(new DateOntologyProperty("dct:issued", this.Dct_issued));
 			propList.Add(new StringOntologyProperty("roh:type", this.Roh_type));
 			propList.Add(new StringOntologyProperty("roh:cvnCode", this.CvnCode));
+			propList.Add(new StringOntologyProperty("roh:text", this.Roh_text));
 		}
 
 		public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI)
