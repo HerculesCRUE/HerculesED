@@ -2191,7 +2191,6 @@ namespace EditorCV.Models
                         {
                             new EntityEditRepresentativeProperty()
                             {
-                                //TODO multiidioma
                                 name = "Nombre",
                                 route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
                             },
@@ -2218,7 +2217,6 @@ namespace EditorCV.Models
                     {
                         properties = new List<ItemEditSectionRowProperty>(){
                             new ItemEditSectionRowProperty(){
-                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Firma" } },
                                 type = DataTypeEdit.text,
                                 required = true,
@@ -2226,7 +2224,6 @@ namespace EditorCV.Models
                                 width = 2
                             },
                             new ItemEditSectionRowProperty(){
-                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Persona" } },
                                 type = DataTypeEdit.entity,
                                 required = true,
@@ -2285,7 +2282,6 @@ namespace EditorCV.Models
                     {
                         new EntityEditRepresentativeProperty()
                         {
-                            //TODO  multiidioma
                             name = "Nombre",
                             value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://xmlns.com/foaf/0.1/name", pData)),
                             route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
@@ -2533,7 +2529,6 @@ namespace EditorCV.Models
                         {
                             properties = new List<ItemEditSectionRowProperty>(){
                                 new ItemEditSectionRowProperty(){
-                                    //TODO multiidioma
                                     title = new Dictionary<string, string>() { { "es", "Categoria" } },
                                     type = DataTypeEdit.text,
                                     multiple=true,
