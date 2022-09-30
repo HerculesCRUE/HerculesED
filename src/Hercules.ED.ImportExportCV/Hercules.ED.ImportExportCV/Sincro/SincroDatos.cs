@@ -424,8 +424,8 @@ namespace ImportadorWebCV.Sincro
         {
             try
             {
-                string personId = Utils.Utility.PersonaCV(pCVID);
-                string nombreCompletoPersona = Utils.Utility.GetNombreCompletoPersonaCV(pCVID);
+                string personId = Utility.PersonaCV(pCVID);
+                string nombreCompletoPersona = Utility.GetNombreCompletoPersonaCV(pCVID);
 
                 foreach (string doi in listaDOI)
                 {
