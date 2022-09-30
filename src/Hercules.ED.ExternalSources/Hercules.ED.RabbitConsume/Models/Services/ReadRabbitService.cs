@@ -180,7 +180,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             // Listado con los datos.
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
-            if (message != null && message.Count() == 5 && message[0] == "doi" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
+            if (message != null && message.Count() == 4 && message[0] == "doi" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
             {
                 try
                 {
