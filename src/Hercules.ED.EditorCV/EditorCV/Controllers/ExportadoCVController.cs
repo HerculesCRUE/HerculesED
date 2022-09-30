@@ -134,7 +134,7 @@ namespace EditorCV.Controllers
                 peticionCarga.subActualWork = 0;
                 peticionCarga.subTotalWorks = tabTemplatesAux.Count();
                 petitionStatus[petitionID] = peticionCarga;
-                Parallel.ForEach(pListId, new ParallelOptions { MaxDegreeOfParallelism = 6 }, keyValue =>
+                Parallel.ForEach(pListId, new ParallelOptions { MaxDegreeOfParallelism = 5 }, keyValue =>
                 {
                     int index = tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
                     listTabs.TryAdd(index, accionesEdicion.GetTab(_Configuracion, pCVId, keyValue.Value, keyValue.Key, pLang));
