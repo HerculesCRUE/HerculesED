@@ -121,7 +121,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 catch
                 {
                     Log.Information("No se ha podido recuperar los datos de Scopus...");
-                }                
+                }
 
                 try
                 {
@@ -153,7 +153,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 catch
                 {
                     Log.Information("No se ha podido recuperar los datos de Scopus...");
-                }                
+                }
 
                 try
                 {
@@ -463,17 +463,24 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 if (publicacion != null && !string.IsNullOrEmpty(publicacion.title) && publicacion.seqOfAuthors != null && publicacion.seqOfAuthors.Any() && publicacion.title != "One or more validation errors occurred.")
                 {
-                    bool encontrado = false;
-                    foreach (Person persona in publicacion.seqOfAuthors)
+                    if (!string.IsNullOrEmpty(pNombreCompletoAutor))
                     {
-                        if (persona.ORCID == pOrcid || pDoi != null)
+                        bool encontrado = false;
+                        foreach (Person persona in publicacion.seqOfAuthors)
                         {
-                            encontrado = true;
-                            break;
+                            if (persona.ORCID == pOrcid || pDoi != null)
+                            {
+                                encontrado = true;
+                                break;
+                            }
+                        }
+
+                        if (encontrado)
+                        {
+                            listaPubsFinal.Add(publicacion);
                         }
                     }
-
-                    if (encontrado)
+                    else
                     {
                         listaPubsFinal.Add(publicacion);
                     }
@@ -497,7 +504,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(publicacion));
                 }
                 else
-                {                    
+                {
                     jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(publicacion));
                 }
 
@@ -1264,18 +1271,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación con los autores fusionados.</returns>
         public Publication CompararAutores(Publication pPublicacion)
         {
-            // Prioridad --> WOS > OpenAire > SemanticScholar > CrossRef
-            Dictionary<string, List<Models.Person>> dicPersonas = new Dictionary<string, List<Models.Person>>();
-            dicPersonas.Add("WoS", new List<Models.Person>());
-            dicPersonas.Add("OpenAire", new List<Models.Person>());
-            dicPersonas.Add("SemanticScholar", new List<Models.Person>());
-            dicPersonas.Add("CrossRef", new List<Models.Person>());
-
+            // Prioridad: WOS > OpenAire > SemanticScholar
+            Dictionary<string, List<Person>> dicPersonas = new Dictionary<string, List<Person>>();
+            dicPersonas.Add("WoS", new List<Person>());
+            dicPersonas.Add("OpenAire", new List<Person>());
+            dicPersonas.Add("SemanticScholar", new List<Person>());
 
             // Peso.
             double umbral = 0.7;
 
-            foreach (Models.Person persona in pPublicacion.seqOfAuthors)
+            foreach (Person persona in pPublicacion.seqOfAuthors)
             {
                 if (persona.name != null)
                 {
@@ -1283,14 +1288,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            List<Models.Person> listaPersonasDefinitivas = new List<Models.Person>();
+            List<Person> listaPersonasDefinitivas = new List<Person>();
 
             // Unir personas 
-            foreach (Models.Person persona in dicPersonas["WoS"])
+            foreach (Person persona in dicPersonas["WoS"])
             {
-                Models.Person personaFinal = persona;
+                Person personaFinal = persona;
 
-                foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
+                foreach (Person personaCrossRef in dicPersonas["OpenAire"])
                 {
                     // Comprobación por ORCID
                     if (!string.IsNullOrEmpty(personaFinal.ORCID))
@@ -1346,7 +1351,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
 
-                foreach (Models.Person personaSemantic in dicPersonas["SemanticScholar"])
+                foreach (Person personaSemantic in dicPersonas["SemanticScholar"])
                 {
                     // Comprobación por ORCID
                     if (!string.IsNullOrEmpty(personaFinal.ORCID))
@@ -1399,67 +1404,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
                 }
 
-                foreach (Models.Person personaCrossRef in dicPersonas["CrossRef"])
-                {
-                    // Comprobación por ORCID
-                    if (!string.IsNullOrEmpty(personaFinal.ORCID))
-                    {
-                        if (personaFinal.ORCID == personaCrossRef.ORCID)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
-                    }
-
-                    // Comprobración por nombre completo
-                    string nombreCompleto1 = string.Empty;
-                    if (personaFinal.name.given != null && personaFinal.name.given.Any())
-                    {
-                        nombreCompleto1 += personaFinal.name.given[0] + " ";
-                    }
-                    if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
-                    {
-                        nombreCompleto1 += personaFinal.name.familia[0];
-                    }
-                    if (!string.IsNullOrEmpty(nombreCompleto1))
-                    {
-                        personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
-                    }
-
-                    string nombreCompleto2 = string.Empty;
-                    if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
-                    {
-                        nombreCompleto2 += personaCrossRef.name.given[0] + " ";
-                    }
-                    if (personaCrossRef.name.familia != null && personaCrossRef.name.familia.Any())
-                    {
-                        nombreCompleto2 += personaCrossRef.name.familia[0];
-                    }
-                    if (!string.IsNullOrEmpty(nombreCompleto2))
-                    {
-                        personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                    }
-
-                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any())
-                    {
-                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
-                    }
-
-                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
-                    {
-                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
-                    }
-                }
-
                 listaPersonasDefinitivas.Add(personaFinal);
             }
 
             // Encontrar el autor
-            foreach (Models.Person persona in listaPersonasDefinitivas)
+            foreach (Person persona in listaPersonasDefinitivas)
             {
                 Models.Person personaFinal = persona;
 
