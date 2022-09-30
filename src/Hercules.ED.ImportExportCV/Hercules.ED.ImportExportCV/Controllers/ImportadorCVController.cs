@@ -62,13 +62,17 @@ namespace Hercules.ED.ImportExportCV.Controllers
             {
                 SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
 
+                List<string> listaDOI = new List<string>();
+
                 sincro.SincroDatosIdentificacion(Secciones);
                 sincro.SincroDatosSituacionProfesional(Secciones);
                 sincro.SincroFormacionAcademica(Secciones);
                 sincro.SincroActividadDocente(Secciones);
                 sincro.SincroExperienciaCientificaTecnologica(Secciones);
-                sincro.SincroActividadCientificaTecnologica(Secciones);
+                sincro.SincroActividadCientificaTecnologica(Secciones, listaDOI: listaDOI);
                 sincro.SincroTextoLibre(Secciones);
+
+                sincro.SincroPublicacionesFuenteExternas(listaDOI);
 
                 return Ok();
             }
@@ -123,6 +127,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
                 Preimport preimportar = new Preimport();
 
+                List<string> listaDOI = new List<string>();
+
                 sincro.ComprobarSecciones();
                 petitionStatus[petitionID].totalWorks = sincro.GetNumItems();
                 petitionStatus[petitionID].actualWork = 0;
@@ -133,7 +139,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 preimportar.secciones.AddRange(sincro.SincroFormacionAcademica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
                 preimportar.secciones.AddRange(sincro.SincroActividadDocente(Secciones, true, petitionStatus: petitionStatus[petitionID]));
                 preimportar.secciones.AddRange(sincro.SincroExperienciaCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
-                preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID]));
+                preimportar.secciones.AddRange(sincro.SincroActividadCientificaTecnologica(Secciones, true, petitionStatus: petitionStatus[petitionID], listaDOI: listaDOI));
                 preimportar.secciones.AddRange(sincro.SincroTextoLibre(Secciones, true));
                 petitionStatus[petitionID].actualWork = petitionStatus[petitionID].totalWorks;
 

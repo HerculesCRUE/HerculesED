@@ -352,14 +352,16 @@ where {{
                                            FROM <http://gnoss.com/documentformat.owl> ";
                 whereIndicesImpacto = $@"WHERE {{
                                            ?s a bibo:Document.
-                                           OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
-                                           OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }}
-                                           OPTIONAL{{?revista bibo:editor ?editor . }} 
-                                           OPTIONAL{{?revista bibo:issn ?issn . }}
                                            OPTIONAL{{
-                                                ?revista roh:format ?formatoAux .
-                                                ?formatoAux dc:identifier ?formato .
-                                           }} 
+                                                ?s vivo:hasPublicationVenue ?revista . 
+                                                OPTIONAL{{?revista bibo:editor ?editor . }} 
+                                                OPTIONAL{{?revista bibo:issn ?issn . }}
+                                                OPTIONAL{{
+                                                    ?revista roh:format ?formatoAux .
+                                                    ?formatoAux dc:identifier ?formato .
+                                               }} 
+                                            }}
+                                           OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }}                                           
                                            FILTER(?s = <{pIdDocumento}>)
                                        }} ";
 
@@ -384,25 +386,27 @@ where {{
                                         FROM <http://gnoss.com/referencesource.owl> ";
                 whereFuenteImpacto = $@"WHERE {{ 
                                             ?s a bibo:Document . 
-                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
-                                            OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }} 
-                                            OPTIONAL{{
-                                                ?revista roh:impactIndex ?indicesImpacto . 
+                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista .
                                                 OPTIONAL{{
-                                                    ?indicesImpacto roh:impactSource ?impactSource .
-                                                    ?impactSource dc:identifier ?fuenteImpacto . 
-                                                }} 
-                                                ?indicesImpacto roh:year ?anio . 
-                                                ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
-                                                OPTIONAL{{
-                                                    ?indicesImpacto  roh:impactCategory ?categoria . 
-                                                    ?categoria roh:quartile ?cuartil . 
+                                                    ?revista roh:impactIndex ?indicesImpacto . 
                                                     OPTIONAL{{
-                                                        ?categoria roh:publicationPosition ?posicionPublicacion .
-                                                        ?categoria roh:journalNumberInCat ?numeroRevistas .
+                                                        ?indicesImpacto roh:impactSource ?impactSource .
+                                                        ?impactSource dc:identifier ?fuenteImpacto . 
+                                                    }} 
+                                                    ?indicesImpacto roh:year ?anio . 
+                                                    ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
+                                                    OPTIONAL{{
+                                                        ?indicesImpacto  roh:impactCategory ?categoria . 
+                                                        ?categoria roh:quartile ?cuartil . 
+                                                        OPTIONAL{{
+                                                            ?categoria roh:publicationPosition ?posicionPublicacion .
+                                                            ?categoria roh:journalNumberInCat ?numeroRevistas .
+                                                        }}
                                                     }}
                                                 }}
                                             }}
+                                            OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }} 
+                                            
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 

@@ -285,9 +285,7 @@ namespace EditorCV.Models
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
-                    //TODO
                     return int.Parse(fila["crisIdentifier"].value.Split("|").Last());
-                    //return Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier"));
                 }
             }
 

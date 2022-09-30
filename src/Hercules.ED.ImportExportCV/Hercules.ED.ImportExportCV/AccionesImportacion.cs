@@ -271,6 +271,9 @@ namespace Hercules.ED.ImportExportCV
                 }
             }
 
+            //Listado de Identificadores DOI
+            List<string> listaDOI = new List<string>();
+
             //Asigno los cvnRoot dependiendo de cada tipo de acción.
             cvnRootResultBean duplicadosResultBean = new cvnRootResultBean() { cvnRootBean = listadoDuplicar.ToArray() };
             cvnRootResultBean fusionResultBean = new cvnRootResultBean() { cvnRootBean = listadoFusionar.ToArray() };
@@ -288,7 +291,7 @@ namespace Hercules.ED.ImportExportCV
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
 
             //Fusionar
             base.cvn = fusionResultBean;

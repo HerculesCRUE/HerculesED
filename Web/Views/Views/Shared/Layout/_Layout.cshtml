@@ -1,3 +1,4 @@
+@*[security|||shared/layout/_layout.cshtml|||hercules]*@
 @{ CommunityModel Comunidad = Html.GetComunidad();
     UserIdentityModel IdentidadActual = Html.GetIdentidadActual();
     string avisoCookies = Html.GetCookiesWarning();
@@ -307,7 +308,7 @@
                         <a href="#curriculumvitae" data-toggle="collapse" aria-expanded="true">@Html.Translate("CURRICULUM")</a>
                         <div id="curriculumvitae" class="collapse show">
                             <ul class="pmd-sidebar-nav">
-                                <li class="liOtros">
+                                <li class="liOtros liEditarCV">
                                     <a href="javascript: void(0);">@Html.Translate("EDITAR_CV")</a>
                                 </li>
                                 <li class="liAnadir">
