@@ -56,7 +56,7 @@ namespace Harvester
         /// Carga las entidades principales.
         /// </summary>
         public void LoadMainEntities()
-        {
+        {           
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
 
             // TODO: Manu.
@@ -108,9 +108,9 @@ namespace Harvester
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
             }
 
-            // TODO: Fecha actual
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
+            //string fecha = LeerFicheroFecha(_Config);
 
             // Genero los ficheros con los datos a procesar desde la fecha.
             GuardarIdentificadores(_Config, "Organizacion", fecha);
@@ -120,8 +120,7 @@ namespace Harvester
             GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
             GuardarIdentificadores(_Config, "Grupo", fecha);
             GuardarIdentificadores(_Config, "Invencion", fecha);
-
-            // TODO: Leerlo de fichero.
+            
             // Actualizo la última fecha de carga.
             UpdateLastDate(_Config, fecha);
 
@@ -652,6 +651,35 @@ namespace Harvester
             }
         }
 
+        /// <summary>
+        /// Permite leer el fichero de la última fecha de modificación.
+        /// </summary>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
+        public string LeerFicheroFecha(ReadConfig pConfig)
+        {
+            string ficheroFecha = pConfig.GetLastUpdateDate();
+
+            if (!File.Exists(ficheroFecha))
+            {
+                string fecha = DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
+                FileStream fichero = File.Create(ficheroFecha);
+                fichero.Close();
+                File.WriteAllText(pConfig.GetLastUpdateDate(), fecha);
+                return fecha;
+            }
+            else
+            {
+                return File.ReadAllText(ficheroFecha);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene el listado de recursos mediante el crisidentifier.
+        /// </summary>
+        /// <param name="pListaIds">IDs a consultar.</param>
+        /// <param name="pOntologia">Ontología.</param>
+        /// <returns></returns>
         private static Dictionary<string, string> GetDataBBDD(List<string> pListaIds, string pOntologia)
         {
             List<List<string>> listas = SplitList(pListaIds, 1000).ToList();
@@ -1188,8 +1216,6 @@ namespace Harvester
             File.WriteAllText(pConfig.GetLastUpdateDate(), pFecha);
         }
 
-
-        //TODO
         /// <summary>
         /// Devuelve una PersonOntology.Person con los datos pasados en <paramref name="pDatos"/>, la cual se ha almacenado en BBDD
         /// </summary>
