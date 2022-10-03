@@ -140,12 +140,12 @@ namespace EditorCV.Models
                     thread.Start();
                 }
                 //Si estaba validado añadimos en la persona que hay que ignorar el item
-                if (entityBBDD.properties.Exists(x => x.prop == "http://w3id.org/roh/isValidated" && x.values!=null && x.values.Select(x=>x.ToLower()).Contains("true")))
+                if (entityBBDD.properties.Exists(x => x.prop == "http://w3id.org/roh/isValidated" && x.values != null && x.values.Select(x => x.ToLower()).Contains("true")))
                 {
                     Dictionary<string, string> ignorar = new Dictionary<string, string>();
                     //DOI
                     Entity.Property doi = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/doi");
-                    if(doi!=null)
+                    if (doi != null)
                     {
                         ignorar["doi"] = doi.values[0];
                     }
@@ -164,14 +164,14 @@ namespace EditorCV.Models
                     //Otros identificadores
                     Entity.Property nombreIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic");
                     Entity.Property valorIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title");
-                    if(nombreIdentificador!=null & valorIdentificador!=null && nombreIdentificador.values!=null && valorIdentificador.values!=null)
+                    if (nombreIdentificador != null & valorIdentificador != null && nombreIdentificador.values != null && valorIdentificador.values != null)
                     {
-                        foreach(string identificador in nombreIdentificador.values)
+                        foreach (string identificador in nombreIdentificador.values)
                         {
                             string idbase = identificador.Split("@@@")[0];
                             string nombreIdentificadorActual = identificador.Split("@@@")[1];
                             string valor = valorIdentificador.values.FirstOrDefault(x => x.StartsWith(idbase + "@@@"));
-                            if(!string.IsNullOrEmpty(valor))
+                            if (!string.IsNullOrEmpty(valor))
                             {
                                 string valorIdentificadorActual = valor.Split("@@@")[1];
                                 ignorar[nombreIdentificadorActual] = valorIdentificadorActual;
@@ -218,7 +218,7 @@ namespace EditorCV.Models
             UpdateMultilangProperties(propiedadesActuales, propiedadesNuevas, entityCV, entityDestino);
 
             //Si la entidaad no está referenciada desde ningún CV se elimina también la entidad
-            if (mResourceApi.VirtuosoQuery("select ?cv", @$"where{{?cv a <http://w3id.org/roh/CV>. ?cv ?p1 ?lv1.?lv1 ?p2 ?lv2. ?lv2 ?p3 <{ entityDestino}>}}", "curriculumvitae").results.bindings.Count == 0)
+            if (mResourceApi.VirtuosoQuery("select ?cv", @$"where{{?cv a <http://w3id.org/roh/CV>. ?cv ?p1 ?lv1.?lv1 ?p2 ?lv2. ?lv2 ?p3 <{entityDestino}>}}", "curriculumvitae").results.bindings.Count == 0)
             {
                 try
                 {
@@ -743,11 +743,7 @@ namespace EditorCV.Models
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    string select = @$"select distinct ?cv ?cvSection ?person
-                                            from <http://gnoss.com/document.owl> 
-                                            from <http://gnoss.com/researchobject.owl> 
-                                            from <http://gnoss.com/person.owl>    ";
+                    string select = @$"select distinct ?cv ?cvSection ?person ";
                     string where = @$"where{{
                                     {filter}
                                     {{
@@ -776,7 +772,7 @@ namespace EditorCV.Models
                                         ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
                     {
@@ -830,11 +826,7 @@ namespace EditorCV.Models
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    string select = @$"select distinct ?cv ?cvSection ?person
-                                            from <http://gnoss.com/document.owl> 
-                                            from <http://gnoss.com/researchobject.owl> 
-                                            from <http://gnoss.com/person.owl>    ";
+                    string select = @$"select distinct ?cv ?cvSection ?person ";
                     string where = @$"where{{
                                     {filter}
                                     {{
@@ -863,7 +855,7 @@ namespace EditorCV.Models
                                         ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
                                     }}
                                 }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
                     {
@@ -917,11 +909,7 @@ namespace EditorCV.Models
                 while (true)
                 {
                     int limit = 500;
-                    //TODO eliminar from
-                    string select = @$"select distinct ?cv ?cvSection ?item ?person
-                                            from <http://gnoss.com/document.owl> 
-                                            from <http://gnoss.com/researchobject.owl> 
-                                            from <http://gnoss.com/person.owl>  ";
+                    string select = @$"select distinct ?cv ?cvSection ?item ?person ";
                     string where = @$"where{{
                                     {filter} 
                                     {{
@@ -950,7 +938,7 @@ namespace EditorCV.Models
                                         }}                                        
                                     }}
                                 }} order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
                     {
@@ -1012,8 +1000,7 @@ namespace EditorCV.Models
                 List<Notification> notificacionesCargar = notificaciones.ToList();
                 notificacionesCargar.RemoveAll(x => x.IdRoh_owner == personaCV);
                 mResourceApi.ChangeOntoly("notification");
-                //TODO cambiar parallel
-                Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 1 }, notificacion =>
+                Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 5 }, notificacion =>
                 {
                     ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
                     int numIntentos = 0;
@@ -1058,11 +1045,12 @@ namespace EditorCV.Models
                         entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
                         entity.propTitle = "http://xmlns.com/foaf/0.1/name";
                         string name = "";
-                        if (person.name.given_names!=null)  {
+                        if (person.name.given_names != null)
+                        {
                             name = person.name.given_names.value.Trim();
                         }
                         string lastName = "";
-                        if (person.name.family_name!=null)
+                        if (person.name.family_name != null)
                         {
                             lastName = person.name.family_name.value.Trim();
                         }
@@ -2190,7 +2178,7 @@ namespace EditorCV.Models
                 {
                     ComplexOntologyResource resource = ToGnossApiResource(mainEntity);
                     mResourceApi.ModifyComplexOntologyResource(resource, false, true);
-                }                
+                }
             }
 
             //Fusionamos los datos de la entidad auxiliar
@@ -2202,7 +2190,7 @@ namespace EditorCV.Models
                 string selectP = "select ?s ?p ?o ";
                 string whereP = @$"where
 {{
-    <{ pIdPrincipal}> <{pTabSection.presentation.listItemsPresentation.property_cv}> ?s. 
+    <{pIdPrincipal}> <{pTabSection.presentation.listItemsPresentation.property_cv}> ?s. 
     ?s a <{pTabSection.presentation.listItemsPresentation.rdftype_cv}>.
     ?s ?p ?o.
 }}";
@@ -2213,7 +2201,7 @@ namespace EditorCV.Models
                 string selectS = "select ?s ?p ?o ";
                 string whereS = @$"where
 {{
-    <{ pIdSecundaria}> <{pTabSection.presentation.listItemsPresentation.property_cv}> ?s. 
+    <{pIdSecundaria}> <{pTabSection.presentation.listItemsPresentation.property_cv}> ?s. 
     ?s a <{pTabSection.presentation.listItemsPresentation.rdftype_cv}>.
     ?s ?p ?o.
 }}";
@@ -2325,7 +2313,7 @@ namespace EditorCV.Models
             //if (!secEntity.IsValidated())
             //{
             //    //Eliminamos la secundaria del usuario si no está validada
-                RemoveItem(pConfigService, pIdSecundaria);
+            RemoveItem(pConfigService, pIdSecundaria);
             //}
         }
     }

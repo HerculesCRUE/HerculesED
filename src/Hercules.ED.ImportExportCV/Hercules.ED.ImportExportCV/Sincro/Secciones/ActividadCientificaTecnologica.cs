@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             listadoDatos = mCvn.GetListadoBloque("060");
             listadoSituacionProfesional = mCvn.GetListadoBloque("010");
             listadoCvn = mCvn.cvnRootBean.ToList();
-            personaCV = Utility.GetPersonaCV(cvID);
+            personaCV = Utility.GetNombrePersonaCV(cvID);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Publicaciones, documentos científicos y técnicos".
         /// Con el codigo identificativo 060.010.010.000
         /// </summary>
-        public List<SubseccionItem> SincroPublicacionesDocumentos(ConfigService mConfiguracion, bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
+        public List<SubseccionItem> SincroPublicacionesDocumentos(ConfigService mConfiguracion, bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -169,7 +169,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus, listaDOI);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -257,7 +257,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// bloque "Trabajos presentados en congresos nacionales o internacionales".
         /// Con el codigo identificativo 060.010.020.000
         /// </summary>
-        public List<SubseccionItem> SincroTrabajosCongresos(ConfigService mConfiguracion, bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
+        public List<SubseccionItem> SincroTrabajosCongresos(ConfigService mConfiguracion, bool procesar, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
         {
             //Si procesar es false, no hago nada.
             if (!procesar)
@@ -272,7 +272,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedConferences";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosCongresos(mConfiguracion, listadoDatos, petitionStatus);
+            List<Entity> listadoAux = GetTrabajosCongresos(mConfiguracion, listadoDatos, petitionStatus, listaDOI);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -1496,7 +1496,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus)
+        public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos,
+            List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1517,55 +1518,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                             petitionStatus.actualWork++;
                         }
 
-                        //Compruebo si está el DOI asociado a la publicación en BBDD
                         string doi = PublicacionesDocumentosComprobarDOI(item);
-                        string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
-
-                        if (!string.IsNullOrEmpty(idDOIBBDD))
+                        if (!string.IsNullOrEmpty(doi))
                         {
-                            //Si existe alguna publicación con ese DOI no la inserto
-                            listadoCvn.Remove(item);
-                            mCvn.cvnRootBean = listadoCvn.ToArray();
-
-                            continue;
+                            listaDOI.Add(doi);
                         }
-                        //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
-                        else if (!string.IsNullOrEmpty(doi) && personaCV.name != null &&
-                            personaCV.name.nombre_completo != null && !string.IsNullOrEmpty(personaCV.name.nombre_completo.First()))
-                        {
-                            bool insertadoPorFE = false;
-
-                            //Elimino la url en caso de que esté
-                            doi = doi.Replace("http://dx.doi.org/", "");
-                            doi = doi.Replace("http://doi.org/", "");
-                            doi = doi.Replace("https://dx.doi.org/", "");
-                            doi = doi.Replace("https://doi.org/", "");
-                            doi = doi.Replace("doi:", "");
-                            doi = doi.Replace("DOI:", "");
-                            doi = doi.Trim();
-                            string nombreCompleto = personaCV.name.nombre_completo.FirstOrDefault();
-
-                            //Llamada al servicio de Fuentes externas para que cargue los datos.
-                            try
-                            {
-                                insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
-                            }
-                            catch (Exception e)
-                            {
-                                mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
-                            }
-
-                            //Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
-                            if (insertadoPorFE)
-                            {
-                                //TODO - confirmar comportamiento
-                                listadoCvn.Remove(item);
-                                mCvn.cvnRootBean = listadoCvn.ToArray();
-
-                                continue;
-                            }
-                        }
-
 
                         //Carga normal de los datos
 
@@ -1627,15 +1584,23 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
+        /// <summary>
+        /// Devuelve el doi de la publicación
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
         {
             string idDOIValue = "";
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.400");
             foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
             {
-                if (identificador.Type != null && identificador.Type.Equals("040"))
+                if (!string.IsNullOrEmpty(identificador.Type) && identificador.Type.Equals("040") && !string.IsNullOrEmpty(identificador.Value))
                 {
-                    idDOIValue = identificador.Value;
+                    idDOIValue = identificador.Value.Replace("http://dx.doi.org/", "").Replace("http://doi.org/", "");
+                    idDOIValue = idDOIValue.Replace("https://dx.doi.org/", "").Replace("https://doi.org/", "");
+                    idDOIValue = idDOIValue.Replace("doi:", "").Replace("DOI:", "");
+                    idDOIValue = idDOIValue.Trim();
                 }
             }
             return idDOIValue;
@@ -1860,7 +1825,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetTrabajosCongresos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
+        public List<Entity> GetTrabajosCongresos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1869,61 +1834,24 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (CvnItemBean item in listadoTrabajosCongresos)
                 {
+                    Entity entidadAux = new Entity();
+                    entidadAux.properties = new List<Property>();
+                    entidadAux.properties_cv = new List<Property>();
+                    entidadAux.id = Guid.NewGuid().ToString();
+
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
                     }
 
-                    //Compruebo si está el DOI asociado a la publicación en BBDD
                     string doi = TrabajosCongresosComprobarDOI(item);
-                    string idDOIBBDD = UtilitySecciones.GetPublicationDOI(doi);
-
-                    if (!string.IsNullOrEmpty(idDOIBBDD))
+                    if (!string.IsNullOrEmpty(doi))
                     {
-                        //Si existe alguna publicación con ese DOI no la inserto
-                        listadoCvn.Remove(item);
-                        mCvn.cvnRootBean = listadoCvn.ToArray();
-
-                        continue;
-                    }
-                    //Si no hay ninguna publicacion con ese doi, en BBDD, la busco en fuentes externas y añado sus valores en caso de existir.
-                    else if (!string.IsNullOrEmpty(doi) && personaCV.name != null && personaCV.name.nombre_completo != null)
-                    {
-                        bool insertadoPorFE = false;
-
-                        //Elimino la url en caso de que esté
-                        doi = doi.Replace("http://dx.doi.org/", "");
-                        doi = doi.Replace("doi:", "");
-                        string nombreCompleto = personaCV.name.nombre_completo.FirstOrDefault();
-
-                        //Llamada al servicio de Fuentes externas para que cargue los datos.
-                        try
-                        {
-                            insertadoPorFE = UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, nombreCompleto, personaCV.ORCID);
-                        }
-                        catch (Exception e)
-                        {
-                            mResourceApi.Log.Error("Error en la petición al servicio de fuentes externas. Mensaje de eror - " + e.Message + ", stacktrace - " + e.StackTrace);
-                        }
-
-
-                        //Si se ha insertado por Fuentes Externas continuo con el siguiente sino hago una carga normal.
-                        if (insertadoPorFE)
-                        {
-                            //TODO - confirmar comportamiento
-                            listadoCvn.Remove(item);
-                            mCvn.cvnRootBean = listadoCvn.ToArray();
-
-                            continue;
-                        }
+                        listaDOI.Add(doi);
                     }
 
                     //Carga normal de los datos
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
-                    entidadAux.properties_cv = new List<Property>();
-                    entidadAux.id = Guid.NewGuid().ToString();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.010.020.030")))
                     {
                         // Añado las etiquetas enriquecidas
@@ -2001,9 +1929,12 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
             foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
             {
-                if (identificador.Type != null && identificador.Type.Equals("040"))
+                if (!string.IsNullOrEmpty(identificador.Type) && identificador.Type.Equals("040") && !string.IsNullOrEmpty(identificador.Value))
                 {
-                    idDOIValue = identificador.Value;
+                    idDOIValue = identificador.Value.Replace("http://dx.doi.org/", "").Replace("http://doi.org/", "");
+                    idDOIValue = idDOIValue.Replace("https://dx.doi.org/", "").Replace("https://doi.org/", "");
+                    idDOIValue = idDOIValue.Replace("doi:", "").Replace("DOI:", "");
+                    idDOIValue = idDOIValue.Trim();
                 }
             }
             return idDOIValue;

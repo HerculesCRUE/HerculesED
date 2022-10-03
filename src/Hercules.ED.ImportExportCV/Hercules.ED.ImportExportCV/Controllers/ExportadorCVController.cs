@@ -85,7 +85,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
                     return File(resp.dataHandler, "application/pdf", resp.filename);
                 }
-                else if (versionExportacion.Equals("1_4_3")) 
+                else if (versionExportacion.Equals("1_4_3"))
                 {
                     Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
@@ -109,7 +109,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 {
                     throw new Exception("La versión de exportación no es correcta");
                 }
-                   
+
             }
             catch (Exception e)
             {
@@ -156,7 +156,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
             try
             {
-                if (versionExportacion.Equals("1_4_0")) 
+                if (versionExportacion.Equals("1_4_0"))
                 {
                     Export140.GenerarPDFWSClient client = new Export140.GenerarPDFWSClient();
 
@@ -177,7 +177,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
 
                     return File(resp.dataHandler, "application/pdf", resp.filename);
                 }
-                else if(versionExportacion.Equals("1_4_3"))
+                else if (versionExportacion.Equals("1_4_3"))
                 {
                     Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
 
@@ -202,7 +202,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 {
                     throw new Exception("La versión de exportación no es correcta");
                 }
-                
+
             }
             catch (Exception e)
             {

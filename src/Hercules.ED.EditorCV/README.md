@@ -26,8 +26,8 @@
 ## Controladores
 El servicio de editor de CV cuenta con varios controladores:
 
-- EdicionCVController - Controlador encargado de las tareas de edición del CV correspondientes a la obtención de datos.
-- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion de un ítem.
+- EdicionCVController - Controlador encargado de las tareas de edición y presentación del CV correspondientes a la obtención de datos.
+- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion items.
 - EnvioValidacionController - Controlador encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
 - ExportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
 - ImportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la importación de CV.
@@ -43,6 +43,7 @@ Este editor se basa en el editor de CV del [fecyt](https://cvn.fecyt.es/editor/c
 
 Todos los items del CV son editables a excepción de:
   - Items bloqueados: Aquellos items que vengan de fuentes externas y de la sincronización con el SGI. En estos items se podrán editar las propiedades propias del usuario o las propiedades multiidioma que sólo afectan al usuario que está editando el CV.
+  - Campos bloqueados: Determinados campos como el índice de impacto que se calculará automáticamente en función de la revista, año de publicación y categorías de la publicación.
 
 Este documento describe, cómo se realiza la configuración de los distintos ítems de la norma CVN para su posterior incorporación y edición en el currículum vitae del investigador en Hércules ED.
 

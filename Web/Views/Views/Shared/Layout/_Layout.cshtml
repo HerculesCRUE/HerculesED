@@ -232,7 +232,7 @@
 
         @Html.PartialView("../Shared/_Pie")
 
-        @*<aside id="menuLateral" class="menuLateral" role="navigation">
+        <aside id="menuLateral" class="menuLateral" role="navigation">
             <div class="header">
                 <div class="wrap-header">
                     <div class="menu-logo-wrapper">
@@ -265,7 +265,7 @@
                     </li>
                 </ul>
             </div>
-        </aside>*@
+        </aside>
 		<aside id="menuLateralUsuario" class="menuLateral usuario" role="navigation">
             <div class="header">
 				<div class="wrap-header">
@@ -283,19 +283,19 @@
                     <div class="group-collapse alertas hasCV" style="display:none">
                         <div id="alertas-usuario" class="collapse show">
                             <ul class="pmd-sidebar-nav">
-								<li>
+								<li class="liOtros">
                                     @{
                                         string urlHomeED = Comunidad.Url + "/" + Html.Translate("HOMEED_URL");
                                     }
                                     <a href="@urlHomeED">@Html.Translate("PAGINA_INICIAL")</a>
                                 </li>
-                                <li>
+                                <li class="liNotificaciones nuevos">
                                     @{
                                         string urlAlertas = Comunidad.Url + "/" + Html.Translate("ALERTAS_URL");
                                     }
                                     <a href="@urlAlertas">@Html.Translate("ALERTAS")</a>
                                 </li>
-                                <li>
+                                <li class="liOtros">
                                     @{
                                         string urlROs = Comunidad.Url + "/" + Html.Translate("GESTIONROS_URL");
                                     }
@@ -308,16 +308,16 @@
                         <a href="#curriculumvitae" data-toggle="collapse" aria-expanded="true">@Html.Translate("CURRICULUM")</a>
                         <div id="curriculumvitae" class="collapse show">
                             <ul class="pmd-sidebar-nav">
-                                <li class="liEditarCV">
+                                <li class="liOtros liEditarCV">
                                     <a href="javascript: void(0);">@Html.Translate("EDITAR_CV")</a>
                                 </li>
-                                <li class="liImportarCV">
+                                <li class="liAnadir">
                                     @{
                                         string urlImportarCV = Comunidad.Url + "/" + Html.Translate("IMPORTAR_CV_URL");
                                     }
                                     <a href="@urlImportarCV">@Html.Translate("IMPORTAR_CV")</a>
                                 </li>
-                                <li class="liExportarCV">
+                                <li class="liOtros">
                                     @{
                                         string urlExportarCV = Comunidad.Url + "/" + Html.Translate("EXPORTAR_CV_URL");
                                     }
@@ -331,10 +331,10 @@
                         <a href="#recuperar-ros" data-toggle="collapse" aria-expanded="true">@Html.Translate("REDES_INVESTIGACION")</a>
                         <div id="recuperar-ros" class="collapse show">
                             <ul class="pmd-sidebar-nav">
-                                <li class="liRecuperarROS">
+                                <li class="liPublicacion">
                                     <a href="#" onclick="PedirFuentesExternas()">@Html.Translate("RECUPERAR_ROS")</a>
                                 </li>
-                                <li class="liFuentesConfig">
+                                <li class="liConfiguracion">
                                     @{
                                         string urlRedes = Comunidad.Url + "/" + Html.Translate("REDES_URL");
                                     }
@@ -355,7 +355,7 @@
                                     }
                                     <a href="@urlListadoCluster">@Html.Translate("LISTADO_CLUSTERS")</a>
                                 </li>
-                                <li class="liNuevoCluster">
+                                <li class="liCluster">
                                     @{
                                         string urlNuevoCluster = Comunidad.Url + "/" + Html.Translate("NUEVO_CLUSTER_URL");
                                     }
@@ -368,7 +368,7 @@
                         <a href="#anotaciones" data-toggle="collapse" aria-expanded="true">@Html.Translate("GESTION_ANOTACIONES")</a>
                         <div id="anotaciones" class="collapse show">
                             <ul class="pmd-sidebar-nav">
-                                <li class="liAnotaciones">
+                                <li class="liComentarios">
                                     @{
                                         string urlListadoAnotaciones = Comunidad.Url + "/" + Html.Translate("ANOTACIONES_URL");
                                     }
@@ -394,19 +394,19 @@
                         <a href="#ofertatecnologica" data-toggle="collapse" aria-expanded="true">@Html.Translate("OFERTAS_TECNOLOGICAS")</a>
                         <div id="ofertatecnologica" class="collapse show">
                             <ul class="pmd-sidebar-nav">
-                                <li class="liOfertas">
+                                <li class="liOffer">
                                     @{
                                         string urlMisOfertasTecnologicas = Comunidad.Url + "/" + Html.Translate("OFERTA_URL");
                                     }
                                     <a href="@urlMisOfertasTecnologicas">@Html.Translate("MIS_OFERTAS_TECNOLOGICAS")</a>
                                 </li>
-                                <li class="liNuevaOferta">
+                                <li class="liOffer">
                                     @{
                                         string urlCrearOfertaTecnologica = Comunidad.Url + "/" + Html.Translate("NUEVA_OFERTA_TECNOLOGICA_URL");
                                     }
                                     <a href="@urlCrearOfertaTecnologica">@Html.Translate("NUEVA_OFERTA_TECNOLOGICA")</a>
                                 </li>
-                                <li class="liNuevaOferta d-none" id="menu_is_otri">
+                                <li class="liOffer d-none" id="menu_is_otri">
                                     @{
                                         string urlOfertasTecnologicasOtri = Comunidad.Url + "/" + Html.Translate("OFERTA_TECNOLOGICA_OTRI_URL");
                                     }

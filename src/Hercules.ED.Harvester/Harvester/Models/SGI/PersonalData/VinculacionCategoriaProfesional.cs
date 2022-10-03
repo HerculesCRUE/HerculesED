@@ -2,11 +2,18 @@
 
 namespace OAI_PMH.Models.SGI.PersonalData
 {
+    /// <summary>
+    /// Vinculación categoría profesional
+    /// </summary>
     public class VinculacionCategoriaProfesional : SGI_Base
     {
-        public CategoriaProfesional CategoriaProfesional { get; set; }
-        public DateTime? FechaObtencion { get; set; }
-        public DateTime? FechaFin { get; set; }
-        public string TipoPersonal { get; set; }
+        /// <summary>
+        /// Categoría profesional de la persona
+        /// </summary>
+        public CategoriaProfesional categoriaProfesional { get; set; }
+        /// <summary>
+        /// Fecha de obtención de categoría profesional de la persona
+        /// </summary>
+        public DateTime? fechaObtencion { get; set; }
     }
 }

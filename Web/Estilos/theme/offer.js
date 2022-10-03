@@ -1482,14 +1482,22 @@ class StepsOffer {
 
 
 		this.crearOfertaStep4.find('.edmaTextEditor').each((i, el) => {
-			let dataId = el.dataset.id
-			let cId = el.id
+			var dataId = el.dataset.id
+			var cId = el.id
 
-			// Inicializo el editor
-			$(el).off('click').on('click', (event) => {
+			function initTextEditor(el) {
 				if (!el.classList.contains("inicilized")) {
 					_self.objectsTextEditor[dataId] = new TextField(el);
 				}
+			}
+
+			// Inicializo el editor
+			$(el).off('click').on('click', (event) => {
+				initTextEditor(el)
+			})
+			$(el).off('contextmenu').on('contextmenu', (event) => {
+				initTextEditor(el)
+				return false;
 			})
 
 
@@ -3725,24 +3733,22 @@ class OfferList {
 			            }
 			            break;
 			        case "http://gnoss.com/items/offerstate_004":
-			            if (ut == "own") 
-			            {
-			                idEstadoOFerta = "http://gnoss.com/items/offerstate_001";
-			                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
-			                targetModalId = ""
-			                icono = "send"
-			                if (!estados.find(e => e.txtEnviar == this.arrLang["ENVIAR_BORRADOR"])) {
-			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
-			                }
-
-			            }
 			            if (ut == "otri")
 			            {
 			                idEstadoOFerta = "http://gnoss.com/items/offerstate_005";
 			                txtEnviar = this.arrLang["ARCHIVAR"]
 			                targetModalId = ""
 			                icono = "delete"
-			                if (!estados.find(e => e.txtEnviar == this.arrLang["ARCHIVAR"])) {
+			                if
+			                 (!estados.find(e => e.txtEnviar == this.arrLang["ARCHIVAR"])) {
+			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
+			                }
+
+			                idEstadoOFerta = "http://gnoss.com/items/offerstate_001"
+			                txtEnviar = this.arrLang["ENVIAR_BORRADOR"]
+			                targetModalId = ""
+			                icono = "send"
+			                if (!estados.find(e => e.txtEnviar == this.arrLang["ENVIAR_BORRADOR"])) {
 			                	estados.push({ idEstadoOFerta, txtEnviar, icono })
 			                }
 			            }
@@ -3750,7 +3756,7 @@ class OfferList {
 
 			    }
 
-			    if (ut == "own" && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002"))
+			    if (ut == "own" && (estado == "http://gnoss.com/items/offerstate_001" || estado == "http://gnoss.com/items/offerstate_002" || estado == "http://gnoss.com/items/offerstate_003" || estado == "http://gnoss.com/items/offerstate_004"))
 			    {
 			        idEstadoOFerta = "editar";
 			        txtEnviar = this.arrLang["EDITAR"]

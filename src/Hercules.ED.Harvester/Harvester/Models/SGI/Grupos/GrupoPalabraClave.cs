@@ -1,9 +1,9 @@
-﻿namespace OAI_PMH.Models.SGI.Grupos
+﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
     /// <summary>
     /// GrupoPalabraClave
     /// </summary>
-    public class GrupoPalabraClave : SGI_Base
+    public class GrupoPalabraClave
     {
         /// <summary>
         /// Id.

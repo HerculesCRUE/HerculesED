@@ -382,7 +382,6 @@ namespace EditorCV.Models.API.Templates
     {
         /// <summary>
         /// Tipo de la propiedad a pintar
-        /// TODO
         /// </summary>
         public DataTypeListItem type;
         /// <summary>

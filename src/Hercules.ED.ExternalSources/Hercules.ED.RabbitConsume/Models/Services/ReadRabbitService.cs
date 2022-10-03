@@ -180,7 +180,44 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             // Listado con los datos.
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
-            if (message != null && message.Count() == 4 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]) && !string.IsNullOrEmpty(message[3]))
+            if (message != null && message.Count() == 4 && message[0] == "doi" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
+            {
+                try
+                {
+                    // Creación de la URL.
+                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}&pNombreCompletoAutor={1}", message[1], message[3]));
+                    FileLogger.Log($@"Haciendo petición a {url}");
+
+                    // Obtención de datos con la petición.
+                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    FileLogger.Log($@"{DateTime.Now} - Publicación obtenida.");
+
+                    // Creación del directorio si no existe.
+                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
+                    {
+                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
+                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
+                    }
+
+                    // Guardado de la información en formato JSON.
+                    DateTime fecha = DateTime.Now;
+                    string id = message[2].Substring(message[2].LastIndexOf('/') + 1);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
+                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
+                }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                }
+            }
+            else if (message != null && message.Count() == 4 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]) && !string.IsNullOrEmpty(message[3]))
             {
                 try
                 {

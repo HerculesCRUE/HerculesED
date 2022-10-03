@@ -65,7 +65,7 @@ var importarCVN = {
 		selectorCamposTexto = `<select hidden name="itemConflict" class="uniqueItemConflict" disabled>
 									<option value="so" selected="">${GetText('CV_SOBREESCRIBIR')}</option>
 									<option value="ig">${GetText('CV_IGNORAR')}</option>
-								</select>`;
+								</select>`;	
 
         return;        
     },
@@ -415,8 +415,7 @@ function changeUniqueItem(opcion, itemConflict){
 }
 
 function checkUniqueItems(){
-	$('.uniqueItemConflict').closest('.resource').find('input[type="checkbox"]').off('click').on('click', function(e){
-		
+	$('.uniqueItemConflict').closest('.resource').find('input[type="checkbox"]').off('click').on('click', function(e){		
 		var itemConflict = $(this).closest('.resource').find('.uniqueItemConflict');
 		var seleccion = $(this).closest('.resource').find('.uniqueItemConflict option:selected').val();
 		changeUniqueItem(seleccion, itemConflict);
@@ -1018,13 +1017,16 @@ edicionCV.printHtmlListItem= function(id, data) {
 	let isCheck ="";
 	let isConflict = false;
 	let isBlockedFE = false;
-	if (data.isopenaccess) {
+	if (data.isopenaccess) 
+	{
 		openAccess = "open-access";
 	}
-	if(data.idBBDD == null || data.idBBDD == ''){
+	if(data.idBBDD == null || data.idBBDD == '')
+	{
 		isCheck = "checked";
 	}
-	if(data.idBBDD != ""){
+	if(data.idBBDD != "")
+	{
 		isConflict = true;
 	}
 	else
@@ -1056,6 +1058,7 @@ edicionCV.printHtmlListItem= function(id, data) {
 		{
 			htmlListItem += `<span class="material-icons-outlined new">fiber_new</span>`;
 		}
+		
 		htmlListItem += `<span class="material-icons arrow">keyboard_arrow_down</span>
 									</div>
 									<div class="content-wrap">

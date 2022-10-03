@@ -1,4 +1,3 @@
-@*[security|||group|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -454,38 +453,73 @@
                             <div class="col col-12 col-chart">
                                 <div class="wrapCol">
                                     <div class="chart-wrap">
+                                        <div class="acciones-grafico">
+                                            <div class="periodo dropdown dropdown-select">                                                
+                                            </div>
+                                            <div class="vista-red dropdown dropdown-select show">
+                                                <a href="#" class="dropdown-toggle btn btn-outline-grey" role="button" id="dropdownVistaRed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    @Html.Translate("RELACIONES_MIEMBROS"):
+                                                    <span class="texto">@Html.Translate("SI")</span>
+                                                </a>
+                                                <div class="dropdown-menu basic-dropdown dropdown-menu-right" aria-labelledby="dropdownVistaRed" x-placement="bottom-end">
+                                                    <ul class="no-list-style">
+                                                        <li>
+                                                            <a href="javascript: newGrafMember.showRelation = true; newGrafMember.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES_MIEMBROS"):</span>
+                                                                <span class="texto">@Html.Translate("SI")</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript: newGrafMember.showRelation = false; newGrafMember.actualizarGraficaColaboradores();" rel="nofollow" class="item-dropdown activeView">
+                                                                <span class="textoAlternativo">@Html.Translate("RELACIONES_MIEMBROS"):</span>
+                                                                <span class="texto">@Html.Translate("NO")</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="contenido-grafico container">
                                             <div class="row">
                                                 <div class="col col-12 col-md-12">
                                                     <div class="grafico-wrap">
-                                                            <p>@Html.Translate("GRAFICA_MIEMBROS_GRUPO")</p>
-                                                            <div class="graph-controls">
-                                                                <div class="graph-controls-menu">
-                                                                    <ul class="no-list-style d-flex align-items-center">
-                                                                        <li onclick="zoomCyOut()" class="control zoomin-control">
-                                                                            <span class="material-icons">remove</span>
-                                                                        </li>
-                                                                        <li class="control text-control">
-                                                                            <span class="material-icons">search</span>
-                                                                        </li>
-                                                                        <li onclick="zoomCyIn()" class="control zoomout-control">
-                                                                            <span class="material-icons">add</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
+                                                        <p>@Html.Translate("GRAFICA_MIEMBROS_GRUPO")</p>
+                                                        <div class="graph-controls">
+                                                            <div class="graph-controls-menu">
+                                                                <ul class="no-list-style d-flex align-items-center mb-2">
+                                                                    <li class="control remove-control" id="removeNodesMembers">
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span id="numNodosMembers">10</span>&nbsp;@Html.Translate("NODOS")
+                                                                    </li>
+                                                                    <li class="control add-control" id="addNodesMembers">
+                                                                        <span class="material-icons">add</span>
+                                                                    </li>
+                                                                </ul>
+                                                                <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
+                                                                    <li onclick="zoomCyOut()" class="control zoomout-control zoomOut" id="zoomOut">
+                                                                        <span class="material-icons">zoom_out</span>
+                                                                    </li>
+                                                                    <li onclick="zoomCyIn()" class="control zoomin-control zoomIn" id="zoomIn">
+                                                                        <span class="material-icons">zoom_in</span>
+                                                                    </li>
+                                                                </ul>
                                                             </div>
+                                                        </div>
                                                         <div class="chartLegend">
                                                             <div class="dataSetLabels">
-                                                                <div id="actualizarTypesOcultar_member_document" class="labelContainer" onclick="ocultarMostrarDocumentos('membersgraph')">
+                                                                <div id="actualizarTypesOcultar_member_document_m" class="labelContainer" onclick="newGrafMember.actualizarTypesOcultar('relation_document', 'actualizarTypesOcultar_member_document_m')">
                                                                     <div style="background-color: #f8abab;"></div>
                                                                     <p class="dataSetLabel">@Html.Translate("DOCUMENTOS")</p>
                                                                 </div>
-                                                                <div id="actualizarTypesOcultar_member_project" class="labelContainer" onclick="ocultarMostrarProyectos('membersgraph')">
+                                                                <div id="actualizarTypesOcultar_member_project_m" class="labelContainer" onclick="newGrafMember.actualizarTypesOcultar('relation_project', 'actualizarTypesOcultar_member_project_m')">
                                                                     <div style="background-color: #b2cff7;"></div>
                                                                     <p class="dataSetLabel">@Html.Translate("PROYECTOS")</p>
                                                                 </div>
                                                             </div>
-                                                        </div>                                                            
+                                                        </div>
+                                                        <input type="hidden" id="numMembers" value="10" />                                                  
                                                         <div class="wrapCol" id="membersgraph" style="width: 100%; height: 500px;"></div>
                                                     </div>
                                                 </div>
@@ -568,15 +602,12 @@
                                                                     </li>
                                                                 </ul>
 
-                                                                <ul class="no-list-style d-flex align-items-center">
-                                                                    <li onclick="zoomCyOut()" class="control zoomin-control">
-                                                                        <span class="material-icons">remove</span>
+                                                                <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
+                                                                    <li onclick="zoomCyOut()" class="control zoomout-control zoomOut" id="zoomOut">
+                                                                        <span class="material-icons">zoom_out</span>
                                                                     </li>
-                                                                    <li class="control text-control">
-                                                                        <span class="material-icons">search</span>
-                                                                    </li>
-                                                                    <li onclick="zoomCyIn()" class="control zoomout-control">
-                                                                        <span class="material-icons">add</span>
+                                                                    <li onclick="zoomCyIn()" class="control zoomin-control zoomIn" id="zoomIn">
+                                                                        <span class="material-icons">zoom_in</span>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -656,24 +687,21 @@
                                                                 </ul>
                                                                 <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
                                                                     <li onclick="zoomCyOut()" class="control zoomout-control zoomOut" id="zoomOut">
-                                                                        <span class="material-icons">remove</span>
-                                                                    </li>
-                                                                    <li class="control text-control">
-                                                                        <span class="material-icons">search</span>
+                                                                        <span class="material-icons">zoom_out</span>
                                                                     </li>
                                                                     <li onclick="zoomCyIn()" class="control zoomin-control zoomIn" id="zoomIn">
-                                                                        <span class="material-icons">add</span>
+                                                                        <span class="material-icons">zoom_in</span>
                                                                     </li>
                                                                 </ul>
                                                             </div>
                                                         </div>
                                                         <div class="chartLegend">
                                                             <div class="dataSetLabels">
-                                                                <div id="actualizarTypesOcultar_relation_document" class="labelContainer" onclick="actualizarTypesOcultar('relation_document', 'actualizarTypesOcultar_relation_document')">
+                                                                <div id="actualizarTypesOcultar_relation_document" class="labelContainer" onclick="newGrafProj.actualizarTypesOcultar('relation_document', 'actualizarTypesOcultar_relation_document')">
                                                                     <div style="background-color: #f8abab;"></div>
                                                                     <p class="dataSetLabel">@Html.Translate("DOCUMENTOS")</p>
                                                                 </div>
-                                                                <div id="actualizarTypesOcultar_relation_project" class="labelContainer" onclick="actualizarTypesOcultar('relation_project', 'actualizarTypesOcultar_relation_project')">
+                                                                <div id="actualizarTypesOcultar_relation_project" class="labelContainer" onclick="newGrafProj.actualizarTypesOcultar('relation_project', 'actualizarTypesOcultar_relation_project')">
                                                                     <div style="background-color: #b2cff7;"></div>
                                                                     <p class="dataSetLabel">@Html.Translate("PROYECTOS")</p>
                                                                 </div>
@@ -750,7 +778,7 @@
     class CargarGraficaProjectoObj {
         dataCB = {};
         idContenedorCB = "";
-        typesOcultar = ['relation_document', 'relation_project'];
+        typesOcultar = ["relation_project", "relation_document"];
         showRelation = true;
 
         actualizarGraficaColaboradores = () => {
@@ -787,23 +815,26 @@
 
         };
 
+
+        // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
+        actualizarTypesOcultar = (type, id) => {
+
+            if (this.typesOcultar.includes(type)) {
+                this.typesOcultar.splice(newGrafProj.typesOcultar.indexOf(type), 1);
+                document.getElementById(id).classList.add('tachado')
+            } else {
+                this.typesOcultar.push(type)
+                document.getElementById(id).classList.remove('tachado')
+            }
+            this.actualizarGraficaColaboradores();
+        }
+
     };
 
     // Creamos un nuevo objeto
     var newGrafProj = new CargarGraficaProjectoObj();
+    var newGrafMember = new CargarGraficaProjectoObj();
 
-    // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
-    function actualizarTypesOcultar(type, id) {
-
-        if (newGrafProj.typesOcultar.includes(type)) {
-            newGrafProj.typesOcultar.splice(newGrafProj.typesOcultar.indexOf(type), 1);
-            document.getElementById(id).classList.add('tachado')
-        } else {
-            newGrafProj.typesOcultar.push(type)
-            document.getElementById(id).classList.remove('tachado')
-        }
-        newGrafProj.actualizarGraficaColaboradores();
-    }
 
     // función para actualizar la gráfica de colaboradores
     function ActualizarGraficaColaboradores(typesOcultar = [], showRelation = true) {
@@ -828,43 +859,6 @@
         });
     }
 
-    function ocultarMostrarProyectos(id){
-        var graph = $("#"+id);
-        var ocultar = [];
-        $("#actualizarTypesOcultar_member_project").toggleClass("tachado");
-
-
-        if(graph.data("isProyectosHidden")){
-            ocultar.push("relation_project")
-        }
-        if(!graph.data("isDocumentosHidden")){
-            graph.data("isDocumentosHidden",true);
-            ocultar.push("relation_document")
-            
-        }else{
-            graph.data("isDocumentosHidden",false)
-        }
-
-       
-        AjustarGraficaArania(graph.data("data"),id,ocultar);
-    }
-    
-    function ocultarMostrarDocumentos(id){
-         var graph = $("#"+id);
-        var ocultar = [];
-        $("#actualizarTypesOcultar_member_document").toggleClass("tachado");
-         if(graph.data("isDocumentosHidden")){
-            ocultar.push("relation_document")
-        }
-        if(!graph.data("isProyectosHidden")){
-            graph.data("isProyectosHidden",true);
-            ocultar.push("relation_project")
-            
-        }else{
-            graph.data("isProyectosHidden",false)
-        }
-        AjustarGraficaArania(graph.data("data"),id,ocultar);
-    }
     // Datos gráfica áreas temáticas
     function CargarGraficaAreasTematicas(pIdGrupo, idContenedor) {
         var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaAreasTematicas"
@@ -902,26 +896,26 @@
 
 
     // Datos gráfica colaboradores externos.
-    function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor, mostrarCargando = false) {
-        var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
-        if (depuracion) {
-            url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo"
-        }
-        var arg = {};
-        arg.pIdGrupo = pIdGrupo;
-        arg.pParametros = parametros;
-        arg.pMax = $('#numColaboradores').val();
-        $('#' + idContenedor).empty();
-        if (mostrarCargando) {
-            MostrarUpdateProgress();
-        }
-        $.get(url, arg, function (data) {
-            PintarGraficaArania(data, idContenedor);
-            if (mostrarCargando) {
-                OcultarUpdateProgress();
-            }
-        });
-    }
+    // function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor, mostrarCargando = false) {
+    //     var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
+    //     if (depuracion) {
+    //         url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo"
+    //     }
+    //     var arg = {};
+    //     arg.pIdGrupo = pIdGrupo;
+    //     arg.pParametros = parametros;
+    //     arg.pMax = $('#numColaboradores').val();
+    //     $('#' + idContenedor).empty();
+    //     if (mostrarCargando) {
+    //         MostrarUpdateProgress();
+    //     }
+    //     $.get(url, arg, function (data) {
+    //         PintarGraficaArania(data, idContenedor);
+    //         if (mostrarCargando) {
+    //             OcultarUpdateProgress();
+    //         }
+    //     });
+    // }
 
 
 
@@ -1028,8 +1022,32 @@
                 $('#numColaboradores').val((numColaboradores + 10));
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                 CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                 // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
                  newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+            });
+            //Fin métodos colaboradores
+
+            //Métodos members
+            $('#removeNodesMembers').unbind().click(function (e) {
+                e.preventDefault();
+                var numMembers = parseInt($('#numMembers').val());
+                if (numMembers > 10) {
+                    $('#numMembers').val((numMembers - 10));
+                }
+                $('#numNodosMembers').html($('#numMembers').val());
+                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+                // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
+                newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph', true);
+            });
+
+            $('#addNodesMembers').unbind().click(function (e) {
+                e.preventDefault();
+                var numMembers = parseInt($('#numMembers').val());
+                $('#numMembers').val((numMembers + 10));
+                $('#numNodosMembers').html($('#numMembers').val());
+                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+                 // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'membersgraph',true);
+                 newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -1081,7 +1099,8 @@
         }
         else if (comportamientoPaginaGrupo.tabActive == "miembros")
         {
-            CargarGraficaMiembros("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'membersgraph');
+            // CargarGraficaMiembros("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'membersgraph');
+            newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph');
         }
         else if (comportamientoPaginaGrupo.tabActive == "colaboradores")
         {

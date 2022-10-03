@@ -372,15 +372,15 @@ namespace ImportadorWebCV.Sincro
         /// apartado de Actividad científica y tecnológica.
         /// Con el codigo identificativo 060.000.000.000
         /// </summary>
-        public List<Subseccion> SincroActividadCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
+        public List<Subseccion> SincroActividadCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
         {
             ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(UtilitySecciones.CheckSecciones(secciones, "060.010.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(UtilitySecciones.CheckSecciones(secciones, "060.010.060.010"), preimportar, listadoIdBBDD, petitionStatus)));
-            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(mConfiguracion, UtilitySecciones.CheckSecciones(secciones, "060.010.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
-            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(mConfiguracion,UtilitySecciones.CheckSecciones(secciones, "060.010.020.000"), preimportar, listadoIdBBDD, petitionStatus)));
+            listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(mConfiguracion, UtilitySecciones.CheckSecciones(secciones, "060.010.010.000"), preimportar, listadoIdBBDD, petitionStatus, listaDOI: listaDOI)));
+            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(mConfiguracion,UtilitySecciones.CheckSecciones(secciones, "060.010.020.000"), preimportar, listadoIdBBDD, petitionStatus, listaDOI: listaDOI)));
             listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(mConfiguracion,UtilitySecciones.CheckSecciones(secciones, "060.010.030.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(UtilitySecciones.CheckSecciones(secciones, "060.010.040.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(UtilitySecciones.CheckSecciones(secciones, "060.020.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
@@ -418,6 +418,31 @@ namespace ImportadorWebCV.Sincro
             listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"), preimportar, listadoIdBBDD)));
 
             return listadoSecciones;
+        }
+
+        public void SincroPublicacionesFuenteExternas(string pCVID, List<string> listaDOI)
+        {
+            try
+            {
+                string personId = Utility.PersonaCV(pCVID);
+                string nombreCompletoPersona = Utility.GetNombreCompletoPersonaCV(pCVID);
+
+                foreach (string doi in listaDOI)
+                {
+                    try
+                    {
+                        UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, personId, nombreCompletoPersona);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }

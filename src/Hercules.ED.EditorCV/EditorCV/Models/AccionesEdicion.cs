@@ -206,7 +206,8 @@ namespace EditorCV.Models
                 }
                 if (searchText != "")
                 {
-                    filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
+                    filter = $"lcase(?o) like \"{searchText}%\" OR lcase(?o) like \"% {searchText}%\" ";
+                    //filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
                 }
                 string select = "SELECT DISTINCT ?s ?o ";
                 string auxProperties = "";
@@ -219,7 +220,14 @@ namespace EditorCV.Models
                     }
 
                 }
-                string where = $"WHERE {{ ?s a <{pRdfType}>. ?s <{pPropertyAux}> ?o. {auxProperties} FILTER( {filter} ) FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   }}ORDER BY ASC(strlen(?o)) ASC (?o)";
+                string where = @$"WHERE {{
+                                    ?s a <{pRdfType}> .
+                                    ?s <{pPropertyAux}> ?o .
+                                    {auxProperties}
+                                    FILTER( {filter} ) 
+                                    FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   
+                                }}
+                                ORDER BY ASC(strlen(?o)) ASC (?o)";
                 SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
                 if (!pGetEntityID)
                 {
@@ -2183,7 +2191,6 @@ namespace EditorCV.Models
                         {
                             new EntityEditRepresentativeProperty()
                             {
-                                //TODO multiidioma
                                 name = "Nombre",
                                 route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
                             },
@@ -2210,7 +2217,6 @@ namespace EditorCV.Models
                     {
                         properties = new List<ItemEditSectionRowProperty>(){
                             new ItemEditSectionRowProperty(){
-                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Firma" } },
                                 type = DataTypeEdit.text,
                                 required = true,
@@ -2218,7 +2224,6 @@ namespace EditorCV.Models
                                 width = 2
                             },
                             new ItemEditSectionRowProperty(){
-                                //TODO multiidioma
                                 title = new Dictionary<string, string>() { { "es", "Persona" } },
                                 type = DataTypeEdit.entity,
                                 required = true,
@@ -2277,7 +2282,6 @@ namespace EditorCV.Models
                     {
                         new EntityEditRepresentativeProperty()
                         {
-                            //TODO  multiidioma
                             name = "Nombre",
                             value = string.Join(", ", GetPropValues(id, "http://www.w3.org/1999/02/22-rdf-syntax-ns#member@@@http://xmlns.com/foaf/0.1/name", pData)),
                             route = "http://www.w3.org/1999/02/22-rdf-syntax-ns#member||person||http://xmlns.com/foaf/0.1/name"
@@ -2525,7 +2529,6 @@ namespace EditorCV.Models
                         {
                             properties = new List<ItemEditSectionRowProperty>(){
                                 new ItemEditSectionRowProperty(){
-                                    //TODO multiidioma
                                     title = new Dictionary<string, string>() { { "es", "Categoria" } },
                                     type = DataTypeEdit.text,
                                     multiple=true,

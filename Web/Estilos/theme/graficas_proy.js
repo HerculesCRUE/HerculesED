@@ -11,6 +11,15 @@ String.prototype.width = function (font) {
 var paginas = [];
 var grupos = {};
 var callbacks = {};
+var resizeGraficas = [];
+$(window).resize(function() {
+    clearTimeout(this.resizeTimer);
+    this.resizeTimer = setTimeout(function() {
+        for (var i = 0; i < resizeGraficas.length; i++) {
+            resizeGraficas[i]();
+        }
+    }, 150);
+});
 class Pagina {
     constructor(title, id, pContenedor, data, userId, pFiltroFacetas = "") {
         this.title = title;
@@ -858,10 +867,10 @@ class GraficaHorizontal extends GraficaBarras {
 
         // mover
         this.data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis);
-        $(window).bind('resize', function () {// evento que se dispara al reescalar el navegador o hacer zoom (esto desalinea los ejes)
-            this.reDrawChart(myChart, mainAxis, secondaryAxis);
 
-        });
+        // Resize
+        let that = this;
+        resizeGraficas.push(() => that.reDrawChart(myChart, mainAxis, secondaryAxis));
     }
     reDrawChart(myChart, mainAxis, secondaryAxis) {
         var legend = $(myChart.canvas).parents(".chartWrapper").find(".chartLegend")[0];
@@ -991,9 +1000,12 @@ class GraficaVertical extends GraficaBarras {
             $(legend).append(secondaryAxis);
         }
 
-
+        // Mover
         this.data.options.animation.onProgress = () => this.reDrawChart(myChart, mainAxis, secondaryAxis, legend);
 
+        // Resize
+        let that = this;
+        resizeGraficas.push(() => that.reDrawChart(myChart, mainAxis, secondaryAxis, legend));
     }
     reDrawChart(myChart, mainAxis, secondaryAxis, legend) {
 
