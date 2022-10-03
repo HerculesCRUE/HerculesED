@@ -2,13 +2,11 @@
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using Harvester.Models;
 using Harvester.Models.ModelsBBDD;
 using Harvester.Models.RabbitMQ;
 using Harvester.Models.SGI.Autorizaciones;
 using Hercules.MA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
-using OAI_PMH.Models.SGI;
 using OAI_PMH.Models.SGI.GruposInvestigacion;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
@@ -23,7 +21,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Utilidades;
 
