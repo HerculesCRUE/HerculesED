@@ -99,20 +99,25 @@ namespace EditorCV.Models
                 //Inserto o actualizo.
                 if (responseEstado.StatusCode == HttpStatusCode.NotFound)
                 {
-                    MetadataEntry metadataEntry = new MetadataEntry();
+                    //Colección con handle
+                    urlEstado = _Configuracion.GetUrlDSpace() + "/collections/" + _Configuracion.GetCollectionDSpace() + "/items";
+                    MetadataEntry metadataEntry = new MetadataEntry("dc.title", tituloRecurso, "es_ES");
 
                     //En caso de no estar lo inserto
                     HttpClient httpClientInserta = new HttpClient();
-                    httpClientInserta.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", tokenAuth);
+                    httpClientInserta.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
                     HttpResponseMessage responseInserta = httpClientInserta.PostAsJsonAsync($"{urlEstado}", metadataEntry).Result;
                 }
                 else if (responseEstado.StatusCode == HttpStatusCode.OK)
                 {
                     MetadataEntry[] metadataEntryArray = new MetadataEntry[15];
 
+
+                    urlEstado = _Configuracion.GetUrlDSpace() + "/collections/" + _Configuracion.GetCollectionDSpace() + "/items/" + idRecursoDspace;
+
                     //Si está en la biblioteca actualizo los datos
                     HttpClient httpClientActualiza = new HttpClient();
-                    httpClientActualiza.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", tokenAuth);
+                    httpClientActualiza.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
                     HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadataEntryArray).Result;
                 }
                 else
@@ -140,6 +145,12 @@ namespace EditorCV.Models
             {
                 string urlStatus = _Configuracion.GetUrlDSpace() + "/status";
                 HttpClient httpClientStatus = new HttpClient();
+
+                if (!string.IsNullOrEmpty(tokenAuth))
+                {
+                    httpClientStatus.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
+                }
+
                 HttpResponseMessage responseStatus = httpClientStatus.GetAsync($"{urlStatus}").Result;
                 if (responseStatus.IsSuccessStatusCode)
                 {
@@ -180,9 +191,7 @@ namespace EditorCV.Models
                 var result = httpClientLoguin.PostAsync(urlLogin, byteContent).Result;
 
                 //Asigno el token
-                //TODO
-                tokenAuth = "";
-
+                tokenAuth = result.Content.ReadAsStringAsync().Result;
             }
             catch (Exception)
             {
