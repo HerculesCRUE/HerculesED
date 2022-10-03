@@ -419,5 +419,33 @@ namespace ImportadorWebCV.Sincro
 
             return listadoSecciones;
         }
+
+        public void SincroPublicacionesFuenteExternas(string pCVID, List<string> listaDOI)
+        {
+            try
+            {
+                string personId = Utility.PersonaCV(pCVID);
+                string nombreCompletoPersona = Utility.GetNombreCompletoPersonaCV(pCVID);
+
+                //Elimino los DOI que se encuentren en BBDD.
+                listaDOI = UtilitySecciones.ComprobarDOIenBBDD(listaDOI);
+
+                foreach (string doi in listaDOI)
+                {
+                    try
+                    {
+                        UtilitySecciones.EnvioFuentesExternasDOI(mConfiguracion, doi, personId, nombreCompletoPersona);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
     }
 }

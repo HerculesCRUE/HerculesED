@@ -637,11 +637,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                             {
                                 foreach (Persona autor in entityXML.autores)
                                 {
+                                    string idPersonaAux = idPersona;
                                     //No notifico a quien suben el documento
                                     if (equivalencias.ContainsKey(idPersona))
                                     {
-                                        idPersona = equivalencias[idPersona].First();
-                                        if (autor.ID == idPersona.Split("|").Last())
+                                        idPersonaAux = equivalencias[idPersona].First();
+                                        if (autor.ID == idPersonaAux.Split("|").Last())
                                         {
                                             continue;
                                         }
@@ -683,11 +684,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                         {
                             foreach (Persona autor in entityXML.autores)
                             {
+                                string idPersonaAux = idPersona;
                                 //No notifico a quien suben el documento
                                 if (equivalencias.ContainsKey(idPersona))
                                 {
-                                    idPersona = equivalencias[idPersona].First();
-                                    if (autor.ID == idPersona.Split("|").Last())
+                                    idPersonaAux = equivalencias[idPersona].First();
+                                    if (autor.ID == idPersonaAux.Split("|").Last())
                                     {
                                         continue;
                                     }
@@ -728,11 +730,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                         {
                             foreach (Persona autor in entityXML.autores)
                             {
+                                string idPersonaAux = idPersona;
                                 //No notifico a quien suben el documento
                                 if (equivalencias.ContainsKey(idPersona))
                                 {
-                                    idPersona = equivalencias[idPersona].First();
-                                    if (autor.ID == idPersona.Split("|").Last())
+                                    idPersonaAux = equivalencias[idPersona].First();
+                                    if (autor.ID == idPersonaAux.Split("|").Last())
                                     {
                                         continue;
                                     }
@@ -898,6 +901,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Enviamos las notificaciones
             List<Notification> notificacionesCargar = notificaciones.ToList();
             notificacionesCargar.RemoveAll(x => x.IdRoh_owner == idPersona);
+
             mResourceApi.ChangeOntoly("notification");
             Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 6 }, notificacion =>
             {

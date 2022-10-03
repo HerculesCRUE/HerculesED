@@ -1078,7 +1078,6 @@ class StepsCluster {
 		if (name == "" && this.prevSavedCluster != undefined) {
 			_self.listadoPerfilesGuardados.find("input[selected]")
 
-
 			let htmlRes = ''
 			let arrayItems = [] // Array para guardar los items que se van a usar
 			this.listadoPerfilesGuardados.find('input.at-input').each((i, e) => {
@@ -1097,7 +1096,6 @@ class StepsCluster {
 					arrayItems.push(perfilId)
 				}
 			})
-
 
 		} else {
 			this.addPerfilSearch()

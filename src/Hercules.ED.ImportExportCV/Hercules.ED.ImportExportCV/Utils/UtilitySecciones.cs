@@ -396,6 +396,41 @@ where{{
         }
 
         /// <summary>
+        /// Comprueba los DOI en BBDD y los elimina de <paramref name="listadoDOI"/> si están.
+        /// </summary>
+        /// <param name="listadoDOI"></param>
+        /// <returns></returns>
+        public static List<string> ComprobarDOIenBBDD(List<string> listadoDOI)
+        {
+            List<string> listaDOIenBBDD = new();
+
+            string select = $@"select ?doi";
+            string where = $@"where{{
+                                ?document a <http://purl.org/ontology/bibo/Document> .
+                                ?document <http://purl.org/ontology/bibo/doi> ?doi . 
+                                FILTER( ?doi in ('{string.Join("','", listadoDOI)}') )
+                            }}";
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
+            if (sparqlObject.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                {
+                    if (fila.ContainsKey("doi") && !string.IsNullOrEmpty(fila["doi"].value))
+                    {
+                        listaDOIenBBDD.Add(fila["doi"].value);
+                    }
+                }
+            }
+            //Elimino los DOI que aparecen en BBDD
+            foreach (string doi in listaDOIenBBDD)
+            {
+                listadoDOI.Remove(doi);
+            }
+
+            return listadoDOI;
+        }
+
+        /// <summary>
         /// Llamada al servicio de Fuentes externas para la inserción de la publicación con doi <paramref name="doi"/> del autor <paramref name="userId"/>
         /// </summary>
         /// <param name="mConfiguracion"></param>
@@ -403,11 +438,11 @@ where{{
         /// <param name="nombreAutor"></param>
         /// <param name="orcid"></param>
         /// <returns>True si se inserta, false en caso contrario</returns>
-        public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string nombreAutor, string orcid)
+        public static bool EnvioFuentesExternasDOI(ConfigService mConfiguracion, string doi, string idPersona, string nombreCompletoAutor)
         {
             try
             {
-                string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pDoi=" + doi + "&pNombreCompletoAutor=" + nombreAutor + "&pOrcid=" + orcid;
+                string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pIdentificador=doi&pDoi=" + doi + "&pIdPersona=" + idPersona + "&pNombreCompletoAutor=" + nombreCompletoAutor;
                 HttpClient httpClientEstado = new HttpClient();
                 HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{urlEstado}").Result;
 
