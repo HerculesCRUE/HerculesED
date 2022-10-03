@@ -100,13 +100,14 @@ class Pagina {
     }
 }
 class GraficaBase {
-    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, tipo = null) {
+    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, tipo = null, hideLegend = false) {
         this.idPagina = idPagina;
         this.idGrafica = idGrafica;
         this.filtroFacetas = filtroFacetas;
         this.titulo = titulo || data.options.plugins.title.text;
         this.data = data;
         this.tipo = tipo;
+        this.hideLegend = hideLegend;
         this.callbacks = {};
         this.plugins = {};
         this.globalPlugins = [];
@@ -156,6 +157,18 @@ class GraficaBase {
         }
     }
     pintarGrafica(canvas, cambiarFont = true) {
+        let fontSize = 16;
+        if (this instanceof GraficaCircular) {
+            canvas = canvas.canvas;
+        }
+        while (fontSize > 5 && this.titulo.width("bold " + fontSize + "px Helvetica") > $(canvas).parents(".grafica").width() - 200) {
+            fontSize--;
+        }
+        this.data.options.plugins.title.font = {
+            size: fontSize,
+            style: 'bold'
+        }
+
         this.addPlugin("legend", {
             onHover: (e) => {
                 e.chart.canvas.style.cursor = 'pointer';
@@ -164,6 +177,9 @@ class GraficaBase {
                 e.chart.canvas.style.cursor = 'default';
             }
         });
+        if (this.hideLegend) {
+            this.addPlugin("legend", { display: false });
+        }
         this.globalPlugins.push({
             id: 'custom_canvas_background_color',
             beforeDraw: (chart) => {
@@ -177,18 +193,7 @@ class GraficaBase {
         if ($(canvas).parents(".zoom").length == 0) {
             this.pluginsCallback();
         }
-        if (cambiarFont) {
-            let fontSize = 12;
-            if ($(canvas).parents('div.grafica').length > 0) {
-                while (fontSize > 1 && this.titulo.width("bold " + fontSize + "px Helvetica") > $(canvas).parents('div.grafica').width() - 200) {
-                    fontSize--;
-                }
-            }
-            this.data.options.plugins.title.font = {
-                size: fontSize,
-                style: 'bold'
-            }
-        }
+
         // Título de la gráfica
         if (this.titulo) {
             this.data.options.plugins.title.text = this.titulo;
@@ -229,24 +234,28 @@ class GraficaBase {
                             </div>
                         </div>
                     `)
+
                 } else {
                     $("#modal-ampliar-mapa").find('.graph-container').addClass('grafica zoom');
                 }
+
                 if ($(".modal-backdrop").length == 0) {
                     $(".modal").first().parent().append(`
                         <div class="modal-backdrop fade" style="pointer-events:none" tabindex="-1" role="dialog"></div>
                     `)
                 }
+
                 $('.modal-backdrop')
                     .unbind()
                     .click(cerrarModal);
+
                 $('span.cerrar-grafica')
                     .unbind()
                     .click(cerrarModal);
 
                 // Obtiene la gráfica seleccionada (en caso de menu) o la grafica del contenedor en casos normales.
                 var grafica = $(this).parents(".acciones-mapa").parent().find(".grafica.show");
-                $("#modal-ampliar-mapa").data("ctx",grafica);
+                $("#modal-ampliar-mapa").data("ctx", grafica);
                 var data = grafica.data('grafica');
                 var parent = $('#modal-ampliar-mapa').find('.graph-container');
                 parent.removeClass('small horizontal vertical'); // se le quitan los estilos que podria tener
@@ -280,7 +289,6 @@ class GraficaBase {
                         botonOpcion.click();
                     });
                 });
-                //metricas.engancharComportamientos();
             });
     }
     /**
@@ -502,7 +510,7 @@ class GraficaNodos extends GraficaBase {
         var ctx = $(`<div class="graficoNodos" id="grafica_${this.idPagina}_${this.idGrafica}"></div>`);
 
         $(pContenedor).append(`
-            <p id="titulo_grafica_${this.idPagina}_${this.idGrafica}" style="z-index:4; text-align:center; margin-top: 0.60em; width: 100%; font-weight: 500; color: #666666; font-size: 0.87em;">${this.titulo}</p>
+            <p id="titulo_grafica_${this.idPagina}_${this.idGrafica}" style="z-index:4; text-align:center; margin-top: 0.60em; width: 100%; color: #666666; ">${this.titulo}</p>
             <div class="graph-controls">
                 <ul class="no-list-style align-items-center">
                     <li class="control zoomin-control" id="zoomIn">
@@ -578,23 +586,20 @@ class GraficaNodos extends GraficaBase {
     }
     pintarGrafica(ctx) {
         ctx = super.addToGroup(ctx);
-
         super.callbacks(ctx);
-
         $(ctx).data("grafica", this);
-
         ctx = this.pintarContenedores(ctx);
-
         this.comportamientoNodos(ctx);
 
     }
 }
 class GraficaBarras extends GraficaBase {
-    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50, orientacion = "vertical") {
-        super(idPagina, idGrafica, data, filtroFacetas, titulo, "barras");
+    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50, orientacion = "vertical", hideLegend = false) {
+        super(idPagina, idGrafica, data, filtroFacetas, titulo, "barras", hideLegend);
         this.escalas = escalas;
         this.barSize = barSize;
         this.orientacion = orientacion;
+
     }
     pintarGrafica(ctx) {
 
@@ -682,7 +687,9 @@ class GraficaBarras extends GraficaBase {
     }
     drawLegend(ctx) {
         //Se revela el modal de zoom
-
+        if (this.hideLegend){
+            return null
+        }
         // Se comprueba si tiene eje principal/secundario.
         var scrollContainer = $(ctx).parents(".chartScroll")[0];
         var chartAreaWrapper = $(ctx).parents(".chartAreaWrapper")[0];
@@ -778,8 +785,8 @@ class GraficaBarras extends GraficaBase {
 
 }
 class GraficaHorizontal extends GraficaBarras {
-    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50, isAbr = false) {
-        super(idPagina, idGrafica, data, filtroFacetas, titulo, escalas, barSize, "horizontal");
+    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50, isAbr = false, hideLegend = false) {
+        super(idPagina, idGrafica, data, filtroFacetas, titulo, escalas, barSize, "horizontal", hideLegend);
         this.isAbr = isAbr;
     }
     pintarGrafica(ctx) {
@@ -818,8 +825,8 @@ class GraficaHorizontal extends GraficaBarras {
         } else { // a partir de aqui se prepara el scroll
             this.drawScrollChart(ctx);
         }
-
     }
+
     drawScrollChart(ctx) {
         var legend = super.drawLegend(ctx);
         var hasMainAxis = false; //eje superior en caso horizontal, izquierdo en vertical
@@ -888,7 +895,6 @@ class GraficaHorizontal extends GraficaBarras {
 
     }
     abreviar() {
-
         // Se modifica la propiedad que usa Chart.js para obtener los labels de la gráfica.
 
         this.data.options.scales['y'] = {
@@ -908,8 +914,8 @@ class GraficaHorizontal extends GraficaBarras {
 
 }
 class GraficaVertical extends GraficaBarras {
-    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50) {
-        super(idPagina, idGrafica, data, filtroFacetas, titulo, escalas, barSize, "vertical");
+    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, escalas = null, barSize = 50, hideLegend = false) {
+        super(idPagina, idGrafica, data, filtroFacetas, titulo, escalas, barSize, "vertical", hideLegend);
         this.escalas = escalas;
 
     }
@@ -1093,8 +1099,8 @@ class GraficaVertical extends GraficaBarras {
     }
 }
 class GraficaCircular extends GraficaBase {
-    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null) {
-        super(idPagina, idGrafica, data, filtroFacetas, titulo, "circular");
+    constructor(idPagina, idGrafica, data, filtroFacetas = "", titulo = null, hideLegend = false) {
+        super(idPagina, idGrafica, data, filtroFacetas, titulo, "circular", hideLegend);
     }
     pintarGrafica(ctx) {
         this.data.options.responsive = true;
@@ -1104,16 +1110,24 @@ class GraficaCircular extends GraficaBase {
         var size = $(ctx).width();
         var canvas = $(`<canvas id = "grafica_${this.idPagina}_${this.idGrafica}" width = "${size}" height = "250" ></canvas>`)
         $(ctx).append(canvas);
-        let fontSize = 12;
-        if ($(ctx).length > 0) {
-            while (fontSize > 1 && this.titulo.width("bold " + fontSize + "px Helvetica") > $(ctx).width() - 200) {
-                fontSize--;
+
+
+        if (this.data.isPercentage) {
+            this.data.options.plugins.tooltip = {
+                callbacks: {
+                    label: function (tooltipItem) {
+                        var dataset = tooltipItem.dataset;
+                        var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
+                            return previousValue + currentValue;
+                        });
+                        var currentValue = tooltipItem.parsed;
+                        var precentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                        return precentage + "%";
+                    }
+                }
             }
         }
-        this.data.options.plugins.title.font = {
-            size: fontSize,
-            style: 'bold'
-        }
+
         if (this.data.data.datasets.length > 1) {
             var dataBack = {};
             super.addPlugin("legend",
@@ -1258,11 +1272,11 @@ async function getGrafica2(pIdPagina, pIdGrafica, pFiltroFacetas, barSize = 50, 
     if (data.isNodes) {
         return new GraficaNodos(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo);
     } else if (data.isVertical) {
-        return new GraficaHorizontal(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo, maxScales, barSize, data.isAbr);
+        return new GraficaHorizontal(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo, maxScales, barSize, data.isAbr, data.hideLeyend);
     } else if (data.isHorizontal) {
-        return new GraficaVertical(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo, maxScales, barSize);
+        return new GraficaVertical(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo, maxScales, barSize, data.hideLeyend);
     } else {
-        return new GraficaCircular(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo);
+        return new GraficaCircular(pIdPagina, pIdGrafica, data, pFiltroFacetas, pTitulo, data.hideLeyend);
     }
 
 }
