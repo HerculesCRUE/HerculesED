@@ -427,6 +427,9 @@ namespace ImportadorWebCV.Sincro
                 string personId = Utility.PersonaCV(pCVID);
                 string nombreCompletoPersona = Utility.GetNombreCompletoPersonaCV(pCVID);
 
+                //Elimino los DOI que se encuentren en BBDD.
+                listaDOI = UtilitySecciones.ComprobarDOIenBBDD(listaDOI);
+
                 foreach (string doi in listaDOI)
                 {
                     try

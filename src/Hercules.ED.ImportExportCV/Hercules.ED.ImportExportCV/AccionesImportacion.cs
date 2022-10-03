@@ -325,6 +325,9 @@ namespace Hercules.ED.ImportExportCV
             string personId = Utils.Utility.PersonaCV(pCVID);
             string nombreCompletoPersona = Utils.Utility.GetNombreCompletoPersonaCV(pCVID);
 
+            //Elimino los DOI que se encuentren en BBDD.
+            listaDOI = Utils.UtilitySecciones.ComprobarDOIenBBDD(listaDOI);
+
             foreach (string doi in listaDOI)
             {
                 try
