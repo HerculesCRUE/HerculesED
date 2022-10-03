@@ -15,6 +15,7 @@ using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
 using OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual;
 using ProjectauthorizationOntology;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,101 +58,113 @@ namespace Harvester
         /// </summary>
         public void LoadMainEntities()
         {
+            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
+            string expresionCron = _Config.GetCronExpression();
+
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
-            RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
 
-            // TODO: Manu.
-            //Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicAutorizaciones = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicInvenciones = new Dictionary<string, Tuple<string, string>>();
-            //IniciacionDiccionarios(ref dicProyectos, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
+            while (true)
+            {
+                try
+                {
+                    var expression = new CronExpression(expresionCron);
+                    DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
 
-            // Personas a desnormalizar.
-            HashSet<string> listaIdsPersonas = new HashSet<string>();            
-                       
-            // Organizaciones.
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion");
+                    if (time.HasValue)
+                    {
+                        Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
 
-            // Personas. 
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
+                        // Personas a desnormalizar.
+                        HashSet<string> listaIdsPersonas = new HashSet<string>();
 
-            // Proyectos.
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
+                        // Organizaciones.
+                        mResourceApi.ChangeOntoly("organization");
+                        ProcesarFichero(_Config, "Organizacion");
 
-            // Document.
-            mResourceApi.ChangeOntoly("document");
-            ProcesarFichero(_Config, "PRC");
+                        // Personas. 
+                        mResourceApi.ChangeOntoly("person");
+                        ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
 
-            // Autorizaciones.
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
+                        // Proyectos.
+                        mResourceApi.ChangeOntoly("project");
+                        ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
 
-            // Grupos.
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
+                        // Document.
+                        mResourceApi.ChangeOntoly("document");
+                        ProcesarFichero(_Config, "PRC");
 
-            // Patentes.
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
+                        // Autorizaciones.
+                        mResourceApi.ChangeOntoly("projectauthorization");
+                        ProcesarFichero(_Config, "AutorizacionProyecto");
 
-            // Inserción de personas en la cola de Rabbit.
-            InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
+                        // Grupos.
+                        mResourceApi.ChangeOntoly("group");
+                        ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
 
-            // Limpiados la lista de IDs del desnormalizador.
-            listaIdsPersonas = new HashSet<string>();
+                        // Patentes.
+                        mResourceApi.ChangeOntoly("patent");
+                        ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
 
-            // Fecha de la última actualización.
-            string fecha = "1500-01-01T00:00:00Z";
-            //string fecha = LeerFicheroFecha(_Config);
+                        // Inserción de personas en la cola de Rabbit.
+                        InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
 
-            // Genero los ficheros con los datos a procesar desde la fecha.
-            GuardarIdentificadores(_Config, "Organizacion", fecha);
-            GuardarIdentificadores(_Config, "Persona", fecha);
-            GuardarIdentificadores(_Config, "Proyecto", fecha);
-            GuardarIdentificadores(_Config, "PRC", fecha, true);
-            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            GuardarIdentificadores(_Config, "Grupo", fecha);
-            GuardarIdentificadores(_Config, "Invencion", fecha);
-            
-            // Actualizo la última fecha de carga.
-            UpdateLastDate(_Config, fecha);
+                        // Limpiados la lista de IDs del desnormalizador.
+                        listaIdsPersonas = new HashSet<string>();
 
-            // Organizaciones.
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion");
+                        // Fecha de la última actualización.
+                        string fecha = "1500-01-01T00:00:00Z";
+                        //string fecha = LeerFicheroFecha(_Config);
 
-            // Personas. 
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
+                        // Genero los ficheros con los datos a procesar desde la fecha.
+                        GuardarIdentificadores(_Config, "Organizacion", fecha);
+                        GuardarIdentificadores(_Config, "Persona", fecha);
+                        GuardarIdentificadores(_Config, "Proyecto", fecha);
+                        GuardarIdentificadores(_Config, "PRC", fecha, true);
+                        GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+                        GuardarIdentificadores(_Config, "Grupo", fecha);
+                        GuardarIdentificadores(_Config, "Invencion", fecha);
 
-            // Proyectos.
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
+                        // Actualizo la última fecha de carga.
+                        UpdateLastDate(_Config, fecha);
 
-            // Document.
-            mResourceApi.ChangeOntoly("document");
-            ProcesarFichero(_Config, "PRC");
+                        // Organizaciones.
+                        mResourceApi.ChangeOntoly("organization");
+                        ProcesarFichero(_Config, "Organizacion");
 
-            // Autorizaciones.
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
+                        // Personas. 
+                        mResourceApi.ChangeOntoly("person");
+                        ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
 
-            // Grupos.
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
+                        // Proyectos.
+                        mResourceApi.ChangeOntoly("project");
+                        ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
 
-            // Patentes.
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
+                        // Document.
+                        mResourceApi.ChangeOntoly("document");
+                        ProcesarFichero(_Config, "PRC");
 
-            // Inserción de personas en la cola de Rabbit.
-            InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
+                        // Autorizaciones.
+                        mResourceApi.ChangeOntoly("projectauthorization");
+                        ProcesarFichero(_Config, "AutorizacionProyecto");
+
+                        // Grupos.
+                        mResourceApi.ChangeOntoly("group");
+                        ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
+
+                        // Patentes.
+                        mResourceApi.ChangeOntoly("patent");
+                        ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
+
+                        // Inserción de personas en la cola de Rabbit.
+                        InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
+                    }
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(60000);
+                }
+            }
         }
 
         /// <summary>
