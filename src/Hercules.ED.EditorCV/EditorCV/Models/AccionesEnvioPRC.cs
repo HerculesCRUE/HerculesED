@@ -444,6 +444,7 @@ where {{
                         }
                         indiceImpacto.revista25 = revista25;
 
+                        if (!string.IsNullOrEmpty(indiceImpacto.fuenteImpacto))
                         PRC.indicesImpacto.Add(indiceImpacto);
                     }
                 }
