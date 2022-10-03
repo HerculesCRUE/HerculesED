@@ -19,6 +19,7 @@
             this.value = value;
             this.language = null;
         }
+
         public MetadataEntry()
         {
             this.key = "";
