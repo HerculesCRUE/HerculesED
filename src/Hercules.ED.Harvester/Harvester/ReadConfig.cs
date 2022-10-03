@@ -18,6 +18,7 @@ namespace Harvester
         // Rutas.
         private string dirLogCargas { get; set; }
         private string lastUpdateDateFile { get; set; }
+        private string cronExpression { get; set; }
 
         // Configuración Rabbit para el desnormalizador
         private string RabbitConnectionString { get; set; }
@@ -104,6 +105,31 @@ namespace Harvester
             }
 
             return lastUpdateDateFile;
+        }
+
+        /// <summary>
+        /// Obtiene la expresión cron configurada.
+        /// </summary>
+        /// <returns>Ruta.</returns>
+        public string GetCronExpression()
+        {
+            if (string.IsNullOrEmpty(cronExpression))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("CronExpression"))
+                {
+                    connectionString = environmentVariables["CronExpression"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["CronExpression"];
+                }
+
+                cronExpression = connectionString;
+            }
+
+            return cronExpression;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using Gnoss.ApiWrapper;
+﻿using DepartmentOntology;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester.Models;
@@ -14,6 +15,7 @@ using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
 using OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual;
 using ProjectauthorizationOntology;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,104 +59,111 @@ namespace Harvester
         public void LoadMainEntities()
         {
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
+            string expresionCron = _Config.GetCronExpression();
 
-            // TODO: Manu.
-            Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();            
-            Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
-            Dictionary<string, Tuple<string, string>> dicAutorizaciones = new Dictionary<string, Tuple<string, string>>();
-            Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
-            Dictionary<string, Tuple<string, string>> dicInvenciones = new Dictionary<string, Tuple<string, string>>();
-            IniciacionDiccionarios(ref dicProyectos, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
-
-            // Personas a desnormalizar.
-            HashSet<string> listaIdsPersonas = new HashSet<string>();            
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
-            // Compruebo que no hay ficheros pendientes de procesar.
-
-            // Organizaciones.
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion");
-
-            // Personas. 
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
-
-            // Proyectos.
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
-
-            // Document.
-            mResourceApi.ChangeOntoly("document");
-            ProcesarFichero(_Config, "PRC");
-
-            // Autorizaciones.
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
-
-            // Grupos.
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
-
-            // Patentes.
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
-
-            // Inserción de personas en la cola de Rabbit.
-            if (listaIdsPersonas.Count > 0)
+            while (true)
             {
-                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
-            }
+                try
+                {
+                    var expression = new CronExpression(expresionCron);
+                    DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
 
-            // Fecha de la última actualización.
-            string fecha = "1500-01-01T00:00:00Z";
+                    if (time.HasValue)
+                    {
+                        Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
 
-            // Genero los ficheros con los datos a procesar desde la fecha.
-            GuardarIdentificadores(_Config, "Organizacion", fecha);
-            GuardarIdentificadores(_Config, "Persona", fecha);
-            GuardarIdentificadores(_Config, "Proyecto", fecha);
-            GuardarIdentificadores(_Config, "PRC", fecha, true);
-            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            GuardarIdentificadores(_Config, "Grupo", fecha);
-            GuardarIdentificadores(_Config, "Invencion", fecha);
+                        // Personas a desnormalizar.
+                        HashSet<string> listaIdsPersonas = new HashSet<string>();
 
-            // TODO: Leerlo de fichero.
-            // Actualizo la última fecha de carga.
-            UpdateLastDate(_Config, fecha);
+                        // Organizaciones.
+                        mResourceApi.ChangeOntoly("organization");
+                        ProcesarFichero(_Config, "Organizacion");
 
-            // Organizaciones.
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion");
+                        // Personas. 
+                        mResourceApi.ChangeOntoly("person");
+                        ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
 
-            // Personas. 
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
+                        // Proyectos.
+                        mResourceApi.ChangeOntoly("project");
+                        ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
 
-            // Proyectos.
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
+                        // Document.
+                        mResourceApi.ChangeOntoly("document");
+                        ProcesarFichero(_Config, "PRC");
 
-            // Document.
-            mResourceApi.ChangeOntoly("document");
-            ProcesarFichero(_Config, "PRC");
+                        // Autorizaciones.
+                        mResourceApi.ChangeOntoly("projectauthorization");
+                        ProcesarFichero(_Config, "AutorizacionProyecto");
 
-            // Autorizaciones.
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
+                        // Grupos.
+                        mResourceApi.ChangeOntoly("group");
+                        ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
 
-            // Grupos.
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
+                        // Patentes.
+                        mResourceApi.ChangeOntoly("patent");
+                        ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
 
-            // Patentes.
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
+                        // Inserción de personas en la cola de Rabbit.
+                        InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
 
-            // Inserción de personas en la cola de Rabbit.
-            if (listaIdsPersonas.Count > 0)
-            {
-                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
+                        // Limpiados la lista de IDs del desnormalizador.
+                        listaIdsPersonas = new HashSet<string>();
+
+                        // Fecha de la última actualización.
+                        string fecha = "1500-01-01T00:00:00Z";
+                        //string fecha = LeerFicheroFecha(_Config);
+
+                        // Genero los ficheros con los datos a procesar desde la fecha.
+                        GuardarIdentificadores(_Config, "Organizacion", fecha);
+                        GuardarIdentificadores(_Config, "Persona", fecha);
+                        GuardarIdentificadores(_Config, "Proyecto", fecha);
+                        GuardarIdentificadores(_Config, "PRC", fecha, true);
+                        GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+                        GuardarIdentificadores(_Config, "Grupo", fecha);
+                        GuardarIdentificadores(_Config, "Invencion", fecha);
+
+                        // Actualizo la última fecha de carga.
+                        UpdateLastDate(_Config, fecha);
+
+                        // Organizaciones.
+                        mResourceApi.ChangeOntoly("organization");
+                        ProcesarFichero(_Config, "Organizacion");
+
+                        // Personas. 
+                        mResourceApi.ChangeOntoly("person");
+                        ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
+
+                        // Proyectos.
+                        mResourceApi.ChangeOntoly("project");
+                        ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
+
+                        // Document.
+                        mResourceApi.ChangeOntoly("document");
+                        ProcesarFichero(_Config, "PRC");
+
+                        // Autorizaciones.
+                        mResourceApi.ChangeOntoly("projectauthorization");
+                        ProcesarFichero(_Config, "AutorizacionProyecto");
+
+                        // Grupos.
+                        mResourceApi.ChangeOntoly("group");
+                        ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
+
+                        // Patentes.
+                        mResourceApi.ChangeOntoly("patent");
+                        ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
+
+                        // Inserción de personas en la cola de Rabbit.
+                        InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
+                    }
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(60000);
+                }
             }
         }
 
@@ -173,6 +182,19 @@ namespace Harvester
             else
             {
                 harvester.HarvestPRC(pConfig, pSet, pFecha);
+            }
+        }
+
+        /// <summary>
+        /// Inserción a la cola.
+        /// </summary>
+        /// <param name="pRabbit"></param>
+        /// <param name="pListaIds"></param>
+        public void InsertToQueue(RabbitServiceWriterDenormalizer pRabbit, HashSet<string> pListaIds)
+        {
+            if (pListaIds.Count > 0)
+            {
+                pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, pListaIds));
             }
         }
 
@@ -221,11 +243,11 @@ namespace Harvester
                     case "Organizacion":
                         dicDatosBBDD = GetDataBBDD(idsACargar, "organization");
                         break;
-                    
+
                     case "Persona":
                         dicDatosBBDD = GetDataBBDD(idsACargar, "person");
-                        break;                
-                    
+                        break;
+
                     case "Proyecto":
                         dicDatosBBDD = GetDataBBDD(idsACargar, "project");
                         break;
@@ -650,6 +672,35 @@ namespace Harvester
             }
         }
 
+        /// <summary>
+        /// Permite leer el fichero de la última fecha de modificación.
+        /// </summary>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
+        public string LeerFicheroFecha(ReadConfig pConfig)
+        {
+            string ficheroFecha = pConfig.GetLastUpdateDate();
+
+            if (!File.Exists(ficheroFecha))
+            {
+                string fecha = DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
+                FileStream fichero = File.Create(ficheroFecha);
+                fichero.Close();
+                File.WriteAllText(pConfig.GetLastUpdateDate(), fecha);
+                return fecha;
+            }
+            else
+            {
+                return File.ReadAllText(ficheroFecha);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene el listado de recursos mediante el crisidentifier.
+        /// </summary>
+        /// <param name="pListaIds">IDs a consultar.</param>
+        /// <param name="pOntologia">Ontología.</param>
+        /// <returns></returns>
         private static Dictionary<string, string> GetDataBBDD(List<string> pListaIds, string pOntologia)
         {
             List<List<string>> listas = SplitList(pListaIds, 1000).ToList();
@@ -659,9 +710,9 @@ namespace Harvester
             foreach (List<string> listaItem in listas)
             {
                 List<string> listaAux = new List<string>();
-                foreach(string item in listaItem)
+                foreach (string item in listaItem)
                 {
-                    if(item.Contains("_"))
+                    if (item.Contains("_"))
                     {
                         listaAux.Add(item.Split("_")[1]);
                     }
@@ -1186,8 +1237,6 @@ namespace Harvester
             File.WriteAllText(pConfig.GetLastUpdateDate(), pFecha);
         }
 
-
-        //TODO
         /// <summary>
         /// Devuelve una PersonOntology.Person con los datos pasados en <paramref name="pDatos"/>, la cual se ha almacenado en BBDD
         /// </summary>
@@ -1282,9 +1331,17 @@ namespace Harvester
                 persona.Roh_isActive = pDatos.Activo.Value;
             }
 
-            // TODO: Posible cambio Treelogic
-            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Id))
+            // Departamentos.
+            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Id) && !string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Nombre))
             {
+                bool deptEncontrado = ComprobarDepartamentoBBDD(pDatos.Vinculacion?.Departamento?.Id);
+
+                if (!deptEncontrado)
+                {
+                    // Si no existe, se carga el departamento como entidad secundaria.
+                    CargarDepartment(pDatos.Vinculacion.Departamento.Id, pDatos.Vinculacion.Departamento.Nombre);
+                }
+
                 persona.IdVivo_departmentOrSchool = $@"{mResourceApi.GraphsUrl}items/department_{pDatos.Vinculacion.Departamento.Id}";
             }
 
@@ -1298,6 +1355,53 @@ namespace Harvester
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
 
             return persona;
+        }
+
+        /// <summary>
+        /// Carga la entidad secundaria Department.
+        /// </summary>
+        /// <param name="pOntology">Ontología.</param>
+        private static void CargarDepartment(string pCodigoDept, string pNombreDept)
+        {
+            string ontology = "department";
+
+            // Cambio de ontología.
+            mResourceApi.ChangeOntoly(ontology);
+
+            // Creación del objeto a cargar.
+            Department dept = new Department();
+            dept.Dc_identifier = pCodigoDept;
+            dept.Dc_title = pNombreDept;
+
+            // Carga.
+            var cargado = mResourceApi.LoadSecondaryResource(dept.ToGnossApiResource(mResourceApi, ontology + "_" + dept.Dc_identifier));
+        }
+
+        /// <summary>
+        /// Comprueba si existe el departamento en la BBDD.
+        /// </summary>
+        /// <param name="pIdentificadorDept">ID del departamento.</param>
+        /// <returns></returns>
+        private static bool ComprobarDepartamentoBBDD(string pIdentificadorDept)
+        {
+            string idSecundaria = $@"http://gnoss.com/items/department_{pIdentificadorDept}";
+
+            SparqlObject resultadoQuery = null;
+
+            // Consulta sparql.
+            string select = "SELECT * ";
+            string where = $@"WHERE {{ 
+                                <{idSecundaria}> ?p ?o. 
+                            }}";
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "department");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -2138,7 +2242,7 @@ namespace Harvester
             string nombreOrganizacion = string.Empty;
             string localidadOrganizacion = string.Empty;
 
-            Dictionary<string, string> dicDatosBBDD = GetDataBBDD(new List<string>(){ entidadConvocanteID }, "organization");
+            Dictionary<string, string> dicDatosBBDD = GetDataBBDD(new List<string>() { entidadConvocanteID }, "organization");
 
             // Se comprueba en el diccionario de organizaciones que no la tengamos previamente cargada.            
             if (dicDatosBBDD.ContainsKey(entidadConvocanteID))
@@ -2701,7 +2805,7 @@ namespace Harvester
                 foreach (ProyectoEquipo item in pDatos.Equipo)
                 {
                     // Obtención de personas de BBDD con los IDs obtenidos por el SGI.
-                    Dictionary<string, string> dicPersonasBBDD =  GetDataBBDD(new List<string>() { item.PersonaRef }, "person"); 
+                    Dictionary<string, string> dicPersonasBBDD = GetDataBBDD(new List<string>() { item.PersonaRef }, "person");
 
                     ProjectOntology.BFO_0000023 BFO = new ProjectOntology.BFO_0000023();
                     BFO.Rdf_comment = orden;

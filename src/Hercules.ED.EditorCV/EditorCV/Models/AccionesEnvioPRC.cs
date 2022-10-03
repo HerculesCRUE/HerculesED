@@ -715,6 +715,7 @@ where {{
                         }
                     }
                 }
+                // TODO Añadir Clase 1 clase 2 Clase 3 al congreso (consulta + envío)
                 List<string> listaIds = new List<string>();
                 List<string> listaValores = new List<string>();
                 foreach (KeyValuePair<string, string> item in dicIds)
