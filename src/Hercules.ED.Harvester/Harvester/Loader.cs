@@ -1,4 +1,5 @@
-﻿using Gnoss.ApiWrapper;
+﻿using DepartmentOntology;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester.Models;
@@ -59,7 +60,7 @@ namespace Harvester
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
 
             // TODO: Manu.
-            Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();            
+            Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicAutorizaciones = new Dictionary<string, Tuple<string, string>>();
             Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
@@ -67,7 +68,7 @@ namespace Harvester
             IniciacionDiccionarios(ref dicProyectos, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
 
             // Personas a desnormalizar.
-            HashSet<string> listaIdsPersonas = new HashSet<string>();            
+            HashSet<string> listaIdsPersonas = new HashSet<string>();
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
@@ -107,6 +108,7 @@ namespace Harvester
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
             }
 
+            // TODO: Fecha actual
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
 
@@ -221,11 +223,11 @@ namespace Harvester
                     case "Organizacion":
                         dicDatosBBDD = GetDataBBDD(idsACargar, "organization");
                         break;
-                    
+
                     case "Persona":
                         dicDatosBBDD = GetDataBBDD(idsACargar, "person");
-                        break;                
-                    
+                        break;
+
                     case "Proyecto":
                         dicDatosBBDD = GetDataBBDD(idsACargar, "project");
                         break;
@@ -659,9 +661,9 @@ namespace Harvester
             foreach (List<string> listaItem in listas)
             {
                 List<string> listaAux = new List<string>();
-                foreach(string item in listaItem)
+                foreach (string item in listaItem)
                 {
-                    if(item.Contains("_"))
+                    if (item.Contains("_"))
                     {
                         listaAux.Add(item.Split("_")[1]);
                     }
@@ -1282,9 +1284,17 @@ namespace Harvester
                 persona.Roh_isActive = pDatos.Activo.Value;
             }
 
-            // TODO: Posible cambio Treelogic
-            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Id))
+            // Departamentos.
+            if (!string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Id) && !string.IsNullOrEmpty(pDatos.Vinculacion?.Departamento?.Nombre))
             {
+                bool deptEncontrado = ComprobarDepartamentoBBDD(pDatos.Vinculacion?.Departamento?.Id);
+
+                if (!deptEncontrado)
+                {
+                    // Si no existe, se carga el departamento como entidad secundaria.
+                    CargarDepartment(pDatos.Vinculacion.Departamento.Id, pDatos.Vinculacion.Departamento.Nombre);
+                }
+
                 persona.IdVivo_departmentOrSchool = $@"{mResourceApi.GraphsUrl}items/department_{pDatos.Vinculacion.Departamento.Id}";
             }
 
@@ -1298,6 +1308,53 @@ namespace Harvester
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
 
             return persona;
+        }
+
+        /// <summary>
+        /// Carga la entidad secundaria Department.
+        /// </summary>
+        /// <param name="pOntology">Ontología.</param>
+        private static void CargarDepartment(string pCodigoDept, string pNombreDept)
+        {
+            string ontology = "department";
+
+            // Cambio de ontología.
+            mResourceApi.ChangeOntoly(ontology);
+
+            // Creación del objeto a cargar.
+            Department dept = new Department();
+            dept.Dc_identifier = pCodigoDept;
+            dept.Dc_title = pNombreDept;
+
+            //Carga.
+            var cargado = mResourceApi.LoadSecondaryResource(dept.ToGnossApiResource(mResourceApi, ontology + "_" + dept.Dc_identifier));
+        }
+
+        /// <summary>
+        /// Comprueba si existe el departamento en la BBDD.
+        /// </summary>
+        /// <param name="pIdentificadorDept">ID del departamento.</param>
+        /// <returns></returns>
+        private static bool ComprobarDepartamentoBBDD(string pIdentificadorDept)
+        {
+            string idSecundaria = $@"http://gnoss.com/items/department_{pIdentificadorDept}";
+
+            SparqlObject resultadoQuery = null;
+
+            // Consulta sparql.
+            string select = "SELECT * ";
+            string where = $@"WHERE {{ 
+                                <{idSecundaria}> ?p ?o. 
+                            }}";
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "department");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -2138,7 +2195,7 @@ namespace Harvester
             string nombreOrganizacion = string.Empty;
             string localidadOrganizacion = string.Empty;
 
-            Dictionary<string, string> dicDatosBBDD = GetDataBBDD(new List<string>(){ entidadConvocanteID }, "organization");
+            Dictionary<string, string> dicDatosBBDD = GetDataBBDD(new List<string>() { entidadConvocanteID }, "organization");
 
             // Se comprueba en el diccionario de organizaciones que no la tengamos previamente cargada.            
             if (dicDatosBBDD.ContainsKey(entidadConvocanteID))
@@ -2701,7 +2758,7 @@ namespace Harvester
                 foreach (ProyectoEquipo item in pDatos.Equipo)
                 {
                     // Obtención de personas de BBDD con los IDs obtenidos por el SGI.
-                    Dictionary<string, string> dicPersonasBBDD =  GetDataBBDD(new List<string>() { item.PersonaRef }, "person"); 
+                    Dictionary<string, string> dicPersonasBBDD = GetDataBBDD(new List<string>() { item.PersonaRef }, "person");
 
                     ProjectOntology.BFO_0000023 BFO = new ProjectOntology.BFO_0000023();
                     BFO.Rdf_comment = orden;
