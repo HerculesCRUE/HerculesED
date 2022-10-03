@@ -56,7 +56,9 @@ namespace Harvester
         /// Carga las entidades principales.
         /// </summary>
         public void LoadMainEntities()
-        {           
+        {
+            UtilidadesGeneral.IniciadorDiccionarioPaises();
+            UtilidadesGeneral.IniciadorDiccionarioRegion();
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
 
             // TODO: Manu.
@@ -68,12 +70,8 @@ namespace Harvester
             //IniciacionDiccionarios(ref dicProyectos, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
 
             // Personas a desnormalizar.
-            HashSet<string> listaIdsPersonas = new HashSet<string>();
-            UtilidadesGeneral.IniciadorDiccionarioPaises();
-            UtilidadesGeneral.IniciadorDiccionarioRegion();
-
-            // Compruebo que no hay ficheros pendientes de procesar.
-
+            HashSet<string> listaIdsPersonas = new HashSet<string>();            
+                       
             // Organizaciones.
             mResourceApi.ChangeOntoly("organization");
             ProcesarFichero(_Config, "Organizacion");
@@ -103,10 +101,10 @@ namespace Harvester
             ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
 
             // Inserción de personas en la cola de Rabbit.
-            if (listaIdsPersonas.Count > 0)
-            {
-                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
-            }
+            InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
+
+            // Limpiados la lista de IDs del desnormalizador.
+            listaIdsPersonas = new HashSet<string>();
 
             // Fecha de la última actualización.
             string fecha = "1500-01-01T00:00:00Z";
@@ -153,10 +151,7 @@ namespace Harvester
             ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
 
             // Inserción de personas en la cola de Rabbit.
-            if (listaIdsPersonas.Count > 0)
-            {
-                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
-            }
+            InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
         }
 
         /// <summary>
@@ -174,6 +169,19 @@ namespace Harvester
             else
             {
                 harvester.HarvestPRC(pConfig, pSet, pFecha);
+            }
+        }
+
+        /// <summary>
+        /// Inserción a la cola.
+        /// </summary>
+        /// <param name="pRabbit"></param>
+        /// <param name="pListaIds"></param>
+        public void InsertToQueue(RabbitServiceWriterDenormalizer pRabbit, HashSet<string> pListaIds)
+        {
+            if (pListaIds.Count > 0)
+            {
+                pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, pListaIds));
             }
         }
 
