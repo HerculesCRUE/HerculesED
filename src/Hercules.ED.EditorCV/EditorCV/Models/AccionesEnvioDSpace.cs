@@ -189,6 +189,11 @@ namespace EditorCV.Models
             }
         }
 
+        /// <summary>
+        /// Añade el erchivo <paramref name="file"/> al ítem de DSpace.
+        /// </summary>
+        /// <param name="publication"></param>
+        /// <param name="file"></param>
         private void AniadirBitstreamDspace(Publication publication, IFormFile file)
         {
             MetadataSend metadata = GetListadoValoresItem(publication);
