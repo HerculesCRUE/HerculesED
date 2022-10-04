@@ -883,7 +883,7 @@
                 }
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores({pIdPersona:"@pPerson.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
 
             $('#addNodesCollaborators').unbind().click(function (e) {
@@ -892,7 +892,7 @@
                 $('#numColaboradores').val((numColaboradores + 10));
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores({pIdPersona:"@pPerson.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -970,7 +970,7 @@
         }
         else if (comportamientoPaginaInvestigador.tabActive == "colaboradores")
         {
-            newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
+            newGrafProj.CargarGraficaColaboradores({pIdPersona:"@pPerson.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph');
         }
     }
 </script>

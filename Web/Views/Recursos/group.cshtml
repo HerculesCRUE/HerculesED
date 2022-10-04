@@ -957,7 +957,7 @@
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                 // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
-                newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
 
             $('#addNodesCollaborators').unbind().click(function (e) {
@@ -967,7 +967,7 @@
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                  // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
-                 newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                 newGrafProj.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -981,7 +981,7 @@
                 $('#numNodosMembers').html($('#numMembers').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                 // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
-                newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph', true);
+                newGrafMember.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true);
             });
 
             $('#addNodesMembers').unbind().click(function (e) {
@@ -991,7 +991,7 @@
                 $('#numNodosMembers').html($('#numMembers').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                  // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'membersgraph',true);
-                 newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph', true);
+                 newGrafMember.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -1044,12 +1044,12 @@
         else if (comportamientoPaginaGrupo.tabActive == "miembros")
         {
             // CargarGraficaMiembros("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'membersgraph');
-            newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph');
+            newGrafMember.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph');
         }
         else if (comportamientoPaginaGrupo.tabActive == "colaboradores")
         {
             // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph');
-            newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
+            newGrafProj.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph');
         }
     }
 

@@ -1065,14 +1065,13 @@ class CargarGraficaProjectoObj {
      * @param idContenedor, Id del contenedor sobre el que se va a pintar la gráfica
      * @param mostrarCargando, Indica si se va a mostrar el efecto "cargando la página"
      */
-    CargarGraficaColaboradores = (pIdGrupo, parametros, idContenedor, mostrarCargando = false) => {
+    CargarGraficaColaboradores = (arg, parametros, idContenedor, mostrarCargando = false) => {
         // var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
         // if (depuracion) {
         //     url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo";
         // }
         
         var self = this;
-        var arg = {...pIdGrupo};
         arg.pParametros = parametros;
         arg.pMax = $('#numColaboradores').val();
         $('#' + idContenedor).empty();
@@ -1103,7 +1102,7 @@ class CargarGraficaProjectoObj {
     actualizarTypesOcultar = (type, id) => {
 
         if (this.typesOcultar.includes(type)) {
-            this.typesOcultar.splice(newGrafProj.typesOcultar.indexOf(type), 1);
+            this.typesOcultar.splice(this.typesOcultar.indexOf(type), 1);
             document.getElementById(id).classList.add('tachado')
         } else {
             this.typesOcultar.push(type)
