@@ -72,46 +72,12 @@ namespace Harvester
                     {
                         Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
 
-                        // Personas a desnormalizar.
-                        HashSet<string> listaIdsPersonas = new HashSet<string>();
-
-                        // Organizaciones.
-                        mResourceApi.ChangeOntoly("organization");
-                        ProcesarFichero(_Config, "Organizacion");
-
-                        // Personas. 
-                        mResourceApi.ChangeOntoly("person");
-                        ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
-
-                        // Proyectos.
-                        mResourceApi.ChangeOntoly("project");
-                        ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
-
-                        // Document.
-                        mResourceApi.ChangeOntoly("document");
-                        ProcesarFichero(_Config, "PRC");
-
-                        // Autorizaciones.
-                        mResourceApi.ChangeOntoly("projectauthorization");
-                        ProcesarFichero(_Config, "AutorizacionProyecto");
-
-                        // Grupos.
-                        mResourceApi.ChangeOntoly("group");
-                        ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
-
-                        // Patentes.
-                        mResourceApi.ChangeOntoly("patent");
-                        ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
-
-                        // Inserción de personas en la cola de Rabbit.
-                        InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
-
-                        // Limpiados la lista de IDs del desnormalizador.
-                        listaIdsPersonas = new HashSet<string>();
+                        // Carga de datos.
+                        CargarDatosSGI(rabbitServiceWriterDenormalizer);
 
                         // Fecha de la última actualización.
-                        string fecha = "1500-01-01T00:00:00Z";
-                        //string fecha = LeerFicheroFecha(_Config);
+                        //string fecha = "1500-01-01T00:00:00Z";
+                        string fecha = LeerFicheroFecha(_Config);
 
                         // Genero los ficheros con los datos a procesar desde la fecha.
                         GuardarIdentificadores(_Config, "Organizacion", fecha);
@@ -125,36 +91,8 @@ namespace Harvester
                         // Actualizo la última fecha de carga.
                         UpdateLastDate(_Config, fecha);
 
-                        // Organizaciones.
-                        mResourceApi.ChangeOntoly("organization");
-                        ProcesarFichero(_Config, "Organizacion");
-
-                        // Personas. 
-                        mResourceApi.ChangeOntoly("person");
-                        ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
-
-                        // Proyectos.
-                        mResourceApi.ChangeOntoly("project");
-                        ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
-
-                        // Document.
-                        mResourceApi.ChangeOntoly("document");
-                        ProcesarFichero(_Config, "PRC");
-
-                        // Autorizaciones.
-                        mResourceApi.ChangeOntoly("projectauthorization");
-                        ProcesarFichero(_Config, "AutorizacionProyecto");
-
-                        // Grupos.
-                        mResourceApi.ChangeOntoly("group");
-                        ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
-
-                        // Patentes.
-                        mResourceApi.ChangeOntoly("patent");
-                        ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
-
-                        // Inserción de personas en la cola de Rabbit.
-                        InsertToQueue(rabbitServiceWriterDenormalizer, listaIdsPersonas);
+                        // Carga de datos.
+                        CargarDatosSGI(rabbitServiceWriterDenormalizer);
                     }
                 }
                 catch (Exception)
@@ -162,6 +100,51 @@ namespace Harvester
                     Thread.Sleep(60000);
                 }
             }
+        }
+
+        /// <summary>
+        /// Obtiene los datos del SGI y los carga.
+        /// </summary>
+        /// <param name="pRabbitConf"></param>
+        public void CargarDatosSGI(RabbitServiceWriterDenormalizer pRabbitConf)
+        {
+            // Identificadores a desnormalizar.
+            HashSet<string> listaIdsPersonas = new HashSet<string>();
+            HashSet<string> listaIdsProyectos = new HashSet<string>();
+            HashSet<string> listaIdsGrupos = new HashSet<string>();
+
+            // Organizaciones.
+            mResourceApi.ChangeOntoly("organization");
+            ProcesarFichero(_Config, "Organizacion");
+
+            // Personas. 
+            mResourceApi.ChangeOntoly("person");
+            ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
+
+            // Proyectos.
+            mResourceApi.ChangeOntoly("project");
+            ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas, pListaProyectos: listaIdsProyectos);
+
+            // Document.
+            mResourceApi.ChangeOntoly("document");
+            ProcesarFichero(_Config, "PRC");
+
+            // Autorizaciones.
+            mResourceApi.ChangeOntoly("projectauthorization");
+            ProcesarFichero(_Config, "AutorizacionProyecto");
+
+            // Grupos.
+            mResourceApi.ChangeOntoly("group");
+            ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas, pListaGrupos: listaIdsGrupos);
+
+            // Patentes.
+            mResourceApi.ChangeOntoly("patent");
+            ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
+
+            // Inserción de personas en la cola de Rabbit.
+            InsertToQueue(pRabbitConf, listaIdsPersonas, "person");
+            InsertToQueue(pRabbitConf, listaIdsProyectos, "project");
+            InsertToQueue(pRabbitConf, listaIdsGrupos, "group");
         }
 
         /// <summary>
@@ -187,11 +170,22 @@ namespace Harvester
         /// </summary>
         /// <param name="pRabbit"></param>
         /// <param name="pListaIds"></param>
-        public void InsertToQueue(RabbitServiceWriterDenormalizer pRabbit, HashSet<string> pListaIds)
+        public void InsertToQueue(RabbitServiceWriterDenormalizer pRabbit, HashSet<string> pListaIds, string pTipo)
         {
             if (pListaIds.Count > 0)
             {
-                pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, pListaIds));
+                switch (pTipo)
+                {
+                    case "person":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, pListaIds));
+                        break;
+                    case "project":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.project, pListaIds));
+                        break;
+                    case "group":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.group, pListaIds));
+                        break;
+                }
             }
         }
 
@@ -203,7 +197,7 @@ namespace Harvester
         /// <param name="dicOrganizaciones"></param>
         /// <param name="dicProyectos"></param>
         /// <param name="dicPersonas"></param>
-        public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] HashSet<string> pListaPersonas)
+        public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] HashSet<string> pListaPersonas, [Optional] HashSet<string> pListaProyectos, [Optional] HashSet<string> pListaGrupos)
         {
             string directorioPendientes = $@"{pConfig.GetLogCargas()}\{pSet}\pending\";
             string directorioProcesados = $@"{pConfig.GetLogCargas()}\{pSet}\processed";
@@ -425,6 +419,7 @@ namespace Harvester
                                 string[] idSplit = dicDatosBBDD[projectOntology.Roh_crisIdentifier].Split('_');
                                 resource = projectOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
                                 mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                pListaProyectos.Add(dicDatosBBDD[projectOntology.Roh_crisIdentifier]);
                             }
                             else
                             {
@@ -432,6 +427,7 @@ namespace Harvester
                                 resource = projectOntology.ToGnossApiResource(mResourceApi, null);
                                 mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicDatosBBDD[projectOntology.Roh_crisIdentifier] = resource.GnossId;
+                                pListaProyectos.Add(resource.GnossId);
                             }
 
                             // Guardamos el ID cargado.
@@ -648,6 +644,7 @@ namespace Harvester
                                 string[] idSplit = dicDatosBBDD[groupOntology.Roh_crisIdentifier].Split('_');
                                 resource = groupOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
                                 mResourceApi.ModifyComplexOntologyResource(resource, false, false);
+                                pListaGrupos.Add(dicDatosBBDD[groupOntology.Roh_crisIdentifier]);
                             }
                             else
                             {
@@ -655,6 +652,7 @@ namespace Harvester
                                 resource = groupOntology.ToGnossApiResource(mResourceApi, null);
                                 mResourceApi.LoadComplexSemanticResource(resource, false, false);
                                 dicDatosBBDD[groupOntology.Roh_crisIdentifier] = resource.GnossId;
+                                pListaGrupos.Add(resource.GnossId);
                             }
 
                             // Guardamos el ID cargado.
@@ -2816,8 +2814,6 @@ namespace Harvester
                     }
                     else
                     {
-                        PersonOntology.Person personOntology = new PersonOntology.Person();
-
                         // Se piden los datos de la persona.
                         Persona persona = ObtenerPersona(item.PersonaRef);
 
@@ -2826,7 +2822,7 @@ namespace Harvester
                         // Si la persona no tiene nombre, no se inserta.
                         if (!string.IsNullOrEmpty(persona.Nombre))
                         {
-                            personOntology = CrearPersona(persona);
+                            PersonOntology.Person personOntology = CrearPersona(persona);
 
                             mResourceApi.ChangeOntoly("person");
                             ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
@@ -2868,26 +2864,26 @@ namespace Harvester
             // Añado las entidades gestoras que no existan en BBDD. Se coge la primera porque en la ontología es 0..1
             if (pDatos.EntidadesGestoras != null && pDatos.EntidadesGestoras.Any())
             {
-                ProyectoEntidadGestora entidadGestora = pDatos.EntidadesGestoras[0];
+                project.Roh_participates = new List<ProjectOntology.OrganizationAux>();
 
-                Dictionary<string, OrganizacionBBDD> organizacion = CrearEntidadOrganization(entidadGestora.EntidadRef);
-
-                // Solamente contrendrá un elemento.
-                foreach (KeyValuePair<string, OrganizacionBBDD> item in organizacion)
+                foreach (ProyectoEntidadGestora entidadGestora in pDatos.EntidadesGestoras)
                 {
-                    project.Roh_conductedByTitle = item.Value.title;
-                    project.IdRoh_conductedBy = item.Key;
+                    project.Roh_participates.Add(CrearEntidadOrganizationAux(entidadGestora.EntidadRef));
                 }
             }
 
             // Se añade las entidades participación que no existan en BBDD.
             if (pDatos.EntidadesConvocantes != null && pDatos.EntidadesConvocantes.Any())
             {
-                project.Roh_participates = new List<ProjectOntology.OrganizationAux>();
+                ProyectoEntidadConvocante entidadConvocante = pDatos.EntidadesConvocantes[0];
 
-                foreach (ProyectoEntidadConvocante entidadConvocante in pDatos.EntidadesConvocantes)
+                Dictionary<string, OrganizacionBBDD> organizacion = CrearEntidadOrganization(entidadConvocante.EntidadRef);
+
+                // Solamente contrendrá un elemento.
+                foreach (KeyValuePair<string, OrganizacionBBDD> item in organizacion)
                 {
-                    project.Roh_participates.Add(CrearEntidadOrganizationAux(entidadConvocante.EntidadRef));
+                    project.Roh_conductedByTitle = item.Value.title;
+                    project.IdRoh_conductedBy = item.Key;
                 }
             }
 
@@ -2937,15 +2933,12 @@ namespace Harvester
                 project.Roh_monetaryAmount = (float)cuantiaTotal;
             }
 
+            // Fecha Inicio.
             project.Vivo_start = pDatos.FechaInicio != null ? Convert.ToDateTime(pDatos.FechaInicio) : null;
 
-            //Si está informada la FechaFinDefinitiva prevalecerá sobre la FechaFin y será la considerada como fecha de finalización del proyecto,
-            //independientemente de que sea mayor o menor que la fecha de fin inicial.
-            //Añado la fecha de finalizacion si el proyecto es de tipo competitivo.
-            if (project.IdRoh_scientificExperienceProject != null && project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1"))
-            {
-                project.Vivo_end = pDatos.FechaFinDefinitiva != null ? Convert.ToDateTime(pDatos.FechaFinDefinitiva) : Convert.ToDateTime(pDatos.FechaFin);
-            }
+            // Fecha Fin. (Nos quuedamos con la fecha de fin definitiva si existe)
+            project.Vivo_end = pDatos.FechaFin != null ? Convert.ToDateTime(pDatos.FechaFin) : null;
+            project.Vivo_end = pDatos.FechaFinDefinitiva != null ? Convert.ToDateTime(pDatos.FechaFinDefinitiva) : Convert.ToDateTime(pDatos.FechaFin);
 
             if (pDatos.FechaFinDefinitiva != null)
             {
