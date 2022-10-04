@@ -1072,8 +1072,7 @@ class CargarGraficaProjectoObj {
         // }
         
         var self = this;
-        var arg = {};
-        arg.pIdGrupo = pIdGrupo;
+        var arg = {...pIdGrupo};
         arg.pParametros = parametros;
         arg.pMax = $('#numColaboradores').val();
         $('#' + idContenedor).empty();
