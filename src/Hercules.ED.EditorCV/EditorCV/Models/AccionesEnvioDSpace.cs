@@ -1,18 +1,17 @@
 ﻿using EditorCV.Models.EnvioDSpace;
-using EditorCV.Models.PreimportModels;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Security.Policy;
 using System.Text;
 
 namespace EditorCV.Models
@@ -32,10 +31,10 @@ namespace EditorCV.Models
             _Configuracion = pConfig;
         }
 
-        public void EnvioDSpace(string pIdRecurso)
+        public void EnvioDSpace(string pIdRecurso, IFormFile file)
         {
             Publication publication = new Publication("000000", "");
-            string idRecurso = "";
+            string idPublication = "";
 
             try
             {
@@ -53,109 +52,11 @@ namespace EditorCV.Models
                     Authentication();
                 }
 
-                //Recupero el identificador de Dspace y el titulo del recurso de la BBDD.
-                string select = "SELECT distinct ?doc ?idDspace ?titulo ?anioPublicacion ?issn ?isbn ?handle ?descripcion ?pagIni ?pagFin ?editorial ?isOpenAccess ?idTipo";
-                string where = $@"WHERE{{
-                                    ?doc a <http://purl.org/ontology/bibo/Document>.
-                                    <{pIdRecurso}> ?p ?doc .
-                                    OPTIONAL{{?doc <http://w3id.org/roh/idDspace> ?idDspace }}
-                                    OPTIONAL{{?doc <http://w3id.org/roh/title> ?titulo }}
-
-                                    OPTIONAL{{?doc <http://w3id.org/roh/year> ?anioPublicacion}}
-                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/issn> ?issn}}
-                                    OPTIONAL{{?doc <http://w3id.org/roh/isbn> ?isbn}}
-                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/handle> ?handle}}
-                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/abstract> ?descripcion}}
-                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/pageStart> ?pagIni}}
-                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/pageEnd> ?pagFin}}
-                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/publisher> ?editorial}}
-                                    OPTIONAL{{?doc <http://w3id.org/roh/openAccess> ?isOpenAccess}}
-                                    OPTIONAL{{?doc <http://purl.org/dc/elements/1.1/type> ?tipo . ?tipo <http://purl.org/dc/elements/1.1/identifier> ?idTipo}}
-                                }}";
-                SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "document", "publicationtype" });
-                if (resultadoQuery.results.bindings.Count != 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> res in resultadoQuery.results.bindings)
-                    {
-                        if (res.ContainsKey("doc") && !string.IsNullOrEmpty(res["doc"].value))
-                        {
-                            idRecurso = res["doc"].value;
-                        }
-
-                        if (res.ContainsKey("idDspace") && !string.IsNullOrEmpty(res["idDspace"].value))
-                        {
-                            publication.idRecursoDspace = res["idDspace"].value.ToString();
-                        }
-                        if (res.ContainsKey("titulo") && !string.IsNullOrEmpty(res["titulo"].value))
-                        {
-                            publication.tituloRecurso = res["titulo"].value.ToString();
-                        }
-
-                        if (res.ContainsKey("anioPublicacion") && !string.IsNullOrEmpty(res["anioPublicacion"].value))
-                        {
-                            publication.anioPublicacion = res["anioPublicacion"].value.ToString();
-                        }
-                        if (res.ContainsKey("issn") && !string.IsNullOrEmpty(res["issn"].value))
-                        {
-                            publication.issn = res["issn"].value.ToString();
-                        }
-                        if (res.ContainsKey("isbn") && !string.IsNullOrEmpty(res["isbn"].value))
-                        {
-                            publication.isbn = res["isbn"].value.ToString();
-                        }
-                        if (res.ContainsKey("handle") && !string.IsNullOrEmpty(res["handle"].value))
-                        {
-                            publication.handle = res["handle"].value.ToString();
-                        }
-                        if (res.ContainsKey("descripcion") && !string.IsNullOrEmpty(res["descripcion"].value))
-                        {
-                            publication.descripcion = res["descripcion"].value.ToString();
-                        }
-                        if (res.ContainsKey("pagIni") && !string.IsNullOrEmpty(res["pagIni"].value))
-                        {
-                            publication.pagIni = res["pagIni"].value.ToString();
-                        }
-                        if (res.ContainsKey("pagFin") && !string.IsNullOrEmpty(res["pagFin"].value))
-                        {
-                            publication.pagFin = res["pagFin"].value.ToString();
-                        }
-                        if (res.ContainsKey("editorial") && !string.IsNullOrEmpty(res["editorial"].value))
-                        {
-                            publication.editorial = res["editorial"].value.ToString();
-                        }
-                        if (res.ContainsKey("isOpenAccess") && !string.IsNullOrEmpty(res["isOpenAccess"].value))
-                        {
-                            publication.isOpenAccess = res["isOpenAccess"].value.ToString();
-                        }
-                        if (res.ContainsKey("idTipo") && !string.IsNullOrEmpty(res["idTipo"].value))
-                        {
-                            publication.tipo = res["idTipo"].value.ToString();
-                        }
-                    }
-                }
+                //Recupero los datos del recurso
+                GetDatosPublicacion(pIdRecurso, publication, ref idPublication);
 
                 //Autores del documento
-                string selectAutores = "select distinct ?nombrePersona";
-                string whereAutores = $@"WHERE{{
-                                    ?doc a <http://purl.org/ontology/bibo/Document>.
-                                    <{pIdRecurso}> ?p ?doc .
-                                    OPTIONAL{{
-                                        ?doc <http://purl.org/ontology/bibo/authorList> ?autores .
-                                        ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona . 
-                                        ?persona <http://xmlns.com/foaf/0.1/name> ?nombrePersona .
-                                    }}
-                                }}";
-                SparqlObject resultadoAutores = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores, new List<string> { "person", "document", "curriculumvitae" });
-                if (resultadoAutores.results.bindings.Count != 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> res in resultadoAutores.results.bindings)
-                    {
-                        if (res.ContainsKey("nombrePersona") && !string.IsNullOrEmpty(res["nombrePersona"].value))
-                        {
-                            publication.autores.Add(res["nombrePersona"].value);
-                        }
-                    }
-                }
+                GetAutoresPublicacion(pIdRecurso, publication);
 
                 if (publication.idRecursoDspace == "000000")
                 {
@@ -191,23 +92,39 @@ namespace EditorCV.Models
                 {
                     //Añade los metadatos a DSpace
                     DSpaceResponse dSpace = new();
-                    dSpace = InsertaDspace(publication);
+                    dSpace = InsertaMetadatosDspace(publication);
+                    if (dSpace.id.Equals("000000"))
+                    {
+                        throw new Exception("Error al insertar datos");
+                    }
                     //Inserta el triple con el Identificador de DSpace 
-                    AniadirIdDspace(dSpace.id, idRecurso);
+                    AniadirIdDspace(dSpace.id, idPublication);
+
+                    //Añado el archivo al recurso
+                    if(file != null)
+                    {
+                        AniadirBitstreamDspace(publication,file);
+                    }
                 }
                 //Actualizo(200, recurso encontrado en DSpace)
                 else if (responseEstado.StatusCode == HttpStatusCode.OK)
                 {
-                    ActualizaDspace(publication);
+                    //ActualizaDspace(publication); 
+
+                    //Añado el archivo al recurso
+                    if (file != null)
+                    {
+                        AniadirBitstreamDspace(publication, file);
+                    }
                 }
                 else
                 {
                     throw new Exception("No se ha recibido un código de estado válido");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                mResourceApi.Log.Error(ex.Message);
             }
         }
 
@@ -216,19 +133,29 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="publication"></param>
         /// <returns></returns>
-        private DSpaceResponse InsertaDspace(Publication publication)
+        private DSpaceResponse InsertaMetadatosDspace(Publication publication)
         {
             //Colección con handle
             string urlEstado = _Configuracion.GetUrlDSpace() + "/collections/" + _Configuracion.GetCollectionDSpace() + "/items";
             MetadataSend metadata = GetListadoValoresItem(publication);
 
-            //En caso de no estar lo inserto
-            HttpClient httpClientInserta = new HttpClient();
-            httpClientInserta.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
-            HttpResponseMessage responseInserta = httpClientInserta.PostAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
+            try
+            {
+                HttpClient httpClientInserta = new HttpClient();
+                httpClientInserta.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
+                HttpResponseMessage responseInserta = httpClientInserta.PostAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
+                if (!responseInserta.StatusCode.Equals(200))
+                {
+                    throw new Exception("Error en la inserción");
+                }
 
-            DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseInserta.Content.ReadAsStringAsync().Result.ToString());
-            return dSpace;
+                DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseInserta.Content.ReadAsStringAsync().Result.ToString());
+                return dSpace;
+            }
+            catch (Exception)
+            {
+                return new DSpaceResponse() { id = "000000" };
+            }
         }
 
         /// <summary>
@@ -241,14 +168,168 @@ namespace EditorCV.Models
             MetadataSend metadata = GetListadoValoresItem(publication);
 
             string urlEstado = _Configuracion.GetUrlDSpace() + "/items/" + publication.idRecursoDspace + "/metadata";
+            try
+            {
+                //Si está en la biblioteca actualizo los datos
+                HttpClient httpClientActualiza = new HttpClient();
+                httpClientActualiza.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
+                HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
+                if (!responseActualiza.StatusCode.Equals(200))
+                {
+                    throw new Exception("Error en la actualización");
+                }
 
-            //Si está en la biblioteca actualizo los datos
-            HttpClient httpClientActualiza = new HttpClient();
-            httpClientActualiza.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
-            HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
+                DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseActualiza.Content.ReadAsStringAsync().Result.ToString());
+                return dSpace;
+            }
+            catch (Exception ex)
+            {
+                mResourceApi.Log.Error(ex.Message);
+                return new DSpaceResponse() { id = "000000" };
+            }
+        }
 
-            DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseActualiza.Content.ReadAsStringAsync().Result.ToString());
-            return dSpace;
+        private void AniadirBitstreamDspace(Publication publication, IFormFile file)
+        {
+            MetadataSend metadata = GetListadoValoresItem(publication);
+
+            string urlEstado = _Configuracion.GetUrlDSpace() + "/items/" + publication.idRecursoDspace + "/bitstreams?name=" + file.FileName;
+            try
+            {
+                MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+                var ms = new MemoryStream();
+                file.CopyTo(ms);
+                byte[] filebytes = ms.ToArray();
+                multipartFormData.Add(new ByteArrayContent(filebytes), "File", file.FileName);
+
+
+                //Si está en la biblioteca actualizo los datos
+                HttpClient httpClientBitstream = new HttpClient();
+                httpClientBitstream.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
+                HttpResponseMessage responseBitstream = httpClientBitstream.PostAsync($"{urlEstado}", multipartFormData).Result;
+                if (!responseBitstream.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    throw new Exception("Error en la inserción del archivo");
+                }
+            }
+            catch (Exception ex)
+            {
+                mResourceApi.Log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Actualiza los datos de una publicación
+        /// </summary>
+        /// <param name="pIdRecurso"></param>
+        /// <param name="publication"></param>
+        /// <param name="idPublication"></param>
+        private void GetDatosPublicacion(string pIdRecurso, Publication publication, ref string idPublication)
+        {
+            string select = "SELECT distinct ?doc ?idDspace ?titulo ?anioPublicacion ?issn ?isbn ?handle ?descripcion ?pagIni ?pagFin ?editorial ?isOpenAccess ?idTipo";
+            string where = $@"WHERE{{
+                                    ?doc a <http://purl.org/ontology/bibo/Document>.
+                                    <{pIdRecurso}> ?p ?doc .
+                                    OPTIONAL{{?doc <http://w3id.org/roh/idDspace> ?idDspace }}
+                                    OPTIONAL{{?doc <http://w3id.org/roh/title> ?titulo }}
+
+                                    OPTIONAL{{?doc <http://w3id.org/roh/year> ?anioPublicacion}}
+                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/issn> ?issn}}
+                                    OPTIONAL{{?doc <http://w3id.org/roh/isbn> ?isbn}}
+                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/handle> ?handle}}
+                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/abstract> ?descripcion}}
+                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/pageStart> ?pagIni}}
+                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/pageEnd> ?pagFin}}
+                                    OPTIONAL{{?doc <http://purl.org/ontology/bibo/publisher> ?editorial}}
+                                    OPTIONAL{{?doc <http://w3id.org/roh/openAccess> ?isOpenAccess}}
+                                    OPTIONAL{{?doc <http://purl.org/dc/elements/1.1/type> ?tipo . ?tipo <http://purl.org/dc/elements/1.1/identifier> ?idTipo}}
+                                }}";
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "document", "publicationtype" });
+            if (resultadoQuery.results.bindings.Count != 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> res in resultadoQuery.results.bindings)
+                {
+                    if (res.ContainsKey("doc") && !string.IsNullOrEmpty(res["doc"].value))
+                    {
+                        idPublication = res["doc"].value;
+                    }
+
+                    if (res.ContainsKey("idDspace") && !string.IsNullOrEmpty(res["idDspace"].value))
+                    {
+                        publication.idRecursoDspace = res["idDspace"].value.ToString();
+                    }
+                    if (res.ContainsKey("titulo") && !string.IsNullOrEmpty(res["titulo"].value))
+                    {
+                        publication.tituloRecurso = res["titulo"].value.ToString();
+                    }
+
+                    if (res.ContainsKey("anioPublicacion") && !string.IsNullOrEmpty(res["anioPublicacion"].value))
+                    {
+                        publication.anioPublicacion = res["anioPublicacion"].value.ToString();
+                    }
+                    if (res.ContainsKey("issn") && !string.IsNullOrEmpty(res["issn"].value))
+                    {
+                        publication.issn = res["issn"].value.ToString();
+                    }
+                    if (res.ContainsKey("isbn") && !string.IsNullOrEmpty(res["isbn"].value))
+                    {
+                        publication.isbn = res["isbn"].value.ToString();
+                    }
+                    if (res.ContainsKey("handle") && !string.IsNullOrEmpty(res["handle"].value))
+                    {
+                        publication.handle = res["handle"].value.ToString();
+                    }
+                    if (res.ContainsKey("descripcion") && !string.IsNullOrEmpty(res["descripcion"].value))
+                    {
+                        publication.descripcion = res["descripcion"].value.ToString();
+                    }
+                    if (res.ContainsKey("pagIni") && !string.IsNullOrEmpty(res["pagIni"].value))
+                    {
+                        publication.pagIni = res["pagIni"].value.ToString();
+                    }
+                    if (res.ContainsKey("pagFin") && !string.IsNullOrEmpty(res["pagFin"].value))
+                    {
+                        publication.pagFin = res["pagFin"].value.ToString();
+                    }
+                    if (res.ContainsKey("editorial") && !string.IsNullOrEmpty(res["editorial"].value))
+                    {
+                        publication.editorial = res["editorial"].value.ToString();
+                    }
+                    if (res.ContainsKey("isOpenAccess") && !string.IsNullOrEmpty(res["isOpenAccess"].value))
+                    {
+                        publication.isOpenAccess = res["isOpenAccess"].value.ToString();
+                    }
+                    if (res.ContainsKey("idTipo") && !string.IsNullOrEmpty(res["idTipo"].value))
+                    {
+                        publication.tipo = res["idTipo"].value.ToString();
+                    }
+                }
+            }
+        }
+
+        private void GetAutoresPublicacion(string pIdRecurso, Publication publication)
+        {
+            string selectAutores = "select distinct ?nombrePersona";
+            string whereAutores = $@"WHERE{{
+                                    ?doc a <http://purl.org/ontology/bibo/Document>.
+                                    <{pIdRecurso}> ?p ?doc .
+                                    OPTIONAL{{
+                                        ?doc <http://purl.org/ontology/bibo/authorList> ?autores .
+                                        ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona . 
+                                        ?persona <http://xmlns.com/foaf/0.1/name> ?nombrePersona .
+                                    }}
+                                }}";
+            SparqlObject resultadoAutores = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores, new List<string> { "person", "document", "curriculumvitae" });
+            if (resultadoAutores.results.bindings.Count != 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> res in resultadoAutores.results.bindings)
+                {
+                    if (res.ContainsKey("nombrePersona") && !string.IsNullOrEmpty(res["nombrePersona"].value))
+                    {
+                        publication.autores.Add(res["nombrePersona"].value);
+                    }
+                }
+            }
         }
 
         /// <summary>
