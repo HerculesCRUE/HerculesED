@@ -776,8 +776,8 @@
     }
 
     // Creamos un nuevo objeto
-    var newGrafProj = new CargarGraficaProjectoObj("servicioexterno/Hercules/DatosGraficaColaboradoresGrupo");
-    var newGrafMember = new CargarGraficaProjectoObj("servicioexterno/Hercules/DatosGraficaColaboradoresGrupo");
+    var newGrafProj = new CargarGraficaProjectoObj("Hercules/DatosGraficaColaboradoresGrupo")
+    var newGrafMember = new CargarGraficaProjectoObj("Hercules/DatosGraficaColaboradoresGrupo")
 
 
     // función para actualizar la gráfica de colaboradores
@@ -837,29 +837,6 @@
             OcultarUpdateProgress();
         });
     }
-
-
-    // Datos gráfica colaboradores externos.
-    // function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor, mostrarCargando = false) {
-    //     var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
-    //     if (depuracion) {
-    //         url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo"
-    //     }
-    //     var arg = {};
-    //     arg.pIdGrupo = pIdGrupo;
-    //     arg.pParametros = parametros;
-    //     arg.pMax = $('#numColaboradores').val();
-    //     $('#' + idContenedor).empty();
-    //     if (mostrarCargando) {
-    //         MostrarUpdateProgress();
-    //     }
-    //     $.get(url, arg, function (data) {
-    //         PintarGraficaArania(data, idContenedor);
-    //         if (mostrarCargando) {
-    //             OcultarUpdateProgress();
-    //         }
-    //     });
-    // }
 
 
 

@@ -757,7 +757,6 @@ var MontarResultadosScroll = {
         };
 		contarLineasDescripcion.init();
         that.footer.waypoint(function (event, direction) {
-	        console.log("llegado cargarScroll");
             that.launchCallWaypoint(callback())
         }, opts);
         return;
@@ -847,7 +846,6 @@ montarTooltip.lanzar = function (elem, title, classes) {
             template: '<div class="tooltip ' + classes + '" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
             title: title
         }).on('mouseenter', function () {
-            // console.log('enter')
             var _this = this;
             // $(this).tooltip('show');
             $('.tooltip').on('mouseenter', function () {
@@ -856,15 +854,12 @@ montarTooltip.lanzar = function (elem, title, classes) {
                 $(this).tooltip('hide')
             })
         }).on('mouseleave', function () {
-            // console.log('leave')
             var _this = this;
             setTimeout(function () {
                 if ($('.tooltip:hover').length < 0) {
-                    // console.log('hover')
                     $(_this).tooltip("hide")
                 }
                 $('.tooltip').on('mouseleave', function () {
-                    //console.log('leave')
                     $(_this).tooltip("hide");
                 });
             });
@@ -968,7 +963,6 @@ tooltipsAccionesRecursos.getTooltipQuotes= function () {
 var montarTooltipCode = {
 	// Init the function
     init: function () {
-    	console.log("montarTooltipCode custom entrado")
         this.config();
         this.comportamiento();
     },
@@ -1480,7 +1474,6 @@ var metabuscador = {
     	var baseUlr = "https://localhost:44321/";
     	var url = baseUlr + "Hercules/GetLastSearchs";
     	$.get(url, function (data) {
-			console.log("data: ", data);
 			that.printDataIntoLastSearchs(data);
 		});
         return;

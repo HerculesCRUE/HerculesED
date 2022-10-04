@@ -94,7 +94,6 @@ class CargarAnotaciones {
 		let currentData = data != null ? data : this.data
 
 		// Pintamos el html
-		console.log(currentData);
 		let html = currentData.map(e => {
 
 			/*var text = e.texto.substring(0, 100).replace("\n", "<br />");
@@ -103,7 +102,6 @@ class CargarAnotaciones {
 			if (index != -1) {
 				text = text.substring(0, index-1);
 			}
-			console.log(text);
 			if (e.texto.length > text.length) {
 				//text = text.substring(0,text.lastIndexOf("<br />")-1);
 				readmore = "<a onclick='readMoreAnotacion(\""+e.id+"\",\""+e.texto+"\")' class='readmore'>Leer más</a>";
