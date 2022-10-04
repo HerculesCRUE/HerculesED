@@ -189,33 +189,16 @@ namespace EditorCV.Models
                 //Inserto(404, recurso no encontrado por ID).
                 if (responseEstado.StatusCode == HttpStatusCode.NotFound)
                 {
-                    //Colección con handle
-                    urlEstado = _Configuracion.GetUrlDSpace() + "/collections/" + _Configuracion.GetCollectionDSpace() + "/items";
-                    MetadataSend metadata = GetListadoValoresItem(publication);
-
-                    //En caso de no estar lo inserto
-                    HttpClient httpClientInserta = new HttpClient();
-                    httpClientInserta.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
-                    HttpResponseMessage responseInserta = httpClientInserta.PostAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
-
-                    DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseInserta.Content.ReadAsStringAsync().Result.ToString());
-
-                    //TODO - Inserta el triple con el Identificador de DSpace 
+                    //Añade los metadatos a DSpace
+                    DSpaceResponse dSpace = new();
+                    dSpace = InsertaDspace(publication);
+                    //Inserta el triple con el Identificador de DSpace 
                     AniadirIdDspace(dSpace.id, idRecurso);
                 }
-                //Actualizo(200, recurso encontrado en DSPACE)
+                //Actualizo(200, recurso encontrado en DSpace)
                 else if (responseEstado.StatusCode == HttpStatusCode.OK)
                 {
-                    MetadataSend metadata = GetListadoValoresItem(publication);
-
-                    urlEstado = _Configuracion.GetUrlDSpace() + "/items/" + publication.idRecursoDspace + "/metadata";
-
-                    //Si está en la biblioteca actualizo los datos
-                    HttpClient httpClientActualiza = new HttpClient();
-                    httpClientActualiza.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
-                    HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
-
-                    DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseActualiza.Content.ReadAsStringAsync().Result.ToString());
+                    ActualizaDspace(publication);
                 }
                 else
                 {
@@ -229,11 +212,51 @@ namespace EditorCV.Models
         }
 
         /// <summary>
+        /// Inserta los metadatos del recurso en DSpace
+        /// </summary>
+        /// <param name="publication"></param>
+        /// <returns></returns>
+        private DSpaceResponse InsertaDspace(Publication publication)
+        {
+            //Colección con handle
+            string urlEstado = _Configuracion.GetUrlDSpace() + "/collections/" + _Configuracion.GetCollectionDSpace() + "/items";
+            MetadataSend metadata = GetListadoValoresItem(publication);
+
+            //En caso de no estar lo inserto
+            HttpClient httpClientInserta = new HttpClient();
+            httpClientInserta.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
+            HttpResponseMessage responseInserta = httpClientInserta.PostAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
+
+            DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseInserta.Content.ReadAsStringAsync().Result.ToString());
+            return dSpace;
+        }
+
+        /// <summary>
+        /// Actualiza los metadatos del recurso en DSpace
+        /// </summary>
+        /// <param name="publication"></param>
+        /// <returns></returns>
+        private DSpaceResponse ActualizaDspace(Publication publication)
+        {
+            MetadataSend metadata = GetListadoValoresItem(publication);
+
+            string urlEstado = _Configuracion.GetUrlDSpace() + "/items/" + publication.idRecursoDspace + "/metadata";
+
+            //Si está en la biblioteca actualizo los datos
+            HttpClient httpClientActualiza = new HttpClient();
+            httpClientActualiza.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
+            HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
+
+            DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseActualiza.Content.ReadAsStringAsync().Result.ToString());
+            return dSpace;
+        }
+
+        /// <summary>
         /// Añade el triple del identificador de DSpace al recurso <paramref name="pIdRecurso"/>
         /// </summary>
         /// <param name="IdDSpace">Identificador de DSpace</param>
         /// <param name="pIdRecurso">Identificador largo del recuso</param>
-        private void AniadirIdDspace(string IdDSpace,string pIdRecurso)
+        private void AniadirIdDspace(string IdDSpace, string pIdRecurso)
         {
             //No hago nada si el identificador del recurso es nulo.
             if (string.IsNullOrEmpty(pIdRecurso))
@@ -276,7 +299,7 @@ namespace EditorCV.Models
                 Metadata metadataEntryType = new Metadata("dc.type", tipoType(publication.tipo));
                 listadoValores.Add(metadataEntryType);
             }
-            
+
             //Autores
             if (publication.autores.Any())
             {
@@ -286,7 +309,7 @@ namespace EditorCV.Models
                     listadoValores.Add(metadataEntryAuthor);
                 }
             }
-            
+
             //Año de publicación
             if (!string.IsNullOrEmpty(publication.anioPublicacion))
             {
