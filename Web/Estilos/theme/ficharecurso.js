@@ -1047,7 +1047,7 @@ class CargarGraficaProjectoObj {
      * @param curi, uri para las gráficas
      */
     constructor (curi) {
-        this.url = servicioExtermpBaseUrl + curi;
+        this.url = url_servicio_externo + curi;
     }
 
     /**
