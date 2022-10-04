@@ -1,3 +1,4 @@
+@*[security|||group|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -774,66 +775,9 @@
         });
     }
 
-    // Clase para las trabajar en las gráficas de los colaboradores
-    class CargarGraficaProjectoObj {
-        dataCB = {};
-        idContenedorCB = "";
-        typesOcultar = ["relation_project", "relation_document"];
-        showRelation = true;
-
-        actualizarGraficaColaboradores = () => {
-            AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
-        };
-
-        CargarGraficaColaboradores = (pIdGrupo, parametros, idContenedor, mostrarCargando = false) => {
-            var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
-            if (depuracion) {
-                url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo";
-            }
-            var self = this;
-            var arg = {};
-            arg.pIdGrupo = pIdGrupo;
-            arg.pParametros = parametros;
-            arg.pMax = $('#numColaboradores').val();
-            $('#' + idContenedor).empty();
-            if (mostrarCargando) {
-                MostrarUpdateProgress();
-            }
-
-            let optionsRelations = ["relation_project", "relation_document"];
-
-            $.get(url, arg, function (data) {
-                // Establecer los valores en la variable externa
-                self.dataCB = data;
-                self.idContenedorCB = idContenedor;
-
-                self.actualizarGraficaColaboradores();
-                if (mostrarCargando) {
-                    OcultarUpdateProgress();
-                }
-            });
-
-        };
-
-
-        // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
-        actualizarTypesOcultar = (type, id) => {
-
-            if (this.typesOcultar.includes(type)) {
-                this.typesOcultar.splice(newGrafProj.typesOcultar.indexOf(type), 1);
-                document.getElementById(id).classList.add('tachado')
-            } else {
-                this.typesOcultar.push(type)
-                document.getElementById(id).classList.remove('tachado')
-            }
-            this.actualizarGraficaColaboradores();
-        }
-
-    };
-
     // Creamos un nuevo objeto
-    var newGrafProj = new CargarGraficaProjectoObj();
-    var newGrafMember = new CargarGraficaProjectoObj();
+    var newGrafProj = new CargarGraficaProjectoObj("servicioexterno/Hercules/DatosGraficaColaboradoresGrupo");
+    var newGrafMember = new CargarGraficaProjectoObj("servicioexterno/Hercules/DatosGraficaColaboradoresGrupo");
 
 
     // función para actualizar la gráfica de colaboradores
