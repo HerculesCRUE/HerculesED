@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Config\configOAuth\" />
+    <Folder Include="Config\ConfigOAuth\" />
     <Folder Include="Dataset\JsonEscritura\" />
   </ItemGroup>
 
@@ -37,7 +37,7 @@
     <None Update="Config\appsettings\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Config\configOAuth\OAuthV3.config">
+    <None Update="Config\ConfigOAuth\OAuthV3.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Config\estados-usa.json">

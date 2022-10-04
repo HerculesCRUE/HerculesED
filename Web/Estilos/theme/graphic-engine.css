@@ -32,7 +32,7 @@
  .chartLegend h4 {
      margin: 10px;
      font-family: Helvetica, sans-serif;
-     font-size: 12px;
+     font-size: 16px;
      font-weight: bold;
  }
 
@@ -72,15 +72,17 @@
      width: 100%;
      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
  }
- .grafica.zoom .graficoNodos{
-    height: 100%;
+
+ .grafica.zoom .graficoNodos {
+     height: 100%;
  }
 
  .graph-container>.grafica>p {
      position: absolute;
  }
- .graph-container{
-    overflow: hidden!important;
+
+ .graph-container {
+     overflow: hidden !important;
  }
 
  .graph-container .graph-controls,
@@ -188,9 +190,10 @@
  div.acciones-mapa.showAcciones select {
      height: 24px;
  }
+
  div.acciones-mapa div.wrap,
  div.acciones-mapa div.toggleGraficas {
-    background-color:white;
+     background-color: white;
  }
 
  body.listado div.acciones-mapa div.wrap {
@@ -234,6 +237,12 @@
 
  .listadoMenuPaginas {
      width: 100%;
+ }
+
+ div.grafica p:not(.dataSetLabel) {
+     font-family: Helvetica, sans-serif;
+     font-size: 16px;
+     font-weight: bold;
  }
 
  .pageOptions div {
@@ -324,9 +333,11 @@
  ul.listadoMenuPaginas li.nav-item:hover .nav-link {
      background-color: #f3f3f3;
  }
+
  .modal-ampliar-mapa .modal-body {
-    overflow: hidden !important;
+     overflow: hidden !important;
  }
+
  .listado.vista-grafico.facetas-abiertas .topbar-container a.btn-filtrar-movil::before {
      content: '';
      display: block;
