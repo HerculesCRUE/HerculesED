@@ -184,6 +184,88 @@ var buscadorPersonalizado = {
 	}
 }
 
+
+// Clase para trabajar en las gráficas de los colaboradores
+class CargarGraficaProjectoObj {
+    /**
+     * Constructor
+     * @param curi, uri para las gráficas
+     */
+    constructor (curi) {
+
+	    this.dataCB = {}
+	    this.idContenedorCB = ""
+	    this.typesOcultar = ["relation_project", "relation_document"]
+	    this.showRelation = true
+	    this.url = ""
+
+        this.url = url_servicio_externo + curi
+    }
+
+    /**
+     * Método para actualizar las gráficas de colaboradores
+     * Llama a la función externa de "AjustarGraficaArania"
+     */
+    actualizarGraficaColaboradores = () => {
+        AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
+    }
+
+    /**
+     * Método para Cargar las gráficas de colaboradores
+     * @param pIdGrupo, Id del grupo
+     * @param parametros, Parámetros de búsqueda
+     * @param idContenedor, Id del contenedor sobre el que se va a pintar la gráfica
+     * @param mostrarCargando, Indica si se va a mostrar el efecto "cargando la página"
+     */
+    CargarGraficaColaboradores = (arg, parametros, idContenedor, mostrarCargando = false) => {
+        // var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
+        // if (depuracion) {
+        //     url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo";
+        // }
+        
+        var self = this;
+        arg.pParametros = parametros;
+        arg.pMax = $('#numColaboradores').val();
+        $('#' + idContenedor).empty();
+        if (mostrarCargando) {
+            MostrarUpdateProgress();
+        }
+
+        let optionsRelations = ["relation_project", "relation_document"];
+
+        $.get(this.url, arg, function (data) {
+            // Establecer los valores en la variable externa
+            self.dataCB = data;
+            self.idContenedorCB = idContenedor;
+
+            self.actualizarGraficaColaboradores();
+            if (mostrarCargando) {
+                OcultarUpdateProgress();
+            }
+        });
+
+    }
+
+	/**
+	 * Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
+	 * @param type, Indica si cierto tipo de elemento de las relaciones en la gráfica se debe ocultar o no
+     * @param id, Id del html que ha lanzado la acción para darle el efecto de "tachado"
+	 */
+    actualizarTypesOcultar = (type, id) => {
+
+        if (this.typesOcultar.includes(type)) {
+            this.typesOcultar.splice(this.typesOcultar.indexOf(type), 1);
+            document.getElementById(id).classList.add('tachado')
+        } else {
+            this.typesOcultar.push(type)
+            document.getElementById(id).classList.remove('tachado')
+        }
+        this.actualizarGraficaColaboradores();
+    }
+
+}
+
+
 function PintarGraficaPublicaciones(data,idContenedor) {	
 	$('#'+idContenedor+'_aux').remove();
 	$('#'+idContenedor).append($('<canvas id="'+idContenedor+'_aux" class="js-chart"></canvas>'));

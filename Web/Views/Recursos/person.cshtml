@@ -1,3 +1,4 @@
+@*[security|||person|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -698,6 +699,8 @@
     // Datos Garfica Colaboradores
     var dataCB = {};
     var idContenedorCB = "";
+    const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/";
+
 
     // Datos gráfica publicaciones.
     function CargarGraficaPublicaciones(parametros, idContenedor) {
@@ -723,59 +726,9 @@
         });
     }
 
-    class CargarGraficaProjectoObj {
-        dataCB = {};
-        idContenedorCB = "";
-        typesOcultar = ["relation_project", "relation_document"];
-        showRelation = true;
 
-        actualizarGraficaColaboradores = () => {
-            AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
-        };
-
-        CargarGraficaColaboradores = (pIdPersona, parametros, idContenedor, mostrarCargando = false) => {
-            var url = url_servicio_externo + "Hercules/DatosGraficaColaboradoresPersonas";
-            var self = this;
-            var arg = {};
-            arg.pIdPersona = pIdPersona;
-            arg.pParametros = parametros;
-            arg.pMax = $('#numColaboradores').val();
-            $('#' + idContenedor).empty();
-            if (mostrarCargando) {
-                MostrarUpdateProgress();
-            }
-
-            let optionsRelations = ["relation_project", "relation_document"];
-
-            $.get(url, arg, function (data) {
-                // Establecer los valores en la variable externa
-                self.dataCB = data;
-                self.idContenedorCB = idContenedor;
-
-                self.actualizarGraficaColaboradores();
-                if (mostrarCargando) {
-                    OcultarUpdateProgress();
-                }
-            });
-
-        };
-
-        // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
-        actualizarTypesOcultar = (type, id) => {
-
-            if (this.typesOcultar.includes(type)) {
-                this.typesOcultar.splice(newGrafProj.typesOcultar.indexOf(type), 1);
-                document.getElementById(id).classList.add('tachado')
-            } else {
-                this.typesOcultar.push(type)
-                document.getElementById(id).classList.remove('tachado')
-            }
-            this.actualizarGraficaColaboradores();
-        }
-
-    };
-
-    var newGrafProj = new CargarGraficaProjectoObj();
+    // Creamos un nuevo objeto
+    var newGrafProj = new CargarGraficaProjectoObj("Hercules/DatosGraficaColaboradoresPersonas");
 
 
     function ActualizarGraficaColaboradores(typesOcultar = [], showRelation = true) {
@@ -930,7 +883,7 @@
                 }
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores({pIdPersona:"@pPerson.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
 
             $('#addNodesCollaborators').unbind().click(function (e) {
@@ -939,7 +892,7 @@
                 $('#numColaboradores').val((numColaboradores + 10));
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores({pIdPersona:"@pPerson.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -1017,7 +970,7 @@
         }
         else if (comportamientoPaginaInvestigador.tabActive == "colaboradores")
         {
-            newGrafProj.CargarGraficaColaboradores("@pPerson.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
+            newGrafProj.CargarGraficaColaboradores({pIdPersona:"@pPerson.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph');
         }
     }
 </script>

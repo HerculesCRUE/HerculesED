@@ -1,3 +1,4 @@
+@*[security|||group|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -774,66 +775,9 @@
         });
     }
 
-    // Clase para las trabajar en las gráficas de los colaboradores
-    class CargarGraficaProjectoObj {
-        dataCB = {};
-        idContenedorCB = "";
-        typesOcultar = ["relation_project", "relation_document"];
-        showRelation = true;
-
-        actualizarGraficaColaboradores = () => {
-            AjustarGraficaArania(this.dataCB, this.idContenedorCB, this.typesOcultar, this.showRelation);
-        };
-
-        CargarGraficaColaboradores = (pIdGrupo, parametros, idContenedor, mostrarCargando = false) => {
-            var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo";
-            if (depuracion) {
-                url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo";
-            }
-            var self = this;
-            var arg = {};
-            arg.pIdGrupo = pIdGrupo;
-            arg.pParametros = parametros;
-            arg.pMax = $('#numColaboradores').val();
-            $('#' + idContenedor).empty();
-            if (mostrarCargando) {
-                MostrarUpdateProgress();
-            }
-
-            let optionsRelations = ["relation_project", "relation_document"];
-
-            $.get(url, arg, function (data) {
-                // Establecer los valores en la variable externa
-                self.dataCB = data;
-                self.idContenedorCB = idContenedor;
-
-                self.actualizarGraficaColaboradores();
-                if (mostrarCargando) {
-                    OcultarUpdateProgress();
-                }
-            });
-
-        };
-
-
-        // Función a la que se llama para seleccionar qué elementos de las relaciones mostrar
-        actualizarTypesOcultar = (type, id) => {
-
-            if (this.typesOcultar.includes(type)) {
-                this.typesOcultar.splice(newGrafProj.typesOcultar.indexOf(type), 1);
-                document.getElementById(id).classList.add('tachado')
-            } else {
-                this.typesOcultar.push(type)
-                document.getElementById(id).classList.remove('tachado')
-            }
-            this.actualizarGraficaColaboradores();
-        }
-
-    };
-
     // Creamos un nuevo objeto
-    var newGrafProj = new CargarGraficaProjectoObj();
-    var newGrafMember = new CargarGraficaProjectoObj();
+    var newGrafProj = new CargarGraficaProjectoObj("Hercules/DatosGraficaColaboradoresGrupo")
+    var newGrafMember = new CargarGraficaProjectoObj("Hercules/DatosGraficaColaboradoresGrupo")
 
 
     // función para actualizar la gráfica de colaboradores
@@ -893,29 +837,6 @@
             OcultarUpdateProgress();
         });
     }
-
-
-    // Datos gráfica colaboradores externos.
-    // function CargarGraficaColaboradores(pIdGrupo, parametros, idContenedor, mostrarCargando = false) {
-    //     var url = servicioExtermpBaseUrl + "servicioexterno/Hercules/DatosGraficaColaboradoresGrupo"
-    //     if (depuracion) {
-    //         url = localUrlBase + "Hercules/DatosGraficaColaboradoresGrupo"
-    //     }
-    //     var arg = {};
-    //     arg.pIdGrupo = pIdGrupo;
-    //     arg.pParametros = parametros;
-    //     arg.pMax = $('#numColaboradores').val();
-    //     $('#' + idContenedor).empty();
-    //     if (mostrarCargando) {
-    //         MostrarUpdateProgress();
-    //     }
-    //     $.get(url, arg, function (data) {
-    //         PintarGraficaArania(data, idContenedor);
-    //         if (mostrarCargando) {
-    //             OcultarUpdateProgress();
-    //         }
-    //     });
-    // }
 
 
 
@@ -1013,7 +934,7 @@
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                 // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
-                newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                newGrafProj.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
 
             $('#addNodesCollaborators').unbind().click(function (e) {
@@ -1023,7 +944,7 @@
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                  // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
-                 newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph', true);
+                 newGrafProj.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -1037,7 +958,7 @@
                 $('#numNodosMembers').html($('#numMembers').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                 // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph',true);
-                newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph', true);
+                newGrafMember.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true);
             });
 
             $('#addNodesMembers').unbind().click(function (e) {
@@ -1047,7 +968,7 @@
                 $('#numNodosMembers').html($('#numMembers').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
                  // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'membersgraph',true);
-                 newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph', true);
+                 newGrafMember.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true);
             });
             //Fin métodos colaboradores
 
@@ -1100,12 +1021,12 @@
         else if (comportamientoPaginaGrupo.tabActive == "miembros")
         {
             // CargarGraficaMiembros("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'membersgraph');
-            newGrafMember.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'membersgraph');
+            newGrafMember.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph');
         }
         else if (comportamientoPaginaGrupo.tabActive == "colaboradores")
         {
             // CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros,'colaboratorsgraph');
-            newGrafProj.CargarGraficaColaboradores("@pGroup.GNOSSID.Split('_')[1].ToUpper()", parametros, 'colaboratorsgraph');
+            newGrafProj.CargarGraficaColaboradores({pIdGrupo:"@pGroup.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'colaboratorsgraph');
         }
     }
 

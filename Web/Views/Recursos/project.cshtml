@@ -1,3 +1,4 @@
+@*[security|||project|||hercules]*@
 @using System.Reflection;
 @model ResourceViewModel
 @{
@@ -345,6 +346,17 @@
                                                         <p>@Html.Translate("MIEMBROS")</p>
                                                         <div class="graph-controls">
                                                             <div class="graph-controls-menu">
+                                                                <ul class="no-list-style d-flex align-items-center mb-2">
+                                                                    <li class="control remove-control" id="removeNodesMembers">
+                                                                        <span class="material-icons">remove</span>
+                                                                    </li>
+                                                                    <li class="control text-control">
+                                                                        <span id="numNodosMembers">10</span>&nbsp;@Html.Translate("NODOS")
+                                                                    </li>
+                                                                    <li class="control add-control" id="addNodesMembers">
+                                                                        <span class="material-icons">add</span>
+                                                                    </li>
+                                                                </ul>
                                                                 <ul class="no-list-style d-flex align-items-center" style="margin:0 auto;">
                                                                     <li onclick="zoomCyOut()" class="control zoomout-control zoomOut" id="zoomOut">
                                                                         <span class="material-icons">zoom_out</span>
@@ -355,6 +367,19 @@
                                                                 </ul>
                                                             </div>
                                                         </div>
+                                                        <div class="chartLegend">
+                                                            <div class="dataSetLabels">
+                                                                <div id="actualizarTypesOcultar_members_relation_document" class="labelContainer" onclick="newGrafMember.actualizarTypesOcultar('relation_document', 'actualizarTypesOcultar_members_relation_document')">
+                                                                    <div style="background-color: #f8abab;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("DOCUMENTOS")</p>
+                                                                </div>
+                                                                <div id="actualizarTypesOcultar_members_relation_project" class="labelContainer" onclick="newGrafMember.actualizarTypesOcultar('relation_project', 'actualizarTypesOcultar_members_relation_project')">
+                                                                    <div style="background-color: #b2cff7;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("PROYECTOS")</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" id="numMembers" value="10" />
                                                         <div class="wrapCol" id="membersgraph" style="width: 100%; height: 500px;"></div>
                                                     </div>
                                                 </div>
@@ -538,6 +563,18 @@
                                                                 </ul>
                                                             </div>
                                                         </div>
+                                                        <div class="chartLegend">
+                                                            <div class="dataSetLabels">
+                                                                <div id="actualizarTypesOcultar_relation_document" class="labelContainer" onclick="newGrafCol.actualizarTypesOcultar('relation_document', 'actualizarTypesOcultar_relation_document')">
+                                                                    <div style="background-color: #f8abab;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("DOCUMENTOS")</p>
+                                                                </div>
+                                                                <div id="actualizarTypesOcultar_relation_project" class="labelContainer" onclick="newGrafCol.actualizarTypesOcultar('relation_project', 'actualizarTypesOcultar_relation_project')">
+                                                                    <div style="background-color: #b2cff7;"></div>
+                                                                    <p class="dataSetLabel">@Html.Translate("PROYECTOS")</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <input type="hidden" id="numColaboradores" value="10" />
                                                         <div class="wrapCol" id="graficaCytoscapeColab" style="width: 100%; height: 500px;"></div>
                                                     </div>
@@ -564,10 +601,12 @@
 <script type="text/javascript">
     var depuracion = false;
 
-    const localUrlBase = "https://localhost:44347/";
-    const edmaUrlBase = "@Html.GetBaseUrlContent()/";
+    const localUrlBase = "https://localhost:44347/"
+    const edmaUrlBase = "@Html.GetBaseUrlContent()/"
+    const servicioExtermpBaseUrl = "@Html.GetBaseUrlContent()/"
 
-    const urlBase = "@Html.GetBaseUrl()";
+
+    const urlBase = "@Html.GetBaseUrl()"
     if (urlBase.includes("localhost") || urlBase.includes("depuracion")) {
         depuracion = true;
     }
@@ -592,26 +631,26 @@
     //}
 
     // Datos gráfica colaboradores.
-    function CargarGraficaColaboradores(idproyecto, parametros, idContenedor, mostrarCargando = false) {
+    function CargarGraficaColaboradores (idproyecto, parametros, idContenedor, mostrarCargando = false) {
         var url = edmaUrlBase + "servicioexterno/Hercules/DatosGraficaRedColaboradores"
         if (depuracion) {
             url = localUrlBase + "Hercules/DatosGraficaRedColaboradores"
         }
 
-        var arg = {};
-        arg.pIdProyecto = idproyecto;
-        arg.pParametros = parametros;
-        arg.pMax = $('#numColaboradores').val();
-        $('#' + idContenedor).empty();
+        var arg = {}
+        arg.pIdProyecto = idproyecto
+        arg.pParametros = parametros
+        arg.pMax = $("#numColaboradores").val()
+        $('#' + idContenedor).empty()
         if (mostrarCargando) {
-            MostrarUpdateProgress();
+            MostrarUpdateProgress()
         }
         $.get(url, arg, function (data) {
-            PintarGraficaArania(data, idContenedor);
+            PintarGraficaArania(data, idContenedor)
             if (mostrarCargando) {
-                OcultarUpdateProgress();
+                OcultarUpdateProgress()
             }
-        });
+        })
     }
 
 
@@ -629,6 +668,13 @@
             PintarGraficaArania(data, idContenedor);
         });
     }
+
+
+    // Creamos un nuevo objeto
+    var newGrafMember = new CargarGraficaProjectoObj("Hercules/DatosGraficaRedMiembros")
+    var newGrafCol = new CargarGraficaProjectoObj("Hercules/DatosGraficaRedColaboradores")
+
+
 
 
     // Datos gráfica publicaciones.
@@ -723,7 +769,7 @@
         init: function () {
             // CargarDatosCabeceras();
             this.config();
-            $('#participantes-tab').click();
+            $('#participantes-tab').click()
             return;
         },
         config: function () {
@@ -743,6 +789,34 @@
                     }
                 });
             });
+
+
+
+            //Métodos Membros (Participantes)
+            $('#removeNodesMembers').unbind().click(function (e) {
+                e.preventDefault();
+                var numColaboradores = parseInt($('#numMembers').val());
+                if (numColaboradores > 10) {
+                    $('#numMembers').val((numColaboradores - 10));
+                }
+                $('#numNodosMembers').html($('#numMembers').val());
+                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
+                // CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros,'graficaCytoscapeColab',true)
+                newGrafMember.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true)
+            });
+
+            $('#addNodesMembers').unbind().click(function (e) {
+                e.preventDefault();
+                var numColaboradores = parseInt($('#numMembers').val());
+                $('#numMembers').val((numColaboradores + 10));
+                $('#numNodosMembers').html($('#numMembers').val());
+                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro
+                // CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros,'graficaCytoscapeColab',true)
+                newGrafMember.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true)
+            });
+            //Fin métodos colaboradores
+
+
             $('#ultimosCincoAniosAreas').unbind().click(function (e) {
                 e.preventDefault();
                 $("#inicioAreas").val(@(anioFinAreas - 4));
@@ -792,7 +866,8 @@
                     $('#numAreas').val((numAreas - 10));
                 }
                 $('#numNodosArea').html($('#numAreas').val());
-                CargarGraficaAreasTematicasArania("@pProject.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+                // CargarGraficaAreasTematicasArania("@pProject.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+                newGrafMember.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true)
             });
 
             $('#addNodesAreas').unbind().click(function (e) {
@@ -800,7 +875,8 @@
                 var numAreas = parseInt($('#numAreas').val());
                 $('#numAreas').val((numAreas + 10));
                 $('#numNodosArea').html($('#numAreas').val());
-                CargarGraficaAreasTematicasArania("@pProject.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania");
+                // CargarGraficaAreasTematicasArania("@pProject.GNOSSID.Split('_')[1].ToUpper()", "areastematicasgrapharania")
+                newGrafMember.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true)
             });
             //Fin métodos áreas
 
@@ -813,7 +889,8 @@
                 }
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
                 var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros,'graficaCytoscapeColab',true);
+                // CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros,'graficaCytoscapeColab',true)
+                newGrafCol.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'graficaCytoscapeColab', true)
             });
 
             $('#addNodesCollaborators').unbind().click(function (e) {
@@ -821,8 +898,9 @@
                 var numColaboradores = parseInt($('#numColaboradores').val());
                 $('#numColaboradores').val((numColaboradores + 10));
                 $('#numNodosCollaborators').html($('#numColaboradores').val());
-                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro;
-                 CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros,'graficaCytoscapeColab',true);
+                var parametros = ObtenerHash2() + "&" + buscadorPersonalizado.filtro
+                // CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros,'graficaCytoscapeColab',true)
+                newGrafCol.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'graficaCytoscapeColab', true)
             });
             //Fin métodos colaboradores
 
@@ -852,23 +930,25 @@
             });
             return;
         }
-    };
+    }
 
     $(function () {
-        comportamientoPaginaProyecto.init();
-    });
+        comportamientoPaginaProyecto.init()
+    })
 
     // Acciones al llevar a cabo en rl filtrado
     function accionFiltrado() {
         var parametros = ObtenerHash2()+"&" + buscadorPersonalizado.filtro;
         if (comportamientoPaginaProyecto.tabActive == "participantes") {
-            CargarGraficaMiembros("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros, "membersgraph");
+            // CargarGraficaMiembros("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros, "membersgraph")
+            newGrafMember.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'membersgraph', true)
         }
         else if (comportamientoPaginaProyecto.tabActive == "publicaciones") {
-            CargarGraficaPublicaciones(parametros,'publicaciongraph');
+            CargarGraficaPublicaciones(parametros,'publicaciongraph')
         }
         else if (comportamientoPaginaProyecto.tabActive == "colaboradores") {
-            CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros, "graficaCytoscapeColab");
+            // CargarGraficaColaboradores("@pProject.GNOSSID.Split('_')[1].ToUpper()", parametros, "graficaCytoscapeColab")
+            newGrafCol.CargarGraficaColaboradores({pIdProyecto: "@pProject.GNOSSID.Split('_')[1].ToUpper()"}, parametros, 'graficaCytoscapeColab', true)
         }
     }
 
