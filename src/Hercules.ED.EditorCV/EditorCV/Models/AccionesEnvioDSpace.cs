@@ -359,10 +359,65 @@ namespace EditorCV.Models
         /// <returns></returns>
         private static string tipoType(string idTipo)
         {
-            List<MetadataEntry> listadoValores = new List<MetadataEntry>();
-            return listadoValores;
+            switch (idTipo)
+            {
+                //Capitulo de libro
+                case "004":
+                    return "info:eu-repo/semantics/bookPart";
+
+                //Informe científico-técnico
+                case "018":
+                    return "info:eu-repo/semantics/report";
+
+                //Artículo científico
+                case "020":
+                    return "info:eu-repo/semantics/article";
+
+                //Libro o monografía científica
+                case "032":
+                    return "info:eu-repo/semantics/book";
+
+                //Artículo de enciclopedia
+                case "202":
+                    return "info:eu-repo/semantics/article";
+
+                //Artículo de divulgación
+                case "203":
+                    return "info:eu-repo/semantics/article";
+
+                //Traducción
+                case "204":
+                    return "info:eu-repo/semantics/other";
+
+                //Reseña
+                case "205":
+                    return "info:eu-repo/semantics/review";
+
+                //Revisión bibliográfica
+                case "206":
+                    return "info:eu-repo/semantics/other";
+
+                //Libro de divulgación
+                case "207":
+                    return "info:eu-repo/semantics/book";
+
+                //Diccionario científico
+                case "209":
+                    return "info:eu-repo/semantics/other";
+
+                //Otros
+                case "OTHERS":
+                    return "info:eu-repo/semantics/other";
+
+                default:
+                    return null;
+            }
         }
 
+        /// <summary>
+        /// Devuelve el estado del servicio
+        /// </summary>
+        /// <returns></returns>
         private Status GetStatus()
         {
             Status status = new Status();
@@ -395,6 +450,9 @@ namespace EditorCV.Models
             return status;
         }
 
+        /// <summary>
+        /// Autentica al usuario con las credenciales de configuración en DSpace y asigna el token a tokenAuth
+        /// </summary>
         private void Authentication()
         {
             try
