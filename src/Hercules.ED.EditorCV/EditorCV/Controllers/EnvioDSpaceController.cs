@@ -22,7 +22,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("EnvioDSpace")]
-        public IActionResult EnvioDSpace([FromForm][Required] string pIdRecurso, IFormFile file)
+        public IActionResult EnvioDSpace([FromForm][Required] string pIdRecurso, [Required] IFormFile file)
         {
             try
             {
