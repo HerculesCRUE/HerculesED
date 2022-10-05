@@ -3910,10 +3910,58 @@ var edicionCV = {
 
 		//Enviar a DSpace
 		$('.texto.sendDspace').closest('li').off('click').on('click', function(e) {
+			
+
+			$("#modal-dspace").modal("show");
+			$("#modal-dspace").find(".resource-list").empty();
+			$(this).parents("article.resource.success").clone().appendTo("#modal-dspace .resource-list").find(".acciones-recurso-listado.acciones-recurso").remove();
+			accionesPlegarDesplegarModal.collapse();
+			$("#file_dspace").GnossDragAndDrop({
+				acceptedFiles: '*',
+				onFileAdded: function (plugin, files) {
+					$('.col-contenido .botonera').css('display', 'block');
+				},
+				onFileRemoved: function (plugin, files) {
+					$('.col-contenido .botonera').css('display', 'none');
+				}
+			})
+/*
 			MostrarUpdateProgress();
 			var formData = new FormData();
 			let idrecurso = $(this).find('[data-id]').attr('data-id');
 			formData.append('pIdRecurso', idrecurso);
+			
+			
+			$.ajax({
+				url: urlEnvioDSpaceCV + '/EnvioDSpace',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				processData: false,
+				enctype: 'multipart/form-data',
+				contentType: false,
+				success: function ( response ) {
+					mostrarNotificacion('success', GetText(pinCV_ENVIO_DSPACE_CORRECTO'), 10000);
+					OcultarUpdateProgress();
+				},
+				error: function(){
+					mostrarNotificacion('warning', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
+					OcultarUpdateProgress();
+				}
+			})*/
+		});
+		$("#enviar-dspace").off("click").on("click", (e)=>{
+			
+			var files = ($("#file_dspace").prop("files"));
+			if(files.length == 0 ){
+				mostrarNotificacion("warning","Debes subir un archivo")
+			}
+
+			MostrarUpdateProgress();
+			var formData = new FormData();
+			let idrecurso = $(this).find('[data-id]').attr('data-id');
+			formData.append('pIdRecurso', idrecurso);
+			formData.append("file",files[0]);
 			$.ajax({
 				url: urlEnvioDSpaceCV + 'EnvioDSpace',
 				type: 'POST',
@@ -3931,7 +3979,9 @@ var edicionCV = {
 					OcultarUpdateProgress();
 				}
 			})
-		});
+
+
+		})
 
 		$('.texto.validacionItem').off('click').on('click', function(e) {
 			var dataId = $(this)[0].dataset.id;
@@ -4570,7 +4620,7 @@ var edicionCV = {
 											${otrosCandidatos}
 											<div class="form-actions">
 												<a href="javascript: void(0);" class="form-buscar">${GetText('CV_BUSCAR')}</a>
-											</div>
+										 	</div>
 										</div>`;
 
 
