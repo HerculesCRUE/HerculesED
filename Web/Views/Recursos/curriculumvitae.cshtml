@@ -480,6 +480,25 @@ $(function() {
 		</div>
 	</div>
 }
+<div id="modal-dspace" class="modal modal-top modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<p class="modal-title"><span class="material-icons">dpsace</span>@Html.Translate("CV_ENVIAR_DSPACE")</p>
+					<span class="material-icons cerrar" data-dismiss="modal" aria-label="Close">close</span>
+				</div>
+				<div class="modal-body">
+                
+                <div class='resource-list'></div>
+				<input type="file" name="" id="file_dspace" accept="application/pdf" data-title-text="@Html.Translate("SUBE_DSPACE")" data-size-text="@Html.Translate("MAXIMO_PESO_DSPACE")" data-format-text="@Html.Translate("FORMATOS_ADMITIDOS_CV")" data-format-error="@Html.Translate("FORMATO_ERROR_CV")" data-size-error="@Html.Translate("TAMANIO_ERROR_CV")">
+
+					<div class="form-actions">
+						<a id="enviar-dspace" class="btn btn-primary">@Html.Translate("CV_ENVIAR")</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 <div id="modal-eliminar" class="modal modal-top fade modal-edicion" data-backdrop="static" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
