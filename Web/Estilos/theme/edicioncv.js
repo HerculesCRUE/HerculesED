@@ -3916,6 +3916,8 @@ var edicionCV = {
 			$("#modal-dspace").find(".resource-list").empty();
 			$(this).parents("article.resource.success").clone().appendTo("#modal-dspace .resource-list").find(".acciones-recurso-listado.acciones-recurso").remove();
 			accionesPlegarDesplegarModal.collapse();
+			$("#file_dspace").parent().find(".gdd-wrap").remove();
+			$("#file_dspace").val(null);
 			$("#file_dspace").GnossDragAndDrop({
 				acceptedFiles: '*',
 				onFileAdded: function (plugin, files) {
