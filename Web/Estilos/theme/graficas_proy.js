@@ -1133,8 +1133,8 @@ class GraficaCircular extends GraficaBase {
                             return previousValue + currentValue;
                         });
                         var currentValue = tooltipItem.parsed;
-                        var precentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                        return precentage + "%";
+                        var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                        return tooltipItem.label + ": " + currentValue + " (" + percentage + "%)";
                     }
                 }
             }
