@@ -69,14 +69,14 @@
                             <li class="usuario">
                                 <div id="navegacionClonado" class="navegacion clonado">
                                     <ul class="pmd-sidebar-nav" data-url="@Html.GetBaseUrl()@Html.GetUrlPagina()">
-                                        <li class="liInicio">
-                                            <a href="@Comunidad.Url/login">@Html.GetText("COMMON", "INICIARSESION")</a>
-                                        </li>
                                         @{
                                             string urlIndicadores=Comunidad.Url+"/"+Html.Translate("URL_PAGINA_INDICADORES");
                                         }
                                         <li class="liIndicadores">
                                             <a href="@urlIndicadores">@Html.Translate("INDICADORES")</a>
+                                        </li>
+                                        <li class="liInicio">
+                                            <a href="@Comunidad.Url/login">@Html.GetText("COMMON", "INICIARSESION")</a>
                                         </li>
                                     </ul>
                                 </div>
