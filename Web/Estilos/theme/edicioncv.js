@@ -3959,7 +3959,7 @@ var edicionCV = {
 
 			MostrarUpdateProgress();
 			var formData = new FormData();
-			let idrecurso = $(this).parents(".modal-body").find('[data-id]').attr('data-id');
+			let idrecurso = $(e.target).parents(".modal-body").find('[data-id]').attr('data-id');
 			formData.append('pIdRecurso', idrecurso);
 			formData.append("file",files[0]);
 			$.ajax({
