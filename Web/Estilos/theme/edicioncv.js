@@ -3834,6 +3834,7 @@ var edicionCV = {
 				success: function (response) {
 					mostrarNotificacion('success', GetText('CV_ENVIO_DSPACE_CORRECTO'), 10000);
 					OcultarUpdateProgress();
+					$("#modal-dspace").modal("hide");
 				},
 				error: function () {
 					mostrarNotificacion('warning', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
