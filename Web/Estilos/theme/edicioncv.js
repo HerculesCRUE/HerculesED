@@ -3933,7 +3933,7 @@ var edicionCV = {
 			
 			
 			$.ajax({
-				url: urlEnvioDSpaceCV + '/EnvioDSpace',
+				url: urlEnvioDSpaceCV + 'EnvioDSpace',
 				type: 'POST',
 				data: formData,
 				cache: false,
@@ -3963,7 +3963,7 @@ var edicionCV = {
 			formData.append('pIdRecurso', idrecurso);
 			formData.append("file",files[0]);
 			$.ajax({
-				url: urlEnvioDSpaceCV + '/EnvioDSpace',
+				url: urlEnvioDSpaceCV + 'EnvioDSpace',
 				type: 'POST',
 				data: formData,
 				cache: false,
