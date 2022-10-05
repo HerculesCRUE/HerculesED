@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Contiene los datos de contacto de una persona
     /// </summary>
-    public class DatosContacto : SGI_Base
+    public class DatosContacto
     {
         /// <summary>
         /// Pais de contacto

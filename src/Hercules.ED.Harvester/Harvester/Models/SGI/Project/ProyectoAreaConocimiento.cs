@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Proyecto area conocimiento
     /// </summary>
-    public class ProyectoAreaConocimiento : SGI_Base
+    public class ProyectoAreaConocimiento
     {
         /// <summary>
         /// Identificador único del área de conocimiento del proyecto.

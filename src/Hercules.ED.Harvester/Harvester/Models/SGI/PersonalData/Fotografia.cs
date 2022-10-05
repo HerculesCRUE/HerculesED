@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Fotografía
     /// </summary>
-    public class Fotografia : SGI_Base
+    public class Fotografia
     {
         /// <summary>
         /// Contenido de la fotografía digital de la persona (en bytes y en base 64).

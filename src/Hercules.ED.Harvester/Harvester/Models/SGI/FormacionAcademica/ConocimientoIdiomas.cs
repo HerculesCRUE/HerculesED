@@ -3,7 +3,7 @@
     /// <summary>
     /// Conocimiento de idiomas
     /// </summary>
-    public class ConocimientoIdiomas : SGI_Base
+    public class ConocimientoIdiomas
     {
         /// <summary>
         /// Identificador del idioma

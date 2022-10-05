@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Contiene información del contexto del proyecto.
     /// </summary>
-    public class ContextoProyecto : SGI_Base
+    public class ContextoProyecto
     {
         /// <summary>
         /// Identificador del proyecto.

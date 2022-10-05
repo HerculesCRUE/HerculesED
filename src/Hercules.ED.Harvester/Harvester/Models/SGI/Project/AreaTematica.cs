@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Area temática
     /// </summary>
-    public class AreaTematica : SGI_Base
+    public class AreaTematica
     {
         /// <summary>
         /// Identificador del área temática

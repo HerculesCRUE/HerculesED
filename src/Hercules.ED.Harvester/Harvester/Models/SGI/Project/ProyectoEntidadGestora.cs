@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Proyecto entidad gestora
     /// </summary>
-    public class ProyectoEntidadGestora : SGI_Base
+    public class ProyectoEntidadGestora
     {
         /// <summary>
         /// Identificador de la entidad gestora del proyecto.

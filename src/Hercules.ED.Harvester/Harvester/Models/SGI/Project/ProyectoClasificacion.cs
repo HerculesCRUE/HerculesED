@@ -3,7 +3,7 @@
     /// <summary>
     /// Contiene la referencia a la clasificación.
     /// </summary>
-    public class ProyectoClasificacion : SGI_Base
+    public class ProyectoClasificacion
     {
         /// <summary>
         /// Identificador de la entidad clasificación proyecto

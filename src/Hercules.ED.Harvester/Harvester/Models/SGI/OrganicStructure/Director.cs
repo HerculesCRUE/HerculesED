@@ -1,6 +1,6 @@
 ﻿namespace OAI_PMH.Models.SGI.OrganicStructure
 {
-    public class Director : SGI_Base
+    public class Director
     {
         public long? Id { get; set; }
         public string PersonaRef { get; set; }

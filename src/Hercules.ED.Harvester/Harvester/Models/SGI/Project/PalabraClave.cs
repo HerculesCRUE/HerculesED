@@ -3,7 +3,7 @@
     /// <summary>
     /// Palabra clave
     /// </summary>
-    public class PalabraClave : SGI_Base
+    public class PalabraClave
     {
         /// <summary>
         /// Identificador único autogenerado de la palabra clave.

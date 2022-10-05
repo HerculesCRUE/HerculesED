@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Vinculacion departamentos
     /// </summary>
-    public class VinculacionDepartamentos : SGI_Base
+    public class VinculacionDepartamentos 
     {
         /// <summary>
         /// Departamento al que está asociada la persona en su calidad de PAS o PDI

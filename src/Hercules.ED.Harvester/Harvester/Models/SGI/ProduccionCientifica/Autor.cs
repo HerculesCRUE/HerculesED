@@ -3,7 +3,7 @@
     /// <summary>
     /// Autor
     /// </summary>
-    public class Autor : SGI_Base
+    public class Autor
     {
         /// <summary>
         /// Identificador único de la persona dentro del sistema de gestión de personas de la Universidad

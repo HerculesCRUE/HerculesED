@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.ProduccionCientifica
     /// <summary>
     /// Campo producción cientifica
     /// </summary>
-    public class CampoProduccionCientifica : SGI_Base
+    public class CampoProduccionCientifica
     {
         /// <summary>
         /// Código de la Fecyt para identificar el campo del item.

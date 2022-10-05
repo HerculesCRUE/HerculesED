@@ -1,6 +1,6 @@
 ﻿namespace OAI_PMH.Models.SGI.GruposInvestigacion
 {
-    public class RolProyecto : SGI_Base
+    public class RolProyecto
     {
         /// <summary>
         /// Id del rol.

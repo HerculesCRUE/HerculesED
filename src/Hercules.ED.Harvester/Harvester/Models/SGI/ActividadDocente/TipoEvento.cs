@@ -3,7 +3,7 @@
     /// <summary>
     /// Tipo de evento
     /// </summary>
-    public class TipoEvento : SGI_Base
+    public class TipoEvento
     {
         /// <summary>
         /// Identificador

@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.Organization
     /// <summary>
     /// Empresa clasificación
     /// </summary>
-    public class EmpresaClasificacion : SGI_Base
+    public class EmpresaClasificacion
     {
         /// <summary>
         /// Identificador de la clasificación.

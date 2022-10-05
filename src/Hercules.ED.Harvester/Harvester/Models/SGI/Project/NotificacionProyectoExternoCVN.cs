@@ -6,7 +6,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Notificación de un proyecto externo del CVN asociado a un Proyecto del SGI
     /// </summary>
-    public class NotificacionProyectoExternoCVN : SGI_Base
+    public class NotificacionProyectoExternoCVN
     {
         /// <summary>
         /// Identificador de la entidad NotificacionProyectoExternoCVN

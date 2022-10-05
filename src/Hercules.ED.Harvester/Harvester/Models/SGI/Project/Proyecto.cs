@@ -1,8 +1,17 @@
-﻿using System;
+﻿using Gnoss.ApiWrapper;
+using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper.Model;
+using Harvester;
+using Harvester.Models.ModelsBBDD;
+using OAI_PMH.Models.SGI.Organization;
+using OAI_PMH.Models.SGI.PersonalData;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace OAI_PMH.Models.SGI.Project
 {
@@ -11,10 +20,403 @@ namespace OAI_PMH.Models.SGI.Project
     /// </summary>
     public class Proyecto : SGI_Base
     {
+        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, bool pFusionarPersona = false, string pIdPersona = null)
+        {
+            ProjectOntology.Project proyecto = CrearProjectOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+            return proyecto.ToGnossApiResource(pResourceApi, null);
+        }
+
+        public override string ObtenerIDBBDD(ResourceApi pResourceApi)
+        {
+            Dictionary<string, string> respuesta = ObtenerProyectoBBDD(new HashSet<string>() { Id.ToString() }, pResourceApi);
+            if (respuesta.ContainsKey(Id.ToString()) && !string.IsNullOrEmpty(respuesta[Id.ToString()]))
+            {
+                return respuesta[Id.ToString()];
+            }
+            return null;
+        }
+
+        public ProjectOntology.Project CrearProjectOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
+        {
+            #region --- Obtenemos los IDs de las personas del proyecto.
+            HashSet<string> listaIdsPersonas = new HashSet<string>();
+            if (this.Equipo != null && this.Equipo.Any())
+            {
+                foreach (ProyectoEquipo item in this.Equipo)
+                {
+                    // Obtención de personas de BBDD con los IDs obtenidos por el SGI.
+                    listaIdsPersonas.Add(item.PersonaRef);
+                }
+            }
+            #endregion
+
+            #region --- Obtenemos los IDs de las personas en BBDD.
+            Dictionary<string, string> dicPersonasBBDD = Persona.ObtenerPersonasBBDD(listaIdsPersonas, pResourceApi);
+            #endregion
+
+            #region --- Obtención de personas
+            Dictionary<string, string> dicPersonasCargadas = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> item in dicPersonasBBDD)
+            {
+                if (string.IsNullOrEmpty(item.Value))
+                {
+                    Persona personaAux = Persona.GetPersonaSGI(pHarvesterServices, pConfig, item.Key, pDicRutas);
+                    string idGnoss = personaAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "person", pDicIdentificadores, pDicRutas);
+                    pDicIdentificadores["person"].Add(idGnoss);
+                    dicPersonasBBDD[item.Key] = idGnoss;
+                }
+                else
+                {
+                    dicPersonasCargadas[item.Key] = item.Value;
+                }
+            }
+            #endregion
+
+            #region --- Obtenemos los IDs de las organizaciones del proyecto.
+            HashSet<string> listaIdsOrganizaciones = new HashSet<string>();
+            if (this.EntidadesFinanciadoras != null && this.EntidadesFinanciadoras.Any())
+            {
+                foreach (ProyectoEntidadFinanciadora entidadFinanciadora in this.EntidadesFinanciadoras)
+                {
+                    // Obtención de personas de BBDD con los IDs obtenidos por el SGI.
+                    listaIdsOrganizaciones.Add(entidadFinanciadora.EntidadRef);
+                }
+            }
+            if (this.EntidadesGestoras != null && this.EntidadesGestoras.Any())
+            {
+                foreach (ProyectoEntidadGestora entidadGestora in this.EntidadesGestoras)
+                {
+                    // Obtención de personas de BBDD con los IDs obtenidos por el SGI.
+                    listaIdsOrganizaciones.Add(entidadGestora.EntidadRef);
+                }
+            }
+            if (this.EntidadesConvocantes != null && this.EntidadesConvocantes.Any())
+            {
+                foreach (ProyectoEntidadConvocante entidadConvocante in this.EntidadesConvocantes)
+                {
+                    // Obtención de personas de BBDD con los IDs obtenidos por el SGI.
+                    listaIdsOrganizaciones.Add(entidadConvocante.EntidadRef);
+                }
+            }
+            #endregion
+
+            #region --- Obtenemos los IDs de las organizaciones en BBDD.
+            Dictionary<string, string> dicOrganizaciones = Empresa.ObtenerOrganizacionesBBDD(listaIdsOrganizaciones, pResourceApi);
+            #endregion
+
+            #region --- Obtención de organizaciones
+            Dictionary<string, string> dicOrganizacionesCargadas = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> item in dicOrganizaciones)
+            {
+                if (string.IsNullOrEmpty(item.Value))
+                {
+                    Empresa organizacionAux = Empresa.GetOrganizacionSGI(pHarvesterServices, pConfig, item.Key, pDicRutas);
+                    string idGnoss = organizacionAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "organization", pDicIdentificadores, pDicRutas);
+                    pDicIdentificadores["organization"].Add(idGnoss);
+                    dicOrganizacionesCargadas[item.Key] = idGnoss;
+                }
+                else
+                {
+                    dicOrganizacionesCargadas[item.Key] = item.Value;
+                }
+            }
+            #endregion
+
+            #region --- Construimos el objeto de 'Project'
+            ProjectOntology.Project project = new ProjectOntology.Project();
+
+            // Crisidentifier
+            project.Roh_crisIdentifier = this.Id.ToString();
+
+            // IsValidated
+            project.Roh_isValidated = true;
+
+            // ValidationStatusProject
+            project.Roh_validationStatusProject = "validado";
+
+            // Tipo de proyecto (COMPETITIVOS o NO_COMPETITIVOS)
+            if (string.IsNullOrEmpty(project.IdRoh_scientificExperienceProject))
+            {
+                switch (this.ClasificacionCVN)
+                {
+                    case "COMPETITIVOS":
+                        project.IdRoh_scientificExperienceProject = pResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1";
+                        break;
+                    case "NO_COMPETITIVOS":
+                        project.IdRoh_scientificExperienceProject = pResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2";
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Se añade el tipo de proyecto en caso de ser no competitivo. (875 - Coordinación, 876 - Cooperación)
+            if (project.IdRoh_scientificExperienceProject != null && project.IdRoh_scientificExperienceProject.Equals(pResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP2")
+                && this.CoordinadorExterno != null)
+            {
+                string projectType = pResourceApi.GraphsUrl + "items/projecttype_";
+                project.IdRoh_projectType = (bool)this.CoordinadorExterno ? projectType + "875" : projectType + "876";
+            }
+
+            // Título
+            if (!string.IsNullOrEmpty(this.Titulo))
+            {
+                project.Roh_title = this.Titulo;
+            }
+
+            // Observaciones
+            if (!string.IsNullOrEmpty(this.Observaciones))
+            {
+                project.Vivo_description = this.Observaciones;
+            }
+
+            // Equipos
+            if (this.Equipo != null && this.Equipo.Any())
+            {
+                project.Vivo_relates = new List<ProjectOntology.BFO_0000023>();
+                int orden = 1;
+                foreach (ProyectoEquipo item in this.Equipo)
+                {
+                    if (dicPersonasBBDD.ContainsKey(item.PersonaRef))
+                    {
+                        ProjectOntology.BFO_0000023 BFO = new ProjectOntology.BFO_0000023();
+                        BFO.Rdf_comment = orden;
+                        BFO.IdRoh_roleOf = dicPersonasBBDD[item.PersonaRef];
+
+                        // IP principal
+                        BFO.Roh_isIP = item.RolProyecto.RolPrincipal.HasValue;
+
+                        if (!string.IsNullOrEmpty(item.FechaInicio))
+                        {
+                            BFO.Vivo_start = Convert.ToDateTime(item.FechaInicio);
+                        }
+
+                        if (!string.IsNullOrEmpty(item.FechaFin))
+                        {
+                            BFO.Vivo_end = Convert.ToDateTime(item.FechaFin);
+                        }
+
+                        project.Vivo_relates.Add(BFO);
+                        orden++;
+                    }
+                }
+            }
+
+            // Añado las entidades financiadoras que no existan en BBDD
+            //if (pProyecto.EntidadesFinanciadoras != null && pProyecto.EntidadesFinanciadoras.Any())
+            //{
+            //    project.Roh_grantedBy = new List<ProjectOntology.OrganizationAux>();
+
+            //    foreach (ProyectoEntidadFinanciadora entidadFinanciadora in pProyecto.EntidadesFinanciadoras)
+            //    {
+            //        project.Roh_grantedBy.Add(CrearEntidadOrganizationAux(entidadFinanciadora.EntidadRef));
+            //    }
+            //}
+
+            // Añado las entidades gestoras que no existan en BBDD. Se coge la primera porque en la ontología es 0..1
+            //if (pProyecto.EntidadesGestoras != null && pProyecto.EntidadesGestoras.Any())
+            //{
+            //    project.Roh_participates = new List<ProjectOntology.OrganizationAux>();
+
+            //    foreach (ProyectoEntidadGestora entidadGestora in pProyecto.EntidadesGestoras)
+            //    {
+            //        project.Roh_participates.Add(CrearEntidadOrganizationAux(entidadGestora.EntidadRef));
+            //    }
+            //}
+
+            // Se añade las entidades participación que no existan en BBDD.
+            if (this.EntidadesConvocantes != null && this.EntidadesConvocantes.Any())
+            {
+                ProyectoEntidadConvocante entidadConvocante = this.EntidadesConvocantes[0];
+                OrganizacionBBDD empresa = Empresa.GetOrganizacionBBDD(pHarvesterServices, pConfig, pResourceApi, dicOrganizaciones[entidadConvocante.EntidadRef]);
+                project.Roh_conductedByTitle = empresa.title;
+                project.IdRoh_conductedBy = dicOrganizaciones[entidadConvocante.EntidadRef];
+            }
+
+            // Número de investigadores. TODO: ¿Actuales?
+            project.Roh_researchersNumber = this.Equipo.Select(x => x.PersonaRef).GroupBy(x => x).Count();
+
+            // Porcentajes
+            double porcentajeSubvencion = 0;
+            double porcentajeCredito = 0;
+            double porcentajeMixto = 0;
+
+            foreach (ProyectoEntidadFinanciadora entidadFinanciadora in this.EntidadesFinanciadoras)
+            {
+                if (entidadFinanciadora.TipoFinanciacion != null && entidadFinanciadora.PorcentajeFinanciacion != null)
+                {
+                    if (entidadFinanciadora.TipoFinanciacion.Nombre.Equals("Subvención"))
+                    {
+                        porcentajeSubvencion += (double)entidadFinanciadora.PorcentajeFinanciacion;
+                    }
+                    else if (entidadFinanciadora.TipoFinanciacion.Nombre.Equals("Préstamo"))
+                    {
+                        porcentajeCredito += (double)entidadFinanciadora.PorcentajeFinanciacion;
+                    }
+                    else if (entidadFinanciadora.TipoFinanciacion.Nombre.Equals("Mixto"))
+                    {
+                        porcentajeMixto += (double)entidadFinanciadora.PorcentajeFinanciacion;
+                    }
+                }
+            }
+
+            project.Roh_grantsPercentage = (float)porcentajeSubvencion;
+            project.Roh_creditPercentage = (float)porcentajeCredito;
+            project.Roh_mixedPercentage = (float)porcentajeMixto;
+
+            // Cuantía Total
+            double cuantiaTotal = this.TotalImporteConcedido != null ? (double)this.TotalImporteConcedido : 0;
+
+            if (cuantiaTotal == 0)
+            {
+                foreach (ProyectoAnualidadResumen anualidadResumen in this.ResumenAnualidades)
+                {
+                    if (anualidadResumen.Presupuestar != null && (bool)anualidadResumen.Presupuestar)
+                    {
+                        cuantiaTotal += anualidadResumen.TotalGastosConcedido;
+                    }
+                }
+                project.Roh_monetaryAmount = (float)cuantiaTotal;
+            }
+
+            // Fecha Inicio.
+            project.Vivo_start = this.FechaInicio != null ? Convert.ToDateTime(this.FechaInicio) : null;
+
+            // Fecha Fin. (Nos quuedamos con la fecha de fin definitiva si existe)
+            project.Vivo_end = this.FechaFin != null ? Convert.ToDateTime(this.FechaFin) : null;
+            project.Vivo_end = this.FechaFinDefinitiva != null ? Convert.ToDateTime(this.FechaFinDefinitiva) : Convert.ToDateTime(this.FechaFin);
+
+            if (this.FechaFinDefinitiva != null)
+            {
+                if (this.FechaInicio != null)
+                {
+                    Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(this.FechaInicio), Convert.ToDateTime(this.FechaFinDefinitiva));
+                    project.Roh_durationYears = duration.Item1;
+                    project.Roh_durationMonths = duration.Item2;
+                    project.Roh_durationDays = duration.Item3;
+                }
+            }
+            else
+            {
+                if (this.FechaInicio != null)
+                {
+                    Tuple<string, string, string> duration = RestarFechas(Convert.ToDateTime(this.FechaInicio), Convert.ToDateTime(this.FechaFin));
+                    project.Roh_durationYears = duration.Item1;
+                    project.Roh_durationMonths = duration.Item2;
+                    project.Roh_durationDays = duration.Item3;
+                }
+            }
+
+            project.Roh_relevantResults = this.Contexto?.ResultadosPrevistos;
+            project.Roh_projectCode = this.CodigoExterno;
+
+            // Ámbito geográfico
+            if (string.IsNullOrEmpty(project.IdRoh_scientificExperienceProject) && this.AmbitoGeografico != null && !string.IsNullOrEmpty(this.AmbitoGeografico.Nombre))
+            {
+                switch (this.AmbitoGeografico.Nombre.ToLower())
+                {
+                    case "autonómica":
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_000";
+                        break;
+                    case "autonómico":
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_000";
+                        break;
+                    case "nacional":
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_010";
+                        break;
+                    case "unión europea":
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_020";
+                        break;
+                    case "europeo":
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_020";
+                        break;
+                    case "internacional no ue":
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_030";
+                        break;
+                    case "internacional no europeo":
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_030";
+                        break;
+                    default:
+                        project.IdVivo_geographicFocus = pResourceApi.GraphsUrl + "items/geographicregion_OTHERS";
+                        project.Roh_geographicFocusOther = this.AmbitoGeografico.Nombre;
+                        break;
+                }
+            }
+            #endregion
+
+            return project;
+        }
+
+        public static Proyecto GetProyectoSGI(IHarvesterServices pHarvesterServices, ReadConfig pConfig, string pId, Dictionary<string, Dictionary<string, string>> pDicRutas)
+        {
+            // Obtención de datos en bruto.
+            Proyecto proyecto = new Proyecto();
+            string xmlResult = pHarvesterServices.GetRecord(pId, pConfig);
+
+            if (string.IsNullOrEmpty(xmlResult))
+            {
+                return null;
+            }
+
+            XmlSerializer xmlSerializer = new(typeof(Proyecto));
+            using (StringReader sr = new(xmlResult))
+            {
+                proyecto = (Proyecto)xmlSerializer.Deserialize(sr);
+            }
+
+            return proyecto;
+        }
+
+        public static Dictionary<string, string> ObtenerProyectoBBDD(HashSet<string> pListaIds, ResourceApi pResourceApi)
+        {
+            List<List<string>> listaProyecto = SplitList(pListaIds.ToList(), 1000).ToList();
+            Dictionary<string, string> dicProyectosBBDD = new Dictionary<string, string>();
+            foreach (string organizacion in pListaIds)
+            {
+                if (organizacion.Contains("_"))
+                {
+                    dicProyectosBBDD[organizacion.Split("_")[1]] = "";
+                }
+                else
+                {
+                    dicProyectosBBDD[organizacion] = "";
+                }
+            }
+            foreach (List<string> listaItem in listaProyecto)
+            {
+                List<string> listaAux = new List<string>();
+                foreach (string item in listaItem)
+                {
+                    if (item.Contains("_"))
+                    {
+                        listaAux.Add(item.Split("_")[1]);
+                    }
+                    else
+                    {
+                        listaAux.Add(item);
+                    }
+                }
+                string selectPerson = $@"SELECT DISTINCT ?s ?crisIdentifier ";
+                string wherePerson = $@"WHERE {{ 
+                            ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier. 
+                            FILTER(?crisIdentifier in ('{string.Join("', '", listaAux.Select(x => x))}')) }}";
+                SparqlObject resultadoQueryPerson = pResourceApi.VirtuosoQuery(selectPerson, wherePerson, "project");
+                if (resultadoQueryPerson != null && resultadoQueryPerson.results != null && resultadoQueryPerson.results.bindings != null && resultadoQueryPerson.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryPerson.results.bindings)
+                    {
+                        dicProyectosBBDD[fila["crisIdentifier"].value] = fila["s"].value;
+                    }
+                }
+            }
+
+            return dicProyectosBBDD;
+        }
+
         /// <summary>
         /// Identificador del proyecto.
         /// </summary>
-        public long? Id { get; set; }
+        public long Id { get; set; }
         /// <summary>
         /// Nombre del usuario que ha creado la entidad.
         /// </summary>

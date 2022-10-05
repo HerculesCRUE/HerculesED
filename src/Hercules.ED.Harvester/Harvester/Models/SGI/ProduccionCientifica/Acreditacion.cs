@@ -3,7 +3,7 @@
     /// <summary>
     /// Acreditacion
     /// </summary>
-    public class Acreditacion : SGI_Base
+    public class Acreditacion
     {
         /// <summary>
         /// URL acreditativa en repositorios ajenos a la Universidad

@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Categoría profesional
     /// </summary>
-    public class CategoriaProfesional : SGI_Base
+    public class CategoriaProfesional
     {
         /// <summary>
         /// Identificador

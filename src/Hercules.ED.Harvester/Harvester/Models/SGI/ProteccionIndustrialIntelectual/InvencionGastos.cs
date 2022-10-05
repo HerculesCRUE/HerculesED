@@ -3,7 +3,7 @@
     /// <summary>
     /// InvencionGasto
     /// </summary>
-    public class InvencionGastos : SGI_Base
+    public class InvencionGastos
     {
         /// <summary>
         /// Id.

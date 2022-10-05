@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Datos Academicos
     /// </summary>
-    public class DatosAcademicos : SGI_Base
+    public class DatosAcademicos
     {
         /// <summary>
         /// Nivel Academico

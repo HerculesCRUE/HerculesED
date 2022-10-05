@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Rol de proyecto
     /// </summary>
-    public class RolProyecto : SGI_Base
+    public class RolProyecto
     {
         /// <summary>
         /// Identificador del rol proyecto.

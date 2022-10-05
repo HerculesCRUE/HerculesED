@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Proyecto equipo
     /// </summary>
-    public class ProyectoEquipo : SGI_Base
+    public class ProyectoEquipo
     {
         /// <summary>
         /// Identificador de la entidad proyecto equipo.

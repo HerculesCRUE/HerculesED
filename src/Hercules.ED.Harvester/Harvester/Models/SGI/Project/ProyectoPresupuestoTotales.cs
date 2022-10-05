@@ -3,7 +3,7 @@
     /// <summary>
     /// Proyecto presupuesto totales
     /// </summary>
-    public class ProyectoPresupuestoTotales : SGI_Base
+    public class ProyectoPresupuestoTotales
     {
         /// <summary>
         /// Importe total (suma del importe de todas las anualidades) presupuestado a la Universidad para el desarrollo del proyecto,

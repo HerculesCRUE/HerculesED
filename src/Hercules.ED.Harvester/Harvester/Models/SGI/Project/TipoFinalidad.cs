@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Tipo de finalidad
     /// </summary>
-    public class TipoFinalidad : SGI_Base
+    public class TipoFinalidad
     {
         /// <summary>
         /// Identificador del tipo de finalidad.

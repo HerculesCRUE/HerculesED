@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
     /// <summary>
     /// SolicitudProteccion
     /// </summary>
-    public class SolicitudProteccion : SGI_Base
+    public class SolicitudProteccion
     {
         /// <summary>
         /// Identificador único de la solicitud de protección.

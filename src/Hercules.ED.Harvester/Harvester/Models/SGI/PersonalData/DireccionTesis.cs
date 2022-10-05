@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Dirección de tesis
     /// </summary>
-    public class DireccionTesis : SGI_Base
+    public class DireccionTesis
     {
         /// <summary>
         /// Identificador del doctorado

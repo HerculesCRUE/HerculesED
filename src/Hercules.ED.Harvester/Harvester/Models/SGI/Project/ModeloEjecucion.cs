@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Entidad que representa un modelo de ejecución.
     /// </summary>
-    public class ModeloEjecucion : SGI_Base
+    public class ModeloEjecucion
     {
         /// <summary>
         /// Identificador del modelo de ejecución

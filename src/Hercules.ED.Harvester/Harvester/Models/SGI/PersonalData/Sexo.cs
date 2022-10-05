@@ -3,7 +3,7 @@
     /// <summary>
     /// Sexo
     /// </summary>
-    public class Sexo : SGI_Base
+    public class Sexo
     {
         /// <summary>
         /// Identificador de la entidad Sexo

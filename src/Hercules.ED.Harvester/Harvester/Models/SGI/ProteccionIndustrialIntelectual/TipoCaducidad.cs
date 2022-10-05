@@ -3,7 +3,7 @@
     /// <summary>
     /// Tipo de caducidad
     /// </summary>
-    public class TipoCaducidad : SGI_Base
+    public class TipoCaducidad
     {
         /// <summary>
         /// Identificador

@@ -3,7 +3,7 @@
     /// <summary>
     /// Producción cientifica estado
     /// </summary>
-    public class ProduccionCientificaEstado : SGI_Base
+    public class ProduccionCientificaEstado
     {
         /// <summary>
         /// Identificador del item de producción científica en el sistema origen.

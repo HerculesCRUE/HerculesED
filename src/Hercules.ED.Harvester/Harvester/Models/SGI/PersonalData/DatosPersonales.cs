@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Contiene los datos personales de una persona
     /// </summary>
-    public class DatosPersonales : SGI_Base
+    public class DatosPersonales
     {
         /// <summary>
         /// Fecha de nacimiento

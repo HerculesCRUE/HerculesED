@@ -7,7 +7,7 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
     /// <summary>
     /// Dirección de tesis doctorales y/o proyectos fin de carrera
     /// </summary>
-    public class Tesis : SGI_Base
+    public class Tesis
     {
         /// <summary>
         /// Identificador del doctorado

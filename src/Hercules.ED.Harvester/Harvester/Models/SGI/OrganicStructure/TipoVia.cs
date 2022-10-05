@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.OrganicStructure
 {
-    public class TipoVia : SGI_Base
+    public class TipoVia
     {
         public string Id { get; set; }
         public string Nombre { get; set; }

@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.ProduccionCientifica
     /// <summary>
     /// Producción científica
     /// </summary>
-    public class ProduccionCientifica : SGI_Base
+    public class ProduccionCientifica
     {
         /// <summary>
         /// Identificador del item de producción científica en el sistema origen.

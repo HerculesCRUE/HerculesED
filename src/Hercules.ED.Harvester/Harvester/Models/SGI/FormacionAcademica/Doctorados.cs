@@ -6,7 +6,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
     /// <summary>
     /// Doctorados
     /// </summary>
-    public class Doctorados : SGI_Base
+    public class Doctorados
     {
         /// <summary>
         /// Identificador del doctorado

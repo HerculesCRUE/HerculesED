@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.Organization
     /// <summary>
     /// Datos tipo empresa
     /// </summary>
-    public class DatosTipoEmpresa : SGI_Base
+    public class DatosTipoEmpresa
     {
         /// <summary>
         /// Tipo de tercero.

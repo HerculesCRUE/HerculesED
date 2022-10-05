@@ -6,7 +6,7 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
     /// <summary>
     /// Formación académica impartida
     /// </summary>
-    public class FormacionAcademicaImpartida : SGI_Base
+    public class FormacionAcademicaImpartida
     {
         /// <summary>
         /// Identificador
