@@ -7,11 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harvester", "Harvester\Harv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hercules", "ClasesGeneradas\hercules.csproj", "{134B24D9-A459-45E9-983A-EF0A99385084}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HavesterTest", "HarvesterTest\HavesterTest.csproj", "{C8B90B78-74A1-42A5-97CF-E8BABD196E7A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{134B24D9-A459-45E9-983A-EF0A99385084} = {134B24D9-A459-45E9-983A-EF0A99385084}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,10 +21,6 @@ Global
 		{134B24D9-A459-45E9-983A-EF0A99385084}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{134B24D9-A459-45E9-983A-EF0A99385084}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{134B24D9-A459-45E9-983A-EF0A99385084}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8B90B78-74A1-42A5-97CF-E8BABD196E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8B90B78-74A1-42A5-97CF-E8BABD196E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8B90B78-74A1-42A5-97CF-E8BABD196E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8B90B78-74A1-42A5-97CF-E8BABD196E7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
