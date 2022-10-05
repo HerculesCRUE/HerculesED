@@ -101,9 +101,9 @@ namespace EditorCV.Models
                     AniadirIdDspace(dSpace.id, idPublication);
 
                     //Añado el archivo al recurso
-                    if(file != null)
+                    if (file != null)
                     {
-                        AniadirBitstreamDspace(publication,file);
+                        AniadirBitstreamDspace(publication, file);
                     }
                 }
                 //Actualizo(200, recurso encontrado en DSpace)
@@ -456,8 +456,21 @@ namespace EditorCV.Models
                 listadoValores.Add(metadataEntryPublisher);
             }
 
-            MetadataSend metadataSend = new MetadataSend(listadoValores);
+            if (!string.IsNullOrEmpty(publication.isOpenAccess))
+            {
+                string isOpenAccess = "";
+                if (publication.isOpenAccess.Equals("true"))
+                {
+                    isOpenAccess = "info:eu-repo/semantics/openAccess";
+                }
+                if (!string.IsNullOrEmpty(isOpenAccess))
+                {
+                    Metadata metadataEntryOpenAccess = new Metadata("", isOpenAccess);
+                    listadoValores.Add(metadataEntryOpenAccess);
+                }
+            }
 
+            MetadataSend metadataSend = new MetadataSend(listadoValores);
             return metadataSend;
         }
 
