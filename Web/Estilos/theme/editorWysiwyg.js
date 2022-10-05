@@ -32,6 +32,12 @@ class TextField {
   	  // prevent default to allow drop
   	  event.preventDefault();
   	});
+    $(editor).off("focusout").on("focusout",(e)=>{
+      if($(editor).find(".visuell-view").html()=="<br>"){
+        $(editor).find(".visuell-view").html("")
+      }
+     
+    })
 
     if (editor.getElementsByTagName('content-area').length > 0) {
       const contentArea = editor.getElementsByClassName('content-area')[0];
@@ -118,7 +124,7 @@ class TextField {
       
       button.classList.remove('active');
     }
-    
+ 
     if(!childOf(window.getSelection().anchorNode.parentNode, editor)) return false;
     
     this.parentTagActive(window.getSelection().anchorNode.parentNode);
