@@ -3809,30 +3809,7 @@ var edicionCV = {
 					$('.col-contenido .botonera').css('display', 'none');
 				}
 			})
-			/*
-						MostrarUpdateProgress();
-						var formData = new FormData();
-						let idrecurso = $(this).find('[data-id]').attr('data-id');
-						formData.append('pIdRecurso', idrecurso);
-						
-						
-						$.ajax({
-							url: urlEnvioDSpaceCV + 'EnvioDSpace',
-							type: 'POST',
-							data: formData,
-							cache: false,
-							processData: false,
-							enctype: 'multipart/form-data',
-							contentType: false,
-							success: function ( response ) {
-								mostrarNotificacion('success', GetText(pinCV_ENVIO_DSPACE_CORRECTO'), 10000);
-								OcultarUpdateProgress();
-							},
-							error: function(){
-								mostrarNotificacion('warning', GetText('CV_ENVIO_DSPACE_ERROR'), 10000);
-								OcultarUpdateProgress();
-							}
-						})*/
+			
 		});
 		$("#enviar-dspace").off("click").on("click", (e) => {
 
