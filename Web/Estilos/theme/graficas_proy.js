@@ -519,7 +519,7 @@ class GraficaNodos extends GraficaBase {
         var ctx = $(`<div class="graficoNodos" id="grafica_${this.idPagina}_${this.idGrafica}"></div>`);
 
         $(pContenedor).append(`
-            <p id="titulo_grafica_${this.idPagina}_${this.idGrafica}" style="z-index:4; text-align:center; margin-top: 0.60em; width: 100%; color: #666666; ">${this.titulo}</p>
+            <p id="titulo_grafica_${this.idPagina}_${this.idGrafica}" style="z-index:4; text-align:center; margin-top: 0.60em; width: 100%; color: #666666; font-weight:bold; ">${this.titulo}</p>
             <div class="graph-controls">
                 <ul class="no-list-style align-items-center">
                     <li class="control zoomin-control" id="zoomIn">
