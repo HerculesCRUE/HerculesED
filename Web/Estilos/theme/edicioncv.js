@@ -3795,7 +3795,12 @@ var edicionCV = {
 
 			$("#modal-dspace").modal("show");
 			$("#modal-dspace").find(".resource-list").empty();
+			$("#modal-dspace").find("a.document-link").remove();
 			$(this).parents("article.resource.success").clone().appendTo("#modal-dspace .resource-list").find(".acciones-recurso-listado.acciones-recurso").remove();
+			var url = $("#modal-dspace .resource-list").find("p:contains('URL')").parent().find('p:not(".title")').html()
+			if(url){
+				$("#modal-dspace .resource-list").after(`<a class="document-link" target="_blank" href=${url}>URL del documento</a>`)
+			}
 			accionesPlegarDesplegarModal.collapse();
 			if ($("#file_dspace").data("GnossDragAndDrop")) {
 				$("#file_dspace").data("GnossDragAndDrop").resetPlugin()
