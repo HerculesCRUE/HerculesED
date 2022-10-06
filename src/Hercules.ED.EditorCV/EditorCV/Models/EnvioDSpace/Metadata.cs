@@ -4,6 +4,12 @@
     {
         public string key { get; set; }
         public string value { get; set; }
+        public string language { get; set; }
+
+        public Metadata(string key, string value, string language) : this(key, value )
+        {
+            this.language = language;
+        }
 
         public Metadata(string key, string value)
         {
