@@ -51,6 +51,12 @@ namespace EditorCV.Models
                 {
                     Authentication();
                 }
+                status = GetStatus();
+                if(status.authenticated != "true")
+                {
+                    throw new Exception("No se ha conseguido autenticar");
+                }
+
 
                 //Recupero los datos del recurso
                 GetDatosPublicacion(pIdRecurso, publication, ref idPublication);
