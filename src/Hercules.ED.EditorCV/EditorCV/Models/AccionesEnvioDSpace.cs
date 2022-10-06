@@ -51,6 +51,7 @@ namespace EditorCV.Models
                 {
                     Authentication();
                 }
+                //Si no me he conseguido autenticar, devuelvo una excepción
                 status = GetStatus();
                 if(status.authenticated != "true")
                 {
@@ -115,7 +116,7 @@ namespace EditorCV.Models
                 //Actualizo(200, recurso encontrado en DSpace)
                 else if (responseEstado.StatusCode == HttpStatusCode.OK)
                 {
-                    //ActualizaDspace(publication); 
+                    ActualizaDspace(publication); 
 
                     //Añado el archivo al recurso
                     if (file != null)
@@ -150,7 +151,7 @@ namespace EditorCV.Models
                 HttpClient httpClientInserta = new HttpClient();
                 httpClientInserta.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
                 HttpResponseMessage responseInserta = httpClientInserta.PostAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
-                if (!responseInserta.StatusCode.Equals(200))
+                if (responseInserta.StatusCode != HttpStatusCode.OK)
                 {
                     throw new Exception("Error en la inserción");
                 }
@@ -179,8 +180,8 @@ namespace EditorCV.Models
                 //Si está en la biblioteca actualizo los datos
                 HttpClient httpClientActualiza = new HttpClient();
                 httpClientActualiza.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
-                HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
-                if (!responseActualiza.StatusCode.Equals(200))
+                HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadata.rootObject.metadata).Result;
+                if (responseActualiza.StatusCode != HttpStatusCode.OK)
                 {
                     throw new Exception("Error en la actualización");
                 }
@@ -218,7 +219,7 @@ namespace EditorCV.Models
                 HttpClient httpClientBitstream = new HttpClient();
                 httpClientBitstream.DefaultRequestHeaders.Add("rest-dspace-token", tokenAuth);
                 HttpResponseMessage responseBitstream = httpClientBitstream.PostAsync($"{urlEstado}", multipartFormData).Result;
-                if (!responseBitstream.StatusCode.Equals(HttpStatusCode.OK))
+                if (responseBitstream.StatusCode != HttpStatusCode.OK)
                 {
                     throw new Exception("Error en la inserción del archivo");
                 }
