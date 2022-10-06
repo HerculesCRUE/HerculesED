@@ -38,40 +38,47 @@ namespace OAI_PMH.Models.OAIPMH
         }
 
         public Record GetRecord(string identifier, string metadataPrefix)
-        {
+        {            
             Record record = new();
-            List<Record> listaRecords = new List<Record>();
-            string set = identifier.Split('_')[0];
-            DateTime date = DateTime.UtcNow;
-
-            switch (set)
+            try
             {
-                case "Persona":
-                    Persona persona = PersonalData.GetPersona(identifier, _Config);
-                    record = ToRecord(persona, set, identifier, date, metadataPrefix);
-                    break;
-                case "Proyecto":
-                    Proyecto proyecto = Project.GetProyecto(identifier, _Config);
-                    record = ToRecord(proyecto, set, identifier, date, metadataPrefix);
-                    break;
-                case "Organizacion":
-                    Empresa organizacion = Organization.GetEmpresa(identifier, _Config);
-                    record = ToRecord(organizacion, set, identifier, date, metadataPrefix);
-                    break;
-                case "AutorizacionProyecto":
-                    Autorizacion autorizacion = Autorizaciones.GetAutorizacion(identifier, _Config);
-                    record = ToRecord(autorizacion, set, identifier, date, metadataPrefix);
-                    break;
-                case "Invencion":
-                    Invencion invencion = Invention.GetInvenciones(identifier, _Config);
-                    record = ToRecord(invencion, set, identifier, date, metadataPrefix);
-                    break;
-                case "Grupo":
-                    Grupo grupo = InvestigationGroup.GetGrupos(identifier, _Config);
-                    record = ToRecord(grupo, set, identifier, date, metadataPrefix);
-                    break;
-                default:
-                    break;
+                List<Record> listaRecords = new List<Record>();
+                string set = identifier.Split('_')[0];
+                DateTime date = DateTime.UtcNow;
+
+                switch (set)
+                {
+                    case "Persona":
+                        Persona persona = PersonalData.GetPersona(identifier, _Config);
+                        record = ToRecord(persona, set, identifier, date, metadataPrefix);
+                        break;
+                    case "Proyecto":
+                        Proyecto proyecto = Project.GetProyecto(identifier, _Config);
+                        record = ToRecord(proyecto, set, identifier, date, metadataPrefix);
+                        break;
+                    case "Organizacion":
+                        Empresa organizacion = Organization.GetEmpresa(identifier, _Config);
+                        record = ToRecord(organizacion, set, identifier, date, metadataPrefix);
+                        break;
+                    case "AutorizacionProyecto":
+                        Autorizacion autorizacion = Autorizaciones.GetAutorizacion(identifier, _Config);
+                        record = ToRecord(autorizacion, set, identifier, date, metadataPrefix);
+                        break;
+                    case "Invencion":
+                        Invencion invencion = Invention.GetInvenciones(identifier, _Config);
+                        record = ToRecord(invencion, set, identifier, date, metadataPrefix);
+                        break;
+                    case "Grupo":
+                        Grupo grupo = InvestigationGroup.GetGrupos(identifier, _Config);
+                        record = ToRecord(grupo, set, identifier, date, metadataPrefix);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch
+            {
+                return null;
             }
             return record;
         }

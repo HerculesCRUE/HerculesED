@@ -12,6 +12,7 @@ namespace Harvester.Models.RabbitMQ
             document,
             patent,
             organization,
+            projectauthorization,
             researchobject
         }
 

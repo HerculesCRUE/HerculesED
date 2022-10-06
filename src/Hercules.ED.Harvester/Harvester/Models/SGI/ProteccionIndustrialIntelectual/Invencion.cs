@@ -2,6 +2,7 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester;
+using Harvester.Models.RabbitMQ;
 using OAI_PMH.Models.SGI.PersonalData;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,12 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
     /// </summary>
     public class Invencion : SGI_Base
     {
+        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, bool pFusionarPersona = false, string pIdPersona = null)
+        {
+            PatentOntology.Patent patente = CrearPatentOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas, pRabbitConf);
+            return patente.ToGnossApiResource(pResourceApi, null);
+        }
+
         public override string ObtenerIDBBDD(ResourceApi pResourceApi)
         {
             Dictionary<string, string> respuesta = ObtenerPatenteBBDD(new HashSet<string>() { id.ToString() }, pResourceApi);
@@ -25,14 +32,8 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
             }
             return null;
         }
-
-        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, bool pFusionarPersona = false, string pIdPersona = null)
-        {
-            PatentOntology.Patent patente = CrearPatentOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
-            return patente.ToGnossApiResource(pResourceApi, null);
-        }
-
-        public PatentOntology.Patent CrearPatentOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
+               
+        public PatentOntology.Patent CrearPatentOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf)
         {
             HashSet<string> listaIdsPersonas = new HashSet<string>();
             if (this.inventores != null && this.inventores.Any())
@@ -68,7 +69,7 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
                     Persona personaAux = Persona.GetPersonaSGI(pHarvesterServices, pConfig, item.Key, pDicRutas);
                     if (personaAux != null)
                     {
-                        string idGnoss = personaAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "person", pDicIdentificadores, pDicRutas);
+                        string idGnoss = personaAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "person", pDicIdentificadores, pDicRutas, pRabbitConf);
                         pDicIdentificadores["person"].Add(idGnoss);
                         dicPersonasCargadas[item.Key] = idGnoss;
                     }
@@ -86,12 +87,11 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
             foreach (Inventor inventor in this.inventores)
             {    
                 PatentOntology.PersonAux persona = new PatentOntology.PersonAux();
-                if (dicPersonasBBDD.ContainsKey(inventor.inventorRef))
+                if (dicPersonasBBDD.ContainsKey(inventor.inventorRef) && !string.IsNullOrEmpty(dicPersonasBBDD[inventor.inventorRef]))
                 {
                     persona.IdRdf_member = dicPersonasBBDD[inventor.inventorRef];
-                }                
-
-                listaPersonas.Add(persona);
+                    listaPersonas.Add(persona);
+                } 
             }
 
             patente.Bibo_authorList = listaPersonas;
