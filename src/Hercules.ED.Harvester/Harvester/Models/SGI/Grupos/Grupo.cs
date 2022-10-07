@@ -2,6 +2,7 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester;
+using Harvester.Models.RabbitMQ;
 using OAI_PMH.Models.SGI.PersonalData;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,22 @@ namespace OAI_PMH.Models.SGI.GruposInvestigacion
     /// </summary>
     public class Grupo : SGI_Base
     {
+        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, bool pFusionarPersona = false, string pIdPersona = null)
+        {
+            GroupOntology.Group grupo = CrearGroupOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas, pRabbitConf);
+            return grupo.ToGnossApiResource(pResourceApi, null);
+        }
+
+        public override string ObtenerIDBBDD(ResourceApi pResourceApi)
+        {
+            Dictionary<string, string> respuesta = ObtenerGruposBBDD(new HashSet<string>() { id.ToString() }, pResourceApi);
+            if (respuesta.ContainsKey(id.ToString()) && !string.IsNullOrEmpty(respuesta[id.ToString()]))
+            {
+                return respuesta[id.ToString()];
+            }
+            return null;
+        }
+
         public static Dictionary<string, string> ObtenerGruposBBDD(HashSet<string> pListaIds, ResourceApi pResourceApi)
         {
             List<List<string>> listasPersonas = SplitList(pListaIds.ToList(), 1000).ToList();
@@ -74,18 +91,8 @@ namespace OAI_PMH.Models.SGI.GruposInvestigacion
 
             return grupo;
         }
-
-        public override string ObtenerIDBBDD(ResourceApi pResourceApi)
-        {
-            Dictionary<string, string> respuesta = ObtenerGruposBBDD(new HashSet<string>() { id.ToString() }, pResourceApi);
-            if (respuesta.ContainsKey(id.ToString()) && !string.IsNullOrEmpty(respuesta[id.ToString()]))
-            {
-                return respuesta[id.ToString()];
-            }
-            return null;
-        }
-
-        public GroupOntology.Group CrearGroupOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
+                
+        public GroupOntology.Group CrearGroupOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf)
         {
             GroupOntology.Group groupOntology = new GroupOntology.Group();
 
@@ -129,7 +136,7 @@ namespace OAI_PMH.Models.SGI.GruposInvestigacion
                     Persona personaAux = Persona.GetPersonaSGI(pHarvesterServices, pConfig, item.Key, pDicRutas);
                     if (personaAux != null)
                     {
-                        string idGnoss = personaAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "person", pDicIdentificadores, pDicRutas);
+                        string idGnoss = personaAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "person", pDicIdentificadores, pDicRutas, pRabbitConf, true);
                         pDicIdentificadores["person"].Add(idGnoss);
                         dicPersonassCargadas[item.Key] = idGnoss;
                     }
@@ -173,13 +180,7 @@ namespace OAI_PMH.Models.SGI.GruposInvestigacion
 
             return groupOntology;
         }
-
-        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, bool pFusionarPersona = false, string pIdPersona = null)
-        {
-            GroupOntology.Group grupo = CrearGroupOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
-            return grupo.ToGnossApiResource(pResourceApi, null);
-        }
-
+               
         /// <summary>
         /// Identificador.
         /// </summary>

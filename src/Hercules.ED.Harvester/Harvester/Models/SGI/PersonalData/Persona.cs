@@ -4,6 +4,7 @@ using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester;
 using Harvester.Models.ModelsBBDD;
+using Harvester.Models.RabbitMQ;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI.ActividadDocente;
 using OAI_PMH.Models.SGI.FormacionAcademica;
@@ -23,6 +24,29 @@ namespace OAI_PMH.Models.SGI.PersonalData
     {
         private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Utilidades/prefijos.json";
         private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
+
+        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, bool pFusionarPersona = false, string pIdPersona = null)
+        {
+            PersonOntology.Person persona = CrearPersonOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+
+            if (pFusionarPersona && !string.IsNullOrEmpty(pIdPersona))
+            {
+                PersonOntology.Person personaAux = DatosPersonaNoBorrar(pIdPersona, pResourceApi);
+                FusionarPersonas(persona, personaAux);
+            }
+
+            return persona.ToGnossApiResource(pResourceApi, null);
+        }
+
+        public override string ObtenerIDBBDD(ResourceApi pResourceApi)
+        {
+            Dictionary<string, string> respuesta = ObtenerPersonasBBDD(new HashSet<string>() { Id.ToString() }, pResourceApi);
+            if (respuesta.ContainsKey(Id.ToString()) && !string.IsNullOrEmpty(respuesta[Id.ToString()]))
+            {
+                return respuesta[Id.ToString()];
+            }
+            return null;
+        }
 
         public static Dictionary<string, string> ObtenerPersonasBBDD(HashSet<string> pListaIds, ResourceApi pResourceApi)
         {
@@ -82,17 +106,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return persona;
         }
-
-        public override string ObtenerIDBBDD(ResourceApi pResourceApi)
-        {
-            Dictionary<string, string> respuesta = ObtenerPersonasBBDD(new HashSet<string>() { Id.ToString() }, pResourceApi);
-            if (respuesta.ContainsKey(Id.ToString()) && !string.IsNullOrEmpty(respuesta[Id.ToString()]))
-            {
-                return respuesta[Id.ToString()];
-            }
-            return null;
-        }
-
+               
         public PersonOntology.Person CrearPersonOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
         {
             PersonOntology.Person persona = new PersonOntology.Person();
@@ -207,20 +221,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return persona;
         }
-
-        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, bool pFusionarPersona = false, string pIdPersona = null)
-        {
-            PersonOntology.Person persona = CrearPersonOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
-
-            if (pFusionarPersona && !string.IsNullOrEmpty(pIdPersona))
-            {
-                PersonOntology.Person personaAux = DatosPersonaNoBorrar(pIdPersona, pResourceApi);
-                FusionarPersonas(persona, personaAux);
-            }
-
-            return persona.ToGnossApiResource(pResourceApi, null);
-        }
-
+                
         /// <summary>
         /// Obtiene los datos que no queremos borrar de la persona.
         /// </summary>

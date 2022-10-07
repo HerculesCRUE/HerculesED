@@ -3,6 +3,7 @@ using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester;
 using Harvester.Models.ModelsBBDD;
+using Harvester.Models.RabbitMQ;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,22 @@ namespace OAI_PMH.Models.SGI.Organization
     /// </summary>
     public class Empresa : SGI_Base
     {
+        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, bool pFusionarPersona = false, string pIdPersona = null)
+        {
+            OrganizationOntology.Organization proyecto = CrearOrganizationOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+            return proyecto.ToGnossApiResource(pResourceApi, null);
+        }
+
+        public override string ObtenerIDBBDD(ResourceApi pResourceApi)
+        {
+            Dictionary<string, string> respuesta = ObtenerEmpresaBBDD(new HashSet<string>() { Id.ToString() }, pResourceApi);
+            if (respuesta.ContainsKey(Id.ToString()) && !string.IsNullOrEmpty(respuesta[Id.ToString()]))
+            {
+                return respuesta[Id.ToString()];
+            }
+            return null;
+        }
+
         public static Dictionary<string, string> ObtenerOrganizacionesBBDD(HashSet<string> pListaIds, ResourceApi pResourceApi)
         {
             List<List<string>> listasPersonas = SplitList(pListaIds.ToList(), 1000).ToList();
@@ -161,17 +178,7 @@ namespace OAI_PMH.Models.SGI.Organization
 
             return dicEmpresasBBDD;
         }
-
-        public override string ObtenerIDBBDD(ResourceApi pResourceApi)
-        {
-            Dictionary<string, string> respuesta = ObtenerEmpresaBBDD(new HashSet<string>() { Id.ToString() }, pResourceApi);
-            if (respuesta.ContainsKey(Id.ToString()) && !string.IsNullOrEmpty(respuesta[Id.ToString()]))
-            {
-                return respuesta[Id.ToString()];
-            }
-            return null;
-        }
-
+                
         public OrganizationOntology.Organization CrearOrganizationOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
         {
             OrganizationOntology.Organization organization = new OrganizationOntology.Organization();
@@ -180,13 +187,7 @@ namespace OAI_PMH.Models.SGI.Organization
             organization.Vcard_locality = this.DatosContacto?.Direccion;
             return organization;
         }
-
-        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, bool pFusionarPersona = false, string pIdPersona = null)
-        {
-            OrganizationOntology.Organization proyecto = CrearOrganizationOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
-            return proyecto.ToGnossApiResource(pResourceApi, null);
-        }
-
+                
         /// <summary>
         /// Identificador de la empresa.
         /// </summary>

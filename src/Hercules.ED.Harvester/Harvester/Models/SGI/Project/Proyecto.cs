@@ -3,6 +3,7 @@ using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
 using Harvester;
 using Harvester.Models.ModelsBBDD;
+using Harvester.Models.RabbitMQ;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using System;
@@ -20,9 +21,9 @@ namespace OAI_PMH.Models.SGI.Project
     /// </summary>
     public class Proyecto : SGI_Base
     {
-        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, bool pFusionarPersona = false, string pIdPersona = null)
+        public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, bool pFusionarPersona = false, string pIdPersona = null)
         {
-            ProjectOntology.Project proyecto = CrearProjectOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+            ProjectOntology.Project proyecto = CrearProjectOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas, pRabbitConf);
             return proyecto.ToGnossApiResource(pResourceApi, null);
         }
 
@@ -36,7 +37,7 @@ namespace OAI_PMH.Models.SGI.Project
             return null;
         }
 
-        public ProjectOntology.Project CrearProjectOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
+        public ProjectOntology.Project CrearProjectOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf)
         {
             #region --- Obtenemos los IDs de las personas del proyecto.
             HashSet<string> listaIdsPersonas = new HashSet<string>();
@@ -61,7 +62,7 @@ namespace OAI_PMH.Models.SGI.Project
                 if (string.IsNullOrEmpty(item.Value))
                 {
                     Persona personaAux = Persona.GetPersonaSGI(pHarvesterServices, pConfig, item.Key, pDicRutas);
-                    string idGnoss = personaAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "person", pDicIdentificadores, pDicRutas);
+                    string idGnoss = personaAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "person", pDicIdentificadores, pDicRutas, pRabbitConf, true);
                     pDicIdentificadores["person"].Add(idGnoss);
                     dicPersonasBBDD[item.Key] = idGnoss;
                 }
@@ -111,7 +112,7 @@ namespace OAI_PMH.Models.SGI.Project
                 if (string.IsNullOrEmpty(item.Value))
                 {
                     Empresa organizacionAux = Empresa.GetOrganizacionSGI(pHarvesterServices, pConfig, item.Key, pDicRutas);
-                    string idGnoss = organizacionAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "organization", pDicIdentificadores, pDicRutas);
+                    string idGnoss = organizacionAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "organization", pDicIdentificadores, pDicRutas, pRabbitConf);
                     pDicIdentificadores["organization"].Add(idGnoss);
                     dicOrganizacionesCargadas[item.Key] = idGnoss;
                 }
@@ -214,11 +215,11 @@ namespace OAI_PMH.Models.SGI.Project
             //}
 
             // Añado las entidades gestoras que no existan en BBDD. Se coge la primera porque en la ontología es 0..1
-            //if (pProyecto.EntidadesGestoras != null && pProyecto.EntidadesGestoras.Any())
+            //if (this.EntidadesGestoras != null && this.EntidadesGestoras.Any())
             //{
             //    project.Roh_participates = new List<ProjectOntology.OrganizationAux>();
 
-            //    foreach (ProyectoEntidadGestora entidadGestora in pProyecto.EntidadesGestoras)
+            //    foreach (ProyectoEntidadGestora entidadGestora in this.EntidadesGestoras)
             //    {
             //        project.Roh_participates.Add(CrearEntidadOrganizationAux(entidadGestora.EntidadRef));
             //    }
