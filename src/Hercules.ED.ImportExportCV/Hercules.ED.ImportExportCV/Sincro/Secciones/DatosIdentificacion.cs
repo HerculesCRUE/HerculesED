@@ -5,6 +5,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
