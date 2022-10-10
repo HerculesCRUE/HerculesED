@@ -78,6 +78,10 @@ namespace ImportadorWebCV.Sincro
                 try
                 {
                     CVFileAsXML = GenerarRootBean(mConfiguracion, CVFile);
+                    if (CVFileAsXML == null)
+                    {
+                        throw new FileLoadException();
+                    }
 
                     XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
                     using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
@@ -89,7 +93,7 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception)
                 {
-                    
+
                 }
             }
             else
@@ -98,6 +102,11 @@ namespace ImportadorWebCV.Sincro
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
                     CVFileAsXML = (FormFile)CVFile;
+                    if (CVFileAsXML == null)
+                    {
+                        throw new FileLoadException();
+                    }
+
                     using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
                     {
                         cvn = (cvnRootResultBean)ser.Deserialize(reader);
@@ -107,7 +116,7 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception)
                 {
-                    
+
                 }
             }
         }
@@ -142,7 +151,7 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception)
                 {
-                    
+
                 }
             }
             else
@@ -196,50 +205,64 @@ namespace ImportadorWebCV.Sincro
 
             if (_Configuracion.GetVersion().Equals("1_4_3"))
             {
-                Import.Cvn2RootBeanClient cvnRootBeanClient = new Import.Cvn2RootBeanClient();
-                
-                //Aumento el tiempo de espera a 2 hora como máximo
-                cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-                cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-                var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
-                Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
-
-                XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
-                MemoryStream memoryStream = new MemoryStream();
-
-                xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
-
-                FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                try
                 {
-                    Headers = new HeaderDictionary(),
-                    ContentType = "application/xml"
-                };
-                return file;
+                    Import.Cvn2RootBeanClient cvnRootBeanClient = new Import.Cvn2RootBeanClient();
+
+                    //Aumento el tiempo de espera a 2 hora como máximo
+                    cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
+                    cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+                    var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
+                    Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
+
+                    XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
+                    MemoryStream memoryStream = new MemoryStream();
+
+                    xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
+
+                    FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                    {
+                        Headers = new HeaderDictionary(),
+                        ContentType = "application/xml"
+                    };
+                    return file;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
-            else if(_Configuracion.GetVersion().Equals("1_4_0"))
+            else if (_Configuracion.GetVersion().Equals("1_4_0"))
             {
-                Import140.Cvn2RootBeanClient cvnRootBeanClient = new Import140.Cvn2RootBeanClient();
-                cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-                var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
-                Import140.cvnRootResultBean cvnRootResultBean = x.Result.@return;
-
-                XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
-                MemoryStream memoryStream = new MemoryStream();
-
-                xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
-
-                FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                try
                 {
-                    Headers = new HeaderDictionary(),
-                    ContentType = "application/xml"
-                };
-                return file;
+                    Import140.Cvn2RootBeanClient cvnRootBeanClient = new Import140.Cvn2RootBeanClient();
+                    cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
+                    var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
+                    Import140.cvnRootResultBean cvnRootResultBean = x.Result.@return;
+
+                    XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
+                    MemoryStream memoryStream = new MemoryStream();
+
+                    xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
+
+                    FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                    {
+                        Headers = new HeaderDictionary(),
+                        ContentType = "application/xml"
+                    };
+                    return file;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
             else
             {
                 throw new Exception("La versión de exportación no es correcta");
             }
-            
+
         }
 
         public byte[] GuardarXMLFiltrado()
@@ -380,8 +403,8 @@ namespace ImportadorWebCV.Sincro
             listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(UtilitySecciones.CheckSecciones(secciones, "060.010.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(UtilitySecciones.CheckSecciones(secciones, "060.010.060.010"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(mConfiguracion, UtilitySecciones.CheckSecciones(secciones, "060.010.010.000"), preimportar, listadoIdBBDD, petitionStatus, listaDOI: listaDOI)));
-            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(mConfiguracion,UtilitySecciones.CheckSecciones(secciones, "060.010.020.000"), preimportar, listadoIdBBDD, petitionStatus, listaDOI: listaDOI)));
-            listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(mConfiguracion,UtilitySecciones.CheckSecciones(secciones, "060.010.030.000"), preimportar, listadoIdBBDD, petitionStatus)));
+            listadoSecciones.Add(new Subseccion("060.010.020.000", actividadCientificaTecnologica.SincroTrabajosCongresos(mConfiguracion, UtilitySecciones.CheckSecciones(secciones, "060.010.020.000"), preimportar, listadoIdBBDD, petitionStatus, listaDOI: listaDOI)));
+            listadoSecciones.Add(new Subseccion("060.010.030.000", actividadCientificaTecnologica.SincroTrabajosJornadasSeminarios(mConfiguracion, UtilitySecciones.CheckSecciones(secciones, "060.010.030.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.010.040.000", actividadCientificaTecnologica.SincroOtrasActividadesDivulgacion(UtilitySecciones.CheckSecciones(secciones, "060.010.040.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.020.010.000", actividadCientificaTecnologica.SincroComitesCTA(UtilitySecciones.CheckSecciones(secciones, "060.020.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.020.030.000", actividadCientificaTecnologica.SincroOrganizacionIDI(UtilitySecciones.CheckSecciones(secciones, "060.020.030.000"), preimportar, listadoIdBBDD, petitionStatus)));
@@ -420,6 +443,11 @@ namespace ImportadorWebCV.Sincro
             return listadoSecciones;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pCVID"></param>
+        /// <param name="listaDOI"></param>
         public void SincroPublicacionesFuenteExternas(string pCVID, List<string> listaDOI)
         {
             try
@@ -447,5 +475,64 @@ namespace ImportadorWebCV.Sincro
 
             }
         }
+
+        /// <summary>
+        /// Añade el ORCID a la persona con identificador <paramref name="crisArchivo"/>
+        /// </summary>
+        /// <param name="sincro"></param>
+        /// <param name="crisArchivo"></param>
+        /// <returns>Cadena vacía si se produce algún error, el ORCID si se inserta el triple</returns>
+        public string SincroORCID(SincroDatos sincro, string crisArchivo)
+        {
+            Hercules.ED.ImportExportCV.Sincro.Secciones.SincroORCID sincroORCID = new Hercules.ED.ImportExportCV.Sincro.Secciones.SincroORCID(sincro.getCVN(), cvID, mConfiguracion);
+
+            List<CvnItemBean> listadoA = sincro.getCVN().cvnRootBean.ToList();
+            listadoA = listadoA.Where(x => x.Code.Equals("000.010.000.000")).ToList();
+
+            CvnItemBeanCvnString crisID = new CvnItemBeanCvnString();
+            string ORCID = listadoA.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetORCID();
+
+
+            if (string.IsNullOrEmpty(ORCID))
+            {
+                return "";
+            }
+
+            if (ORCID.Contains("/"))
+            {
+                ORCID = ORCID.Substring(ORCID.LastIndexOf("/") + 1);
+            }
+
+            //Compruebo el formato de 'ORCID'
+            if (!UtilityCV.ComprobarORCID(ORCID))
+            {
+                return "";
+            }
+
+            //Inserto el ORCID
+            Dictionary<string, string> dicPersonaORCID = UtilitySecciones.GetIDPersona(crisArchivo);
+
+            //Sin valores sigo al siguiente
+            if (!dicPersonaORCID.Any() || string.IsNullOrEmpty(dicPersonaORCID.ElementAt(0).Key))
+            {
+                return "";
+            }
+            //Si la persona tiene ORCID sigo al siguiente
+            if (!string.IsNullOrEmpty(dicPersonaORCID.ElementAt(0).Value))
+            {
+                return "";
+            }
+
+            //Inserto el triple
+            if (sincroORCID.SincroDatosPersonaORCID(dicPersonaORCID.ElementAt(0).Key, ORCID))
+            {
+                return ORCID;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
     }
 }
