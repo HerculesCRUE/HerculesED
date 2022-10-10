@@ -1,30 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EditorCV.Models.Clases
+namespace Harvester.Models.ModelsBBDD
 {
-    public class DoctoradosBBDD
+    public class DoctoradosBBDD:AcademicDegreeBBDD
     {
-        string programaDoctorado { get; set; }
-        DateTime fechaTitulacion { get; set; }
-        string entidadTituluacion { get; set; }
-        string ciudadEntidadTit { get; set; }
-        string paisEntiadadTit { get; set; }
-        string cAutonEntidadTit { get; set; }
-        string entidadTitDEA { get; set; }
-        DateTime obtencionDEA { get; set; }
-        string tituloTesis { get; set; }
-        string calificacionObtenida { get; set; }
-        string firmaDirector { get; set; }
-        string nombreDirector { get; set; }
-        string primApeDirector { get; set; }
-        string segunApeDirector { get; set; }
-        List<CodirectorTesis> codirectorTesis { get; set; }
-        string doctoradoEuropeo { get; set; }
-        string mencionCalidad { get; set; }
-        string premioExtraordinarioDoctor { get; set; }
-        string tituloHomologado { get; set; }
 
-        
+        public DateTime? fechaTitulacion { get; set; }
+        public string entidadTitDEA { get; set; }
+        public DateTime? obtencionDEA { get; set; }
+        public string tituloTesis { get; set; }
+        public string calificacionObtenida { get; set; }
+        public string firmaDirector { get; set; }
+        public string nombreDirector { get; set; }
+        public string primApeDirector { get; set; }
+        public string segunApeDirector { get; set; }
+        public List<Codirector> codirectorTesis { get; set; }
+        public string doctoradoEuropeo { get; set; }
+        public string mencionCalidad { get; set; }
+        public string premioExtraordinarioDoctor { get; set; }
+        public string tituloHomologado { get; set; }
+
     }
 }
