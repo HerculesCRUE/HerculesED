@@ -4,6 +4,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Utils
 {
@@ -53,6 +54,52 @@ namespace Utils
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
         }
         
+        public static bool ComprobarORCID(string ORCID)
+        {
+            //Compruebo que no sea nulo
+            if (string.IsNullOrEmpty(ORCID))
+            {
+                return false;
+            }
+
+            //Compruebo si tiene formato DNI
+            if (Regex.IsMatch(ORCID, "\\d{4}-\\d{4}-\\d{4}-\\d{4}"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public static bool ComprobarCRIS(string crisID)
+        {
+            //Compruebo que no sea nulo
+            if (string.IsNullOrEmpty(crisID))
+            {
+                return false;
+            }
+
+            //Compruebo si tiene formato DNI
+            if(Regex.IsMatch(crisID, "\\d{8}[TRWAGMYFPDXBNJZSQVHLCKE]"))
+            {
+                return true;
+            }
+
+            //Compruebo si tiene formato NIE
+            if(Regex.IsMatch(crisID, "[XYZ]\\d{7}[TRWAGMYFPDXBNJZSQVHLCKE]"))
+            {
+                return true;
+            }
+
+            //Compruebo si tiene formato Pasaporte
+            if(Regex.IsMatch(crisID, "\\w{3}\\d{6}\\w*"))
+            {
+                return true;
+            }
+
+
+            return false;
+        }
+
         /// <summary>
         /// Devuelve el identificador numerico apartir del tipo de documento.
         /// </summary>
