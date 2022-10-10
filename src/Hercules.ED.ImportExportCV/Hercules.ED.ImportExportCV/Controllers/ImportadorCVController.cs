@@ -17,6 +17,7 @@ using Models;
 using ImportadorWebCV.Exporta.Secciones;
 using Gnoss.ApiWrapper;
 using ImportadorWebCV;
+using Utils;
 
 namespace Hercules.ED.ImportExportCV.Controllers
 {
@@ -35,6 +36,50 @@ namespace Hercules.ED.ImportExportCV.Controllers
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             _logger = logger;
             _Configuracion = pConfig;
+        }
+
+        [HttpGet("InsertaORCID")]
+        public ActionResult InsertaORCID()
+        {
+            try
+            {
+                string pathFichero = _Configuracion.GetPathFichero();
+                string path = _Configuracion.GetPathCarpeta();
+                List<string> listadoArchivos = Directory.GetFiles(path).ToList();
+                List<string> listadoInsercion = new List<string>();
+                foreach (string archivo in listadoArchivos)
+                {
+                    using var stream = new MemoryStream(System.IO.File.ReadAllBytes(archivo).ToArray());
+                    string nombreArchivo = archivo.Split("\\").Last();
+
+                    //Compruebo que sea valido el identificador del archivo
+                    if (!UtilityCV.ComprobarCRIS(nombreArchivo.Split(".").First()))
+                    {
+                        continue;
+                    }
+                    string crisArchivo = nombreArchivo.Split(".").First().Substring(0, nombreArchivo.Split(".").First().Length - 1);
+
+                    FormFile formFile = new FormFile(stream, 0, stream.Length, "streamFile", nombreArchivo);
+
+                    SincroDatos sincro = new SincroDatos(_Configuracion, formFile);
+                    if (sincro.getCVN() == null || sincro.getCVN().numElementos == 0 || sincro.getCVN().errorCode != 0)
+                    {
+                        continue;
+                    }
+
+                    string ORCID = sincro.SincroORCID(sincro, crisArchivo);
+                    if (!string.IsNullOrEmpty(ORCID))
+                    {
+                        listadoInsercion.Add(ORCID);
+                    }
+                }
+
+                return Ok(listadoInsercion);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("LecturaDatos")]
