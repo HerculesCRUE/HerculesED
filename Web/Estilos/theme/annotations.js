@@ -20,6 +20,9 @@ $(document).ready(function () {
 	urlDA = new URL(url_servicio_externo + uriDA);
 })
 
+/**
+ * Clase que se encarga de cargar y pintar las anotaciones en los diferentes ROs
+ */
 class CargarAnotaciones {
 
 	/**

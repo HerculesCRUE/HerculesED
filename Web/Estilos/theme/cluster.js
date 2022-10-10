@@ -22,7 +22,9 @@ $(document).ready(function () {
 
 
 
-
+/**
+ * Clase encargada del funcionamiento del creador / editor de los clusters
+ */
 class StepsCluster {
 	/**
 	 * Constructor de la clase StepsCluster
@@ -1389,7 +1391,9 @@ class StepsCluster {
 }
 
 
-// Clase para las trabajar en las gráficas de los colaboradores en el cluster
+/**
+ * Clase para las trabajar en las gráficas de los colaboradores en el cluster
+ */
 class CargarGraficaProjectoClusterObj {
 	dataCB = {};
 	dataSE = {};
@@ -1467,6 +1471,7 @@ function actualizarTypesClusterOcultar(type) {
 	newGrafProjClust.actualizarGraficaColaboradores();
 }
 
+// Función a la que se llama para seleccionar qué elementos de las relaciones mostrar en los investigadores seleccionados
 function actualizarTypesClusterOcultarSE(type) {
 	if (type == "relation_todas") {
 		newGrafProjClust.typesOcultarSE = [];
@@ -1482,7 +1487,7 @@ function ActualizarGraficaClusterolaboradoresCluster(typesOcultar = [], showRela
 	AjustarGraficaArania(dataCB, idContenedorCB, typesOcultar, showRelation);
 }
 
-// Comportamiento página proyecto
+// Objeto para el funcionamiento de los usuarios disponibles para los clusters
 var comportamientoPopupCluster = {
 	tabActive: null,
 
@@ -1799,7 +1804,7 @@ class ModalSearchTags {
 	}
 }
 
-
+// función que se llama cuando se cargan los investigadores en el cluster
 function CompletadaCargaRecursosCluster()
 {	
 	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
@@ -2001,7 +2006,7 @@ function CompletadaCargaRecursosCluster()
 }
 
 
-
+// Función que se llama cuando se cargan las facetas de los investigadores en el cluster
 function CompletadaCargaFacetasCluster()
 {	
 	if(typeof stepsCls != 'undefined' && stepsCls!=null && stepsCls.data!=null)
