@@ -8,12 +8,14 @@ using Harvester.Models.RabbitMQ;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI.ActividadDocente;
 using OAI_PMH.Models.SGI.FormacionAcademica;
+using OAI_PMH.Models.SGI.Organization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Utilidades;
 
 namespace OAI_PMH.Models.SGI.PersonalData
 {
@@ -27,7 +29,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
         public override ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, bool pFusionarPersona = false, string pIdPersona = null)
         {
-            PersonOntology.Person persona = CrearPersonOntology(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+            PersonOntology.Person persona = CrearPersonOntology(pRabbitConf, pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
 
             if (pFusionarPersona && !string.IsNullOrEmpty(pIdPersona))
             {
@@ -106,10 +108,21 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return persona;
         }
-               
-        public PersonOntology.Person CrearPersonOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
+
+        public PersonOntology.Person CrearPersonOntology(RabbitServiceWriterDenormalizer pRabbitConf, IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
         {
             PersonOntology.Person persona = new PersonOntology.Person();
+
+            // TESIS
+            List<TesisBBDD> listaTesisBBDD = ObtenerTesisBBDD(pResourceApi, this.Id);
+            List<TesisBBDD> listaTesisSGI = ObtenerTesisSGI(pRabbitConf, this.Tesis, pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+
+            // Cargar --> Tesis que estén en listaTesisSGI y no en listaTesisBBDD [Por CrisIdentifier]
+            List<TesisBBDD> listaTesisCargar = listaTesisSGI.Where(x => !listaTesisBBDD.Any(y => x.crisIdentifier == y.crisIdentifier)).ToList();
+            
+
+            // Elimitar --> Tesis que estén en listaTesisBBDD y no en listaTesisSGI [Por CrisIdentifier]
+            // Modificar --> Tesis que estén en listaTesisBBDD y en listaTesisSGI [Preguntar Álvaro Comparator]
 
             // Crisidentifier (Se corresponde al DNI sin letra)
             persona.Roh_crisIdentifier = this.Id;
@@ -221,7 +234,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return persona;
         }
-                
+
         /// <summary>
         /// Obtiene los datos que no queremos borrar de la persona.
         /// </summary>
@@ -505,6 +518,346 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return false;
         }
+
+        public List<TesisBBDD> ObtenerTesisBBDD(ResourceApi pResourceApi, string pCrisIdentfierPerson)
+        {
+            List<TesisBBDD> listaTesis = new List<TesisBBDD>();
+            Dictionary<string, List<string>> dicCodirectores = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> dicCategoryPaths = new Dictionary<string, List<string>>();
+
+            string select = string.Empty;
+            string where = string.Empty;
+            SparqlObject resultadoQuery = null;
+
+            #region --- Obtención datos básicos Tesis
+            select = "SELECT * ";
+            where = $@"WHERE {{ 
+                                ?s <http://w3id.org/roh/owner> ?persona.
+                                ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
+                                ?s <http://w3id.org/roh/title> ?title.
+                                OPTIONAL {{ ?s <http://purl.org/dc/terms/issued> ?issued. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/studentNick> ?studentNick. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/studentName> ?studentName. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/studentFirstSurname> ?studentFirstSurname. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/studentSecondSurname> ?studentSecondSurname. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/promotedByTitle> ?promotedByTitle. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/promotedBy> ?promotedBy. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/promotedByType> ?promotedByType. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/promotedByTypeOther> ?promotedByTypeOther. }}
+                                OPTIONAL {{ ?s <http://www.w3.org/2006/vcard/ns#locality> ?locality. }}
+                                OPTIONAL {{ ?s <http://www.w3.org/2006/vcard/ns#hasCountryName> ?hasCountryName. }}
+                                OPTIONAL {{ ?s <http://www.w3.org/2006/vcard/ns#hasRegion> ?hasRegion. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/projectCharacterType> ?projectCharacterType. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/projectCharacterTypeOther> ?projectCharacterTypeOther. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/codirector> ?codirector. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/qualification> ?qualification. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/qualityMention> ?qualityMention. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/qualityMentionDate> ?qualityMentionDate. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/europeanDoctorate> ?europeanDoctorate. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/europeanDoctorateDate> ?europeanDoctorateDate. }}
+                                OPTIONAL {{ ?s <http://vivoweb.org/ontology/core#freeTextKeyword> ?freeTextKeyword. }}
+                                ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentfierPerson}'.
+                            }}";
+
+            resultadoQuery = pResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "thesissupervision" });
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    TesisBBDD tesis = new TesisBBDD();
+                    tesis.idGnoss = fila["s"].value;
+                    tesis.crisIdentifier = fila["s"].value;
+                    tesis.title = fila["title"].value;
+                    if (fila.ContainsKey("issued") && !string.IsNullOrEmpty(fila["issued"].value))
+                    {
+                        int anio = int.Parse(fila["issued"].value.Substring(0, 4));
+                        int mes = int.Parse(fila["issued"].value.Substring(4, 2));
+                        int dia = int.Parse(fila["issued"].value.Substring(6, 2));
+                        tesis.issued = new DateTime(anio, mes, dia, 0, 0, 0, DateTimeKind.Utc);
+                    }
+                    if (fila.ContainsKey("studentNick") && !string.IsNullOrEmpty(fila["studentNick"].value))
+                    {
+                        tesis.studentNick = fila["studentNick"].value;
+                    }
+                    if (fila.ContainsKey("studentName") && !string.IsNullOrEmpty(fila["studentName"].value))
+                    {
+                        tesis.studentName = fila["studentName"].value;
+                    }
+                    if (fila.ContainsKey("studentFirstSurname") && !string.IsNullOrEmpty(fila["studentFirstSurname"].value))
+                    {
+                        tesis.studentFirstSurname = fila["studentFirstSurname"].value;
+                    }
+                    if (fila.ContainsKey("studentSecondSurname") && !string.IsNullOrEmpty(fila["studentSecondSurname"].value))
+                    {
+                        tesis.studentSecondSurname = fila["studentSecondSurname"].value;
+                    }
+                    if (fila.ContainsKey("promotedByTitle") && !string.IsNullOrEmpty(fila["promotedByTitle"].value))
+                    {
+                        tesis.promotedByTitle = fila["promotedByTitle"].value;
+                    }
+                    if (fila.ContainsKey("promotedBy") && !string.IsNullOrEmpty(fila["promotedBy"].value))
+                    {
+                        tesis.promotedBy = fila["promotedBy"].value;
+                    }
+                    if (fila.ContainsKey("promotedByType") && !string.IsNullOrEmpty(fila["promotedByType"].value))
+                    {
+                        tesis.promotedByType = fila["promotedByType"].value;
+                    }
+                    if (fila.ContainsKey("promotedByTypeOther") && !string.IsNullOrEmpty(fila["promotedByTypeOther"].value))
+                    {
+                        tesis.promotedByTypeOther = fila["promotedByTypeOther"].value;
+                    }
+                    if (fila.ContainsKey("codirector") && !string.IsNullOrEmpty(fila["codirector"].value))
+                    {
+                        if (dicCodirectores.ContainsKey(fila["s"].value))
+                        {
+                            dicCodirectores[fila["s"].value].Add(fila["codirector"].value);
+                        }
+                        else
+                        {
+                            tesis.codirector = new List<Codirector>();
+                            dicCodirectores[fila["s"].value] = new List<string>() { fila["codirector"].value };
+                        }
+                    }
+                    if (fila.ContainsKey("locality") && !string.IsNullOrEmpty(fila["locality"].value))
+                    {
+                        tesis.locality = fila["locality"].value;
+                    }
+                    if (fila.ContainsKey("hasCountryName") && !string.IsNullOrEmpty(fila["hasCountryName"].value))
+                    {
+                        tesis.hasCountryName = fila["hasCountryName"].value;
+                    }
+                    if (fila.ContainsKey("hasRegion") && !string.IsNullOrEmpty(fila["hasRegion"].value))
+                    {
+                        tesis.hasRegion = fila["hasRegion"].value;
+                    }
+                    if (fila.ContainsKey("projectCharacterType") && !string.IsNullOrEmpty(fila["projectCharacterType"].value))
+                    {
+                        tesis.projectCharacterType = fila["projectCharacterType"].value;
+                    }
+                    if (fila.ContainsKey("projectCharacterTypeOther") && !string.IsNullOrEmpty(fila["projectCharacterTypeOther"].value))
+                    {
+                        tesis.projectCharacterTypeOther = fila["projectCharacterTypeOther"].value;
+                    }
+                    if (fila.ContainsKey("qualityMention") && !string.IsNullOrEmpty(fila["qualityMention"].value))
+                    {
+                        tesis.qualityMention = bool.Parse(fila["qualityMention"].value);
+                    }
+                    if (fila.ContainsKey("qualityMentionDate") && !string.IsNullOrEmpty(fila["qualityMentionDate"].value))
+                    {
+                        int anio = int.Parse(fila["qualityMentionDate"].value.Substring(0, 4));
+                        int mes = int.Parse(fila["qualityMentionDate"].value.Substring(4, 2));
+                        int dia = int.Parse(fila["qualityMentionDate"].value.Substring(6, 2));
+                        tesis.qualityMentionDate = new DateTime(anio, mes, dia, 0, 0, 0, DateTimeKind.Utc);
+                    }
+                    if (fila.ContainsKey("europeanDoctorate") && !string.IsNullOrEmpty(fila["europeanDoctorate"].value))
+                    {
+                        tesis.europeanDoctorate = bool.Parse(fila["europeanDoctorate"].value);
+                    }
+                    if (fila.ContainsKey("europeanDoctorateDate") && !string.IsNullOrEmpty(fila["europeanDoctorateDate"].value))
+                    {
+                        int anio = int.Parse(fila["europeanDoctorateDate"].value.Substring(0, 4));
+                        int mes = int.Parse(fila["europeanDoctorateDate"].value.Substring(4, 2));
+                        int dia = int.Parse(fila["europeanDoctorateDate"].value.Substring(6, 2));
+                        tesis.europeanDoctorateDate = new DateTime(anio, mes, dia, 0, 0, 0, DateTimeKind.Utc);
+                    }
+                    if (fila.ContainsKey("freeTextKeyword") && !string.IsNullOrEmpty(fila["freeTextKeyword"].value))
+                    {
+                        if (dicCategoryPaths.ContainsKey(fila["s"].value))
+                        {
+                            dicCategoryPaths[fila["s"].value].Add(fila["freeTextKeyword"].value);
+                        }
+                        else
+                        {
+                            tesis.freeTextKeyword = new List<string>();
+                            dicCategoryPaths[fila["s"].value] = new List<string>() { fila["freeTextKeyword"].value };
+                        }
+                    }
+                    listaTesis.Add(tesis);
+                }
+            }
+            #endregion
+
+            #region --- Obtención de los datos de codirectores
+            foreach (KeyValuePair<string, List<string>> item in dicCodirectores)
+            {
+                select = "SELECT * ";
+                where = $@"WHERE {{
+                        ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#comment> ?comment.
+                        ?s <http://xmlns.com/foaf/0.1/nick> ?nick.
+                        ?s <http://xmlns.com/foaf/0.1/firtName> ?firstName.
+                        ?s <http://xmlns.com/foaf/0.1/familyName> ?familyName.
+                        ?s <http://w3id.org/roh/secondFamilyName> ?secondFamilyName.
+                        FILTER(?s in (<{string.Join(">, <", item.Value.Select(x => x))}>))}}
+                    }}";
+
+                resultadoQuery = pResourceApi.VirtuosoQuery(select, where, "thesissupervision");
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        Codirector codirector = new Codirector();
+                        codirector.comment = Int32.Parse(fila["comment"].value);
+                        codirector.firstName = fila["firstName"].value;
+
+                        if (fila.ContainsKey("nick") && !string.IsNullOrEmpty(fila["nick"].value))
+                        {
+                            codirector.nick = fila["nick"].value;
+                        }
+                        if (fila.ContainsKey("familyName") && !string.IsNullOrEmpty(fila["familyName"].value))
+                        {
+                            codirector.familyName = fila["familyName"].value;
+                        }
+                        if (fila.ContainsKey("secondFamilyName") && !string.IsNullOrEmpty(fila["secondFamilyName"].value))
+                        {
+                            codirector.secondFamilyName = fila["secondFamilyName"].value;
+                        }
+
+                        listaTesis.First(x => x.idGnoss == item.Key).codirector.Add(codirector);
+                    }
+                }
+            }
+            #endregion
+
+            return listaTesis;
+        }
+
+        public List<TesisBBDD> ObtenerTesisSGI(RabbitServiceWriterDenormalizer pRabbitConf, List<Tesis> pListaTesisSGI, IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
+        {
+            List<TesisBBDD> listaTesis = new List<TesisBBDD>();
+
+            foreach (Tesis item in pListaTesisSGI)
+            {
+                TesisBBDD tesis = new TesisBBDD();
+
+                tesis.crisIdentifier = item.Id;
+
+                if (item.TipoProyecto != null && !string.IsNullOrEmpty(item.TipoProyecto.Nombre))
+                {
+                    tesis.projectCharacterType = ProjectCharacterType(pResourceApi, item.TipoProyecto.Nombre);
+                    if (tesis.projectCharacterType.Contains("OTHERS"))
+                    {
+                        tesis.projectCharacterTypeOther = item.TipoProyecto.Nombre;
+                    }
+                }
+
+                tesis.title = item.TituloTrabajo;
+                // TODO: Código del pais no mapeable.
+                //tesis.hasCountryName = IdentificadorPais(item.PaisEntidadRealizacion.Id, pResourceApi);
+                //tesis.hasRegion = IdentificadorRegion(item.CcaaRegionEntidadRealizacion.Id, pResourceApi);
+                //tesis.locality = item.CiudadEntidadRealizacion;
+                tesis.issued = item.FechaDefensa;
+                tesis.qualification = item.CalificacionObtenida;
+                tesis.europeanDoctorateDate = item.FechaMencionDoctoradoEuropeo;
+                tesis.qualityMention = item.MencionCalidad != null ? (bool)item.MencionCalidad : false;
+                tesis.europeanDoctorate = item.DoctoradoEuropeo != null ? (bool)item.DoctoradoEuropeo : false;
+                tesis.qualityMentionDate = item.FechaMencionCalidad;
+
+                Persona alumno = GetPersonaSGI(pHarvesterServices, pConfig, "Persona_" + item.Alumno, pDicRutas);
+                if (alumno != null)
+                {
+                    tesis.studentName = alumno.Nombre;
+                    tesis.studentFirstSurname = alumno.Apellidos;
+                    tesis.studentNick = alumno.Nombre + " " + alumno.Apellidos;
+                }
+
+                // ORGANIZACION
+                if (item.EntidadRealizacion != null && !string.IsNullOrEmpty(item.EntidadRealizacion.EntidadRef))
+                {
+                    Dictionary<string, string> dicOrganizaciones = Empresa.ObtenerOrganizacionesBBDD(new HashSet<string>() { item.EntidadRealizacion.EntidadRef }, pResourceApi);
+                    Dictionary<string, string> dicOrganizacionesCargadas = new Dictionary<string, string>();
+                    foreach (KeyValuePair<string, string> organizacion in dicOrganizaciones)
+                    {
+                        Empresa organizacionAux = Empresa.GetOrganizacionSGI(pHarvesterServices, pConfig, "Organizacion_" + organizacion.Key, pDicRutas);
+                        tesis.promotedByTitle = organizacionAux.Nombre;
+
+                        if (string.IsNullOrEmpty(organizacion.Value))
+                        {
+                            string idGnoss = organizacionAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "organization", pDicIdentificadores, pDicRutas, pRabbitConf);
+                            pDicIdentificadores["organization"].Add(idGnoss);
+                            dicOrganizacionesCargadas[organizacion.Key] = idGnoss;
+                        }
+                        else
+                        {
+                            dicOrganizacionesCargadas[organizacion.Key] = organizacion.Value;
+                        }
+
+                        tesis.promotedBy = dicOrganizacionesCargadas[item.EntidadRealizacion.EntidadRef];
+                    }
+                }
+
+                if (item.CoDirectorTesis != null && !string.IsNullOrEmpty(item.CoDirectorTesis.PersonaRef))
+                {
+                    Persona codirectorSGI = GetPersonaSGI(pHarvesterServices, pConfig, "Persona_"+item.CoDirectorTesis.PersonaRef, pDicRutas);
+                    if (codirectorSGI != null)
+                    {
+                        Codirector codirector = new Codirector();
+                        codirector.firstName = codirectorSGI.Nombre;
+                        codirector.secondFamilyName = codirectorSGI.Apellidos;
+                        codirector.nick = codirectorSGI.Nombre + " " + codirectorSGI.Apellidos;
+                        codirector.comment = 1;
+                        tesis.codirector = new List<Codirector>() { codirector };
+                    }
+                }
+
+                listaTesis.Add(tesis);
+            }
+
+            return listaTesis;
+        }
+
+        private static string IdentificadorPais(string pais, ResourceApi pResourceApi)
+        {
+            if (!UtilidadesGeneral.DicPaisesContienePais(pais))
+            {
+                return null;
+            }
+            return pResourceApi.GraphsUrl + "items/feature_PCLD_" + UtilidadesGeneral.dicPaises[pais];
+        }
+
+        private static string IdentificadorRegion(string region, ResourceApi pResourceApi)
+        {
+            if (!UtilidadesGeneral.DicRegionesContieneRegion(region))
+            {
+                return null;
+            }
+            return pResourceApi.GraphsUrl + "items/feature_ADM1_" + UtilidadesGeneral.dicRegiones[region];
+        }
+
+        private static string ProjectCharacterType(ResourceApi pResourceApi, string projectCharacterType)
+        {
+            string id = pResourceApi.GraphsUrl + "items/projectcharactertype_";
+            switch (projectCharacterType.ToLower())
+            {
+                case "proyecto de fin de carrera":                
+                    id += "055";
+                    break;
+                case "proyecto final de carrera":
+                    id += "055";
+                    break;
+                case "tesina":
+                    id += "066";
+                    break;
+                case "tesis doctoral":
+                    id += "067";
+                    break;
+                case "trabajo conducente a la obtención de dea":
+                    id += "071";
+                    break;
+                case "texto de otros":
+                    id += "OTHERS";
+                    break;
+                default:
+                    return null;
+            }
+            return id;
+        }
+
+
+
+
+
+
 
         /// <summary>
         /// Identificador de la persona.

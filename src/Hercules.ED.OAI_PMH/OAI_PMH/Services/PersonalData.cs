@@ -1,12 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OAI_PMH.Controllers;
+using OAI_PMH.Models.SGI.ActividadDocente;
+using OAI_PMH.Models.SGI.FormacionAcademica;
 using OAI_PMH.Models.SGI.PersonalData;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OAI_PMH.Services
@@ -44,7 +47,7 @@ namespace OAI_PMH.Services
 
             #region --- Formación Académica
             Dictionary<string, DateTime> dicFormacionAcademica = AcademicFormation.GetModifiedCiclos(from, pConfig);
-            foreach(KeyValuePair<string, DateTime> item in dicFormacionAcademica)
+            foreach (KeyValuePair<string, DateTime> item in dicFormacionAcademica)
             {
                 string idPersona = "Persona_" + item.Key.Split("_")[1];
                 if (!idDictionary.ContainsKey(idPersona))
@@ -178,31 +181,131 @@ namespace OAI_PMH.Services
         {
             string accessToken = Token.CheckToken(pConfig);
             string identifier = id.Split('_')[1];
-            Persona persona = new();
-            RestClient client = new(pConfig.GetUrlBasePersona() + "personas/" + identifier);
+            List<Thread> hilos = new List<Thread>();
+
+            Persona dataPersona = new();
+            hilos.Add(new Thread(() =>
+                dataPersona = GetDatosPersona(identifier, pConfig, accessToken)
+            ));
+
+            DatosPersonales datosPersonales = null;
+            hilos.Add(new Thread(() =>
+                datosPersonales = GetDatosPersonales(identifier, pConfig, accessToken)
+            ));
+
+            DatosContacto datosContacto = null;
+            hilos.Add(new Thread(() =>
+                datosContacto = GetDatosContacto(identifier, pConfig, accessToken)
+            ));
+
+            Vinculacion vinculacion = null;
+            hilos.Add(new Thread(() =>
+                vinculacion = GetVinculacion(identifier, pConfig, accessToken)
+            ));
+
+            DatosAcademicos datosAcademicos = null;
+            hilos.Add(new Thread(() =>
+                datosAcademicos = GetDatosAcademicos(identifier, pConfig, accessToken)
+            ));
+
+            Fotografia fotografia = null;
+            hilos.Add(new Thread(() =>
+                fotografia = GetFotografia(identifier, pConfig, accessToken)
+            ));
+
+            Sexenio sexenio = null;
+            hilos.Add(new Thread(() =>
+                sexenio = GetSexenios(identifier, pConfig, accessToken)
+            ));
+
+            List<FormacionAcademicaImpartida> listaFormacionAcademica = null;
+            hilos.Add(new Thread(() =>
+                listaFormacionAcademica = DocentActivity.GetAcademicFormationProvided(identifier, pConfig, accessToken)
+            ));
+
+            List<SeminariosCursos> listaSeminarios = null;
+            hilos.Add(new Thread(() =>
+                listaSeminarios = DocentActivity.GetSeminars(identifier, pConfig, accessToken)
+            ));
+
+            List<Tesis> listaTesis = null;
+            hilos.Add(new Thread(() =>
+                listaTesis = DocentActivity.GetTesis(identifier, pConfig, accessToken)
+            ));
+
+            List<Ciclos> listaCiclos = null;
+            hilos.Add(new Thread(() =>
+                listaCiclos = AcademicFormation.GetFormacionAcademicaCiclos(identifier, pConfig, accessToken)
+            ));
+
+            List<Doctorados> listaDoctorados = null;
+            hilos.Add(new Thread(() =>
+                listaDoctorados = AcademicFormation.GetFormacionAcademicaDoctorados(identifier, pConfig, accessToken)
+            ));
+
+            List<FormacionEspecializada> listaEspecializada = null;
+            hilos.Add(new Thread(() =>
+                listaEspecializada = AcademicFormation.GetFormacionAcademicaEspecializada(identifier, pConfig, accessToken)
+            ));
+
+            List<Posgrado> listaPosgrado = null;
+            hilos.Add(new Thread(() =>
+                listaPosgrado = AcademicFormation.GetFormacionAcademicaPosgrado(identifier, pConfig, accessToken)
+            ));
+
+            // Inicio hilos.
+            foreach (Thread th in hilos)
+            {
+                th.Start();
+            }
+
+            // Espero a que estén listos.
+            foreach (Thread th in hilos)
+            {
+                th.Join();
+            }
+
+            Persona persona = dataPersona;
+            persona.DatosPersonales = datosPersonales;
+            persona.DatosContacto = datosContacto;
+            persona.Vinculacion = vinculacion;
+            persona.DatosAcademicos = datosAcademicos;
+            persona.Fotografia = fotografia;
+            persona.Sexenios = sexenio;
+            persona.FormacionAcademicaImpartida = listaFormacionAcademica;
+            persona.SeminariosCursos = listaSeminarios;
+            persona.Tesis = listaTesis;
+            if(persona.Tesis != null && persona.Tesis.Any())
+            {
+
+            }
+            persona.Ciclos = listaCiclos;
+            persona.Doctorados = listaDoctorados;
+            persona.FormacionEspecializada = listaEspecializada;
+            persona.Posgrado = listaPosgrado;
+
+            return persona;
+        }
+
+        /// <summary>
+        /// Obtiene los datos básicos de la persona.
+        /// </summary>
+        /// <param name="id">Identificador de la persona</param>
+        /// <param name="pConfig">ConfigService</param>
+        /// <param name="accessToken">Token de acceso</param>
+        /// <returns>Devuelve el objeto persona.</returns>
+        private static Persona GetDatosPersona(string id, ConfigService pConfig, string accessToken)
+        {
+            RestClient client = new(pConfig.GetUrlBasePersona() + "personas/" + id);
             client.AddDefaultHeader("Authorization", "Bearer " + accessToken);
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
-            if(string.IsNullOrEmpty(response.Content))
+            if (string.IsNullOrEmpty(response.Content))
             {
                 return null;
             }
             var json = JObject.Parse(response.Content);
-            persona = JsonConvert.DeserializeObject<Persona>(json.ToString());
-            persona.DatosPersonales = GetDatosPersonales(identifier, pConfig, accessToken);
-            persona.DatosContacto = GetDatosContacto(identifier, pConfig, accessToken);
-            persona.Vinculacion = GetVinculacion(identifier, pConfig, accessToken);
-            persona.DatosAcademicos = GetDatosAcademicos(identifier, pConfig, accessToken);
-            persona.Fotografia = GetFotografia(identifier, pConfig, accessToken);
-            persona.Sexenios = GetSexenios(identifier, pConfig, accessToken);
-            persona.FormacionAcademicaImpartida = DocentActivity.GetAcademicFormationProvided(identifier, pConfig, accessToken);
-            persona.SeminariosCursos = DocentActivity.GetSeminars(identifier, pConfig, accessToken);
-            persona.Tesis = DocentActivity.GetTesis(identifier, pConfig, accessToken);
-            persona.Ciclos = AcademicFormation.GetFormacionAcademicaCiclos(identifier, pConfig, accessToken);
-            persona.Doctorados = AcademicFormation.GetFormacionAcademicaDoctorados(identifier, pConfig, accessToken);
-            persona.FormacionEspecializada = AcademicFormation.GetFormacionAcademicaEspecializada(identifier, pConfig, accessToken);
-            persona.Posgrado = AcademicFormation.GetFormacionAcademicaPosgrado(identifier, pConfig, accessToken);
-            return persona;
+            return JsonConvert.DeserializeObject<Persona>(json.ToString());
         }
 
         /// <summary>

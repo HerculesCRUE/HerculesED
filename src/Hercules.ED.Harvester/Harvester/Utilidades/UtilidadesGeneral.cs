@@ -17,7 +17,7 @@ namespace Utilidades
             List<Pais> listaPaises = JsonConvert.DeserializeObject<List<Pais>>(File.ReadAllText(RUTA_PAISES));
             foreach (Pais pais in listaPaises)
             {
-                dicPaises.Add(pais.name, pais.country_code);
+                dicPaises.Add(pais.country_code, pais.name);
             }
         }
         public static void IniciadorDiccionarioRegion()
