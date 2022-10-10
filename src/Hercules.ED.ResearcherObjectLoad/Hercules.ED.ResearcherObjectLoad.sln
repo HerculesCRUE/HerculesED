@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.ED.ResearcherObjec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hercules", "ClasesGeneradas\hercules.csproj", "{6470BDB2-EDB4-46C0-BD9B-C365BD0A930B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.ED.DisambiguationEngine", "..\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine.csproj", "{A6B48AAC-963F-4F3D-95AA-3C921C41CE3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.CommonsEDMA.DisambiguationEngine", "..\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj", "{A6B48AAC-963F-4F3D-95AA-3C921C41CE3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

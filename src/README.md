@@ -7,7 +7,7 @@ Contiene los servicios web y back que proporcionan la funcionalidad propia del p
 El listado de componentes es:
 
 - [Hercules.ED.Desnormalizador](./Hercules.ED.Desnormalizador). Proceso encargado de generar datos desnormalizados para su consulta, búsqueda o representación.
-- [Hercules.ED.DisambiguationEngine](./Hercules.ED.DisambiguationEngine). Servicio encargado de la deduplicación de datos (investigadores, publicaciones, ROs, etc.
+- [Hercules.CommonsEDMA.DisambiguationEngine](./Hercules.CommonsEDMA.DisambiguationEngine). Servicio encargado de la deduplicación de datos (investigadores, publicaciones, ROs, etc.
 - [Hercules.ED.DoiRabbitConsume](./Hercules.ED.DoiRabbitConsume). Servicio de Rabbit.
 - [Hercules.ED.EditorCV](./Hercules.ED.EditorCV). Configuración del Editor de CV.
 - [Hercules.ED.Enrichment](./Hercules.ED.Enrichment). Servicios y pipeline del enriquecimiento de descriptores y el servicio de similitud de ROs.

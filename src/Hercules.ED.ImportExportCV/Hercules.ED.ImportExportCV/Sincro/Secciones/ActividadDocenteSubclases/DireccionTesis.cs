@@ -1,6 +1,6 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using Utils;
 using System.Collections.Generic;
 using System.Linq;
