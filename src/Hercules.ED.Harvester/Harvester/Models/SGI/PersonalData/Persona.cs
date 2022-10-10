@@ -672,7 +672,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
         public DoctoradosBBDD ObtenerDoctoradosBBDD(Dictionary<string, SparqlObject.Data> fila)
         {
             DoctoradosBBDD doctorados = new DoctoradosBBDD();
-
+            doctorados.tituloTesis = fila["thesiTitle"].value;
             return doctorados;
         }
         public PosgradoBBDD ObtenerPosgradoBBDD(Dictionary<string, SparqlObject.Data> fila)
