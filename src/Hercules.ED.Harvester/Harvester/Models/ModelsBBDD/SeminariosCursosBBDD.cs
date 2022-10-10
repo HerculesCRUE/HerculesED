@@ -1,24 +1,20 @@
 ﻿using System;
 
-namespace EditorCV.Models.Clases
+namespace Harvester.Models.ModelsBBDD
 {
-    public class SeminariosCursosBBDD
+    public class SeminariosCursosBBDD:AcademicDegreeBBDD
     {
-        string tituloCurso { get; set; }
-        string objetivosCurso { get; set; }
-        string entidadOrganizadora { get; set; }
-        DateTime fechaInicio { get; set; }
-        DateTime fechaFin { get; set; }
-        int duracionHoras { get; set; }
-        string ciudadEntidad { get; set; }
-        string paisEntidad { get; set; }
-        string cAutonEntidad { get; set; }
-        int duracionAnyos { get; set; }
-        int duracionMeses { get; set; }
-        int duracionDias { get; set; }
-        string objetivoEstancia { get; set; }
-        string programaFin { get; set; }
-        string perfilDestinatario { get; set; }
-        string tareasContrastables { get; set; }
+
+        public string objetivosCurso { get; set; }
+        public DateTime? fechaInicio { get; set; }
+        public DateTime? fechaFin { get; set; }
+        public int duracionHoras { get; set; }
+        public int duracionAnyos { get; set; }
+        public int duracionMeses { get; set; }
+        public int duracionDias { get; set; }
+        public string objetivoEstancia { get; set; }
+        public string programaFin { get; set; }
+        public string perfilDestinatario { get; set; }
+        public string tareasContrastables { get; set; }
     }
 }

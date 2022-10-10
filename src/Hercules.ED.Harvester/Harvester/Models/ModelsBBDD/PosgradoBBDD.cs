@@ -1,18 +1,13 @@
 ﻿using System;
 
-namespace EditorCV.Models.Clases
+namespace Harvester.Models.ModelsBBDD
 {
-    public class PosgradoBBDD
+    public class PosgradoBBDD:AcademicDegreeBBDD
     {
-        string tituacionPostgrado { get; set; }
-        DateTime fechaTitulacion { get; set; }
-        string entidadTitulacion { get; set; }
-        string cicudadEntidad { get; set; }
-        string paisentidad { get; set; }
-        string cAutonTitulacion { get; set; }
-        string tipoFormacion { get; set; }
-        string calificacionObtenida { get; set; }
-        string tituloHomologado { get; set; }
-        DateTime fechaHomologacion { get; set; }
+        public DateTime? fechaTitulacion { get; set; }
+        public string tipoFormacion { get; set; }
+        public string calificacionObtenida { get; set; }
+        public string tituloHomologado { get; set; }
+        public DateTime? fechaHomologacion { get; set; }
     }
 }
