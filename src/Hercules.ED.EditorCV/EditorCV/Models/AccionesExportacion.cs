@@ -159,7 +159,7 @@ namespace EditorCV.Models
     <{pCVId}> <http://w3id.org/roh/generatedPDFFile> ?pdfFile .
     ?pdfFile <http://w3id.org/roh/title> ?titulo.
     ?pdfFile <http://purl.org/dc/terms/issued> ?fecha.
-    ?pdfFile <http://w3id.org/roh/status> ?estado.
+    OPTIONAL{{ ?pdfFile <http://w3id.org/roh/status> ?estado }}
     OPTIONAL{{ ?pdfFile <http://w3id.org/roh/filePDF> ?fichero }}
 }}order by desc(xsd:long(?fecha))";
 
