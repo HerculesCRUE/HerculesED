@@ -1,9 +1,9 @@
 ﻿using EditorCV.Controllers;
 using EditorCV.Models.EnvioPRC;
+using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using Hercules.CommonsEDMA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
