@@ -1,6 +1,6 @@
 using EditorCV.Controllers;
+using EditorCV.Middlewares;
 using EditorCV.Models;
-using Hercules.CommonsEDMA.ServicioExterno.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
