@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,18 +29,18 @@ namespace EditorCV.Models.Sexenios
             process = new Process();
         }
 
-        public ParameterSexenio(string comite, string periodo, string perfil_tecnologico, string subcomite, string idInvestigador)
+        public ParameterSexenio(string comite, string periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
         {
             time_schedule = null;
             id_process = 18;
             process = new Process(comite, periodo, perfil_tecnologico, subcomite, idInvestigador);
         }
 
-        public ParameterSexenio(string comite, List<string> periodo, string perfil_tecnologico, string subcomite, string idInvestigador)
+        public ParameterSexenio(string comite, List<string> periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
         {
             time_schedule = null;
             id_process = 18;
-            process = new Process(comite, periodo, perfil_tecnologico, subcomite,idInvestigador);
+            process = new Process(comite, periodo, perfil_tecnologico, subcomite, idInvestigador);
         }
 
     }
@@ -65,13 +66,13 @@ namespace EditorCV.Models.Sexenios
             parameters = new Parameters();
             priority = 1;
         }
-        public Process(string comite, string periodo, string perfil_tecnologico, string subcomite, string idInvestigador)
+        public Process(string comite, string periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
         {
             id_robot = null;
             parameters = new Parameters(comite, periodo, perfil_tecnologico, subcomite, idInvestigador);
             priority = 1;
         }
-        public Process(string comite, List<string> periodo, string perfil_tecnologico, string subcomite, string idInvestigador)
+        public Process(string comite, List<string> periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
         {
             id_robot = null;
             string periodoConcat = string.Join(",", periodo);
@@ -114,16 +115,16 @@ namespace EditorCV.Models.Sexenios
         {
             comite = "";
             periodo = "";
-            perfil_tecnologico = "";
-            subcomite = "";
+            perfil_tecnologico = null;
+            subcomite = null;
         }
 
-        public Parameters(string comite, string periodo, string perfil_tecnologico, string subcomite, string idInvestigador)
+        public Parameters(string comite, string periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
         {
             this.comite = comite;
             this.periodo = periodo;
-            this.perfil_tecnologico = perfil_tecnologico;
-            this.subcomite = subcomite;
+            this.perfil_tecnologico = string.IsNullOrEmpty(perfil_tecnologico) ? null : perfil_tecnologico;
+            this.subcomite = string.IsNullOrEmpty(subcomite) ? null : subcomite; 
             this.investigador = idInvestigador;
         }
     }
