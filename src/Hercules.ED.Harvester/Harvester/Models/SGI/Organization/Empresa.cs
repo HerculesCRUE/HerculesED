@@ -133,6 +133,10 @@ namespace OAI_PMH.Models.SGI.Organization
             return null;
         }
 
+        public override void ToRecursoAdicional(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, string pIdGnoss)
+        {
+        }
+
         public static Dictionary<string, string> ObtenerEmpresaBBDD(HashSet<string> pListaIds, ResourceApi pResourceApi)
         {
             List<List<string>> listaEmpresas = SplitList(pListaIds.ToList(), 1000).ToList();

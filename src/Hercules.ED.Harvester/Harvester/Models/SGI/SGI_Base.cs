@@ -27,6 +27,20 @@ namespace OAI_PMH.Models.SGI
         public abstract ComplexOntologyResource ToRecurso(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, bool pFusionarPersona = false, string pIdPersona = null);
 
         /// <summary>
+        /// Transforma un objeto a un recurso a cargar.
+        /// </summary>
+        /// <param name="pHarvesterServices"></param>
+        /// <param name="pConfig"></param>
+        /// <param name="pResourceApi"></param>
+        /// <param name="pDicIdentificadores"></param>
+        /// <param name="pDicRutas"></param>
+        /// <param name="pRabbitConf"></param>
+        /// <param name="pFusionarPersona"></param>
+        /// <param name="pIdPersona"></param>
+        /// <returns></returns>
+        public abstract void ToRecursoAdicional(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, string pIdGnoss);
+
+        /// <summary>
         /// Obtiene el ID en BBDD preguntando por el crisidentifier.
         /// </summary>
         /// <param name="pResourceApi"></param>
@@ -69,8 +83,12 @@ namespace OAI_PMH.Models.SGI
             {
                 // Carga.
                 resource = ToRecurso(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas, pRabbitConf);
-                pResourceApi.LoadComplexSemanticResource(resource, false, false);                
+                pResourceApi.LoadComplexSemanticResource(resource, false, false);
+                gnossId = resource.GnossId;
             }
+
+            // Carga adicional.
+            ToRecursoAdicional(pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas, pRabbitConf, gnossId);
 
             // Inserción en la cola de Rabbit.
             switch (pIdGrafo)
