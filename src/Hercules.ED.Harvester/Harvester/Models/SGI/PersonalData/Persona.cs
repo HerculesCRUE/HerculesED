@@ -10,9 +10,12 @@ using OAI_PMH.Models.SGI.ActividadDocente;
 using OAI_PMH.Models.SGI.FormacionAcademica;
 using OAI_PMH.Models.SGI.Organization;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Utilidades;
@@ -48,6 +51,72 @@ namespace OAI_PMH.Models.SGI.PersonalData
                 return respuesta[Id.ToString()];
             }
             return null;
+        }
+
+        public override void ToRecursoAdicional(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, string pIdGnoss)
+        {
+            // TESIS
+            pResourceApi.ChangeOntoly("thesissupervision");
+
+            List<string> crisIdentifiersTesisBBDD = ObtenerTesisCrisIdentifier(pResourceApi, this.Id);
+            List<string> crisIdentifiersTesisSGI = new List<string>();
+
+            List<TesisBBDD> listaTesisSGI = ObtenerTesisSGI(pRabbitConf, this.Tesis, pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+            foreach (TesisBBDD tesisAux in listaTesisSGI)
+            {
+                crisIdentifiersTesisSGI.Add(tesisAux.crisIdentifier);
+            }
+
+            // Cargar --> Tesis que estén en listaTesisSGI y no en listaTesisBBDD.           
+            //List<TesisBBDD> listaTesisCargar = listaTesisSGI.Where(x => !listaTesisBBDD.Any(y => x.crisIdentifier == y.crisIdentifier)).ToList();
+            List<string> listaTesisCargarCrisIdentifiers = crisIdentifiersTesisSGI.Except(crisIdentifiersTesisBBDD).ToList();
+            List<TesisBBDD> listaTesisCargar = listaTesisSGI.Where(x => listaTesisCargarCrisIdentifiers.Contains(x.crisIdentifier)).ToList();            
+            List<ComplexOntologyResource> listaTesisOntology = GetThesisSupervision(listaTesisCargar, pResourceApi, pIdGnoss);
+            CargarDatos(listaTesisOntology, pResourceApi);
+
+            // Elimitar --> Tesis que estén en listaTesisBBDD y no en listaTesisSGI.
+            List<string> listaTesisBorrarCrisIdentifiers = crisIdentifiersTesisBBDD.Except(crisIdentifiersTesisSGI).ToList();            
+            List<string> listaIdsBorrar = ObtenerTesisByCrisIdentifiers(listaTesisBorrarCrisIdentifiers, pResourceApi);
+            BorrarRecursos(listaIdsBorrar, pResourceApi, "thesissupervision");
+
+            // ACADEMICDEGREE
+
+        }
+
+        public static void BorrarRecursos(List<string> pListaGnossId, ResourceApi pResourceApi, string pOntology)
+        {
+            pResourceApi.ChangeOntoly(pOntology);
+
+            foreach (string id in pListaGnossId)
+            {
+                Guid guid = pResourceApi.GetShortGuid(id);
+                pResourceApi.PersistentDelete(guid);
+            }
+        }
+
+        public static List<string> ObtenerTesisByCrisIdentifiers(List<string> pListaCrisIdentifiers, ResourceApi pResourceApi)
+        {
+            List<string> listaTesis = new List<string>();
+
+            string select = string.Empty;
+            string where = string.Empty;
+
+            select = $@"SELECT * ";
+            where = $@"WHERE {{                        
+                        ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier. 
+                        FILTER(?crisIdentifier in ('{string.Join("', '", pListaCrisIdentifiers.Select(x => x))}'))
+                    }}";
+
+            SparqlObject resultadoQueryPerson = pResourceApi.VirtuosoQuery(select, where, "thesissupervision");
+            if (resultadoQueryPerson != null && resultadoQueryPerson.results != null && resultadoQueryPerson.results.bindings != null && resultadoQueryPerson.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryPerson.results.bindings)
+                {
+                    listaTesis.Add(fila["s"].value);
+                }
+            }
+
+            return listaTesis;
         }
 
         public static Dictionary<string, string> ObtenerPersonasBBDD(HashSet<string> pListaIds, ResourceApi pResourceApi)
@@ -111,18 +180,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
         public PersonOntology.Person CrearPersonOntology(RabbitServiceWriterDenormalizer pRabbitConf, IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
         {
-            PersonOntology.Person persona = new PersonOntology.Person();
-
-            // TESIS
-            List<TesisBBDD> listaTesisBBDD = ObtenerTesisBBDD(pResourceApi, this.Id);
-            List<TesisBBDD> listaTesisSGI = ObtenerTesisSGI(pRabbitConf, this.Tesis, pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
-
-            // Cargar --> Tesis que estén en listaTesisSGI y no en listaTesisBBDD [Por CrisIdentifier]
-            List<TesisBBDD> listaTesisCargar = listaTesisSGI.Where(x => !listaTesisBBDD.Any(y => x.crisIdentifier == y.crisIdentifier)).ToList();
-            
-
-            // Elimitar --> Tesis que estén en listaTesisBBDD y no en listaTesisSGI [Por CrisIdentifier]
-            // Modificar --> Tesis que estén en listaTesisBBDD y en listaTesisSGI [Preguntar Álvaro Comparator]
+            PersonOntology.Person persona = new PersonOntology.Person();        
 
             // Crisidentifier (Se corresponde al DNI sin letra)
             persona.Roh_crisIdentifier = this.Id;
@@ -233,6 +291,89 @@ namespace OAI_PMH.Models.SGI.PersonalData
             persona.Roh_lastUpdatedDate = DateTime.UtcNow;
 
             return persona;
+        }
+
+        /// <summary>
+        /// Permite cargar los recursos.
+        /// </summary>
+        /// <param name="pListaRecursosCargar">Lista de recursos a cargar.</param>
+        private static List<string> CargarDatos(List<ComplexOntologyResource> pListaRecursosCargar, ResourceApi pResourceApi)
+        {
+            ConcurrentBag<string> idsItems = new ConcurrentBag<string>();
+
+            // Carga.
+            Parallel.ForEach(pListaRecursosCargar, new ParallelOptions { MaxDegreeOfParallelism = 6 }, recursoCargar =>
+            {
+                int numIntentos = 0;
+                while (!recursoCargar.Uploaded)
+                {
+                    numIntentos++;
+
+                    if (numIntentos > 6)
+                    {
+                        break;
+                    }
+                    string id = "";
+                    if (pListaRecursosCargar.Last() == recursoCargar)
+                    {
+                        id = pResourceApi.LoadComplexSemanticResource(recursoCargar, false, true);
+                    }
+                    else
+                    {
+                        id = pResourceApi.LoadComplexSemanticResource(recursoCargar);
+                    }
+                    if (recursoCargar.Uploaded)
+                    {
+                        idsItems.Add(id);
+                    }
+                }
+            });
+            return idsItems.Distinct().ToList();
+        }
+
+        public List<ComplexOntologyResource> GetThesisSupervision(List<TesisBBDD> pTesisList, ResourceApi pResourceApi, string pIdGnoss)
+        {            
+            List<ComplexOntologyResource> listaTesisDevolver = new List<ComplexOntologyResource>();
+
+            foreach (TesisBBDD tesis in pTesisList)
+            {
+                ThesissupervisionOntology.ThesisSupervision tesisDevolver = new ThesissupervisionOntology.ThesisSupervision();
+
+                tesisDevolver.IdRoh_owner = pIdGnoss;
+                tesisDevolver.Roh_crisIdentifier = tesis.crisIdentifier;
+                tesisDevolver.IdRoh_projectCharacterType = tesis.projectCharacterType;
+                tesisDevolver.Roh_projectCharacterTypeOther = tesis.projectCharacterTypeOther;
+                tesisDevolver.Roh_title = tesis.title;
+                //tesisDevolver.IdVcard_hasCountryName = tesis.hasCountryName;
+                //tesisDevolver.IdVcard_hasRegion = tesis.hasRegion;
+                //tesisDevolver.Vcard_locality = tesis.locality;
+                tesisDevolver.Dct_issued = tesis.issued;
+                tesisDevolver.Roh_qualification = tesis.qualification;
+                tesisDevolver.Roh_europeanDoctorateDate = tesis.europeanDoctorateDate;
+                tesisDevolver.Roh_qualityMention = tesis.qualityMention.Value;
+                tesisDevolver.Roh_europeanDoctorate = tesis.europeanDoctorate.Value;               
+                tesisDevolver.Roh_qualityMentionDate = tesis.qualityMentionDate;
+                tesisDevolver.Roh_studentName = tesis.studentName;
+                tesisDevolver.Roh_studentFirstSurname = tesis.studentFirstSurname;
+                tesisDevolver.Roh_studentNick = tesis.studentNick;
+                tesisDevolver.Roh_promotedByTitle = tesis.promotedByTitle;
+                tesisDevolver.IdRoh_promotedBy = tesis.promotedBy;
+
+                // En los datos únicamente viene un solo codirector.
+                if (tesis.codirector != null && tesis.codirector.Any())
+                {
+                    ThesissupervisionOntology.PersonAux personaAux = new ThesissupervisionOntology.PersonAux();
+                    personaAux.Rdf_comment = tesis.codirector[0].comment;
+                    personaAux.Foaf_firstName = tesis.codirector[0].firstName;
+                    personaAux.Roh_secondFamilyName = tesis.codirector[0].secondFamilyName;
+                    personaAux.Foaf_nick = tesis.codirector[0].nick;
+                    tesisDevolver.Roh_codirector = new List<ThesissupervisionOntology.PersonAux>() { personaAux };
+                }
+
+                listaTesisDevolver.Add(tesisDevolver.ToGnossApiResource(pResourceApi, null));
+            }
+
+            return listaTesisDevolver;
         }
 
         /// <summary>
@@ -722,6 +863,37 @@ namespace OAI_PMH.Models.SGI.PersonalData
             return listaTesis;
         }
 
+        public List<string> ObtenerTesisCrisIdentifier(ResourceApi pResourceApi, string pCrisIdentfierPerson)
+        {
+            List<string> listaTesis = new List<string>();
+
+            string select = string.Empty;
+            string where = string.Empty;
+            SparqlObject resultadoQuery = null;
+
+            select = "SELECT ?crisIdentifier ";
+            where = $@"WHERE {{ 
+                                ?s <http://w3id.org/roh/owner> ?persona.
+                                OPTIONAL {{ ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentfierPerson}'. }}
+                                OPTIONAL {{ ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier. }}                        
+                            }}";
+
+            resultadoQuery = pResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "thesissupervision" });
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    if (fila.ContainsKey("crisIdentifier") && !string.IsNullOrEmpty(fila["crisIdentifier"].value))
+                    {
+                        listaTesis.Add(fila["crisIdentifier"].value);
+                    }
+                }
+            }
+
+            return listaTesis;
+        }
+
+
         public List<TesisBBDD> ObtenerTesisSGI(RabbitServiceWriterDenormalizer pRabbitConf, List<Tesis> pListaTesisSGI, IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
         {
             List<TesisBBDD> listaTesis = new List<TesisBBDD>();
@@ -730,7 +902,10 @@ namespace OAI_PMH.Models.SGI.PersonalData
             {
                 TesisBBDD tesis = new TesisBBDD();
 
-                tesis.crisIdentifier = item.Id;
+                string tituloTrabajo = RemoveDiacritics(item.TituloTrabajo.ToLower());
+                tituloTrabajo = tituloTrabajo.Replace(" ", "-");
+
+                tesis.crisIdentifier = $@"{item.Id}___{item.Alumno}___{tituloTrabajo}";
 
                 if (item.TipoProyecto != null && !string.IsNullOrEmpty(item.TipoProyecto.Nombre))
                 {
@@ -806,6 +981,26 @@ namespace OAI_PMH.Models.SGI.PersonalData
             return listaTesis;
         }
 
+        static string RemoveDiacritics(string text)
+        {
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder(capacity: normalizedString.Length);
+
+            for (int i = 0; i < normalizedString.Length; i++)
+            {
+                char c = normalizedString[i];
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder
+                .ToString()
+                .Normalize(NormalizationForm.FormC);
+        }
+
         private static string IdentificadorPais(string pais, ResourceApi pResourceApi)
         {
             if (!UtilidadesGeneral.DicPaisesContienePais(pais))
@@ -852,12 +1047,6 @@ namespace OAI_PMH.Models.SGI.PersonalData
             }
             return id;
         }
-
-
-
-
-
-
 
         /// <summary>
         /// Identificador de la persona.

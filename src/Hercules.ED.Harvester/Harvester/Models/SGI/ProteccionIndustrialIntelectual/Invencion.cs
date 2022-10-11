@@ -32,7 +32,11 @@ namespace OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual
             }
             return null;
         }
-               
+
+        public override void ToRecursoAdicional(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, string pIdGnoss)
+        {           
+        }
+
         public PatentOntology.Patent CrearPatentOntology(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf)
         {
             HashSet<string> listaIdsPersonas = new HashSet<string>();
