@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj" />
+    <ProjectReference Include="..\..\..\..\Commons-ED-MA\src\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj" />
     <ProjectReference Include="..\ClasesGeneradas\hercules.csproj" />
   </ItemGroup>
 
