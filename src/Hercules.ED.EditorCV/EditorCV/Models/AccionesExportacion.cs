@@ -185,7 +185,10 @@ namespace EditorCV.Models
                 fecha = fecha.AddMinutes(-timezoneOffset);
 
                 file.fecha = fecha.ToString("dd/MM/yyyy HH:mm:ss");
-                file.estado = fila["estado"].value;
+                if (fila.ContainsKey("estado") && !string.IsNullOrEmpty(fila["estado"].value))
+                {
+                    file.estado = fila["estado"].value;
+                }
                 if (fila.ContainsKey("fichero"))
                 {
                     string uri = baseUrl + "/download-file?doc=" + mResourceApi.GetShortGuid(pCVId) + "&ext=.pdf&archivoAdjuntoSem="
