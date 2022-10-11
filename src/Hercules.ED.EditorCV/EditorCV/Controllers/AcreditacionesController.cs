@@ -21,12 +21,12 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("ConseguirAcreditaciones")]
-        public IActionResult ConseguirAcreditaciones(string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string investigador)
+        public IActionResult ConseguirAcreditaciones(string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string idInvestigador)
         {
             try
             {
                 AccionesAcreditaciones accionesAcreditaciones = new AccionesAcreditaciones();
-                accionesAcreditaciones.GetAcreditaciones(_Configuracion, comision, tipo_acreditacion, categoria_acreditacion, investigador);
+                accionesAcreditaciones.GetAcreditaciones(_Configuracion, comision, tipo_acreditacion, categoria_acreditacion, idInvestigador);
                 return Ok();
             }
             catch (Exception)
