@@ -117,7 +117,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorDocument.ActualizarIndicesImpacto();
             actualizadorDocument.ActualizarGenderAutorPrincipal();
             actualizadorDocument.ActualizarPositionAutorPrincipal();
-            actualizadorDocument.EliminarDocumentosSinAutoresActivos();
+            actualizadorDocument.EliminarDocumentosSinAutoresSGI();
             actualizadorDocument.ModificarNombreRevistaDesnormalizado();
             actualizadorDocument.ModificarEditorialRevistaDesnormalizado();
             actualizadorDocument.ModificarISSNRevistaDesnormalizado();
@@ -163,6 +163,7 @@ namespace DesnormalizadorHercules.Models
             actualizadorPersonas.ActualizarNumeroProyectosPublicos();
             actualizadorPersonas.ActualizarNumeroResearchObjectsPublicos();
             actualizadorPersonas.ActualizarNumeroAreasTematicas();
+            actualizadorPersonas.ActualizarHIndex();
 
             //Grupo con dependencias
             actualizadorGrupos.ActualizarMiembrosUnificados();
@@ -383,6 +384,7 @@ namespace DesnormalizadorHercules.Models
                 actualizadorPersonas.ActualizarNumeroColaboradoresPublicos(pPersons: listPersonIn);
                 actualizadorPersonas.ActualizarNumeroPublicacionesPublicas(pPersons: listPersonIn);
                 actualizadorPersonas.ActualizarNumeroAreasTematicas(pPersons: listPersonIn);
+                actualizadorPersonas.ActualizarHIndex(pPersons: listPersonIn);
             }
 
             //Grupo con dependencias

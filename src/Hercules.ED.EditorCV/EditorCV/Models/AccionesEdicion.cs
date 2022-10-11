@@ -490,7 +490,7 @@ namespace EditorCV.Models
             int offset = 0;
             while (true)
             {
-                string select = $@"SELECT distinct ?itemSection ?item ?title ?validated from <{mResourceApi.GraphsUrl}{pGraph}.owl>";
+                string select = $@"SELECT distinct ?itemSection ?item ?title ?validated ";
                 string where = $@"where
                             {{ 
                                 <{pCV}> <{pTabProperty}> ?tab.
@@ -499,7 +499,7 @@ namespace EditorCV.Models
                                 ?item <{pPropTitle}> ?title.
                                 OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
                             }} LIMIT {limit} OFFSET {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae",pGraph});
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
                     bool validated = false;
@@ -1006,13 +1006,13 @@ namespace EditorCV.Models
             int offset = 0;
             while (true)
             {
-                string select = $@"SELECT * WHERE {{select distinct ?personOtherID from <{mResourceApi.GraphsUrl}department.owl>";
+                string select = $@"SELECT * WHERE {{select distinct ?personOtherID ";
                 string where = $@"where
                             {{ 
                                 <{pPersonID}> <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
                                 ?personOtherID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.            
                             }}order by desc (?personOtherID) }} LIMIT {limit} OFFSET {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "person");
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person" ,"department"});
                 offset += limit;
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
@@ -1077,7 +1077,7 @@ namespace EditorCV.Models
                         }
                     }
 
-                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento from <{mResourceApi.GraphsUrl}person.owl> from <{mResourceApi.GraphsUrl}department.owl>";
+                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento";
                     string where = $@"where
                             {{
                                 {{
@@ -1102,7 +1102,7 @@ namespace EditorCV.Models
                                     ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
                                 }}
                             }}order by desc (?num)limit 500";
-                    SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "document");
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>{"document","person","department" });
                     foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                     {
                         string personID = fila["personID"].value;
@@ -2054,7 +2054,7 @@ namespace EditorCV.Models
             if (pPresentationEdit.sections.Exists(x => x.rows.Exists(y => y.properties.Exists(z => z.type == DataTypeEdit.projectauthorization))))
             {
                 string person = UtilityCV.GetPersonFromCV(pCVId);
-                string select = $@"select ?s ?nombre from <{mResourceApi.GraphsUrl}project.owl>";
+                string select = $@"select ?s ?nombre ";
                 string where = $@"  where
                                     {{
                                         ?s a <http://w3id.org/roh/ProjectAuthorization>.
@@ -2067,7 +2067,7 @@ namespace EditorCV.Models
                                             FILTER(?proy !=<{pId}>)
                                         }}
                                     }}";
-                SparqlObject respuesta = mResourceApi.VirtuosoQuery(select, where, "projectauthorization");
+                SparqlObject respuesta = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "projectauthorization" , "project" });
                 foreach (Dictionary<string, SparqlObject.Data> fila in respuesta.results.bindings)
                 {
                     comboAutorizacionesProyecto[fila["s"].value] = fila["nombre"].value;
