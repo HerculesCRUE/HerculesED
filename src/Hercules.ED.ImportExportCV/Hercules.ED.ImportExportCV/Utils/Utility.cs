@@ -1,6 +1,6 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Models;
 using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV;

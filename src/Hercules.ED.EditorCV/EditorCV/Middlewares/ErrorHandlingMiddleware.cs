@@ -8,7 +8,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Hercules.MA.ServicioExterno.Middlewares
+namespace Hercules.CommonsEDMA.ServicioExterno.Middlewares
 {
     public class ErrorHandlingMiddleware
     {

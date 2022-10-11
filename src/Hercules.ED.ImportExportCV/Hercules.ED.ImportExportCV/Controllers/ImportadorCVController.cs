@@ -83,13 +83,13 @@ namespace Hercules.ED.ImportExportCV.Controllers
         }
 
         [HttpGet("LecturaDatos")]
-        public ActionResult lecturaDatos()
+        public ActionResult LecturaDatos()
         {
                 return Ok();
         }
 
         [HttpGet("LecturaCarpeta")]
-        public ActionResult lecturaCarpeta()
+        public ActionResult LecturaCarpeta()
         {
                 return Ok();
         }
@@ -99,6 +99,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// </summary>
         /// <param name="pCVID">ID curriculum</param>
         /// <param name="File">Archivo en formato PDF o XML</param>
+        /// <param name="Secciones">Listado de secciones a importar</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Importar")]
         public ActionResult Importar([FromHeader][Required] string pCVID, [Required] IFormFile File, [FromHeader][Optional] List<string> Secciones)
@@ -159,9 +160,12 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// </summary>
         /// <param name="pCVID">ID curriculum</param>
         /// <param name="File">Archivo en formato PDF o XML</param>
+        /// <param name="petitionID">Identificador para la petición de estado</param>
+        /// <param name="Secciones">Listado de secciones a importar</param>
         /// <returns>Json con los datos a preimportar</returns>
         [HttpPost("Preimportar")]
-        public ActionResult Preimportar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Required] string petitionID, [FromForm][Optional] List<string> Secciones)
+        public ActionResult Preimportar([FromForm][Required] string pCVID, [Required] IFormFile File,
+            [FromForm][Required] string petitionID, [FromForm][Optional] List<string> Secciones)
         {
             try
             {
@@ -220,11 +224,13 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="pCVID">Identificador del curriculumvitae</param>
         /// <param name="file">Archivo XML</param>
         /// <param name="filePreimport">Preimport del archivo XML tras tratarlo en Preimportar</param>
+        /// <param name="petitionID">Identificador para la petición de estado</param>
         /// <param name="listaId">Listado de identificadores de los recursos a añadir</param>
         /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm][Required] string petitionID, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport,
+            [FromForm][Required] string petitionID, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {

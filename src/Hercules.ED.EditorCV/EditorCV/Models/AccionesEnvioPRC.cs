@@ -3,7 +3,7 @@ using EditorCV.Models.EnvioPRC;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using Hercules.MA.ServicioExterno.Controllers.Utilidades;
+using Hercules.CommonsEDMA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;

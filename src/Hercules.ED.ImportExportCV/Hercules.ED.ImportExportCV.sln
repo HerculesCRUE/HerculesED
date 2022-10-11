@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.ED.ImportExportCV", "Hercules.ED.ImportExportCV\Hercules.ED.ImportExportCV.csproj", "{1DE3BEE7-CBCF-470E-B931-9ADFEC5CBD5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.ED.DisambiguationEngine", "..\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine\Hercules.ED.DisambiguationEngine.csproj", "{143C361F-0EEF-4C4C-B933-0F061B7390E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.CommonsEDMA.DisambiguationEngine", "..\..\..\Commons-ED-MA\src\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj", "{A9CE8C05-C6EF-4B64-90E8-9E314C0071AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{1DE3BEE7-CBCF-470E-B931-9ADFEC5CBD5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DE3BEE7-CBCF-470E-B931-9ADFEC5CBD5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DE3BEE7-CBCF-470E-B931-9ADFEC5CBD5E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{143C361F-0EEF-4C4C-B933-0F061B7390E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{143C361F-0EEF-4C4C-B933-0F061B7390E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{143C361F-0EEF-4C4C-B933-0F061B7390E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{143C361F-0EEF-4C4C-B933-0F061B7390E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9CE8C05-C6EF-4B64-90E8-9E314C0071AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9CE8C05-C6EF-4B64-90E8-9E314C0071AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9CE8C05-C6EF-4B64-90E8-9E314C0071AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9CE8C05-C6EF-4B64-90E8-9E314C0071AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

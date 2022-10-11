@@ -1,4 +1,4 @@
-﻿using Hercules.ED.DisambiguationEngine.Models;
+﻿using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

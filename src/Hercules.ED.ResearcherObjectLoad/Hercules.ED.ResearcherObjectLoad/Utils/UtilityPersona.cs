@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Gnoss.ApiWrapper.ApiModel;
 using PersonOntology;
 using Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects;
 using System.Collections.Concurrent;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
