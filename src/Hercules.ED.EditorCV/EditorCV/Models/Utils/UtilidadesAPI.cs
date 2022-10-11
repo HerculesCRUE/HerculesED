@@ -8,7 +8,7 @@ using Gnoss.ApiWrapper;
 using System.Text;
 using System.Web;
 
-namespace Hercules.MA.ServicioExterno.Controllers.Utilidades
+namespace EditorCV.Models.Utils
 {
     public class UtilidadesAPI
     {
