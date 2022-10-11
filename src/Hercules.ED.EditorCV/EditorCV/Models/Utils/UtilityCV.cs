@@ -58,7 +58,7 @@ namespace EditorCV.Models.Utils
         private static ConcurrentBag<Tab> mTabTemplates;
 
         /// <summary>
-        /// Dado el Guid largo del investigador devuelve su orcid
+        /// Dado el identificador del CV del investigador devuelve su orcid
         /// </summary>
         /// <param name="idInvestigador">Guid largo del investigador</param>
         /// <returns>ORCID del investigador</returns>
