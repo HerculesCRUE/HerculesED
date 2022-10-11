@@ -70,17 +70,14 @@ namespace Utils
         public static Dictionary<string, HashSet<string>> DatosOrganizacionPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> organizaciones = new Dictionary<string, HashSet<string>>();
-            string select = $@"select distinct ?person ?organization
-                                from <{mResourceApi.GraphsUrl}person.owl> 
-                                from <{mResourceApi.GraphsUrl}group.owl> 
-                                ";
+            string select = $@"select distinct ?person ?organization";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
                                     ?person <http://w3id.org/roh/hasRole> ?organization .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae" ,"person","group"});
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Organizaciones
@@ -107,17 +104,14 @@ namespace Utils
         public static Dictionary<string, HashSet<string>> DatosDepartamentoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> departamentos = new Dictionary<string, HashSet<string>>();
-            string select = $@"select distinct ?person ?departament
-                                from <{mResourceApi.GraphsUrl}person.owl> 
-                                from <{mResourceApi.GraphsUrl}group.owl> 
-                                ";
+            string select = $@"select distinct ?person ?departament";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
                                     ?person <http://vivoweb.org/ontology/core#departmentOrSchool> ?departament .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string> { "curriculumvitae" ,"person","group"});
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Departamentos
@@ -144,10 +138,7 @@ namespace Utils
         public static Dictionary<string, HashSet<string>> DatosProyectoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> proyectos = new Dictionary<string, HashSet<string>>();
-            string select = $@"select distinct ?person ?project
-                                from <{mResourceApi.GraphsUrl}person.owl> 
-                                from <{mResourceApi.GraphsUrl}project.owl> 
-                                ";
+            string select = $@"select distinct ?person ?project";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
@@ -157,7 +148,7 @@ namespace Utils
                                     ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string> { "curriculumvitae","person","project" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Proyectos
@@ -184,10 +175,7 @@ namespace Utils
         public static Dictionary<string, HashSet<string>> DatosGrupoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> grupos = new Dictionary<string, HashSet<string>>();
-            string select = $@"select distinct ?person ?group
-                                from <{mResourceApi.GraphsUrl}person.owl> 
-                                from <{mResourceApi.GraphsUrl}group.owl> 
-                                ";
+            string select = $@"select distinct ?person ?group";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     ?person a <http://xmlns.com/foaf/0.1/Person>.
@@ -197,7 +185,7 @@ namespace Utils
                                     ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>{"curriculumvitae","person","group" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Grupos
@@ -1916,14 +1904,14 @@ namespace Utils
             Person persona = new Person();
             try
             {
-                string select = $@"select distinct ?person ?nombre ?orcid from <http://gnoss.com/person.owl>";
+                string select = $@"select distinct ?person ?nombre ?orcid";
                 string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     ?person <http://w3id.org/roh/ORCID> ?orcid .
                                     ?person <http://xmlns.com/foaf/0.1/name> ?nombre .
                                     FILTER(?s=<{pCVID}>)
                                 }}";
-                SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+                SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new(){"curriculumvitae","person" });
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
                     persona.name = new Name();
