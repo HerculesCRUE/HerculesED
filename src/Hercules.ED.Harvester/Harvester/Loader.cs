@@ -267,9 +267,14 @@ namespace Harvester
                         #region - Persona
                         case "Persona":
 
-                            Persona persona = Persona.GetPersonaSGI(harvesterServices, _Config, id, pDicRutas);
+                            Persona persona = Persona.GetPersonaSGI(harvesterServices, _Config, id, pDicRutas);                            
                             if (persona != null && !string.IsNullOrEmpty(persona.Nombre))
                             {
+                                if (persona.SeminariosCursos != null && persona.SeminariosCursos.Any())
+                                {
+
+                                }
+
                                 string idGnossPersona = persona.Cargar(harvesterServices, pConfig, mResourceApi, "person", pDicIdentificadores, pDicRutas, pRabbitConf, true);
                                 pDicIdentificadores["person"].Add(idGnossPersona);
                             }

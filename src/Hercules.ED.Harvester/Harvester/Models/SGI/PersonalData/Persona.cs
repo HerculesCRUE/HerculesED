@@ -55,32 +55,72 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
         public override void ToRecursoAdicional(IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf, string pIdGnoss)
         {
-            // TESIS
+            #region --- TESIS
             pResourceApi.ChangeOntoly("thesissupervision");
-
-            List<string> crisIdentifiersTesisBBDD = ObtenerTesisCrisIdentifier(pResourceApi, this.Id);
+            List<string> crisIdentifiersTesisBBDD = ObtenerDataCrisIdentifier(pResourceApi, this.Id, "thesissupervision");
             List<string> crisIdentifiersTesisSGI = new List<string>();
-
             List<TesisBBDD> listaTesisSGI = ObtenerTesisSGI(pRabbitConf, this.Tesis, pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
             foreach (TesisBBDD tesisAux in listaTesisSGI)
             {
                 crisIdentifiersTesisSGI.Add(tesisAux.crisIdentifier);
-            }
+            }            
 
-            // Cargar --> Tesis que estén en listaTesisSGI y no en listaTesisBBDD.           
-            //List<TesisBBDD> listaTesisCargar = listaTesisSGI.Where(x => !listaTesisBBDD.Any(y => x.crisIdentifier == y.crisIdentifier)).ToList();
+            // Cargar --> Tesis que estén en listaTesisSGI y no en listaTesisBBDD.    
             List<string> listaTesisCargarCrisIdentifiers = crisIdentifiersTesisSGI.Except(crisIdentifiersTesisBBDD).ToList();
             List<TesisBBDD> listaTesisCargar = listaTesisSGI.Where(x => listaTesisCargarCrisIdentifiers.Contains(x.crisIdentifier)).ToList();            
             List<ComplexOntologyResource> listaTesisOntology = GetThesisSupervision(listaTesisCargar, pResourceApi, pIdGnoss);
             CargarDatos(listaTesisOntology, pResourceApi);
 
             // Elimitar --> Tesis que estén en listaTesisBBDD y no en listaTesisSGI.
-            List<string> listaTesisBorrarCrisIdentifiers = crisIdentifiersTesisBBDD.Except(crisIdentifiersTesisSGI).ToList();            
-            List<string> listaIdsBorrar = ObtenerTesisByCrisIdentifiers(listaTesisBorrarCrisIdentifiers, pResourceApi);
-            BorrarRecursos(listaIdsBorrar, pResourceApi, "thesissupervision");
+            List<string> listaTesisBorrarCrisIdentifiers = crisIdentifiersTesisBBDD.Except(crisIdentifiersTesisSGI).ToList();
+            List<string> listaIdsTesisBorrar = ObtenerDataByCrisIdentifiers(listaTesisBorrarCrisIdentifiers, pResourceApi, "thesissupervision");
+            BorrarRecursos(listaIdsTesisBorrar, pResourceApi, "thesissupervision");
+            #endregion
 
-            // ACADEMICDEGREE
+            #region --- IMPARTED ACADEMIC TRAINING (TODO)
+            pResourceApi.ChangeOntoly("impartedacademictraining");
 
+            List<string> crisIdentifiersImpartedAcademicBBDD = ObtenerDataCrisIdentifier(pResourceApi, this.Id, "impartedacademictraining");
+            List<string> crisIdentifiersImpartedAcademicSGI = new List<string>();
+
+            // Cargar --> Academic Degree que estén en listaImpartedacademictrainingSGI y no en listaImpartedacademictrainingBBDD.   
+            List<string> listaImpartedAcademicCargarCrisIdentifiers = crisIdentifiersImpartedAcademicSGI.Except(crisIdentifiersImpartedAcademicBBDD).ToList();
+            //List<ImpartedAcademicBBDD> listaImpartedAcademicCargar = listaImpartedAcademicSGI.Where(x => listaImpartedAcademicCargarCrisIdentifiers.Contains(x.crisIdentifier)).ToList();
+            //List<ComplexOntologyResource> listaImpartedAcademicOntology = GetImpartedAcademic(listaImpartedAcademicCargar, pResourceApi, pIdGnoss);
+            //CargarDatos(listaImpartedAcademicOntology, pResourceApi);
+
+            // Elimitar --> Academic Degree que estén en listaImpartedacademictrainingBBDD y no en listaImpartedacademictrainingSGI.
+            List<string> listaImpartedAcademicBorrarCrisIdentifiers = crisIdentifiersImpartedAcademicBBDD.Except(crisIdentifiersImpartedAcademicSGI).ToList();
+            List<string> listaIdsImpartedAcademicBorrar = ObtenerDataByCrisIdentifiers(listaTesisBorrarCrisIdentifiers, pResourceApi, "impartedacademictraining");
+            BorrarRecursos(listaIdsImpartedAcademicBorrar, pResourceApi, "impartedacademictraining");
+            #endregion
+
+            #region --- CURSES AND SEMINARS TODO: REVISAR PROPIEDADES
+            pResourceApi.ChangeOntoly("impartedcoursesseminars");
+            List<string> crisIdentifiersCursosBBDD = ObtenerDataCrisIdentifier(pResourceApi, this.Id, "impartedcoursesseminars");
+            List<ImpartedCoursesSeminarsBBDD> listaCursosSGI = ObtenerCursosSGI(pRabbitConf, this.SeminariosCursos, pHarvesterServices, pConfig, pResourceApi, pDicIdentificadores, pDicRutas);
+            
+            List<string> crisIdentifiersCursosSGI = new List<string>();
+            foreach (ImpartedCoursesSeminarsBBDD cursoAux in listaCursosSGI)
+            {
+                crisIdentifiersCursosSGI.Add(cursoAux.crisIdentifiers);
+            }
+
+            // Cargar --> Cursos que estén en listaCursosSGI y no en listaCursosBBDD.           
+            List<string> listaCursosCargarCrisIdentifiers = crisIdentifiersCursosSGI.Except(crisIdentifiersCursosBBDD).ToList();
+            List<ImpartedCoursesSeminarsBBDD> listaCursosCargar = listaCursosSGI.Where(x => listaCursosCargarCrisIdentifiers.Contains(x.crisIdentifiers)).ToList();
+            List<ComplexOntologyResource> listaCursosOntology = GetCursosSupervision(listaCursosCargar, pResourceApi, pIdGnoss);
+            CargarDatos(listaTesisOntology, pResourceApi);
+
+            // Elimitar --> Cursos que estén en listaCursosBBDD y no en listaCursosSGI.
+            List<string> listaCursosBorrarCrisIdentifiers = crisIdentifiersCursosBBDD.Except(crisIdentifiersCursosSGI).ToList();
+            List<string> listaIdsCursosBorrar = ObtenerDataByCrisIdentifiers(listaCursosBorrarCrisIdentifiers, pResourceApi, "impartedcoursesseminars");
+            BorrarRecursos(listaIdsCursosBorrar, pResourceApi, "impartedcoursesseminars");
+            #endregion
+
+            #region --- CICLOS (TODO)
+
+            #endregion
         }
 
         public static void BorrarRecursos(List<string> pListaGnossId, ResourceApi pResourceApi, string pOntology)
@@ -94,7 +134,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
             }
         }
 
-        public static List<string> ObtenerTesisByCrisIdentifiers(List<string> pListaCrisIdentifiers, ResourceApi pResourceApi)
+        public static List<string> ObtenerDataByCrisIdentifiers(List<string> pListaCrisIdentifiers, ResourceApi pResourceApi, string pOntology)
         {
             List<string> listaTesis = new List<string>();
 
@@ -107,7 +147,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
                         FILTER(?crisIdentifier in ('{string.Join("', '", pListaCrisIdentifiers.Select(x => x))}'))
                     }}";
 
-            SparqlObject resultadoQueryPerson = pResourceApi.VirtuosoQuery(select, where, "thesissupervision");
+            SparqlObject resultadoQueryPerson = pResourceApi.VirtuosoQuery(select, where, pOntology);
             if (resultadoQueryPerson != null && resultadoQueryPerson.results != null && resultadoQueryPerson.results.bindings != null && resultadoQueryPerson.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryPerson.results.bindings)
@@ -375,6 +415,46 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return listaTesisDevolver;
         }
+
+        public List<ComplexOntologyResource> GetCursosSupervision(List<ImpartedCoursesSeminarsBBDD> pTesisList, ResourceApi pResourceApi, string pIdGnoss)
+        {
+            List<ComplexOntologyResource> listacursoDevolver = new List<ComplexOntologyResource>();
+
+            foreach (ImpartedCoursesSeminarsBBDD curso in pTesisList)
+            {
+                ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars courseDevolver = new ImpartedcoursesseminarsOntology.ImpartedCoursesSeminars();
+
+                courseDevolver.IdRoh_owner = pIdGnoss;
+                courseDevolver.Roh_crisIdentifier = curso.crisIdentifiers;
+                courseDevolver.Roh_title = curso.title;
+                courseDevolver.IdRoh_eventType = curso.eventType;
+                courseDevolver.Roh_eventTypeOther = curso.eventTypeOther;
+                courseDevolver.Roh_promotedByTitle = curso.promotedByTitle;
+                courseDevolver.IdRoh_promotedBy = curso.promotedBy;                
+                courseDevolver.IdRoh_promotedByType = curso.promotedByType;
+                courseDevolver.Roh_promotedByTypeOther = curso.promotedByTypeOther;
+                courseDevolver.Vivo_start = curso.start;
+                courseDevolver.Roh_durationHours = curso.durationHours;
+                // TODO
+                courseDevolver.Roh_goals = curso.goals;
+                courseDevolver.IdVcard_hasLanguage = curso.hasLanguage;
+                courseDevolver.Roh_isbn = curso.isbn;
+                courseDevolver.Bibo_issn = curso.issn;
+                courseDevolver.Roh_correspondingAuthor = curso.correspondingAuthor;
+                courseDevolver.Bibo_doi = curso.doi;
+                courseDevolver.Bibo_handle = curso.handle;
+                courseDevolver.Bibo_pmid = curso.pmid;
+                // TODO Identifier
+                courseDevolver.Roh_targetProfile = curso.targetProfile;
+                courseDevolver.IdRoh_participationType = curso.participationType;
+                courseDevolver.Roh_participationTypeOther = curso.participationTypeOther;
+
+                listacursoDevolver.Add(courseDevolver.ToGnossApiResource(pResourceApi, null));
+            }
+
+            return listacursoDevolver;
+        }
+
 
         /// <summary>
         /// Obtiene los datos que no queremos borrar de la persona.
@@ -1038,7 +1118,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
             return listaTesis;
         }
 
-        public List<string> ObtenerTesisCrisIdentifier(ResourceApi pResourceApi, string pCrisIdentfierPerson)
+        public List<string> ObtenerDataCrisIdentifier(ResourceApi pResourceApi, string pCrisIdentfierPerson, string pOntology)
         {
             List<string> listaTesis = new List<string>();
 
@@ -1049,11 +1129,11 @@ namespace OAI_PMH.Models.SGI.PersonalData
             select = "SELECT ?crisIdentifier ";
             where = $@"WHERE {{ 
                                 ?s <http://w3id.org/roh/owner> ?persona.
-                                OPTIONAL {{ ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentfierPerson}'. }}
-                                OPTIONAL {{ ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier. }}                        
+                                ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentfierPerson}'.
+                                ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.                        
                             }}";
 
-            resultadoQuery = pResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "thesissupervision" });
+            resultadoQuery = pResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", pOntology });
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -1079,7 +1159,6 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
                 string tituloTrabajo = RemoveDiacritics(item.TituloTrabajo.ToLower());
                 tituloTrabajo = tituloTrabajo.Replace(" ", "-");
-
                 tesis.crisIdentifier = $@"{item.Id}___{item.Alumno}___{tituloTrabajo}";
 
                 if (item.TipoProyecto != null && !string.IsNullOrEmpty(item.TipoProyecto.Nombre))
@@ -1155,6 +1234,64 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return listaTesis;
         }
+
+        public List<ImpartedCoursesSeminarsBBDD> ObtenerCursosSGI(RabbitServiceWriterDenormalizer pRabbitConf, List<SeminariosCursos> pListaCursosSGI, IHarvesterServices pHarvesterServices, ReadConfig pConfig, ResourceApi pResourceApi, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas)
+        {
+            List<ImpartedCoursesSeminarsBBDD> listaCursos = new List<ImpartedCoursesSeminarsBBDD>();
+
+            foreach (SeminariosCursos item in pListaCursosSGI)
+            {
+                ImpartedCoursesSeminarsBBDD curso = new ImpartedCoursesSeminarsBBDD();
+
+                string tituloTrabajo = RemoveDiacritics(item.NombreEvento.ToLower());
+                tituloTrabajo = tituloTrabajo.Replace(" ", "-");
+                curso.crisIdentifiers = $@"{item.Id}___{tituloTrabajo}";
+                curso.goals = item.ObjetivosCurso;
+                curso.targetProfile = item.PerfilDestinatarios;
+                curso.hasLanguage = item.Idioma;
+                curso.start = item.FechaTitulacion;
+
+                if (item.TipoParticipacion != null && !string.IsNullOrEmpty(item.TipoParticipacion.Nombre))
+                {
+                    curso.participationType = item.TipoParticipacion.Nombre;
+                }
+
+                curso.correspondingAuthor = item.AutorCorrespondencia != null ? (bool)item.AutorCorrespondencia : false;
+
+                // ENTIDAD ORGANIZADORA
+                if (item.EntidadOrganizacionEvento != null && !string.IsNullOrEmpty(item.EntidadOrganizacionEvento.EntidadRef))
+                {
+                    Dictionary<string, string> dicOrganizaciones = Empresa.ObtenerOrganizacionesBBDD(new HashSet<string>() { item.EntidadOrganizacionEvento.EntidadRef }, pResourceApi);
+                    Dictionary<string, string> dicOrganizacionesCargadas = new Dictionary<string, string>();
+                    foreach (KeyValuePair<string, string> organizacion in dicOrganizaciones)
+                    {
+                        Empresa organizacionAux = Empresa.GetOrganizacionSGI(pHarvesterServices, pConfig, "Organizacion_" + organizacion.Key, pDicRutas);
+                        curso.promotedByTitle = organizacionAux.Nombre;
+
+                        if (string.IsNullOrEmpty(organizacion.Value))
+                        {
+                            string idGnoss = organizacionAux.Cargar(pHarvesterServices, pConfig, pResourceApi, "organization", pDicIdentificadores, pDicRutas, pRabbitConf);
+                            pDicIdentificadores["organization"].Add(idGnoss);
+                            dicOrganizacionesCargadas[organizacion.Key] = idGnoss;
+                        }
+                        else
+                        {
+                            dicOrganizacionesCargadas[organizacion.Key] = organizacion.Value;
+                        }
+
+                        curso.promotedBy = dicOrganizacionesCargadas[item.EntidadOrganizacionEvento.EntidadRef];
+                    }
+                }
+
+                curso.isbn = item.ISBN;
+                curso.issn = item.ISSN;
+
+                listaCursos.Add(curso);
+            }
+
+            return listaCursos;
+        }
+
 
         static string RemoveDiacritics(string text)
         {
