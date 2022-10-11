@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.ED.ResearcherObjec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hercules", "ClasesGeneradas\hercules.csproj", "{6470BDB2-EDB4-46C0-BD9B-C365BD0A930B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.CommonsEDMA.DisambiguationEngine", "..\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj", "{A6B48AAC-963F-4F3D-95AA-3C921C41CE3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hercules.CommonsEDMA.DisambiguationEngine", "..\..\..\Commons-ED-MA\src\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj", "{77343436-EC9F-4AAE-A8D2-8489D1C9C89F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{6470BDB2-EDB4-46C0-BD9B-C365BD0A930B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6470BDB2-EDB4-46C0-BD9B-C365BD0A930B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6470BDB2-EDB4-46C0-BD9B-C365BD0A930B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6B48AAC-963F-4F3D-95AA-3C921C41CE3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6B48AAC-963F-4F3D-95AA-3C921C41CE3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6B48AAC-963F-4F3D-95AA-3C921C41CE3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6B48AAC-963F-4F3D-95AA-3C921C41CE3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77343436-EC9F-4AAE-A8D2-8489D1C9C89F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77343436-EC9F-4AAE-A8D2-8489D1C9C89F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77343436-EC9F-4AAE-A8D2-8489D1C9C89F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77343436-EC9F-4AAE-A8D2-8489D1C9C89F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
