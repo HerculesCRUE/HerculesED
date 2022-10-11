@@ -226,8 +226,7 @@ where {{
 
             selectAutores = mPrefijos;
             selectAutores += "SELECT DISTINCT ?crisIdentifier ?orcid ?orden ?nombre ?apellidos ?firma ";
-            whereAutores = $@"FROM <http://gnoss.com/person.owl>
-                            WHERE {{
+            whereAutores = $@"WHERE {{
                                 ?s a bibo:Document . 
                                 OPTIONAL{{
                                     ?s bibo:authorList ?listaAutores . 
@@ -242,7 +241,7 @@ where {{
                                 FILTER(?s = <{pIdDocumento}>) 
                             }} ORDER BY ?orden ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(selectAutores, whereAutores, "document");
+            resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores, new List<string>{ "document" ,"person"});
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -347,9 +346,7 @@ where {{
                 string selectIndicesImpacto = "";
                 string whereIndicesImpacto = "";
                 selectIndicesImpacto = mPrefijos;
-                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato
-                                           FROM <http://gnoss.com/maindocument.owl> 
-                                           FROM <http://gnoss.com/documentformat.owl> ";
+                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato";
                 whereIndicesImpacto = $@"WHERE {{
                                            ?s a bibo:Document.
                                            OPTIONAL{{
@@ -365,7 +362,7 @@ where {{
                                            FILTER(?s = <{pIdDocumento}>)
                                        }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectIndicesImpacto, whereIndicesImpacto, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto, new List<string> { "document","maindocument", "documentformat" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -380,10 +377,7 @@ where {{
                 string selectFuenteImpacto = "";
                 string whereFuenteImpacto = "";
                 selectFuenteImpacto = mPrefijos;
-                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas 
-                                        FROM <http://gnoss.com/maindocument.owl> 
-                                        FROM <http://gnoss.com/documentformat.owl>
-                                        FROM <http://gnoss.com/referencesource.owl> ";
+                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas";
                 whereFuenteImpacto = $@"WHERE {{ 
                                             ?s a bibo:Document . 
                                             OPTIONAL{{?s vivo:hasPublicationVenue ?revista .
@@ -410,7 +404,7 @@ where {{
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectFuenteImpacto, whereFuenteImpacto, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto, new List<string> { "document" ,"maindocument", "documentformat", "referencesource" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -492,9 +486,7 @@ where {{
                 string whereObtencionProyecto = "";
 
                 selectObtencionProyecto = mPrefijos;
-                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess 
-                                            FROM <http://gnoss.com/documentformat.owl>
-                                            FROM <http://gnoss.com/publicationtype.owl> ";
+                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess";
                 whereObtencionProyecto = $@"WHERE {{
                                                 ?s a bibo:Document . 
                                                 ?s roh:title ?title .
@@ -520,7 +512,7 @@ where {{
                                                 FILTER(?s = <{pIdDocumento}>) 
                                             }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectObtencionProyecto, whereObtencionProyecto, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectObtencionProyecto, whereObtencionProyecto,new List<string> { "document", "documentformat", "publicationtype" });
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -625,9 +617,7 @@ where {{
                 string whereDatosCongresos = "";
 
                 selectDatosCongresos = mPrefijos;
-                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType 
-                                            FROM <http://gnoss.com/documentformat.owl> 
-                                            FROM <http://gnoss.com/publicationtype.owl> ";
+                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?";
                 whereDatosCongresos = $@"WHERE {{
                                             ?s a bibo:Document . 
                                             ?s roh:title ?title . 
@@ -663,7 +653,7 @@ where {{
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectDatosCongresos, whereDatosCongresos, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos,new List<string> { "document", "documentformat", "publicationtype" });
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -912,8 +902,7 @@ where {{
 
             selectAutores = mPrefijos;
             selectAutores += "SELECT DISTINCT ?crisIdentifier ?orcid ?orden ?nombre ?apellidos ?firma ";
-            whereAutores = $@"FROM <http://gnoss.com/person.owl>
-                            WHERE {{
+            whereAutores = $@"WHERE {{
                                 ?s a bibo:Document . 
                                 OPTIONAL{{
                                     ?s bibo:authorList ?listaAutores . 
@@ -928,7 +917,7 @@ where {{
                                 FILTER(?s = <{pIdDocumento}>) 
                             }} ORDER BY ?orden ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(selectAutores, whereAutores, "document");
+            resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores,new List<string> { "document", "person" });
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -960,9 +949,7 @@ where {{
                 string selectIndicesImpacto = "";
                 string whereIndicesImpacto = "";
                 selectIndicesImpacto = mPrefijos;
-                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato
-                                           FROM <http://gnoss.com/maindocument.owl> 
-                                           FROM <http://gnoss.com/documentformat.owl> ";
+                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato";
                 whereIndicesImpacto = $@"WHERE {{
                                            ?s a bibo:Document.
                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
@@ -976,7 +963,7 @@ where {{
                                            FILTER(?s = <{pIdDocumento}>)
                                        }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectIndicesImpacto, whereIndicesImpacto, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto,new List<string> { "document", "maindocument", "documentformat" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -991,10 +978,7 @@ where {{
                 string selectFuenteImpacto = "";
                 string whereFuenteImpacto = "";
                 selectFuenteImpacto = mPrefijos;
-                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas 
-                                        FROM <http://gnoss.com/maindocument.owl> 
-                                        FROM <http://gnoss.com/documentformat.owl>
-                                        FROM <http://gnoss.com/referencesource.owl> ";
+                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas";
                 whereFuenteImpacto = $@"WHERE {{ 
                                             ?s a bibo:Document . 
                                             OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
@@ -1019,7 +1003,7 @@ where {{
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectFuenteImpacto, whereFuenteImpacto, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto,new List<string> { "document", "maindocument", "documentformat", "referencesource" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -1100,9 +1084,7 @@ where {{
                 string whereObtencionProyecto = "";
 
                 selectObtencionProyecto = mPrefijos;
-                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess 
-                                            FROM <http://gnoss.com/documentformat.owl>
-                                            FROM <http://gnoss.com/publicationtype.owl> ";
+                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess";
                 whereObtencionProyecto = $@"WHERE {{
                                                 ?s a bibo:Document . 
                                                 ?s roh:title ?title .
@@ -1128,7 +1110,7 @@ where {{
                                                 FILTER(?s = <{pIdDocumento}>) 
                                             }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectObtencionProyecto, whereObtencionProyecto, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectObtencionProyecto, whereObtencionProyecto, new List<string> { "document", "documentformat", "publicationtype" });
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -1240,9 +1222,7 @@ where {{
                 string whereDatosCongresos = "";
 
                 selectDatosCongresos = mPrefijos;
-                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType 
-                                            FROM <http://gnoss.com/documentformat.owl> 
-                                            FROM <http://gnoss.com/publicationtype.owl> ";
+                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType";
                 whereDatosCongresos = $@"WHERE {{
                                             ?s a bibo:Document . 
                                             ?s roh:title ?title . 
@@ -1278,7 +1258,7 @@ where {{
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQuery(selectDatosCongresos, whereDatosCongresos, "document");
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos, new List<string> { "document" , "documentformat" , "publicationtype" });
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {

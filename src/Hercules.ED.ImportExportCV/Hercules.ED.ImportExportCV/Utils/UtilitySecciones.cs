@@ -681,13 +681,13 @@ where{{
         public static Dictionary<string, string> ObtenerIdPersona(ResourceApi resourceApi, string CVID)
         {
             Dictionary<string, string> resultado = new Dictionary<string, string>();
-            string select = $@"SELECT distinct ?idPersona ?nombreCompleto from <{resourceApi.GraphsUrl}person.owl>";
+            string select = $@"SELECT distinct ?idPersona ?nombreCompleto ";
             string where = $@"where {{
                                 <{CVID}> <http://w3id.org/roh/cvOf> ?idPersona . 
                                 ?idPersona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto 
                             }}";
 
-            SparqlObject sparqlObject = resourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject sparqlObject = resourceApi.VirtuosoQueryMultipleGraph(select, where, new(){ "curriculumvitae" ,"person"});
             if (sparqlObject.results.bindings.Count > 0)
             {
                 string nick = sparqlObject.results.bindings.Any(x => x.ContainsKey("nombreCompleto")) ? sparqlObject.results.bindings.Select(x => x["nombreCompleto"].value)?.FirstOrDefault() : null;
