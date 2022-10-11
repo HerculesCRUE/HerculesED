@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace EditorCV.Models.Acreditacion
             this.process = new Process();
         }
 
-        public ParameterAcreditacion(string comision, string tipo_acreditacion, string categoria_acreditacion, string investigador)
+        public ParameterAcreditacion(string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string investigador)
         {
             this.time_schedule = null;
             this.id_process = 22;
@@ -58,7 +59,7 @@ namespace EditorCV.Models.Acreditacion
             this.parameters = new Parameters();
             this.priority = 1;
         }
-        public Process(string comision, string tipo_acreditacion, string categoria_acreditacion, string investigador)
+        public Process(string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string investigador)
         {
             this.id_robot = null;
             this.parameters = new Parameters(comision, tipo_acreditacion, categoria_acreditacion, investigador);
@@ -91,15 +92,15 @@ namespace EditorCV.Models.Acreditacion
         {
             this.comision = "";
             this.tipo_acreditacion = "";
-            this.categoria_acreditacion = "";
+            this.categoria_acreditacion = null;
             this.investigador = "";
         }
 
-        public Parameters(string comision, string tipo_acreditacion, string categoria_acreditacion, string investigador)
+        public Parameters(string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string investigador)
         {
             this.comision = comision;
             this.tipo_acreditacion = tipo_acreditacion;
-            this.categoria_acreditacion = categoria_acreditacion;
+            this.categoria_acreditacion = string.IsNullOrEmpty(categoria_acreditacion) ? null : categoria_acreditacion;
             this.investigador = investigador;
         }
     }
