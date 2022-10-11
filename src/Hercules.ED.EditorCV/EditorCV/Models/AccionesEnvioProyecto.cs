@@ -3,7 +3,6 @@ using EditorCV.Models.ValidacionProyectos;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using Hercules.CommonsEDMA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -15,6 +14,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using EditorCV.Models.Utils;
 
 namespace EditorCV.Models
 {
