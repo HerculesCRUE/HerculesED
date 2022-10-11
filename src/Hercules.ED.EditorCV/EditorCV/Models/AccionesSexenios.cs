@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 
 namespace EditorCV.Models
 {
@@ -24,7 +25,7 @@ namespace EditorCV.Models
         /// <param name="perfil_tecnologico"></param>
         /// <param name="subcomite"></param>
         /// <param name="idInvestigador"></param>
-        public void GetSexenios(ConfigService _Configuracion, string comite, string periodo, string perfil_tecnologico, string subcomite, string idInvestigador)
+        public void GetSexenios(ConfigService _Configuracion, string comite, string periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
         {
             try
             {
