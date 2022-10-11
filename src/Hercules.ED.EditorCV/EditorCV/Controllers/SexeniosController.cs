@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace EditorCV.Controllers
 {
@@ -20,7 +21,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("ConseguirSexenios")]
-        public IActionResult ConseguirSexenios(string comite, string periodo, string perfil_tecnologico, string subcomite, string idInvestigador)
+        public IActionResult ConseguirSexenios(string comite, string periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
         {
             try
             {
