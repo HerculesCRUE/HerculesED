@@ -364,7 +364,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}";
-                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "document" ,"taxonomy"});
+                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "taxonomy" });
                         List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
@@ -861,7 +861,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 }}
                                 FILTER(?positionIPCargado!= ?positionIPACargar OR !BOUND(?positionIPCargado) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "document", "person" });
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -892,7 +892,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
         /// Eliminamos los http://purl.org/ontology/bibo/Document que no tengan autores activos
         /// </summary>
         /// <param name="pDocuments">ID de documentos</param>
-        public void EliminarDocumentosSinAutoresActivos(List<string> pDocuments = null)
+        public void EliminarDocumentosSinAutoresSGI(List<string> pDocuments = null)
         {
             HashSet<string> filters = new HashSet<string>();
             if (pDocuments != null && pDocuments.Count > 0)
@@ -916,7 +916,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                 {{
                                     ?document <http://purl.org/ontology/bibo/authorList> ?autores.
                                     ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-                                    ?person <http://w3id.org/roh/isActive> 'true'.
+                                    ?person <http://w3id.org/roh/crisIdentifier> ?crisIdentifier.
                                 }}
                             }} limit {limit}";
                     SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
@@ -1673,7 +1673,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                 }
             }
         }
-
+               
 
         /// <summary>
         /// Método para inserción múltiple de indices de impacto

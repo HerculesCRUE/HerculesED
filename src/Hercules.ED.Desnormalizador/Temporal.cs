@@ -282,13 +282,14 @@ namespace DesnormalizadorHercules
 
         public static void EliminarEntidadesCV()
         {
-            String select = @"SELECT ?cv ?pLvl1 ?oLvl1 ?pLvl2 ?oLvl2 ?entity";
+            String select = @"SELECT ?cv ?pLvl1 ?oLvl1 ?pLvl2 ?oLvl2 ?entity ?isValidated";
             String where = @$"  where{{
                                             ?cv a <http://w3id.org/roh/CV>.
                                             ?cv ?pLvl1 ?oLvl1.
                                             ?oLvl1 ?pLvl2 ?oLvl2.
                                             ?oLvl2 <http://vivoweb.org/ontology/core#relatedBy> ?entity.
-                                            FILTER(?cv =<http://gnoss.com/items/CV_cf131d23-1378-4991-8b54-e069f2e99814_57b3ffed-98fa-4495-b8be-5d4d5e9e2486>)
+                                            OPTIONAL{{?entity <http://w3id.org/roh/isValidated> ?isValidated}}
+                                            FILTER(?cv =<http://gnoss.com/items/CV_d5c72945-6106-4f2d-a91b-fda3f5438054_fcbb2d02-8cfb-49ef-882f-b45c5dde9c0c>)
                                         }}";
 
             SparqlObject resultado = resourceApi.VirtuosoQuery(select, where, "curriculumvitae");
@@ -298,6 +299,17 @@ namespace DesnormalizadorHercules
             foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
             {
                 if (!fila["entity"].value.Contains("Document") && !fila["entity"].value.Contains("Project") && !fila["entity"].value.Contains("Group"))
+                {
+                    eliminar.Add(resourceApi.GetShortGuid(fila["entity"].value));
+                    Guid idCV = resourceApi.GetShortGuid(fila["cv"].value);
+                    if (!dicEliminar.ContainsKey(idCV))
+                    {
+                        dicEliminar.Add(idCV, new List<RemoveTriples>());
+                    }
+                    RemoveTriples remove = new RemoveTriples(fila["oLvl1"].value + "|" + fila["oLvl2"].value, fila["pLvl1"].value + "|" + fila["pLvl2"].value);
+                    dicEliminar[idCV].Add(remove);
+                }
+                else if(!fila.ContainsKey("isValidated") || fila["isValidated"].value=="false")
                 {
                     eliminar.Add(resourceApi.GetShortGuid(fila["entity"].value));
                     Guid idCV = resourceApi.GetShortGuid(fila["cv"].value);

@@ -514,7 +514,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                             }}
                             FILTER(?numProyectosCargados!= ?numProyectosACargar OR !BOUND(?numProyectosCargados) )
                             }} limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person", "project", "curriculumvitae" });
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "project", "curriculumvitae" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -586,7 +586,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         FILTER(?numResearchObjectsCargados!= ?numResearchObjectsACargar OR !BOUND(?numResearchObjectsCargados) )
                         }}
                         limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person" , "curriculumvitae" });
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "curriculumvitae" });
 
                     Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
                     {
@@ -668,7 +668,7 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                                         }}
                                     }}
                                 }}";
-                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>() { "person" ,"taxonomy"});
+                        resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "taxonomy" });
                         List<RemoveTriples> triplesRemove = new();
                         foreach (string hasKnowledgeArea in resultado.results.bindings.GetRange(1, resultado.results.bindings.Count - 1).Select(x => x["hasKnowledgeArea"].value).ToList())
                         {
@@ -1307,6 +1307,500 @@ namespace DesnormalizadorHercules.Models.Actualizadores
                         break;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Actualizamos en la propiedad http://w3id.org/roh/hIndex de las http://xmlns.com/foaf/0.1/Person 
+        /// los hIndex de las diferentes fuentes
+        /// Depende de ActualizadorDocument.ActualizarNumeroCitasMaximas
+        /// </summary>
+        /// <param name="pPersons">ID de las personas</param>
+        /// <param name="pProjects">ID de los proyectos</param>
+        public void ActualizarHIndex(List<string> pDocuments = null, List<string> pPersons = null)
+        {
+            HashSet<string> filters = new HashSet<string>();
+            if (pDocuments != null && pDocuments.Count > 0)
+            {
+                filters.Add($@" ?document a <http://purl.org/ontology/bibo/Document>.                               
+	                            ?document <http://purl.org/ontology/bibo/authorList> ?autores.
+	                            ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+                                FILTER(?document in (<{string.Join(">,<", pDocuments)}>,<>))");
+            }
+            if (pPersons != null && pPersons.Count > 0)
+            {
+                filters.Add($" FILTER(?person in (<{string.Join(">,<", pPersons)}>,<>))");
+            }
+            if (filters.Count == 0)
+            {
+                filters.Add("");
+            }
+
+            Dictionary<string, string> listSources = new Dictionary<string, string>();
+            listSources.Add("SCOPUS", "http://w3id.org/roh/scopusCitationCount");
+            listSources.Add("WOS", "http://w3id.org/roh/wosCitationCount");
+            listSources.Add("Hércules", "http://w3id.org/roh/citationCount");
+            listSources.Add("Semantic Scholar", "http://w3id.org/roh/semanticScholarcitationCount");
+
+            foreach (string filter in filters)
+            {
+                //Eliminamos HIndex
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?person ?hIndexEntity  ";
+                    String where = @$"where{{
+                                    {filter}
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    ?person <http://w3id.org/roh/hIndex> ?hIndexEntity.
+                                    ?hIndexEntity <http://w3id.org/roh/citationSource> ?citationSource.
+                                    FILTER(?citationSource not in ('{string.Join("','", listSources.Keys)}'))
+                                }}order by desc(?person) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
+                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/hIndex", "person", "hIndexEntity");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                //Eliminamos HIndexCitationCount
+                while (true)
+                {
+                    int limit = 500;
+                    String select = @"select ?person ?hIndexCitationCount  ";
+                    String where = @$"where{{
+                                    {filter}
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+                                    ?hIndexCitationCount <http://w3id.org/roh/citationSource> ?citationSource.
+                                    FILTER(?citationSource not in ('{string.Join("','", listSources.Keys)}'))
+                                }}order by desc(?person) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
+                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/hIndexCitationCount", "person", "hIndexCitationCount");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                foreach (string source in listSources.Keys)
+                {
+                    while (true)
+                    {
+                        //Añadimos nº citas
+                        int limit = 500;
+                        String select = @"select *  ";
+                        String where = @$"where{{
+                                    {filter}
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    {{
+                                        #Los que debe de haber
+                                        select distinct ?person count(distinct(?document)) as ?publicationNumber ?citationCount ?citationSource
+                                        Where{{
+                                            ?person <http://w3id.org/roh/crisIdentifier> ?crisIdentifier. 
+	                                        ?document a <http://purl.org/ontology/bibo/Document>.                               
+	                                        ?document <http://purl.org/ontology/bibo/authorList> ?autores.
+	                                        ?document <{listSources[source]}> ?citationCount.
+	                                        ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+	                                        FILTER(?citationCount!=""0"")
+                                            BIND('{source}' as ?citationSource)
+                                        }}
+                                    }}
+                                    MINUS
+                                    {{
+                                        #Los que hay
+                                        ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+                                        ?hIndexCitationCount <http://w3id.org/roh/citationCount> ?citationCount.
+                                        ?hIndexCitationCount <http://w3id.org/roh/publicationNumber> ?publicationNumberAux.
+                                        BIND(xsd:int(?publicationNumberAux) as ?publicationNumber)
+                                        ?hIndexCitationCount <http://w3id.org/roh/citationSource> ?citationSource.
+                                        FILTER(?citationSource='{source}')
+                                    }}
+                                }}order by desc(?person) limit {limit}";
+                        SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
+                        InsercionHIndexCitationCount(resultado.results.bindings);
+                        if (resultado.results.bindings.Count != limit)
+                        {
+                            break;
+                        }
+                    }
+
+                    while (true)
+                    {
+                        //Eliminamos nº citas
+                        int limit = 500;
+                        String select = @"select *  ";
+                        String where = @$"where{{
+                                    {filter}
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                    {{
+                                        #Los que hay
+                                        ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+                                        ?hIndexCitationCount <http://w3id.org/roh/citationCount> ?citationCount.
+                                        ?hIndexCitationCount <http://w3id.org/roh/publicationNumber> ?publicationNumberAux.
+                                        BIND(xsd:int(?publicationNumberAux) as ?publicationNumber)
+                                        ?hIndexCitationCount <http://w3id.org/roh/citationSource> ?citationSource.    
+                                        FILTER(?citationSource='{source}')
+                                    }}
+                                    MINUS
+                                    {{
+                                        #Los que debe de haber
+                                        select distinct ?person count(distinct(?document)) as ?publicationNumber ?citationCount ?citationSource
+                                        Where{{
+                                            ?person <http://w3id.org/roh/crisIdentifier> ?crisIdentifier. 
+	                                        ?document a <http://purl.org/ontology/bibo/Document>.                               
+	                                        ?document <http://purl.org/ontology/bibo/authorList> ?autores.
+	                                        ?document <{listSources[source]}> ?citationCount.
+	                                        ?autores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
+	                                        FILTER(?citationCount!=""0"")
+                                            BIND('{source}' as ?citationSource)
+                                        }}
+                                    }}
+                                }}order by desc(?person) limit {limit}";
+                        SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "document", "person" });
+
+                        EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/hIndexCitationCount", "person", "hIndexCitationCount");
+
+                        if (resultado.results.bindings.Count != limit)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                
+
+                while (true)
+                {
+                    //Actualizamos AcumulatedPublicationNumber
+                    int limit = 500;
+                    String select = @"select ?person ?hIndexCitationCount ?numAcumuladoCargadas ?numAcumuladoACargar";
+                    String where = @$"where{{
+                                {filter}
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+                                OPTIONAL{{
+                                    
+                                    ?hIndexCitationCount <http://w3id.org/roh/acumulatedPublicationNumber> ?numAcumuladoCargadasAux.
+                                    BIND(xsd:int(?numAcumuladoCargadasAux) as ?numAcumuladoCargadas)
+                                }}
+                                {{                                  
+                                    select ?person ?hIndexCitationCount SUM(?publicationNumber) as ?numAcumuladoACargar
+                                    where
+                                    {{
+	                                    {{
+		                                    select distinct ?person  ?hIndexCitationCount xsd:long(?citas) as ?citas ?citationSource
+		                                    where 
+		                                    {{					
+			                                    ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+			                                    ?hIndexCitationCount <http://w3id.org/roh/citationSource> ?citationSource.                                                    
+			                                    ?hIndexCitationCount <http://w3id.org/roh/citationCount> ?citas.
+		                                    }}
+	                                    }}
+	                                    {{
+		                                    select ?person ?publicationNumber xsd:long(?citas2) as ?acumulatedCitationCount ?citationSource
+		                                    where 
+		                                    {{
+			                                    ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+			                                    ?hIndexCitationCount <http://w3id.org/roh/citationSource> ?citationSource.
+			                                    ?hIndexCitationCount <http://w3id.org/roh/citationCount> ?citas2.
+			                                    ?hIndexCitationCount <http://w3id.org/roh/publicationNumber> ?publicationNumberAux.
+			                                    BIND(xsd:int(?publicationNumberAux) as ?publicationNumber)
+		                                    }}
+	                                    }}
+	                                    FILTER(?acumulatedCitationCount >=?citas)	       
+                                    }}
+                                }}
+                                FILTER(?numAcumuladoCargadas!= ?numAcumuladoACargar OR !BOUND(?numAcumuladoCargadas))
+                            }}order by desc(?person) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    ActualizarHIndexCitationCount(resultado.results.bindings);
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    //Actualizamos hIndexMax
+                    int limit = 500;
+                    String select = @"select ?person ?hIndexCitationCount ?numMaxCargado ?numMaxACargar";
+                    String where = @$"where{{
+                                {filter}
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.
+                                ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+                                OPTIONAL
+                                {{                                    
+                                    ?hIndexCitationCount <http://w3id.org/roh/hIndexMax> ?numMaxCargadoAux.
+                                    BIND(xsd:int(?numMaxCargadoAux) as ?numMaxCargado)
+                                }}                                
+                                    
+                                ?hIndexCitationCount <http://w3id.org/roh/acumulatedPublicationNumber> ?numAcumuladoCargadasAux.
+                                BIND(xsd:int(?numAcumuladoCargadasAux) as ?numAcumuladoCargadas)                                
+                                    
+                                ?hIndexCitationCount <http://w3id.org/roh/citationCount> ?citasAux.
+                                BIND(xsd:int(?citasAux) as ?citas)
+                                
+                                BIND(IF(?numAcumuladoCargadas>=?citas,?citas,?numAcumuladoCargadas) as ?numMaxACargar)
+                                FILTER(?numMaxCargado!= ?numMaxACargar OR !BOUND(?numMaxCargado) )
+                            }}order by desc(?person) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    ActualizarHIndexCitationCount(resultado.results.bindings);
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    //Añadimos auxiliar H-Index
+                    int limit = 500;
+                    String select = @"select ?person ?source ?hIndexCalculado ";
+                    String where = @$"where{{
+                                    {filter}                                    
+                                    {{
+                                        select ?person ?source MAX(?hIndexMax) as ?hIndexCalculado
+                                        Where
+                                        {{
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.     
+					                        ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+                                            ?hIndexCitationCount <http://w3id.org/roh/citationSource> ?source.    
+                                            ?hIndexCitationCount <http://w3id.org/roh/hIndexMax> ?hIndexMaxAux.                                    
+                                            BIND(xsd:int(?hIndexMaxAux) as ?hIndexMax).
+                                        }}                                        
+                                    }}
+                                    MINUS{{
+                                        ?person a <http://xmlns.com/foaf/0.1/Person>.     
+                                        ?person <http://w3id.org/roh/hIndex> ?hIndexEntity.
+                                        ?hIndexEntity <http://w3id.org/roh/h-index> ?hIndexAux.
+                                        ?hIndexEntity <http://w3id.org/roh/citationSource> ?source.    
+                                        BIND(xsd:int(?hIndexAux) as ?hIndex)
+                                    }}
+                                }}order by desc(?person) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    InsercionHIndex(resultado.results.bindings);
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }               
+
+                while (true)
+                {
+                    //Eliminamos auxiliar H-Index
+                    int limit = 500;
+                    String select = @"select distinct ?person ?hIndexEntity ";
+                    String where = @$"where{{
+                                    {filter}                                    
+                                    ?person a <http://xmlns.com/foaf/0.1/Person>.     
+                                    {{                                        
+                                        ?person <http://w3id.org/roh/hIndex> ?hIndexEntity.
+                                        ?hIndexEntity <http://w3id.org/roh/h-index> ?hIndexAux.
+                                        ?hIndexEntity <http://w3id.org/roh/citationSource> ?source.    
+                                        BIND(xsd:int(?hIndexAux) as ?hIndex)                                        
+                                    }}
+                                    MINUS{{
+                                        select ?person ?source MAX(?hIndexMax) as ?hIndexCalculado
+                                        Where
+                                        {{
+                                            ?person a <http://xmlns.com/foaf/0.1/Person>.     
+					                        ?person <http://w3id.org/roh/hIndexCitationCount> ?hIndexCitationCount.
+                                            ?hIndexCitationCount <http://w3id.org/roh/citationSource> ?source.    
+                                            ?hIndexCitationCount <http://w3id.org/roh/hIndexMax> ?hIndexMaxAux.                                    
+                                            BIND(xsd:int(?hIndexMaxAux) as ?hIndexMax).
+                                        }}                                        
+                                    }}
+                                }}order by desc(?person) limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+                    EliminacionMultiple(resultado.results.bindings, "http://w3id.org/roh/hIndex", "person", "hIndexEntity");
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    //Actualizamos H-Index
+                    int limit = 500;
+                    String select = @"select ?person ?hIndexCargado ?hIndexACargar";
+                    String where = @$"where{{
+                                ?person a <http://xmlns.com/foaf/0.1/Person>.     
+                                {filter}
+                                OPTIONAL
+                                {{
+                                    ?person <http://w3id.org/roh/h-index> ?hIndexCargado.
+                                }}
+                                OPTIONAL{{
+                                    ?person <http://w3id.org/roh/hIndex> ?hIndexEntity.
+                                    ?hIndexEntity <http://w3id.org/roh/h-index> ?hIndexACargar.
+                                    ?hIndexEntity <http://w3id.org/roh/citationSource> 'Hércules'.    
+                                }}
+                                FILTER(?hIndexCargado!= ?hIndexACargar OR (!BOUND(?hIndexCargado) AND BOUND(?hIndexACargar)) OR (BOUND(?hIndexCargado) AND !BOUND(?hIndexACargar)) )
+                            }} limit {limit}";
+                    SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "person");
+
+                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, fila =>
+                    {
+                        string person = fila["person"].value;
+                        string hIndexACargar = fila["hIndexACargar"].value;
+                        string hIndexCargado = "";
+                        if (fila.ContainsKey("hIndexCargado"))
+                        {
+                            hIndexCargado = fila["hIndexCargado"].value;
+                        }
+                        ActualizadorTriple(person, "http://w3id.org/roh/h-index", hIndexCargado, hIndexACargar);
+                    });
+
+                    if (resultado.results.bindings.Count != limit)
+                    {
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        private void InsercionHIndexCitationCount(List<Dictionary<string, SparqlObject.Data>> pFilas)
+        {
+            List<string> ids = pFilas.Select(x => x["person"].value).Distinct().ToList();
+            if (ids.Count > 0)
+            {
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                {
+                    Guid guid = mResourceApi.GetShortGuid(id);
+
+                    Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
+                    foreach (Dictionary<string, SparqlObject.Data> fila in pFilas.Where(x => x["person"].value == id))
+                    {
+                        string idAux = mResourceApi.GraphsUrl + "items/HIndexCitationCount_" + guid.ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        string person = fila["person"].value;
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndexCitationCount|http://w3id.org/roh/citationCount";
+                            t.NewValue = idAux + "|" + fila["citationCount"].value;
+                            triples[guid].Add(t);
+                        }
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndexCitationCount|http://w3id.org/roh/publicationNumber";
+                            t.NewValue = idAux + "|" + fila["publicationNumber"].value;
+                            triples[guid].Add(t);
+                        }
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndexCitationCount|http://w3id.org/roh/citationSource";
+                            t.NewValue = idAux + "|" + fila["citationSource"].value;
+                            triples[guid].Add(t);
+                        }
+                    }
+                    if (triples[guid].Count > 0)
+                    {
+                        var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                    }
+                });
+            }
+        }
+
+        private void ActualizarHIndexCitationCount(List<Dictionary<string, SparqlObject.Data>> pFilas)
+        {
+            List<string> ids = pFilas.Select(x => x["person"].value).Distinct().ToList();
+            if (ids.Count > 0)
+            {
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                {
+                    Guid guid = mResourceApi.GetShortGuid(id);
+
+                    Dictionary<Guid, List<TriplesToInclude>> triplesInsert = new() { { guid, new List<TriplesToInclude>() } };
+                    Dictionary<Guid, List<TriplesToModify>> triplesModify = new() { { guid, new List<TriplesToModify>() } };
+
+
+                    foreach (Dictionary<string, SparqlObject.Data> fila in pFilas.Where(x => x["person"].value == id))
+                    {
+                        string idAux = fila["hIndexCitationCount"].value;
+                        string person = fila["person"].value;
+                        if (fila.ContainsKey("numAcumuladoCargadas"))
+                        {
+                            TriplesToModify t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndexCitationCount|http://w3id.org/roh/acumulatedPublicationNumber";
+                            t.NewValue = idAux + "|" + fila["numAcumuladoACargar"].value;
+                            t.OldValue = idAux + "|" + fila["numAcumuladoCargadas"].value;
+                            triplesModify[guid].Add(t);
+                        }
+                        else if (fila.ContainsKey("numAcumuladoACargar"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndexCitationCount|http://w3id.org/roh/acumulatedPublicationNumber";
+                            t.NewValue = idAux + "|" + fila["numAcumuladoACargar"].value;
+                            triplesInsert[guid].Add(t);
+                        }
+
+                        if (fila.ContainsKey("numMaxCargado"))
+                        {
+                            TriplesToModify t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndexCitationCount|http://w3id.org/roh/hIndexMax";
+                            t.NewValue = idAux + "|" + fila["numMaxACargar"].value;
+                            t.OldValue = idAux + "|" + fila["numMaxCargado"].value;
+                            triplesModify[guid].Add(t);
+                        }
+                        else if (fila.ContainsKey("numMaxACargar"))
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndexCitationCount|http://w3id.org/roh/hIndexMax";
+                            t.NewValue = idAux + "|" + fila["numMaxACargar"].value;
+                            triplesInsert[guid].Add(t);
+                        }
+                    }
+
+                    if (triplesInsert[guid].Count > 0)
+                    {
+                        var resultado = mResourceApi.InsertPropertiesLoadedResources(triplesInsert);
+                    }
+                    if (triplesModify[guid].Count > 0)
+                    {
+                        var resultado = mResourceApi.ModifyPropertiesLoadedResources(triplesModify);
+                    }
+                });
+            }
+        }
+
+        private void InsercionHIndex(List<Dictionary<string, SparqlObject.Data>> pFilas)
+        {
+            List<string> ids = pFilas.Select(x => x["person"].value).Distinct().ToList();
+            if (ids.Count > 0)
+            {
+                Parallel.ForEach(ids, new ParallelOptions { MaxDegreeOfParallelism = ActualizadorBase.numParallel }, id =>
+                {
+                    Guid guid = mResourceApi.GetShortGuid(id);
+
+                    Dictionary<Guid, List<TriplesToInclude>> triples = new() { { guid, new List<TriplesToInclude>() } };
+                    foreach (Dictionary<string, SparqlObject.Data> fila in pFilas.Where(x => x["person"].value == id))
+                    {
+                        string idAux = mResourceApi.GraphsUrl + "items/HIndex_" + guid.ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        string person = fila["person"].value;
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndex|http://w3id.org/roh/h-index";
+                            t.NewValue = idAux + "|" + fila["hIndexCalculado"].value;
+                            triples[guid].Add(t);
+                        }
+                        {
+                            TriplesToInclude t = new();
+                            t.Predicate = "http://w3id.org/roh/hIndex|http://w3id.org/roh/citationSource";
+                            t.NewValue = idAux + "|" + fila["source"].value;
+                            triples[guid].Add(t);
+                        }
+                    }
+                    if (triples[guid].Count > 0)
+                    {
+                        var resultado = mResourceApi.InsertPropertiesLoadedResources(triples);
+                    }
+                });
             }
         }
 
