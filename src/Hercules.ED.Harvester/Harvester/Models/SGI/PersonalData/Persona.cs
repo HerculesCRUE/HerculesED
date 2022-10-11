@@ -659,8 +659,183 @@ namespace OAI_PMH.Models.SGI.PersonalData
 
             return false;
         }
+        public List<AcademicDegreeBBDD> ObtenerCodigosAcademicDegree(ResourceApi pResourceApi, string pCrisIdentifierPerson, string pTipo)
+        {
+            List<AcademicDegreeBBDD> listaAcademicDegree = new List<AcademicDegreeBBDD>();
+            Dictionary<string, List<string>> dicCodirectores = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> dicCategoryPaths = new Dictionary<string, List<string>>();
 
-        public List<TesisBBDD> ObtenerTesisBBDD(ResourceApi pResourceApi, string pCrisIdentfierPerson)
+            string select = "SELECT ?crisIdentifier";
+            string where = $@"
+            WHERE {{
+                ?cv <http://w3id.org/roh/cvOf> ?persona.
+                ?cv <http://w3id.org/roh/qualifications> ?qualifications.
+                ?qualifications <{pTipo}> ?aux.
+                ?aux <http://vivoweb.org/ontology/core#relatedBy> ?s.
+                OPTIONAL {{ ?s <http://w3id.org/roh/crisIdentifier> ?crisIdentifier }}
+                ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentifierPerson}'.
+            }}";
+
+            SparqlObject resultadoQuery = pResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "thesissupervision" });
+            if (!(resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0))
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    if (fila.ContainsKey("crisIdentifier") && !string.IsNullOrEmpty(fila["crisIdentifier"].value))
+                    {
+                        listaAcademicDegree.Add(new AcademicDegreeBBDD() { crisIdentifier = fila["crisIdentifier"].value });
+                    }
+                }
+            }
+            return listaAcademicDegree;
+        }
+        public List<AcademicDegreeBBDD> ObtenerAcademicDegree(ResourceApi pResourceApi, string pCrisIdentifierPerson, string pTipo)
+        {
+            List<AcademicDegreeBBDD> listaAcademicDegree = new List<AcademicDegreeBBDD>();
+            Dictionary<string, List<string>> dicCodirectores = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> dicCategoryPaths = new Dictionary<string, List<string>>();
+
+            string select = "SELECT *";
+            string where = $@"
+            WHERE {{
+                ?cv <http://w3id.org/roh/cvOf> ?persona.
+                ?cv <http://w3id.org/roh/qualifications> ?qualifications.
+                ?qualifications <{pTipo}> ?aux.
+                ?aux <http://vivoweb.org/ontology/core#relatedBy> ?s.
+                OPTIONAL {{ ?s <http://w3id.org/roh/title> ?title. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/degreeType> ?degreeType. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/postgradeDegree> ?postgradeDegree. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/doctoralProgram> ?doctoralProgram. }}
+                OPTIONAL {{ ?s <http://purl.org/dc/terms/issued> ?issued. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/universityDegreeType> ?universityDegreeType. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/universityDegreeTypeOther> ?universityDegreeTypeOther. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/conductedByTitle> ?conductedByTitle. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/conductedBy> ?conductedBy. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/conductedByType> ?conductedByType. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/conductedByTypeOther> ?conductedByTypeOther. }}
+                OPTIONAL {{ ?s <http://www.w3.org/2006/vcard/ns#locality> ?locality. }}
+                OPTIONAL {{ ?s <http://www.w3.org/2006/vcard/ns#hasCountryName> ?hasCountryName. }}
+                OPTIONAL {{ ?s <http://www.w3.org/2006/vcard/ns#hasRegion> ?hasRegion. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/foreignTitle> ?foreignTitle. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/foreignDegreeType> ?foreignDegreeType. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/approvedDegree> ?approvedDegree. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/approvedDate> ?approvedDate. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/mark> ?mark. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/prize> ?prize. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/prizeOther> ?prizeOther. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/formationType> ?formationType. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/qualification> ?qualification. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/center> ?center. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/durationHours> ?durationHours. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/goals> ?goals. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/trainerNick> ?trainerNick. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/trainerName> ?trainerName. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/trainerFistSurname> ?trainerFistSurname. }}
+                OPTIONAL {{ ?s <http://vivoweb.org/ontology/core#end> ?end. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/formationActivityType> ?formationActivityType. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/formationActivityTypeOther> ?formationActivityTypeOther. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/stayGoal> ?stayGoal. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/stayGoalOther> ?stayGoalOther. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/fundingProgram> ?fundingProgram. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/targetProfile> ?targetProfile. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/performedTasks> ?performedTasks. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/durationYears> ?durationYears. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/durationMonths> ?durationMonths. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/durationDays> ?durationDays. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/deaEntityTitle> ?deaEntityTitle. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/deaEntity> ?deaEntity. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/deaDate> ?deaDate. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/thesiTitle> ?thesiTitle. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/directorNick> ?directorNick. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/directorName> ?directorName. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/directorFirstSurname> ?directorFirstSurname. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/directorSecondSurname> ?directorSecondSurname. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/codirector> ?codirector. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/europeanDoctorate> ?europeanDoctorate. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/europeanDoctorateDate> ?europeanDoctorateDate. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/qualityMention> ?qualityMention. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/doctorExtraordinaryAward> ?doctorExtraordinaryAward. }}
+                OPTIONAL {{ ?s <http://w3id.org/roh/doctorExtraordinaryAwardDate> ?doctorExtraordinaryAwardDate. }}
+                ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentifierPerson}'.
+            }}";
+
+            SparqlObject resultadoQuery = pResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "thesissupervision" });
+            if (!(resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0))
+            {
+                return listaAcademicDegree;
+            }
+
+            if (pTipo.Equals("http://w3id.org/roh/relatedFirstSecondCycles"))
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    listaAcademicDegree.Add(ObtenerCiclosBBDD(fila));
+                }
+            } 
+            else if (pTipo.Equals("http://w3id.org/roh/relatedDoctorates"))
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    listaAcademicDegree.Add(ObtenerDoctoradosBBDD(fila));
+                }
+            } 
+            else if (pTipo.Equals("http://w3id.org/roh/relatedPostGraduates"))
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    listaAcademicDegree.Add(ObtenerPosgradoBBDD(fila));
+                }
+            } 
+            else if (pTipo.Equals("http://w3id.org/roh/relatedSpecialisedTrainings"))
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    listaAcademicDegree.Add(ObtenerFormacionEspecializadaBBDD(fila));
+                }
+            }
+            else if (pTipo.Equals("http://w3id.org/roh/relatedCoursesAndSeminars"))
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    listaAcademicDegree.Add(ObtenerSeminariosCursosBBDD(fila));
+                }
+            }
+            return listaAcademicDegree;
+        }
+        public CiclosBBDD ObtenerCiclosBBDD(Dictionary<string, SparqlObject.Data> fila)
+        {
+            CiclosBBDD ciclo = new CiclosBBDD();
+            ciclo.crisIdentifier = fila["s"].value;
+            ciclo.nombreTitulo = fila["title"].value;
+
+            return ciclo;
+        }
+        public DoctoradosBBDD ObtenerDoctoradosBBDD(Dictionary<string, SparqlObject.Data> fila)
+        {
+            DoctoradosBBDD doctorados = new DoctoradosBBDD();
+            doctorados.tituloTesis = fila["thesiTitle"].value;
+            return doctorados;
+        }
+        public PosgradoBBDD ObtenerPosgradoBBDD(Dictionary<string, SparqlObject.Data> fila)
+        {
+            PosgradoBBDD posgrado = new PosgradoBBDD();
+
+            return posgrado;
+        }
+        public FormacionEspecializadaBBDD ObtenerFormacionEspecializadaBBDD(Dictionary<string, SparqlObject.Data> fila)
+        {
+            FormacionEspecializadaBBDD formacionEspecializada = new FormacionEspecializadaBBDD();
+
+            return formacionEspecializada;
+        }
+        public SeminariosCursosBBDD ObtenerSeminariosCursosBBDD(Dictionary<string, SparqlObject.Data> fila)
+        {
+            SeminariosCursosBBDD seminariosCursos = new SeminariosCursosBBDD();
+
+            return seminariosCursos;
+        }
+
+        public List<TesisBBDD> ObtenerTesisBBDD(ResourceApi pResourceApi, string pCrisIdentifierPerson)
         {
             List<TesisBBDD> listaTesis = new List<TesisBBDD>();
             Dictionary<string, List<string>> dicCodirectores = new Dictionary<string, List<string>>();
@@ -697,7 +872,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
                                 OPTIONAL {{ ?s <http://w3id.org/roh/europeanDoctorate> ?europeanDoctorate. }}
                                 OPTIONAL {{ ?s <http://w3id.org/roh/europeanDoctorateDate> ?europeanDoctorateDate. }}
                                 OPTIONAL {{ ?s <http://vivoweb.org/ontology/core#freeTextKeyword> ?freeTextKeyword. }}
-                                ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentfierPerson}'.
+                                ?persona <http://w3id.org/roh/crisIdentifier> '{pCrisIdentifierPerson}'.
                             }}";
 
             resultadoQuery = pResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "thesissupervision" });

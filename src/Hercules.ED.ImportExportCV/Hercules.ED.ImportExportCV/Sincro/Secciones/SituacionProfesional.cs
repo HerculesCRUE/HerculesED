@@ -4,7 +4,7 @@ using System.Linq;
 using static Models.Entity;
 using Utils;
 using Models;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using System.Runtime.InteropServices;
 using ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases;
 using Hercules.ED.ImportExportCV.Models;

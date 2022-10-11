@@ -1,7 +1,7 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Controllers;
 using Hercules.ED.ImportExportCV.Models;
 using Models;

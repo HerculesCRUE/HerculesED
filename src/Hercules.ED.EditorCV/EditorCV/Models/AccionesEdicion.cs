@@ -15,7 +15,7 @@ using System.Net.Http;
 using EditorCV.Models.Enrichment;
 using EditorCV.Controllers;
 using static EditorCV.Models.Enrichment.EnrichmentResponse;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using EditorCV.Models.Similarity;

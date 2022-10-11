@@ -5,7 +5,7 @@ using Gnoss.ApiWrapper.Model;
 using Harvester.Models.ModelsBBDD;
 using Harvester.Models.RabbitMQ;
 using Harvester.Models.SGI.Autorizaciones;
-using Hercules.MA.ServicioExterno.Controllers.Utilidades;
+using Hercules.CommonsEDMA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
 using OAI_PMH.Models.SGI.GruposInvestigacion;
 using OAI_PMH.Models.SGI.Organization;

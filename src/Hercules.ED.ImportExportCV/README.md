@@ -32,7 +32,7 @@ Los datos leidos se devolverán como un JSON, para posteriormente elegir cual de
 
 ## Importación de CVN
 Dado un identificador del CV, el fichero de CV en formato PDF o XML asociado a la persona y opcionalmente las secciones que se desean incluir, las cuales se deberá pasar el codigo CVN de FECYT. 
-Insertará en BBDD los datos leidos del documento, en caso de que se encuentren duplicidades, se resolverán por medio del [motor de desambiguación](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.DisambiguationEngine).
+Insertará en BBDD los datos leidos del documento, en caso de que se encuentren duplicidades, se resolverán por medio del [motor de desambiguación](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.CommonsEDMA.DisambiguationEngine).
 
 ## Postimportación de CVN
 Dado un identificador del CV, el fichero de CV en formato XML asociado a la persona como array de bytes, el fichero Preimport en formato XML como array de bytes, el listado de identificadores de los recusos a añadir y opcionalmente el listado de identificadores de los recursos concatenados por "|||" con las opciones seleccionadas, las cuales pueden ser:
