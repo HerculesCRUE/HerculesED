@@ -74,13 +74,13 @@ namespace EditorCV.Models.Utils
         /// <returns></returns>
         public static string GetCVFromUser(string userId)
         {
-            string select = $@"select ?cv from <{mResourceApi.GraphsUrl}person.owl>";
+            string select = $@"select ?cv";
             string where = $@"where {{
     ?persona a <http://xmlns.com/foaf/0.1/Person> .
     ?persona <http://w3id.org/roh/gnossUser> <http://gnoss/{userId.ToUpper()}> .
     ?cv <http://w3id.org/roh/cvOf> ?persona .
 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>{ "curriculumvitae" ,"person"});
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 if (fila.ContainsKey("cv"))
@@ -99,14 +99,14 @@ namespace EditorCV.Models.Utils
         /// <returns></returns>
         public static Guid GetUserFromCV(string pCv)
         {
-            string select = $@"select ?user from <{mResourceApi.GraphsUrl}person.owl>";
+            string select = $@"select ?user";
             string where = $@"where {{
     ?persona a <http://xmlns.com/foaf/0.1/Person> .
     ?persona <http://w3id.org/roh/gnossUser> ?user.
     ?cv <http://w3id.org/roh/cvOf> ?persona .
     FILTER(?cv=<{pCv}>)
 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae" , "person" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 if (fila.ContainsKey("user"))
@@ -151,7 +151,7 @@ namespace EditorCV.Models.Utils
         public static List<Guid> GetUsersFromDocument(string pDocument)
         {
             List<Guid> users = new List<Guid>();
-            string select = $@"select ?user  from <{mResourceApi.GraphsUrl}person.owl>"; 
+            string select = $@"select ?user"; 
             string where = $@"where {{
     ?persona a <http://xmlns.com/foaf/0.1/Person> .
     ?persona <http://w3id.org/roh/gnossUser> ?user.
@@ -160,7 +160,7 @@ namespace EditorCV.Models.Utils
     ?authorList <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona.
     FILTER(?document=<{pDocument}>)
 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "document" ,"person"});
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 if (fila.ContainsKey("user"))
