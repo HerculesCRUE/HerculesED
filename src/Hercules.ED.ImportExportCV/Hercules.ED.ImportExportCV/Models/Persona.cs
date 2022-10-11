@@ -1,4 +1,4 @@
-﻿using Hercules.ED.DisambiguationEngine.Models;
+﻿using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using System.Collections.Generic;
 
 namespace Hercules.ED.ImportExportCV.Models

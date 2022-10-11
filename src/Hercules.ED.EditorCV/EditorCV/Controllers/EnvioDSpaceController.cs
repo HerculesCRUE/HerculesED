@@ -22,7 +22,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("EnvioDSpace")]
-        public IActionResult EnvioDSpace([FromForm][Required] string pIdRecurso, [FromForm] List<string> pIdProyecto)
+        public IActionResult EnvioDSpace([FromForm][Required] string pIdRecurso, [Required] IFormFile file)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace EditorCV.Controllers
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
                 AccionesEnvioDSpace accionesEnvioDSpace = new AccionesEnvioDSpace(_Configuracion);
-                accionesEnvioDSpace.EnvioDSpace(pIdRecurso);
+                accionesEnvioDSpace.EnvioDSpace(pIdRecurso, file);
             }
             catch (Exception e)
             {

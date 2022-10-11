@@ -86,7 +86,7 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
-            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-CommonsEDMA_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
             List<Publication> publication = WoSObject.getPublications(orcid, date);
             return publication;
         }
@@ -102,7 +102,7 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetRoByWosId([FromQuery][Required] string pIdWos)
         {
-            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-CommonsEDMA_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
             Publication publication = WoSObject.getPublicationWos(pIdWos);
             return publication;
         }
@@ -118,7 +118,7 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetRoByDoi([FromQuery][Required] string pDoi)
         {
-            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-CommonsEDMA_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
             Publication publication = WoSObject.getPublicationDoi(pDoi);
             return publication;
         }
@@ -134,7 +134,7 @@ namespace WoSConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetCitesByWosId([FromQuery][Required] string pWosId)
         {
-            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-ED_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
+            ROWoSController WoSObject = new ROWoSController("https://wos-api.clarivate.com/", "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8", this.ds, mResourceApi);//, @"C:\Users\mpuer\Documents\GitHub\HerculesED\src\Hercules.ED.ExternalSources\Hércules-CommonsEDMA_Taxonomías_v1.2.xlsx");//"adf94bebeeba8c3042ad5193455740e2");
             List<Publication> publication = WoSObject.getCitingByWosId(pWosId);
             return publication;
         }

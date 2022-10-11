@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Entidad que representa un estado del proyecto.
     /// </summary>
-    public class EstadoProyecto : SGI_Base
+    public class EstadoProyecto
     {
         /// <summary>
         /// Identificador del estado del proyecto

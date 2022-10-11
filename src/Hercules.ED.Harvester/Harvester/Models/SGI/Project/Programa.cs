@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Programa
     /// </summary>
-    public class Programa : SGI_Base
+    public class Programa
     {
         /// <summary>
         /// Identificador del programa.

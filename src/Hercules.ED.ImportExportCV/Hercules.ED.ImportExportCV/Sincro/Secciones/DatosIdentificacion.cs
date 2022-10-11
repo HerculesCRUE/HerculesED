@@ -5,6 +5,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
@@ -165,8 +166,8 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                     string entityAux = Guid.NewGuid().ToString() + "|";
                     entity.properties.AddRange(UtilitySecciones.AddProperty(
-                        new Property(Variables.DatosIdentificacion.otroIdentificador, UtilitySecciones.StringGNOSSID(entityAux, item.Value)),
-                        new Property(Variables.DatosIdentificacion.otroIdentificadorTitulo, UtilitySecciones.StringGNOSSID(entityAux, item.Others))
+                        new Property(Variables.DatosIdentificacion.otroIdentificadorTitulo, UtilitySecciones.StringGNOSSID(entityAux, item.Value)),
+                        new Property(Variables.DatosIdentificacion.otroIdentificador, UtilitySecciones.StringGNOSSID(entityAux, item.Others))
                     ));
                     entity.auxEntityRemove.AddRange(entityBBDD.properties.Where(x => x.prop.Contains("http://w3id.org/roh/otherIds")).SelectMany(x => x.values).Select(x => x.Substring(0, x.IndexOf("@@@"))));
                 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Sexenio
     /// </summary>
-    public class Sexenio : SGI_Base
+    public class Sexenio
     {
         /// <summary>
         /// Número de sexenios reconocidos

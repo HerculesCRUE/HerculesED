@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Proyecto IVA
     /// </summary>
-    public class ProyectoIVA : SGI_Base
+    public class ProyectoIVA
     {
         /// <summary>
         /// Identificador del tipo de finalidad.

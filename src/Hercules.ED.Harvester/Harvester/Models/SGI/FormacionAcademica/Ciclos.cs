@@ -6,7 +6,7 @@ namespace OAI_PMH.Models.SGI.FormacionAcademica
     /// <summary>
     /// Estudios de 1º y 2º ciclo, y antiguos ciclos
     /// </summary>
-    public class Ciclos : SGI_Base
+    public class Ciclos
     {
         /// <summary>
         /// Identificador de la formación.

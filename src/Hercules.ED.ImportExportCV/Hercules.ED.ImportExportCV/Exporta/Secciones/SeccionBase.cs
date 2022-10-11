@@ -105,19 +105,10 @@ namespace ImportadorWebCV.Exporta.Secciones
                 int numLimit = 10000;
                 int offset = 0;
                 bool cargar = true;
+                listadoFrom.Add(pGraph);
                 while (cargar)
                 {
                     string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
-                    string from = "";
-                    if (listadoFrom != null)
-                    {
-                        foreach (string cadena in listadoFrom)
-                        {
-                            from += " FROM <" + mResourceApi.GraphsUrl + cadena + ".owl>";
-                        }
-                        selectID = selectID + from;
-                    }
-
                     string whereID = $@"where{{
         ?x <http://gnoss/hasEntidad> ?s . 
         ?s ?p ?o .
@@ -129,7 +120,7 @@ namespace ImportadorWebCV.Exporta.Secciones
     order by desc(?s) desc(?p) desc(?o)
 }} limit {numLimit} offset {offset}";
 
-                    SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, pGraph);
+                    SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(selectID, whereID, listadoFrom);
                     foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                     {
                         if (!listResult.ContainsKey(fila["s"].value))

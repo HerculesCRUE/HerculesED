@@ -3,7 +3,7 @@
     /// <summary>
     /// Entidad financiadora
     /// </summary>
-    public class EntidadFinanciadora : SGI_Base
+    public class EntidadFinanciadora
     {
         /// <summary>
         /// Referencia de la entidad dentro del Sistema de gestión de empresas corporativo asociado al dato recogido sobre el campo Entidades financiadoras del CVN.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Tipo de trabajo dirigido.
     /// </summary>
-    public class TipoTrabajoDirigido : SGI_Base
+    public class TipoTrabajoDirigido
     {
         /// <summary>
         /// Identificador del tipo de trabajo-proyecto dirigido

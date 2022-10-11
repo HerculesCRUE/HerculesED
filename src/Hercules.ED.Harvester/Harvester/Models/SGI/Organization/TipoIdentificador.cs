@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.Organization
     /// <summary>
     /// Tipo de identificador fiscal de la empresa.
     /// </summary>
-    public class TipoIdentificador : SGI_Base
+    public class TipoIdentificador
     {
         /// <summary>
         /// Identificador de la entidad TipoIdentificador.

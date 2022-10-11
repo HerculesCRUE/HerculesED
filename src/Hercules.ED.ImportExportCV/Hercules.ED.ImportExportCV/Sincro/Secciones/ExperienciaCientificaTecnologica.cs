@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static Models.Entity;
 using Utils;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases;
 using System.Runtime.InteropServices;
 using Hercules.ED.ImportExportCV.Models;

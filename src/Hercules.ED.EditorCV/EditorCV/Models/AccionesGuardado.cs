@@ -1143,7 +1143,7 @@ namespace EditorCV.Models
 
         private Person GetPerson(string pIdPerson)
         {
-            string select = $@"select distinct ?ORCID ?name ?departamento from <{mResourceApi.GraphsUrl}department.owl>";
+            string select = $@"select distinct ?ORCID ?name ?departamento";
             string where = $@"where
                                 {{
                                     ?personID <http://xmlns.com/foaf/0.1/name> ?name.
@@ -1156,7 +1156,7 @@ namespace EditorCV.Models
                                     }}
                                     FILTER(?personID=<{pIdPerson}>)
                                 }}";
-            SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "person");
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person" ,"department"});
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
             {
                 Person persona = new Person();

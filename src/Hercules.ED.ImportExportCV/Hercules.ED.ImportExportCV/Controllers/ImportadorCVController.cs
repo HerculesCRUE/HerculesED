@@ -17,6 +17,7 @@ using Models;
 using ImportadorWebCV.Exporta.Secciones;
 using Gnoss.ApiWrapper;
 using ImportadorWebCV;
+using Utils;
 
 namespace Hercules.ED.ImportExportCV.Controllers
 {
@@ -37,14 +38,58 @@ namespace Hercules.ED.ImportExportCV.Controllers
             _Configuracion = pConfig;
         }
 
+        [HttpGet("InsertaORCID")]
+        public ActionResult InsertaORCID()
+        {
+            try
+            {
+                string pathFichero = _Configuracion.GetPathFichero();
+                string path = _Configuracion.GetPathCarpeta();
+                List<string> listadoArchivos = Directory.GetFiles(path).ToList();
+                List<string> listadoInsercion = new List<string>();
+                foreach (string archivo in listadoArchivos)
+                {
+                    using var stream = new MemoryStream(System.IO.File.ReadAllBytes(archivo).ToArray());
+                    string nombreArchivo = archivo.Split("\\").Last();
+
+                    //Compruebo que sea valido el identificador del archivo
+                    if (!UtilityCV.ComprobarCRIS(nombreArchivo.Split(".").First()))
+                    {
+                        continue;
+                    }
+                    string crisArchivo = nombreArchivo.Split(".").First().Substring(0, nombreArchivo.Split(".").First().Length - 1);
+
+                    FormFile formFile = new FormFile(stream, 0, stream.Length, "streamFile", nombreArchivo);
+
+                    SincroDatos sincro = new SincroDatos(_Configuracion, formFile);
+                    if (sincro.getCVN() == null || sincro.getCVN().numElementos == 0 || sincro.getCVN().errorCode != 0)
+                    {
+                        continue;
+                    }
+
+                    string ORCID = sincro.SincroORCID(sincro, crisArchivo);
+                    if (!string.IsNullOrEmpty(ORCID))
+                    {
+                        listadoInsercion.Add(ORCID);
+                    }
+                }
+
+                return Ok(listadoInsercion);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("LecturaDatos")]
-        public ActionResult lecturaDatos()
+        public ActionResult LecturaDatos()
         {
                 return Ok();
         }
 
         [HttpGet("LecturaCarpeta")]
-        public ActionResult lecturaCarpeta()
+        public ActionResult LecturaCarpeta()
         {
                 return Ok();
         }
@@ -54,6 +99,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// </summary>
         /// <param name="pCVID">ID curriculum</param>
         /// <param name="File">Archivo en formato PDF o XML</param>
+        /// <param name="Secciones">Listado de secciones a importar</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Importar")]
         public ActionResult Importar([FromHeader][Required] string pCVID, [Required] IFormFile File, [FromHeader][Optional] List<string> Secciones)
@@ -114,9 +160,12 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// </summary>
         /// <param name="pCVID">ID curriculum</param>
         /// <param name="File">Archivo en formato PDF o XML</param>
+        /// <param name="petitionID">Identificador para la petición de estado</param>
+        /// <param name="Secciones">Listado de secciones a importar</param>
         /// <returns>Json con los datos a preimportar</returns>
         [HttpPost("Preimportar")]
-        public ActionResult Preimportar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Required] string petitionID, [FromForm][Optional] List<string> Secciones)
+        public ActionResult Preimportar([FromForm][Required] string pCVID, [Required] IFormFile File,
+            [FromForm][Required] string petitionID, [FromForm][Optional] List<string> Secciones)
         {
             try
             {
@@ -175,11 +224,13 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="pCVID">Identificador del curriculumvitae</param>
         /// <param name="file">Archivo XML</param>
         /// <param name="filePreimport">Preimport del archivo XML tras tratarlo en Preimportar</param>
+        /// <param name="petitionID">Identificador para la petición de estado</param>
         /// <param name="listaId">Listado de identificadores de los recursos a añadir</param>
         /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Postimportar")]
-        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport, [FromForm][Required] string petitionID, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
+        public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport,
+            [FromForm][Required] string petitionID, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
         {
             try
             {

@@ -92,7 +92,6 @@ namespace EditorCV.Controllers
             }
         }
 
-
         /// <summary>
         /// Devuelve el estado actual de la peticion con identificador <paramref name="petitionID"/>
         /// </summary>

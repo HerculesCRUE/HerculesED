@@ -3,7 +3,7 @@
     /// <summary>
     /// Indice de impacto
     /// </summary>
-    public class IndiceImpacto : SGI_Base
+    public class IndiceImpacto
     {
         /// <summary>
         /// Tipo de la fuente de impacto. 

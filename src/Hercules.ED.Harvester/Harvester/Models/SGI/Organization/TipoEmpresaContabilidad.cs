@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.Organization
     /// <summary>
     /// Tipo de empresa de Contabilidad
     /// </summary>
-    public class TipoEmpresaContabilidad : SGI_Base
+    public class TipoEmpresaContabilidad
     {
         /// <summary>
         /// Identificador de la entidad TipoEmpresaContabilidad.

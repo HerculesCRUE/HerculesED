@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.Organization
     /// <summary>
     /// Tipo de empresa
     /// </summary>
-    public class TipoEmpresa : SGI_Base
+    public class TipoEmpresa
     {
         /// <summary>
         /// Identificador de la entidad TipoEmpresa.

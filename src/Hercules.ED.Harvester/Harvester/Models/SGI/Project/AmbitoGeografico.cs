@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.Project
 {
-    public class AmbitoGeografico : SGI_Base
+    public class AmbitoGeografico
     {
         public string Id { get; set; }
         public string CreatedBy { get; set; }

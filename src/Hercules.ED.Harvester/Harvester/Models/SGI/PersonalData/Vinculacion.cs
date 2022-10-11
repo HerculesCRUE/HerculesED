@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Contiene los datos de vinculación de una persona a la estructura organizativa Universitaria.
     /// </summary>
-    public class Vinculacion : SGI_Base
+    public class Vinculacion
     {
         /// <summary>
         /// Vinculacion categoria profesional

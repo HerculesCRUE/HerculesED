@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Tipo ambito geografico
     /// </summary>
-    public class TipoAmbitoGeografico : SGI_Base
+    public class TipoAmbitoGeografico
     {
         /// <summary>
         /// Identificador del tipo de ámbito geográfico.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Contiene los datos de la solicitud de autorización para participar en un proyecto externo
     /// </summary>
-    public class Autorizacion : SGI_Base
+    public class Autorizacion
     {
         /// <summary>
         /// Identificador de la solicitud de autorización

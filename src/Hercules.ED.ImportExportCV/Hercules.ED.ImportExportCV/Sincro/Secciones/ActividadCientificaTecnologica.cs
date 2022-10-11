@@ -1,4 +1,4 @@
-﻿using Hercules.ED.DisambiguationEngine.Models;
+﻿using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Controllers;
 using Hercules.ED.ImportExportCV.Models;
 using Hercules.ED.ImportExportCV.Models.FuentesExternas;
@@ -130,14 +130,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             else
             {
-                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
+                if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/GeneralQualityIndicatorCV_"))
                 {
-                    if (listadoIdBBDD.ElementAt(0).StartsWith("http://gnoss.com/items/GeneralQualityIndicatorCV_"))
-                    {
-                        //4º Actualizamos la entidad
-                        UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
-                        listadoIdBBDD.RemoveAt(0);
-                    }
+                    //4º Actualizamos la entidad
+                    UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
+                    listadoIdBBDD.RemoveAt(0);
                 }
                 else
                 {

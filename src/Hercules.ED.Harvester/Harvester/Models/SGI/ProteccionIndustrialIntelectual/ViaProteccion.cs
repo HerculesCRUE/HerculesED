@@ -3,7 +3,7 @@
     /// <summary>
     /// ViaProteccion
     /// </summary>
-    public class ViaProteccion : SGI_Base
+    public class ViaProteccion 
     {
         /// <summary>
         /// Identificador.

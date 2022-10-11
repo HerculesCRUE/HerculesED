@@ -27,7 +27,41 @@ namespace Utils
         private static Dictionary<string, string> dicDOI = new Dictionary<string, string>();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
 
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+
+        public static Dictionary<string, string> GetIDPersona(string crisID)
+        {
+            Dictionary<string, string> PersonaORCID = new Dictionary<string, string>();
+            string persona="";
+            string ORCID="";
+
+            string select = $@"select distinct ?cv ?person ?cris ?ORCID";
+            string where = $@"
+where{{
+    ?cv a <http://w3id.org/roh/CV> .
+    ?cv ?p ?person.
+    ?person a <http://xmlns.com/foaf/0.1/Person> .
+    ?person <http://w3id.org/roh/crisIdentifier> ?cris .
+    ?person <http://w3id.org/roh/crisIdentifier> ?ORCID .
+    FILTER(?cris='{crisID}')
+}} ";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
+
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("person"))
+                {
+                    persona = fila["person"].value;
+                }
+                if (fila.ContainsKey("ORCID"))
+                {
+                    ORCID = fila["ORCID"].value;
+                }
+            }
+
+            PersonaORCID.Add(persona, ORCID);
+            return PersonaORCID;
+        }
 
         /// <summary>
         /// Devuelve el identificador de CV a partir del crisIdentifier
@@ -36,8 +70,7 @@ namespace Utils
         /// <returns></returns>
         public static string GetID(string crisID)
         {
-            string select = $@"select distinct ?cv ?person ?cris
-from <http://gnoss.com/person.owl>";
+            string select = $@"select distinct ?cv ?person ?cris";
             string where = $@"
 where{{
     ?cv a <http://w3id.org/roh/CV> .
@@ -46,7 +79,7 @@ where{{
     ?person <http://w3id.org/roh/crisIdentifier> ?cris .
     FILTER(?cris='{crisID}')
 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
 
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
@@ -739,7 +772,7 @@ where{{
 
             foreach (CvnItemBeanCvnExternalPKBean identificador in listadoIDs)
             {
-                if(identificador.Type == null)
+                if (identificador.Type == null)
                 {
                     continue;
                 }

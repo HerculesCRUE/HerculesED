@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Contiene los datos de una entidad convocante. 
     /// </summary>
-    public class ProyectoEntidadConvocante : SGI_Base
+    public class ProyectoEntidadConvocante
     {
         /// <summary>
         /// Identificador de la entidad convocante del proyecto.

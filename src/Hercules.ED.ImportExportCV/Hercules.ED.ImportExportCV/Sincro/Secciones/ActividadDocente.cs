@@ -6,7 +6,7 @@ using Utils;
 using Models;
 using System.Runtime.InteropServices;
 using Hercules.ED.ImportExportCV.Models;
-using Hercules.ED.DisambiguationEngine.Models;
+using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases;
 using Hercules.ED.ImportExportCV.Controllers;
 

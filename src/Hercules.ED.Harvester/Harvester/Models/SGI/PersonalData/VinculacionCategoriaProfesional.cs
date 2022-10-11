@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.PersonalData
     /// <summary>
     /// Vinculación categoría profesional
     /// </summary>
-    public class VinculacionCategoriaProfesional : SGI_Base
+    public class VinculacionCategoriaProfesional 
     {
         /// <summary>
         /// Categoría profesional de la persona

@@ -7,7 +7,7 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
     /// <summary>
     /// Dirección de tesis doctorales y/o proyectos fin de carrera
     /// </summary>
-    public class Tesis : SGI_Base
+    public class Tesis
     {
         /// <summary>
         /// Identificador del doctorado
@@ -52,7 +52,7 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
         /// <summary>
         /// Nombre de los/las co-directores/as que han intervenido
         /// </summary>
-        public string CoDirectorTesis { get; set; }
+        public Director CoDirectorTesis { get; set; }
         /// <summary>
         /// Indica si se ha recibido una mención europea
         /// </summary>

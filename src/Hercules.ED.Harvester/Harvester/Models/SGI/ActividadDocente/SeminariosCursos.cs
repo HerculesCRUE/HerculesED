@@ -6,7 +6,7 @@ namespace OAI_PMH.Models.SGI.ActividadDocente
     /// <summary>
     /// Cursos y seminarios impartidos orientados a la formación docente universitaria
     /// </summary>
-    public class SeminariosCursos : SGI_Base
+    public class SeminariosCursos
     {
         /// <summary>
         /// Identificador de la formación

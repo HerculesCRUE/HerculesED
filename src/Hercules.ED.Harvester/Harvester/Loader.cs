@@ -2,19 +2,18 @@
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
-using Harvester.Models;
 using Harvester.Models.ModelsBBDD;
 using Harvester.Models.RabbitMQ;
 using Harvester.Models.SGI.Autorizaciones;
-using Hercules.MA.ServicioExterno.Controllers.Utilidades;
+using Hercules.CommonsEDMA.ServicioExterno.Controllers.Utilidades;
 using Newtonsoft.Json;
-using OAI_PMH.Models.SGI;
 using OAI_PMH.Models.SGI.GruposInvestigacion;
 using OAI_PMH.Models.SGI.Organization;
 using OAI_PMH.Models.SGI.PersonalData;
 using OAI_PMH.Models.SGI.Project;
 using OAI_PMH.Models.SGI.ProteccionIndustrialIntelectual;
 using ProjectauthorizationOntology;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +21,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Utilidades;
 
@@ -58,106 +56,103 @@ namespace Harvester
         public void LoadMainEntities()
         {
             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(_Config);
+            string expresionCron = _Config.GetCronExpression();
 
-            // TODO: Manu.
-            //Dictionary<string, Tuple<string, string>> dicOrganizaciones = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicProyectos = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicAutorizaciones = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicGrupos = new Dictionary<string, Tuple<string, string>>();
-            //Dictionary<string, Tuple<string, string>> dicInvenciones = new Dictionary<string, Tuple<string, string>>();
-            //IniciacionDiccionarios(ref dicProyectos, ref dicOrganizaciones, ref dicAutorizaciones, ref dicGrupos, ref dicInvenciones);
-
-            // Personas a desnormalizar.
-            HashSet<string> listaIdsPersonas = new HashSet<string>();
             UtilidadesGeneral.IniciadorDiccionarioPaises();
             UtilidadesGeneral.IniciadorDiccionarioRegion();
 
-            // Compruebo que no hay ficheros pendientes de procesar.
+            while (true)
+            {
+                try
+                {
+                    var expression = new CronExpression(expresionCron);
+                    DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
+
+                    if (time.HasValue)
+                    {
+                        Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
+
+                        // Carga de datos.
+                        CargarDatosSGI(rabbitServiceWriterDenormalizer);
+
+                        // Fecha de la última actualización.
+                        //string fecha = "1500-01-01T00:00:00Z";
+                        string fecha = LeerFicheroFecha(_Config);
+
+                        // Genero los ficheros con los datos a procesar desde la fecha.
+                        GuardarIdentificadores(_Config, "Organizacion", fecha);
+                        GuardarIdentificadores(_Config, "Persona", fecha);
+                        GuardarIdentificadores(_Config, "Proyecto", fecha);
+                        GuardarIdentificadores(_Config, "PRC", fecha, true);
+                        GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
+                        GuardarIdentificadores(_Config, "Grupo", fecha);
+                        GuardarIdentificadores(_Config, "Invencion", fecha);
+
+                        // Actualizo la última fecha de carga.
+                        UpdateLastDate(_Config, DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"));
+
+                        // Carga de datos.
+                        CargarDatosSGI(rabbitServiceWriterDenormalizer);
+                    }
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(60000);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtiene los datos del SGI y los carga.
+        /// </summary>
+        /// <param name="pRabbitConf"></param>
+        public void CargarDatosSGI(RabbitServiceWriterDenormalizer pRabbitConf)
+        {
+            Dictionary<string, HashSet<string>> dicIdentificadores = new Dictionary<string, HashSet<string>>();
+            dicIdentificadores.Add("organization", new HashSet<string>());
+            dicIdentificadores.Add("person", new HashSet<string>());
+            dicIdentificadores.Add("project", new HashSet<string>());
+            dicIdentificadores.Add("group", new HashSet<string>());
+            dicIdentificadores.Add("patent", new HashSet<string>());
+            dicIdentificadores.Add("projectauthorization", new HashSet<string>());
+            dicIdentificadores.Add("document", new HashSet<string>());
+
+            Dictionary<string, Dictionary<string, string>> dicRutas = new Dictionary<string, Dictionary<string, string>>();
+            dicRutas.Add("Organizacion", new Dictionary<string, string>() { { $@"{_Config.GetLogCargas()}\Organizacion\pending", $@"{_Config.GetLogCargas()}\Organizacion\processed" } });
+            dicRutas.Add("Persona", new Dictionary<string, string>() { { $@"{_Config.GetLogCargas()}\Persona\pending", $@"{_Config.GetLogCargas()}\Persona\processed" } });
+            dicRutas.Add("Proyecto", new Dictionary<string, string>() { { $@"{_Config.GetLogCargas()}\Proyecto\pending", $@"{_Config.GetLogCargas()}\Proyecto\processed" } });
+            dicRutas.Add("Grupo", new Dictionary<string, string>() { { $@"{_Config.GetLogCargas()}\Grupo\pending", $@"{_Config.GetLogCargas()}\Grupo\processed" } });
+            dicRutas.Add("Invencion", new Dictionary<string, string>() { { $@"{_Config.GetLogCargas()}\Invencion\pending", $@"{_Config.GetLogCargas()}\Invencion\processed" } });
+            dicRutas.Add("AutorizacionProyecto", new Dictionary<string, string>() { { $@"{_Config.GetLogCargas()}\AutorizacionProyecto\pending", $@"{_Config.GetLogCargas()}\AutorizacionProyecto\processed" } });
+            dicRutas.Add("PRC", new Dictionary<string, string>() { { $@"{_Config.GetLogCargas()}\PRC\pending", $@"{_Config.GetLogCargas()}\PRC\processed" } });
 
             // Organizaciones.
             mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion");
+            ProcesarFichero(_Config, "Organizacion", dicIdentificadores, dicRutas, pRabbitConf);
 
             // Personas. 
             mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
+            ProcesarFichero(_Config, "Persona", dicIdentificadores, dicRutas, pRabbitConf);
 
             // Proyectos.
             mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
+            ProcesarFichero(_Config, "Proyecto", dicIdentificadores, dicRutas, pRabbitConf);
 
             // Document.
             mResourceApi.ChangeOntoly("document");
-            ProcesarFichero(_Config, "PRC");
+            ProcesarFichero(_Config, "PRC", dicIdentificadores, dicRutas, pRabbitConf);
 
             // Autorizaciones.
             mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
+            ProcesarFichero(_Config, "AutorizacionProyecto", dicIdentificadores, dicRutas, pRabbitConf);
 
             // Grupos.
             mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
+            ProcesarFichero(_Config, "Grupo", dicIdentificadores, dicRutas, pRabbitConf);
 
             // Patentes.
             mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
-
-            // Inserción de personas en la cola de Rabbit.
-            if (listaIdsPersonas.Count > 0)
-            {
-                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
-            }
-
-            // TODO: Fecha actual
-            // Fecha de la última actualización.
-            string fecha = "1500-01-01T00:00:00Z";
-
-            // Genero los ficheros con los datos a procesar desde la fecha.
-            GuardarIdentificadores(_Config, "Organizacion", fecha);
-            GuardarIdentificadores(_Config, "Persona", fecha);
-            GuardarIdentificadores(_Config, "Proyecto", fecha);
-            GuardarIdentificadores(_Config, "PRC", fecha, true);
-            GuardarIdentificadores(_Config, "AutorizacionProyecto", fecha);
-            GuardarIdentificadores(_Config, "Grupo", fecha);
-            GuardarIdentificadores(_Config, "Invencion", fecha);
-
-            // TODO: Leerlo de fichero.
-            // Actualizo la última fecha de carga.
-            UpdateLastDate(_Config, fecha);
-
-            // Organizaciones.
-            mResourceApi.ChangeOntoly("organization");
-            ProcesarFichero(_Config, "Organizacion");
-
-            // Personas. 
-            mResourceApi.ChangeOntoly("person");
-            ProcesarFichero(_Config, "Persona", pListaPersonas: listaIdsPersonas);
-
-            // Proyectos.
-            mResourceApi.ChangeOntoly("project");
-            ProcesarFichero(_Config, "Proyecto", pListaPersonas: listaIdsPersonas);
-
-            // Document.
-            mResourceApi.ChangeOntoly("document");
-            ProcesarFichero(_Config, "PRC");
-
-            // Autorizaciones.
-            mResourceApi.ChangeOntoly("projectauthorization");
-            ProcesarFichero(_Config, "AutorizacionProyecto");
-
-            // Grupos.
-            mResourceApi.ChangeOntoly("group");
-            ProcesarFichero(_Config, "Grupo", pListaPersonas: listaIdsPersonas);
-
-            // Patentes.
-            mResourceApi.ChangeOntoly("patent");
-            ProcesarFichero(_Config, "Invencion", pListaPersonas: listaIdsPersonas);
-
-            // Inserción de personas en la cola de Rabbit.
-            if (listaIdsPersonas.Count > 0)
-            {
-                rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, listaIdsPersonas));
-            }
+            ProcesarFichero(_Config, "Invencion", dicIdentificadores, dicRutas, pRabbitConf);            
         }
 
         /// <summary>
@@ -179,6 +174,39 @@ namespace Harvester
         }
 
         /// <summary>
+        /// Inserción a la cola.
+        /// </summary>
+        /// <param name="pRabbit"></param>
+        /// <param name="pListaIds"></param>
+        public void InsertToQueue(RabbitServiceWriterDenormalizer pRabbit, HashSet<string> pListaIds, string pTipo)
+        {
+            if (pListaIds.Count > 0)
+            {
+                switch (pTipo)
+                {
+                    case "person":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, pListaIds));
+                        break;
+                    case "project":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.project, pListaIds));
+                        break;
+                    case "group":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.group, pListaIds));
+                        break;
+                    case "patent":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.patent, pListaIds));
+                        break;
+                    case "organization":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.organization, pListaIds));
+                        break;
+                    case "projectauthorization":
+                        pRabbit.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.projectauthorization, pListaIds));
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
         /// Obtiene los datos de los ficheros y los carga.
         /// </summary>
         /// <param name="pConfig"></param>
@@ -186,10 +214,10 @@ namespace Harvester
         /// <param name="dicOrganizaciones"></param>
         /// <param name="dicProyectos"></param>
         /// <param name="dicPersonas"></param>
-        public void ProcesarFichero(ReadConfig pConfig, string pSet, [Optional] HashSet<string> pListaPersonas)
+        public void ProcesarFichero(ReadConfig pConfig, string pSet, Dictionary<string, HashSet<string>> pDicIdentificadores, Dictionary<string, Dictionary<string, string>> pDicRutas, RabbitServiceWriterDenormalizer pRabbitConf)
         {
-            string directorioPendientes = $@"{pConfig.GetLogCargas()}\{pSet}\pending\";
-            string directorioProcesados = $@"{pConfig.GetLogCargas()}\{pSet}\processed";
+            string directorioPendientes = pDicRutas[pSet].First().Key;
+            string directorioProcesados = pDicRutas[pSet].First().Value;
 
             if (!Directory.Exists(directorioPendientes))
             {
@@ -202,48 +230,21 @@ namespace Harvester
 
             foreach (string fichero in Directory.EnumerateFiles(directorioPendientes))
             {
-                string ficheroProcesado = directorioProcesados + fichero.Substring(fichero.LastIndexOf("\\"));
-                List<string> idsACargar = File.ReadAllLines(fichero).ToList();
+                pDicRutas[pSet][directorioPendientes] += fichero.Substring(fichero.LastIndexOf("\\"));
+                List<string> idsACargar = File.ReadAllLines(fichero).Distinct().ToList();
 
-                if (File.Exists(ficheroProcesado))
+                if (File.Exists(pDicRutas[pSet][directorioPendientes]))
                 {
-                    List<string> listaIdsCargados = File.ReadAllLines(ficheroProcesado).ToList();
-                    idsACargar = idsACargar.Except(listaIdsCargados).ToList();
+                    List<string> listaIdsCargados = File.ReadAllLines(pDicRutas[pSet][directorioPendientes]).Distinct().ToList();
+                    idsACargar = idsACargar.Except(listaIdsCargados).Distinct().ToList();
                 }
+                else
+                {
+                    FileStream ficheroAux = File.Create(pDicRutas[pSet][directorioPendientes]);
+                    ficheroAux.Close();
+                }
+
                 idsACargar.Sort();
-
-                string xmlResult = string.Empty;
-                XmlSerializer xmlSerializer = null;
-                ComplexOntologyResource resource = null;
-
-                // Obtención de personas de BBDD con los IDs obtenidos por el SGI.
-                Dictionary<string, string> dicDatosBBDD = new Dictionary<string, string>();
-                switch (pSet)
-                {
-                    case "Organizacion":
-                        dicDatosBBDD = GetDataBBDD(idsACargar, "organization");
-                        break;
-
-                    case "Persona":
-                        dicDatosBBDD = GetDataBBDD(idsACargar, "person");
-                        break;
-
-                    case "Proyecto":
-                        dicDatosBBDD = GetDataBBDD(idsACargar, "project");
-                        break;
-
-                    case "AutorizacionProyecto":
-                        dicDatosBBDD = GetDataBBDD(idsACargar, "projectauthorization");
-                        break;
-
-                    case "Invencion":
-                        dicDatosBBDD = GetDataBBDD(idsACargar, "patent");
-                        break;
-
-                    case "Grupo":
-                        dicDatosBBDD = GetDataBBDD(idsACargar, "group");
-                        break;
-                }
 
                 foreach (string id in idsACargar)
                 {
@@ -252,174 +253,43 @@ namespace Harvester
                         #region - Organizacion
                         case "Organizacion":
 
-                            // Obtención de datos en bruto.
-                            Empresa organization = new Empresa();
-                            xmlResult = harvesterServices.GetRecord(id, pConfig);
-
-                            // Si el dato llega mal, skip.
-                            if (string.IsNullOrEmpty(xmlResult))
+                            Empresa empresa = Empresa.GetOrganizacionSGI(harvesterServices, _Config, id, pDicRutas);
+                            if (empresa != null && !string.IsNullOrEmpty(empresa.Nombre))
                             {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
+                                string idGnossOrg = empresa.Cargar(harvesterServices, pConfig, mResourceApi, "organization", pDicIdentificadores, pDicRutas, pRabbitConf);
+                                pDicIdentificadores["organization"].Add(idGnossOrg);
                             }
-
-                            xmlSerializer = new(typeof(Empresa));
-                            using (StringReader sr = new(xmlResult))
-                            {
-                                organization = (Empresa)xmlSerializer.Deserialize(sr);
-                            }
-
-                            // Si la organización no tiene id o título, skip.
-                            if (string.IsNullOrEmpty(organization.Id) || string.IsNullOrEmpty(organization.Nombre))
-                            {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
-                            }
-
-                            // Cambio de modelo.
-                            OrganizationOntology.Organization empresaOntology = CrearOrganizacionOntology(organization);
-
-                            if (dicDatosBBDD.ContainsKey(empresaOntology.Roh_crisIdentifier))
-                            {
-                                // Modificación.
-                                string[] idSplit = dicDatosBBDD[empresaOntology.Roh_crisIdentifier].Split('_');
-                                resource = empresaOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            }
-                            else
-                            {
-                                // Carga.
-                                resource = empresaOntology.ToGnossApiResource(mResourceApi, null);
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                dicDatosBBDD[empresaOntology.Roh_crisIdentifier] = resource.GnossId;
-                            }
-
-                            // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            File.AppendAllText(pDicRutas[pSet][directorioPendientes], id + Environment.NewLine);
                             break;
+
                         #endregion
 
                         #region - Persona
                         case "Persona":
-                            // Obtención de datos en bruto.
-                            if (ComprobarID(id.Split("_")[1]))
+
+                            Persona persona = Persona.GetPersonaSGI(harvesterServices, _Config, id, pDicRutas);
+                            if (persona != null && !string.IsNullOrEmpty(persona.Nombre))
                             {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
+                                string idGnossPersona = persona.Cargar(harvesterServices, pConfig, mResourceApi, "person", pDicIdentificadores, pDicRutas, pRabbitConf, true);
+                                pDicIdentificadores["person"].Add(idGnossPersona);
                             }
-                            Persona persona = new Persona();
-                            xmlResult = harvesterServices.GetRecord(id, pConfig);
-
-                            if (string.IsNullOrEmpty(xmlResult))
-                            {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
-                            }
-
-                            xmlSerializer = new(typeof(Persona));
-                            using (StringReader sr = new(xmlResult))
-                            {
-                                persona = (Persona)xmlSerializer.Deserialize(sr);
-                            }
-
-                            // Cambio de modelo. TODO: Mirar propiedades.
-                            PersonOntology.Person personOntology = CrearPersona(persona);
-
-                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
-                            if (string.IsNullOrEmpty(personOntology.Roh_crisIdentifier) && string.IsNullOrEmpty(personOntology.Foaf_name)
-                                && string.IsNullOrEmpty(personOntology.Foaf_firstName) && string.IsNullOrEmpty(personOntology.Foaf_lastName))
-                            {
-                                // Guardamos el ID cargado.
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
-                            }
-
-                            if (dicDatosBBDD.ContainsKey(personOntology.Roh_crisIdentifier))
-                            {
-                                // GnossId
-                                string[] idSplit = dicDatosBBDD[personOntology.Roh_crisIdentifier].Split('_');
-
-                                // Fusión de datos.
-                                PersonOntology.Person personaBBDD = DatosPersonaNoBorrar(idSplit.ToString());
-                                FusionarPersonas(personOntology, personaBBDD);
-
-                                // Modificación.
-                                resource = personOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-
-                                // Agregar a la lista de IDs
-                                pListaPersonas.Add(dicDatosBBDD[personOntology.Roh_crisIdentifier]);
-                            }
-                            else
-                            {
-                                // Carga.
-                                resource = personOntology.ToGnossApiResource(mResourceApi, null);
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
-
-                                // Guardado de la persona en el diccionario.
-                                dicDatosBBDD[personOntology.Roh_crisIdentifier] = resource.GnossId;
-
-                                // Agregar a la lista de IDs
-                                pListaPersonas.Add(dicDatosBBDD[personOntology.Roh_crisIdentifier]);
-                            }
-
-                            // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            File.AppendAllText(pDicRutas[pSet][directorioPendientes], id + Environment.NewLine);
                             break;
+                                                    
                         #endregion
 
                         #region - Proyecto
                         case "Proyecto":
 
-                            // Obtención de datos en bruto.
-                            Proyecto proyecto = new Proyecto();
-                            xmlResult = harvesterServices.GetRecord(id, pConfig);
-
-                            if (string.IsNullOrEmpty(xmlResult))
+                            Proyecto proyectoSGI = Proyecto.GetProyectoSGI(harvesterServices, _Config, id, pDicRutas);
+                            if (proyectoSGI != null && !string.IsNullOrEmpty(proyectoSGI.Titulo))
                             {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
+                                string idGnossProy = proyectoSGI.Cargar(harvesterServices, pConfig, mResourceApi, "project", pDicIdentificadores, pDicRutas, pRabbitConf);
+                                pDicIdentificadores["project"].Add(idGnossProy);
                             }
-
-                            xmlSerializer = new(typeof(Proyecto));
-                            using (StringReader sr = new(xmlResult))
-                            {
-                                proyecto = (Proyecto)xmlSerializer.Deserialize(sr);
-                            }
-
-                            // TODO: Manu. ¿?
-                            //UtilidadesLoader.CreacionAuxiliaresProyecto(proyecto, dicProyectos, dicPersonas, dicOrganizaciones, mResourceApi: mResourceApi);
-
-                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
-                            if (string.IsNullOrEmpty(proyecto.Id.ToString()) && string.IsNullOrEmpty(proyecto.Titulo))
-                            {
-                                // Guardamos el ID cargado.
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
-                            }
-
-                            // Cambio de modelo.
-                            ProjectOntology.Project projectOntology = CrearProyecto(proyecto, pListaPersonas: pListaPersonas);
-
-                            mResourceApi.ChangeOntoly("project");
-                            if (dicDatosBBDD.ContainsKey(projectOntology.Roh_crisIdentifier))
-                            {
-                                // Modificación.
-                                string[] idSplit = dicDatosBBDD[projectOntology.Roh_crisIdentifier].Split('_');
-                                resource = projectOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            }
-                            else
-                            {
-                                // Carga.
-                                resource = projectOntology.ToGnossApiResource(mResourceApi, null);
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                dicDatosBBDD[projectOntology.Roh_crisIdentifier] = resource.GnossId;
-                            }
-
-                            // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            File.AppendAllText(pDicRutas[pSet][directorioPendientes], id + Environment.NewLine);
                             break;
+                        
                         #endregion
 
                         #region - PRC
@@ -487,163 +357,50 @@ namespace Harvester
                             }
 
                             // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            File.AppendAllText(pDicRutas[pSet][directorioPendientes], id + Environment.NewLine);
                             break;
                         #endregion
 
                         #region - Autorizacion proyecto
                         case "AutorizacionProyecto":
-                            // Obtención de datos en bruto.
-                            Autorizacion autorizacion = new Autorizacion();
-                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
-                            if (string.IsNullOrEmpty(xmlResult))
+                            Autorizacion autorizacionSGI = Autorizacion.GetAutorizacionSGI(harvesterServices, _Config, id, pDicRutas);
+                            if (autorizacionSGI != null && !string.IsNullOrEmpty(autorizacionSGI.tituloProyecto) && !string.IsNullOrEmpty(autorizacionSGI.solicitanteRef) && !string.IsNullOrEmpty(autorizacionSGI.entidadRef))
                             {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
+                                string idGnossAutorizacion = autorizacionSGI.Cargar(harvesterServices, pConfig, mResourceApi, "projectauthorization", pDicIdentificadores, pDicRutas, pRabbitConf);
+                                pDicIdentificadores["projectauthorization"].Add(idGnossAutorizacion);
                             }
-
-                            xmlSerializer = new(typeof(Autorizacion));
-                            using (StringReader sr = new(xmlResult))
-                            {
-                                try
-                                {
-                                    autorizacion = (Autorizacion)xmlSerializer.Deserialize(sr);
-                                }
-                                catch (Exception)
-                                {
-                                    continue;
-                                }
-                            }
-
-                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
-                            if (string.IsNullOrEmpty(autorizacion.id.ToString()) && string.IsNullOrEmpty(autorizacion.solicitanteRef)
-                                && string.IsNullOrEmpty(autorizacion.tituloProyecto))
-                            {
-                                // Guardamos el ID cargado.
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
-                            }
-
-                            // Cambio de modelo.
-                            ProjectAuthorization projectAuthOntology = CrearAutorizacion(autorizacion);
-
-                            if (dicDatosBBDD.ContainsKey(projectAuthOntology.Roh_crisIdentifier))
-                            {
-                                // Modificación.
-                                string[] idSplit = dicDatosBBDD[projectAuthOntology.Roh_crisIdentifier].Split('_');
-                                resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            }
-                            else
-                            {
-                                // Carga.
-                                resource = projectAuthOntology.ToGnossApiResource(mResourceApi, null);
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                dicDatosBBDD[projectAuthOntology.Roh_crisIdentifier] = resource.GnossId;
-                            }
-
-                            // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
                             break;
+                            
                         #endregion
 
                         #region - Invencion
                         case "Invencion":
-                            // Obtención de datos en bruto.
-                            Invencion invencion = new Invencion();
-                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
-                            if (string.IsNullOrEmpty(xmlResult))
+                            Invencion invencion = Invencion.GetInvencionSGI(harvesterServices, _Config, id, pDicRutas);
+                            if (invencion != null && !string.IsNullOrEmpty(invencion.titulo))
                             {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
+                                string idGnossInv = invencion.Cargar(harvesterServices, pConfig, mResourceApi, "patent", pDicIdentificadores, pDicRutas, pRabbitConf);
+                                pDicIdentificadores["patent"].Add(idGnossInv);
                             }
-
-                            xmlSerializer = new(typeof(Invencion));
-                            using (StringReader sr = new(xmlResult))
-                            {
-                                invencion = (Invencion)xmlSerializer.Deserialize(sr);
-                            }
-
-                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
-                            if (string.IsNullOrEmpty(invencion.id.ToString()))
-                            {
-                                // Guardamos el ID cargado.
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
-                            }
-
-                            PatentOntology.Patent patentOntology = CrearInvencionesOntology(invencion, pListaPersonas);
-
-                            if (dicDatosBBDD.ContainsKey(patentOntology.Roh_crisIdentifier))
-                            {
-                                // Modificación.
-                                string[] idSplit = dicDatosBBDD[patentOntology.Roh_crisIdentifier].Split('_');
-                                resource = patentOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            }
-                            else
-                            {
-                                // Carga.
-                                resource = patentOntology.ToGnossApiResource(mResourceApi, null);
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                dicDatosBBDD[patentOntology.Roh_crisIdentifier] = resource.GnossId;
-                            }
-
-                            // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            File.AppendAllText(pDicRutas[pSet][directorioPendientes], id + Environment.NewLine);
                             break;
+
                         #endregion
 
                         #region - Grupo
                         case "Grupo":
-                            // Obtención de datos en bruto.
-                            Grupo grupo = new Grupo();
-                            xmlResult = harvesterServices.GetRecord(id, pConfig);
 
-                            if (string.IsNullOrEmpty(xmlResult))
+                            Grupo grupo = Grupo.GetGrupoSGI(harvesterServices, _Config, id, pDicRutas);
+                            if (grupo != null && !string.IsNullOrEmpty(grupo.nombre))
                             {
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
+                                string idGnossGrupo = grupo.Cargar(harvesterServices, pConfig, mResourceApi, "group", pDicIdentificadores, pDicRutas, pRabbitConf);
+                                pDicIdentificadores["group"].Add(idGnossGrupo);
                             }
-
-                            xmlSerializer = new(typeof(Grupo));
-                            using (StringReader sr = new(xmlResult))
-                            {
-                                grupo = (Grupo)xmlSerializer.Deserialize(sr);
-                            }
-
-                            // Si no me llega el cris identifier o los datos obligatorios salto a la siguiente.
-                            if (string.IsNullOrEmpty(grupo.id.ToString()) && string.IsNullOrEmpty(grupo.nombre))
-                            {
-                                // Guardamos el ID cargado.
-                                File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
-                                continue;
-                            }
-
-                            //Cambio de modelo.
-                            GroupOntology.Group groupOntology = CrearGrupo(grupo, pListaPersonas);
-
-                            if (dicDatosBBDD.ContainsKey(groupOntology.Roh_crisIdentifier))
-                            {
-                                // Modificación.
-                                string[] idSplit = dicDatosBBDD[groupOntology.Roh_crisIdentifier].Split('_');
-                                resource = groupOntology.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-                                mResourceApi.ModifyComplexOntologyResource(resource, false, false);
-                            }
-                            else
-                            {
-                                // Carga.
-                                resource = groupOntology.ToGnossApiResource(mResourceApi, null);
-                                mResourceApi.LoadComplexSemanticResource(resource, false, false);
-                                dicDatosBBDD[groupOntology.Roh_crisIdentifier] = resource.GnossId;
-                            }
-
-                            // Guardamos el ID cargado.
-                            File.AppendAllText(ficheroProcesado, id + Environment.NewLine);
+                            File.AppendAllText(pDicRutas[pSet][directorioPendientes], id + Environment.NewLine);
                             break;
-                            #endregion
+
+                       #endregion
                     }
                 }
 
@@ -652,6 +409,35 @@ namespace Harvester
             }
         }
 
+        /// <summary>
+        /// Permite leer el fichero de la última fecha de modificación.
+        /// </summary>
+        /// <param name="pConfig"></param>
+        /// <returns></returns>
+        public string LeerFicheroFecha(ReadConfig pConfig)
+        {
+            string ficheroFecha = pConfig.GetLastUpdateDate();
+
+            if (!File.Exists(ficheroFecha))
+            {
+                string fecha = DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
+                FileStream fichero = File.Create(ficheroFecha);
+                fichero.Close();
+                File.WriteAllText(pConfig.GetLastUpdateDate(), fecha);
+                return fecha;
+            }
+            else
+            {
+                return File.ReadAllText(ficheroFecha);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene el listado de recursos mediante el crisidentifier.
+        /// </summary>
+        /// <param name="pListaIds">IDs a consultar.</param>
+        /// <param name="pOntologia">Ontología.</param>
+        /// <returns></returns>
         private static Dictionary<string, string> GetDataBBDD(List<string> pListaIds, string pOntologia)
         {
             List<List<string>> listas = SplitList(pListaIds, 1000).ToList();
@@ -1188,8 +974,6 @@ namespace Harvester
             File.WriteAllText(pConfig.GetLastUpdateDate(), pFecha);
         }
 
-
-        //TODO
         /// <summary>
         /// Devuelve una PersonOntology.Person con los datos pasados en <paramref name="pDatos"/>, la cual se ha almacenado en BBDD
         /// </summary>
@@ -2772,8 +2556,6 @@ namespace Harvester
                     }
                     else
                     {
-                        PersonOntology.Person personOntology = new PersonOntology.Person();
-
                         // Se piden los datos de la persona.
                         Persona persona = ObtenerPersona(item.PersonaRef);
 
@@ -2782,7 +2564,7 @@ namespace Harvester
                         // Si la persona no tiene nombre, no se inserta.
                         if (!string.IsNullOrEmpty(persona.Nombre))
                         {
-                            personOntology = CrearPersona(persona);
+                            PersonOntology.Person personOntology = CrearPersona(persona);
 
                             mResourceApi.ChangeOntoly("person");
                             ComplexOntologyResource resource = personOntology.ToGnossApiResource(mResourceApi, null);
@@ -2824,26 +2606,26 @@ namespace Harvester
             // Añado las entidades gestoras que no existan en BBDD. Se coge la primera porque en la ontología es 0..1
             if (pDatos.EntidadesGestoras != null && pDatos.EntidadesGestoras.Any())
             {
-                ProyectoEntidadGestora entidadGestora = pDatos.EntidadesGestoras[0];
+                project.Roh_participates = new List<ProjectOntology.OrganizationAux>();
 
-                Dictionary<string, OrganizacionBBDD> organizacion = CrearEntidadOrganization(entidadGestora.EntidadRef);
-
-                // Solamente contrendrá un elemento.
-                foreach (KeyValuePair<string, OrganizacionBBDD> item in organizacion)
+                foreach (ProyectoEntidadGestora entidadGestora in pDatos.EntidadesGestoras)
                 {
-                    project.Roh_conductedByTitle = item.Value.title;
-                    project.IdRoh_conductedBy = item.Key;
+                    project.Roh_participates.Add(CrearEntidadOrganizationAux(entidadGestora.EntidadRef));
                 }
             }
 
             // Se añade las entidades participación que no existan en BBDD.
             if (pDatos.EntidadesConvocantes != null && pDatos.EntidadesConvocantes.Any())
             {
-                project.Roh_participates = new List<ProjectOntology.OrganizationAux>();
+                ProyectoEntidadConvocante entidadConvocante = pDatos.EntidadesConvocantes[0];
 
-                foreach (ProyectoEntidadConvocante entidadConvocante in pDatos.EntidadesConvocantes)
+                Dictionary<string, OrganizacionBBDD> organizacion = CrearEntidadOrganization(entidadConvocante.EntidadRef);
+
+                // Solamente contrendrá un elemento.
+                foreach (KeyValuePair<string, OrganizacionBBDD> item in organizacion)
                 {
-                    project.Roh_participates.Add(CrearEntidadOrganizationAux(entidadConvocante.EntidadRef));
+                    project.Roh_conductedByTitle = item.Value.title;
+                    project.IdRoh_conductedBy = item.Key;
                 }
             }
 
@@ -2893,15 +2675,12 @@ namespace Harvester
                 project.Roh_monetaryAmount = (float)cuantiaTotal;
             }
 
+            // Fecha Inicio.
             project.Vivo_start = pDatos.FechaInicio != null ? Convert.ToDateTime(pDatos.FechaInicio) : null;
 
-            //Si está informada la FechaFinDefinitiva prevalecerá sobre la FechaFin y será la considerada como fecha de finalización del proyecto,
-            //independientemente de que sea mayor o menor que la fecha de fin inicial.
-            //Añado la fecha de finalizacion si el proyecto es de tipo competitivo.
-            if (project.IdRoh_scientificExperienceProject != null && project.IdRoh_scientificExperienceProject.Equals(mResourceApi.GraphsUrl + "items/scientificexperienceproject_SEP1"))
-            {
-                project.Vivo_end = pDatos.FechaFinDefinitiva != null ? Convert.ToDateTime(pDatos.FechaFinDefinitiva) : Convert.ToDateTime(pDatos.FechaFin);
-            }
+            // Fecha Fin. (Nos quuedamos con la fecha de fin definitiva si existe)
+            project.Vivo_end = pDatos.FechaFin != null ? Convert.ToDateTime(pDatos.FechaFin) : null;
+            project.Vivo_end = pDatos.FechaFinDefinitiva != null ? Convert.ToDateTime(pDatos.FechaFinDefinitiva) : Convert.ToDateTime(pDatos.FechaFin);
 
             if (pDatos.FechaFinDefinitiva != null)
             {

@@ -3,7 +3,7 @@
     /// <summary>
     /// InvencionDocumento
     /// </summary>
-    public class InvencionDocumento : SGI_Base
+    public class InvencionDocumento
     {
         /// <summary>
         /// Id.

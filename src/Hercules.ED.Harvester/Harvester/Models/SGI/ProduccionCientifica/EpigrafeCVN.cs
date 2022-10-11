@@ -5,7 +5,7 @@ namespace OAI_PMH.Models.SGI.ProduccionCientifica
     /// <summary>
     /// Epigrafe CVN
     /// </summary>
-    public class EpigrafeCVN : SGI_Base
+    public class EpigrafeCVN
     {
         /// <summary>
         /// Código de uno de lo apartados del CVN que forman parte de la Producción científica y que necesita validación

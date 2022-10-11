@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OAI_PMH.Models.SGI.OrganicStructure
 {
-    public class Clasificacion : SGI_Base
+    public class Clasificacion
     {
         public string Id { get; set; }
         public string Codigo { get; set; }

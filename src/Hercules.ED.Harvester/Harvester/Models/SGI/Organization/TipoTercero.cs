@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.Organization
     /// <summary>
     /// Tipo de tercero
     /// </summary>
-    public class TipoTercero : SGI_Base
+    public class TipoTercero
     {
         /// <summary>
         /// Identificador de la entidad TipoTercero.

@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Organization
     /// <summary>
     /// Datos de contacto
     /// </summary>
-    public class DatosContacto : SGI_Base
+    public class DatosContacto
     {
         /// <summary>
         /// Dirección de contacto de la empresa.

@@ -22,7 +22,7 @@ Dichos tipos pueden ser:
 - SlideShare (RO)
 - Zenodo (RO)
 
-En este punto, se utiliza el [motor de desambiguación](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.DisambiguationEngine) para obtener las equivalencias entre todos los datos.
+En este punto, se utiliza el [motor de desambiguación](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.CommonsEDMA.DisambiguationEngine) para obtener las equivalencias entre todos los datos.
 Finalmente, se cargan los datos nuevos y se modifican los ya existentes con los datos obtenidos.
 Tras cargar los datos, se inserta en la cola de rabbit del [desnormalizador](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.Desnormalizador) aquellos recursos que tengan que ser modificados con datos previamente cargados.
 

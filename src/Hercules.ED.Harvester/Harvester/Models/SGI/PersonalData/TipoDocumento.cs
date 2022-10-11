@@ -3,7 +3,7 @@
     /// <summary>
     /// Tipo de documento
     /// </summary>
-    public class TipoDocumento : SGI_Base
+    public class TipoDocumento
     {
         /// <summary>
         /// Identificador de la entidad TipoDocumento

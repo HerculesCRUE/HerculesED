@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Tipo de financiación
     /// </summary>
-    public class TipoFinanciacion : SGI_Base
+    public class TipoFinanciacion
     {
         /// <summary>
         /// Identificador del tipo de financiación.

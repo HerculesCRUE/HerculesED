@@ -333,9 +333,20 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Número de la página.</returns>
         public string getPageStart(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && pPublicacionIn.static_data.summary.pub_info.page != null && pPublicacionIn.static_data.summary.pub_info.page.begin != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && pPublicacionIn.static_data.summary.pub_info.page != null)
             {
-                return pPublicacionIn.static_data.summary.pub_info.page.begin.ToString();
+                if (pPublicacionIn.static_data.summary.pub_info.page.begin != null && pPublicacionIn.static_data.summary.pub_info.page.begin.ToString() != "0")
+                {
+                    return pPublicacionIn.static_data.summary.pub_info.page.begin.ToString();
+                }
+                else if (pPublicacionIn.static_data.summary.pub_info.page.page_count != 0)
+                {
+                    if (!int.TryParse(pPublicacionIn.static_data.summary.pub_info.page.end.ToString(), out int endPage))
+                    {
+                        return "1";
+                    }
+                    return endPage - pPublicacionIn.static_data.summary.pub_info.page.page_count > 0 ? (endPage - pPublicacionIn.static_data.summary.pub_info.page.page_count).ToString() : "1";
+                }
             }
 
             return null;
@@ -348,11 +359,17 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Número de la página.</returns>
         public string getPageEnd(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && pPublicacionIn.static_data.summary.pub_info.page != null && pPublicacionIn.static_data.summary.pub_info.page.end != null)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && pPublicacionIn.static_data.summary.pub_info.page != null)
             {
-                return pPublicacionIn.static_data.summary.pub_info.page.end.ToString();
+                if (pPublicacionIn.static_data.summary.pub_info.page.end != null && pPublicacionIn.static_data.summary.pub_info.page.end.ToString() != "0")
+                { 
+                    return pPublicacionIn.static_data.summary.pub_info.page.end.ToString();
+                } 
+                else if (pPublicacionIn.static_data.summary.pub_info.page.page_count != 0)
+                {
+                    return pPublicacionIn.static_data.summary.pub_info.page.page_count.ToString();
+                }
             }
-
             return null;
         }
 

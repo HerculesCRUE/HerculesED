@@ -3,7 +3,7 @@
     /// <summary>
     /// Clase principal de Grupo Equipo.
     /// </summary>
-    public class GrupoEquipo : SGI_Base
+    public class GrupoEquipo
     {
         /// <summary>
         /// Id del equipo.

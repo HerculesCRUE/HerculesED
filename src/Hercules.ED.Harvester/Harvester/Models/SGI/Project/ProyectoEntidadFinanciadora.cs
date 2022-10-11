@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Proyecto entidad financiadora
     /// </summary>
-    public class ProyectoEntidadFinanciadora : SGI_Base
+    public class ProyectoEntidadFinanciadora
     {
         /// <summary>
         /// Identificador de la entidad financiadora del proyecto.

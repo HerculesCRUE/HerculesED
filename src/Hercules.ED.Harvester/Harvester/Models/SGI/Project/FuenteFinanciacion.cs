@@ -9,7 +9,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Fuente de financiación
     /// </summary>
-    public class FuenteFinanciacion : SGI_Base
+    public class FuenteFinanciacion
     {
         /// <summary>
         /// Identificador de la fuente de financiación

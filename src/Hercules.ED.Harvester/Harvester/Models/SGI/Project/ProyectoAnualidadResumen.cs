@@ -8,7 +8,7 @@ namespace OAI_PMH.Models.SGI.Project
     /// <summary>
     /// Anualidades de un Proyecto
     /// </summary>
-    public class ProyectoAnualidadResumen : SGI_Base
+    public class ProyectoAnualidadResumen
     {
         /// <summary>
         /// Identificador de la anualidad del proyecto.

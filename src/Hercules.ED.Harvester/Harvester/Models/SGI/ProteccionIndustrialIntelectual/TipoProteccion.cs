@@ -3,7 +3,7 @@
     /// <summary>
     /// TipoProteccion
     /// </summary>
-    public class TipoProteccion : SGI_Base
+    public class TipoProteccion
     {
         /// <summary>
         /// Id.

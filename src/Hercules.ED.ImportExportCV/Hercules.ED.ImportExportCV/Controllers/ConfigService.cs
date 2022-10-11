@@ -13,6 +13,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
         private string Usuario_PDF { get; set; }
         private string PSS_PDF { get; set; }
         private string Version { get; set; }
+        private string PathCarpeta { get; set; }
+        private string PathFichero { get; set; }
         private string UrlEnriquecimiento { get; set; }
         private string UrlServicioExterno { get; set; }
 
@@ -26,6 +28,48 @@ namespace Hercules.ED.ImportExportCV.Controllers
         public ConfigService()
         {
             configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
+        }
+
+        public string GetPathFichero()
+        {
+            if (string.IsNullOrEmpty(PathFichero))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("PathFichero"))
+                {
+                    connectionString = environmentVariables["PathFichero"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["PathFichero"];
+                }
+
+                PathFichero = connectionString;
+            }
+
+            return PathFichero;
+        }
+        
+        public string GetPathCarpeta()
+        {
+            if (string.IsNullOrEmpty(PathCarpeta))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("PathCarpeta"))
+                {
+                    connectionString = environmentVariables["PathCarpeta"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["PathCarpeta"];
+                }
+
+                PathCarpeta = connectionString;
+            }
+
+            return PathCarpeta;
         }
 
         public string GetVersion()
