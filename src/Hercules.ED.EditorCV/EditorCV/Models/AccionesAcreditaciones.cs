@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 
 namespace EditorCV.Models
 {
@@ -23,7 +24,7 @@ namespace EditorCV.Models
         /// <param name="tipo_acreditacion"></param>
         /// <param name="categoria_acreditacion"></param>
         /// <param name="investigador"></param>
-        public void GetAcreditaciones(ConfigService _Configuracion, string comision, string tipo_acreditacion, string categoria_acreditacion, string investigador)
+        public void GetAcreditaciones(ConfigService _Configuracion, string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string investigador)
         {
             //Petición al exportador para conseguir el archivo PDF
             HttpClient client = new HttpClient();
