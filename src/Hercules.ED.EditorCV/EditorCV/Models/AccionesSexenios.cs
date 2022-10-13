@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using Gnoss.ApiWrapper.ApiModel;
 
 namespace EditorCV.Models
 {
@@ -34,7 +35,8 @@ namespace EditorCV.Models
                 client.Timeout = new TimeSpan(1, 15, 0);
                 string urlSexenios = _Configuracion.GetUrlSGI() + "/api/orchestrator/schedules/execute";
 
-                ParameterSexenio sexenio = new ParameterSexenio(comite, periodo, perfil_tecnologico, subcomite, idInvestigador);
+                string investigador = ObtenerIdInvestigador(idInvestigador);
+                ParameterSexenio sexenio = new ParameterSexenio(comite, periodo, perfil_tecnologico, subcomite, investigador);
                 string sexenioJson = JsonConvert.SerializeObject(sexenio);
 
                 StringContent content = new StringContent(sexenioJson, System.Text.Encoding.UTF8, "application/json");
@@ -46,6 +48,22 @@ namespace EditorCV.Models
             {
 
             }
+        }
+        public string ObtenerIdInvestigador(string idInvestigador)
+        {
+            string crisIdentifier = "";
+            string select = "SELECT ?crisIdentifier";
+            string where = @$"WHERE {{
+
+
+                            }}";
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+
+            }
+
+            return crisIdentifier;
         }
 
         /// <summary>

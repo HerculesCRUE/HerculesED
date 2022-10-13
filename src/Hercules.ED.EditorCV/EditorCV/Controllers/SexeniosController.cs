@@ -21,7 +21,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("ConseguirSexenios")]
-        public IActionResult ConseguirSexenios(string comite, string periodo, [Optional] string perfil_tecnologico, [Optional] string subcomite, string idInvestigador)
+        public IActionResult ConseguirSexenios([FromForm] string comite, [FromForm] string periodo, [FromForm][Optional] string perfil_tecnologico, [FromForm][Optional] string subcomite, [FromForm] string idInvestigador)
         {
             try
             {
