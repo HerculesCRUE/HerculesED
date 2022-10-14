@@ -44,6 +44,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
 		public DateTime Dct_issued { get; set; }
 		public string Roh_type { get; set; }
 		public string CvnCode { get; set; }
+		public string Roh_text { get; set; }
 
 
 		private void GetProperties()
@@ -56,6 +57,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
 			propList.Add(new DateOntologyProperty("dct:issued", this.Dct_issued));
 			propList.Add(new StringOntologyProperty("roh:type", this.Roh_type));
 			propList.Add(new StringOntologyProperty("roh:cvnCode", this.CvnCode));
+			propList.Add(new StringOntologyProperty("roh:text", this.Roh_text));
 		}
 
 		public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI)

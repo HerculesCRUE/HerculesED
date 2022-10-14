@@ -58,6 +58,30 @@ namespace EditorCV.Models.Utils
         private static ConcurrentBag<Tab> mTabTemplates;
 
         /// <summary>
+        /// Dado el identificador del CV del investigador devuelve su orcid
+        /// </summary>
+        /// <param name="idInvestigador">Guid largo del investigador</param>
+        /// <returns>ORCID del investigador</returns>
+        public string GetORCIDInvestigador(string idInvestigador)
+        {
+            string select = "SELECT ?orcid";
+            string where = $@"WHERE{{
+                                <{idInvestigador}> <http://w3id.org/roh/cvOf> ?cvOf .
+                                ?cvOf <http://w3id.org/roh/ORCID> ?orcid .
+                            }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "person" });
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("orcid"))
+                {
+                    return fila["orcid"].value;
+                }
+            }
+
+            return "";
+        }
+
+        /// <summary>
         /// Obtiene la persona propietaria de un CV
         /// </summary>
         /// <param name="pCvID">Identificador del CV</param>
@@ -80,7 +104,7 @@ namespace EditorCV.Models.Utils
     ?persona <http://w3id.org/roh/gnossUser> <http://gnoss/{userId.ToUpper()}> .
     ?cv <http://w3id.org/roh/cvOf> ?persona .
 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>{ "curriculumvitae" ,"person"});
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 if (fila.ContainsKey("cv"))
@@ -106,7 +130,7 @@ namespace EditorCV.Models.Utils
     ?cv <http://w3id.org/roh/cvOf> ?persona .
     FILTER(?cv=<{pCv}>)
 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae" , "person" });
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 if (fila.ContainsKey("user"))
@@ -151,7 +175,7 @@ namespace EditorCV.Models.Utils
         public static List<Guid> GetUsersFromDocument(string pDocument)
         {
             List<Guid> users = new List<Guid>();
-            string select = $@"select ?user"; 
+            string select = $@"select ?user";
             string where = $@"where {{
     ?persona a <http://xmlns.com/foaf/0.1/Person> .
     ?persona <http://w3id.org/roh/gnossUser> ?user.
@@ -160,7 +184,7 @@ namespace EditorCV.Models.Utils
     ?authorList <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona.
     FILTER(?document=<{pDocument}>)
 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "document" ,"person"});
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "document", "person" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 if (fila.ContainsKey("user"))
@@ -607,7 +631,6 @@ namespace EditorCV.Models.Utils
             }
         }
 
-
         public static string GetTextLang(string pLang, Dictionary<string, string> pValores)
         {
             if (pValores == null)
@@ -655,7 +678,6 @@ namespace EditorCV.Models.Utils
             return textNumber;
         }
 
-
         /// <summary>
         /// Método para dividir listas
         /// </summary>
@@ -690,8 +712,6 @@ namespace EditorCV.Models.Utils
             normalizedString = sb.ToString().Normalize(NormalizationForm.FormD).ToLower();
             return normalizedString;
         }
-
-
 
         /// <summary>
         /// Lista de TabTemplates configurados
