@@ -105,6 +105,10 @@ namespace ImportadorWebCV.Exporta.Secciones
                 int numLimit = 10000;
                 int offset = 0;
                 bool cargar = true;
+                if (listadoFrom == null)
+                {
+                    listadoFrom = new List<string>();
+                }
                 listadoFrom.Add(pGraph);
                 while (cargar)
                 {
