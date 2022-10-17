@@ -1,6 +1,8 @@
 ﻿using EditorCV.Models.API.Templates;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper.Model;
+using Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -58,15 +60,69 @@ namespace EditorCV.Models.Utils
         private static ConcurrentBag<Tab> mTabTemplates;
 
         /// <summary>
+        /// Envia una notificación.
+        /// </summary>
+        /// <param name="title">Texto de la notificación</param>
+        /// <param name="owner">Persona a la que enviar la notificación</param>
+        /// <param name="rohType">Tipo de notificación</param>
+        public static void EnvioNotificacion(string title, string owner, string rohType)
+        {
+            Notification notificacion = new Notification();
+            notificacion.Roh_text = title;
+            notificacion.IdRoh_owner = owner;
+            notificacion.Dct_issued = DateTime.UtcNow;
+            notificacion.Roh_type = rohType;
+            mResourceApi.ChangeOntoly("notification");
+            ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+            int numIntentos = 0;
+            while (!recursoCargar.Uploaded)
+            {
+                numIntentos++;
+
+                if (numIntentos > 5)
+                {
+                    break;
+                }
+                mResourceApi.LoadComplexSemanticResource(recursoCargar);
+            }
+        }
+
+        /// <summary>
+        /// Dado el identificador del CV devuelve el crisIdentifier, el email o el orcid del investigador.
+        /// </summary>
+        /// <param name="cvOf">Identificador del CV</param>
+        /// <returns>Identificador del usuario</returns>
+        public static string GetIdInvestigador(string cvOf)
+        {
+            string orcid = GetORCIDInvestigador(cvOf);
+            string email = GetEmailInvestigador(cvOf);
+            string crisID = GetCrisIdentifierInvestigador(cvOf);
+
+            if (!string.IsNullOrEmpty(crisID))
+            {
+                return crisID;
+            }
+            else if (!string.IsNullOrEmpty(email))
+            {
+                return email;
+            }
+            else if (!string.IsNullOrEmpty(orcid))
+            {
+                return orcid;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Dado el identificador del CV del investigador devuelve su orcid
         /// </summary>
-        /// <param name="idInvestigador">Guid largo del investigador</param>
+        /// <param name="CVID">Guid largo del investigador</param>
         /// <returns>ORCID del investigador</returns>
-        public string GetORCIDInvestigador(string idInvestigador)
+        public static string GetORCIDInvestigador(string CVID)
         {
             string select = "SELECT ?orcid";
             string where = $@"WHERE{{
-                                <{idInvestigador}> <http://w3id.org/roh/cvOf> ?cvOf .
+                                <{CVID}> <http://w3id.org/roh/cvOf> ?cvOf .
                                 ?cvOf <http://w3id.org/roh/ORCID> ?orcid .
                             }}";
             SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "person" });
@@ -75,6 +131,50 @@ namespace EditorCV.Models.Utils
                 if (fila.ContainsKey("orcid"))
                 {
                     return fila["orcid"].value;
+                }
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// Dado el identificador del CV del investigador devuelve su email
+        /// </summary>
+        /// <param name="CVID">Guid largo del investigador</param>
+        /// <returns>Email del investigador</returns>
+        public static string GetEmailInvestigador(string CVID)
+        {
+            string select = "SELECT ?email";
+            string where = $@"WHERE{{
+                                <{CVID}> <http://w3id.org/roh/cvOf> ?cvOf .
+                                ?cvOf <https://www.w3.org/2006/vcard/ns#email> ?email .
+                            }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "person" });
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("email"))
+                {
+                    return fila["email"].value;
+                }
+            }
+
+            return "";
+        }
+
+
+        public static string GetCrisIdentifierInvestigador(string CVID)
+        {
+            string select = "SELECT ?cris";
+            string where = $@"WHERE{{
+                                <{CVID}> <http://w3id.org/roh/cvOf> ?cvOf .
+                                ?cvOf <http://w3id.org/roh/crisIdentifier> ?cris .
+                            }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "person" });
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("cris"))
+                {
+                    return fila["cris"].value;
                 }
             }
 
@@ -104,7 +204,7 @@ namespace EditorCV.Models.Utils
     ?persona <http://w3id.org/roh/gnossUser> <http://gnoss/{userId.ToUpper()}> .
     ?cv <http://w3id.org/roh/cvOf> ?persona .
 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person"});
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 if (fila.ContainsKey("cv"))
