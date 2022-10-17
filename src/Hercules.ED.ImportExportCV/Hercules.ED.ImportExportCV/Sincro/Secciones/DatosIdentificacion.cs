@@ -38,7 +38,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (petitionStatus != null)
             {
                 petitionStatus.actualWork++;
-                petitionStatus.actualWorkSubtitle = "Datos de identificación y contacto";
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_DATOS_IDENTIFICACION";
             }
 
             //1º Recuperamos los elementos necesarios del cv, del archivo xml.
