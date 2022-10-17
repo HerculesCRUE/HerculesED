@@ -166,7 +166,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus, listaDOI);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus, listaDOI,preimportar);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -269,7 +269,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedConferences";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosCongresos(mConfiguracion, listadoDatos, petitionStatus, listaDOI);
+            List<Entity> listadoAux = GetTrabajosCongresos(mConfiguracion, listadoDatos, petitionStatus, listaDOI,preimportar);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -373,7 +373,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedSeminars";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(mConfiguracion, listadoDatos, petitionStatus);
+            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(mConfiguracion, listadoDatos, petitionStatus,preimportar);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -1495,7 +1495,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
         public List<Entity> GetPublicacionesDocumentos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos,
-            List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
+            List<CvnItemBean> listadoSituacionProfesional, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI, [Optional] bool preimportar)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1531,11 +1531,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
 
                         //Categorias enriquecidas
-                        Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
-                        PublicacionesDocumentosTopics(dicTopics, entidadAux);
-                        //Etiquetas enriquecidas
-                        Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
-                        PublicacionesDocumentosEtiquetas(dicEtiquetas, entidadAux);
+                        if (!preimportar)
+                        {
+                            Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
+                            PublicacionesDocumentosTopics(dicTopics, entidadAux);
+                            //Etiquetas enriquecidas
+                            Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
+                            PublicacionesDocumentosEtiquetas(dicEtiquetas, entidadAux);
+                        }
 
 
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -1824,7 +1827,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetTrabajosCongresos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
+        public List<Entity> GetTrabajosCongresos(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI, [Optional] bool preimportar)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -1859,13 +1862,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                         tituloPublicacion = Regex.Replace(tituloPublicacion, "<.*?>", string.Empty);
                         ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
 
-                        //Categorias
-                        Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
-                        TrabajosCongresosTopics(dicTopics, entidadAux);
-                        //Etiquetas
-                        Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
-                        TrabajosCongresosEtiquetas(dicEtiquetas, entidadAux);
-
+                        if (!preimportar)
+                        {
+                            //Categorias
+                            Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
+                            TrabajosCongresosTopics(dicTopics, entidadAux);
+                            //Etiquetas
+                            Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
+                            TrabajosCongresosEtiquetas(dicEtiquetas, entidadAux);
+                        }
 
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD2")
@@ -2140,7 +2145,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        public List<Entity> GetTrabajosJornadasSeminarios(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
+        public List<Entity> GetTrabajosJornadasSeminarios(ConfigService mConfiguracion, List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus, [Optional] bool preimportar)
         {
             List<Entity> listado = new List<Entity>();
 
@@ -2168,11 +2173,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ObjEnriquecimiento objEnriquecimiento = new ObjEnriquecimiento(tituloPublicacion);
 
                         //Categorias
-                        Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
-                        TrabajosJornadasSeminariosTopics(dicTopics, entidadAux);
-                        //Etiquetas
-                        Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
-                        TrabajosJornadasSeminariosEtiquetas(dicEtiquetas, entidadAux);
+                        if (!preimportar)
+                        {
+                            Dictionary<string, string> dicTopics = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "thematic");
+                            TrabajosJornadasSeminariosTopics(dicTopics, entidadAux);
+                            //Etiquetas
+                            Dictionary<string, string> dicEtiquetas = objEnriquecimiento.getDescriptores(mConfiguracion, objEnriquecimiento, "specific");
+                            TrabajosJornadasSeminariosEtiquetas(dicEtiquetas, entidadAux);
+                        }
 
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property("http://w3id.org/roh/scientificActivityDocument", mResourceApi.GraphsUrl + "items/scientificactivitydocument_SAD3")
