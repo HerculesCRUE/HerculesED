@@ -13,6 +13,7 @@ from arxiv_public_data.fulltext import fulltext as pdf_to_str
 from passlib.apps import custom_app_context as pwd_context
 
 import requests
+import pickle, joblib
 import tempfile
 import logging
 import json
@@ -165,15 +166,32 @@ def init():
         if model_name not in available_keyphrase_models:
              logging.warning("model {} not available".format(model_name))
              continue
-         
+
+        # loading models
+        print("Loading freqs and idf models")
+        kp_clef_en_fpath=os.path.join(model_path,"clef_en.pkl")
+        kp_clef_es_fpath=os.path.join(model_path,"clef_es.pkl")
+        kp_clef_idf_en_fpath=os.path.join(model_path,"idfakCLEF_en.pkl")
+        kp_clef_idf_es_fpath=os.path.join(model_path,"idfakCLEF_es.pkl")
+        kp_scopus_fpath=os.path.join(model_path,"scopus.pkl")
+        kp_clef, kp_clef_idf = {}, {}
+        with open(kp_clef_en_fpath, 'rb') as f:
+            kp_clef['en'] = pickle.load(f)
+        with open(kp_clef_es_fpath, 'rb') as f:
+            kp_clef['es'] = pickle.load(f)
+        with open(kp_scopus_fpath, 'rb') as f:
+            kp_scopus = pickle.load(f)
+        kp_clef_idf['en'] = joblib.load(kp_clef_idf_en_fpath)
+        kp_clef_idf['es'] = joblib.load(kp_clef_idf_es_fpath)
+        print("Done")
+        
         for i in ['short','fulltext']:
             kp_model_s_fpath=os.path.join(model_path,"single-"+i+".sav")
             kp_model_m_fpath=os.path.join(model_path,"multi-"+i+".sav")
-            kp_clef_fpath=os.path.join(model_path,"clef.pkl")
-            kp_clef_idf_fpath=os.path.join(model_path,"idfakCLEF.pkl")
-            kp_scopus_fpath=os.path.join(model_path,"scopus.pkl")
-        
-            model=KeyphraseExtractor(kp_model_s_fpath, kp_model_m_fpath, kp_clef_fpath, kp_scopus_fpath, kp_clef_idf_fpath) #kp_scopus_fpath)
+            kp_model_s = joblib.load(kp_model_s_fpath)
+            kp_model_m = joblib.load(kp_model_m_fpath)
+            
+            model=KeyphraseExtractor(kp_model_s, kp_model_m, kp_clef, kp_scopus, kp_clef_idf) #kp_scopus_fpath)
 
             if model == None:
                 logging.warning("model {} could not be loaded".format(model_name))

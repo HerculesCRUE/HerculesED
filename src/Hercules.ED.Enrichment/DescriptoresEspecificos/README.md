@@ -1,6 +1,6 @@
 # Description
 
-This project contains the scripts needed to train the models for extraction of specific descriptors. It also contains the instructions to download all the required data. We train models for scientific papers, protocol papers and code projects. 
+This project contains the scripts needed to train the models for extraction of specific descriptors. It also contains the instructions to download all the required data. We train models for scientific papers, protocol papers and code projects.
 
 
 # Setting up the environment
@@ -60,7 +60,7 @@ wget https://storage.googleapis.com/elhuyar/Hercules/hercules-models.tar.gz
 The first step consists in extract keyword candidates and their features from the Krapivin dataset:
 
 ```
-python3 krapivin_extract_features.py [--fulltext] krapivin-set/ tfidf_models/clef.pkl tfidf_models/scopus.pkl tfidf_models/idfakCLEF.pkl krapivin.tsv
+python3 krapivin_extract_features.py [--fulltext] krapivin-set/ tfidf_models/clef_en.pkl tfidf_models/scopus.pkl tfidf_models/idfakCLEF_en.pkl krapivin.tsv
 ```
 
 _Note: You should set the optional argument `--fulltext` if you want to extract keyword candidates from the full texts, and leave it blank if you want to extract them only from the title + abstract._
@@ -81,6 +81,7 @@ python3 train_eval_krapivin.py [--fulltext] krapivin.train.tsv krapivin.test.tsv
 
 _Note: Again, set the `--fulltext` argument if you are training a model using the candidates extracted from the full texts._
 _Note: Two models will be created: `krapivin_single_model.sav` and `krapivin_multi_model.sav`. The first one will be used to classify single-word candidates, and the second one to classify the multiword candidates._
+_Note: Only one model is trained, with english data, and it is used both for english and spanish texts.
 
 The script used to train the model also performs the evaluation using the test-set. Once you get the model, if you want to evaluate it separately, execute the following script:
 
