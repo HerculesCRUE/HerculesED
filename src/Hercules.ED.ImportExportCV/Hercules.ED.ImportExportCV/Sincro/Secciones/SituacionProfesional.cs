@@ -143,13 +143,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoSituacionProfesionalActual = listadoDatos.Where(x => x.Code.Equals("010.010.000.000")).ToList();
             if (listadoSituacionProfesionalActual.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoSituacionProfesionalActual.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_SITUACION_PROFESIONAL";
+                }
+
                 foreach (CvnItemBean item in listadoSituacionProfesionalActual)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_SITUACION_PROFESIONAL";
                     }
 
                     Entity entidadAux = new Entity();
@@ -187,7 +193,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         listado.Add(entidadAux);
                     }
                     else
-                    {                        
+                    {
                         listadoCvn.Remove(item);
                         mCvn.cvnRootBean = listadoCvn.ToArray();
                     }
@@ -334,13 +340,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoCargosActividades = listadoDatos.Where(x => x.Code.Equals("010.020.000.000")).ToList();
             if (listadoCargosActividades.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoCargosActividades.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CARGOS_ACTIVIDADES";
+                }
+
                 foreach (CvnItemBean item in listadoCargosActividades)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_CARGOS_ACTIVIDADES";
                     }
 
                     Entity entidadAux = new Entity();

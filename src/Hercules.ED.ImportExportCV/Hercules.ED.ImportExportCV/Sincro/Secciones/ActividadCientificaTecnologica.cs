@@ -1427,13 +1427,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoPublicacionesDocumentos = listadoDatos.Where(x => x.Code.Equals("060.010.000.000")).ToList();
             if (listadoPublicacionesDocumentos.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoPublicacionesDocumentos.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PRODUCCION_CIENTIFICA";
+                }
+
                 foreach (CvnItemBean item in listadoPublicacionesDocumentos)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PRODUCCION_CIENTIFICA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1502,6 +1508,13 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoPublicacionesDocumentos = listadoDatos.Where(x => x.Code.Equals("060.010.010.000")).ToList();
             if (listadoPublicacionesDocumentos.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoPublicacionesDocumentos.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTAR_PUBLICACIONES_DOCUMENTOS";
+                }
+
                 foreach (CvnItemBean item in listadoPublicacionesDocumentos)
                 {
                     Entity entidadAux = new Entity();
@@ -1514,7 +1527,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         if (petitionStatus != null)
                         {
                             petitionStatus.actualWork++;
-                            petitionStatus.actualWorkSubtitle = "IMPORTAR_PUBLICACIONES_DOCUMENTOS";
                         }
 
                         string doi = PublicacionesDocumentosComprobarDOI(item);
@@ -1834,6 +1846,13 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoTrabajosCongresos = listadoDatos.Where(x => x.Code.Equals("060.010.020.000")).ToList();
             if (listadoTrabajosCongresos.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoTrabajosCongresos.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_TRABAJOS_CONGRESOS";
+                }
+
                 foreach (CvnItemBean item in listadoTrabajosCongresos)
                 {
                     Entity entidadAux = new Entity();
@@ -1845,7 +1864,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_TRABAJOS_CONGRESOS";
                     }
 
                     string doi = TrabajosCongresosComprobarDOI(item);
@@ -2152,13 +2170,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoComitesTrabajosJornadasSeminarios = listadoDatos.Where(x => x.Code.Equals("060.010.030.000")).ToList();
             if (listadoComitesTrabajosJornadasSeminarios.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoComitesTrabajosJornadasSeminarios.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_TRABAJOS_JORNADAS_SEMINARIOS";
+                }
+
                 foreach (CvnItemBean item in listadoComitesTrabajosJornadasSeminarios)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_TRABAJOS_JORNADAS_SEMINARIOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2421,13 +2445,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoOtrasActividadesDivulgacion = listadoDatos.Where(x => x.Code.Equals("060.010.040.000")).ToList();
             if (listadoOtrasActividadesDivulgacion.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoOtrasActividadesDivulgacion.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_ACTIVIDADES_DIVULGACION";
+                }
+
                 foreach (CvnItemBean item in listadoOtrasActividadesDivulgacion)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_ACTIVIDADES_DIVULGACION";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2590,13 +2620,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoComitesCTA = listadoDatos.Where(x => x.Code.Equals("060.020.010.000")).ToList();
             if (listadoComitesCTA.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoComitesCTA.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_COMITES_CTA";
+                }
+
                 foreach (CvnItemBean item in listadoComitesCTA)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_COMITES_CTA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2692,13 +2728,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoOrganizacionIDI = listadoDatos.Where(x => x.Code.Equals("060.020.030.000")).ToList();
             if (listadoOrganizacionIDI.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoOrganizacionIDI.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_ORGANIZACION_IDI";
+                }
+
                 foreach (CvnItemBean item in listadoOrganizacionIDI)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_ORGANIZACION_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2777,13 +2819,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoGestionIDI = listadoDatos.Where(x => x.Code.Equals("060.020.040.000")).ToList();
             if (listadoGestionIDI.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoGestionIDI.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_GESTION_IDI";
+                }
+
                 foreach (CvnItemBean item in listadoGestionIDI)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_GESTION_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2892,13 +2940,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoForosComites = listadoDatos.Where(x => x.Code.Equals("060.020.050.000")).ToList();
             if (listadoForosComites.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoForosComites.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_FOROS_COMITES";
+                }
+
                 foreach (CvnItemBean item in listadoForosComites)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_FOROS_COMITES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2986,13 +3040,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoEvalRevIDI = listadoDatos.Where(x => x.Code.Equals("060.020.060.000")).ToList();
             if (listadoEvalRevIDI.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoEvalRevIDI.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_EVAL_REV_IDI";
+                }
+
                 foreach (CvnItemBean item in listadoEvalRevIDI)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_EVAL_REV_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3068,13 +3128,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoEstanciasIDI = listadoDatos.Where(x => x.Code.Equals("060.010.050.000")).ToList();
             if (listadoEstanciasIDI.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoEstanciasIDI.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_ESTANCIAS_IDI";
+                }
+
                 foreach (CvnItemBean item in listadoEstanciasIDI)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_ESTANCIAS_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3229,13 +3295,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoAyudasBecas = listadoDatos.Where(x => x.Code.Equals("060.030.010.000")).ToList();
             if (listadoAyudasBecas.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoAyudasBecas.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_AYUDA_BECAS";
+                }
+
                 foreach (CvnItemBean item in listadoAyudasBecas)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_AYUDA_BECAS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3363,13 +3435,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoOtrosModosColaboracion = listadoDatos.Where(x => x.Code.Equals("060.020.020.000")).ToList();
             if (listadoOtrosModosColaboracion.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoOtrosModosColaboracion.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OTROS_MODOS_COLABORACION";
+                }
+
                 foreach (CvnItemBean item in listadoOtrosModosColaboracion)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTROS_MODOS_COLABORACION";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3562,13 +3640,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoSociedadesAsociaciones = listadoDatos.Where(x => x.Code.Equals("060.030.020.000")).ToList();
             if (listadoSociedadesAsociaciones.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoSociedadesAsociaciones.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_SOCIEDADES_ASOCIACIONES";
+                }
+
                 foreach (CvnItemBean item in listadoSociedadesAsociaciones)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_SOCIEDADES_ASOCIACIONES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3670,13 +3754,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoConsejos = listadoDatos.Where(x => x.Code.Equals("060.030.030.000")).ToList();
             if (listadoConsejos.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoConsejos.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CONSEJOS";
+                }
+
                 foreach (CvnItemBean item in listadoConsejos)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_CONSEJOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3756,13 +3846,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoRedesCooperacion = listadoDatos.Where(x => x.Code.Equals("060.030.040.000")).ToList();
             if (listadoRedesCooperacion.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoRedesCooperacion.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_REDES_COOPERACION";
+                }
+
                 foreach (CvnItemBean item in listadoRedesCooperacion)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_REDES_COOPERACION";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3894,13 +3990,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoPremios = listadoDatos.Where(x => x.Code.Equals("060.030.050.000")).ToList();
             if (listadoPremios.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoPremios.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PREMIOS_MENCIONES";
+                }
+
                 foreach (CvnItemBean item in listadoPremios)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PREMIOS_MENCIONES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3970,13 +4072,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoDistinciones = listadoDatos.Where(x => x.Code.Equals("060.030.060.000")).ToList();
             if (listadoDistinciones.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoDistinciones.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_DISTINCIONES";
+                }
+
                 foreach (CvnItemBean item in listadoDistinciones)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_DISTINCIONES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -4047,13 +4155,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoAcreditaciones = listadoDatos.Where(x => x.Code.Equals("060.030.070.000")).ToList();
             if (listadoAcreditaciones.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoAcreditaciones.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PERIODOS_ACTIVIDAD_INVESTIGADORA";
+                }
+
                 foreach (CvnItemBean item in listadoAcreditaciones)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PERIODOS_ACTIVIDAD_INVESTIGADORA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -4124,13 +4238,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoAcreditaciones = listadoDatos.Where(x => x.Code.Equals("060.030.090.000")).ToList();
             if (listadoAcreditaciones.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoAcreditaciones.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_ACREDITACIONES_OBTENIDAS";
+                }
+
                 foreach (CvnItemBean item in listadoAcreditaciones)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_ACREDITACIONES_OBTENIDAS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -4201,13 +4321,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoOtros = listadoDatos.Where(x => x.Code.Equals("060.030.100.000")).ToList();
             if (listadoOtros.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoOtros.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OTROS_MERITOS";
+                }
+
                 foreach (CvnItemBean item in listadoOtros)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTROS_MERITOS";
                     }
 
                     Entity entidadAux = new Entity();

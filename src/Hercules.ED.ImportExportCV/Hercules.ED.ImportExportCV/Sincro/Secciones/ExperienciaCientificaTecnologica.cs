@@ -364,13 +364,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoProyectosIDI = listadoDatos.Where(x => x.Code.Equals("050.020.010.000")).ToList();
             if (listadoProyectosIDI.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoProyectosIDI.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PROYECTOS_IDI_COMPETITIVOS";
+                }
+
                 foreach (CvnItemBean item in listadoProyectosIDI)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PROYECTOS_IDI_COMPETITIVOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -649,13 +655,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoContratos = listadoDatos.Where(x => x.Code.Equals("050.020.020.000")).ToList();
             if (listadoContratos.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoContratos.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CONTRATOS_NO_COMPETITIVOS";
+                }
+
                 foreach (CvnItemBean item in listadoContratos)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_CONTRATOS_NO_COMPETITIVOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -922,13 +934,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoPropiedadIndustrialIntelectual = listadoDatos.Where(x => x.Code.Equals("050.030.010.000")).ToList();
             if (listadoPropiedadIndustrialIntelectual.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoPropiedadIndustrialIntelectual.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PROPIEDAD_INDUSTRIAL_INTELECTUAL";
+                }
+
                 foreach (CvnItemBean item in listadoPropiedadIndustrialIntelectual)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PROPIEDAD_INDUSTRIAL_INTELECTUAL";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1152,13 +1170,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoGrupoIDI = listadoDatos.Where(x => x.Code.Equals("050.010.000.000")).ToList();
             if (listadoGrupoIDI.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoGrupoIDI.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_GRUPOS_IDI";
+                }
+
                 foreach (CvnItemBean item in listadoGrupoIDI)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_GRUPOS_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1299,13 +1323,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoObrasArtisticas = listadoDatos.Where(x => x.Code.Equals("050.020.030.000")).ToList();
             if (listadoObrasArtisticas.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoObrasArtisticas.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OBRAS_ARTISTICAS";
+                }
+
                 foreach (CvnItemBean item in listadoObrasArtisticas)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OBRAS_ARTISTICAS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1399,13 +1429,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoResultadosTecnologicos = listadoDatos.Where(x => x.Code.Equals("050.030.020.000")).ToList();
             if (listadoResultadosTecnologicos.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoResultadosTecnologicos.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_RESULTADOS_TECNOLOGICOS";
+                }
+
                 foreach (CvnItemBean item in listadoResultadosTecnologicos)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_RESULTADOS_TECNOLOGICOS";
                     }
 
                     Entity entidadAux = new Entity();

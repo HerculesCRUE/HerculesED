@@ -38,6 +38,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             if (petitionStatus != null)
             {
                 petitionStatus.actualWork++;
+                petitionStatus.actualSubWorks = 1;
+                petitionStatus.actualSubTotalWorks = 1;
                 petitionStatus.actualWorkSubtitle = "IMPORTACION_DATOS_IDENTIFICACION";
             }
 
