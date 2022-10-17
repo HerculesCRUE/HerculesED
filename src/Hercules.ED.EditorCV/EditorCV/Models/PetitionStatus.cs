@@ -14,18 +14,8 @@ namespace Models
         public string actualWorkTitle { get; set; }
         public string actualWorkSubtitle { get; set; }
         public int actualSubWorks { get; set; }
-        public int actualSubtotalWorks { get; set; }
+        public int actualSubTotalWorks { get; set; }
 
-        public PetitionStatus()
-        {
-            actualWork = 0;
-            totalWorks = 0;
-            subActualWork = 0;
-            subTotalWorks = 0;
-            actualWorkTitle = "";
-            actualWorkSubtitle = "";
-        }
-        
         public PetitionStatus(int actualWork, int totalWorks, string actualWorkTitle)
         {
             this.actualWork = actualWork;
@@ -33,16 +23,8 @@ namespace Models
             this.actualWorkTitle = actualWorkTitle;
             this.subActualWork = 0;
             this.subTotalWorks = 0;
-        }
-
-        public PetitionStatus(int actualWork, int totalWorks, string actualWorkTitle, string actualWorkSubtitle)
-        {
-            this.actualWork = actualWork;
-            this.totalWorks = totalWorks;
-            this.actualWorkTitle = actualWorkTitle;
-            this.actualWorkSubtitle = actualWorkSubtitle;
-            this.subActualWork = 0;
-            this.subTotalWorks = 0;
+            this.actualSubWorks = 0;
+            this.actualSubTotalWorks = 0;
         }
     }
 }
