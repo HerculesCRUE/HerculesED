@@ -13,6 +13,8 @@ namespace Models
         public int subActualWork { get; set; }
         public string actualWorkTitle { get; set; }
         public string actualWorkSubtitle { get; set; }
+        public int actualSubWorks { get; set; }
+        public int actualSubtotalWorks { get; set; }
 
         public PetitionStatus()
         {
