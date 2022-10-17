@@ -12,7 +12,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
     {
         private IConfiguration _configuration { get; set; }
         private string RabbitConnectionString { get; set; }
-        private string QueueRabbit { get; set; }
+        private string FuentesExternasQueueRabbit { get; set; }
         private string urlPublicacion { get; set; }
         private string rutaDirectorioEscritura { get; set; }
         private string urlZenodo { get; set; }
@@ -68,23 +68,23 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// Obtiene la el nombre de la cola Rabbit de configuración.
         /// </summary>
         /// <returns>Nombre de la cola Rabbit.</returns>
-        public string GetQueueRabbit()
+        public string GetFuentesExternasQueueRabbit()
         {
-            if (string.IsNullOrEmpty(QueueRabbit))
+            if (string.IsNullOrEmpty(FuentesExternasQueueRabbit))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 string queue = string.Empty;
-                if (environmentVariables.Contains("QueueRabbit"))
+                if (environmentVariables.Contains("FuentesExternasQueueRabbit"))
                 {
-                    queue = environmentVariables["QueueRabbit"] as string;
+                    queue = environmentVariables["FuentesExternasQueueRabbit"] as string;
                 }
                 else
                 {
-                    queue = _configuration["QueueRabbit"];
+                    queue = _configuration["FuentesExternasQueueRabbit"];
                 }
-                QueueRabbit = queue;
+                FuentesExternasQueueRabbit = queue;
             }
-            return QueueRabbit;
+            return FuentesExternasQueueRabbit;
         }
 
         /// <summary>

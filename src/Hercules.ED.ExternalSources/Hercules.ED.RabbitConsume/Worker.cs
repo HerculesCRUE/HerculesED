@@ -46,7 +46,7 @@ namespace Hercules.ED.RabbitConsume
             {
                 ConfigService configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
                 ReadRabbitService rabbitMQService = scope.ServiceProvider.GetRequiredService<ReadRabbitService>();
-                rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetQueueRabbit());
+                rabbitMQService.ListenToQueue(new ReadRabbitService.ReceivedDelegate(rabbitMQService.ProcessItem), new ReadRabbitService.ShutDownDelegate(OnShutDown), configService.GetFuentesExternasQueueRabbit());
             }
         }
 

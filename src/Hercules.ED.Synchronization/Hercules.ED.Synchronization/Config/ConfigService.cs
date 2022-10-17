@@ -21,7 +21,7 @@ namespace Hercules.ED.Synchronization.Config
 
         // RabbitMQ.
         public string rabbitConnectionString { get; set; }
-        public string queueRabbit { get; set; }
+        public string FuentesExternasQueueRabbit { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -90,14 +90,16 @@ namespace Hercules.ED.Synchronization.Config
             if (string.IsNullOrEmpty(rabbitConnectionString))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("colaFuentesExternas"))
+                string rabbitConnectionString = string.Empty;
+                if (environmentVariables.Contains("RabbitMQ"))
                 {
-                    rabbitConnectionString = environmentVariables["colaFuentesExternas"] as string;
+                    rabbitConnectionString = environmentVariables["RabbitMQ"] as string;
                 }
                 else
                 {
-                    rabbitConnectionString = configuracion["RabbitMQ:colaFuentesExternas"];
+                    rabbitConnectionString = configuracion.GetConnectionString("RabbitMQ");
                 }
+                rabbitConnectionString = rabbitConnectionString;
             }
             return rabbitConnectionString;
         }
@@ -106,23 +108,23 @@ namespace Hercules.ED.Synchronization.Config
         /// Obtiene la el nombre de la cola Rabbit de configuración.
         /// </summary>
         /// <returns>Nombre de la cola Rabbit.</returns>
-        public string GetQueueRabbit()
+        public string GetFuentesExternasQueueRabbit()
         {
-            if (string.IsNullOrEmpty(queueRabbit))
+            if (string.IsNullOrEmpty(FuentesExternasQueueRabbit))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 string queue = "";
-                if (environmentVariables.Contains("QueueRabbit"))
+                if (environmentVariables.Contains("FuentesExternasQueueRabbit"))
                 {
-                    queue = environmentVariables["QueueRabbit"] as string;
+                    queue = environmentVariables["FuentesExternasQueueRabbit"] as string;
                 }
                 else
                 {
-                    queue = configuracion["QueueRabbit"];
+                    queue = configuracion["FuentesExternasQueueRabbit"];
                 }
-                queueRabbit = queue;
+                FuentesExternasQueueRabbit = queue;
             }
-            return queueRabbit;
+            return FuentesExternasQueueRabbit;
         }
     }
 }

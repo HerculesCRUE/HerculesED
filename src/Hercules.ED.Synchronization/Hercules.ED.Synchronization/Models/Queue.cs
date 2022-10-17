@@ -41,7 +41,7 @@ namespace Hercules.ED.Synchronization.Models
         {
             // Publicaciones.
             List<string> listaDatos = new List<string>() { "investigador", pOrcid, pUltimaFechaMod, pGnossId };
-            pRabbitMQService.PublishMessage(listaDatos, configService.GetQueueRabbit());
+            pRabbitMQService.PublishMessage(listaDatos, configService.GetFuentesExternasQueueRabbit());
 
             // Zenodo.
             List<string> listaDatosZenodo = new List<string>() { "zenodo", pOrcid };
@@ -51,14 +51,14 @@ namespace Hercules.ED.Synchronization.Models
             if (pDicIDs.ContainsKey("usuarioFigshare") && pDicIDs.ContainsKey("tokenFigshare"))
             {
                 List<string> listaDatosFigShare = new List<string>() { "figshare", pDicIDs["tokenFigshare"] };
-                pRabbitMQService.PublishMessage(listaDatosFigShare, configService.GetQueueRabbit());
+                pRabbitMQService.PublishMessage(listaDatosFigShare, configService.GetFuentesExternasQueueRabbit());
             }
 
             // GitHub.
             if (pDicIDs.ContainsKey("usuarioGitHub") && pDicIDs.ContainsKey("tokenGitHub"))
             {
                 List<string> listaDatosGitHub = new List<string>() { "github", pDicIDs["usuarioGitHub"], pDicIDs["tokenGitHub"] };
-                pRabbitMQService.PublishMessage(listaDatosGitHub, configService.GetQueueRabbit());
+                pRabbitMQService.PublishMessage(listaDatosGitHub, configService.GetFuentesExternasQueueRabbit());
             }
         }
 
