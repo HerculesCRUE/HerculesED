@@ -43,6 +43,7 @@ $ pip install -r requirements.txt
 Download the Spacy model:
 ```
 $ spacy download en_core_web_lg
+$ spacy download es_core_news_lg
 ```
 
 Download the pretrained models and extract them:
