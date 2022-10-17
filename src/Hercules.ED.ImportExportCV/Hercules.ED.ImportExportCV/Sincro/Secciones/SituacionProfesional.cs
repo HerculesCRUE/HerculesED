@@ -149,6 +149,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Situación profesional actual";
                     }
 
                     Entity entidadAux = new Entity();
@@ -339,6 +340,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Cargos y actividades desempeñados con anterioridad";
                     }
 
                     Entity entidadAux = new Entity();

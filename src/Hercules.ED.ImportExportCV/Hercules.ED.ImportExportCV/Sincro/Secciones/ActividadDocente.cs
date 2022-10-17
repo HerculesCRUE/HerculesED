@@ -597,6 +597,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Dirección de tesis doctorales y/o proyectos fin de carrera";
                     }
 
                     Entity entidadAux = new Entity();
@@ -744,6 +745,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Formación académica impartida";
                     }
 
                     Entity entidadAux = new Entity();
@@ -909,6 +911,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Tutorías académicas de estudiantes";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1003,6 +1006,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Cursos y seminarios impartidos orientados a la formación docente universitaria";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1129,6 +1133,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Publicaciones docentes o de carácter pedagógico, libros, artículos, etc.";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1261,6 +1266,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Participación en proyectos de innovación docente";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1414,6 +1420,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Participación en congresos con ponencias orientadas a la formación docente";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1559,6 +1566,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Premios de innovación docente recibidos";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1629,6 +1637,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Otras actividades/méritos no incluidos en la relación anterior";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1725,6 +1734,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Aportaciones más relevantes de su CV de docencia";
                     }
 
                     Entity entidadAux = new Entity();

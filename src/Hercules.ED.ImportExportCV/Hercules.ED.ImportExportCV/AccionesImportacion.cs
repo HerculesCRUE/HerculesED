@@ -284,6 +284,7 @@ namespace Hercules.ED.ImportExportCV
             base.cvn = duplicadosResultBean;
 
             petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
+            petitionStatus.actualWorkSubtitle = "";
             petitionStatus.totalWorks = listadoDuplicar.Count();
             petitionStatus.actualWork = 0;
 
