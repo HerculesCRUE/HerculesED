@@ -366,6 +366,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Estudios de 1º y 2º ciclo, y antiguos ciclos (licenciados, Diplomados, Ingenieros Superiores, Ingenieros Técnicos, Arquitectos)";
                     }
 
                     Entity entidadAux = new Entity();
@@ -503,6 +504,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Doctorados";
                     }
 
                     Entity entidadAux = new Entity();
@@ -730,6 +732,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Otra formación universitaria de posgrado Formación especializada";
                     }
 
                     Entity entidadAux = new Entity();
@@ -836,6 +839,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización";
                     }
 
                     Entity entidadAux = new Entity();
@@ -934,6 +938,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Cursos y semin. mejora docente";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1023,6 +1028,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Conocimiento de idiomas";
                     }
 
                     Entity entidadAux = new Entity();

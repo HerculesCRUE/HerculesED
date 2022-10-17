@@ -127,6 +127,7 @@ namespace EditorCV.Controllers
                                     petitionStatus[petitionID].actualWork = 3;
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                     petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
                                 }
                             }
@@ -137,6 +138,7 @@ namespace EditorCV.Controllers
                                     petitionStatus[petitionID].actualWork = 2;
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                     petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_DUPLICAR")
@@ -145,6 +147,7 @@ namespace EditorCV.Controllers
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
                                     petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_FUSIONAR")
                                 {
@@ -152,6 +155,7 @@ namespace EditorCV.Controllers
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
                                     petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_SOBRESCRIBIR")
                                 {
@@ -159,6 +163,7 @@ namespace EditorCV.Controllers
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
                                     petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                 }
                             }
 

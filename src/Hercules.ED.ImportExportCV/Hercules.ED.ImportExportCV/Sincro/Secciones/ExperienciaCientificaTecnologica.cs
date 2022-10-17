@@ -370,6 +370,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas";
                     }
 
                     Entity entidadAux = new Entity();
@@ -654,6 +655,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Contratos, convenios o proyectos de I+D+i no competitivos con Administraciones o entidades públicas o privadas";
                     }
 
                     Entity entidadAux = new Entity();
@@ -926,6 +928,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Propiedad industrial e intelectual";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1155,6 +1158,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Grupos/equipos de investigación, desarrollo o innovación";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1301,6 +1305,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Obras artísticas dirigidas";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1400,6 +1405,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "Resultados tecnológicos derivados de actividades especializadas y de transferencia no incluidos en apartados anteriores";
                     }
 
                     Entity entidadAux = new Entity();
