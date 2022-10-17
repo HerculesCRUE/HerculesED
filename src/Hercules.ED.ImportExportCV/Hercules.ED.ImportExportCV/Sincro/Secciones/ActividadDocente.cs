@@ -591,13 +591,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoDireccionTesis = listadoDatos.Where(x => x.Code.Equals("030.040.000.000")).ToList();
             if (listadoDireccionTesis.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoDireccionTesis.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_DIRECCION_TESIS";
+                }
+
                 foreach (CvnItemBean item in listadoDireccionTesis)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_DIRECCION_TESIS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -739,13 +745,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoFormacionAcademica = listadoDatos.Where(x => x.Code.Equals("030.010.000.000")).ToList();
             if (listadoFormacionAcademica.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoFormacionAcademica.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_FORMACION_ACADEMICA";
+                }
+
                 foreach (CvnItemBean item in listadoFormacionAcademica)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_FORMACION_ACADEMICA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -905,13 +917,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoTutoriasAcademicas = listadoDatos.Where(x => x.Code.Equals("030.050.000.000")).ToList();
             if (listadoTutoriasAcademicas.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoTutoriasAcademicas.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_TUTORIAS_ACADEMICAS";
+                }
+
                 foreach (CvnItemBean item in listadoTutoriasAcademicas)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_TUTORIAS_ACADEMICAS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1000,13 +1018,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoCursosSeminarios = listadoDatos.Where(x => x.Code.Equals("030.060.000.000")).ToList();
             if (listadoCursosSeminarios.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoCursosSeminarios.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CURSOS_SEMINARIOS";
+                }
+
                 foreach (CvnItemBean item in listadoCursosSeminarios)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_CURSOS_SEMINARIOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1127,13 +1151,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoPublicacionDocentes = listadoDatos.Where(x => x.Code.Equals("030.070.000.000")).ToList();
             if (listadoPublicacionDocentes.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoPublicacionDocentes.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PUBLICACIONES_DOCENTES";
+                }
+
                 foreach (CvnItemBean item in listadoPublicacionDocentes)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PUBLICACIONES_DOCENTES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1260,13 +1290,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoParticipacionProyectosInnovacionDocente = listadoDatos.Where(x => x.Code.Equals("030.080.000.000")).ToList();
             if (listadoParticipacionProyectosInnovacionDocente.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoParticipacionProyectosInnovacionDocente.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_PROYECTOS_INNOVACION_DOCENTE";
+                }
+
                 foreach (CvnItemBean item in listadoParticipacionProyectosInnovacionDocente)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_PROYECTOS_INNOVACION_DOCENTE";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1414,13 +1450,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoParticipacionCongresosFormacionDocente = listadoDatos.Where(x => x.Code.Equals("030.090.000.000")).ToList();
             if (listadoParticipacionCongresosFormacionDocente.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoParticipacionCongresosFormacionDocente.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_CONGRESOS_FORMACION_DOCENTE";
+                }
+
                 foreach (CvnItemBean item in listadoParticipacionCongresosFormacionDocente)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_CONGRESOS_FORMACION_DOCENTE";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1560,6 +1602,13 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoPremiosInovacionDocente = listadoDatos.Where(x => x.Code.Equals("060.030.080.000")).ToList();
             if (listadoPremiosInovacionDocente.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoPremiosInovacionDocente.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PREMIOS_INNOVACION_DOCENTE";
+                }
+
                 foreach (CvnItemBean item in listadoPremiosInovacionDocente)
                 {
                     //Actualizo el estado de los recursos tratados
@@ -1631,6 +1680,13 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoOtrasActividades = listadoDatos.Where(x => x.Code.Equals("030.100.000.000")).ToList();
             if (listadoOtrasActividades.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoOtrasActividades.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_ACTIVIDADES";
+                }
+
                 foreach (CvnItemBean item in listadoOtrasActividades)
                 {
                     //Actualizo el estado de los recursos tratados
@@ -1728,13 +1784,19 @@ namespace ImportadorWebCV.Sincro.Secciones
             List<CvnItemBean> listadoAportacionesRelevantes = listadoDatos.Where(x => x.Code.Equals("030.110.000.000")).ToList();
             if (listadoAportacionesRelevantes.Count > 0)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoAportacionesRelevantes.Count;
+                    petitionStatus.actualWorkSubtitle = "IMPORTACION_APORTACIONES_RELEVANTES";
+                }
+
                 foreach (CvnItemBean item in listadoAportacionesRelevantes)
                 {
                     //Actualizo el estado de los recursos tratados
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "IMPORTACION_APORTACIONES_RELEVANTES";
                     }
 
                     Entity entidadAux = new Entity();
