@@ -2,6 +2,8 @@
 
 API providing access for the extraction of thematic and specific descriptors from scientific papers, protocols and code projects.
 
+This API supports english and spanish languages. No parameters must be set to indicate the language of a given RO, as it is automatically identified when needed.
+
 # Requirements
 
 These are the minimum hardware and software requirements to run this service:

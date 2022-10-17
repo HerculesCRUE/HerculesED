@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using Gnoss.ApiWrapper.ApiModel;
+using Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology;
+using Gnoss.ApiWrapper.Model;
 
 namespace EditorCV.Models
 {
