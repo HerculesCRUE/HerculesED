@@ -40,6 +40,10 @@ namespace EditorCV.Models
                 string[] personaCrisIdentifier = ObtenerPersonaYCrisIdentifier(idInvestigador);
                 string persona = personaCrisIdentifier[0];
                 string crisIdentifier = personaCrisIdentifier[1];
+                if (periodo.Contains(','))
+                {
+                    periodo = string.Join(',', periodo.Split(',').Select(x => x.Trim()).ToList());
+                }
                 ParameterSexenio sexenio = new ParameterSexenio(comite, periodo, perfil_tecnologico, subcomite, crisIdentifier);
                 string sexenioJson = JsonConvert.SerializeObject(sexenio);
                 if (sexenio.process.parameters.perfil_tecnologico == null)
@@ -71,7 +75,7 @@ namespace EditorCV.Models
         }
 
         /// <summary>
-        /// Método que obtiene el crisIdentifier y un recurso Person a partir de una id de una persona
+        /// Método que obtiene un recurso Person y el crisIdentifier a partir de una id de una persona
         /// </summary>
         /// <param name="idInvestigador"></param>
         /// <returns></returns>

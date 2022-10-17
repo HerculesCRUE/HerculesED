@@ -21,7 +21,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("ConseguirAcreditaciones")]
-        public IActionResult ConseguirAcreditaciones(string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string idInvestigador)
+        public IActionResult ConseguirAcreditaciones([FromForm] string comision, [FromForm] string tipo_acreditacion, [FromForm][Optional] string categoria_acreditacion, [FromForm] string idInvestigador)
         {
             try
             {
