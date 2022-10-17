@@ -366,7 +366,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "Estudios de 1º y 2º ciclo, y antiguos ciclos (licenciados, Diplomados, Ingenieros Superiores, Ingenieros Técnicos, Arquitectos)";
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_ESTUDIOS_CICLOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -504,7 +504,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "Doctorados";
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_DOCTORADOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -732,7 +732,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "Otra formación universitaria de posgrado Formación especializada";
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRA_FORMACION_POSGRADO";
                     }
 
                     Entity entidadAux = new Entity();
@@ -839,7 +839,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "Formación especializada, continuada, técnica, profesionalizada, de reciclaje y actualización";
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_FORMACION_ESPECIALIZADA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -938,7 +938,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "Cursos y semin. mejora docente";
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_CURSOS_MEJORA_DOCENTE";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1028,7 +1028,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
-                        petitionStatus.actualWorkSubtitle = "Conocimiento de idiomas";
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_CONOCIMIENTO_IDIOMAS";
                     }
 
                     Entity entidadAux = new Entity();
