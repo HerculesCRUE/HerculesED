@@ -1433,6 +1433,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PRODUCCION_CIENTIFICA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -1513,6 +1514,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         if (petitionStatus != null)
                         {
                             petitionStatus.actualWork++;
+                            petitionStatus.actualWorkSubtitle = "IMPORTAR_PUBLICACIONES_DOCUMENTOS";
                         }
 
                         string doi = PublicacionesDocumentosComprobarDOI(item);
@@ -1840,6 +1842,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_TRABAJOS_CONGRESOS";
                     }
 
                     string doi = TrabajosCongresosComprobarDOI(item);
@@ -2150,6 +2153,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_TRABAJOS_JORNADAS_SEMINARIOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2415,6 +2419,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_ACTIVIDADES_DIVULGACION";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2583,6 +2588,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_COMITES_CTA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2684,6 +2690,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_ORGANIZACION_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2768,6 +2775,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_GESTION_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2882,6 +2890,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_FOROS_COMITES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -2975,6 +2984,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_EVAL_REV_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3056,6 +3066,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_ESTANCIAS_IDI";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3216,6 +3227,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_AYUDA_BECAS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3349,6 +3361,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTROS_MODOS_COLABORACION";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3547,6 +3560,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_SOCIEDADES_ASOCIACIONES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3654,6 +3668,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_CONSEJOS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3739,6 +3754,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_REDES_COOPERACION";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3876,6 +3892,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PREMIOS_MENCIONES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -3951,6 +3968,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_DISTINCIONES";
                     }
 
                     Entity entidadAux = new Entity();
@@ -4027,6 +4045,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_PERIODOS_ACTIVIDAD_INVESTIGADORA";
                     }
 
                     Entity entidadAux = new Entity();
@@ -4103,6 +4122,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_ACREDITACIONES_OBTENIDAS";
                     }
 
                     Entity entidadAux = new Entity();
@@ -4179,6 +4199,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualWorkSubtitle = "IMPORTACION_OTROS_MERITOS";
                     }
 
                     Entity entidadAux = new Entity();
