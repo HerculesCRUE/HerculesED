@@ -433,9 +433,16 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         /// <param name="preimportar"></param>
         /// <returns></returns>
-        public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD)
+        public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             TextoLibre textoLibre = new TextoLibre(cvn, cvID, mConfiguracion);
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualSubWorks = 1;
+                petitionStatus.actualSubTotalWorks = 1;
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_TEXTO_LIBRE";
+            }
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
             listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"), preimportar, listadoIdBBDD)));
