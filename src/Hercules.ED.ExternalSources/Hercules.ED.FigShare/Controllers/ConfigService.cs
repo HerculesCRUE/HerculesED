@@ -8,9 +8,6 @@ namespace FigShareAPI.Controllers
     {
         // Archivo de configuración.
         public static IConfigurationRoot configuracion;
-
-        // URLs
-        private string urlBase { get; set; }
         private string urlBaseEnriquecimiento { get; set; }
         private string token { get; set; }
 
@@ -28,23 +25,7 @@ namespace FigShareAPI.Controllers
         /// <returns>URI del API de FigShare.</returns>
         public string GetUrlBase()
         {
-            if (string.IsNullOrEmpty(urlBase))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("UrlBase"))
-                {
-                    connectionString = environmentVariables["UrlBase"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["UrlBase"];
-                }
-
-                urlBase = connectionString;
-            }
-
-            return urlBase;
+            return "https://api.figshare.com/v2";
         }
 
         /// <summary>
