@@ -24,20 +24,40 @@ namespace EditorCV.Models
         /// <param name="tipo_acreditacion"></param>
         /// <param name="categoria_acreditacion"></param>
         /// <param name="investigador"></param>
-        public void GetAcreditaciones(ConfigService _Configuracion, string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string investigador)
+        public void GetAcreditaciones(ConfigService _Configuracion, string comision, string tipo_acreditacion, [Optional] string categoria_acreditacion, string idInvestigador)
         {
             //Petición al exportador para conseguir el archivo PDF
             HttpClient client = new HttpClient();
             client.Timeout = new TimeSpan(1, 15, 0);
             string urlAcreditaciones = _Configuracion.GetUrlSGI() + "/api/orchestrator/schedules/execute";
 
+            string cvOf = Utils.UtilityCV.GetCVFromUser(idInvestigador);
+            string person = Utils.UtilityCV.GetPersonFromCV(cvOf);
+
+            //Consigo el identificador del investigador.
+            string investigador = Utils.UtilityCV.GetIdInvestigador(cvOf);
+
+            //Si no consigo ningún identificador del usuario.
+            if (string.IsNullOrEmpty(investigador))
+            {
+                throw new Exception("El usuario no se ha encontrado, id: " + idInvestigador);
+            }
+
             ParameterAcreditacion acreditacion = new ParameterAcreditacion(comision, tipo_acreditacion, categoria_acreditacion, investigador);
             string acreditacionJson = JsonConvert.SerializeObject(acreditacion);
 
             StringContent content = new StringContent(acreditacionJson, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = client.PostAsync($"{urlAcreditaciones}", content).Result;
-            response.EnsureSuccessStatusCode();
+            HttpResponseMessage response = client.PostAsync($"{urlAcreditaciones}", content).Result; 
+
+            if (response.IsSuccessStatusCode)
+            {
+                Utils.UtilityCV.EnvioNotificacion("NOTIFICACION_ACREDITACION", person, "recuperarAcreditacion");
+            }
+            else
+            {
+                Utils.UtilityCV.EnvioNotificacion("NOTIFICACION_ACREDITACION_ERROR", person, "recuperarAcreditacion");
+            }
         }
 
         /// <summary>
