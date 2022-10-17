@@ -121,14 +121,15 @@ namespace EditorCV.Controllers
                                 {
                                     petitionStatus[petitionID].actualWork = 2;
                                     petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_LECTURA";
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_PREIMPORTAR_PROCESARDATOS")
                                 {
                                     petitionStatus[petitionID].actualWork = 3;
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                     petitionStatus[petitionID].actualWorkTitle = "ESTADO_PREIMPORTAR_PROCESARDATOS";
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                 }
                             }
                             else if (estadoRespuesta != null && accion == "POSTIMPORTAR")
@@ -138,8 +139,8 @@ namespace EditorCV.Controllers
                                     petitionStatus[petitionID].actualWork = 2;
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                     petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
+                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_DUPLICAR")
                                 {
