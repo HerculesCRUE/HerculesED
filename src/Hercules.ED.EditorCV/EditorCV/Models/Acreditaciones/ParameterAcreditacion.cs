@@ -36,7 +36,6 @@ namespace EditorCV.Models.Acreditacion
             this.process = new Process(comision, tipo_acreditacion, categoria_acreditacion, investigador);
         }
 
-
     }
     public class Process
     {
