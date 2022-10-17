@@ -377,6 +377,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualSubWorks++;
                     }
 
                     Entity entidadAux = new Entity();
@@ -668,6 +669,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualSubWorks++;
                     }
 
                     Entity entidadAux = new Entity();
@@ -947,6 +949,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualSubWorks++;
                     }
 
                     Entity entidadAux = new Entity();
@@ -1183,6 +1186,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualSubWorks++;
                     }
 
                     Entity entidadAux = new Entity();
@@ -1336,6 +1340,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualSubWorks++;
                     }
 
                     Entity entidadAux = new Entity();
@@ -1442,6 +1447,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     if (petitionStatus != null)
                     {
                         petitionStatus.actualWork++;
+                        petitionStatus.actualSubWorks++;
                     }
 
                     Entity entidadAux = new Entity();
