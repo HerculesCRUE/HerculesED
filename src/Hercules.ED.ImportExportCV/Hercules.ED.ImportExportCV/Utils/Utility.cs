@@ -1,15 +1,18 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using Gnoss.ApiWrapper.Model;
 using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Models;
 using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV;
 using Models;
+using Models.NotificationOntology;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
@@ -36,14 +39,14 @@ namespace Utils
                                     ?person a <http://xmlns.com/foaf/0.1/Person> .
                                     FILTER(?s=<{pCVID}>)
                                 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person"});
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 return fila["person"].value;
             }
             return null;
         }
-        
+
         public static string GetNombreCompletoPersonaCV(string pCVID)
         {
             string select = $@"select distinct ?name ";
@@ -63,6 +66,45 @@ namespace Utils
         }
 
         /// <summary>
+        /// Obtiene la persona propietaria de un CV
+        /// </summary>
+        /// <param name="pCvID">Identificador del CV</param>
+        /// <returns>ID de la persona</returns>
+        public static string GetPersonFromCV(string pCvID)
+        {
+            return mResourceApi.VirtuosoQuery("select *", "where{<" + pCvID + "> <http://w3id.org/roh/cvOf> ?person. }", "curriculumvitae").results.bindings.First()["person"].value;
+        }
+
+        /// <summary>
+        /// Envia una notificación.
+        /// </summary>
+        /// <param name="owner">Persona a la que enviar la notificación</param>
+        /// <param name="rohType">Tipo de notificación</param>
+        /// <param name="textoExtra">Texto extra de la notificación</param>
+        public static void EnvioNotificacion(string owner, string rohType, [Optional] string textoExtra)
+        {
+            Notification notificacion = new Notification();
+            notificacion.Roh_text = string.IsNullOrEmpty(textoExtra) ? null : textoExtra;
+            notificacion.IdRoh_owner = owner;
+            notificacion.Dct_issued = DateTime.UtcNow;
+            notificacion.Roh_type = rohType;
+
+            mResourceApi.ChangeOntoly("notification");
+            ComplexOntologyResource recursoCargar = notificacion.ToGnossApiResource(mResourceApi);
+            int numIntentos = 0;
+            while (!recursoCargar.Uploaded)
+            {
+                numIntentos++;
+
+                if (numIntentos > 5)
+                {
+                    break;
+                }
+                mResourceApi.LoadComplexSemanticResource(recursoCargar);
+            }
+        }
+
+        /// <summary>
         /// Dada una lista de personas, devuelve las organizaciones correspondientes a cada persona.
         /// </summary>
         /// <param name="personas"></param>
@@ -77,7 +119,7 @@ namespace Utils
                                     ?person <http://w3id.org/roh/hasRole> ?organization .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae" ,"person","group"});
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person", "group" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Organizaciones
@@ -111,7 +153,7 @@ namespace Utils
                                     ?person <http://vivoweb.org/ontology/core#departmentOrSchool> ?departament .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string> { "curriculumvitae" ,"person","group"});
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person", "group" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Departamentos
@@ -148,7 +190,7 @@ namespace Utils
                                     ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string> { "curriculumvitae","person","project" });
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person", "project" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Proyectos
@@ -185,7 +227,7 @@ namespace Utils
                                     ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new List<string>{"curriculumvitae","person","group" });
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person", "group" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Grupos
@@ -1911,7 +1953,7 @@ namespace Utils
                                     ?person <http://xmlns.com/foaf/0.1/name> ?nombre .
                                     FILTER(?s=<{pCVID}>)
                                 }}";
-                SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new(){"curriculumvitae","person" });
+                SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "curriculumvitae", "person" });
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
                     persona.name = new Name();
