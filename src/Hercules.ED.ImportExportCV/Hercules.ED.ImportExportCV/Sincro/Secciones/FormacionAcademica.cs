@@ -67,7 +67,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //3º Comparamos las equivalentes
                 equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-            
+
                 foreach (var item in equivalencias.Values)
                 {
                     listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
@@ -75,7 +75,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -120,7 +121,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //3º Comparamos las equivalentes
                 equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-            
+
                 foreach (var item in equivalencias.Values)
                 {
                     listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
@@ -128,7 +129,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -174,7 +176,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //3º Comparamos las equivalentes
                 equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-            
+
                 foreach (var item in equivalencias.Values)
                 {
                     listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
@@ -182,7 +184,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -229,7 +232,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //3º Comparamos las equivalentes
                 equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-            
+
                 foreach (var item in equivalencias.Values)
                 {
                     listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
@@ -237,7 +240,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -284,7 +288,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //3º Comparamos las equivalentes
                 equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-            
+
                 foreach (var item in equivalencias.Values)
                 {
                     listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
@@ -292,7 +296,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -337,7 +342,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 //3º Comparamos las equivalentes
                 equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-            
+
                 foreach (var item in equivalencias.Values)
                 {
                     listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
@@ -345,7 +350,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD:listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -1078,7 +1084,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     CvnItemBeanCvnTitleBean idioma = item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.060.000.010");
 
                     //Si el TitleBean es nulo o no tiene identificador, no hago nada. 
-                    if (idioma == null) 
+                    if (idioma == null)
                     {
                         listadoDatos.Remove(item);
                         listadoCvn.Remove(item);
@@ -1102,7 +1108,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 new Property(Variables.FormacionAcademica.conocimientoIdiomasExpresionEscrita, Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.160")))
                             ));
                         }
-                        else {
+                        else
+                        {
                             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                                     new Property(Variables.FormacionAcademica.conocimientoIdiomasIdioma.Split("@@@").First(), idioma.GetTraduccion()),
                                     new Property(Variables.FormacionAcademica.conocimientoIdiomasComprensionAuditiva.Split("@@@").First(), Utility.GetNivelLenguaje(item.GetStringPorIDCampo("020.060.000.120"))),
