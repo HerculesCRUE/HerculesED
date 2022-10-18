@@ -428,7 +428,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         protected List<SubseccionItem> CheckPreimportar(bool preimportar, List<Entity> listadoAux, Dictionary<string, DisambiguableEntity> entidadesXML,
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
             List<string> propiedadesItem, string RdfTypeTab, List<bool> listadoBloqueados,
-            [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] bool propertiesCV, [Optional] List<string> listadoIdBBDD)
+            [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] bool propertiesCV, [Optional] List<string> listadoIdBBDD,
+            [Optional] PetitionStatus petitionStatus)
         {
             if (preimportar)
             {
@@ -437,11 +438,21 @@ namespace ImportadorWebCV.Sincro.Secciones
                     throw new Exception("El listado de items bloqueados y el listado de equivalencias no concuerdan");
                 }
 
+                if(petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = equivalencias.Count;
+                }
+
                 if (propertiesCV != null && propertiesCV)
                 {
                     List<SubseccionItem> listaAux = new List<SubseccionItem>();
                     for (int i = 0; i < equivalencias.Count; i++)
                     {
+                        if (petitionStatus != null)
+                        {
+                            petitionStatus.actualSubWorks++;
+                        }
                         listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties, listadoAux.ElementAt(i).properties_cv, listadoBloqueados.ElementAt(i)));
                     }
                     return listaAux;
@@ -451,6 +462,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                     List<SubseccionItem> listaAux = new List<SubseccionItem>();
                     for (int i = 0; i < equivalencias.Count; i++)
                     {
+                        if (petitionStatus != null)
+                        {
+                            petitionStatus.actualSubWorks++;
+                        }
                         listaAux.Add(new SubseccionItem(i, equivalencias.Values.ElementAt(i), listadoAux.ElementAt(i).properties, listadoBloqueados.ElementAt(i)));
                     }
                     return listaAux;
@@ -950,14 +965,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 string select = "select distinct ?related ?relatedCV ";
                 string where = $@"where {{
                                         ?s <{propiedadesItem[0]}> ?category . 
-                                        ?category <{propiedadesItem[propiedadesItem.Count - 2] }> ?related . 
+                                        ?category <{propiedadesItem[propiedadesItem.Count - 2]}> ?related . 
                                         OPTIONAL{{?related <{pPropertyCV}> ?relatedCV.}}
                                         ?related <http://vivoweb.org/ontology/core#relatedBy> ?item
                                         FILTER(?s=<{mCvID}>)
                                         FILTER(?item=<{pIdEntidadBBDD}>)
                                     }}";
                 SparqlObject entityIDCV = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-                if (entityIDCV.results.bindings.Count == 0) { 
+                if (entityIDCV.results.bindings.Count == 0)
+                {
                     return;
                 }
                 string idEntity = entityIDCV.results.bindings[0]["related"].value;

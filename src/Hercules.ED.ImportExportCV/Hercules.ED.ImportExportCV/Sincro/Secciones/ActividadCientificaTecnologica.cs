@@ -80,7 +80,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
 
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab,
+                listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedScientificPublication";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus, listaDOI,preimportar);
+            List<Entity> listadoAux = GetPublicacionesDocumentos(mConfiguracion, listadoDatos, listadoSituacionProfesional, petitionStatus, listaDOI, preimportar);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -224,8 +225,20 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 Dictionary<string, bool> bloqueados = ComprobarBloqueados(idValuesBBDD, graph);
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
+
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoAux.Count;
+                }
+
                 for (int i = 0; i < listadoAux.Count; i++)
                 {
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualSubWorks++;
+                    }
+
                     KeyValuePair<string, HashSet<string>> x = equivalencias.FirstOrDefault(x => x.Value.Select(x => x.Split('|')[1]).Contains(listadoAux[i].id));
                     //Si NO es un Guid añado el valor.
                     string idBBDD = !Guid.TryParse(x.Key, out Guid aux) ? x.Key : "";
@@ -270,7 +283,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedConferences";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosCongresos(mConfiguracion, listadoDatos, petitionStatus, listaDOI,preimportar);
+            List<Entity> listadoAux = GetTrabajosCongresos(mConfiguracion, listadoDatos, petitionStatus, listaDOI, preimportar);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -327,8 +340,20 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 Dictionary<string, bool> bloqueados = ComprobarBloqueados(idValuesBBDD, graph);
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
+
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoAux.Count;
+                }
+
                 for (int i = 0; i < listadoAux.Count; i++)
                 {
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualSubWorks++;
+                    }
+
                     KeyValuePair<string, HashSet<string>> x = equivalencias.FirstOrDefault(x => x.Value.Select(x => x.Split('|')[1]).Contains(listadoAux[i].id));
                     //Si NO es un Guid añado el valor.
                     string idBBDD = !Guid.TryParse(x.Key, out Guid aux) ? x.Key : "";
@@ -374,7 +399,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfTypePrefix = "RelatedWorkSubmittedSeminars";
 
             //1º Obtenemos la entidad del XML.
-            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(mConfiguracion, listadoDatos, petitionStatus,preimportar);
+            List<Entity> listadoAux = GetTrabajosJornadasSeminarios(mConfiguracion, listadoDatos, petitionStatus, preimportar);
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             foreach (Entity entityXML in listadoAux)
@@ -432,8 +457,20 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 Dictionary<string, bool> bloqueados = ComprobarBloqueados(idValuesBBDD, graph);
                 List<SubseccionItem> listaAux = new List<SubseccionItem>();
+
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks = 1;
+                    petitionStatus.actualSubTotalWorks = listadoAux.Count;
+                }
+
                 for (int i = 0; i < listadoAux.Count; i++)
                 {
+                    if (petitionStatus != null)
+                    {
+                        petitionStatus.actualSubWorks++;
+                    }
+
                     KeyValuePair<string, HashSet<string>> x = equivalencias.FirstOrDefault(x => x.Value.Select(x => x.Split('|')[1]).Contains(listadoAux[i].id));
                     //Si NO es un Guid añado el valor.
                     string idBBDD = !Guid.TryParse(x.Key, out Guid aux) ? x.Key : "";

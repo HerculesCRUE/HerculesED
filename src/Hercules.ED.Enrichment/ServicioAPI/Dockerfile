@@ -7,6 +7,7 @@ WORKDIR /hercules-enrichment-api
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 RUN spacy download en_core_web_lg
+RUN spacy download es_core_news_lg
 
 RUN wget https://storage.googleapis.com/elhuyar/Hercules/hercules-models.tar.gz
 RUN tar xfz hercules-models.tar.gz

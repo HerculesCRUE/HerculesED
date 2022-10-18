@@ -75,7 +75,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, propertyCV, rdfTypeCV, true, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, propertyCV, rdfTypeCV, true, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -130,7 +131,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, propertyCV, rdfTypeCV, true, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, propertyCV, rdfTypeCV, true, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -185,7 +187,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -241,7 +244,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, propertyCV, rdfTypeCV, true, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, propertyCV, rdfTypeCV, true, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -296,7 +300,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -349,7 +354,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix, propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
