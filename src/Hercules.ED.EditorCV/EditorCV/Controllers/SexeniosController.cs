@@ -36,12 +36,12 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("Notify")]
-        public IActionResult NotifySexenios(string url_cdn, string identifier)
+        public IActionResult NotifySexenios(string url_cdn, string idUsuario)
         {
             try
             {
                 AccionesSexenios accionesSexenios = new AccionesSexenios();
-                accionesSexenios.NotifySexenios(url_cdn, identifier);
+                accionesSexenios.NotifySexenios(url_cdn, idUsuario);
                 return Ok();
             }
             catch (Exception)
