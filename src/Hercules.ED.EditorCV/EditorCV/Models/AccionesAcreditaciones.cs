@@ -32,7 +32,7 @@ namespace EditorCV.Models
             //Petición al exportador para conseguir el archivo PDF
             HttpClient client = new HttpClient();
             client.Timeout = new TimeSpan(1, 15, 0);
-            string urlAcreditaciones = _Configuracion.GetUrlSGI() + "/api/orchestrator/schedules/execute";
+            string urlAcreditaciones = _Configuracion.GetUrlSGISexeniosAcreditaciones() + "/api/orchestrator/schedules/execute";
 
             string cvOf = Utils.UtilityCV.GetCVFromUser(idInvestigador);
             string person = Utils.UtilityCV.GetPersonFromCV(cvOf);
