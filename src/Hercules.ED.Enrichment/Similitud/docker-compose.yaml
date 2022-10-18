@@ -1,4 +1,4 @@
-version: "3.7"	
+version: "3.7"
 
 services:
   
@@ -14,4 +14,3 @@ services:
     container_name: hercules-similarity-mongodb
     volumes:
       - ./mongodb-data:/data/db
-    
