@@ -81,10 +81,10 @@ namespace Utils
         /// <param name="owner">Persona a la que enviar la notificación</param>
         /// <param name="rohType">Tipo de notificación</param>
         /// <param name="textoExtra">Texto extra de la notificación</param>
-        public static void EnvioNotificacion(string owner, string rohType, [Optional] string textoExtra)
+        public static void EnvioNotificacion(string owner, string rohType, string mensaje)
         {
             Notification notificacion = new Notification();
-            notificacion.Roh_text = string.IsNullOrEmpty(textoExtra) ? null : textoExtra;
+            notificacion.Roh_text = mensaje;
             notificacion.IdRoh_owner = owner;
             notificacion.Dct_issued = DateTime.UtcNow;
             notificacion.Roh_type = rohType;

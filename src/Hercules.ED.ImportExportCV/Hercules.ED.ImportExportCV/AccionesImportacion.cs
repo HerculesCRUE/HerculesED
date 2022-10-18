@@ -345,7 +345,7 @@ namespace Hercules.ED.ImportExportCV
             try
             {
                 string person = Utils.Utility.GetPersonFromCV(pCVID);
-                Utils.Utility.EnvioNotificacion(person, "loadCV");
+                Utils.Utility.EnvioNotificacion(person, "loadCV", "NOTIFICACION_FIN_CARGA_CV");
             }
             catch (Exception ex)
             {
