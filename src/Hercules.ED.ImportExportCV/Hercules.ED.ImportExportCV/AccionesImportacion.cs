@@ -342,6 +342,16 @@ namespace Hercules.ED.ImportExportCV
                 }
             }
 
+            try
+            {
+                string person = Utils.Utility.GetPersonFromCV(pCVID);
+                Utils.Utility.EnvioNotificacion(person, "loadCV");
+            }
+            catch (Exception ex)
+            {
+                mResourceApi.Log.Error(ex.Message);
+            }
+
         }
     }
 }
