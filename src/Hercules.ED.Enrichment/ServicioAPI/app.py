@@ -392,7 +392,7 @@ class SpecificDescriptorAPI(MethodResource, Resource):
             response_json["topics"]={'error':'specified ro type is not available {}'.format(available_keyphrase_models)}
             return response_json
         
-        logging.info('Text to process: \n TITLE:_{}_ \n ABSTRACT:_{}_ \n TEXT:_{}_'.format(title, abstract, text))
+        #logging.info('Text to process: \n TITLE:_{}_ \n ABSTRACT:_{}_ \n TEXT:_{}_'.format(title, abstract, text))
         text=text.replace("<br />","\n")
         title=title.replace("<br />","\n")
         abstract=abstract.replace("<br />","\n")

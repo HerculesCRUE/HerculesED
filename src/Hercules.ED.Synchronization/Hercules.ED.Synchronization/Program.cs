@@ -34,9 +34,30 @@ namespace Hercules.ED.Synchronization
             /// <param name="messsage"></param>
             public static void Log(string messsage)
             {
-                using var fileStream = new FileStream(FilePath, FileMode.Append);
+                if (!Directory.Exists(FilePath))
+                {
+                    Directory.CreateDirectory(FilePath);
+                }
+                using var fileStream = new FileStream($"{FilePath}/log_{CreateTimeStamp()}.txt", FileMode.Append);
                 using var writter = new StreamWriter(fileStream);
                 writter.WriteLine(messsage);
+            }
+
+            private static string CreateTimeStamp()
+            {
+                DateTime time = DateTime.Now;
+                string month = time.Month.ToString();
+                if (month.Length == 1)
+                {
+                    month = $"0{month}";
+                }
+                string day = time.Day.ToString();
+                if (day.Length == 1)
+                {
+                    day = $"0{day}";
+                }
+                string timeStamp = $"{time.Year.ToString()}{month}{day}";
+                return timeStamp;
             }
         }
     }

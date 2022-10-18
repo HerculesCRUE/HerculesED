@@ -11,9 +11,6 @@ namespace ZenodoAPI.Controllers
 
         // Ruta del log
         private static string logPath { get; set; }
-
-        // URL
-        private static string urlZenodo { get; set; }
         private string urlBaseEnriquecimiento { get; set; }
 
         /// <summary>
@@ -54,24 +51,8 @@ namespace ZenodoAPI.Controllers
         /// </summary>
         /// <returns>URL.</returns>
         public string GetUrlZenodo()
-        {
-            if (string.IsNullOrEmpty(urlZenodo))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("UrlZenodo"))
-                {
-                    connectionString = environmentVariables["UrlZenodo"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["UrlZenodo"];
-                }
-
-                urlZenodo = connectionString;
-            }
-
-            return urlZenodo;
+        {            
+            return "https://zenodo.org/api/records/";
         }
 
         /// <summary>

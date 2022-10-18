@@ -12,9 +12,6 @@ namespace OpenAireAPI.Controllers
         // Archivo de configuración.
         public static IConfigurationRoot configuracion;
 
-        // URLs
-        private string urlOpenAire { get; set; }
-
 
         /// <summary>
         /// Constructor.
@@ -30,23 +27,7 @@ namespace OpenAireAPI.Controllers
         /// <returns>URI del API de OpenAire.</returns>
         public string GetUrlOpenAire()
         {
-            if (string.IsNullOrEmpty(urlOpenAire))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("UrlOpenAire"))
-                {
-                    connectionString = environmentVariables["UrlOpenAire"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["UrlOpenAire"];
-                }
-
-                urlOpenAire = connectionString;
-            }
-
-            return urlOpenAire;
+            return "https://api.openaire.eu";
         }
 
     }

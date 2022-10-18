@@ -107,10 +107,6 @@ namespace PublicationConnect
         private void CreateLoggin(string pTimestamp)
         {
             string pathDirectory = GetLogPath();
-            if (!Path.IsPathRooted(pathDirectory))
-            {
-                pathDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathDirectory);
-            }
             if (!Directory.Exists(pathDirectory))
             {
                 Directory.CreateDirectory(pathDirectory);
