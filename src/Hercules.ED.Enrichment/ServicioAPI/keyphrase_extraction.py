@@ -112,7 +112,7 @@ class KeyphraseExtractor:
     def extract_keyphrases(self, title, abstract, body, return_n=10):
 
         X = self._feature_extractor.extract_features(title, abstract, body)
-        print(X.to_string())
+        #print(X.to_string())
             
         ranking = self.create_ranking(self._model_s, self._model_m, X)
         ranking = ranking.head(return_n)
