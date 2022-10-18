@@ -29,6 +29,27 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
+        private string mScientificActivityDocument { get; set; }
+        public string scientificActivityDocument
+        {
+            get
+            {
+                return mScientificActivityDocument;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    mScientificActivityDocument = string.Empty;
+                }
+                else
+                {
+                    mScientificActivityDocument = value;
+                }
+            }
+        }
+
+
         private string mDoi { get; set; }
         public string doi
         {
@@ -130,6 +151,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
+        private static readonly DisambiguationDataConfig configScientificActivityDocument = new DisambiguationDataConfig()
+        {
+            type = DisambiguationDataConfigType.equalsItem,
+            score = 0.5f,
+            scoreMinus = 0.5f
+        };
+
         private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
@@ -166,6 +194,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
                 property = "scopusId",
                 config = configScopusId,
                 value = scopusId
+            });
+
+            data.Add(new DisambiguationData()
+            {
+                property = "scientificActivityDocument",
+                config = configScientificActivityDocument,
+                value = scientificActivityDocument
             });
 
             data.Add(new DisambiguationData()

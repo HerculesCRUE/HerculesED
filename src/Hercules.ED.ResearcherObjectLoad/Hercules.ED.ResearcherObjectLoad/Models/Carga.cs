@@ -313,6 +313,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     DisambiguationPublication disambiguationPub = GetDisambiguationPublication(publication);
                                     listadoDOI.Add(disambiguationPub.doi);
 
+                                    PublicationType(publication.typeOfPublication, pDisambiguationPub: disambiguationPub);
+
                                     disambiguationPub.autores = new HashSet<string>();
                                     string idPub = disambiguationPub.ID;
                                     listaDesambiguar.Add(disambiguationPub);
@@ -366,6 +368,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                         if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
                         {
+                            // Las publicaciones que nos vengan del JSON siempre son diferentes.
+                            List<string> idsPubicacionesJSON = listaDesambiguar.Where(x => x is DisambiguationPublication).Select(x => ((DisambiguationPublication)x).ID).ToList();
+                            foreach (DisambiguableEntity disambiguableEntity in listaDesambiguar)
+                            {
+                                if (disambiguableEntity is DisambiguationPublication)
+                                {
+                                    disambiguableEntity.distincts = new HashSet<string>(idsPubicacionesJSON.Except(new List<string>() { disambiguableEntity.ID }));
+                                }
+                            }
                             Dictionary<string, Dictionary<string, List<string>>> dicccionarioPersonaIgnorarPublicaciones = ObtenerPublicacionesIgnorarPersonas();
 
                             HashSet<string> idsPersonasActualizar = new HashSet<string>();
@@ -1114,7 +1125,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 //TODO  from
                 string select = $@"SELECT * 
                                    WHERE {{ 
-                                       SELECT DISTINCT ?documento ?doi ?titulo ?id ?fuenteId
+                                       SELECT DISTINCT ?documento ?doi ?titulo ?id ?fuenteId ?sad
                                        FROM <{mResourceApi.GraphsUrl}person.owl> ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
@@ -1123,6 +1134,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?identificadores <http://xmlns.com/foaf/0.1/topic> ?fuenteId.
                                 ?identificadores <http://purl.org/dc/elements/1.1/title> ?id.
                                 }}
+                                OPTIONAL{{ ?documento <http://w3id.org/roh/scientificActivityDocument> ?sad.}}
                                 ?documento <http://w3id.org/roh/title> ?titulo. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> <{pGnossId}>. 
@@ -1135,6 +1147,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                     {
                         Publication publicacion = new Publication();
+                        if (fila.ContainsKey("sad") && !string.IsNullOrEmpty(fila["sad"].value))
+                        {
+                            publicacion.typeOfPublication = fila["sad"].value;
+                        }
                         if (fila.ContainsKey("doi"))
                         {
                             publicacion.doi = fila["doi"].value;
@@ -1170,19 +1186,21 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 DisambiguationPublication pub = GetDisambiguationPublication(item.Value);
                 pub.ID = item.Key;
+                pub.scientificActivityDocument = item.Value.typeOfPublication;
                 pub.autores = new HashSet<string>();
                 listaDocumentos.Add(item.Key, pub);
             }
 
-            //Añado los documentos por DOI
+            // Añado los documentos por DOI.
             while (true)
             {
                 offset = 0;
-                string select = "SELECT * WHERE { SELECT DISTINCT ?documento ?doi ?titulo ";
+                string select = "SELECT * WHERE { SELECT DISTINCT ?documento ?doi ?titulo ?sad ";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 ?documento <http://purl.org/ontology/bibo/doi> ?doi.
                                 ?documento <http://w3id.org/roh/title> ?titulo. 
+                                OPTIONAL{{ ?documento <http://w3id.org/roh/scientificActivityDocument> ?sad.}}
                                 FILTER(?doi in (""{string.Join("\",\"", listadoDOI)}""))
                             }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
 
@@ -1199,6 +1217,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                         publicacion.title = fila["titulo"].value;
                         DisambiguationPublication pub = GetDisambiguationPublication(publicacion);
+                        if (fila.ContainsKey("sad") && !string.IsNullOrEmpty(fila["sad"].value))
+                        {
+                            pub.scientificActivityDocument = fila["sad"].value;
+                        }
                         pub.ID = fila["documento"].value;
                         pub.autores = new HashSet<string>();
                         listaDocumentos.TryAdd(fila["documento"].value, pub);
@@ -1602,59 +1624,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Tipo de publicación (TypeOfPublication)
             if (pPublicacion.typeOfPublication != null)
             {
-                if (pPublicacion.typeOfPublication == JOURNAL_ARTICLE)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_020";
-                }
-                else if (pPublicacion.typeOfPublication == BOOK)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_032";
-                }
-                else if (pPublicacion.typeOfPublication == CHAPTER)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_004";
-                }
-                else if (pPublicacion.typeOfPublication == CONFERENCE_PAPER)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD2";
-                }
-                else
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_OTHERS";
-                    document.Roh_typeOthers = "Otros";
-                }
+                PublicationType(pPublicacion.typeOfPublication, document);
             }
             else if (pPublicacionB != null && pPublicacionB.typeOfPublication != null)
             {
-                if (pPublicacionB.typeOfPublication == JOURNAL_ARTICLE)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_020";
-                }
-                else if (pPublicacionB.typeOfPublication == BOOK)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_032";
-                }
-                else if (pPublicacionB.typeOfPublication == CHAPTER)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_004";
-                }
-                else if (pPublicacionB.typeOfPublication == CONFERENCE_PAPER)
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD2";
-                }
-                else
-                {
-                    document.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
-                    document.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_OTHERS";
-                    document.Roh_typeOthers = "Otros";
-                }
+                PublicationType(pPublicacionB.typeOfPublication, document);
             }
 
             // Etiquetas Externas (ExternalFreeTextKeywords)
@@ -2285,6 +2259,72 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             }
 
             return document;
+        }
+
+        private static void PublicationType(string pType, Document pDocument = null, DisambiguationPublication pDisambiguationPub = null)
+        {
+            switch (pType)
+            {
+                case JOURNAL_ARTICLE:
+                    if (pDocument != null)
+                    {
+                        pDocument.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                        pDocument.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_020";
+                    }
+                    if (pDisambiguationPub != null)
+                    {
+                        pDisambiguationPub.scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                    }
+                    break;
+
+                case BOOK:
+                    if (pDocument != null)
+                    {
+                        pDocument.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                        pDocument.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_032";
+                    }
+                    if (pDisambiguationPub != null)
+                    {
+                        pDisambiguationPub.scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                    }
+                    break;
+
+                case CHAPTER:
+                    if (pDocument != null)
+                    {
+                        pDocument.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                        pDocument.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_004";
+                    }
+                    if (pDisambiguationPub != null)
+                    {
+                        pDisambiguationPub.scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                    }
+                    break;
+
+                case CONFERENCE_PAPER:
+                    if (pDocument != null)
+                    {
+                        pDocument.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD2";
+                    }
+                    if (pDisambiguationPub != null)
+                    {
+                        pDisambiguationPub.scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD2";
+                    }
+                    break;
+
+                default:
+                    if (pDocument != null)
+                    {
+                        pDocument.IdRoh_scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                        pDocument.IdDc_type = $"{mResourceApi.GraphsUrl}items/publicationtype_OTHERS";
+                        pDocument.Roh_typeOthers = "Otros";
+                    }
+                    if (pDisambiguationPub != null)
+                    {
+                        pDisambiguationPub.scientificActivityDocument = $"{mResourceApi.GraphsUrl}items/scientificactivitydocument_SAD1";
+                    }
+                    break;
+            }
         }
 
         /// <summary>
