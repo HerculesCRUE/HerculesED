@@ -36,12 +36,12 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("Notify")]
-        public IActionResult NotifyAcreditaciones(string url, string idUsuario)
+        public IActionResult NotifyAcreditaciones(string url_cdn, string idUsuario)
         {
             try
             {
                 AccionesAcreditaciones accionesAcreditaciones = new AccionesAcreditaciones();
-                accionesAcreditaciones.NotifyAcreditaciones(url, idUsuario);
+                accionesAcreditaciones.NotifyAcreditaciones(url_cdn, idUsuario);
 
                 return Ok();
             }
