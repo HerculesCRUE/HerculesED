@@ -54,23 +54,6 @@ namespace Utils
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
         }
         
-        public static bool ComprobarORCID(string ORCID)
-        {
-            //Compruebo que no sea nulo
-            if (string.IsNullOrEmpty(ORCID))
-            {
-                return false;
-            }
-
-            //Compruebo si tiene formato DNI
-            if (Regex.IsMatch(ORCID, "\\d{4}-\\d{4}-\\d{4}-\\d{4}"))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public static bool ComprobarCRIS(string crisID)
         {
             //Compruebo que no sea nulo
