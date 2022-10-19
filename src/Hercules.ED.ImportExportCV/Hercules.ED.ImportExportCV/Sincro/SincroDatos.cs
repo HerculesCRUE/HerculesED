@@ -489,7 +489,7 @@ namespace ImportadorWebCV.Sincro
         /// <param name="sincro"></param>
         /// <param name="crisArchivo"></param>
         /// <returns>Cadena vacía si se produce algún error, el ORCID si se inserta el triple</returns>
-        public string SincroORCID(SincroDatos sincro, string crisArchivo)
+        public string ObtenerORCID(SincroDatos sincro, string crisArchivo)
         {
             Hercules.ED.ImportExportCV.Sincro.Secciones.SincroORCID sincroORCID = new Hercules.ED.ImportExportCV.Sincro.Secciones.SincroORCID(sincro.getCVN(), cvID, mConfiguracion);
 
@@ -499,7 +499,6 @@ namespace ImportadorWebCV.Sincro
             CvnItemBeanCvnString crisID = new CvnItemBeanCvnString();
             string ORCID = listadoA.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetORCID();
 
-
             if (string.IsNullOrEmpty(ORCID))
             {
                 return "";
@@ -507,38 +506,10 @@ namespace ImportadorWebCV.Sincro
 
             if (ORCID.Contains("/"))
             {
-                ORCID = ORCID.Substring(ORCID.LastIndexOf("/") + 1);
+                return ORCID.Substring(ORCID.LastIndexOf("/") + 1);
             }
 
-            //Compruebo el formato de 'ORCID'
-            if (!UtilityCV.ComprobarORCID(ORCID))
-            {
-                return "";
-            }
-
-            //Inserto el ORCID
-            Dictionary<string, string> dicPersonaORCID = UtilitySecciones.GetIDPersona(crisArchivo);
-
-            //Sin valores sigo al siguiente
-            if (!dicPersonaORCID.Any() || string.IsNullOrEmpty(dicPersonaORCID.ElementAt(0).Key))
-            {
-                return "";
-            }
-            //Si la persona tiene ORCID sigo al siguiente
-            if (!string.IsNullOrEmpty(dicPersonaORCID.ElementAt(0).Value))
-            {
-                return "";
-            }
-
-            //Inserto el triple
-            if (sincroORCID.SincroDatosPersonaORCID(dicPersonaORCID.ElementAt(0).Key, ORCID))
-            {
-                return ORCID;
-            }
-            else
-            {
-                return "";
-            }
+            return ORCID;
         }
 
     }
