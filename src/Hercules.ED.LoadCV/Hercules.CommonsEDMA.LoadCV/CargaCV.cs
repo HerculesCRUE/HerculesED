@@ -79,6 +79,7 @@ namespace Hercules.ED.LoadCV
                                 }
                             }
                         }
+                    }
                     catch (Exception ex)
                     {
                         mResourceApi.Log.Error(ex.Message);
