@@ -31,52 +31,58 @@ namespace Hercules.ED.LoadCV
                 List<string> listadoArchivos = Directory.GetFiles(_Configuracion.GetRutaCarpeta()).ToList();
                 foreach (string archivo in listadoArchivos)
                 {
-                    string nombreArchivo = archivo.Split("\\").Last();
-                    //Si no existe el investigador continuo con el siguiente.
-                    if (!ExisteInvestigadorActivo(nombreArchivo.Split(".").First()))
+                    try
                     {
-                        continue;
-                    }
-                    else
-                    {
-                        string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ImportadorCV/ObtenerORCID";
-
-                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
-
-                        MemoryStream ms = new MemoryStream();
-                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
-                        multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
-
-                        HttpClient httpClient = new HttpClient();
-                        HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
-                        if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+                        string nombreArchivo = archivo.Split("\\").Last();
+                        //Si no existe el investigador continuo con el siguiente.
+                        if (!ExisteInvestigadorActivo(nombreArchivo.Split(".").First()))
                         {
-                            string ORCID = responseMessage.Content.ReadAsStringAsync().Result;
-                            if (!ComprobarORCID(ORCID))
-                            {
-                                mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
-                                return;
-                            }
+                            continue;
+                        }
+                        else
+                        {
+                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ImportadorCV/ObtenerORCID";
 
-                            SincroORCID sincroORCID = new SincroORCID();
-                            Dictionary<string,string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
-                            string idPersona = dicPersonaORCID.First().Key;
-                            //Si el investigador tiene ORCID lo actualizo
-                            if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
-                            {
-                                sincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
+                            MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
 
-                                mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
-                            }
-                            //Si el investigador no tiene ORCID se inserta
-                            else
-                            {
-                                sincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
+                            MemoryStream ms = new MemoryStream();
+                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
+                            multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
 
-                                mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
+                            HttpClient httpClient = new HttpClient();
+                            HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
+                            if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                string ORCID = responseMessage.Content.ReadAsStringAsync().Result;
+                                if (!ComprobarORCID(ORCID))
+                                {
+                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
+                                    return;
+                                }
+
+                                SincroORCID sincroORCID = new SincroORCID();
+                                Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
+                                string idPersona = dicPersonaORCID.First().Key;
+                                //Si el investigador tiene ORCID lo actualizo
+                                if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
+                                {
+                                    sincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
+
+                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
+                                }
+                                //Si el investigador no tiene ORCID se inserta
+                                else
+                                {
+                                    sincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
+
+                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
+                                }
                             }
                         }
-
+                    catch (Exception ex)
+                    {
+                        mResourceApi.Log.Error(ex.Message);
+                        continue;
                     }
                 }
             }
@@ -98,28 +104,36 @@ namespace Hercules.ED.LoadCV
                 List<string> listadoArchivos = Directory.GetFiles(_Configuracion.GetRutaCarpeta()).ToList();
                 foreach (string archivo in listadoArchivos)
                 {
-                    string nombreArchivo = archivo.Split("\\").Last();
-                    string CVID = CVInvestigadorActivo(nombreArchivo.Split(".").First());
-
-                    //Si no existe el CV de la persona continuo con el siguiente archivo.
-                    if (string.IsNullOrEmpty(CVID))
+                    try
                     {
-                        continue;
+                        string nombreArchivo = archivo.Split("\\").Last();
+                        string CVID = CVInvestigadorActivo(nombreArchivo.Split(".").First());
+
+                        //Si no existe el CV de la persona continuo con el siguiente archivo.
+                        if (string.IsNullOrEmpty(CVID))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ImportadorCV/Importar";
+
+                            MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+                            multipartFormData.Add(new StringContent(CVID), "pCVID");
+
+                            MemoryStream ms = new MemoryStream();
+                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
+                            multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
+
+                            HttpClient httpClient = new HttpClient();
+                            HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
+                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage.StatusCode);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ImportadorCV/Importar";
-
-                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
-                        multipartFormData.Add(new StringContent(CVID), "pCVID");
-
-                        MemoryStream ms = new MemoryStream();
-                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
-                        multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
-
-                        HttpClient httpClient = new HttpClient();
-                        HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
-                        mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage.StatusCode);
+                        mResourceApi.Log.Error(ex.Message);
+                        continue;
                     }
                 }
             }
