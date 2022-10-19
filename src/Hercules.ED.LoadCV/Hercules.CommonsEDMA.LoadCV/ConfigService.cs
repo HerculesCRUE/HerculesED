@@ -14,7 +14,6 @@ namespace Hercules.ED.LoadCV.Config
         public static IConfigurationRoot configuracion;
 
         private string RutaCarpeta { get; set; }
-        private string RutaFichero { get; set; }
         private string UrlImportadorExportador { get; set; }
 
         /// <summary>
@@ -50,6 +49,10 @@ namespace Hercules.ED.LoadCV.Config
             return UrlImportadorExportador;
         }
 
+        /// <summary>
+        /// Obtiene la ruta del la carpeta de lectura de archivos
+        /// </summary>
+        /// <returns></returns>
         public string GetRutaCarpeta()
         {
             if (string.IsNullOrEmpty(RutaCarpeta))
