@@ -38,6 +38,11 @@ namespace Hercules.ED.ImportExportCV.Controllers
             _Configuracion = pConfig;
         }
 
+        /// <summary>
+        /// Devuelve el ORCID del titular del archivo
+        /// </summary>
+        /// <param name="File">Archivo en formato pdf</param>
+        /// <returns>ORCID del titular del archivo, BadRequest en caso contrario</returns>
         [HttpPost("ObtenerORCID")]
         public ActionResult ObtenerORCID([Required] IFormFile File)
         {
