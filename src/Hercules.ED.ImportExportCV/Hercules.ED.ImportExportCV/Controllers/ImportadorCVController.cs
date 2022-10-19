@@ -38,8 +38,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
             _Configuracion = pConfig;
         }
 
-        [HttpPost("InsertaORCID")]
-        public ActionResult InsertaORCID([Required] IFormFile File)
+        [HttpPost("ObtenerORCID")]
+        public ActionResult ObtenerORCID([Required] IFormFile File)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                     return BadRequest();
                 }
 
-                string ORCID = sincro.SincroORCID(sincro, crisArchivo);
+                string ORCID = sincro.ObtenerORCID(sincro, crisArchivo);
 
                 return Ok(ORCID);
             }
