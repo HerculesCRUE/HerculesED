@@ -282,6 +282,9 @@ namespace ImportadorWebCV.Sincro
             return bytes;
         }
 
+        /// <summary>
+        /// Comprueba que las secciones del cvn formen parte de la norma. En caso contrario las elimina.
+        /// </summary>
         public void ComprobarSecciones()
         {
             List<CvnItemBean> listCvnRootBean = cvn.cvnRootBean.ToList();
@@ -451,10 +454,10 @@ namespace ImportadorWebCV.Sincro
         }
 
         /// <summary>
-        /// 
+        /// Metodo para sincronizar con fuentes externas
         /// </summary>
-        /// <param name="pCVID"></param>
-        /// <param name="listaDOI"></param>
+        /// <param name="pCVID">Identificador del CV</param>
+        /// <param name="listaDOI">Listado de DOI de publicaciones</param>
         public void SincroPublicacionesFuenteExternas(string pCVID, List<string> listaDOI)
         {
             try
