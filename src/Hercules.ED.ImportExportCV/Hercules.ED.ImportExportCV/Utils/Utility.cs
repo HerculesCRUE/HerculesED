@@ -1334,9 +1334,9 @@ namespace Utils
         /// <summary>
         /// Devuelve el identificador del TitleBean con código <paramref name="codigo"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Identificador del TitleBean</returns>
         public static string GetIdentificationTitleBeanPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1357,9 +1357,9 @@ namespace Utils
         /// Devuelve el objetivo como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/staygoal_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
-        /// <returns>Name</returns>
+        /// <returns>Objetivo</returns>
         public static string GetObjetivoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1380,7 +1380,7 @@ namespace Utils
         /// Devuelve la modalidad de la actividad como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/activitymodality_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>ModalidadActividad</returns>
         public static string GetModalidadActividadPorIDCampo(this CvnItemBean item, string codigo)
@@ -1403,8 +1403,8 @@ namespace Utils
         /// Devuelve la referencia del programa de doctorado como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/doctoralprogramtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnTitleBean</param>
+        /// <returns>TipoProgramaDoctorado</returns>
         public static string ReferenciaProgramaDoctorado(this CvnItemBeanCvnTitleBean item)
         {
             if (!string.IsNullOrEmpty(item.Identification))
@@ -1418,7 +1418,7 @@ namespace Utils
         /// Devuelve el sistema de actividad como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/accesssystemactivity_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>SistemaActividad</returns>
         public static string GetSistemaActividadPorIDCampo(this CvnItemBean item, string codigo)
@@ -1441,7 +1441,7 @@ namespace Utils
         /// Devuelve la finalidad como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/grantaim_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Finalidad</returns>
         public static string GetFinalidadPorIDCampo(this CvnItemBean item, string codigo)
@@ -1464,7 +1464,7 @@ namespace Utils
         /// Devuelve el tipo de relacion como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/relationshiptype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>TipoRelacion</returns>
         public static string GetRelacionPorIDCampo(this CvnItemBean item, string codigo)
@@ -1487,7 +1487,7 @@ namespace Utils
         /// Devuelve la region geografica como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/geographicregion_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>RegionGeografica</returns>
         public static string GetGeographicRegionPorIDCampo(this CvnItemBean item, string codigo)
@@ -1510,9 +1510,9 @@ namespace Utils
         /// Devuelve el tipo de convoatoria como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/calltype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de convocatoria</returns>
         public static string GetTipoConvocatoriaPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1533,9 +1533,9 @@ namespace Utils
         /// Devuelve el tipo de evaluación como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/evaluationtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de evaluación</returns>
         public static string GetTipoEvaluacionPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1556,9 +1556,9 @@ namespace Utils
         /// Devuelve los creditos ECTS como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/hourscreditsectstype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo Horas/Creditos</returns>
         public static string GetHorasCreditosECTSPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1579,9 +1579,9 @@ namespace Utils
         /// Devuelve el tipo de curso como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/coursetype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de curso</returns>
         public static string GetTipoCursoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1602,9 +1602,9 @@ namespace Utils
         /// Devuelve el tipo de modalidad de docencia como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/modalityteachingtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de modalidad de docencia</returns>
         public static string GetTipoDocenciaModalidadPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1625,9 +1625,9 @@ namespace Utils
         /// Devuelve el tipo de programa como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/programtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de programa</returns>
         public static string GetTipoProgramaPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1648,9 +1648,9 @@ namespace Utils
         /// Devuelve el tipo de oficialidad de la docencia como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/teachingtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de docencia por oficialidad</returns>
         public static string GetTipoDocenciaOficialidadPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1671,7 +1671,7 @@ namespace Utils
         /// Devuelve el valor de la fotografía digital,
         /// en formato imagen en base64
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Imagen en base64</returns>
         public static string GetImagenPorIDCampo(this List<CvnItemBean> listado, string codigo)
@@ -1702,8 +1702,8 @@ namespace Utils
         /// <summary>
         /// Devuelve el Volume del CvnItemBeanCvnVolumeBean con codigo igual a <paramref name="codigo"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
         /// <returns>Volumen del CvnItemBeanCvnVolumeBean</returns>
         public static string GetVolumenPorIDCampo(this CvnItemBean item, string codigo)
         {
@@ -1724,8 +1724,8 @@ namespace Utils
         /// <summary>
         /// Devuelve el Number del CvnItemBeanCvnVolumeBean con codigo igual a <paramref name="codigo"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
         /// <returns>Number del CvnItemBeanCvnVolumeBean</returns>
         public static string GetNumeroVolumenPorIDCampo(this CvnItemBean item, string codigo)
         {
@@ -1746,8 +1746,8 @@ namespace Utils
         /// <summary>
         /// Devuelve la página inicial del CvnItemBeanCvnPageBean
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
         /// <returns>Página inicial del CvnItemBeanCvnPageBean</returns>
         public static string GetPaginaInicialPorIDCampo(this CvnItemBean item, string codigo)
         {
@@ -1768,8 +1768,8 @@ namespace Utils
         /// <summary>
         /// Devuelve la página final del CvnItemBeanCvnPageBean
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
         /// <returns>Página final del CvnItemBeanCvnPageBean</returns>
         public static string GetPaginaFinalPorIDCampo(this CvnItemBean item, string codigo)
         {
@@ -1791,7 +1791,7 @@ namespace Utils
         /// Dado un listado de identificadores (CvnItemBeanCvnExternalPKBean)
         /// devuelve el valor de ORCID. 
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBeanCvnExternalPKBean</param>
         /// <returns>ORCID</returns>
         public static string GetORCID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
@@ -1802,7 +1802,7 @@ namespace Utils
         /// Dado un listado de identificadores (CvnItemBeanCvnExternalPKBean)
         /// devuelve el valor de Scopus
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBeanCvnExternalPKBean</param>
         /// <returns>Scopus</returns>
         public static string GetScopus(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
@@ -1813,13 +1813,18 @@ namespace Utils
         /// Dado un listado de identificadores (CvnItemBeanCvnExternalPKBean)
         /// devuelve el valor de ResearcherID
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBeanCvnExternalPKBean</param>
         /// <returns>ResearcherID</returns>
         public static string GetResearcherID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
             return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
         }
 
+        /// <summary>
+        /// Devuelve un objeto Person a partir del <paramref name="pCVID"/>
+        /// </summary>
+        /// <param name="pCVID">Identificador del CV</param>
+        /// <returns>Objeto Person</returns>
         public static Person GetNombrePersonaCV(string pCVID)
         {
             Person persona = new Person();
@@ -1848,44 +1853,11 @@ namespace Utils
             return persona;
         }
 
-        public static string DatetimeFE(string dateTime)
-        {
-            if (string.IsNullOrEmpty(dateTime))
-            {
-                return null;
-            }
-
-            try
-            {
-                //Creo un datetime, en formato UTC, sin especificar el Kind y le indico que lo convierta a horario de España.
-                int anio = int.Parse(dateTime.Split("-").ElementAt(0));
-                int mes = int.Parse(dateTime.Split("-").ElementAt(1));
-                int dia = int.Parse(dateTime.Split("-").ElementAt(2));
-
-                DateTime datetimeAux = new DateTime(anio, mes, dia);
-
-                DateTime dateTime2 = new DateTime(datetimeAux.Ticks, DateTimeKind.Unspecified);
-
-                if (TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id.Contains("Europe/Madrid")))
-                {
-                    dateTime2 = TimeZoneInfo.ConvertTime(dateTime2, TimeZoneInfo.FindSystemTimeZoneById("Europe/Madrid"));
-                }
-
-
-                return dateTime2.ToString("yyyyMMdd000000");
-            }
-            catch (Exception e)
-            {
-                mResourceApi.Log.Error("Error en el formato de fecha" + e.Message + " " + e.StackTrace);
-                return null;
-            }
-        }
-
         /// <summary>
         /// Devuelve un string en formato de fecha de GNOSS
         /// YYYYMMDD000000
         /// </summary>
-        /// <param name="dateTime"></param>
+        /// <param name="dateTime">CvnItemBeanCvnDateDayMonthYear</param>
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateDayMonthYear dateTime)
         {
@@ -1913,7 +1885,7 @@ namespace Utils
         /// Devuelve un string en formato de fecha de GNOSS
         /// YYYYMMDD000000
         /// </summary>
-        /// <param name="dateTime"></param>
+        /// <param name="dateTime">CvnItemBeanCvnDateMonthYear</param>
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateMonthYear dateTime)
         {
@@ -1932,7 +1904,7 @@ namespace Utils
         /// Devuelve un string en formato de fecha de GNOSS
         /// YYYYMMDD000000
         /// </summary>
-        /// <param name="dateTime"></param>
+        /// <param name="dateTime">CvnItemBeanCvnDateYear</param>
         /// <returns>YYYYMMDD000000</returns>
         public static string DatetimeStringGNOSS(this CvnItemBeanCvnDateYear dateTime)
         {
@@ -1951,9 +1923,9 @@ namespace Utils
         /// <summary>
         /// Devuelve el valor del CvnString con codigo igual a <paramref name="codigo"/>
         /// </summary>
-        /// <param name="codeGroup"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="codeGroup">CvnItemBeanCvnCodeGroup</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Value de CvnItemBeanCvnCodeGroup</returns>
         public static string GetStringCvnCodeGroup(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             try
@@ -1981,9 +1953,9 @@ namespace Utils
         /// Devuelve el pais, de un CvnItemBeanCvnCodeGroup, como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_PCLD_" + valor
         /// </summary>
-        /// <param name="codeGroup"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="codeGroup">CvnItemBeanCvnCodeGroup</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Pais</returns>
         public static string GetPaisPorIDCampo(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2003,9 +1975,9 @@ namespace Utils
         /// Devuelve la región como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_" + valor
         /// </summary>
-        /// <param name="codeGroup"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="codeGroup">CvnItemBeanCvnCodeGroup</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Region</returns>
         public static string GetRegionPorIDCampo(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2025,9 +1997,9 @@ namespace Utils
         /// Devuelve el tipo de grado universitario como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/universitydegreetype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de grado universitario</returns>
         public static string GetTipoGradoUniversitarioPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2047,9 +2019,9 @@ namespace Utils
         /// Devuelve la nota media como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/qualificationtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de nota media</returns>
         public static string GetNotaMediaPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2069,9 +2041,9 @@ namespace Utils
         /// Devuelve el tipo de premio como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/prizetype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de premio</returns>
         public static string GetPremioPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2091,9 +2063,9 @@ namespace Utils
         /// Devuelvel la palabra clave como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/tesauro_cvn_" + valor
         /// </summary>
-        /// <param name="mResourceApi"></param>
-        /// <param name="palabra"></param>
-        /// <returns></returns>
+        /// <param name="mResourceApi">ResourceApi</param>
+        /// <param name="palabra">Palabra</param>
+        /// <returns>Palabra clave</returns>
         public static string ObtenerPalabraClave(ResourceApi mResourceApi, string palabra)
         {
             if (palabra == null) { return null; }
@@ -2105,9 +2077,9 @@ namespace Utils
         /// Devuelvel el tipo de formación como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/formationtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de formación</returns>
         public static string GetTipoFormacion(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2127,9 +2099,9 @@ namespace Utils
         /// Devuelvel el tipo de formación de actividad como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/formationactivitytype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>tipo de formación de la actividad</returns>
         public static string GetTipoFormacionActividad(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2148,9 +2120,9 @@ namespace Utils
         /// <summary>
         /// Devuelve el Name perteneciente al CvnEntityBean con codigo igual a <paramref name="codigo"/>
         /// </summary>
-        /// <param name="codeGroup"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="codeGroup">CvnItemBeanCvnCodeGroup</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Name perteneciente al CvnEntityBean</returns>
         public static string GetNameEntityBeanCvnCodeGroup(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             try
@@ -2178,9 +2150,9 @@ namespace Utils
         /// Devuelvel el tipo de organización, que es parte de un CvnItemBeanCvnCodeGroup, como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/organizationtype_" + valor
         /// </summary>
-        /// <param name="codeGroup"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="codeGroup">CvnItemBeanCvnCodeGroup</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de organizacion</returns>
         public static string GetOrganizationCvnCodeGroup(this CvnItemBeanCvnCodeGroup codeGroup, string codigo)
         {
             try
@@ -2207,8 +2179,8 @@ namespace Utils
         /// <summary>
         /// Devuelve el valor CvnBoolean del CvnItemBeanCvnCodeGroup 
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnCodeGroup</param>
+        /// <returns>CvnBoolean del CvnItemBeanCvnCodeGroup</returns>
         public static string GetCvnBooleanCvnCodeGroup(this CvnItemBeanCvnCodeGroup item)
         {
             return item.CvnBoolean?.Value.ToString();
@@ -2218,9 +2190,9 @@ namespace Utils
         /// Devuelve el valor CvnDouble del CvnItemBeanCvnCodeGroup 
         /// con codigo igual a <paramref name="codigo"/> como string
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnCodeGroup</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>CvnDouble del CvnItemBeanCvnCodeGroup </returns>
         public static string GetCvnDoubleCvnCodeGroup(this CvnItemBeanCvnCodeGroup item, string codigo)
         {
             return item.CvnDouble?.Where(x => x.Code.Equals(codigo))?.Select(x => x.Value)?.FirstOrDefault().ToString();
@@ -2229,9 +2201,9 @@ namespace Utils
         /// <summary>
         /// Devuelve el Type del CvnItemBeanCvnExternalPKBean con codigo igual a <paramref name="codigo"/>
         /// </summary>
-        /// <param name="cvnItemBean"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="cvnItemBean">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Type del CvnItemBeanCvnExternalPKBean</returns>
         public static string GetTypeCvnExternalPKBean(this CvnItemBean cvnItemBean, string codigo)
         {
             try
@@ -2259,9 +2231,9 @@ namespace Utils
         /// <summary>
         /// Devuelve el Others del CvnItemBeanCvnExternalPKBean con codigo igual a <paramref name="codigo"/>
         /// </summary>
-        /// <param name="cvnItemBean"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="cvnItemBean">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Others del CvnItemBeanCvnExternalPKBean</returns>
         public static string GetOthersCvnExternalPKBean(this CvnItemBean cvnItemBean, string codigo)
         {
             try
@@ -2289,9 +2261,9 @@ namespace Utils
         /// <summary>
         /// Devuelve el Value del CvnItemBeanCvnExternalPKBean con codigo igual a <paramref name="codigo"/>
         /// </summary>
-        /// <param name="cvnItemBean"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="cvnItemBean">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Value del CvnItemBeanCvnExternalPKBean</returns>
         public static string GetValueCvnExternalPKBean(this CvnItemBean cvnItemBean, string codigo)
         {
             try
@@ -2320,9 +2292,9 @@ namespace Utils
         /// Devuelve el tipo de soporte como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/documentformat_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de formato de documento</returns>
         public static string GetFormatoDocumentoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2342,9 +2314,9 @@ namespace Utils
         /// Devuelve el tipo de soporte como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/supporttype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de soporte</returns>
         public static string GetTipoSoportePorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2364,9 +2336,9 @@ namespace Utils
         /// Devuelve el tipo de publicación como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/publicationtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de publicación</returns>
         public static string GetTipoPublicacionPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2386,9 +2358,9 @@ namespace Utils
         /// Devuelve el tipo de modalidad de contrato como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/contractmodality_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de modalidad de contrato</returns>
         public static string GetModalidadContrato(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2408,9 +2380,9 @@ namespace Utils
         /// Devuelve el tipo de regimen de dedicación como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/dedicationregime_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Regimen de dedicación</returns>
         public static string GetRegimenDedicacion(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2431,7 +2403,7 @@ namespace Utils
         /// con formato mResourceApi.GraphsUrl + "items/unesco_" + valor
         /// </summary>
         /// <param name="codigolista">codigolista</param>
-        /// <returns></returns>
+        /// <returns>Codigo UNESCO</returns>
         public static string GetCodUnescoIDCampo(string codigolista)
         {
             return mResourceApi.GraphsUrl + "items/unesco_" + codigolista;
@@ -2441,9 +2413,9 @@ namespace Utils
         /// Devuelve el ambito de gratión como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/scopemanagementactivity_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Ambito de gestion</returns>
         public static string GetAmbitoGestion(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2463,9 +2435,9 @@ namespace Utils
         /// Devuelve el grado de contribución del documento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/contributiongradedocument_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Grado de contribucion en el documento</returns>
         public static string GetGradoContribucionDocumentoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2485,9 +2457,9 @@ namespace Utils
         /// Devuelve el grado de contribución del documento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/contributiongradeproyect_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Grado de contribucion en el proyecto</returns>
         public static string GetGradoContribucionProyectoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2507,9 +2479,9 @@ namespace Utils
         /// Devuelve el tipo de colaboración en un grupo como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/colaborationtypegroup_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de colaboracion</returns>
         public static string GetTipoColaboracionPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2529,9 +2501,9 @@ namespace Utils
         /// Devuelve el tipo de propiedad industrial como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/industrialpropertytype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de propiedad industrial</returns>
         public static string GetTipoPropiedadIndustrialPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2551,9 +2523,9 @@ namespace Utils
         /// Devuelve el tipo de participación de actividad como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/participationtypeactivity_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de participacion de actividad</returns>
         public static string GetTipoParticipacionActividadPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2573,9 +2545,9 @@ namespace Utils
         /// Devuelve el tipo de participación como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/participationtypedocument_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de participacion</returns>
         public static string GetTipoParticipacionDocumentoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2595,9 +2567,9 @@ namespace Utils
         /// Devuelve el tipo de participación como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/participationtypeproject_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de participacion</returns>
         public static string GetTipoParticipacionProyectoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2617,9 +2589,9 @@ namespace Utils
         /// Devuelve el tipo de duración laboral como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/laboraldurationtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de duracion laboral</returns>
         public static string GetTipoDuracionLaboralPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2639,9 +2611,9 @@ namespace Utils
         /// Devuelve la modalidad del proyecto como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/projectmodality_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Modalidad del proyecto</returns>
         public static string GetModalidadProyectoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2661,9 +2633,9 @@ namespace Utils
         /// Devuelve el tipo de proyecto como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/projecttype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de proyecto</returns>
         public static string GetTipoProyectoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2683,9 +2655,9 @@ namespace Utils
         /// Devuelve el tipo de proyecto como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/projectcharactertype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de proyecto</returns>
         public static string GetTipoProyectoCharacterPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2705,9 +2677,9 @@ namespace Utils
         /// Devuelve el tipo de tipología de gestión como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/managementtypeactivity_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de tipologia de gestion</returns>
         public static string GetTipoTipologiaGestionPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2727,9 +2699,9 @@ namespace Utils
         /// Devuelve el tipo de perfil de grupo como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/targetgroupprofile_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Tipo de perfil de grupo</returns>
         public static string GetTipoPerfilGrupoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2749,9 +2721,9 @@ namespace Utils
         /// Devuelve el Indice H  como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/hindexsource_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Indice H</returns>
         public static string GetIndiceH(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2771,8 +2743,8 @@ namespace Utils
         /// Devuelve el idioma como respuesta, Identification de un CvnItemBeanCvnTitleBean,
         /// con formato mResourceApi.GraphsUrl + "items/language_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnTitleBean</param>
+        /// <returns>Traduccion</returns>
         public static string GetTraduccion(this CvnItemBeanCvnTitleBean item)
         {
             if (!string.IsNullOrEmpty(item.Identification))
@@ -2786,9 +2758,9 @@ namespace Utils
         /// Devuelve la traducción como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/language_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>Traduccion</returns>
         public static string GetTraduccion(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -2808,8 +2780,8 @@ namespace Utils
         /// Devuelve el nivel del idioma como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/languagelevel_" + valor
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">Valor</param>
+        /// <returns>Nivel del idioma</returns>
         public static string GetNivelLenguaje(string value)
         {
             if (!string.IsNullOrEmpty(value))
@@ -2820,84 +2792,10 @@ namespace Utils
         }
 
         /// <summary>
-        /// Devuelve el código unesco como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/unesco_" + valor
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public static string GetCodUnescoIDCampo(this CvnItemBeanCvnString item)
-        {
-            return mResourceApi.GraphsUrl + "items/unesco_" + item.Value;
-        }
-
-        /// <summary>
-        /// Devuelve el codigo internacional del PhoneBean
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
-        public static string GetCodInternacional(this CvnItemBean item, string codigo)
-        {
-            if (!CodigoCampoCorrecto(codigo))
-            {
-                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-            }
-
-            CvnItemBeanCvnPhoneBean campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnPhoneBean).Cast<CvnItemBeanCvnPhoneBean>().FirstOrDefault();
-            if (campo != null)
-            {
-                return campo.InternationalCode;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Devuelve el nº de telefono del PhoneBean
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
-        public static string GetNumeroTelefono(this CvnItemBean item, string codigo)
-        {
-            if (!CodigoCampoCorrecto(codigo))
-            {
-                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-            }
-
-            CvnItemBeanCvnPhoneBean campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnPhoneBean).Cast<CvnItemBeanCvnPhoneBean>().FirstOrDefault();
-            if (campo != null)
-            {
-                return campo.Number;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Devuelve la extension del PhoneBean
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
-        public static string GetExtensionTelefono(this CvnItemBean item, string codigo)
-        {
-            if (!CodigoCampoCorrecto(codigo))
-            {
-                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-            }
-
-            CvnItemBeanCvnPhoneBean campo = item.Items.Where(x => x.Code.Equals(codigo) && x is CvnItemBeanCvnPhoneBean).Cast<CvnItemBeanCvnPhoneBean>().FirstOrDefault();
-            if (campo != null)
-            {
-                return campo.Extension;
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Devuelve un listado con los valores de los codigos UNESCO.
         /// </summary>
-        /// <param name="item">item</param>
-        /// <returns>List<string></returns>
+        /// <param name="item">CvnItemBeanCvnString</param>
+        /// <returns>Listado codigos UNESCO<string></returns>
         public static List<string> GetPadresCodUnesco(this CvnItemBeanCvnString item)
         {
             if (item.Value.Length != 6) { return null; }
@@ -2931,8 +2829,8 @@ namespace Utils
         /// <summary>
         /// Devuelve un listado con los valores del tesauro de las palabras clave.
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnString</param>
+        /// <returns>Listado palabras clave</returns>
         public static List<string> GetPadresPalabrasClave(this CvnItemBeanCvnString item)
         {
             if (item.Value.Length != 24) { return null; }
@@ -2956,11 +2854,11 @@ namespace Utils
         /// <summary>
         /// Añade la referencia a la entidad <paramref name="propiedadNombreTitulacion"/> si esta se encuentra en BBDD.
         /// </summary>
-        /// <param name="mResourceApi"></param>
-        /// <param name="nombreTitulacion"></param>
-        /// <param name="propiedadNombreTitulacion"></param>
-        /// <param name="propiedadTitulacion"></param>
-        /// <param name="entidadAux"></param>
+        /// <param name="mResourceApi">ResourceApi</param>
+        /// <param name="titulacion">CvnItemBeanCvnTitleBean</param>
+        /// <param name="propiedadNombreTitulacion">Propiedad nombre titulacion</param>
+        /// <param name="propiedadTitulacion">Propiedad titulacion</param>
+        /// <param name="entidadAux">Entity</param>
         public static void AniadirTitulacion(ResourceApi mResourceApi, CvnItemBeanCvnTitleBean titulacion, string propiedadNombreTitulacion, string propiedadTitulacion, Entity entidadAux)
         {
             if (mResourceApi == null || titulacion == null ||
