@@ -29,8 +29,8 @@ namespace Utils
         /// <summary>
         /// Devuelve la persona a partir del CV
         /// </summary>
-        /// <param name="pCVID"></param>
-        /// <returns></returns>
+        /// <param name="pCVID">Identificador del CV</param>
+        /// <returns>Identificador de la persona</returns>
         public static string PersonaCV(string pCVID)
         {
             string select = $@"select distinct ?person ";
@@ -47,6 +47,11 @@ namespace Utils
             return null;
         }
 
+        /// <summary>
+        /// Devuelve el nombre completo de la persona a partir de su CV
+        /// </summary>
+        /// <param name="pCVID">Identificador del CV</param>
+        /// <returns>Nombre completo de la persona</returns>
         public static string GetNombreCompletoPersonaCV(string pCVID)
         {
             string select = $@"select distinct ?name ";
@@ -107,8 +112,8 @@ namespace Utils
         /// <summary>
         /// Dada una lista de personas, devuelve las organizaciones correspondientes a cada persona.
         /// </summary>
-        /// <param name="personas"></param>
-        /// <returns></returns>
+        /// <param name="personas">Listado de identificadores de personas</param>
+        /// <returns>Organizaciones correspondientes a cada persona</returns>
         public static Dictionary<string, HashSet<string>> DatosOrganizacionPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> organizaciones = new Dictionary<string, HashSet<string>>();
@@ -141,8 +146,8 @@ namespace Utils
         /// <summary>
         /// Dada una lista de personas, devuelve los departamentos correspondientes a cada persona.
         /// </summary>
-        /// <param name="personas"></param>
-        /// <returns></returns>
+        /// <param name="personas">Listado de identificadores de persona</param>
+        /// <returns>Departamentos correspondientes a cada persona</returns>
         public static Dictionary<string, HashSet<string>> DatosDepartamentoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> departamentos = new Dictionary<string, HashSet<string>>();
@@ -175,8 +180,8 @@ namespace Utils
         /// <summary>
         /// Dada una lista de personas, devuelve los proyectos correspondientes a cada persona.
         /// </summary>
-        /// <param name="personas"></param>
-        /// <returns></returns>
+        /// <param name="personas">Listado de identificadores de personas</param>
+        /// <returns>Proyectos correspondientes a cada persona</returns>
         public static Dictionary<string, HashSet<string>> DatosProyectoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> proyectos = new Dictionary<string, HashSet<string>>();
@@ -212,8 +217,8 @@ namespace Utils
         /// <summary>
         /// Dada una lista de personas, devuelve los grupos correspondientes a cada persona.
         /// </summary>
-        /// <param name="personas"></param>
-        /// <returns></returns>
+        /// <param name="personas">Listado de identificadores de personas</param>
+        /// <returns>Grupos correspondientes a cada persona</returns>
         public static Dictionary<string, HashSet<string>> DatosGrupoPersona(List<string> personas)
         {
             Dictionary<string, HashSet<string>> grupos = new Dictionary<string, HashSet<string>>();
@@ -280,132 +285,6 @@ namespace Utils
                 return codigo.Length == 15;
             }
 
-            return false;
-        }
-
-        /// <summary>
-        /// Dado el listado y los digitos del apartado, subapartado, bloque.
-        /// Devuelve el listado de los campos con codigo empezado por los digitos pasados como parametro.
-        /// </summary>
-        /// <param name="cvn">cvnRootResultBean</param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>Listado de bloque</returns>
-        public static List<CVNObject> ListadoBloque(cvnRootResultBean cvn, string codigo)
-        {
-            List<CVNObject> listadoCampos = new List<CVNObject>();
-
-            if (!Regex.Match(codigo, "^\\d{3}(\\.\\d{3}){0,3}$").Success)
-            {
-                return listadoCampos;
-            }
-
-            foreach (CvnItemBean c in cvn.cvnRootBean)
-            {
-                if (c.Code.StartsWith(codigo))
-                {
-                    foreach (CVNObject o in c.Items)
-                    {
-                        listadoCampos.Add(o);
-                    }
-                }
-            }
-
-            return listadoCampos;
-        }
-
-        /// <summary>
-        /// Dado el listado y los tres digitos del apartado.
-        /// Devuelve si existe algun apartado empezado por esos digitos en el listado.
-        /// </summary>
-        /// <param name="cvn">cvnRootResultBean</param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>True si existe ese apartado</returns>
-        public static bool ExisteIdentificadorApartado(cvnRootResultBean cvn, string codigo)
-        {
-            if (codigo.Length != 3)
-            {
-                return false;
-            }
-            if (!Regex.Match(codigo, "\\d{3}").Success)
-            {
-                return false;
-            }
-
-            if (!cvn.cvnRootBean.Any())
-            {
-                return false;
-            }
-            foreach (CvnItemBean c in cvn.cvnRootBean)
-            {
-                if (c.Code.StartsWith(codigo))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Dado el listado y los digitos del apartado y subapartado unidos con un punto.
-        /// Devuelve si existe algun subapartado empezado con esos digitos en el listado.
-        /// </summary>
-        /// <param name="cvn">cvnRootResultBean</param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>True si existe ese subapartado</returns>
-        public static bool ExisteIdentificadorSubapartado(cvnRootResultBean cvn, string codigo)
-        {
-            if (codigo.Length != 7)
-            {
-                return false;
-            }
-            if (!Regex.Match(codigo, "\\d{3}\\.\\d{3}").Success)
-            {
-                return false;
-            }
-
-            if (!cvn.cvnRootBean.Any())
-            {
-                return false;
-            }
-            foreach (CvnItemBean c in cvn.cvnRootBean)
-            {
-                if (c.Code.StartsWith(codigo))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Dado el listado y los digitos del apartado, subapartado y bloque unidos cada uno con un punto.
-        /// Devuelve si existe algun bloque empezado con esos digitos en el listado.
-        /// </summary>
-        /// <param name="cvn">cvnRootResultBean</param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>True si existe ese bloque</returns>
-        public static bool ExisteIdentificadorBloque(cvnRootResultBean cvn, string codigo)
-        {
-            if (codigo.Length != 11)
-            {
-                return false;
-            }
-            if (!Regex.Match(codigo, "\\d{3}\\.\\d{3}\\.\\d{3}").Success)
-            {
-                return false;
-            }
-
-            if (!cvn.cvnRootBean.Any())
-            {
-                return false;
-            }
-            foreach (CvnItemBean c in cvn.cvnRootBean)
-            {
-                if (c.Code.StartsWith(codigo))
-                {
-                    return true;
-                }
-            }
             return false;
         }
 
@@ -489,7 +368,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un elemento
         /// de tipo CvnItemBeanCvnString que tenga ese codigo.
         /// </summary>
-        /// <param name="cvnItemBean"></param>
+        /// <param name="cvnItemBean">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns><typeparamref name="T"/> de <paramref name="cvnItemBean"/></returns>
         public static T GetElementoPorIDCampo<T>(this CvnItemBean cvnItemBean, string codigo) where T : CVNObject
@@ -516,7 +395,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un elemento
         /// de tipo CvnItemBeanCvnString que tenga ese codigo.
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns><typeparamref name="T"/> de <paramref name="codigo"/></returns>
         public static T GetElementoPorIDCampo<T>(this List<CvnItemBean> listado, string codigo) where T : CVNObject
@@ -543,7 +422,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un string del elemento
         /// de tipo CvnItemBeanCvnString que tenga ese codigo.
         /// </summary>
-        /// <param name="cvnItemBean"></param>
+        /// <param name="cvnItemBean">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnString que tenga ese codigo</returns>
         public static string GetStringPorIDCampo(this CvnItemBean cvnItemBean, string codigo)
@@ -574,7 +453,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un string del elemento
         /// de tipo CvnItemBeanCvnString que tenga ese codigo.
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnString que tenga ese codigo</returns>
         public static string GetStringPorIDCampo(this List<CvnItemBean> listado, string codigo)
@@ -600,7 +479,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un string del anio, 
         /// de tipo CvnItemBeanCvnDuration que tenga ese codigo.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnDuration que tenga ese codigo</returns>
         public static string GetDurationAnioPorIDCampo(this CvnItemBean item, string codigo)
@@ -630,7 +509,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un string del mes, 
         /// de tipo CvnItemBeanCvnDuration que tenga ese codigo.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnDuration que tenga ese codigo</returns>
         public static string GetDurationMesPorIDCampo(this CvnItemBean item, string codigo)
@@ -664,7 +543,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un string del dia, 
         /// de tipo CvnItemBeanCvnDuration que tenga ese codigo.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnDuration que tenga ese codigo</returns>
         public static string GetDurationDiaPorIDCampo(this CvnItemBean item, string codigo)
@@ -703,7 +582,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve un string de las horas, 
         /// de tipo CvnItemBeanCvnDuration que tenga ese codigo.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnDuration que tenga ese codigo</returns>
         public static string GetDurationHorasPorIDCampo(this CvnItemBean item, string codigo)
@@ -736,7 +615,7 @@ namespace Utils
         /// Dado el codigo del campo, devuelve el valor booleano del elemento, 
         /// de tipo CvnItemBeanCvnBoolean que tenga ese codigo.
         /// </summary>
-        /// <param name="cvnItemBean"></param>
+        /// <param name="cvnItemBean">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnBoolean que tenga ese codigo</returns>
         public static string GetStringBooleanPorIDCampo(this CvnItemBean cvnItemBean, string codigo)
@@ -766,9 +645,9 @@ namespace Utils
         /// <summary>
         /// Obtiene un diccionario con las firma, como clave, y las posibles personas asociadas a la misma encontradas en BBDD de <paramref name="listadoFirma"/>.
         /// </summary>
-        /// <param name="pResourceApi"></param>
+        /// <param name="pResourceApi">ResourceApi</param>
         /// <param name="listadoFirma">Listado de firmas</param>
-        /// <returns></returns>
+        /// <returns>Diccionario con la firma y las posibles personas asociadas a ella</returns>
         public static Dictionary<string, List<Persona>> ObtenerPersonasFirma(ResourceApi pResourceApi, List<string> listadoFirma)
         {
             Dictionary<string, List<Persona>> diccionarioPersonasFirma = new Dictionary<string, List<Persona>>();
@@ -881,9 +760,9 @@ namespace Utils
         /// <summary>
         /// Cambia las letras acentuadas a, e, i, o, u por las mismas sin el signo de puntuación, la letra ñ por n y la letra ç por c.
         /// </summary>
-        /// <param name="pWord"></param>
-        /// <param name="pVar"></param>
-        /// <returns></returns>
+        /// <param name="pWord">Palabra</param>
+        /// <param name="pVar">Nombre de la variable</param>
+        /// <returns>Filtro</returns>
         public static string FilterWordComplete(string pWord, string pVar)
         {
             Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();
@@ -907,7 +786,7 @@ namespace Utils
         /// de tipo CvnItemBeanCvnDouble que tenga ese codigo.
         /// En formato 
         /// </summary>
-        /// <param name="cvnItemBean"></param>
+        /// <param name="cvnItemBean">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string del elemento de tipo CvnItemBeanCvnDouble que tenga ese codigo</returns>
         public static string GetStringDoublePorIDCampo(this CvnItemBean cvnItemBean, string codigo)
@@ -937,7 +816,7 @@ namespace Utils
         /// <summary>
         /// Devuelve la fecha en formato GNOSS (YYYYMMDD000000) como un string.
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string de la fecha en formato GNOSS</returns>
         public static string GetStringDatetimePorIDCampo(this List<CvnItemBean> listado, string codigo)
@@ -971,7 +850,7 @@ namespace Utils
         /// <summary>
         /// Devuelve la fecha en formato GNOSS (YYYYMM01000000) como un string.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>string de la fecha en formato GNOSS</returns>
         public static string GetStringDatetimePorIDCampo(this CvnItemBean item, string codigo)
@@ -1004,7 +883,7 @@ namespace Utils
         /// Devuelve el genero,
         /// con formato mResourceApi.GraphsUrl + "items/gender_" + valor
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Genero</returns>
         public static string GetGeneroPorIDCampo(this List<CvnItemBean> listado, string codigo)
@@ -1029,7 +908,7 @@ namespace Utils
         /// Devuelve el pais como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_PCLD_" + valor
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Pais</returns>
         public static string GetPaisPorIDCampo(this List<CvnItemBean> listado, string codigo)
@@ -1054,7 +933,7 @@ namespace Utils
         /// Devuelve el pais como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_PCLD_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Pais</returns>
         public static string GetPaisPorIDCampo(this CvnItemBean item, string codigo)
@@ -1077,7 +956,7 @@ namespace Utils
         /// Devuelve la region como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_" + valor
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Region</returns>
         public static string GetRegionPorIDCampo(this List<CvnItemBean> listado, string codigo)
@@ -1102,7 +981,7 @@ namespace Utils
         /// Devuelve la region como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_ADM1_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Region</returns>
         public static string GetRegionPorIDCampo(this CvnItemBean item, string codigo)
@@ -1125,7 +1004,7 @@ namespace Utils
         /// Devuelve la region como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/resulttype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Region</returns>
         public static string GetTipoResultadoIDCampo(this CvnItemBean item, string codigo)
@@ -1148,7 +1027,7 @@ namespace Utils
         /// Devuelve la provincia como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/feature_ADM2_" + valor
         /// </summary>
-        /// <param name="listado"></param>
+        /// <param name="listado">Listado de CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Provincia</returns>
         public static string GetProvinciaPorIDCampo(this List<CvnItemBean> listado, string codigo)
@@ -1173,7 +1052,7 @@ namespace Utils
         /// Devuelve la organizacion como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/organizationtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Organizacion</returns>
         public static string GetOrganizacionPorIDCampo(this CvnItemBean item, string codigo)
@@ -1196,9 +1075,9 @@ namespace Utils
         /// Devuelve el tipo de programa de tutorización como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/tutorshipsprogramtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
-        /// <returns>Organizacion</returns>
+        /// <returns>TipoProgramaTutorizacion</returns>
         public static string GetTipoProgramaTutorizacionPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1219,9 +1098,9 @@ namespace Utils
         /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/seminareventtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
-        /// <returns>OrganizaTipoEventocion</returns>
+        /// <returns>TipoEventoSeminario</returns>
         public static string GetTipoEventoSeminarioPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1242,9 +1121,9 @@ namespace Utils
         /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/eventtype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
-        /// <returns>OrganizaTipoEventocion</returns>
+        /// <returns>TipoEvento</returns>
         public static string GetTipoEventoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1265,9 +1144,9 @@ namespace Utils
         /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
-        /// <returns>OrganizaTipoEventocion</returns>
+        /// <returns>TipoInscripcionEvento</returns>
         public static string GetTipoInscripcionEventoPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1288,9 +1167,9 @@ namespace Utils
         /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/seminarinscriptiontype_" + valor
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
-        /// <returns>OrganizaTipoEventocion</returns>
+        /// <returns>TipoInscripcionSeminario</returns>
         public static string GetTipoInscripcionSeminarioPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1311,9 +1190,9 @@ namespace Utils
         /// Devuelve el tipo de intervención como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + valor
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>TipoIntervencion</returns>
         public static string GetTipoIntervencionPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
@@ -1333,8 +1212,8 @@ namespace Utils
         /// <summary>
         /// Devuelve la firma del del <paramref name="item"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnAuthorBean</param>
+        /// <returns>Firma del autor</returns>
         public static string GetFirmaAutor(this CvnItemBeanCvnAuthorBean item)
         {
             if (item == null)
@@ -1352,8 +1231,8 @@ namespace Utils
         /// <summary>
         /// Devuelve el orden del del <paramref name="item"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnAuthorBean</param>
+        /// <returns>Orden del autor</returns>
         public static string GetOrdenAutor(this CvnItemBeanCvnAuthorBean item)
         {
             if (item == null)
@@ -1366,8 +1245,8 @@ namespace Utils
         /// <summary>
         /// Devuelve el nombre del <paramref name="item"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnAuthorBean</param>
+        /// <returns>Nombre del autor</returns>
         public static string GetNombreAutor(this CvnItemBeanCvnAuthorBean item)
         {
             if (item == null) { return null; }
@@ -1381,8 +1260,8 @@ namespace Utils
         /// <summary>
         /// Devuelve el primer apellido del <paramref name="item"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnAuthorBean</param>
+        /// <returns>Primer apellido del autor</returns>
         public static string GetPrimerApellidoAutor(this CvnItemBeanCvnAuthorBean item)
         {
             if (item == null) { return null; }
@@ -1396,8 +1275,8 @@ namespace Utils
         /// <summary>
         /// Devuelve el segundo apellido del <paramref name="item"/>
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBeanCvnAuthorBean</param>
+        /// <returns>Segundo apellido del autor</returns>
         public static string GetSegundoApellidoAutor(this CvnItemBeanCvnAuthorBean item)
         {
             if (item == null) { return null; }
@@ -1411,7 +1290,7 @@ namespace Utils
         /// <summary>
         /// Devuelve el nombre del EntityBean con código <paramref name="codigo"/>.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">CvnItemBean</param>
         /// <param name="codigo">Codigo</param>
         /// <returns>Name</returns>
         public static string GetNameEntityBeanPorIDCampo(this CvnItemBean item, string codigo)
@@ -1433,9 +1312,9 @@ namespace Utils
         /// <summary>
         /// Devuelve el nombre del TitleBean con código <paramref name="codigo"/>.
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="codigo"></param>
-        /// <returns></returns>
+        /// <param name="item">CvnItemBean</param>
+        /// <param name="codigo">Codigo</param>
+        /// <returns>NameTitleBean</returns>
         public static string GetNameTitleBeanPorIDCampo(this CvnItemBean item, string codigo)
         {
             if (!CodigoCampoCorrecto(codigo))
