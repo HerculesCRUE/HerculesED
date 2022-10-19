@@ -102,7 +102,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="Secciones">Listado de secciones a importar</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Importar")]
-        public ActionResult Importar([FromHeader][Required] string pCVID, [Required] IFormFile File, [FromHeader][Optional] List<string> Secciones)
+        public ActionResult Importar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Optional] List<string> Secciones)
         {
             try
             {
