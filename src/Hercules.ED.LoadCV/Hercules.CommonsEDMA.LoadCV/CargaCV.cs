@@ -41,7 +41,7 @@ namespace Hercules.ED.LoadCV
                         }
                         else
                         {
-                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ImportadorCV/ObtenerORCID";
+                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ObtenerORCID";
 
                             MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
 
@@ -117,7 +117,7 @@ namespace Hercules.ED.LoadCV
                         }
                         else
                         {
-                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ImportadorCV/Importar";
+                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/Importar";
 
                             MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
                             multipartFormData.Add(new StringContent(CVID), "pCVID");
