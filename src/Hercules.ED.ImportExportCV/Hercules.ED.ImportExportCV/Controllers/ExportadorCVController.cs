@@ -35,10 +35,10 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Devuelve un fichero PDF con los datos del CV
         /// </summary>
         /// <param name="pCVID">ID curriculum</param>
-        /// <returns></returns>
+        /// <returns>Archivo pdf con los datos del CV</returns>
         [HttpPost("Exportar")]
         public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion, [FromForm][Required] string versionExportacion)
         {
@@ -124,7 +124,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="pCVID">ID curriculum</param>
         /// <param name="lang">Lenguaje del CV</param>
         /// <param name="listaId">Listado de identificadores de los recursos a devolver</param>
-        /// <returns></returns>
+        /// <returns>Archivo pdf con los datos del CV</returns>
         [HttpPost("ExportarLimitado")]
         public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion,
             [FromForm][Required] string versionExportacion, [FromForm][Optional] List<string> listaId)
