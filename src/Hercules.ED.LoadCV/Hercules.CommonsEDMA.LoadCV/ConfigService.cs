@@ -71,25 +71,5 @@ namespace Hercules.ED.LoadCV.Config
             return RutaCarpeta;
         }
 
-        public string GetRutaFichero()
-        {
-            if (string.IsNullOrEmpty(RutaFichero))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("RutaFichero"))
-                {
-                    connectionString = environmentVariables["RutaFichero"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["RutaFichero"];
-                }
-
-                RutaFichero = connectionString;
-            }
-
-            return RutaFichero;
-        }
     }
 }
