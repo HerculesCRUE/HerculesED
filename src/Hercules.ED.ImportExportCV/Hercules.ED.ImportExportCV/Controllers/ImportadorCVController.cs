@@ -38,60 +38,32 @@ namespace Hercules.ED.ImportExportCV.Controllers
             _Configuracion = pConfig;
         }
 
-        [HttpGet("InsertaORCID")]
-        public ActionResult InsertaORCID()
+        /// <summary>
+        /// Devuelve el ORCID del titular del archivo
+        /// </summary>
+        /// <param name="File">Archivo en formato pdf</param>
+        /// <returns>ORCID del titular del archivo, BadRequest en caso contrario</returns>
+        [HttpPost("ObtenerORCID")]
+        public ActionResult ObtenerORCID([Required] IFormFile File)
         {
             try
             {
-                string pathFichero = _Configuracion.GetPathFichero();
-                string path = _Configuracion.GetPathCarpeta();
-                List<string> listadoArchivos = Directory.GetFiles(path).ToList();
-                List<string> listadoInsercion = new List<string>();
-                foreach (string archivo in listadoArchivos)
+                string crisArchivo = File.FileName.Split(".").First().Substring(0, File.FileName.Split(".").First().Length - 1);
+
+                SincroDatos sincro = new SincroDatos(_Configuracion, File);
+                if (sincro.getCVN() == null || sincro.getCVN().numElementos == 0 || sincro.getCVN().errorCode != 0)
                 {
-                    using var stream = new MemoryStream(System.IO.File.ReadAllBytes(archivo).ToArray());
-                    string nombreArchivo = archivo.Split("\\").Last();
-
-                    //Compruebo que sea valido el identificador del archivo
-                    if (!UtilityCV.ComprobarCRIS(nombreArchivo.Split(".").First()))
-                    {
-                        continue;
-                    }
-                    string crisArchivo = nombreArchivo.Split(".").First().Substring(0, nombreArchivo.Split(".").First().Length - 1);
-
-                    FormFile formFile = new FormFile(stream, 0, stream.Length, "streamFile", nombreArchivo);
-
-                    SincroDatos sincro = new SincroDatos(_Configuracion, formFile);
-                    if (sincro.getCVN() == null || sincro.getCVN().numElementos == 0 || sincro.getCVN().errorCode != 0)
-                    {
-                        continue;
-                    }
-
-                    string ORCID = sincro.SincroORCID(sincro, crisArchivo);
-                    if (!string.IsNullOrEmpty(ORCID))
-                    {
-                        listadoInsercion.Add(ORCID);
-                    }
+                    return BadRequest();
                 }
 
-                return Ok(listadoInsercion);
+                string ORCID = sincro.ObtenerORCID(sincro, crisArchivo);
+
+                return Ok(ORCID);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        [HttpGet("LecturaDatos")]
-        public ActionResult LecturaDatos()
-        {
-                return Ok();
-        }
-
-        [HttpGet("LecturaCarpeta")]
-        public ActionResult LecturaCarpeta()
-        {
-                return Ok();
         }
 
         /// <summary>
@@ -102,7 +74,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="Secciones">Listado de secciones a importar</param>
         /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Importar")]
-        public ActionResult Importar([FromHeader][Required] string pCVID, [Required] IFormFile File, [FromHeader][Optional] List<string> Secciones)
+        public ActionResult Importar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Optional] List<string> Secciones)
         {
             try
             {

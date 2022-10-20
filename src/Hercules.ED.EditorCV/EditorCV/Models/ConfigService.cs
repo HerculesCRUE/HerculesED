@@ -24,6 +24,7 @@ namespace EditorCV.Models
         // URLs
         private string urlEnrichment { get; set; }
         private string urlSGI { get; set; }
+        private string urlSGISexeniosAcreditaciones { get; set; }
         private string urlDSpace { get; set; }
         private string collectionDSpace { get; set; }
         private string urlImportadorExportador { get; set; }
@@ -292,6 +293,26 @@ namespace EditorCV.Models
             }
 
             return urlSGI;
+        }
+        public string GetUrlSGISexeniosAcreditaciones()
+        {
+            if (string.IsNullOrEmpty(urlSGISexeniosAcreditaciones))
+            {
+                string connectionString = string.Empty;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("url_sgi_sexenios_acreditaciones"))
+                {
+                    connectionString = environmentVariables["url_sgi_sexenios_acreditaciones"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["url_sgi_sexenios_acreditaciones"];
+                }
+
+                urlSGISexeniosAcreditaciones = connectionString;
+            }
+
+            return urlSGISexeniosAcreditaciones;
         }
 
         /// <summary>

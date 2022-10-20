@@ -54,53 +54,6 @@ namespace Utils
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
         }
         
-        public static bool ComprobarORCID(string ORCID)
-        {
-            //Compruebo que no sea nulo
-            if (string.IsNullOrEmpty(ORCID))
-            {
-                return false;
-            }
-
-            //Compruebo si tiene formato DNI
-            if (Regex.IsMatch(ORCID, "\\d{4}-\\d{4}-\\d{4}-\\d{4}"))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public static bool ComprobarCRIS(string crisID)
-        {
-            //Compruebo que no sea nulo
-            if (string.IsNullOrEmpty(crisID))
-            {
-                return false;
-            }
-
-            //Compruebo si tiene formato DNI
-            if(Regex.IsMatch(crisID, "\\d{8}[TRWAGMYFPDXBNJZSQVHLCKE]"))
-            {
-                return true;
-            }
-
-            //Compruebo si tiene formato NIE
-            if(Regex.IsMatch(crisID, "[XYZ]\\d{7}[TRWAGMYFPDXBNJZSQVHLCKE]"))
-            {
-                return true;
-            }
-
-            //Compruebo si tiene formato Pasaporte
-            if(Regex.IsMatch(crisID, "\\w{3}\\d{6}\\w*"))
-            {
-                return true;
-            }
-
-
-            return false;
-        }
-
         /// <summary>
         /// Devuelve el identificador numerico apartir del tipo de documento.
         /// </summary>
@@ -125,30 +78,6 @@ namespace Utils
                 return "060.010.030.000";
             }
             return null;
-        }
-
-        public static string GetTextLang(string pLang, Dictionary<string, string> pValores)
-        {
-            if (pValores == null)
-            {
-                return "";
-            }
-            else if (pValores.ContainsKey(pLang))
-            {
-                return pValores[pLang];
-            }
-            else if (pValores.ContainsKey("es"))
-            {
-                return pValores["es"];
-            }
-            else if (pValores.Count > 0)
-            {
-                return pValores.Values.First();
-            }
-            else
-            {
-                return "";
-            }
         }
 
         /// <summary>

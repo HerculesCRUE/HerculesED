@@ -16,6 +16,7 @@ Tambien es posible extraer los datos almacenados en BBDD, y recibir un CV en for
 El análisis funcional relacionado con el CV se puede consultar en [Edición CV - CVN](https://confluence.um.es/confluence/pages/viewpage.action?pageId=397534628).
 
 ## Servicios
+- [ObtenerORCID](#obtener-orcid)
 - [Preimportación](#preimportación-de-cvn)
 - [Importación](#importación-de-cvn)
 - [Postimportación](#postimportación-de-cvn)
@@ -25,6 +26,9 @@ El análisis funcional relacionado con el CV se puede consultar en [Edición CV 
 ## Ejemplos
 - [Ejemplo de importación](#ejemplo-de-importación)
 - [Ejemplo de exportación](#ejemplo-de-exportación)
+
+## Obtener ORCID
+El servicio de obtención de ORCID recibirá un fichero en formato PDF, leerá los datos almacenados en el mismo y devolverá el ORCID.
 
 ## Preimportación de CVN
 El servicio de preimportación devuelve los datos leidos de un Documento XML o PDF pasados como parametro, junto al identificador de CV de la persona, y como dato opcional las secciones que se desea leer, las cuales se deberá pasar el codigo CVN de FECYT.

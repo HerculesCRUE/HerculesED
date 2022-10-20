@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Hercules.ED.LoadCV": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
