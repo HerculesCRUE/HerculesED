@@ -8,14 +8,14 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Hercules.CommonsEDMA.ConfigLoad.csproj", ""]
-RUN dotnet restore "./Hercules.CommonsEDMA.ConfigLoad.csproj"
+COPY ["Hercules.ED.LoadCV.csproj", ""]
+RUN dotnet restore "./Hercules.ED.LoadCV.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "Hercules.CommonsEDMA.ConfigLoad.csproj" -c Release -o /app/build
+RUN dotnet build "Hercules.ED.LoadCV.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Hercules.CommonsEDMA.ConfigLoad.csproj" -c Release -o /app/publish
+RUN dotnet publish "Hercules.ED.LoadCV.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
