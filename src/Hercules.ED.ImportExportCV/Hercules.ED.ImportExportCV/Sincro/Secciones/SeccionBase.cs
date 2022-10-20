@@ -438,7 +438,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     throw new Exception("El listado de items bloqueados y el listado de equivalencias no concuerdan");
                 }
 
-                if(petitionStatus != null)
+                if (petitionStatus != null)
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = equivalencias.Count;
@@ -494,7 +494,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <param name="pRdfTypeCV"></param>
         protected void AniadirModificarPublicaciones(List<Entity> listadoAux, Dictionary<string, HashSet<string>> equivalencias, string propTitle,
             string graph, string rdfType, string rdfTypePrefix, List<string> propiedadesItem, string RdfTypeTab,
-            [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] List<string> listadoIdBBDD)
+            [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Diccionario para almacenar las notificaciones
             ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
@@ -507,6 +507,13 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> idPersonaNick = UtilitySecciones.ObtenerIdPersona(mResourceApi, mCvID);
             string idPersona = idPersonaNick.ElementAt(0).Key;
             string nickPersona = idPersonaNick.ElementAt(0).Value;
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "PREPARANDO_PERSONAS_PUBLICACIONES";
+                petitionStatus.actualSubWorks = 1;
+                petitionStatus.actualSubTotalWorks = 1;
+            }
 
             //1º cargar todas las personas que no estén cargadas
             List<ComplexOntologyResource> personasCargar = new List<ComplexOntologyResource>();
@@ -623,10 +630,23 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
 
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTANDO_PUBLICACIONES";
+                petitionStatus.actualSubWorks = 1;
+                petitionStatus.actualSubTotalWorks = listadoAux.Count;
+            }
+
             //Añado las personas que se usan en los documentos, si se añade o puede modificar el documento.
             HashSet<string> personasUsadas = new HashSet<string>();
             for (int i = 0; i < listadoAux.Count; i++)
             {
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks++;
+                }
+
                 Entity entityXML = listadoAux[i];
 
                 string idXML = entityXML.id;
@@ -880,6 +900,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             //Elimino las personas repetidas.
             personasCargar.RemoveAll(x => !personasUsadas.Contains(x.GnossId));
+
             //Cargo las personas
             ConcurrentBag<string> personasDesnormalizarAux = new ConcurrentBag<string>();
             Parallel.ForEach(personasCargar, new ParallelOptions { MaxDegreeOfParallelism = 5 }, personaCargar =>
@@ -913,9 +934,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, documentosDesnormalizar));
             }
 
+
             //Enviamos las notificaciones
             List<Notification> notificacionesCargar = notificaciones.ToList();
             notificacionesCargar.RemoveAll(x => x.IdRoh_owner == idPersona);
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTANDO_NOTIFICACIOENS_PUBLICACIONES";
+                petitionStatus.actualSubWorks = 1;
+                petitionStatus.actualSubTotalWorks = notificacionesCargar.Count;
+            }
 
             mResourceApi.ChangeOntoly("notification");
             Parallel.ForEach(notificacionesCargar, new ParallelOptions { MaxDegreeOfParallelism = 6 }, notificacion =>
@@ -931,6 +960,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                         break;
                     }
                     mResourceApi.LoadComplexSemanticResource(recursoCargar);
+                }
+
+                if (petitionStatus != null)
+                {
+                    petitionStatus.actualSubWorks++;
                 }
             });
         }
