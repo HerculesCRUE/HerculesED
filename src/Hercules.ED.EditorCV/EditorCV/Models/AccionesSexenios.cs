@@ -79,6 +79,14 @@ namespace EditorCV.Models
         /// <param name="idUsuario">Identificador del usuario</param>
         public void NotifySexenios(string url, string idUsuario)
         {
+            string person = Utils.UtilityCV.GetInvestigadorByID(idUsuario);
+            if (string.IsNullOrEmpty(person))
+            {
+                mResourceApi.Log.Error("Usuario no encontrado o sin CV: " + idUsuario + ", URL: " + url);
+                return;
+            }
+            Utils.UtilityCV.EnvioNotificacion(url, person, "notifySexenios");
+
             mResourceApi.Log.Info("Usuario: " + idUsuario + ", URL: " + url);
         }
 
