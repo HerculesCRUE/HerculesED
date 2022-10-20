@@ -941,7 +941,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             if (petitionStatus != null)
             {
-                petitionStatus.actualWorkSubtitle = "IMPORTANDO_NOTIFICACIOENS_PUBLICACIONES";
+                petitionStatus.actualWorkSubtitle = "IMPORTANDO_NOTIFICACIONES_PUBLICACIONES";
                 petitionStatus.actualSubWorks = 1;
                 petitionStatus.actualSubTotalWorks = notificacionesCargar.Count;
             }
