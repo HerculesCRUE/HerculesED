@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -36,7 +37,7 @@ namespace EditorCV.Controllers
         }
 
         [HttpPost("Notify")]
-        public IActionResult NotifySexenios(string url_cdn, string idUsuario)
+        public IActionResult NotifySexenios([Required]string url_cdn, [Required] string idUsuario)
         {
             try
             {
