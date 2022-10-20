@@ -341,7 +341,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
                 else if (pPublicacionIn.static_data.summary.pub_info.page.page_count != 0)
                 {
-                    if (!int.TryParse(pPublicacionIn.static_data.summary.pub_info.page.end.ToString(), out int endPage))
+                    if (pPublicacionIn.static_data.summary.pub_info.page.end == null || !int.TryParse(pPublicacionIn.static_data.summary.pub_info.page.end.ToString(), out int endPage))
                     {
                         return "1";
                     }
