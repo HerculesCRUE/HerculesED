@@ -63,14 +63,14 @@ namespace Hercules.ED.LoadCV
                                 SincroORCID sincroORCID = new SincroORCID();
                                 Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
                                 string idPersona = dicPersonaORCID.First().Key;
-                                //Si el investigador tiene ORCID lo actualizo
+                                //Si el investigador NO tiene ORCID lo inserto
                                 if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
                                 {
                                     sincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
 
                                     mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
                                 }
-                                //Si el investigador no tiene ORCID se inserta
+                                //Si el investigador tiene ORCID se actualiza
                                 else
                                 {
                                     sincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);

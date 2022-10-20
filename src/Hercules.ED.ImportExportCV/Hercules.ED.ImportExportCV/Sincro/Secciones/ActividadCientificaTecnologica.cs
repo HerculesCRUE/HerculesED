@@ -258,7 +258,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Añadimos o modificamos las entidades
                 AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedScientificPublicationCV", "http://w3id.org/roh/RelatedScientificPublicationCV", listadoIdBBDD: listadoIdBBDD);
+                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedScientificPublicationCV", "http://w3id.org/roh/RelatedScientificPublicationCV",
+                    listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
                 return null;
             }
         }
@@ -373,7 +374,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Añadimos o modificamos las entidades
                 AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedConferencesCV", "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV", listadoIdBBDD: listadoIdBBDD);
+                propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedConferencesCV", "http://w3id.org/roh/RelatedWorkSubmittedConferencesCV", 
+                listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
                 return null;
             }
         }
@@ -490,7 +492,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 //4º Añadimos o modificamos las entidades
                 AniadirModificarPublicaciones(listadoAux, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV", "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", listadoIdBBDD: listadoIdBBDD);
+                    propiedadesItem, RdfTypeTab, "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV", "http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV",
+                    listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
                 return null;
             }
         }

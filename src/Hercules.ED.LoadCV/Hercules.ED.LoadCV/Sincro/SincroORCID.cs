@@ -32,7 +32,7 @@ namespace Hercules.ED.ImportExportCV.Sincro.Secciones
         }
 
         /// <summary>
-        /// Añade a la persona el triple del ORCID
+        /// Actualiza a la persona el triple del ORCID
         /// </summary>
         /// <param name="idPersona">Identificador largo de la persona</param>
         /// <param name="orcid">ORCID</param>

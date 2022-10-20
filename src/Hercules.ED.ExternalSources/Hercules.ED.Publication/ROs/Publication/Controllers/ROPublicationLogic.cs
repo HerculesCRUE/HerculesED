@@ -105,64 +105,76 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 try
                 {
-                    Log.Information("Haciendo petición a Wos...");
+                    Console.WriteLine("Haciendo petición a Wos...");
                     objInicial_woS = llamada_WoS_Doi(pDoi);
                 }
-                catch
+                catch (Exception error)
                 {
-                    Log.Information("No se ha podido recuperar los datos de Wos...");
+                    Console.WriteLine("No se ha podido recuperar los datos de Wos...");
+                    Log.Error("No se ha podido recuperar los datos de Wos...");
+                    Log.Error(error.Message);
                 }
 
                 try
                 {
-                    Log.Information("Haciendo petición a Scopus...");
+                    Console.WriteLine("Haciendo petición a Scopus...");
                     objInicial_Scopus = llamada_Scopus_Doi(pDoi);
                 }
-                catch
+                catch (Exception error)
                 {
-                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                    Console.WriteLine("No se ha podido recuperar los datos de Scopus...");
+                    Log.Error("No se ha podido recuperar los datos de Scopus...");
+                    Log.Error(error.Message);
                 }
 
                 try
                 {
-                    Log.Information("Haciendo petición a OpenAire...");
+                    Console.WriteLine("Haciendo petición a OpenAire...");
                     objInicial_openAire = llamada_OpenAire_Doi(pDoi);
                 }
-                catch
+                catch (Exception error)
                 {
-                    Log.Information("No se ha podido recuperar los datos de OpenAire...");
+                    Console.WriteLine("No se ha podido recuperar los datos de OpenAire...");
+                    Log.Error("No se ha podido recuperar los datos de OpenAire...");
+                    Log.Error(error.Message);
                 }
             }
             else // Recuperar las publicaciones de un autor desde 'X' fecha.
             {
                 try
                 {
-                    Log.Information("Haciendo petición a Wos...");
+                    Console.WriteLine("Haciendo petición a Wos...");
                     objInicial_woS = llamada_WoS(pOrcid, pDate);
                 }
-                catch
+                catch (Exception error)
                 {
-                    Log.Information("No se ha podido recuperar los datos de Wos...");
+                    Console.WriteLine("No se ha podido recuperar los datos de Wos...");
+                    Log.Error("No se ha podido recuperar los datos de Wos...");
+                    Log.Error(error.Message);
                 }
 
                 try
                 {
-                    Log.Information("Haciendo petición a Scopus...");
+                    Console.WriteLine("Haciendo petición a Scopus...");
                     objInicial_Scopus = llamada_Scopus(pOrcid, pDate);
                 }
-                catch
+                catch (Exception error)
                 {
-                    Log.Information("No se ha podido recuperar los datos de Scopus...");
+                    Console.WriteLine("No se ha podido recuperar los datos de Scopus...");
+                    Log.Error("No se ha podido recuperar los datos de Scopus...");
+                    Log.Error(error.Message);
                 }
 
                 try
                 {
-                    Log.Information("Haciendo petición a OpenAire...");
+                    Console.WriteLine("Haciendo petición a OpenAire...");
                     objInicial_openAire = llamada_OpenAire(pOrcid, pDate);
                 }
-                catch
+                catch (Exception error)
                 {
-                    Log.Information("No se ha podido recuperar los datos de OpenAire...");
+                    Console.WriteLine("No se ha podido recuperar los datos de OpenAire...");
+                    Log.Error("No se ha podido recuperar los datos de OpenAire...");
+                    Log.Error(error.Message);
                 }
             }
 
@@ -174,7 +186,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     foreach (Publication pub in objInicial_woS)
                     {
-                        Log.Information($@"[WoS] Publicación {contadorPubWos}/{objInicial_woS.Count}");
+                        Console.WriteLine($@"[WoS] Publicación {contadorPubWos}/{objInicial_woS.Count}");
 
                         // Inserción de DOI en la lista de DOIs.
                         if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
@@ -187,7 +199,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new Tuple<Publication, List<PubReferencias>>(null, null);
                         while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                         {
-                            Log.Information($@"[WoS] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
+                            Console.WriteLine($@"[WoS] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
                             dataSemanticScholar = llamadaRefSemanticScholar(pub.doi);
                             contadorSemanticScholar++;
 
@@ -204,7 +216,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             }
                         }
 
-                        Log.Information("[WoS] Comparación (SemanticScholar)...");
+                        Console.WriteLine("[WoS] Comparación (SemanticScholar)...");
                         Publication pub_completa = pub;
                         pub_completa.dataOriginList = new HashSet<string>() { "WoS" };
                         if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
@@ -214,7 +226,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
 
                         // Zenodo - Archivos pdf...
-                        Log.Information("[WoS] Haciendo petición a Zenodo...");
+                        Console.WriteLine("[WoS] Haciendo petición a Zenodo...");
                         pub_completa.pdf = llamadaZenodo(pub.doi, dicZenodo);
                         if (pub_completa.pdf == string.Empty)
                         {
@@ -274,10 +286,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 Log.Error(e.Message);
             }
 
-            Log.Information($@"[WoS] Publicaciones procesadas");
+            Console.WriteLine($@"[WoS] Publicaciones procesadas");
             #endregion
 
             #region --- Scopues
@@ -289,7 +302,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Llamada Scopus para completar publicaciones que no se hayan obtenido de WoS.
                     foreach (PublicacionScopus pub_scopus in objInicial_Scopus)
                     {
-                        Log.Information($@"[Scopus] Publicación {contadoPubScopus}/{objInicial_Scopus.Count}");
+                        Console.WriteLine($@"[Scopus] Publicación {contadoPubScopus}/{objInicial_Scopus.Count}");
                         if (pub_scopus != null && !string.IsNullOrEmpty(pub_scopus.doi) && !dois_principales.Contains(pub_scopus.doi.ToLower()))
                         {
                             Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
@@ -304,7 +317,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new Tuple<Publication, List<PubReferencias>>(null, null);
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
-                                Log.Information($@"[Scopus] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
+                                Console.WriteLine($@"[Scopus] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
                                 dataSemanticScholar = llamadaRefSemanticScholar(pubScopus.doi);
                                 contadorSemanticScholar++;
 
@@ -321,7 +334,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 }
                             }
 
-                            Log.Information("[Scopus] Comparación (SemanticScholar)...");
+                            Console.WriteLine("[Scopus] Comparación (SemanticScholar)...");
                             Publication pub_completa = pubScopus;
                             pub_completa.dataOriginList = new HashSet<string>() { "Scopus" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
@@ -331,7 +344,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             }
 
                             // Zenodo - Archivos pdf...
-                            Log.Information("[Scopus] Haciendo petición a Zenodo...");
+                            Console.WriteLine("[Scopus] Haciendo petición a Zenodo...");
                             pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
                             if (pub_completa.pdf == String.Empty)
                             {
@@ -373,10 +386,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 Log.Error(e.Message);
             }
 
-            Log.Information($@"[Scopus] Publicaciones procesadas");
+            Console.WriteLine($@"[Scopus] Publicaciones procesadas");
             #endregion
 
             #region --- OpenAire
@@ -388,7 +402,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Llamada OpenAire para completar publicaciones que no se hayan obtenido de WoS/Scopus.
                     foreach (Publication pub in objInicial_openAire)
                     {
-                        Log.Information($@"[OpenAire] Publicación {contadorPubOpenAire}/{objInicial_openAire.Count}");
+                        Console.WriteLine($@"[OpenAire] Publicación {contadorPubOpenAire}/{objInicial_openAire.Count}");
                         if (pub != null && !string.IsNullOrEmpty(pub.doi) && !dois_principales.Contains(pub.doi.ToLower()))
                         {
                             if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
@@ -401,7 +415,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new Tuple<Publication, List<PubReferencias>>(null, null);
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
-                                Log.Information($@"[OpenAire] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
+                                Console.WriteLine($@"[OpenAire] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
                                 dataSemanticScholar = llamadaRefSemanticScholar(pub.doi);
                                 contadorSemanticScholar++;
 
@@ -418,7 +432,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 }
                             }
 
-                            Log.Information("[OpenAire] Comparación (SemanticScholar)...");
+                            Console.WriteLine("[OpenAire] Comparación (SemanticScholar)...");
                             Publication pub_completa = pub;
                             pub_completa.dataOriginList = new HashSet<string>() { "OpenAire" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
@@ -428,7 +442,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             }
 
                             // Zenodo - Archivos pdf...
-                            Log.Information("[OpenAire] Haciendo petición a Zenodo...");
+                            Console.WriteLine("[OpenAire] Haciendo petición a Zenodo...");
                             pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
                             if (pub_completa.pdf == string.Empty)
                             {
@@ -451,10 +465,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 Log.Error(e.Message);
             }
 
-            Log.Information($@"[OpenAire] Publicaciones procesadas");
+            Console.WriteLine($@"[OpenAire] Publicaciones procesadas");
             #endregion
 
             // Comprobación de que las publicaciones estén bien formadas.
@@ -511,9 +526,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 if (!string.IsNullOrEmpty(jsonData))
                 {
                     // Peticiones.
-                    Log.Information("[WoS] Obteniendo topics enriquecidos...");
+                    Console.WriteLine("Obteniendo topics enriquecidos...");
                     Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
-                    Log.Information("[WoS] Obteniendo freeTextKeywords enriquecidos...");
+                    Console.WriteLine("Obteniendo freeTextKeywords enriquecidos...");
                     Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
 
                     if (listaTopics != null && listaTopics.Any())
