@@ -41,6 +41,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                if(string.IsNullOrEmpty(url_cdn) || string.IsNullOrEmpty(idUsuario))
+                {
+                    return BadRequest();
+                }
+
                 AccionesAcreditaciones accionesAcreditaciones = new AccionesAcreditaciones();
                 accionesAcreditaciones.NotifyAcreditaciones(url_cdn, idUsuario);
 
