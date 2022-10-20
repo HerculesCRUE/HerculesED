@@ -197,11 +197,6 @@ namespace EditorCV.Controllers
         {
             try
             {
-                //Solo puede obtener el propietario del CV
-                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized);
-                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetItemMini(_Configuracion, pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
@@ -210,6 +205,26 @@ namespace EditorCV.Controllers
                 return Ok(new EditorCV.Models.API.Response.JsonResult() { error = ex.Message });
             }
 
+        }
+
+        /// <summary>
+        /// Obtiene una minificha de una entidad del CV para el importador
+        /// </summary>
+        /// <param name="pCVId">Identificador del CV</param>
+        /// <param name="pIdSection">Identificador de la sección</param>
+        /// <param name="pRdfTypeTab">Rdftype del tab</param>
+        /// <param name="pEntityID">Identificador de la entidad</param>
+        /// <param name="pLang">Idioma</param>
+        /// <returns></returns>
+        [HttpGet("GetItemMiniImport")]
+        public IActionResult GetItemMiniImport(string pIdSection, string pIdBBDD, string pLang)
+        {
+            AccionesEdicion accionesEdicion = new AccionesEdicion();
+            string[] dataForMiniImport = accionesEdicion.GetDataItemMiniImport(pIdBBDD);
+            string pCVId = dataForMiniImport[0];
+            string pRdfTypeTab = dataForMiniImport[1];
+            string pEntityID = dataForMiniImport[2];
+            return GetItemMini(pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang);
         }
 
         /// <summary>
