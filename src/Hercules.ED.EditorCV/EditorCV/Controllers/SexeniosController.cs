@@ -41,6 +41,11 @@ namespace EditorCV.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(url_cdn) || string.IsNullOrEmpty(idUsuario))
+                {
+                    return BadRequest();
+                }
+
                 AccionesSexenios accionesSexenios = new AccionesSexenios();
                 accionesSexenios.NotifySexenios(url_cdn, idUsuario);
                 return Ok();
