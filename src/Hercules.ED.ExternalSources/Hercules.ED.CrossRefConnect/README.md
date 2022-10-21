@@ -1,6 +1,6 @@
 ![](../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 20/06/20201                                                  |
+| Fecha         | 21/10/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
 |Titulo|API Hercules.ED.CrossRefConnect| 
 |Descripción|Manual del servicio API Hercules.ED.CrossRefConnect para la importación de recursos|
