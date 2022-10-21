@@ -196,7 +196,12 @@ namespace EditorCV.Controllers
         public IActionResult GetItemMini(string pCVId, string pIdSection, string pRdfTypeTab, string pEntityID, string pLang)
         {
             try
-            {
+            {   
+                //Solo puede obtener el propietario del CV
+                if (!Security.CheckUser(UtilityCV.GetUserFromCV(pCVId), Request))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+                }
                 AccionesEdicion accionesEdicion = new AccionesEdicion();
                 return Ok(accionesEdicion.GetItemMini(_Configuracion, pCVId, pIdSection, pRdfTypeTab, pEntityID, pLang));
             }
