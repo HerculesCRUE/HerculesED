@@ -25,8 +25,8 @@ Servicio encargado de la carga completa del CV de los usuarios. El servicio har√
 ## Configuraci√≥n en el appsetting.json
 ```json{
 {
-  "RutaCarpeta": "C:\\Users\\mboillos\\Desktop\\cv_Carga_Murcia",
-  "url_importador_exportador": "https://localhost:5001/ImportadorCV/"
+  "RutaCarpeta": "",
+  "url_importador_exportador": ""
 }
 }
 - RutaCarpeta: Ruta de lectura de la carpeta de archivos.
