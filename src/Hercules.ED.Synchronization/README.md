@@ -29,3 +29,9 @@ Configuración del appsettings.json
 - FuentesExternasQueueRabbit: Nombre de la cola para la inserción.
 - LogPath: Ruta dónde se van a almacenar lo logs.
 - cronExternalSource: Expresión cron para la ejecución del programa.
+
+Dependencias
+============
+- GnossApiWrapper.NetCore: v6.0.2
+- Quartz: v3.4.0
+- RabbitMQ.Client: v6.4.0
