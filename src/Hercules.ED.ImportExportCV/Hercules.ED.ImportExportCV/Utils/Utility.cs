@@ -47,6 +47,94 @@ namespace Utils
             return null;
         }
 
+        public static DateTime getFechaImportacion(string pCVID)
+        {
+
+            string valorActual = "";
+            string select = "select distinct ?fecha ";
+            string where = @$"
+                where {{
+                    <http://gnoss.com/{pCVID}><http://gnoss/hasEntidad> ?s. 
+                    ?s ?p <http://w3id.org/roh/CV>.
+                    ?s <http://w3id.org/roh/importDate> ?fecha
+                }} LIMIT 100";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings) { 
+            
+                if (fila.ContainsKey("fecha")) {
+                    valorActual = fila["fecha"].value;
+                }
+
+            
+            }
+            DateTime fecha;
+            if (DateTime.TryParse(valorActual,out fecha))
+            {
+                return fecha;
+            }
+            else
+            {
+                return fecha;
+            }
+
+
+
+
+               
+        }
+
+        public static bool checkFecha(string pCVID)
+        {
+            return getFechaImportacion(pCVID) > DateTime.Now.AddDays(-1);
+        }
+
+
+        public static void updateFechaImportacion(string pCVID, bool revertir = false)
+        {
+
+
+            DateTime fecha = getFechaImportacion(pCVID);
+            
+            if (fecha != DateTime.MinValue)
+            {
+                List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+                TriplesToModify triple = new TriplesToModify();
+                triple.Predicate = $@"http://w3id.org/roh/importDate";
+                triple.OldValue = fecha.ToString();
+                triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString(); 
+                listaTriplesModificacion.Add(triple);
+                Dictionary<Guid, List<TriplesToModify>> dicTriplesInsertar = new Dictionary<Guid, List<TriplesToModify>>();
+                dicTriplesInsertar.Add(new Guid(pCVID), listaTriplesModificacion);
+                mResourceApi.ModifyPropertiesLoadedResources(dicTriplesInsertar);
+            }
+            else
+            {
+                List<TriplesToInclude> listaTriplesModificacion = new List<TriplesToInclude>();
+                TriplesToInclude triple = new TriplesToInclude();
+                triple.Predicate = $@"http://w3id.org/roh/importDate";
+                triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString();
+                listaTriplesModificacion.Add(triple);
+                Dictionary<Guid, List<TriplesToInclude>> dicTriplesInsertar = new Dictionary<Guid, List<TriplesToInclude>>();
+                dicTriplesInsertar.Add(new Guid(pCVID), listaTriplesModificacion);
+                mResourceApi.InsertPropertiesLoadedResources(dicTriplesInsertar);
+            }
+        }
+        public static void quitarFechaImportacion(string pCVID)
+        {
+            DateTime fecha = getFechaImportacion(pCVID);
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new Dictionary<Guid, List<RemoveTriples>>();
+            List<RemoveTriples> listaTriplesBorrado = new List<RemoveTriples>();
+            RemoveTriples triple = new RemoveTriples();
+            triple.Predicate = $@"http://w3id.org/roh/importDate"; 
+            triple.Value = fecha.ToString();
+            triple.Title = false;
+            triple.Description = false;
+            listaTriplesBorrado.Add(triple);
+            dicBorrado.Add(new Guid(pCVID), listaTriplesBorrado);
+            mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+
+        }
+
         /// <summary>
         /// Devuelve el nombre completo de la persona a partir de su CV
         /// </summary>
