@@ -27,7 +27,7 @@ namespace Hercules.ED.LoadCV.Config
         /// <summary>
         /// Obtiene la url del servicio importador/exportador
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Devuelve la url del importador/exportador</returns>
         public string GetUrlImportadorExportador()
         {
             if (string.IsNullOrEmpty(UrlImportadorExportador))
@@ -52,7 +52,7 @@ namespace Hercules.ED.LoadCV.Config
         /// <summary>
         /// Obtiene la ruta del la carpeta de lectura de archivos
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Devuelve la ruta de la carpeta de archivos</returns>
         public string GetRutaCarpeta()
         {
             if (string.IsNullOrEmpty(RutaCarpeta))
