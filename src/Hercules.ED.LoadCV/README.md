@@ -28,7 +28,6 @@ Servicio encargado de la carga completa del CV de los usuarios. El servicio har√
   "RutaCarpeta": "",
   "url_importador_exportador": ""
 }
-}
 ```
 
 - RutaCarpeta: Ruta de lectura de la carpeta de archivos.
