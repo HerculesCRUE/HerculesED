@@ -23,6 +23,12 @@ Servicio encargado de la carga del ORCID de los usuarios. El servicio hará una 
 Servicio encargado de la carga completa del CV de los usuarios. El servicio hará una petición al servicio de [Importación de CV](https://github.com/HerculesCRUE/HerculesED/tree/main/src/Hercules.ED.ImportExportCV), enviando el archivo del CV en formato PDF junto con el identificador del CV del usuario.
 
 ## Configuración en el appsetting.json
+```json{
+{
+  "RutaCarpeta": "C:\\Users\\mboillos\\Desktop\\cv_Carga_Murcia",
+  "url_importador_exportador": "https://localhost:5001/ImportadorCV/"
+}
+}
 - RutaCarpeta: Ruta de lectura de la carpeta de archivos.
 - url_importador_exportador: URL del servicio de Importación de CV.
 
